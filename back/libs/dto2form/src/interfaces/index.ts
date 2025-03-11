@@ -1,6 +1,5 @@
 export * from './choice-attributes.interface';
 export * from './field-attributes.interface';
-export * from './field-errors.interface';
 export * from './field-validate-if-rule.interface';
 export * from './field-validator.interface';
 export * from './input-attributes.interface';

@@ -23,8 +23,8 @@ import {
 } from '../exceptions';
 import {
   FieldAttributes,
-  FieldErrorsInterface,
   FieldValidator,
+  MetadataDtoInterface,
 } from '../interfaces';
 import { ValidateIfRulesService, ValidatorCustomService } from '../services';
 import { FORM_METADATA_TOKEN } from '../tokens';
@@ -699,10 +699,10 @@ describe('FormValidationPipe', () => {
   describe('hasValidatorsErrors', () => {
     it('should return false if no error found', () => {
       // Given
-      const targetMock = [
-        { foo: 'bar', validators: [] },
-        { fizz: 'buzz', validators: [] },
-      ] as unknown as FieldErrorsInterface[];
+      const targetMock: MetadataDtoInterface[] = [
+        { name: 'bar', validators: [] },
+        { name: 'buzz', validators: [] },
+      ];
 
       // When
       const result = service['hasValidatorsErrors'](targetMock);
@@ -714,9 +714,9 @@ describe('FormValidationPipe', () => {
     it('should return true if error found', () => {
       // Given
       const targetMock = [
-        { foo: 'bar', validators: [Symbol('errors')] },
-        { fizz: 'buzz', validators: [] },
-      ] as unknown as FieldErrorsInterface[];
+        { name: 'bar', validators: [Symbol('errors')] },
+        { name: 'buzz', validators: [] },
+      ] as unknown as MetadataDtoInterface[];
 
       // When
       const result = service['hasValidatorsErrors'](targetMock);

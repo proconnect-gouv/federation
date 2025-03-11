@@ -4,9 +4,10 @@ import { I18nService, I18nVariables } from '@fc/i18n';
 
 import { Fields } from '../enums';
 import {
+  FieldValidator,
   IsLengthI18nOptions,
   MetadataDtoInterface,
-  MetadataDtoValidatorsInterface,
+  MetadataDtoTranslationInterface,
   ValidatorType,
 } from '../interfaces';
 
@@ -14,7 +15,9 @@ import {
 export class PartnersI18nService {
   constructor(private readonly i18nService: I18nService) {}
 
-  public translation(payload: MetadataDtoInterface[]): MetadataDtoInterface[] {
+  public translation(
+    payload: MetadataDtoInterface[],
+  ): MetadataDtoTranslationInterface[] {
     return payload.map((item) => {
       const label = this.getTranslation('label', item.name);
       const commonFields = { ...item, label };
@@ -46,29 +49,29 @@ export class PartnersI18nService {
   }
 
   private getValidatorsWithErrorMessages(
-    validators: ValidatorType,
+    validators: ValidatorType[],
     name: string,
-  ): ValidatorType {
+  ): ValidatorType[] {
     return this.processValidatorsRecursively(validators, name);
   }
 
   private processValidatorsRecursively(
-    validators: ValidatorType,
+    validators: ValidatorType[],
     name: string,
-  ): ValidatorType {
+  ): ValidatorType[] {
     return validators.map((validator) => {
       if (Array.isArray(validator)) {
         return this.processValidatorsRecursively(validator, name);
       }
 
       return this.enhanceValidatorWithErrorMessage(validator, name);
-    }) as MetadataDtoValidatorsInterface[];
+    }) as FieldValidator[];
   }
 
   private enhanceValidatorWithErrorMessage(
-    validator: MetadataDtoValidatorsInterface,
+    validator: FieldValidator,
     name: string,
-  ): MetadataDtoValidatorsInterface {
+  ): FieldValidator {
     let errorMessage: string;
 
     if (validator.name === 'isLength') {

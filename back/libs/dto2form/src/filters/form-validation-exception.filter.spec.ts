@@ -14,8 +14,9 @@ import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
 import {
-  MetadataDtoInterface,
-  MetadataDtoValidatorsInterface,
+  FieldValidator,
+  MetadataDtoTranslationInterface,
+  ValidatorType,
 } from '../interfaces';
 import { PartnersI18nService } from '../services';
 import { FormValidationExceptionFilter } from './form-validation-exception.filter';
@@ -215,8 +216,9 @@ describe('FormValidationExceptionFilter', () => {
 
     it('should call getErrorMessages with params', () => {
       // Given
-      const payloadMock = [
+      const payloadMock: MetadataDtoTranslationInterface[] = [
         {
+          label: 'Field 1',
           name: 'field1',
           validators: [
             {
@@ -232,6 +234,7 @@ describe('FormValidationExceptionFilter', () => {
           ],
         },
         {
+          label: 'Field 2',
           name: 'field2',
           validators: [
             {
@@ -241,7 +244,7 @@ describe('FormValidationExceptionFilter', () => {
             },
           ],
         },
-      ] as unknown as MetadataDtoInterface[];
+      ];
 
       // When
       const _result = filter['transformToFinalForm'](payloadMock);
@@ -260,8 +263,9 @@ describe('FormValidationExceptionFilter', () => {
 
     it('should transform the payload into a record with error labels', () => {
       // Given
-      const payload = [
+      const payload: MetadataDtoTranslationInterface[] = [
         {
+          label: 'Field 1',
           name: 'field1',
           validators: [
             {
@@ -276,7 +280,7 @@ describe('FormValidationExceptionFilter', () => {
             },
           ],
         },
-      ] as unknown as MetadataDtoInterface[];
+      ];
 
       const expected = [
         'This field is required',
@@ -293,16 +297,18 @@ describe('FormValidationExceptionFilter', () => {
 
     it('should skip fields without validators', () => {
       // Given
-      const payload = [
+      const payload: MetadataDtoTranslationInterface[] = [
         {
+          label: 'Field 1',
           name: 'field1',
           validators: [],
         },
         {
+          label: 'Field 2',
           name: 'field2',
           validators: undefined,
         },
-      ] as unknown as MetadataDtoInterface[];
+      ];
 
       // When
       const result = filter['transformToFinalForm'](payload);
@@ -314,7 +320,7 @@ describe('FormValidationExceptionFilter', () => {
 
     it('should return an empty object if the payload is empty', () => {
       // Given
-      const payload: MetadataDtoInterface[] = [];
+      const payload: MetadataDtoTranslationInterface[] = [];
 
       // When
       const result = filter['transformToFinalForm'](payload);
@@ -328,10 +334,7 @@ describe('FormValidationExceptionFilter', () => {
   describe('getErrorMessages', () => {
     it('should call extractErrorMessage with params', () => {
       // Given
-      const nestedValidatorsMock: (
-        | MetadataDtoValidatorsInterface
-        | MetadataDtoValidatorsInterface[]
-      )[] = [
+      const nestedValidatorsMock: ValidatorType[] = [
         {
           name: 'isRequired',
           errorMessage: 'This field is required',
@@ -381,7 +384,7 @@ describe('FormValidationExceptionFilter', () => {
   describe('extractErrorMessagesFromArray', () => {
     it('should extract error labels for an array of validators', () => {
       // Given
-      const validatorMock: MetadataDtoValidatorsInterface[] = [
+      const validatorMock: FieldValidator[] = [
         {
           name: 'isRequired',
           errorMessage: 'This field is required',
@@ -406,7 +409,7 @@ describe('FormValidationExceptionFilter', () => {
 
     it('should return an empty array if the validator array is empty', () => {
       // Given
-      const emptyValidatorsMock: MetadataDtoValidatorsInterface[] = [];
+      const emptyValidatorsMock: FieldValidator[] = [];
 
       // When
       const result =
@@ -420,7 +423,7 @@ describe('FormValidationExceptionFilter', () => {
   describe('extractErrorMessage', () => {
     it('should return the errorMessage for a single validator', () => {
       // Given
-      const validatorMock: MetadataDtoValidatorsInterface = {
+      const validatorMock: FieldValidator = {
         name: 'isRequired',
         errorMessage: 'This field is required',
         validationArgs: [],
@@ -435,7 +438,7 @@ describe('FormValidationExceptionFilter', () => {
 
     it('should extract error labels for an array of validators', () => {
       // Given
-      const validatorMock: MetadataDtoValidatorsInterface[] = [
+      const validatorMock: FieldValidator[] = [
         {
           name: 'isRequired',
           errorMessage: 'This field is required',
@@ -460,7 +463,7 @@ describe('FormValidationExceptionFilter', () => {
 
     it('should return an empty array if the validator array is empty', () => {
       // Given
-      const emptyValidatorsMock: MetadataDtoValidatorsInterface[] = [];
+      const emptyValidatorsMock: FieldValidator[] = [];
 
       // When
       const result = filter['extractErrorMessage'](emptyValidatorsMock);
