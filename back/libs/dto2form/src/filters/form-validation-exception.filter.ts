@@ -15,8 +15,9 @@ import { generateErrorId, getClass } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 
 import {
+  FieldValidator,
   MetadataDtoInterface,
-  MetadataDtoValidatorsInterface,
+  MetadataDtoTranslationInterface,
   ValidatorType,
 } from '../interfaces';
 import { PartnersI18nService } from '../services';
@@ -48,7 +49,7 @@ export class FormValidationExceptionFilter
 
     // Translate
     const exceptionLogI18n = this.partners.translation(
-      exception.log as unknown as MetadataDtoInterface[],
+      exception.log as MetadataDtoInterface[],
     );
 
     const exceptioni18nToFinalForm =
@@ -80,7 +81,7 @@ export class FormValidationExceptionFilter
   }
 
   private transformToFinalForm(
-    payload: MetadataDtoInterface[],
+    payload: MetadataDtoTranslationInterface[],
   ): Record<string, unknown[]> {
     return payload.reduce(
       (acc, field) => {
@@ -97,21 +98,17 @@ export class FormValidationExceptionFilter
     );
   }
 
-  private getErrorMessages(validators: ValidatorType): unknown[] {
+  private getErrorMessages(validators: ValidatorType[]): unknown[] {
     return validators.map((validator) => this.extractErrorMessage(validator));
   }
 
   private extractErrorMessagesFromArray(
-    validators: MetadataDtoValidatorsInterface[],
+    validators: FieldValidator[],
   ): unknown[] {
     return validators.map((v) => v.errorMessage);
   }
 
-  private extractErrorMessage(
-    validator:
-      | MetadataDtoValidatorsInterface
-      | MetadataDtoValidatorsInterface[],
-  ): unknown {
+  private extractErrorMessage(validator: ValidatorType): unknown {
     if (Array.isArray(validator)) {
       return this.extractErrorMessagesFromArray(validator);
     }

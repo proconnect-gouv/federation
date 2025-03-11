@@ -7,7 +7,7 @@ import {
   RequirePermission,
 } from '@fc/access-control';
 import {
-  MetadataDtoInterface,
+  MetadataDtoTranslationInterface,
   MetadataFormService,
   PartnersI18nService,
 } from '@fc/dto2form';
@@ -29,7 +29,7 @@ export class VersionController {
     entity: EntityType.SP_INSTANCE,
   })
   @UseGuards(AccessControlGuard)
-  getFormMetadata(): MetadataDtoInterface[] {
+  getFormMetadata(): MetadataDtoTranslationInterface[] {
     const payload = this.metadataFormService.getDtoMetadata(
       ServiceProviderInstanceVersionDto,
     );

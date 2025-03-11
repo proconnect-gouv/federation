@@ -5,8 +5,8 @@ import { I18nService } from '@fc/i18n';
 import { getI18nServiceMock } from '@mocks/i18n';
 
 import {
+  FieldValidator,
   MetadataDtoInterface,
-  MetadataDtoValidatorsInterface,
   ValidatorType,
 } from '../interfaces';
 import { PartnersI18nService } from './i18n.service';
@@ -220,7 +220,7 @@ describe('PartnersService', () => {
   describe('getValidatorsWithErrorMessages', () => {
     it('should call processValidatorsRecursively and pass params', () => {
       // Given
-      const validatorMock = Symbol('validator') as unknown as ValidatorType;
+      const validatorMock = Symbol('validator') as unknown as ValidatorType[];
       const nameMock = Symbol('name') as unknown as string;
 
       const expected = Symbol('validator returned');
@@ -251,19 +251,17 @@ describe('PartnersService', () => {
     beforeEach(() => {
       jest
         .spyOn(service as any, 'enhanceValidatorWithErrorMessage')
-        .mockImplementation(
-          (validator: MetadataDtoValidatorsInterface, name: string) => ({
-            ...validator,
-            errorMessage: `Processed ${name}`,
-          }),
-        );
+        .mockImplementation((validator: FieldValidator, name: string) => ({
+          ...validator,
+          errorMessage: `Processed ${name}`,
+        }));
 
       jest.spyOn(service as any, 'processValidatorsRecursively');
     });
 
     it('should process nested arrays of validators and make recursive calls', () => {
       // Given
-      const validatorsMock: MetadataDtoValidatorsInterface[][] = [
+      const validatorsMock: FieldValidator[][] = [
         [
           { name: 'isRequired', errorMessage: '', validationArgs: [] },
           { name: 'isEmail', errorMessage: '', validationArgs: [] },
@@ -291,7 +289,7 @@ describe('PartnersService', () => {
 
     it('should process a flat array of validators', () => {
       // Given
-      const validatorsMock: MetadataDtoValidatorsInterface[] = [
+      const validatorsMock: FieldValidator[] = [
         { name: 'isLength', errorMessage: '', validationArgs: [] },
         { name: 'isRequired', errorMessage: '', validationArgs: [] },
       ];
@@ -325,7 +323,7 @@ describe('PartnersService', () => {
 
     it('should call generateI18nIsLengthParams', () => {
       // Given
-      const validatorsMock: MetadataDtoValidatorsInterface = {
+      const validatorsMock: FieldValidator = {
         name: 'isLength',
         errorMessage: 'errorMessage',
         validationArgs: [{ max: 10 }],
@@ -347,7 +345,7 @@ describe('PartnersService', () => {
 
     it('should call getTranslation with "max" value in option', () => {
       // Given
-      const validatorsMock: MetadataDtoValidatorsInterface = {
+      const validatorsMock: FieldValidator = {
         name: 'isLength',
         errorMessage: 'errorMessage',
         validationArgs: [{ max: 10 }],
@@ -376,7 +374,7 @@ describe('PartnersService', () => {
 
     it('should call getTranslation with "min" value in option', () => {
       // Given
-      const validatorsMock: MetadataDtoValidatorsInterface = {
+      const validatorsMock: FieldValidator = {
         name: 'isLength',
         errorMessage: 'errorMessage',
         validationArgs: [{ min: 10 }],
@@ -405,7 +403,7 @@ describe('PartnersService', () => {
 
     it('should call getTranslation with "min" and "max" value in option', () => {
       // Given
-      const validatorsMock: MetadataDtoValidatorsInterface = {
+      const validatorsMock: FieldValidator = {
         name: 'isLength',
         errorMessage: 'errorMessage',
         validationArgs: [{ max: 20, min: 10 }],
@@ -438,7 +436,7 @@ describe('PartnersService', () => {
         name: 'otherName',
         errorMessage: 'errorMessage',
         validationArgs: [{ max: 20, min: 10 }],
-      } as unknown as MetadataDtoValidatorsInterface;
+      } as unknown as FieldValidator;
 
       // When
       service['enhanceValidatorWithErrorMessage'](validatorsMock, nameMock);
@@ -457,7 +455,7 @@ describe('PartnersService', () => {
         name: 'otherName',
         errorMessage: 'errorMessage',
         validationArgs: [],
-      } as unknown as MetadataDtoValidatorsInterface;
+      } as unknown as FieldValidator;
 
       const expected = {
         errorMessage: 'label errorMessage',
