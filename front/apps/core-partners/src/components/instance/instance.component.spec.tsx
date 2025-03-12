@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
 
-import type { ISODate } from '@fc/common';
 import { CardComponent } from '@fc/dsfr';
 import { t } from '@fc/i18n';
 
@@ -19,7 +18,7 @@ describe('InstanceComponent', () => {
       client_secret: 'any-client_secret-mock',
       name: 'any-name-mock',
     };
-    const createdAtMock = Symbol('any-create-at-mock') as unknown as ISODate;
+    const createdAtMock = '2025-03-03T09:39:17.382Z';
 
     jest.mocked(t).mockReturnValueOnce('any-date-value-mock');
 
@@ -32,7 +31,7 @@ describe('InstanceComponent', () => {
 
     // Then
     expect(t).toHaveBeenCalledOnce();
-    expect(t).toHaveBeenCalledWith('CorePartners.instance.createdAt', { date: createdAtMock });
+    expect(t).toHaveBeenCalledWith('CorePartners.instance.createdAt', { date: '03/03/2025' });
     expect(container).toMatchSnapshot();
     expect(clientIdElt).toBeInTheDocument();
     expect(clientSecretElt).toBeInTheDocument();

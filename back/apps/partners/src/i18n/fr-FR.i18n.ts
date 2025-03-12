@@ -22,7 +22,7 @@ export const frFR: I18nTranslationsMapType = {
   'Form.label.spInformationSection':
     '2. Informations sur votre Fournisseur de Service',
   'Form.label.spConfigurationSection':
-    '3. Configuration de votre Fournisseur de Service',
+    '3. Configuration de votre instance de test',
   'Form.label.subSection':
     '4. Gestion des subs pour votre Fournisseur de Service',
 
@@ -37,21 +37,23 @@ export const frFR: I18nTranslationsMapType = {
   'Form.label.post_logout_redirect_uris': 'URL de déconnexion',
   'Form.label.IPServerAddressesAndRanges': 'Adresse IP',
   'Form.label.id_token_signed_response_alg': 'Algorithme de signature',
-  'Form.label.entityId': 'client_id à réutiliser pour générer les subs',
+  'Form.label.entityId': 'Client ID à réutiliser pour générer les subs',
 
   // form create instance label description
-  'Form.hint.name': 'Exemple : Commune de Paris - Portail Citoyen',
+  'Form.hint.name': 'Renseignez ici le nom de votre instance de test',
   'Form.hint.client_id': '',
   'Form.hint.client_secret': '',
   'Form.hint.platform': '',
   'Form.hint.signupId':
     'Renseignez ici le numéro de la demande Datapass qui a été validée',
-  'Form.hint.site': 'Renseignez ici votre URL de site',
-  'Form.hint.redirect_uris': 'Exemple : https://www.paris.fr/callback',
+  'Form.hint.site':
+    'Renseignez ici votre url de site\r\nExemple : https://www.paris.fr/',
+  'Form.hint.redirect_uris':
+    'Renseignez ici vos urls de callback\r\nExemple : https://www.paris.fr/callback',
   'Form.hint.post_logout_redirect_uris':
-    'Exemple : https://www.paris.fr/logout',
+    'Renseignez ici vos urls de logout\r\nExemple : https://www.paris.fr/logout',
   'Form.hint.IPServerAddressesAndRanges':
-    'Renseignez ici les adresses IP utilisées par votre Fournisseur de Service Exemple : 185.24.184.100 (IPv4), 2001:0db8:0000:85a3:0000:0000:ac1f:8001/59 (IPv6)',
+    'Renseignez ici les adresses IP utilisées par votre Fournisseur de Service',
   'Form.hint.id_token_signed_response_alg':
     'Renseignez ici l’algorithme de signature que vous souhaitez utiliser pour la signature des jetons transmis par FranceConnect',
   'Form.hint.entityId':
