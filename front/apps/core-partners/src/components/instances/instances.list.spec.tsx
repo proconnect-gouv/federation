@@ -81,6 +81,7 @@ describe('InstancesListComponent', () => {
     expect(InstanceComponent).toHaveBeenNthCalledWith(
       1,
       {
+        className: undefined,
         createdAt: 'any-createdAt-mock-1',
         data: {
           // @NOTE API interface
@@ -98,6 +99,7 @@ describe('InstancesListComponent', () => {
     expect(InstanceComponent).toHaveBeenNthCalledWith(
       2,
       {
+        className: 'fr-mt-2w',
         createdAt: 'any-createdAt-mock-2',
         data: {
           // @NOTE API interface
@@ -115,6 +117,7 @@ describe('InstancesListComponent', () => {
     expect(InstanceComponent).toHaveBeenNthCalledWith(
       3,
       {
+        className: 'fr-mt-2w',
         createdAt: 'any-createdAt-mock-3',
         data: {
           // @NOTE API interface

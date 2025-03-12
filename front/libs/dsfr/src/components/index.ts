@@ -10,6 +10,7 @@ export * from './card';
 export * from './inputs';
 export * from './link';
 export * from './logos';
+export * from './notice';
 export * from './pagination';
 export * from './searchbar';
 export * from './stepper';

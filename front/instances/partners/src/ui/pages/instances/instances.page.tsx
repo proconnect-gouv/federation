@@ -17,6 +17,7 @@ export const InstancesPage = React.memo(() => {
       </div>
       {submitState && (
         <AlertComponent
+          className="fr-mb-3w"
           dataTestId="instances-page-alert-top"
           title={t(submitState.message)}
           type={submitState.type}
@@ -25,7 +26,7 @@ export const InstancesPage = React.memo(() => {
       )}
       {hasItems && (
         <React.Fragment>
-          <div className="fr-col-12">
+          <div className="fr-col-12 fr-mb-3w">
             <CreateInstanceButton />
           </div>
           <div className="fr-col-12">
@@ -45,16 +46,6 @@ export const InstancesPage = React.memo(() => {
           />
         </div>
       )}
-      <div className="fr-col-12">
-        <TileComponent
-          isHorizontal
-          dataTestId="instances-page-sandbox-tile"
-          description={t('Partners.homepage.sandboxTileDescription')}
-          link="."
-          size={Sizes.LARGE}
-          title={t('Partners.homepage.sandboxTileTitle')}
-        />
-      </div>
       {submitState && <ScrollRestoration />}
     </div>
   );

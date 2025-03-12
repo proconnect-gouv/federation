@@ -16,6 +16,8 @@ export const CardComponent = jest.fn(({ children }) => (
 
 export const TileComponent = jest.fn(() => <div>TileComponent</div>);
 
+export const NoticeComponent = jest.fn(() => <div>NoticeComponent</div>);
+
 export const SearchBarComponent = jest.fn(() => <div>SearchBarComponent</div>);
 
 export const BadgeComponent = jest.fn(() => <div>BadgeComponent</div>);
