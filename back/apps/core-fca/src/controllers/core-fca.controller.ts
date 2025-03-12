@@ -82,11 +82,16 @@ export class CoreFcaController {
 
     const { defaultEmailRenater } = this.config.get<AppConfig>('App');
 
+    const {
+      params: { login_hint: loginHint },
+    } = await this.oidcProvider.getInteraction(req, res);
+
     const response = {
       csrfToken,
       defaultEmailRenater,
       notification,
       spName,
+      loginHint,
     };
 
     const isRefresh = stepRoute === CoreRoutes.INTERACTION;

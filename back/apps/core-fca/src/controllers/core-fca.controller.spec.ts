@@ -288,6 +288,12 @@ describe('CoreFcaController', () => {
         interactionDetailsMock,
       );
 
+      oidcProviderServiceMock.getInteraction.mockResolvedValue({
+        params: {
+          login_hint: 'test@example.com',
+        },
+      });
+
       notificationsServiceMock.getNotificationToDisplay.mockResolvedValue(
         notificationsMock,
       );
@@ -379,6 +385,7 @@ describe('CoreFcaController', () => {
       const expectedInteractionDetails = {
         csrfToken: randomStringMock,
         defaultEmailRenater: undefined,
+        loginHint: 'test@example.com',
         notification: notificationsMock,
         spName: oidcSessionMock.spName,
       };

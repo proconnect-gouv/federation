@@ -10,6 +10,7 @@
   <body>
     <%- include('includes/skiplinks.ejs') %>
     <%- include('includes/header.ejs') %>
+    <div id="email-container" data-login-hint="<%= locals.loginHint %>"></div>
     <main class="onboarding-container" role="main" id="content">
       <div>
         <%- include('pages/interaction/interaction.welcome.ejs') %> <%-
