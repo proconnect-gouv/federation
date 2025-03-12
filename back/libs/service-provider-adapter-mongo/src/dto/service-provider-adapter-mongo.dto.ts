@@ -55,17 +55,21 @@ export class ServiceProviderAdapterMongoDTO {
   readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';
 
   @IsString()
+  readonly userinfo_signed_response_alg: string;
+
+  @IsOptional()
+  @IsString()
   readonly id_token_encrypted_response_alg: string;
 
+  @IsOptional()
   @IsString()
   readonly id_token_encrypted_response_enc: string;
 
-  @IsString()
-  readonly userinfo_signed_response_alg: string;
-
+  @IsOptional()
   @IsString()
   readonly userinfo_encrypted_response_alg: string;
 
+  @IsOptional()
   @IsString()
   readonly userinfo_encrypted_response_enc: string;
 
@@ -73,6 +77,7 @@ export class ServiceProviderAdapterMongoDTO {
   @IsUrlRequiredTldFromConfig()
   readonly jwks_uri?: string;
 
+  @IsOptional()
   @IsBoolean()
   idpFilterExclude: boolean;
 
@@ -86,9 +91,11 @@ export class ServiceProviderAdapterMongoDTO {
   })
   readonly type: string;
 
+  @IsOptional()
   @IsBoolean()
   readonly identityConsent: boolean;
 
+  @IsOptional()
   @IsBoolean()
   readonly ssoDisabled: boolean;
 
