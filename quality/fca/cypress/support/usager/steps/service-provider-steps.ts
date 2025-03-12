@@ -15,6 +15,7 @@ import {
   setAcrValues,
   setAsRequestedClaims,
   setIdpHint,
+  setLoginHint,
   setPrompt,
   setScope,
 } from '../../common/helpers';
@@ -36,6 +37,13 @@ Given(
   'le fournisseur de service requiert le claim {string}',
   function (claim: string) {
     setAsRequestedClaims(claim);
+  },
+);
+
+Given(
+  'le fournisseur de service requiert le login_hint {string}',
+  function (login_hint: string) {
+    setLoginHint(login_hint);
   },
 );
 

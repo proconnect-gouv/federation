@@ -42,6 +42,14 @@ export const setIdpHint = (idpHint: string): void => {
   });
 };
 
+export const setLoginHint = (loginHint: string): void => {
+  updateCustomParams((customParams) => {
+    customParams['login_hint'] = loginHint;
+
+    return customParams;
+  });
+};
+
 export const setPrompt = (prompt: string): void => {
   updateCustomParams((customParams) => {
     customParams['prompt'] = prompt;
