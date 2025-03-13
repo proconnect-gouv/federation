@@ -16,6 +16,10 @@ export class PartnersController {
 
   @Get(PartnersBackRoutes.USER_INFO)
   @Header('cache-control', 'no-store')
+  /**
+   * @todo FC-2184 ⚠️
+   */
+  // eslint-disable-next-line complexity
   getUserInfo(
     @Res() res,
     @Session('PartnersAccount')

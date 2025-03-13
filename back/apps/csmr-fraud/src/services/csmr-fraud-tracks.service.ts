@@ -75,6 +75,8 @@ export class CsmrFraudTracksService {
         },
       );
       return { error: '', total, tracks };
+      // You can't remove the catch argument, it's mandatory
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return {
         error: `impossible de récupérer les traces à partir du code d’identification`,
