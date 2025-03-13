@@ -254,23 +254,34 @@ describe('PartnersAccountService', () => {
   });
 
   describe('updateLastConnection', () => {
-    it('should update last connection', async () => {
-      // Given
-      const queryBuilderMock = {
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        returning: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue(insertResult),
-      };
+    // Given
+    const queryBuilderMock = {
+      update: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      returning: jest.fn().mockReturnThis(),
+      execute: jest.fn().mockResolvedValue(insertResult),
+      release: jest.fn(),
+    };
+
+    const data = {
+      email: 'emailMock',
+    } as unknown as AccountInitInputInterface;
+
+    beforeEach(() => {
+      queryBuilderMock.update = jest.fn().mockReturnThis();
+      queryBuilderMock.set = jest.fn().mockReturnThis();
+      queryBuilderMock.where = jest.fn().mockReturnThis();
+      queryBuilderMock.returning = jest.fn().mockReturnThis();
+      queryBuilderMock.execute = jest.fn().mockResolvedValue(insertResult);
+      queryBuilderMock.release = jest.fn();
+
       queryRunnerMock.manager.createQueryBuilder = jest
         .fn()
         .mockReturnValue(queryBuilderMock);
+    });
 
-      const data = {
-        email: 'emailMock',
-      } as unknown as AccountInitInputInterface;
-
+    it('should update last connection', async () => {
       // When
       await service.updateLastConnection(data);
 
@@ -288,6 +299,16 @@ describe('PartnersAccountService', () => {
         'id',
       ]);
       expect(queryBuilderMock.execute).toHaveBeenCalledOnce();
+    });
+
+    it('should releaser queryRunner', async () => {
+      // When
+      await service.updateLastConnection(
+        {} as unknown as AccountInitInputInterface,
+      );
+
+      // Then
+      expect(queryRunnerMock.release).toHaveBeenCalledOnce();
     });
   });
 });
