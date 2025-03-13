@@ -8,7 +8,6 @@ import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import {
-  OidcClientIdpBlacklistedException,
   OidcClientIdpDisabledException,
   OidcClientService,
 } from '@fc/oidc-client';
@@ -19,10 +18,7 @@ import { getCoreAuthorizationServiceMock } from '@mocks/core';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import {
-  CoreFcaAgentIdpBlacklistedException,
-  CoreFcaAgentIdpDisabledException,
-} from '../exceptions';
+import { CoreFcaAgentIdpDisabledException } from '../exceptions';
 import { CoreFcaService } from './core-fca.service';
 import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 
@@ -36,7 +32,6 @@ describe('CoreFcaService', () => {
 
   const oidcMock = {
     utils: {
-      checkIdpBlacklisted: jest.fn(),
       checkIdpDisabled: jest.fn(),
       buildAuthorizeParameters: jest.fn(),
     },
@@ -181,21 +176,6 @@ describe('CoreFcaService', () => {
       expect(configServiceMock.get).toHaveBeenCalledWith('OidcClient');
     });
 
-    it('should call oidcClient.utils.checkIdpBlacklisted()', async () => {
-      // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
-      // Then
-      expect(oidcMock.utils.checkIdpBlacklisted).toHaveBeenCalledTimes(1);
-      expect(oidcMock.utils.checkIdpBlacklisted).toHaveBeenCalledWith(
-        spIdMock,
-        idpIdMock,
-      );
-    });
-
     it('should call oidcClient.utils.checkIdpDisabled()', async () => {
       // When
       await service.redirectToIdp(
@@ -288,40 +268,6 @@ describe('CoreFcaService', () => {
       // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
       expect(resMock.redirect).toHaveBeenCalledWith(authorizeUrlMock);
-    });
-  });
-
-  describe('checkIdpBlacklisted', () => {
-    it('should call oidcClient.utils.checkIdpBlacklisted', async () => {
-      // When
-      await service['checkIdpBlacklisted'](spIdMock, idpIdMock);
-
-      // Then
-      expect(oidcMock.utils.checkIdpBlacklisted).toHaveBeenCalledTimes(1);
-      expect(oidcMock.utils.checkIdpBlacklisted).toHaveBeenCalledWith(
-        spIdMock,
-        idpIdMock,
-      );
-    });
-
-    it('should throw a CoreFcaAgentIdpBlacklistedException', async () => {
-      // Given
-      oidcMock.utils.checkIdpBlacklisted.mockRejectedValue(
-        new OidcClientIdpBlacklistedException(),
-      );
-      // When
-      await expect(
-        service['checkIdpBlacklisted'](spIdMock, idpIdMock),
-      ).rejects.toThrow(CoreFcaAgentIdpBlacklistedException);
-    });
-
-    it('should throw an error if utils return an error', async () => {
-      // Given
-      oidcMock.utils.checkIdpBlacklisted.mockRejectedValue(new Error('wrong'));
-      // When
-      await expect(
-        service['checkIdpBlacklisted'](spIdMock, idpIdMock),
-      ).rejects.toThrow(Error);
     });
   });
 

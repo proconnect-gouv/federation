@@ -33,7 +33,6 @@ describe('OidcProviderRedisAdapter', () => {
   const testAdapterName = 'testAdapterName';
   const ServiceProviderAdapterMock = {
     getList: jest.fn(),
-    shouldExcludeIdp: jest.fn(),
     getById: jest.fn(),
   };
 

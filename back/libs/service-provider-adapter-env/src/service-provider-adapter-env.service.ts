@@ -27,13 +27,6 @@ export class ServiceProviderAdapterEnvService
     return cloneDeep(list);
   }
 
-  async shouldExcludeIdp(spId: string, idpId: string): Promise<boolean> {
-    const { idpFilterExclude, idpFilterList } = await this.getById(spId);
-    const idpFound = idpFilterList.includes(idpId);
-
-    return idpFilterExclude ? idpFound : !idpFound;
-  }
-
   async getById(id: string): Promise<ServiceProviderMetadata> {
     const list = await this.getList();
     return list.find(({ client_id: dbId }) => dbId === id);

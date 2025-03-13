@@ -9,17 +9,13 @@ import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   OidcClientConfig,
-  OidcClientIdpBlacklistedException,
   OidcClientIdpDisabledException,
   OidcClientService,
 } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 
 import { CoreFcaOidcClientSession } from '../dto/core-fca-oidc-client-session.dto';
-import {
-  CoreFcaAgentIdpBlacklistedException,
-  CoreFcaAgentIdpDisabledException,
-} from '../exceptions';
+import { CoreFcaAgentIdpDisabledException } from '../exceptions';
 import { CoreFcaUnauthorizedEmailException } from '../exceptions/core-fca-unauthorized-email-exception';
 import {
   CoreFcaAuthorizationParametersInterface,
@@ -67,7 +63,6 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
     await this.validateEmailForSp(spId, login_hint);
-    await this.checkIdpBlacklisted(spId, idpId);
     await this.checkIdpDisabled(idpId);
 
     const { nonce, state } =
@@ -132,17 +127,6 @@ export class CoreFcaService implements CoreFcaServiceInterface {
         authorizedFqdnsConfig.spContact,
         authorizedFqdnsConfig.authorizedFqdns,
       );
-    }
-  }
-
-  private async checkIdpBlacklisted(spId: string, idpId: string) {
-    try {
-      await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
-    } catch (error) {
-      if (error instanceof OidcClientIdpBlacklistedException) {
-        throw new CoreFcaAgentIdpBlacklistedException();
-      }
-      throw error;
     }
   }
 

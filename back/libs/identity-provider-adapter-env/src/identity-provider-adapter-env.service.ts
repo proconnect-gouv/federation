@@ -87,31 +87,6 @@ export class IdentityProviderAdapterEnvService
     await this.getList(true);
   }
 
-  /**
-   * Method triggered when you want to filter identity providers
-   * from service providers' whitelist/blacklist
-   *
-   * @param idpList  list of identity providers' clientID
-   * @param blacklist  boolean false = blacklist true = whitelist
-   */
-  async getFilteredList(
-    idpList: string[],
-    blacklist: boolean,
-  ): Promise<IdentityProviderMetadata[]> {
-    const providers = cloneDeep(await this.getList());
-    const mappedProviders = providers.map((provider) => {
-      const idpFound = idpList.includes(provider.uid);
-      const isIdpAuthorized = blacklist ? !idpFound : idpFound;
-
-      if (!isIdpAuthorized) {
-        provider.active = false;
-      }
-
-      return provider;
-    });
-    return mappedProviders;
-  }
-
   async getById(
     id: string,
     refreshCache = false,

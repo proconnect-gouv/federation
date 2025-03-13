@@ -6,7 +6,7 @@ This library is a MongoDB adapter that retrieves a list of Identity Providers (F
 
 This library provides an adapter to retrieve the FIs stored in MongoDB based on the email domain names of users.
 
-The library can potentially return multiple FIs for the same domain name. However, it does not choose an FI; that responsibility is left to the calling application, which is aware of whitelist/blacklist concepts.
+The library can potentially return multiple FIs for the same domain name. However, it does not choose an FI; that responsibility is left to the calling application.
 
 The responsibility of this library is technical. It persists a relationship between email domain names and FIs in the "fqdnToProvider" collection and allows you to retrieve all elements of this collection through a search by email.
 

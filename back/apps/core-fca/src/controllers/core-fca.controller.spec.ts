@@ -92,14 +92,12 @@ describe('CoreFcaController', () => {
   };
 
   const identityProviderServiceMock = {
-    getFilteredList: jest.fn(),
     getList: jest.fn(),
     isActiveById: jest.fn(),
   };
 
   const serviceProviderServiceMock = {
     getById: jest.fn(),
-    shouldExcludeIdp: jest.fn(),
   };
 
   const sessionServiceMock = getSessionServiceMock();
@@ -255,7 +253,6 @@ describe('CoreFcaController', () => {
     sessionCsrfServiceMock.get.mockReturnValueOnce(randomStringMock);
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
 
-    serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(true);
     oidcSessionServiceMock.get.mockReturnValue(oidcSessionMock);
     sessionCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
 
@@ -609,7 +606,6 @@ describe('CoreFcaController', () => {
 
     describe('when `identityProvider.isActiveById` returns false and isSilentAuthentication is false', () => {
       beforeEach(() => {
-        serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
         identityProviderServiceMock.isActiveById.mockResolvedValue(false);
         coreVerifyServiceMock.handleUnavailableIdp.mockResolvedValue(
           handleUnavailableIdpResult,
@@ -656,55 +652,8 @@ describe('CoreFcaController', () => {
       });
     });
 
-    describe('when `serviceProvider.shouldExcludeIdp()` returns `true` and `isSilentAuthentication` is false', () => {
-      beforeEach(() => {
-        coreVerifyServiceMock.handleUnavailableIdp.mockResolvedValue(
-          handleUnavailableIdpResult,
-        );
-        coreFcaVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
-          handleVerifyResult,
-        );
-        const oidcClientSessionDataMock = {
-          isSilentAuthentication: false,
-        } as unknown as ISessionService<OidcClientSession>;
-
-        sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      });
-
-      it('should call `handleUnavailableIdp()` and not `handleVerifyIdentity()`', async () => {
-        // When
-        await coreController.getVerify(
-          req,
-          res as unknown as Response,
-          params,
-          sessionServiceMock,
-        );
-        // Then
-        expect(
-          coreVerifyServiceMock.handleUnavailableIdp,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          coreFcaVerifyServiceMock.handleVerifyIdentity,
-        ).not.toHaveBeenCalled();
-      });
-
-      it('should return result from `handleUnavailableIdp()`', async () => {
-        // When
-        await coreController.getVerify(
-          req,
-          res as unknown as Response,
-          params,
-          sessionServiceMock,
-        );
-        // Then
-        expect(res.redirect).toBeCalledTimes(1);
-        expect(res.redirect).toBeCalledWith(handleUnavailableIdpResult);
-      });
-    });
-
     describe('when `identityProvider.isActiveById` returns false and `isSilentAuthentication` is true', () => {
       beforeEach(() => {
-        serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
         identityProviderServiceMock.isActiveById.mockResolvedValue(false);
         coreFcaVerifyServiceMock.handleErrorLoginRequired.mockReturnValue(
           handleErrorLoginRequiredResult,
@@ -744,94 +693,6 @@ describe('CoreFcaController', () => {
         // Then
         expect(res.redirect).toBeCalledTimes(1);
         expect(res.redirect).toBeCalledWith(handleErrorLoginRequiredResult);
-      });
-    });
-
-    describe('when `serviceProvider.shouldExcludeIdp()` returns `true` and `isSilentAuthentication` is true', () => {
-      beforeEach(() => {
-        coreVerifyServiceMock.handleUnavailableIdp.mockResolvedValue(
-          handleUnavailableIdpResult,
-        );
-        coreFcaVerifyServiceMock.handleErrorLoginRequired.mockReturnValue(
-          handleErrorLoginRequiredResult,
-        );
-        const oidcClientSessionDataMock = {
-          isSilentAuthentication: true,
-        } as unknown as ISessionService<OidcClientSession>;
-
-        sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      });
-
-      it('should call `handleErrorLoginRequired()` and not `handleUnavailableIdp()`', async () => {
-        // When
-        await coreController.getVerify(
-          req,
-          res as unknown as Response,
-          params,
-          sessionServiceMock,
-        );
-        // Then
-        expect(
-          coreFcaVerifyServiceMock.handleErrorLoginRequired,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          coreVerifyServiceMock.handleUnavailableIdp,
-        ).not.toHaveBeenCalled();
-      });
-
-      it('should return result from `handleErrorLoginRequired()`', async () => {
-        // When
-        await coreController.getVerify(
-          req,
-          res as unknown as Response,
-          params,
-          sessionServiceMock,
-        );
-        // Then
-        expect(res.redirect).toBeCalledTimes(1);
-        expect(res.redirect).toBeCalledWith(handleErrorLoginRequiredResult);
-      });
-    });
-
-    describe('when `serviceProvider.shouldExcludeIdp()` returns `false`', () => {
-      beforeEach(() => {
-        serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
-        coreVerifyServiceMock.handleUnavailableIdp.mockResolvedValue(
-          handleUnavailableIdpResult,
-        );
-        coreFcaVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
-          handleVerifyResult,
-        );
-      });
-
-      it('should call `handleVerify()` and not `handleUnavailableIdp()`', async () => {
-        // When
-        await coreController.getVerify(
-          req,
-          res as unknown as Response,
-          params,
-          sessionServiceMock,
-        );
-        // Then
-        expect(
-          coreFcaVerifyServiceMock.handleVerifyIdentity,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          coreVerifyServiceMock.handleUnavailableIdp,
-        ).not.toHaveBeenCalled();
-      });
-
-      it('should call return result from `handleVerify()`', async () => {
-        // When
-        await coreController.getVerify(
-          req,
-          res as unknown as Response,
-          params,
-          sessionServiceMock,
-        );
-        // Then
-        expect(res.redirect).toBeCalledTimes(1);
-        expect(res.redirect).toBeCalledWith(handleVerifyResult);
       });
     });
   });

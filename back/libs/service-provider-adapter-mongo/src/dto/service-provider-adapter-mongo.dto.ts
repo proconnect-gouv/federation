@@ -81,6 +81,7 @@ export class ServiceProviderAdapterMongoDTO {
   @IsBoolean()
   idpFilterExclude: boolean;
 
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   idpFilterList: string[];

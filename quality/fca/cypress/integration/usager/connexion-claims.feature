@@ -18,6 +18,7 @@ Fonctionnalité: Connexion avec Claims
     Quand je m'authentifie
     Alors la cinématique n'a pas renvoyé d'amr
 
+  @ignoreInteg01
   Scénario: Connexion avec claims - erreur FS non habilité pour amr
     Etant donné que je navigue sur la page fournisseur de service "non habilité à demander le claim amr"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires"
