@@ -232,6 +232,8 @@ export class OidcClientUtilsService {
         post_logout_redirect_uri: postLogoutRedirectUri,
         state: stateFromSession,
       });
+      // You can't remove the catch argument, it's mandatory
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       throw new OidcClientGetEndSessionUrlException();
     }
@@ -285,6 +287,8 @@ export class OidcClientUtilsService {
     let isIdpExcluded = false;
     try {
       isIdpExcluded = await this.serviceProvider.shouldExcludeIdp(spId, idpId);
+      // You can't remove the catch argument, it's mandatory
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       throw new OidcClientFailedToFetchBlacklist();
     }

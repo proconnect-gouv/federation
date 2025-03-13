@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { FraudCaseDto } from '@fc/csmr-fraud-client';
 import { LoggerService } from '@fc/logger';
 import { PivotIdentityDto } from '@fc/oidc';
-import _ = require('lodash');
 
 import { SecurityTicketDataInterface } from '../interfaces';
 import { CsmrFraudTracksService } from './csmr-fraud-tracks.service';

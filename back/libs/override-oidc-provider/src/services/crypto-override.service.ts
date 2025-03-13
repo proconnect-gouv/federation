@@ -3,6 +3,7 @@ import { timeout } from 'rxjs/operators';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
+import { AsyncFunctionSafe, FunctionSafe } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { CryptoProtocol } from '@fc/microservices';
@@ -79,39 +80,50 @@ export class CryptoOverrideService {
     dataBuffer: Buffer,
     digest = 'sha256',
   ): Promise<Buffer> {
-    return new Promise((resolve: Function, reject: Function) => {
-      const { payloadEncoding, requestTimeout } =
-        this.config.get<RabbitmqConfig>('CryptographyBroker');
+    return new Promise(
+      (
+        resolve: FunctionSafe | AsyncFunctionSafe,
+        reject: FunctionSafe | AsyncFunctionSafe,
+      ) => {
+        const { payloadEncoding, requestTimeout } =
+          this.config.get<RabbitmqConfig>('CryptographyBroker');
 
-      try {
-        // Build message
-        const payload = {
-          data: dataBuffer.toString(payloadEncoding),
-          digest,
-        };
+        try {
+          // Build message
+          const payload = {
+            data: dataBuffer.toString(payloadEncoding),
+            digest,
+          };
 
-        // Build callbacks
-        const next = this.signSuccess.bind(this, resolve, reject);
-        const error = (): void => {
-          reject(new CryptographyGatewayException());
-        };
+          // Build callbacks
+          const next = this.signSuccess.bind(this, resolve, reject);
+          const error = (): void => {
+            reject(new CryptographyGatewayException());
+          };
 
-        // Send message to gateway
-        this.broker
-          .send(CryptoProtocol.Commands.SIGN, payload)
-          .pipe(timeout(requestTimeout))
-          .subscribe({
-            next,
-            error,
-          });
-      } catch (error) {
-        return reject(new CryptographyGatewayException());
-      }
-    });
+          // Send message to gateway
+          this.broker
+            .send(CryptoProtocol.Commands.SIGN, payload)
+            .pipe(timeout(requestTimeout))
+            .subscribe({
+              next,
+              error,
+            });
+          // You can't remove the catch argument, it's mandatory
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          return reject(new CryptographyGatewayException());
+        }
+      },
+    );
   }
 
   // Handle successful call
-  private signSuccess(resolve: Function, reject: Function, data: string): void {
+  private signSuccess(
+    resolve: FunctionSafe | AsyncFunctionSafe,
+    reject: FunctionSafe | AsyncFunctionSafe,
+    data: string,
+  ): void {
     const { payloadEncoding } =
       this.config.get<RabbitmqConfig>('CryptographyBroker');
     /**

@@ -1,3 +1,6 @@
+import * as deepFreeze from 'deep-freeze';
+
+import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartnersAccountPermission } from '@entities/typeorm';
@@ -11,8 +14,6 @@ import { EntityType, PermissionsType } from '../enums';
 import { AccountPermissionRepository } from '../services';
 import { ACCESS_CONTROL_TOKEN } from '../tokens';
 import { AccessControlSessionInterceptor } from './access-control-session.interceptor';
-import deepFreeze = require('deep-freeze');
-import { ExecutionContext } from '@nestjs/common';
 
 describe('AccessControlSessionInterceptor', () => {
   let interceptor: AccessControlSessionInterceptor;

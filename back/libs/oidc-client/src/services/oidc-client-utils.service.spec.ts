@@ -646,6 +646,7 @@ describe('OidcClientUtilsService', () => {
     it('should returns true if endSessionUrl was found', async () => {
       // Given
       const isURLMock = jest.mocked(isURL);
+      isURLMock.mockReturnValueOnce(true);
 
       // When
       const result = await service.hasEndSessionUrl(providerUidMock);
@@ -661,7 +662,7 @@ describe('OidcClientUtilsService', () => {
           require_protocol: true,
         },
       );
-      expect(result).toBeTrue;
+      expect(result).toBeTrue();
     });
 
     it('should returns false if no endSessionUrl was found', async () => {
@@ -676,7 +677,7 @@ describe('OidcClientUtilsService', () => {
 
       // Then
       expect(isURLMock).toHaveBeenCalledTimes(0);
-      expect(result).toBeFalse;
+      expect(result).toBeFalse();
     });
   });
 });

@@ -6,6 +6,7 @@ import {
 
 import { Injectable } from '@nestjs/common';
 
+import { AsyncFunctionSafe } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
@@ -92,7 +93,7 @@ export abstract class OidcProviderAppConfigLibService
   async findAccount(
     ctx: KoaContextWithOIDC,
     sessionId: string,
-  ): Promise<{ accountId: string; claims: Function }> {
+  ): Promise<{ accountId: string; claims: AsyncFunctionSafe }> {
     try {
       // Use the user session from the service provider request
       await this.sessionService.initCache(sessionId);
@@ -236,7 +237,7 @@ export abstract class OidcProviderAppConfigLibService
     sessionId: string,
     spIdentity: Partial<Omit<IOidcIdentity, 'sub'>>,
     subSp: string,
-  ): Promise<{ accountId: string; claims: Function }> {
+  ): Promise<{ accountId: string; claims: AsyncFunctionSafe }> {
     return {
       /**
        * We used the `sessionId` as `accountId` identifier when building the grant

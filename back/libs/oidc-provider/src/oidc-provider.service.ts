@@ -10,6 +10,7 @@ import { HttpOptions } from 'openid-client';
 import { Global, Inject, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
+import { AsyncFunctionSafe, FunctionSafe } from '@fc/common';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { RedisService } from '@fc/redis';
@@ -83,6 +84,8 @@ export class OidcProviderService {
         httpOptions: this.getHttpOptions.bind(this),
       });
       this.provider.proxy = true;
+      // You can't remove the catch argument, it's mandatory
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       throw new OidcProviderInitialisationException();
     }
@@ -94,6 +97,8 @@ export class OidcProviderService {
        * @see https://github.com/panva/node-oidc-provider/blob/main/docs/README.md#mounting-oidc-provider
        */
       this.httpAdapterHost.httpAdapter.use(prefix, this.provider.callback());
+      // You can't remove the catch argument, it's mandatory
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       throw new OidcProviderBindingException();
     }
@@ -171,7 +176,7 @@ export class OidcProviderService {
 
   private async runMiddlewareBeforePattern(
     { step, path, pattern, ctx },
-    middleware: Function,
+    middleware: FunctionSafe | AsyncFunctionSafe,
   ) {
     // run middleware BEFORE pattern occurs
     if (step === OidcProviderMiddlewareStep.BEFORE && path === pattern) {
@@ -181,7 +186,7 @@ export class OidcProviderService {
 
   private async runMiddlewareAfterPattern(
     { step, route, path, pattern, ctx },
-    middleware: Function,
+    middleware: FunctionSafe | AsyncFunctionSafe,
   ) {
     // run middleware AFTER pattern occurred
     if (
@@ -217,9 +222,9 @@ export class OidcProviderService {
   registerMiddleware(
     step: OidcProviderMiddlewareStep,
     pattern: OidcProviderMiddlewarePattern | OidcProviderRoutes,
-    middleware: Function,
+    middleware: FunctionSafe | AsyncFunctionSafe,
   ): void {
-    this.provider.use(async (ctx: KoaContextWithOIDC, next: Function) => {
+    this.provider.use(async (ctx: KoaContextWithOIDC, next: FunctionSafe) => {
       // Extract path and oidc.route from ctx
       const { path, oidc: { route = '' } = {} } = ctx;
 

@@ -6,7 +6,6 @@ import { LoggerService } from '@fc/logger';
 import { FraudProtocol } from '@fc/microservices';
 
 import { CsmrFraudDataService, CsmrFraudSupportService } from '../services';
-import _ = require('lodash');
 
 @Controller()
 export class CsmrFraudController {
