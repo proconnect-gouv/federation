@@ -123,4 +123,9 @@ export class FqdnToIdpAdapterMongoService
 
     return fqdnToProvider;
   }
+
+  fetchFqdnToIdpByEmail(email: string): Promise<FqdnToIdentityProvider[]> {
+    const fqdn = email.split('@').pop().toLowerCase();
+    return this.getIdpsByFqdn(fqdn);
+  }
 }

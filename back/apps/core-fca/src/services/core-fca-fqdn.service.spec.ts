@@ -14,6 +14,8 @@ describe('CoreFcaFqdnService', () => {
     getIdpsByFqdn: jest.fn(),
     refreshCache: jest.fn(),
     getList: jest.fn(),
+    isAllowedIdpForEmail: jest.fn(),
+    fetchFqdnToIdpByEmail: jest.fn().mockResolvedValue([]),
   };
 
   const configServiceMock = getConfigMock();
@@ -214,7 +216,7 @@ describe('CoreFcaFqdnService', () => {
   describe('isAllowedIdpForEmail', () => {
     it('should allow a fqdn listed in one of the FqdnToProvider of an idp', async () => {
       // Given
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([
         { identityProvider: 'idp1' },
       ]);
 
@@ -230,7 +232,7 @@ describe('CoreFcaFqdnService', () => {
 
     it('should not allow a fqdn listed in one of the FqdnToProvider of only others idps', async () => {
       // Given
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([
         { identityProvider: 'idp2' },
         { identityProvider: 'idp3' },
       ]);
@@ -251,7 +253,7 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([]);
 
       // When
       const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
@@ -269,7 +271,7 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([]);
 
       // When
       const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
@@ -287,7 +289,7 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([
         { identityProvider: 'default-idp' },
       ]);
 
@@ -307,7 +309,7 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([
         { identityProvider: 'another-idp' },
       ]);
 

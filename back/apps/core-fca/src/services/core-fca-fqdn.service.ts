@@ -78,9 +78,8 @@ export class CoreFcaFqdnService {
   }
 
   async isAllowedIdpForEmail(idpId: string, email: string): Promise<boolean> {
-    const fqdn = this.getFqdnFromEmail(email);
     const existingFqdnToProvider =
-      await this.fqdnToIdpAdapterMongo.getIdpsByFqdn(fqdn);
+      await this.fqdnToIdpAdapterMongo.fetchFqdnToIdpByEmail(email);
 
     if (existingFqdnToProvider.length > 0) {
       return existingFqdnToProvider.some(
