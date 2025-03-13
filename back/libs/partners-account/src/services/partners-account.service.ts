@@ -91,6 +91,8 @@ export class PartnersAccountService {
       .returning(['id'])
       .execute();
 
+    await queryRunner.release();
+
     const accountId = result.raw[0]?.id;
     return accountId;
   }
