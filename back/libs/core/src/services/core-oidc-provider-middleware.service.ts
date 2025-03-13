@@ -174,6 +174,7 @@ export class CoreOidcProviderMiddlewareService {
     spId: string;
     spName: string;
     spRedirectUri: string;
+    spType: string;
     isSso: boolean;
     stepRoute: string;
   }> {
@@ -191,7 +192,9 @@ export class CoreOidcProviderMiddlewareService {
      * We  have to cast properties of `ctx.oidc.params` to `string`
      * since `oidc-provider`defines them as `unknown`
      */
-    const { name: spName } = await this.serviceProvider.getById(spId as string);
+    const { name: spName, type: spType } = await this.serviceProvider.getById(
+      spId as string,
+    );
 
     const sessionProperties = {
       interactionId,
@@ -200,6 +203,7 @@ export class CoreOidcProviderMiddlewareService {
       spRedirectUri: spRedirectUri as string,
       spName,
       spState: state,
+      spType,
       isSso,
       /**
        * Explicit stepRoute set
