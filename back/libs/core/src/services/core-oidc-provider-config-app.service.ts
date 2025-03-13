@@ -67,6 +67,7 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
       spId,
       spAcr,
       spName,
+      spType,
       subs,
     } = session.OidcClient;
 
@@ -84,6 +85,7 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
       spId,
       spAcr,
       spName,
+      spType,
       subs,
     });
 
