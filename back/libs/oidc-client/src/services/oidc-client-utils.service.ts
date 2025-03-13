@@ -24,9 +24,7 @@ import {
 } from '@fc/oidc';
 
 import {
-  OidcClientFailedToFetchBlacklist,
   OidcClientGetEndSessionUrlException,
-  OidcClientIdpBlacklistedException,
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientInvalidStateException,
@@ -268,29 +266,6 @@ export class OidcClientUtilsService {
     } catch (error) {
       this.logger.err({ error });
       return false;
-    }
-  }
-
-  /**
-   * Method to check if
-   * an identity provider is blacklisted or whitelisted.
-   *
-   * @param {string} spId service provider ID
-   * @param {string} idpId identity provider ID
-   * @returns {Promise<void>}
-   * @throws OidcClientFailedToFetchBlacklist if the idp restrictions of the sp couldn't be fetched
-   * @throws OidcClientIdpBlacklistedException if the idp is blacklisted or not whitelisted
-   */
-  async checkIdpBlacklisted(spId: string, idpId: string): Promise<void> {
-    let isIdpExcluded = false;
-    try {
-      isIdpExcluded = await this.serviceProvider.shouldExcludeIdp(spId, idpId);
-    } catch (error) {
-      throw new OidcClientFailedToFetchBlacklist();
-    }
-
-    if (isIdpExcluded) {
-      throw new OidcClientIdpBlacklistedException();
     }
   }
 

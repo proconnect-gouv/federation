@@ -3,17 +3,17 @@ Fonctionnalité: Connexion Usager - idp_hint
 
   @ignoreInteg01
   Scénario: Connexion initiale + SSO avec idp_hint valide
-    Etant donné que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Quand je rentre l'id du fournisseur d'identité "autorisé pour idp_hint" dans le champ idp_hint
     Et que je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page login du fournisseur d'identité "autorisé pour idp_hint"
     Et je m'authentifie
-    Et je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et je suis redirigé vers la page fournisseur de service "premier FS"
     Et je suis connecté au fournisseur de service
-    Quand je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
+    Quand je navigue sur la page fournisseur de service "second fs"
     Et que je rentre l'id du fournisseur d'identité "autorisé pour idp_hint" dans le champ idp_hint
     Et que je clique sur le bouton ProConnect
-    Et je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
+    Et je suis redirigé vers la page fournisseur de service "second fs"
     Et je suis connecté au fournisseur de service
 
   Scénario: Connexion avec idp_hint invalide

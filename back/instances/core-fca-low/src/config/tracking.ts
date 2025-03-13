@@ -91,12 +91,6 @@ export default {
       event: 'FC_IDP_DISABLED',
     },
 
-    FC_IDP_BLACKLISTED: {
-      step: '5.2.0',
-      category: EventsCategories.FRONT_CINEMATIC,
-      event: 'FC_IDP_BLACKLISTED',
-    },
-
     FC_FQDN_MISMATCH: {
       step: '6.0.0',
       category: EventsCategories.FRONT_CINEMATIC,

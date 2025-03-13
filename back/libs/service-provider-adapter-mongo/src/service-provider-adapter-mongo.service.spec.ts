@@ -473,60 +473,6 @@ describe('ServiceProviderAdapterMongoService', () => {
     });
   });
 
-  describe('shouldExcludeIdp', () => {
-    // Given
-    const spListMock = [
-      {
-        client_id: 'wizz',
-        idpFilterExclude: true,
-        idpFilterList: ['idp1'],
-      },
-      {
-        client_id: 'foo',
-        idpFilterExclude: false,
-        idpFilterList: ['idp1'],
-      },
-      {
-        client_id: 'bar',
-        idpFilterExclude: true,
-        idpFilterList: ['idp2'],
-      },
-    ];
-
-    it('should return true because idp1 is blacklisted', async () => {
-      // setup
-      service.getById = jest.fn().mockReturnValueOnce(spListMock[0]);
-
-      // action
-      const result = await service.shouldExcludeIdp('wizz', 'idp1');
-
-      // expect
-      expect(result).toBeTruthy();
-    });
-
-    it('should return false because idp1 is whitelist', async () => {
-      // setup
-      service.getById = jest.fn().mockReturnValueOnce(spListMock[1]);
-
-      // action
-      const result = await service.shouldExcludeIdp('foo', 'idp1');
-
-      // expect
-      expect(result).toBeFalsy();
-    });
-
-    it('should return false because idp1 is not blacklisted', async () => {
-      // setup
-      service.getById = jest.fn().mockReturnValueOnce(spListMock[2]);
-
-      //action
-      const result = await service.shouldExcludeIdp('bar', 'idp1');
-
-      // expect
-      expect(result).toBeFalsy();
-    });
-  });
-
   describe('legacyToOpenIdPropertyName', () => {
     it('should return service provider with change legacy property name by openid property name', () => {
       // setup

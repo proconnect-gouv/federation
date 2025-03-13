@@ -177,35 +177,6 @@ export class IdentityProviderAdapterMongoService
     return this.listCache;
   }
 
-  /**
-   * Method triggered when you want to filter identity providers
-   * from service providers' whitelist/blacklist
-   *
-   * @param idpList  list of identity providers' clientID
-   * @param blacklist  boolean false = blacklist true = whitelist
-   */
-  async getFilteredList(
-    idpList: string[],
-    blacklist: boolean,
-    showExcludedIdp: boolean,
-  ): Promise<IdentityProviderMetadata[]> {
-    const providers = cloneDeep(await this.getList());
-    const mappedProviders = providers.map((provider) => {
-      const idpFound = idpList.includes(provider.uid);
-      const isIdpAuthorized = blacklist ? !idpFound : idpFound;
-
-      const providerUpdated = this.updateProviderStatus(
-        provider,
-        isIdpAuthorized,
-        showExcludedIdp,
-      );
-
-      return providerUpdated;
-    });
-
-    return mappedProviders;
-  }
-
   async getById(
     id: string,
     refreshCache = false,

@@ -59,7 +59,6 @@ describe('OidcClient Controller', () => {
       getAuthorizeUrl: jest.fn(),
       wellKnownKeys: jest.fn(),
       buildAuthorizeParameters: jest.fn(),
-      checkIdpBlacklisted: jest.fn(),
       checkIdpDisabled: jest.fn(),
     },
     getEndSessionUrlFromProvider: jest.fn(),
@@ -605,10 +604,6 @@ describe('OidcClient Controller', () => {
         usual_name: 'usual_name',
         uid: 'uid',
       });
-
-      oidcClientServiceMock.utils.checkIdpBlacklisted.mockResolvedValueOnce(
-        false,
-      );
     });
 
     it('should duplicate current session', async () => {

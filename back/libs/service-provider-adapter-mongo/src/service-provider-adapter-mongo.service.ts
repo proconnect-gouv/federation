@@ -143,19 +143,6 @@ export class ServiceProviderAdapterMongoService
     return serviceProvider;
   }
 
-  /**
-   * Method triggered when you want to filter or check if
-   * an identity provider is blacklisted or whitelisted
-   * @param spId service provider ID
-   * @param idpId identity provider ID
-   */
-  async shouldExcludeIdp(spId: string, idpId: string): Promise<boolean> {
-    const { idpFilterExclude, idpFilterList } = await this.getById(spId);
-    const idpFound = idpFilterList.includes(idpId);
-
-    return idpFilterExclude ? idpFound : !idpFound;
-  }
-
   private legacyToOpenIdPropertyName(
     source: ServiceProvider,
   ): ServiceProviderMetadata {

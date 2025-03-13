@@ -21,6 +21,5 @@ export interface ServiceProviderMetadataList {
 
 export interface IServiceProviderAdapter {
   getList(refreshCache?: boolean): Promise<ServiceProviderMetadata[]>;
-  shouldExcludeIdp(spId: string, idpId: string): Promise<boolean>;
   getById(id: string): Promise<ServiceProviderMetadata>;
 }

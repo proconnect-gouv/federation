@@ -79,7 +79,6 @@ describe('CoreVerifyService', () => {
     TrackedEventsMap: {
       IDP_CALLEDBACK: {},
       FC_VERIFIED: {},
-      FC_IDP_BLACKLISTED: {},
     },
   } as unknown as TrackingService;
 
@@ -253,29 +252,7 @@ describe('CoreVerifyService', () => {
     };
 
     beforeEach(() => {
-      service['trackIdpBlackListed'] = jest.fn();
       service['trackIdpDisabled'] = jest.fn();
-    });
-
-    it('should call session.set()', async () => {
-      // Given
-      const idpDisabledMock = false;
-      // When
-      await service['handleUnavailableIdp'](req, params, idpDisabledMock);
-      // Then
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith('isSso', false);
-    });
-
-    it('should call trackIdpBlackListed', async () => {
-      // Given
-      const idpDisabledMock = false;
-      // When
-      await service['handleUnavailableIdp'](req, params, idpDisabledMock);
-      // Then
-      expect(service['trackIdpDisabled']).toHaveBeenCalledTimes(0);
-      expect(service['trackIdpBlackListed']).toHaveBeenCalledTimes(1);
-      expect(service['trackIdpBlackListed']).toHaveBeenCalledWith(req);
     });
 
     it('should call trackIdpDisabled', async () => {
@@ -284,7 +261,6 @@ describe('CoreVerifyService', () => {
       // When
       await service['handleUnavailableIdp'](req, params, idpDisabledMock);
       // Then
-      expect(service['trackIdpBlackListed']).toHaveBeenCalledTimes(0);
       expect(service['trackIdpDisabled']).toHaveBeenCalledTimes(1);
       expect(service['trackIdpDisabled']).toHaveBeenCalledWith(req);
     });
@@ -322,29 +298,6 @@ describe('CoreVerifyService', () => {
       expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
       expect(trackingServiceMock.track).toHaveBeenCalledWith(
         trackingServiceMock.TrackedEventsMap.FC_VERIFIED,
-        { req },
-      );
-    });
-  });
-
-  describe('trackIdpBlackListed', () => {
-    const req = {
-      fc: {
-        interactionId: interactionIdMock,
-      },
-      query: {
-        firstQueryParam: 'first',
-        secondQueryParam: 'second',
-      },
-    } as unknown as Request;
-
-    it('should call tracking.track()', async () => {
-      // When
-      await service['trackIdpBlackListed'](req);
-      // Then
-      expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
-      expect(trackingServiceMock.track).toHaveBeenCalledWith(
-        trackingServiceMock.TrackedEventsMap.FC_IDP_BLACKLISTED,
         { req },
       );
     });

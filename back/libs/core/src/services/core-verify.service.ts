@@ -64,34 +64,18 @@ export class CoreVerifyService {
     },
     idpDisabled: boolean,
   ): Promise<string> {
-    const { interactionId, urlPrefix, sessionOidc } = params;
+    const { interactionId, urlPrefix } = params;
 
     const url = `${urlPrefix}${CoreRoutes.INTERACTION.replace(
       ':uid',
       interactionId,
     )}`;
 
-    /**
-     * Black listing redirects to idp choice,
-     * thus we are no longer in an "sso" interaction,
-     * so we update isSso flag in session.
-     */
-    sessionOidc.set('isSso', false);
-
     if (idpDisabled) {
       await this.trackIdpDisabled(req);
-    } else {
-      await this.trackIdpBlackListed(req);
     }
 
     return url;
-  }
-
-  async trackIdpBlackListed(req: Request) {
-    const eventContext = { req };
-    const { FC_IDP_BLACKLISTED } = this.tracking.TrackedEventsMap;
-
-    await this.tracking.track(FC_IDP_BLACKLISTED, eventContext);
   }
 
   async trackIdpDisabled(req: Request) {

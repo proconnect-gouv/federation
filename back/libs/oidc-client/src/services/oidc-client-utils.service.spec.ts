@@ -16,9 +16,7 @@ import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { getLoggerMock } from '@mocks/logger';
 
 import {
-  OidcClientFailedToFetchBlacklist,
   OidcClientGetEndSessionUrlException,
-  OidcClientIdpBlacklistedException,
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientInvalidStateException,
@@ -95,9 +93,7 @@ describe('OidcClientUtilsService', () => {
 
   const createOidcClientMock = jest.fn();
 
-  const serviceProviderServiceMock = {
-    shouldExcludeIdp: jest.fn(),
-  };
+  const serviceProviderServiceMock = {};
 
   const identityProviderServiceMock = {
     getById: jest.fn(),
@@ -547,39 +543,6 @@ describe('OidcClientUtilsService', () => {
           postLogoutRedirectUriMock,
         ),
       ).rejects.toThrow(expectedError);
-    });
-  });
-
-  describe('checkIdpBlacklisted()', () => {
-    it('should return OidcClientRuntimeException isIdpBlacklist throw an error', async () => {
-      // Given
-      const errorMock = new Error();
-      serviceProviderServiceMock.shouldExcludeIdp.mockRejectedValueOnce(
-        errorMock,
-      );
-
-      // When / Then
-      await expect(
-        service.checkIdpBlacklisted('spId', 'idpId'),
-      ).rejects.toThrow(OidcClientFailedToFetchBlacklist);
-    });
-
-    it('should throw OidcClientIdpBlacklistedException because identity provider is blacklisted', async () => {
-      // Given
-      const errorMock = new OidcClientIdpBlacklistedException();
-      // When
-      serviceProviderServiceMock.shouldExcludeIdp.mockReturnValueOnce(true);
-      // Then
-      await expect(
-        service.checkIdpBlacklisted('spId', 'idpId'),
-      ).rejects.toThrow(errorMock);
-    });
-
-    it('should return false because identity provider is not blacklisted', async () => {
-      // Given
-      serviceProviderServiceMock.shouldExcludeIdp.mockReturnValueOnce(false);
-      // When
-      await service.checkIdpBlacklisted('spId', 'idpId');
     });
   });
 

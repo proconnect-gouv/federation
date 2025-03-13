@@ -148,12 +148,7 @@ export class CoreFcaController {
     }
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
 
-    const isBlackListed = await this.serviceProvider.shouldExcludeIdp(
-      spId,
-      idpId,
-    );
-
-    if (isBlackListed || !isIdpActive) {
+    if (!isIdpActive) {
       if (isSilentAuthentication) {
         const url = this.coreFcaVerify.handleErrorLoginRequired(spRedirectUri);
         return res.redirect(url);

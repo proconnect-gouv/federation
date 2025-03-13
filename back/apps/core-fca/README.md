@@ -29,8 +29,6 @@ La vérification à cet endroit permet de s'assurer dans tous les cas que le bus
 
 Pour des raisons UX, certaines vérifications métiers peuvent avoir été faites plus tôt, mais c'est cet appel qui reste le "dernier rempart" et qui fait donc foi.
 
-Si le FI utilisé n'est pas compatible avec le FS (blacklist/whitelist), alors l'utilisateur est renvoyé vers la page de sélection du FI (`/interaction`).
-
 ## Architecture globale
 
 ```mermaid
