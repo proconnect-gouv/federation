@@ -20,7 +20,6 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { getEmailValidatorMock } from '@mocks/email-validator';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -170,7 +169,9 @@ describe('OidcClient Controller', () => {
     genRandomString: jest.fn(),
   };
 
-  const emailValidatorServiceMock = getEmailValidatorMock();
+  const emailValidatorServiceMock = {
+    validate: jest.fn(),
+  };
 
   const csrfTokenGuardMock = {
     canActivate: () => true,

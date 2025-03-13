@@ -69,7 +69,7 @@ import { IsPhoneNumberFCAConstraint } from './validators';
   imports: [
     CqrsModule,
     AsyncLocalStorageModule,
-    EmailValidatorModule.register('EmailValidator'),
+    EmailValidatorModule,
     SessionModule,
     MongooseModule.forRoot(),
     AccountModule,

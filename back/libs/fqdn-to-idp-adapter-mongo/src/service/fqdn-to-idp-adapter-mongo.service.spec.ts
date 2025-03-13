@@ -269,4 +269,36 @@ describe('FqdnToIdpAdapterMongoService', () => {
       expect(response).toEqual([validFqdnToIdp]);
     });
   });
+
+  describe('fetchFqdnToIdpByEmail', () => {
+    beforeEach(() => {
+      service.getIdpsByFqdn = jest.fn();
+    });
+    it('should extract the FQDN of the email and call getIdpsByFqdn with it', async () => {
+      //Given
+      const email = 'utilisateur@default-fqdn.fr';
+      const fqdn = 'default-fqdn.fr';
+      (service.getIdpsByFqdn as jest.Mock).mockResolvedValue(fqdnToIdps);
+
+      // When
+      const result = await service.fetchFqdnToIdpByEmail(email);
+
+      // Then
+      expect(service.getIdpsByFqdn).toHaveBeenCalledWith(fqdn);
+      expect(result).toStrictEqual(fqdnToIdps);
+    });
+
+    it('should convert the FQDN to lower case', async () => {
+      // Given
+      const email = 'utilisateur@DEFAULT-FQDN.FR';
+      const fqdnLowerCase = 'default-fqdn.fr';
+      (service.getIdpsByFqdn as jest.Mock).mockResolvedValue([]);
+
+      // When
+      await service.fetchFqdnToIdpByEmail(email);
+
+      // Then
+      expect(service.getIdpsByFqdn).toHaveBeenCalledWith(fqdnLowerCase);
+    });
+  });
 });
