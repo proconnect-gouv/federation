@@ -16,7 +16,7 @@ describe('IsSiretValidator', () => {
       expect(constraint.validate('5521005540026')).toBeFalse();
     });
 
-    it('should validate a string number of 14 figues with spaces', () => {
+    it('should validate a string number of 14 figures with spaces', () => {
       expect(constraint.validate('5521 0055 400 260')).toBeTrue();
     });
 
@@ -28,8 +28,20 @@ describe('IsSiretValidator', () => {
       expect(constraint.validate('55210055400260000')).toBeFalse();
     });
 
-    it('should not validate a string even of 14 characters', () => {
+    it('should not validate a random string of 14 characters', () => {
       expect(constraint.validate('imnotavalidint')).toBeFalse();
+    });
+
+    it('should not validate a number', () => {
+      expect(constraint.validate(35600000012345)).toBeFalse();
+    });
+
+    it('should not validate a empty siret', () => {
+      expect(constraint.validate('')).toBeFalse();
+    });
+
+    it('should not validate a undefined siret', () => {
+      expect(constraint.validate(null)).toBeFalse();
     });
   });
 

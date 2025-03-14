@@ -47,7 +47,7 @@ export class IdentityFromIdpDto {
 
   @IsSiret()
   @Expose()
-  readonly siret?: string;
+  siret?: string;
 
   @IsString()
   @MinLength(1)
@@ -66,7 +66,7 @@ export class IdentityFromIdpDto {
   @IsString()
   @IsOptional()
   @Expose()
-  readonly phone_number?: string;
+  phone_number?: string;
 
   @IsString()
   @MinLength(1)

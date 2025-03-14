@@ -7,3 +7,4 @@ export * from './navigation-helper';
 export * from './sp-claims-helper';
 export * from './sp-custom-params-helper';
 export * from './sp-provider-helper';
+export * from './user-helper';

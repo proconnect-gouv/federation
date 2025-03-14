@@ -1,15 +1,16 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { ValidationError } from 'class-validator';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
 import * as FcCommon from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { IdentityProviderMetadata } from '@fc/oidc';
 
+import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
-import { IdentityForSpDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
 import { NoDefaultSiretException } from '../exceptions/no-default-idp-siret.exception';
 import { IdentitySanitizer } from './identity.sanitizer';
@@ -24,6 +25,7 @@ jest.mock('@fc/common', () => {
 describe('IdentitySanitizer', () => {
   const loggerServiceMock = getLoggerMock();
   const validSiretMock = '81801912700021';
+  const invalidSiretMock = 'invalid_siret';
 
   const identityMock = {
     given_name: 'given_name',
@@ -40,6 +42,8 @@ describe('IdentitySanitizer', () => {
 
   const idpIdMock = 'idpIdMock';
 
+  const configServiceMock = getConfigMock();
+
   let service: IdentitySanitizer;
 
   beforeEach(async () => {
@@ -51,12 +55,15 @@ describe('IdentitySanitizer', () => {
         LoggerService,
         IdentitySanitizer,
         IdentityProviderAdapterMongoService,
+        ConfigService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderAdapterMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .compile();
 
     service = app.get<IdentitySanitizer>(IdentitySanitizer);
@@ -65,6 +72,7 @@ describe('IdentitySanitizer', () => {
   describe('sanitize()', () => {
     beforeEach(() => {
       jest.spyOn(FcCommon, 'validateDto');
+      identityProviderAdapterMock.getById.mockResolvedValue(identityMock);
     });
 
     it('should be defined', () => {
@@ -73,84 +81,58 @@ describe('IdentitySanitizer', () => {
 
     it('should validate a correct identity', async () => {
       // When
-      const res = await service.sanitize(identityMock, idpIdMock);
+      const res = await service.sanitize(identityMock, idpIdMock, []);
       // Then
-      expect(res).toBe(identityMock);
-    });
-
-    it('should validate the IdentityFromIdpDto with correct params', async () => {
-      // When
-      await service.sanitize(identityMock, idpIdMock);
-      // Then
-      expect(FcCommon.validateDto).toHaveBeenCalledTimes(1);
-      expect(FcCommon.validateDto).toHaveBeenCalledWith(
-        identityMock,
-        IdentityForSpDto,
-        {
-          forbidNonWhitelisted: true,
-          forbidUnknownValues: true,
-          whitelist: true,
-        },
-        { excludeExtraneousValues: true },
-      );
+      expect(res).toStrictEqual(identityMock);
     });
 
     it('should failed to validate an incorrect identity with missing sub', async () => {
       // Given
       const incorrectIdentityMock = { ...identityMock };
       delete incorrectIdentityMock.sub;
+
       await expect(
         // When
-        service.sanitize(incorrectIdentityMock, idpIdMock),
+        service.sanitize(incorrectIdentityMock, idpIdMock, [
+          {
+            property: 'sub',
+          },
+        ]),
         // Then
       ).rejects.toThrow(CoreFcaInvalidIdentityException);
     });
 
-    it('should throw when email is a string of number', async () => {
-      const emailIdentity = {
-        email: '12345',
-      };
-      const identityForSpDto = plainToInstance(IdentityForSpDto, emailIdentity);
-      const errors = await validate(identityForSpDto, {
-        skipMissingProperties: true,
-      });
-      expect(errors.length).not.toBe(0);
-      expect(errors[0].constraints.isEmail).toContain(`email must be an email`);
-    });
-
-    it('should delete phone_number claim if the phone_number is invalid', async () => {
+    it('should call sanitizePhoneNumber if the phone_number is invalid', async () => {
       // Given
+      jest.spyOn(service as any, 'sanitizePhoneNumber');
+
+      const phoneValidationError: Array<ValidationError> = [
+        {
+          property: 'phone_number',
+          constraints: { isPhoneNumber: 'Invalid phone number.' },
+          value: '1234',
+        },
+      ];
+
       const invalidIdentity = {
         ...identityMock,
-        phone_number: 'invalid_phone',
+        phone_number: 'invalid_phone_number',
       };
+
       // When
-      const res = await service.sanitize(invalidIdentity, idpIdMock);
+      await service.sanitize(invalidIdentity, idpIdMock, phoneValidationError);
+
       // Then
-      expect(res).not.toHaveProperty('phone_number');
+      expect(service['sanitizePhoneNumber']).toHaveBeenCalledTimes(1);
+      expect(service['sanitizePhoneNumber']).toHaveBeenCalledWith(
+        invalidIdentity,
+      );
     });
 
-    it('should return a transformed identity if only phone_number is invalid', async () => {
-      // Given
-      const invalidIdentity = {
-        ...identityMock,
-        phone_number: 'invalid_phone',
-      };
-      // When
-      const res = await service.sanitize(invalidIdentity, idpIdMock);
-      // Then
-      expect(res).toEqual({ ...identityMock, phone_number: undefined });
-    });
-
-    it('should throw an exception if a property other than the sanitizable one is invalid', async () => {
-      // Given
-      const invalidIdentity = {
-        ...identityMock,
-        email: 'invalid-email', // Invalid field
-      };
+    it('should throw an exception if a property other than the sanitizable ones is invalid', async () => {
       // When/Then
       await expect(
-        service.sanitize(invalidIdentity, idpIdMock),
+        service.sanitize(identityMock, idpIdMock, [{ property: 'email' }]),
       ).rejects.toThrow(CoreFcaInvalidIdentityException);
     });
 
@@ -160,189 +142,70 @@ describe('IdentitySanitizer', () => {
         ...identityMock,
       };
       // When
-      const res = await service.sanitize(validIdentity, idpIdMock);
+      const res = await service.sanitize(validIdentity, idpIdMock, []);
       // Then
       expect(res).toEqual(validIdentity);
     });
 
-    it('should success when organizational_unit contains points and others specifics characters', async () => {
-      const organizationalUnitIdentity = {
-        organizational_unit:
-          'MINISTERE INTERIEUR/DGPN/US REGROUPEMENT DES DZPN/US REGROUP. DIPN GC/DIPN77/CPN MELUN VAL DE SEINE',
-      };
-      const identityForSpDto = plainToInstance(
-        IdentityForSpDto,
-        organizationalUnitIdentity,
-      );
-      const errors = await validate(identityForSpDto, {
-        skipMissingProperties: true,
-      });
-      expect(errors.length).toBe(0);
-    });
-
-    it('should fail if siren is empty string', async () => {
-      const sirenIdentity = {
-        siren: '',
-      };
-      const identityForSpDto = plainToInstance(IdentityForSpDto, sirenIdentity);
-      const errors = await validate(identityForSpDto, {
-        skipMissingProperties: true,
-      });
-      expect(errors.length).not.toBe(0);
-      expect(errors[0].constraints.minLength).toContain(
-        `siren must be longer than or equal to 1 characters`,
-      );
-    });
-
-    it('should failed if siret is empty string', async () => {
-      const sirenIdentity = {
-        siret: '',
-      };
-      const identityForSpDto = plainToInstance(IdentityForSpDto, sirenIdentity);
-      const errors = await validate(identityForSpDto, {
-        skipMissingProperties: true,
-      });
-      expect(errors.length).not.toBe(0);
-      expect(errors[0].constraints.isSiret).toContain(`Le siret est invalide.`);
-    });
-
-    it('should failed if siret is not a string', async () => {
-      const siretIdentity = {
-        siret: 1234,
-      };
-      const identityForSpDto = plainToInstance(IdentityForSpDto, siretIdentity);
-      const errors = await validate(identityForSpDto, {
-        skipMissingProperties: true,
-      });
-      expect(errors.length).not.toBe(0);
-      expect(errors[0].constraints.isSiret).toContain(`Le siret est invalide.`);
-    });
-
-    it('should failed if siret is an empty property', async () => {
-      const { siret: _, ...identityWihoutSiret } = identityMock;
-
-      const identityForSpDto = plainToInstance(
-        IdentityForSpDto,
-        identityWihoutSiret,
-      );
-
-      const errors = await validate(identityForSpDto);
-      expect(errors.length).not.toBe(0);
-      expect(errors[0].constraints.isSiret).toContain(`Le siret est invalide.`);
-    });
-
-    it('should validate an identity with custom properties', async () => {
+    it('should call sanitizeSiret() if the siret is invalid', async () => {
       // Given
-      const identityMockWithCustomProperties = {
-        ...identityMock,
-        unknownField: 'a custom field',
-        anotherField: 'another custom field',
-      };
-      // When
-      const res = await service.sanitize(
-        identityMockWithCustomProperties,
-        idpIdMock,
-      );
-      // Then
-      expect(FcCommon.validateDto).toHaveBeenCalledTimes(1);
-      expect(FcCommon.validateDto).toHaveBeenCalledWith(
-        identityMockWithCustomProperties,
-        IdentityForSpDto,
+      jest.spyOn(service as any, 'sanitizeSiret');
+
+      const siretValidationError: Array<ValidationError> = [
         {
-          forbidNonWhitelisted: true,
-          forbidUnknownValues: true,
-          whitelist: true,
+          property: 'siret',
+          constraints: { isSiret: 'Invalid siret.' },
+          value: invalidSiretMock,
         },
-        { excludeExtraneousValues: true },
-      );
-      expect(res).toBe(identityMockWithCustomProperties);
-    });
-  });
-
-  describe('handleErrors()', () => {
-    it('should log that identity is invalid', async () => {
-      // Given
-      const errors = [{ property: 'sub' }];
+      ];
 
       // When
-      await expect(
-        service['handleErrors'](errors, identityMock, idpIdMock),
-      ).rejects.toThrow(CoreFcaInvalidIdentityException);
-
-      // Then
-      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.debug).toHaveBeenCalledWith(
-        errors,
-        `Identity from "${idpIdMock}" is invalid`,
-      );
-    });
-
-    it('should throw an exception if there is an error on a non sanitizable property', async () => {
-      // Given
-      const errors = [{ property: 'sub' }];
-
-      // When & Then
-      await expect(
-        service['handleErrors'](errors, identityMock, idpIdMock),
-      ).rejects.toThrow(CoreFcaInvalidIdentityException);
-    });
-
-    it('should remove property if there is an error on phone_number', async () => {
-      // Given
-      const errors = [{ property: 'phone_number' }];
-
-      // When
-      const res = await service['handleErrors'](
-        errors,
-        identityMock,
-        idpIdMock,
-      );
-
-      // Then
-      expect(res).not.toHaveProperty('phone_number');
-    });
-
-    it('should call sanitizeSiret() if there is an error on siret', async () => {
-      // Given
-      const errors = [{ property: 'siret' }];
-      service['sanitizeSiret'] = jest.fn();
-
-      // When
-      await service['handleErrors'](errors, identityMock, idpIdMock);
+      await service.sanitize(identityMock, idpIdMock, siretValidationError);
 
       // Then
       expect(service['sanitizeSiret']).toHaveBeenCalledTimes(1);
-      expect(service['sanitizeSiret']).toHaveBeenCalledWith(
-        { property: 'siret' },
-        idpIdMock,
-      );
+      expect(service['sanitizeSiret']).toHaveBeenCalledWith(identityMock); // the return of the idp provider get
     });
   });
 
   describe('sanitizeSiret()', () => {
-    it('should return the default siret of idp', async () => {
+    it('should return the default siret of idp', () => {
       // When
-      identityProviderAdapterMock.getById.mockResolvedValue({
-        ...identityMock,
+      const res = service['sanitizeSiret']({
         siret: validSiretMock,
-      });
-      const res = await service['sanitizeSiret']({}, idpIdMock);
+      } as IdentityProviderMetadata);
 
       // Then
       expect(res).toBe(validSiretMock);
     });
 
-    it('should throw a NoDefaultSiretException if the idp has an empty default siret', async () => {
-      // When
+    it('should throw a NoDefaultSiretException if the idp has an empty default siret', () => {
+      // Given
       identityProviderAdapterMock.getById.mockResolvedValue({
         identityMock,
         siret: '',
       });
 
-      // Then && When
-      await expect(service['sanitizeSiret']({}, idpIdMock)).rejects.toThrow(
-        NoDefaultSiretException,
-      );
+      // Then
+      expect(() => {
+        service['sanitizeSiret']({
+          siret: '',
+        } as IdentityProviderMetadata);
+      }).toThrow(NoDefaultSiretException);
+    });
+  });
+
+  describe('sanitizePhoneNumber()', () => {
+    it('should delete phone_number property', () => {
+      // Given
+      const identity = {
+        ...identityMock,
+        phone_number: 'wrong_phone_number',
+      };
+      // When
+      const res = service['sanitizePhoneNumber'](identity);
+      // Then
+      expect(res).not.toHaveProperty('phone_number');
     });
   });
 });

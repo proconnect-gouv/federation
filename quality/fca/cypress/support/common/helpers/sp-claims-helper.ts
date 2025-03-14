@@ -1,23 +1,8 @@
 import { ChainableElement } from '../types';
 import scopes from './../../../fixtures/fca-low/scopes.json';
+import { getDefaultUser } from './user-helper';
 
-const defaultUserClaims = {
-  belonging_population: 'agent',
-  'chorusdt:matricule': 'USER_AGC',
-  'chorusdt:societe': 'CHT',
-  custom: {
-    email_verified: false,
-    phone_number_verified: false,
-  },
-  given_name: 'John',
-  is_service_public: 'true',
-  organizational_unit: 'comptabilite',
-  phone_number: '+49 000 000000',
-  siren: '130025265',
-  siret: '13002526500013',
-  uid: '1',
-  usual_name: 'Doe',
-};
+const defaultUserClaims = getDefaultUser();
 
 const getUserInfo = (): ChainableElement =>
   cy.get('#userinfo').invoke('text').then(JSON.parse);

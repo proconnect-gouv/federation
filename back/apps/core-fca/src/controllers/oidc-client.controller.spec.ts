@@ -2,6 +2,7 @@ import { cloneDeep } from 'lodash';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import * as FcCommon from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfTokenGuard } from '@fc/csrf';
@@ -41,10 +42,10 @@ jest.mock('querystring', () => ({
   encode: jest.fn(),
 }));
 
-// This code make it possible to spyOn on the validateDto function
 jest.mock('@fc/common', () => {
   return {
     ...jest.requireActual('@fc/common'),
+    validateDto: jest.fn(),
   };
 });
 
@@ -186,6 +187,8 @@ describe('OidcClient Controller', () => {
   const identitySanitizerMock = {
     sanitize: jest.fn(),
   };
+
+  const validateDtoMock = jest.mocked(FcCommon.validateDto);
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -588,6 +591,8 @@ describe('OidcClient Controller', () => {
         redirect: jest.fn(),
       };
 
+      validateDtoMock.mockResolvedValue([]);
+
       oidcClientServiceMock.getTokenFromProvider.mockReturnValueOnce({
         accessToken: accessTokenMock,
         acr: acrMock,
@@ -647,23 +652,34 @@ describe('OidcClient Controller', () => {
       ).toHaveBeenCalledWith(userInfoParamsMock, req);
     });
 
-    it('should failed to get identity if validation failed', async () => {
-      // arrange
-      const errorMock = new Error('Unknown Error');
-      identitySanitizerMock.sanitize
-        .mockReset()
-        .mockRejectedValueOnce(errorMock);
+    it('should call not the sanitizer if validation has succeed', async () => {
+      // When
+      await controller.getOidcCallback(req, res, sessionServiceMock);
+
+      // Then
+      expect(identitySanitizerMock.sanitize).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call the sanitizer if validation has failed', async () => {
+      // Given
+      const validateDtoMock = jest.mocked(FcCommon.validateDto);
+      const errorsMock = [
+        {
+          property: 'email',
+          constraints: { isEmail: 'email must be an email' },
+        },
+      ];
+      validateDtoMock.mockResolvedValue(errorsMock);
 
       // When
-      await expect(
-        controller.getOidcCallback(req, res, sessionServiceMock),
-      ).rejects.toThrow(errorMock);
+      await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // Then
       expect(identitySanitizerMock.sanitize).toHaveBeenCalledTimes(1);
       expect(identitySanitizerMock.sanitize).toHaveBeenCalledWith(
         identityMock,
         idpIdMock,
+        errorsMock,
       );
     });
 

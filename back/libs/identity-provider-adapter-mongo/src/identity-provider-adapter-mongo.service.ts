@@ -116,6 +116,7 @@ export class IdentityProviderAdapterMongoService
           userinfo_signed_response_alg: true,
           endSessionURL: true,
           modal: true,
+          supportEmail: true,
         },
       )
       .sort({ order: 'asc', createdAt: 'asc' })

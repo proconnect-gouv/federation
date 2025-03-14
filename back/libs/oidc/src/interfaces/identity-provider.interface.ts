@@ -34,6 +34,7 @@ export interface IdpFCMetadata {
   amr: string[];
   modal?: IdpFCModal;
   siret: string;
+  supportEmail: string;
 }
 
 export type IdentityProviderMetadata = IdpFCMetadata & {

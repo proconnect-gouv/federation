@@ -148,6 +148,10 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsString()
   readonly siret: string;
+
+  @IsOptional()
+  @IsString()
+  readonly supportEmail: string;
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {

@@ -12,7 +12,7 @@ Fonctionnalité: Connexion Usager personnalisé
     Et que je m'authentifie
     Alors le fournisseur de service a accès aux informations du scope "tous les scopes sauf phone" en provenance du FI "par défaut"
 
-  Scénario: Connexion d'un usager - mauvais format d'email
+  Scénario: Connexion d'un usager - mauvais format d'email et vérification de l'erreur
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
@@ -21,6 +21,8 @@ Fonctionnalité: Connexion Usager personnalisé
     Et que je m'authentifie
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500006"
+    Et le lien vers le support est affiché
+    Et le href correspond à l'erreur Y500006 avec l'email "incorrect"
 
   Scénario: Connexion d'un usager - mauvais format de siret avec siret par défaut
     Etant donné que je navigue sur la page fournisseur de service

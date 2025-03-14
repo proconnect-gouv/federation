@@ -5,7 +5,7 @@ import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
   static DOCUMENTATION =
-    'Nous n’arrivons pas à vous identifier. Nous vous conseillons de créer un compte sur le site sans passer par le bouton ProConnect';
+    'Nous n’arrivons pas à vous identifier. Nous vous conseillons de créer un compte sur le site sans passer par le bouton ProConnect.';
   static CODE = ErrorCode.NO_IDP;
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
   static ERROR = 'server_error';

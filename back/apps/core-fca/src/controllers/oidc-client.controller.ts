@@ -15,6 +15,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
+import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfToken, CsrfTokenGuard } from '@fc/csrf';
@@ -39,10 +40,11 @@ import {
   GetOidcCallbackOidcClientSessionDto,
   GetOidcCallbackSessionDto,
   GetRedirectToIdpOidcClientSessionDto,
+  IdentityForSpDto,
   IdentityFromIdpDto,
+  RedirectToIdp,
 } from '../dto';
 import { AppConfig } from '../dto/app-config.dto';
-import { RedirectToIdp } from '../dto/redirect-to-idp.dto';
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
@@ -270,6 +272,7 @@ export class OidcClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @IsStep()
   @ForbidRefresh()
+  // eslint-disable-next-line complexity
   async getOidcCallback(
     @Req() req,
     @Res() res,
@@ -329,6 +332,7 @@ export class OidcClientController {
     const identityFqdn = this.fqdnService.getFqdnFromEmail(
       identity.email ?? '',
     );
+
     await this.tracking.track(FC_REQUESTED_IDP_USERINFO, {
       req,
       fqdn: identityFqdn,
@@ -336,12 +340,28 @@ export class OidcClientController {
       idpSub: identity.sub,
     });
 
-    const transformedIdentity = await this.sanitizer.sanitize(identity, idpId);
+    const errors = await validateDto(
+      identity,
+      IdentityForSpDto,
+      { forbidUnknownValues: true },
+      { excludeExtraneousValues: true },
+    );
+
+    let transformedIdentity = identity;
+
+    if (errors.length > 0) {
+      transformedIdentity = await this.sanitizer.sanitize(
+        identity,
+        idpId,
+        errors,
+      );
+    }
 
     const isAllowedIdpForEmail = await this.fqdnService.isAllowedIdpForEmail(
       idpId,
       transformedIdentity.email,
     );
+
     if (!isAllowedIdpForEmail) {
       this.logger.warning(
         `Identity from "${idpId}" using "***@${identityFqdn}" is not allowed`,
