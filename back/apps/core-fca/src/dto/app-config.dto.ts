@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsEmail, IsString, ValidateNested } from 'class-validator';
 
 import { AppConfig as AppGenericConfig } from '@fc/app';
 
@@ -21,4 +21,7 @@ export class AppConfig extends AppGenericConfig {
   @ValidateNested()
   @Type(() => ContentSecurityPolicy)
   readonly contentSecurityPolicy: ContentSecurityPolicy;
+
+  @IsEmail()
+  readonly customerServiceEmail: string;
 }

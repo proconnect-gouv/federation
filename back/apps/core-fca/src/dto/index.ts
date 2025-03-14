@@ -12,3 +12,4 @@ export * from './get-redirect-to-idp-session-dto';
 export * from './get-verify-session-dto';
 export * from './identity-for-sp.dto';
 export * from './identity-from-idp.dto';
+export * from './redirect-to-idp.dto';
