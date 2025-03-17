@@ -1,86 +1,40 @@
 [
   {
-    "name": "fsp1",
-    "clientId": "2e5eaafcf2e1f0be4f8a6e1a03135ee1aac4a30412a6e243bce044da1a0726b4",
-    "descriptions": ["par défaut", "public"],
+    "name": "fsp1-legacy",
+    "descriptions": [
+      "par défaut",
+      "public",
+      "pour les scopes data"
+    ],
     "mocked": true,
-    "url": "https://fournisseur-de-service.dev-franceconnect.fr",
-    "redirectUri": "https://fournisseur-de-service.dev-franceconnect.fr/login-callback",
+    "url": "https://fsp1-legacy.integ01.fcp.fournisseur-de-service.fr",
+    "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f30000",
     "acrValue": "eidas1",
-    "claims": [],
+    "claims": ["amr"],
     "scopes": ["tous les scopes"],
     "explicitConsent": false,
     "selectors": {
-      "fcButton": "[alt='Soumettre']",
-      "logoutButton": "[data-fc-logout-url='/logout']"
+      "fcButton": "#call-authorize-button",
+      "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"
   },
   {
-    "name": "fsp1",
-    "clientId": "2e5eaafcf2e1f0be4f8a6e1a03135ee1aac4a30412a6e243bce044da1a0726b4",
-    "descriptions": ["pour les scopes data"],
+    "name": "fsp2-legacy",
+    "descriptions": [
+      "privé avec consentement obligatoire",
+      "privé pour les scopes data"
+    ],
     "mocked": true,
-    "url": "https://fournisseur-de-service.dev-franceconnect.fr",
-    "redirectUri": "https://fournisseur-de-service.dev-franceconnect.fr/data-callback",
+    "url": "https://fsp2-legacy.integ01.fcp.fournisseur-de-service.fr",
+    "clientId": "d62e6970f13b4ae68afce56902122abeb2baa4911d61490eb9f3f441193ff4c8",
     "acrValue": "eidas1",
-    "claims": [],
-    "scopes": ["tous les scopes"],
-    "explicitConsent": false,
-    "selectors": {
-      "fcButton": "[alt='Soumettre']",
-      "logoutButton": "[data-fc-logout-url='/logout']"
-    },
-    "authorizeHttpMethod": "get"
-  },
-  {
-    "name": "fsp1",
-    "clientId": "2d166753b14d5c8c334642ea1de1d2c3988d14bcf1fe8c79182cdc42e31ec7e0",
-    "descriptions": ["privé avec consentement obligatoire"],
-    "mocked": true,
-    "url": "https://fournisseur-de-service.dev-franceconnect.fr",
-    "redirectUri": "https://fournisseur-de-service.dev-franceconnect.fr/login-callback",
-    "acrValue": "eidas1",
-    "claims": [],
+    "claims": ["amr"],
     "scopes": ["tous les scopes"],
     "explicitConsent": true,
     "selectors": {
-      "fcButton": "[alt='Soumettre']",
-      "logoutButton": "[data-fc-logout-url='/logout']"
-    },
-    "authorizeHttpMethod": "get"
-  },
-  {
-    "name": "fsp1",
-    "clientId": "2d166753b14d5c8c334642ea1de1d2c3988d14bcf1fe8c79182cdc42e31ec7e0",
-    "descriptions": ["privé pour les scopes data"],
-    "mocked": true,
-    "url": "https://fournisseur-de-service.dev-franceconnect.fr",
-    "redirectUri": "https://fournisseur-de-service.dev-franceconnect.fr/data-callback",
-    "acrValue": "eidas1",
-    "claims": [],
-    "scopes": ["tous les scopes"],
-    "explicitConsent": true,
-    "selectors": {
-      "fcButton": "[alt='Soumettre']",
-      "logoutButton": "[data-fc-logout-url='/logout']"
-    },
-    "authorizeHttpMethod": "get"
-  },
-  {
-    "name": "ud-home",
-    "clientId": "6dbec6040ec1f49f604e07120650b5d7d6372ce94e438c766d2cdede6b53ee75",
-    "descriptions": ["user-dashboard"],
-    "mocked": false,
-    "url": "https://tableaudebord.integ01.dev-franceconnect.fr",
-    "redirectUri": "https://tableaudebord.integ01.dev-franceconnect.fr/api/oidc-callback",
-    "acrValue": "eidas1",
-    "claims": [],
-    "scopes": [],
-    "explicitConsent": false,
-    "selectors": {
-      "fcButton": "[data-testid='LoginConnectComponent'] button",
-      "logoutButton": "[data-testid='logout-button-component']"
+      "fcButton": "#call-authorize-button",
+      "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"
   }

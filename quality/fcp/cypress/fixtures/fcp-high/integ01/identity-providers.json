@@ -1,8 +1,8 @@
 [
   {
     "idpId": "fip1",
-    "name": "fip1",
-    "title": "Identity Provider - eIDAS élevé - discov - crypt",
+    "name": "fip1-high",
+    "title": "Démonstration eIDAS élevé - RSA ES256",
     "descriptions": [
       "par défaut",
       "actif",
@@ -13,7 +13,7 @@
     ],
     "mocked": true,
     "usable": true,
-    "url": "https://fip1v2.integ01.fcp.fournisseur-d-identite.fr",
+    "url": "https://fip1-high.integ01.fcp.fournisseur-d-identite.fr",
     "acrValue": "eidas3",
     "selectors": {
       "idpButton": "#idp-fip1",
@@ -24,16 +24,16 @@
   },
   {
     "idpId": "fip2",
-    "name": "fip2",
-    "title": "Identity Provider - eIDAS élevé - nodiscov - nocrypt",
+    "name": "fip2-high",
+    "title": "Démonstration eIDAS substantiel - EC RS256",
     "descriptions": [
       "différent",
       "non autorisé pour idp_hint"
     ],
     "mocked": true,
     "usable": true,
-    "url": "https://fip2v2.integ01.fcp.fournisseur-d-identite.fr",
-    "acrValue": "eidas3",
+    "url": "https://fip2-high.integ01.fcp.fournisseur-d-identite.fr",
+    "acrValue": "eidas2",
     "selectors": {
       "idpButton": "#idp-fip2",
       "username": "input[name='login']",

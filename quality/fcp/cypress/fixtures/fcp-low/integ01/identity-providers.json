@@ -27,10 +27,9 @@
     "name": "fip2-low",
     "title": "Démonstration eIDAS substantiel",
     "descriptions": [
-      "différent",
       "actif",
       "non autorisé pour idp_hint",
-      "pour le test de préférences FI"
+      "différent"
     ],
     "mocked": true,
     "usable": true,
@@ -40,6 +39,24 @@
     "signature": "HS256",
     "selectors": {
       "idpButton": "#idp-21329ee8-56ea-445f-9d88-45ac1989399c",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
+    }
+  },
+  {
+    "idpId": "f840fb6e-5ec7-4298-b69e-0854ef7e18a2",
+    "name": "fip3-low",
+    "title": "Démonstration eIDAS élevé",
+    "descriptions": ["pour le test de préférences FI"],
+    "mocked": true,
+    "usable": true,
+    "url": "https://fip3-low.integ01.fcp.fournisseur-d-identite.fr",
+    "acrValue": "eidas3",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "#idp-f840fb6e-5ec7-4298-b69e-0854ef7e18a2",
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
