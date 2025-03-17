@@ -24,5 +24,7 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
   public description = CoreFcaInvalidIdentityException.DOCUMENTATION;
   public displayContact = true;
   public contactMessage = 'Signaler l’erreur au service informatique concerné.';
-  public contactHref = `mailto:${this.contact}?subject=Mise à jour de mon profil pour compatibilité ProConnect&body=Bonjour\n,Voici une erreur remontée par ProConnect suite à une tentative de connexion infructueuse.\n${this.validationConstraints}\nVoici l’identité telle que reçue par ProConnect :\n${this.validationTarget}\nProConnect a vérifié que l’erreur ne venait pas de leur côté.\nMerci de corriger mes informations d'identité afin que ProConnect reconnaisse mon identité et que je puisse me connecter.\nCordialement,`;
+  public contactHref = `mailto:${this.contact}?subject=Mise à jour de mon profil pour compatibilité ProConnect&body=${encodeURIComponent(
+    `Bonjour,\nVoici une erreur remontée par ProConnect suite à une tentative de connexion infructueuse.\n${this.validationConstraints}\nVoici l’identité telle que reçue par ProConnect :\n${this.validationTarget}\nProConnect a vérifié que l’erreur ne venait pas de leur côté.\nMerci de corriger mes informations d'identité afin que ProConnect reconnaisse mon identité et que je puisse me connecter.\nCordialement,`,
+  )}`;
 }
