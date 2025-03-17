@@ -1,66 +1,69 @@
 [
   {
-    "idpId": "fip1",
-    "name": "identity-provider-example-faible",
-    "title": "Démonstration - faible",
-    "descriptions": ["par défaut", "actif"],
+    "idpId": "07e573f2-3312-4bb9-bc48-6fcec737e497",
+    "name": "fip1-low",
+    "title": "Démonstration eIDAS faible",
+    "descriptions": [
+      "par défaut",
+      "actif"
+    ],
     "mocked": true,
     "usable": true,
-    "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
+    "url": "https://fip1-low.integ01.fcp.fournisseur-d-identite.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "HS256",
     "selectors": {
-      "idpButton": "#fi-identity-provider-example-faible",
+      "idpButton": "#fi-fip1-low",
       "username": "input[name='login']",
       "password": "input[name='password']",
-      "loginButton": "[type='submit']"
+      "loginButton": "button[type='submit']"
     }
   },
   {
-    "idpId": "fip2",
-    "name": "identity-provider-example-substantiel",
-    "title": "Démonstration - substantiel",
-    "descriptions": ["pour le test de préférences FI"],
+    "idpId": "21329ee8-56ea-445f-9d88-45ac1989399c",
+    "name": "fip2-low",
+    "title": "Démonstration eIDAS substantiel",
+    "descriptions": ["différent"],
     "mocked": true,
     "usable": true,
-    "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
+    "url": "https://fip2-low.integ01.fcp.fournisseur-d-identite.fr",
     "acrValue": "eidas2",
     "encryption": "",
     "signature": "HS256",
     "selectors": {
-      "idpButton": "#fi-identity-provider-example-substantiel",
+      "idpButton": "#fi-fip2-low",
       "username": "input[name='login']",
       "password": "input[name='password']",
-      "loginButton": "[type='submit']"
+      "loginButton": "button[type='submit']"
     }
   },
   {
-    "idpId": "fip3",
-    "name": "identity-provider-example",
-    "title": "Démonstration - élevé",
-    "descriptions": ["distinct"],
+    "idpId": "f840fb6e-5ec7-4298-b69e-0854ef7e18a2",
+    "name": "fip3-low",
+    "title": "Démonstration eIDAS élevé",
+    "descriptions": ["pour le test de préférences FI"],
     "mocked": true,
     "usable": true,
-    "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
-    "acrValue": "eidas3",
+    "url": "https://fip3-low.integ01.fcp.fournisseur-d-identite.fr",
+    "acrValue": "eidas2",
     "encryption": "",
     "signature": "HS256",
     "selectors": {
-      "idpButton": "#fi-identity-provider-example",
+      "idpButton": "#fi-fip3-low",
       "username": "input[name='login']",
       "password": "input[name='password']",
-      "loginButton": "[type='submit']"
+      "loginButton": "button[type='submit']"
     }
   },
   {
-    "idpId": "aidants-connect-mock",
+    "idpId": "a10135ea-793d-4985-81b0-e4b4bd77afca",
     "name": "Aidants Connect",
     "title": "Aidants Connect",
     "descriptions": ["Aidants Connect"],
     "mocked": true,
     "usable": true,
-    "url": "https://aidants-connect-mock.docker.dev-franceconnect.fr",
+    "url": "https://integ.aidantsconnect.beta.gouv.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "HS256",

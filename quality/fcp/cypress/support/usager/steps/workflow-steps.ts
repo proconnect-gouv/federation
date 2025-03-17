@@ -67,12 +67,7 @@ export class ConnectionWorkflow {
   start(): this {
     const { acrValue, claims } = this.serviceProvider;
 
-    this.serviceProviderPage.startLogin(
-      this.fcRootUrl,
-      this.scopeContext,
-      claims,
-      acrValue,
-    );
+    this.serviceProviderPage.startLogin(this.scopeContext, claims, acrValue);
     return this;
   }
 
