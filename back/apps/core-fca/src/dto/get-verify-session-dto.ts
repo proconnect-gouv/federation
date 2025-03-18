@@ -7,8 +7,6 @@ import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 
 import { IAgentIdentityWithPublicness } from '../interfaces';
-import { AppSession } from './app-session.dto';
-import { CoreSessionDto } from './core-session.dto';
 
 export class GetVerifyOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
   // Metadata: We MUST restrict the routes we can come from
@@ -45,14 +43,6 @@ export class GetVerifyOidcClientSessionDto extends CoreBaseOidcClientSessionDto 
 
 export class GetVerifySessionDto {
   @Expose()
-  @Type(() => AppSession)
-  readonly App: AppSession;
-
-  @Expose()
   @Type(() => GetVerifyOidcClientSessionDto)
   readonly OidcClient: GetVerifyOidcClientSessionDto;
-
-  @Expose()
-  @Type(() => CoreSessionDto)
-  readonly Core: CoreSessionDto;
 }

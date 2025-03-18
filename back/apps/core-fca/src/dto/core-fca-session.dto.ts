@@ -5,15 +5,7 @@ import { CsrfSession } from '@fc/csrf';
 import { I18nSession } from '@fc/i18n';
 import { OidcClientSession } from '@fc/oidc-client';
 
-import { AppSession } from './app-session.dto';
-
 export class CoreFcaSession {
-  @IsObject()
-  @ValidateNested()
-  @IsOptional()
-  @Type(() => AppSession)
-  readonly App?: AppSession;
-
   @IsObject()
   @ValidateNested()
   @Type(() => OidcClientSession)
