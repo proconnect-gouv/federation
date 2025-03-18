@@ -10,7 +10,6 @@ import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackedEventInterface, TrackingService } from '@fc/tracking';
 
@@ -96,10 +95,6 @@ describe('CoreFcaController', () => {
     isActiveById: jest.fn(),
   };
 
-  const serviceProviderServiceMock = {
-    getById: jest.fn(),
-  };
-
   const sessionServiceMock = getSessionServiceMock();
 
   const sessionCsrfServiceMock = {
@@ -153,8 +148,6 @@ describe('CoreFcaController', () => {
 
   const handleUnavailableIdpResult = 'urlPrefixValue/interaction/interactionId';
   const handleVerifyResult = 'urlPrefixValue/login';
-  const handleSsoDisabledResult =
-    'urlPrefixValue/interaction/interactionIdMockValue';
   const handleErrorLoginRequiredResult =
     'spRedirectUri?error=login_required&error_description=End-User+authentication+is+required';
 
@@ -192,7 +185,6 @@ describe('CoreFcaController', () => {
       providers: [
         OidcProviderService,
         IdentityProviderAdapterMongoService,
-        ServiceProviderAdapterMongoService,
         ConfigService,
         CoreFcaFqdnService,
         CoreFcaVerifyService,
@@ -207,8 +199,6 @@ describe('CoreFcaController', () => {
       .useValue(oidcProviderServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderServiceMock)
-      .overrideProvider(ServiceProviderAdapterMongoService)
-      .useValue(serviceProviderServiceMock)
       .overrideProvider(CoreFcaFqdnService)
       .useValue(coreFcaFqdnServiceMock)
       .overrideProvider(CoreFcaVerifyService)
@@ -241,9 +231,6 @@ describe('CoreFcaController', () => {
     );
     coreVerifyServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
 
-    serviceProviderServiceMock.getById.mockResolvedValue({
-      name: spNameMock,
-    });
     sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
 
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
@@ -406,202 +393,24 @@ describe('CoreFcaController', () => {
   });
 
   describe('getVerify()', () => {
-    it('should not call handleSsoDisabled with ssoDisabled = false and isSso = false', async () => {
-      // When
-      const oidcClientSessionDataMock = {
-        isSso: false,
-      } as unknown as ISessionService<OidcClientSession>;
-      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      serviceProviderServiceMock.getById.mockResolvedValue({
-        ssoDisabled: false,
+    describe('when `identityProvider.isActiveById` returns true', () => {
+      it('should call handleVerifyIdentity when idp is active', async () => {
+        // Given
+        identityProviderServiceMock.isActiveById.mockResolvedValue(true);
+
+        // When
+        await coreController.getVerify(
+          req,
+          res as unknown as Response,
+          params,
+          sessionServiceMock,
+        );
+
+        // Then
+        expect(
+          coreFcaVerifyServiceMock.handleVerifyIdentity,
+        ).toHaveBeenCalledTimes(1);
       });
-      await coreController.getVerify(
-        req,
-        res as unknown as Response,
-        params,
-        sessionServiceMock,
-      );
-
-      // Then
-      expect(coreFcaVerifyServiceMock.handleSsoDisabled).not.toHaveBeenCalled();
-    });
-
-    it('should not call handleSsoDisabled with isSso = false', async () => {
-      // When
-      const ssoDisabledMock = Symbol('a-boolean') as unknown as boolean;
-      const oidcClientSessionDataMock = {
-        isSso: false,
-      } as unknown as ISessionService<OidcClientSession>;
-      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      serviceProviderServiceMock.getById.mockResolvedValue({
-        ssoDisabled: ssoDisabledMock,
-      });
-      await coreController.getVerify(
-        req,
-        res as unknown as Response,
-        params,
-        sessionServiceMock,
-      );
-
-      // Then
-      expect(coreFcaVerifyServiceMock.handleSsoDisabled).not.toHaveBeenCalled();
-    });
-
-    it('should not call handleSsoDisabled with ssoDisabled = false', async () => {
-      // Given
-      const isSsoMock = Symbol('a-boolean') as unknown as boolean;
-      const oidcClientSessionDataMock = {
-        isSso: isSsoMock,
-      } as unknown as ISessionService<OidcClientSession>;
-
-      // When
-      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      serviceProviderServiceMock.getById.mockResolvedValue({
-        ssoDisabled: false,
-      });
-      await coreController.getVerify(
-        req,
-        res as unknown as Response,
-        params,
-        sessionServiceMock,
-      );
-
-      // Then
-      expect(coreFcaVerifyServiceMock.handleSsoDisabled).not.toHaveBeenCalled();
-    });
-
-    it('should call handleErrorLoginRequired with isSso = true, ssoDisabled = true and isSilentAuthentication = true', async () => {
-      // Given
-      const oidcClientSessionDataMock = {
-        idpId: 'idpIdMockValue',
-        interactionId: 'interactionIdMockValue',
-        spId: 'spIdMockValue',
-        isSso: true,
-        isSilentAuthentication: true,
-        spRedirectUri: 'mock-redirect-uri',
-      } as unknown as ISessionService<OidcClientSession>;
-
-      // When
-      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      serviceProviderServiceMock.getById.mockResolvedValue({
-        ssoDisabled: true,
-      });
-      await coreController.getVerify(
-        req,
-        res as unknown as Response,
-        params,
-        sessionServiceMock,
-      );
-
-      // Then
-      expect(coreFcaVerifyServiceMock.handleSsoDisabled).toHaveBeenCalledTimes(
-        0,
-      );
-      expect(
-        coreFcaVerifyServiceMock.handleErrorLoginRequired,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        coreFcaVerifyServiceMock.handleErrorLoginRequired,
-      ).toHaveBeenCalledWith('mock-redirect-uri');
-    });
-
-    it('should call handleSsoDisabled with isSso = true, ssoDisabled = true and isSilentAuthentication = false', async () => {
-      // Given
-      const oidcClientSessionDataMock = {
-        idpId: 'idpIdMockValue',
-        interactionId: 'interactionIdMockValue',
-        spId: 'spIdMockValue',
-        isSso: true,
-        isSilentAuthentication: false,
-      } as unknown as ISessionService<OidcClientSession>;
-      const urlPrefixMock = '/api/v2';
-
-      // When
-      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      serviceProviderServiceMock.getById.mockResolvedValue({
-        ssoDisabled: true,
-      });
-      await coreController.getVerify(
-        req,
-        res as unknown as Response,
-        params,
-        sessionServiceMock,
-      );
-
-      // Then
-      expect(coreFcaVerifyServiceMock.handleSsoDisabled).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(coreFcaVerifyServiceMock.handleSsoDisabled).toHaveBeenCalledWith(
-        req,
-        {
-          urlPrefix: urlPrefixMock,
-          interactionId: interactionIdMock,
-          sessionOidc: sessionServiceMock,
-        },
-      );
-    });
-
-    it('should return redirect when isSso = true, ssoDisabled = true and isSilentAuthentication = true', async () => {
-      // Given
-      const oidcClientSessionDataMock = {
-        idpId: 'idpIdMockValue',
-        interactionId: 'interactionIdMockValue',
-        spId: 'spIdMockValue',
-        isSso: true,
-        isSilentAuthentication: true,
-      } as unknown as ISessionService<OidcClientSession>;
-
-      coreFcaVerifyServiceMock.handleErrorLoginRequired.mockReturnValue(
-        handleErrorLoginRequiredResult,
-      );
-      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      serviceProviderServiceMock.getById.mockResolvedValue({
-        ssoDisabled: true,
-      });
-
-      // When
-      await coreController.getVerify(
-        req,
-        res as unknown as Response,
-        params,
-        sessionServiceMock,
-      );
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(handleErrorLoginRequiredResult);
-    });
-
-    it('should return redirect when isSso = true, ssoDisabled = true and isSilentAuthentication = false', async () => {
-      // Given
-      const oidcClientSessionDataMock = {
-        idpId: 'idpIdMockValue',
-        interactionId: 'interactionIdMockValue',
-        spId: 'spIdMockValue',
-        isSso: true,
-        isSilentAuthentication: false,
-      } as unknown as ISessionService<OidcClientSession>;
-
-      coreFcaVerifyServiceMock.handleSsoDisabled.mockResolvedValue(
-        handleSsoDisabledResult,
-      );
-      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
-      serviceProviderServiceMock.getById.mockResolvedValue({
-        ssoDisabled: true,
-      });
-
-      // When
-      await coreController.getVerify(
-        req,
-        res as unknown as Response,
-        params,
-        sessionServiceMock,
-      );
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(handleSsoDisabledResult);
     });
 
     describe('when `identityProvider.isActiveById` returns false and isSilentAuthentication is false', () => {

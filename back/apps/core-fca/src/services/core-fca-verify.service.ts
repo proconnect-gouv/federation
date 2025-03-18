@@ -3,18 +3,15 @@ import { Request } from 'express';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CORE_VERIFY_SERVICE, CoreRoutes, CoreVerifyService } from '@fc/core';
-import { LoggerService } from '@fc/logger';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService } from '@fc/session';
-import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
+import { TrackedEventContextInterface } from '@fc/tracking';
 
 @Injectable()
 export class CoreFcaVerifyService {
   constructor(
-    private readonly logger: LoggerService,
     @Inject(CORE_VERIFY_SERVICE)
     private readonly coreVerify: CoreVerifyService,
-    private readonly tracking: TrackingService,
   ) {}
 
   async handleVerifyIdentity(
@@ -33,35 +30,6 @@ export class CoreFcaVerifyService {
     await this.coreVerify.trackVerified(req);
 
     const url = `${urlPrefix}${CoreRoutes.INTERACTION_LOGIN}`;
-    return url;
-  }
-
-  private async trackSsoDisabled(eventContext: TrackedEventContextInterface) {
-    this.logger.info('SSO was disabled');
-    const { SP_DISABLED_SSO } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(SP_DISABLED_SSO, eventContext);
-  }
-
-  async handleSsoDisabled(
-    req: Request,
-    params: {
-      urlPrefix: string;
-      interactionId: string;
-      sessionOidc: ISessionService<OidcClientSession>;
-    },
-  ): Promise<string> {
-    const eventContext = { req };
-    const { interactionId, sessionOidc, urlPrefix } = params;
-
-    sessionOidc.set('isSso', false);
-
-    const url = `${urlPrefix}${CoreRoutes.INTERACTION.replace(
-      ':uid',
-      interactionId,
-    )}`;
-
-    await this.trackSsoDisabled(eventContext);
-
     return url;
   }
 
