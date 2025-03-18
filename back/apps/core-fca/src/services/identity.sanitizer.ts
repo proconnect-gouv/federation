@@ -3,6 +3,7 @@ import { ValidationError } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
+import { CoreConfig } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
@@ -52,9 +53,7 @@ export class IdentitySanitizer {
 
     if (filteredErrors.length > 0) {
       this.logger.err(filteredErrors, `Identity from "${idpId}" is invalid`);
-      const contact =
-        identityProvider.supportEmail ||
-        this.config.get('customerServiceEmail');
+      const contact = this.getSupportEmail(identityProvider);
       throw new CoreFcaInvalidIdentityException(
         contact,
         JSON.stringify(filteredErrors.map((error) => error?.constraints)),
@@ -63,6 +62,13 @@ export class IdentitySanitizer {
     }
 
     return sanitizedIdentity as IdentityForSpDto;
+  }
+
+  private getSupportEmail(identityProvider: IdentityProviderMetadata): string {
+    return (
+      identityProvider.supportEmail ||
+      this.config.get<CoreConfig>('Core').supportEmail
+    );
   }
 
   private sanitizePhoneNumber(

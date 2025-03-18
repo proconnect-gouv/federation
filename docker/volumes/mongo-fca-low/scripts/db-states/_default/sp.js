@@ -54,6 +54,8 @@ const fsa = {
     identityConsent: false,
     trustedIdentity: false,
     ssoDisabled: false,
+    idpFilterExclude: false,
+    idpFilterList: [],
   },
 
   // -- FSA - FSA2-LOW - Activated - ES256 - encrypted response - No post-logout-redirect-uri - Accept private

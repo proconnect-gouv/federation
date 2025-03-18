@@ -7,4 +7,5 @@ export default {
   allowedIdpHints: env.json('ALLOWED_IDP_HINTS'),
   defaultRedirectUri: 'https://www.proconnect.gouv.fr',
   enableSso: true,
+  supportEmail: 'support+federation@proconnect.gouv.fr',
 } as CoreConfig;

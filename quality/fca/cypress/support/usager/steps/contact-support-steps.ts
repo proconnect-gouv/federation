@@ -47,7 +47,7 @@ Then(
 );
 
 Then(
-  /^le href est celui par défaut avec le fs "([^"]+)", le fi "([^"]+)" et l'erreur "([^"]+)"$/,
+  /^le lien est celui par défaut avec le fs "([^"]+)", le fi "([^"]+)" et l'erreur "([^"]+)"$/,
   function (spName: string, idpName: string, errorCode: string) {
     getContactSupportLink()
       .invoke('attr', 'href')
@@ -64,7 +64,7 @@ Then(
 );
 
 Then(
-  /^le href correspond à l'erreur Y500006 avec l'email "([^"]+)"$/,
+  /^le lien correspond à l'erreur Y500006 avec l'email "([^"]+)"$/,
   function (email: string) {
     getContactSupportLink()
       .invoke('attr', 'href')

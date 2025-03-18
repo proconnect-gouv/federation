@@ -73,6 +73,7 @@ describe('IdentitySanitizer', () => {
     beforeEach(() => {
       jest.spyOn(FcCommon, 'validateDto');
       identityProviderAdapterMock.getById.mockResolvedValue(identityMock);
+      configServiceMock.get.mockReturnValue({ supportEmail: '' });
     });
 
     it('should be defined', () => {
@@ -206,6 +207,37 @@ describe('IdentitySanitizer', () => {
       const res = service['sanitizePhoneNumber'](identity);
       // Then
       expect(res).not.toHaveProperty('phone_number');
+    });
+  });
+
+  describe('getSupportEmail()', () => {
+    it('should use idp supportEmail when idp has one', () => {
+      // Given
+      const emailFromIdp = 'mysupport@email.fr';
+      const identityMockWithEmailSupport = {
+        ...identityMock,
+        supportEmail: emailFromIdp,
+      } as unknown as IdentityProviderMetadata;
+
+      // When/Then
+      expect(service['getSupportEmail'](identityMockWithEmailSupport)).toBe(
+        emailFromIdp,
+      );
+    });
+
+    it('should use supportEmail from config when idp has none', () => {
+      // Given
+      const emailFromConfig = 'emailfrom@config.fr';
+      configServiceMock.get.mockReturnValue({
+        supportEmail: emailFromConfig,
+      });
+
+      // When/Then
+      expect(
+        service['getSupportEmail'](
+          identityMock as unknown as IdentityProviderMetadata,
+        ),
+      ).toBe(emailFromConfig);
     });
   });
 });
