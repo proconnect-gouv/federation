@@ -98,7 +98,7 @@ export class ServiceProviderAdapterMongoDTO {
 
   @IsOptional()
   @IsBoolean()
-  readonly ssoDisabled: boolean;
+  readonly ssoDisabled?: boolean;
 
   @IsOptional()
   @IsEqualToConfig<ServiceProviderAdapterMongoConfig>(

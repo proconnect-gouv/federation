@@ -85,7 +85,6 @@ export class ServiceProviderAdapterMongoService
         idpFilterList: true,
         type: true,
         identityConsent: true,
-        ssoDisabled: true,
         platform: true,
         rep_scope: true,
       })

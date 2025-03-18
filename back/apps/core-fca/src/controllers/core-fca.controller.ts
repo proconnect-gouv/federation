@@ -24,7 +24,6 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { NotificationsService } from '@fc/notifications';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, Session } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
@@ -42,7 +41,6 @@ export class CoreFcaController {
   constructor(
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
-    private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
     private readonly fqdnService: CoreFcaFqdnService,
@@ -111,8 +109,6 @@ export class CoreFcaController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @IsStep()
   @ForbidRefresh()
-  // we choose to keep code readable here and to be close to fcp
-  // eslint-disable-next-line complexity
   async getVerify(
     @Req() req: Request,
     @Res() res: Response,
@@ -125,27 +121,11 @@ export class CoreFcaController {
     @Session('OidcClient', GetVerifyOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
-    const {
-      idpId,
-      interactionId,
-      spId,
-      isSso,
-      spRedirectUri,
-      isSilentAuthentication,
-    } = sessionOidc.get();
+    const { idpId, interactionId, spRedirectUri, isSilentAuthentication } =
+      sessionOidc.get();
 
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const params = { urlPrefix, interactionId, sessionOidc };
-
-    const { ssoDisabled } = await this.serviceProvider.getById(spId);
-    if (isSso && ssoDisabled) {
-      if (isSilentAuthentication) {
-        const url = this.coreFcaVerify.handleErrorLoginRequired(spRedirectUri);
-        return res.redirect(url);
-      }
-      const url = await this.coreFcaVerify.handleSsoDisabled(req, params);
-      return res.redirect(url);
-    }
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
 
     if (!isIdpActive) {

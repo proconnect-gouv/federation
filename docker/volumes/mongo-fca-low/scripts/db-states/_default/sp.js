@@ -53,6 +53,7 @@ const fsa = {
       'https://fsa1-low.docker.dev-franceconnect.fr/client/.well-known/keys',
     identityConsent: false,
     trustedIdentity: false,
+    // todo: the following fields are deprecated and should be removed once SP clean-up is complete
     ssoDisabled: false,
     idpFilterExclude: false,
     idpFilterList: [],
@@ -110,7 +111,6 @@ const fsa = {
       'https://fsa2-low.docker.dev-franceconnect.fr/client/.well-known/keys',
     identityConsent: false,
     trustedIdentity: false,
-    ssoDisabled: false,
   },
 
   // -- FSA - FSA3-LOW - Deactivated
@@ -164,7 +164,6 @@ const fsa = {
       'https://fsa3-low.docker.dev-franceconnect.fr/client/.well-known/keys',
     identityConsent: false,
     trustedIdentity: false,
-    ssoDisabled: false,
   },
 
   // -- FSA - FSA4-LOW - Activated - RS256 - encrypted response - not autorized to request amr claim
@@ -219,7 +218,6 @@ const fsa = {
       'https://fsa4-low.docker.dev-franceconnect.fr/client/.well-known/keys',
     identityConsent: false,
     trustedIdentity: false,
-    ssoDisabled: false,
   },
 };
 
