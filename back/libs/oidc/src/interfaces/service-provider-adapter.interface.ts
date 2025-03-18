@@ -4,8 +4,8 @@ export interface CustomClientMetadata extends AllClientMetadata {
   active: boolean;
   name: string;
   entityId: string;
-  idpFilterExclude: boolean;
-  idpFilterList: string[];
+  idpFilterExclude?: boolean;
+  idpFilterList?: string[];
   rep_scope?: string[];
 }
 

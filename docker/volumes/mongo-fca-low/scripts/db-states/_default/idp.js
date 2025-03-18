@@ -53,7 +53,7 @@ const fia = {
     ],
   },
 
-  // -- FIA - FIA2-LOW - Activated
+  // -- FIA - FIA2-LOW - Activated No support Email
   'FIA2-LOW': {
     uid: '0e7c099f-fe86-49a0-b7d1-19df45397212',
     name: 'fia2-low',
@@ -69,7 +69,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support+federation@proconnect.gouv.fr',
+    supportEmail: '',
     featureHandlers: {
       coreVerify: 'core-fca-default-verify',
       authenticationEmail: null,

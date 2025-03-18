@@ -79,12 +79,12 @@ export class ServiceProviderAdapterMongoDTO {
 
   @IsOptional()
   @IsBoolean()
-  idpFilterExclude: boolean;
+  idpFilterExclude?: boolean;
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  idpFilterList: string[];
+  idpFilterList?: string[];
 
   @IsString()
   @IsIn(['private', 'public'], {

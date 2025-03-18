@@ -10,4 +10,4 @@ Fonctionnalité: Connexion Partenaires
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500015"
     Et le lien vers le support est affiché
-    Et le href est celui par défaut avec le fs "FSA - FSA1-LOW", le fi "moncomptepro" et l'erreur "Y500015"
+    Et le lien est celui par défaut avec le fs "FSA - FSA1-LOW", le fi "moncomptepro" et l'erreur "Y500015"

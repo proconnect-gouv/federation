@@ -27,5 +27,4 @@ export default {
     imgSrc: env.json('CSP_IMG_SRC'),
   },
   environment: env.string('ENVIRONMENT'),
-  customerServiceEmail: 'support+federation@proconnect.gouv.fr',
 } as AppConfig;

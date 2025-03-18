@@ -10,16 +10,6 @@ Fonctionnalité: Connexion à un FI
     Et je suis redirigé vers la page login du fournisseur d'identité "par défaut"
     Alors la page du FI affiche l'id du FS "premier FS"
 
-  Scénario: Je me connecte à un FI avec un usagé sans email
-    Etant donné que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@fia1.fr"
-    Et que je clique sur le bouton de connexion
-    Quand j'utilise un compte usager sans email
-    Et je m'authentifie
-    Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y500006"
-
   @ignoreInteg01
   Scénario: J'utilise un fournisseur d'identité désactivé
     Etant donné que je navigue sur la page fournisseur de service

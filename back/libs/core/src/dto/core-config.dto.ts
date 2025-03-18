@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsBoolean, IsEmail, IsString, IsUrl } from 'class-validator';
 
 export class CoreConfig {
   @IsUrl()
@@ -10,4 +10,7 @@ export class CoreConfig {
   @IsArray()
   @IsString({ each: true })
   readonly allowedIdpHints: string[];
+
+  @IsEmail()
+  readonly supportEmail: string;
 }

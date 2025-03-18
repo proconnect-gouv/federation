@@ -8,8 +8,8 @@ export interface ServiceProviderConfig
   emails: string[];
   ipAddresses: string[];
   scopes: string[];
-  idpFilterExclude: string;
-  idpFilterList: string[];
+  idpFilterExclude?: string;
+  idpFilterList?: string[];
   active: string;
   type: string;
   identityConsent: string;
