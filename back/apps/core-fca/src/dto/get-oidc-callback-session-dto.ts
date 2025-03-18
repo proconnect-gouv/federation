@@ -5,8 +5,6 @@ import { CoreBaseOidcClientSessionDto } from '@fc/core';
 import { OidcClientRoutes } from '@fc/oidc-client';
 
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
-import { AppSession } from './app-session.dto';
-import { CoreSessionDto } from './core-session.dto';
 
 export class GetOidcCallbackOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
   // Metadata: We MUST restrict the routes we can come from
@@ -51,14 +49,6 @@ export class GetOidcCallbackOidcClientSessionDto extends CoreBaseOidcClientSessi
 
 export class GetOidcCallbackSessionDto {
   @Expose()
-  @Type(() => AppSession)
-  readonly App: AppSession;
-
-  @Expose()
   @Type(() => GetOidcCallbackOidcClientSessionDto)
   readonly OidcClient: GetOidcCallbackOidcClientSessionDto;
-
-  @Expose()
-  @Type(() => CoreSessionDto)
-  readonly Core: CoreSessionDto;
 }

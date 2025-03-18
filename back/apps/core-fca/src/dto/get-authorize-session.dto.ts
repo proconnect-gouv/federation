@@ -12,9 +12,6 @@ import { PartialExcept } from '@fc/common';
 import { CoreBaseOidcClientSessionDto } from '@fc/core';
 import { IdentityForSpDto, IOidcIdentity } from '@fc/oidc';
 
-import { AppSession } from './app-session.dto';
-import { CoreSessionDto } from './core-session.dto';
-
 /**
  * This DTO validates only an SSO compliant session.
  *
@@ -76,14 +73,6 @@ export class GetAuthorizeOidcClientSsoSession extends CoreBaseOidcClientSessionD
 
 export class GetAuthorizeSessionDto {
   @Expose()
-  @Type(() => AppSession)
-  readonly App: AppSession;
-
-  @Expose()
   @Type(() => GetAuthorizeOidcClientSsoSession)
   readonly OidcClient: GetAuthorizeOidcClientSsoSession;
-
-  @Expose()
-  @Type(() => CoreSessionDto)
-  readonly Core: CoreSessionDto;
 }
