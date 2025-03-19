@@ -9,9 +9,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity, OidcSession } from '@fc/oidc';
-import { OidcClientSession } from '@fc/oidc-client';
-import { SessionService, SessionSubNotFoundException } from '@fc/session';
+import { IOidcIdentity } from '@fc/oidc';
+import {
+  Session,
+  SessionService,
+  SessionSubNotFoundException,
+} from '@fc/session';
 
 import {
   OidcProviderRuntimeException,
@@ -103,7 +106,7 @@ export abstract class OidcProviderAppConfigLibService
       await this.checkSpId(spId);
 
       const { spIdentity, subs } =
-        this.sessionService.get<OidcSession>('OidcClient');
+        this.sessionService.get<Session>('OidcClient');
 
       const subSp = spId && subs[spId];
       await this.checkSub(subSp);
@@ -129,10 +132,10 @@ export abstract class OidcProviderAppConfigLibService
    *
    * @param {any} req
    * @param {any} res
-   * @param {OidcSession} session Object that contains the session info
+   * @param {Session} session Object that contains the session info
    */
-  async finishInteraction(req: any, res: any, session: OidcSession) {
-    const { amr, interactionAcr: acr }: OidcClientSession = session;
+  async finishInteraction(req: any, res: any, session: Session) {
+    const { amr, interactionAcr: acr }: Session = session;
     const sessionId = this.sessionService.getId();
 
     /**

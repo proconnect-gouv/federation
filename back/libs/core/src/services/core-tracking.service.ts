@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { overrideWithSourceIfNotNull } from '@fc/common';
 import { DeviceSession } from '@fc/device';
-import { OidcSession } from '@fc/oidc';
-import { SessionService } from '@fc/session';
+import { Session, SessionService } from '@fc/session';
 import {
   TrackedEventContextInterface,
   TrackedEventInterface,
@@ -128,8 +127,7 @@ export class CoreTrackingService {
 
   // eslint-disable-next-line complexity
   protected getDataFromSession(sessionId: string): ICoreTrackingProviders {
-    const oidcSession =
-      this.sessionService.get<OidcSession>('OidcClient') || {};
+    const session = this.sessionService.get<Session>('OidcClient') || {};
 
     // Defaults to undefined rather than null to not pollute AC logs
     const deviceSession = this.sessionService.get<DeviceSession>('Device') || {
@@ -154,7 +152,7 @@ export class CoreTrackingService {
       idpName = null,
       idpLabel = null,
       idpIdentity = null,
-    } = oidcSession;
+    } = session;
 
     const { isTrusted, isSuspicious } = deviceSession;
 

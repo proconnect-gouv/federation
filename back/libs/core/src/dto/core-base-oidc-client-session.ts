@@ -16,7 +16,7 @@ import {
  * Properties about core internals
  * Those properties are always present
  */
-export class CoreBaseOidcClientSessionDto {
+export class CoreBaseSessionDto {
   @IsUUID(4)
   @Expose()
   readonly browsingSessionId: string;

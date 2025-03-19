@@ -2,9 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept } from '@fc/common';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity, OidcSession } from '@fc/oidc';
+import { IOidcIdentity } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcProviderService } from '@fc/oidc-provider';
+import { Session } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
@@ -20,7 +21,7 @@ const spNameMock = 'spNameValue';
 const idpStateMock = 'idpStateMockValue';
 const idpNonceMock = 'idpNonceMock';
 
-const oidcSessionDataMock: OidcSession = {
+const sessionDataMock: Session = {
   interactionId: interactionIdMock,
   spAcr: acrMock,
   spIdentity: {} as PartialExcept<IOidcIdentity, 'sub'>,
@@ -110,7 +111,7 @@ describe('OidcProviderController', () => {
       // Given
       const req = {};
       const res = {};
-      sessionServiceMock.get.mockReturnValueOnce(oidcSessionDataMock);
+      sessionServiceMock.get.mockReturnValueOnce(sessionDataMock);
       // When
       await oidcProviderController.getLogin(req, res, sessionServiceMock);
       // Then
@@ -120,7 +121,7 @@ describe('OidcProviderController', () => {
       expect(oidcProviderConfigAppMock.finishInteraction).toHaveBeenCalledWith(
         req,
         res,
-        oidcSessionDataMock,
+        sessionDataMock,
       );
     });
   });

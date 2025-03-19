@@ -3,7 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PartialExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity, OidcSession } from '@fc/oidc';
+import { IOidcIdentity } from '@fc/oidc';
+import { Session } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -193,7 +194,7 @@ describe('MailerService', () => {
       family_name: 'TEACH',
       email: undefined,
     };
-    const sessionDataMock: OidcSession = {
+    const sessionDataMock: Session = {
       idpId: '42',
       idpAcr: 'eidas3',
       idpName: 'my favorite Idp',

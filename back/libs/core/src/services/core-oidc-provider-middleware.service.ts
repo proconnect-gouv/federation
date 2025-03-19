@@ -5,7 +5,7 @@ import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import { atHashFromAccessToken, IOidcClaims, OidcSession } from '@fc/oidc';
+import { atHashFromAccessToken, IOidcClaims } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { AuthorizationParameters, OidcClientRoutes } from '@fc/oidc-client';
 import {
@@ -18,7 +18,11 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionNoSessionIdException, SessionService } from '@fc/session';
+import {
+  Session,
+  SessionNoSessionIdException,
+  SessionService,
+} from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import { CoreConfig } from '../dto';
@@ -282,8 +286,7 @@ export class CoreOidcProviderMiddlewareService {
 
   protected isSsoAvailable(): boolean {
     const { enableSso } = this.config.get<CoreConfig>('Core');
-    const { spIdentity } =
-      this.sessionService.get<OidcSession>('OidcClient') || {};
+    const { spIdentity } = this.sessionService.get<Session>('OidcClient') || {};
 
     const hasSpIdentity = Boolean(spIdentity);
 

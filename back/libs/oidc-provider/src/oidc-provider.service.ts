@@ -11,8 +11,8 @@ import { Global, Inject, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
 import { RedisService } from '@fc/redis';
+import { Session } from '@fc/session';
 
 import {
   OidcProviderMiddlewarePattern,
@@ -241,7 +241,7 @@ export class OidcProviderService {
     });
   }
 
-  finishInteraction(req: any, res: any, session: OidcSession) {
+  finishInteraction(req: any, res: any, session: Session) {
     this.oidcProviderConfigApp.finishInteraction(req, res, session);
   }
 

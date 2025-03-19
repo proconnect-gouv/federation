@@ -1,12 +1,12 @@
 import { Expose, Type } from 'class-transformer';
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
-import { CoreBaseOidcClientSessionDto } from '@fc/core';
+import { CoreBaseSessionDto } from '@fc/core';
 import { OidcClientRoutes } from '@fc/oidc-client';
 
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 
-export class GetOidcCallbackOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
+export class GetOidcCallbackSessionDto extends CoreBaseSessionDto {
   // Metadata: We MUST restrict the routes we can come from
   @IsString()
   @IsIn([
@@ -47,8 +47,8 @@ export class GetOidcCallbackOidcClientSessionDto extends CoreBaseOidcClientSessi
   readonly idpNonce: string;
 }
 
-export class GetOidcCallbackSessionDto {
+export class GetOidcCallbackCoreSessionDto {
   @Expose()
-  @Type(() => GetOidcCallbackOidcClientSessionDto)
-  readonly OidcClient: GetOidcCallbackOidcClientSessionDto;
+  @Type(() => GetOidcCallbackSessionDto)
+  readonly OidcClient: GetOidcCallbackSessionDto;
 }

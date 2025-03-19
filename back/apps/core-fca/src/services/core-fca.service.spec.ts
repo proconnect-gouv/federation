@@ -254,7 +254,6 @@ describe('CoreFcaService', () => {
         idpIdentity: undefined,
         spIdentity: undefined,
         accountId: undefined,
-        login_hint: 'example@email.com',
       });
     });
 

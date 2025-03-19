@@ -2,9 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { CoreMissingIdentityException } from '@fc/core';
 import { IOidcIdentity } from '@fc/oidc';
-import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
+import { Session, SessionService } from '@fc/session';
 
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -35,7 +34,7 @@ describe('OidcProviderController', () => {
   const idpIdMock = 'idpIdMockValue';
   const interactionFinishedValue = Symbol('interactionFinishedValue');
 
-  const oidcClientSessionDataMock: OidcClientSession = {
+  const sessionDataMock: Session = {
     spId: spIdMock,
     idpId: idpIdMock,
     idpNonce: idpNonceMock,
@@ -77,7 +76,7 @@ describe('OidcProviderController', () => {
       interactionDetailsResolved,
     );
 
-    sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
+    sessionServiceMock.get.mockReturnValue(sessionDataMock);
     sessionServiceMock.reset.mockResolvedValueOnce(sessionIdMock);
   });
 
@@ -133,7 +132,7 @@ describe('OidcProviderController', () => {
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
         reqMock,
         res,
-        oidcClientSessionDataMock,
+        sessionDataMock,
       );
     });
 

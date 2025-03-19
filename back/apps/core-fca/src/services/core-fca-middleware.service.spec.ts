@@ -8,7 +8,6 @@ import { ConfigService } from '@fc/config';
 import { CORE_SERVICE } from '@fc/core';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcCtx,
@@ -16,16 +15,13 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionService } from '@fc/session';
+import { Session, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import {
-  GetAuthorizeOidcClientSsoSession,
-  GetAuthorizeSessionDto,
-} from '../dto';
+import { GetAuthorizeCoreSessionDto, GetAuthorizeSessionDto } from '../dto';
 import { CoreFcaMiddlewareService } from './core-fca-middleware.service';
 
 jest.mock('uuid');
@@ -85,7 +81,7 @@ describe('CoreFcaMiddlewareService', () => {
     sub: 'some idpSub',
   };
 
-  const sessionDataMock: OidcSession = {
+  const sessionDataMock: Session = {
     idpAcr: 'eidas3',
     idpId: '42',
     idpIdentity: idpIdentityMock,
@@ -593,7 +589,7 @@ describe('CoreFcaMiddlewareService', () => {
       expect(validateDtoMock).toHaveBeenCalledTimes(1);
       expect(validateDtoMock).toHaveBeenCalledWith(
         sessionDataMock,
-        GetAuthorizeOidcClientSsoSession,
+        GetAuthorizeSessionDto,
         { forbidNonWhitelisted: true },
       );
     });
@@ -666,7 +662,7 @@ describe('CoreFcaMiddlewareService', () => {
       expect(sessionServiceMock.duplicate).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.duplicate).toHaveBeenCalledWith(
         resMock,
-        GetAuthorizeSessionDto,
+        GetAuthorizeCoreSessionDto,
       );
     });
   });

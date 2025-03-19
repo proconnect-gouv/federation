@@ -14,11 +14,10 @@ import {
 
 import { CoreMissingIdentityException, CoreRoutes } from '@fc/core';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
-import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
-import { ISessionService, Session } from '@fc/session';
+import { ISessionService, Session, SessionDecorator } from '@fc/session';
 
-import { AuthorizeParamsDto, GetLoginOidcClientSessionDto } from '../dto';
+import { AuthorizeParamsDto, GetLoginSessionDto } from '../dto';
 
 @Controller()
 export class OidcProviderController {
@@ -86,15 +85,15 @@ export class OidcProviderController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient', GetLoginOidcClientSessionDto)
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient', GetLoginSessionDto)
+    sessionOidc: ISessionService<Session>,
   ) {
     const { spIdentity } = sessionOidc.get();
     if (!spIdentity) {
       throw new CoreMissingIdentityException();
     }
 
-    const session: OidcClientSession = sessionOidc.get();
+    const session: Session = sessionOidc.get();
     return this.oidcProvider.finishInteraction(req, res, session);
   }
 }

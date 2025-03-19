@@ -2,8 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { overrideWithSourceIfNotNull } from '@fc/common/helpers';
 import { ConfigService } from '@fc/config';
-import { OidcSession } from '@fc/oidc';
-import { SessionService } from '@fc/session';
+import { Session, SessionService } from '@fc/session';
 import { extractNetworkInfoFromHeaders } from '@fc/tracking-context';
 
 import { getSessionServiceMock } from '@mocks/session';
@@ -88,7 +87,7 @@ describe('CoreTrackingService', () => {
 
   const interactionAcrMock = 'interactionAcrMock';
 
-  const sessionDataMock: OidcSession = {
+  const sessionDataMock: Session = {
     accountId: 'accountId Mock Value',
     browsingSessionId: 'browsingSessionId Mock Value',
     sessionId: sessionIdMock,
@@ -404,7 +403,7 @@ describe('CoreTrackingService', () => {
         idpSub: null,
         idpLabel: null,
       };
-      const sessionMock: OidcSession = {
+      const sessionMock: Session = {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spAcr: 'spAcrMock',
@@ -441,7 +440,7 @@ describe('CoreTrackingService', () => {
         idpSub: null,
         idpLabel: null,
       };
-      const sessionMock: OidcSession = {
+      const sessionMock: Session = {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spAcr: 'spAcrMock',
@@ -479,7 +478,7 @@ describe('CoreTrackingService', () => {
         idpSub: null,
         idpLabel: null,
       };
-      const sessionMock: OidcSession = {
+      const sessionMock: Session = {
         subs: {},
         spIdentity: {},
         browsingSessionId: browsingSessionIdMock,

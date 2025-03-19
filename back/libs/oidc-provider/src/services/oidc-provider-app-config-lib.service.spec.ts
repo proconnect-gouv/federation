@@ -5,8 +5,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity, OidcSession } from '@fc/oidc';
-import { SessionService, SessionSubNotFoundException } from '@fc/session';
+import { IOidcIdentity } from '@fc/oidc';
+import {
+  Session,
+  SessionService,
+  SessionSubNotFoundException,
+} from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
@@ -315,7 +319,7 @@ describe('OidcProviderAppConfigLibService', () => {
       const resolvedValue = Symbol('resolved value');
 
       providerMock.interactionFinished.mockResolvedValueOnce(resolvedValue);
-      const sessionDataMock: OidcSession = {
+      const sessionDataMock: Session = {
         spAcr: 'spAcrValue',
         spIdentity: {},
       };
@@ -340,7 +344,7 @@ describe('OidcProviderAppConfigLibService', () => {
       } as IOidcIdentity;
       const interactionAcrMock = 'interactionAcrMock';
 
-      const sessionDataMock: OidcSession = {
+      const sessionDataMock: Session = {
         spAcr: spAcrMock,
         amr: amrValueMock,
         interactionId: interactionIdMock,
@@ -399,7 +403,7 @@ describe('OidcProviderAppConfigLibService', () => {
       // Given
       const nativeError = new Error('invalid_request');
       providerMock.interactionFinished.mockRejectedValueOnce(nativeError);
-      const sessionDataMock: OidcSession = {
+      const sessionDataMock: Session = {
         spAcr: 'spAcrValue',
         spIdentity: {},
       };

@@ -11,7 +11,7 @@ import {
 } from '@fc/core';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import { OidcSession, stringToArray } from '@fc/oidc';
+import { stringToArray } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcCtx,
@@ -22,13 +22,10 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionService } from '@fc/session';
+import { Session, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import {
-  GetAuthorizeOidcClientSsoSession,
-  GetAuthorizeSessionDto,
-} from '../dto';
+import { GetAuthorizeCoreSessionDto, GetAuthorizeSessionDto } from '../dto';
 import { CoreFcaService } from './core-fca.service';
 
 @Injectable()
@@ -167,17 +164,15 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
   }
 
   private async isSsoSession() {
-    const data = this.sessionService.get<OidcSession>('OidcClient');
+    const data = this.sessionService.get<Session>('OidcClient');
 
     if (!data) {
       return false;
     }
 
-    const validationErrors = await validateDto(
-      data,
-      GetAuthorizeOidcClientSsoSession,
-      { forbidNonWhitelisted: true },
-    );
+    const validationErrors = await validateDto(data, GetAuthorizeSessionDto, {
+      forbidNonWhitelisted: true,
+    });
 
     this.logger.debug({ data, validationErrors });
 
@@ -191,7 +186,7 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     const isSsoSession = await this.isSsoSession();
 
     if (enableSso && isSsoSession) {
-      await this.sessionService.duplicate(res, GetAuthorizeSessionDto);
+      await this.sessionService.duplicate(res, GetAuthorizeCoreSessionDto);
       this.logger.debug('Session has been detached and duplicated');
     } else {
       await this.sessionService.reset(res);

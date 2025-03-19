@@ -8,14 +8,14 @@ import {
 } from 'class-validator';
 
 import { PartialExcept } from '@fc/common';
-import { CoreBaseOidcClientSessionDto, CoreRoutes } from '@fc/core';
+import { CoreBaseSessionDto, CoreRoutes } from '@fc/core';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 
-export class GetInteractionOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
+export class GetInteractionSessionDto extends CoreBaseSessionDto {
   // Metadata: We MAY have an accountId (SSO)
   @IsOptional()
   @IsString()

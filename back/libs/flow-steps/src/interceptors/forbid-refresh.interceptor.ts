@@ -10,8 +10,7 @@ import { Reflector } from '@nestjs/core';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { OidcSession } from '@fc/oidc';
-import { SessionService } from '@fc/session';
+import { Session, SessionService } from '@fc/session';
 
 import { ForbidRefresh } from '../decorators';
 import {
@@ -39,7 +38,7 @@ export class ForbidRefreshInterceptor implements NestInterceptor {
 
   private checkRefresh(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
-    const { stepRoute } = this.session.get<OidcSession>('OidcClient') || {};
+    const { stepRoute } = this.session.get<Session>('OidcClient') || {};
     const { urlPrefix } = this.config.get<AppConfig>('App');
 
     const currentRoute = req.route.path.replace(urlPrefix, '');

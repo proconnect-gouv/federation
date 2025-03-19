@@ -23,23 +23,26 @@ import { EmailValidatorService } from '@fc/email-validator/services';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientConfigService,
   OidcClientRoutes,
   OidcClientService,
-  OidcClientSession,
 } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { ISessionService, Session, SessionService } from '@fc/session';
+import {
+  ISessionService,
+  Session,
+  SessionDecorator,
+  SessionService,
+} from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import {
-  GetIdentityProviderSelectionOidcClientSessionDto,
-  GetOidcCallbackOidcClientSessionDto,
+  GetIdentityProviderSelectionSessionDto,
+  GetOidcCallbackCoreSessionDto,
   GetOidcCallbackSessionDto,
-  GetRedirectToIdpOidcClientSessionDto,
+  GetRedirectToIdpSessionDto,
   IdentityForSpDto,
   IdentityFromIdpDto,
   RedirectToIdp,
@@ -80,8 +83,8 @@ export class OidcClientController {
   async getIdentityProviderSelection(
     @CsrfToken() csrfToken: string,
     @Res() res: Response,
-    @Session('OidcClient', GetIdentityProviderSelectionOidcClientSessionDto)
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient', GetIdentityProviderSelectionSessionDto)
+    sessionOidc: ISessionService<Session>,
   ) {
     const { login_hint: email } = sessionOidc.get();
     const fqdnConfig = await this.fqdnService.getFqdnConfigFromEmail(email);
@@ -127,8 +130,8 @@ export class OidcClientController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient', GetRedirectToIdpOidcClientSessionDto)
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient', GetRedirectToIdpSessionDto)
+    sessionOidc: ISessionService<Session>,
   ): Promise<void> {
     // if email is set, this controller is called from the interaction page
     // if identityProviderUid is set, this controller is called directly from the sp page via idp_hint or from the select-idp page
@@ -225,8 +228,8 @@ export class OidcClientController {
   @Header('cache-control', 'no-store')
   async logoutFromIdp(
     @Res() res,
-    @Session('OidcClient')
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient')
+    sessionOidc: ISessionService<Session>,
   ) {
     const { idpIdToken, idpId } = sessionOidc.get();
 
@@ -249,8 +252,8 @@ export class OidcClientController {
   async redirectAfterIdpLogout(
     @Req() req,
     @Res() res,
-    @Session('OidcClient')
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient')
+    sessionOidc: ISessionService<Session>,
   ) {
     const { oidcProviderLogoutForm } = sessionOidc.get();
 
@@ -281,10 +284,10 @@ export class OidcClientController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient', GetOidcCallbackOidcClientSessionDto)
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient', GetOidcCallbackSessionDto)
+    sessionOidc: ISessionService<Session>,
   ) {
-    await this.sessionService.duplicate(res, GetOidcCallbackSessionDto);
+    await this.sessionService.duplicate(res, GetOidcCallbackCoreSessionDto);
     this.logger.debug('Session has been detached and duplicated');
 
     const { idpId, idpNonce, idpState, interactionId, spId, login_hint } =
@@ -373,7 +376,7 @@ export class OidcClientController {
       });
     }
 
-    const identityExchange: OidcSession = cloneDeep({
+    const identityExchange: Session = cloneDeep({
       amr,
       idpAccessToken: accessToken,
       idpIdToken: idToken,

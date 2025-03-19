@@ -3,13 +3,13 @@ import { IsObject, IsOptional, ValidateNested } from 'class-validator';
 
 import { CsrfSession } from '@fc/csrf';
 import { I18nSession } from '@fc/i18n';
-import { OidcClientSession } from '@fc/oidc-client';
+import { Session } from '@fc/session';
 
 export class CoreFcaSession {
   @IsObject()
   @ValidateNested()
-  @Type(() => OidcClientSession)
-  readonly OidcClient: OidcClientSession;
+  @Type(() => Session)
+  readonly OidcClient: Session;
 
   @IsObject()
   @ValidateNested()

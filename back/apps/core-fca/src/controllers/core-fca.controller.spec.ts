@@ -6,11 +6,10 @@ import { ConfigService } from '@fc/config';
 import { CoreRoutes, CoreVerifyService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { NotificationsService } from '@fc/notifications';
-import { IOidcIdentity, OidcSession } from '@fc/oidc';
+import { IOidcIdentity } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { ISessionService, SessionService } from '@fc/session';
+import { ISessionService, Session, SessionService } from '@fc/session';
 import { TrackedEventInterface, TrackingService } from '@fc/tracking';
 
 import { getSessionServiceMock } from '@mocks/session';
@@ -95,8 +94,6 @@ describe('CoreFcaController', () => {
     isActiveById: jest.fn(),
   };
 
-  const sessionServiceMock = getSessionServiceMock();
-
   const sessionCsrfServiceMock = {
     get: jest.fn(),
     save: jest.fn(),
@@ -129,7 +126,7 @@ describe('CoreFcaController', () => {
 
   const csrfToken = randomStringMock;
 
-  const oidcClientSessionDataMock: OidcClientSession = {
+  const sessionDataMock: Session = {
     spId: spIdMock,
     idpId: idpIdMock,
     idpNonce: idpNonceMock,
@@ -153,11 +150,11 @@ describe('CoreFcaController', () => {
 
   const appSessionServiceMock = getSessionServiceMock();
 
-  const oidcSessionServiceMock = getSessionServiceMock();
+  const sessionServiceMock = getSessionServiceMock();
 
   const csrfMock = 'csrfMockValue';
 
-  const oidcSessionMock: OidcSession = {
+  const sessionMock: Session = {
     idpId: idpIdMock,
     idpNonce: idpNonceMock,
     idpState: idpStateMock,
@@ -210,7 +207,7 @@ describe('CoreFcaController', () => {
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
       .overrideProvider(SessionService)
-      .useValue(oidcSessionServiceMock)
+      .useValue(sessionServiceMock)
       .overrideProvider(NotificationsService)
       .useValue(notificationsServiceMock)
       .compile();
@@ -231,7 +228,7 @@ describe('CoreFcaController', () => {
     );
     coreVerifyServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
 
-    sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
+    sessionServiceMock.get.mockReturnValue(sessionDataMock);
 
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
     cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
@@ -240,7 +237,7 @@ describe('CoreFcaController', () => {
     sessionCsrfServiceMock.get.mockReturnValueOnce(randomStringMock);
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
 
-    oidcSessionServiceMock.get.mockReturnValue(oidcSessionMock);
+    sessionServiceMock.get.mockReturnValue(sessionMock);
     sessionCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
 
     identityProviderServiceMock.isActiveById.mockResolvedValue(true);
@@ -292,7 +289,7 @@ describe('CoreFcaController', () => {
         res,
         params,
         csrfToken,
-        oidcSessionServiceMock,
+        sessionServiceMock,
       );
       // Then
       expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
@@ -304,7 +301,7 @@ describe('CoreFcaController', () => {
 
     it('should not track route if is a refresh', async () => {
       // Given
-      oidcSessionServiceMock.get.mockReturnValueOnce({
+      sessionServiceMock.get.mockReturnValueOnce({
         stepRoute: CoreRoutes.INTERACTION,
       });
       // When
@@ -313,24 +310,24 @@ describe('CoreFcaController', () => {
         res,
         params,
         csrfToken,
-        oidcSessionServiceMock,
+        sessionServiceMock,
       );
       // Then
       expect(trackingServiceMock.track).not.toHaveBeenCalled();
     });
 
-    it('should retrieve the spName and stepRoute from oidcSession', async () => {
+    it('should retrieve the spName and stepRoute from session', async () => {
       // When
       await coreController.getInteraction(
         req,
         res,
         params,
         csrfToken,
-        oidcSessionServiceMock,
+        sessionServiceMock,
       );
       // Then
-      expect(oidcSessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(oidcSessionServiceMock.get).toHaveBeenCalledWith();
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith();
     });
 
     it('should retrieve the OidcProvider config', async () => {
@@ -340,7 +337,7 @@ describe('CoreFcaController', () => {
         res,
         params,
         csrfToken,
-        oidcSessionServiceMock,
+        sessionServiceMock,
       );
       // Then
       expect(configServiceMock.get).toHaveBeenNthCalledWith(1, 'App');
@@ -353,7 +350,7 @@ describe('CoreFcaController', () => {
         res,
         params,
         csrfToken,
-        oidcSessionServiceMock,
+        sessionServiceMock,
       );
 
       // Then
@@ -371,7 +368,7 @@ describe('CoreFcaController', () => {
         defaultEmailRenater: undefined,
         loginHint: 'test@example.com',
         notification: notificationsMock,
-        spName: oidcSessionMock.spName,
+        spName: sessionMock.spName,
       };
 
       // When
@@ -380,7 +377,7 @@ describe('CoreFcaController', () => {
         res,
         params,
         csrfToken,
-        oidcSessionServiceMock,
+        sessionServiceMock,
       );
 
       // Then
@@ -423,11 +420,11 @@ describe('CoreFcaController', () => {
           handleVerifyResult,
         );
 
-        const oidcClientSessionDataMock = {
+        const sessionDataMock = {
           isSilentAuthentication: false,
-        } as unknown as ISessionService<OidcClientSession>;
+        } as unknown as ISessionService<Session>;
 
-        sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
+        sessionServiceMock.get.mockReturnValue(sessionDataMock);
       });
 
       it('should call `handleUnavailableIdp()` and not `handleVerify()`', async () => {
@@ -467,11 +464,11 @@ describe('CoreFcaController', () => {
         coreFcaVerifyServiceMock.handleErrorLoginRequired.mockReturnValue(
           handleErrorLoginRequiredResult,
         );
-        const oidcClientSessionDataMock = {
+        const sessionDataMock = {
           isSilentAuthentication: true,
-        } as unknown as ISessionService<OidcClientSession>;
+        } as unknown as ISessionService<Session>;
 
-        sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
+        sessionServiceMock.get.mockReturnValue(sessionDataMock);
       });
 
       it('should call `handleErrorLoginRequired()` and not `handleUnavailableIdp()`', async () => {

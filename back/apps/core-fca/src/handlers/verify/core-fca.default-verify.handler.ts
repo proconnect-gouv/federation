@@ -13,9 +13,8 @@ import { standardJwtClaims } from '@fc/jwt';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
-import { ISessionService } from '@fc/session';
+import { ISessionService, Session } from '@fc/session';
 
 @Injectable()
 @FeatureHandler('core-fca-default-verify')
@@ -153,7 +152,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   // @fixme Check with AC team what to do about that
   // eslint-disable-next-line max-params
   protected storeIdentityWithSessionService(
-    sessionOidc: ISessionService<OidcClientSession>,
+    sessionOidc: ISessionService<Session>,
     sub: string,
     spIdentity: Partial<Omit<IOidcIdentity, 'sub'>>,
     accountId: string,
@@ -161,7 +160,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   ): void {
     const { idpIdentity, spId, amr, subs } = sessionOidc.get();
 
-    const session: OidcClientSession = {
+    const session: Session = {
       amr,
       idpIdentity,
       spIdentity,
