@@ -66,6 +66,7 @@
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - RETURN_CODE=0
     # Bind sources in docker volumes
+    - ls -l $FC_ROOT/fc/docker/volumes/src/
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
     # Return to project directory
     - wait
