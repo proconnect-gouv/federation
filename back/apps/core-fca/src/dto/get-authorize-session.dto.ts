@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 
 import { PartialExcept } from '@fc/common';
-import { CoreBaseOidcClientSessionDto } from '@fc/core';
+import { CoreBaseSessionDto } from '@fc/core';
 import { IdentityForSpDto, IOidcIdentity } from '@fc/oidc';
 
 /**
@@ -17,7 +17,7 @@ import { IdentityForSpDto, IOidcIdentity } from '@fc/oidc';
  *
  * It does not match a brand new session or a session that was not intended to be usable as SSO.
  */
-export class GetAuthorizeOidcClientSsoSession extends CoreBaseOidcClientSessionDto {
+export class GetAuthorizeSessionDto extends CoreBaseSessionDto {
   // Metadata: We MUST have accountId (SSO)
   @IsString()
   @IsNotEmpty()
@@ -71,8 +71,8 @@ export class GetAuthorizeOidcClientSsoSession extends CoreBaseOidcClientSessionD
   readonly spIdentity: IdentityForSpDto;
 }
 
-export class GetAuthorizeSessionDto {
+export class GetAuthorizeCoreSessionDto {
   @Expose()
-  @Type(() => GetAuthorizeOidcClientSsoSession)
-  readonly OidcClient: GetAuthorizeOidcClientSsoSession;
+  @Type(() => GetAuthorizeSessionDto)
+  readonly OidcClient: GetAuthorizeSessionDto;
 }

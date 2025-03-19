@@ -5,8 +5,8 @@ import { HttpAdapterHost } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
 import { RedisService } from '@fc/redis';
+import { Session } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getRedisServiceMock } from '@mocks/redis';
@@ -645,7 +645,7 @@ describe('OidcProviderService', () => {
       // Given
       const reqMock = Symbol('req');
       const resMock = Symbol('res');
-      const sessionDataMock: OidcSession = {
+      const sessionDataMock: Session = {
         spAcr: 'spAcrValue',
         spIdentity: {},
       };

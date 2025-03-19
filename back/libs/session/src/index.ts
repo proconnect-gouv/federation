@@ -1,5 +1,5 @@
 export * from './decorators';
-export { SessionConfig } from './dto';
+export * from './dto';
 export * from './exceptions';
 export * from './interfaces';
 export * from './middlewares';

@@ -42,7 +42,7 @@ describe('DataProviderController', () => {
 
   const loggerServiceMock = getLoggerMock();
 
-  const oidcSessionServiceMock = getSessionServiceMock();
+  const sessionServiceMock = getSessionServiceMock();
 
   const tokenIntrospectionMock = {
     active: true,
@@ -152,7 +152,7 @@ describe('DataProviderController', () => {
         .fn()
         .mockReturnValue(expMock);
 
-      jest.mocked(oidcSessionServiceMock.get).mockReturnValue({
+      jest.mocked(sessionServiceMock.get).mockReturnValue({
         spIdentity: spIdentityMock,
         spScope: spScopeMock,
       });

@@ -21,7 +21,7 @@ In the controllers where you want to retrieve data, you should the use the `Sess
 It should looks like:
 
 ```typescript
-@Session('YourLibrary') session: ISessionService<YourLibrarySessionDto>
+@SessionDecorator('YourLibrary') session: ISessionService<YourLibrarySessionDto>
 ```
 
 ## Configuration
@@ -46,14 +46,14 @@ It should looks like:
 ### Create Session Schema file for your app
 
 We need to provide a Schema that describes the type of data that can be stored in the session
-This Schema target to the shared `OidcSession` interface.
+This Schema target to the shared `Session` interface.
 
 ```typescript
 export class MockServiceProviderSession {
   @IsObject()
   @ValidateNested()
-  @Type(() => OidcClientSession)
-  readonly OidcClient: OidcClientSession;
+  @Type(() => Session)
+  readonly OidcClient: Session;
 }
 ```
 

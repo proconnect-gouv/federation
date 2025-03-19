@@ -5,7 +5,7 @@ import { NestJsDependencyInjectionWrapper } from '@fc/common';
 import { getSessionServiceMock } from '../../.mocks';
 import { checkSession } from '../helper';
 import { SessionService } from '../services';
-import { Session } from './session.decorator';
+import { SessionDecorator } from './session.decorator';
 
 jest.mock('@nestjs/common', () => ({
   ...jest.requireActual('@nestjs/common'),
@@ -19,7 +19,7 @@ jest.mock('@fc/common', () => ({
 
 jest.mock('../helper');
 
-describe('@Session()', () => {
+describe('@SessionDecorator()', () => {
   class DtoMock {}
   const ctxMock = {};
   const moduleNameMock = 'moduleNameMockValue';
@@ -43,7 +43,7 @@ describe('@Session()', () => {
   describe('Session() > decorator', () => {
     it('should get sessionService from NestJsDependencyInjectionWrapper', async () => {
       // Given
-      const decorator = Session(moduleNameMock) as Function;
+      const decorator = SessionDecorator(moduleNameMock) as Function;
 
       // When
       await decorator(argMock, ctxMock);
@@ -55,7 +55,7 @@ describe('@Session()', () => {
 
     it('should get session data if DTO is provided', async () => {
       // Given
-      const decorator = Session(moduleNameMock, DtoMock) as Function;
+      const decorator = SessionDecorator(moduleNameMock, DtoMock) as Function;
 
       // When
       await decorator(argMock, ctxMock);
@@ -66,7 +66,7 @@ describe('@Session()', () => {
 
     it('should call checkSession if DTO is provided', async () => {
       // Given
-      const decorator = Session(moduleNameMock, DtoMock) as Function;
+      const decorator = SessionDecorator(moduleNameMock, DtoMock) as Function;
 
       // When
       await decorator(argMock, ctxMock);
@@ -82,7 +82,7 @@ describe('@Session()', () => {
 
     it('should not get session data if DTO is not provided', async () => {
       // Given
-      const decorator = Session(moduleNameMock) as Function;
+      const decorator = SessionDecorator(moduleNameMock) as Function;
 
       // When
       await decorator(argMock, ctxMock);
@@ -93,7 +93,7 @@ describe('@Session()', () => {
 
     it('should not call checkSession if DTO is not provided', async () => {
       // Given
-      const decorator = Session(moduleNameMock) as Function;
+      const decorator = SessionDecorator(moduleNameMock) as Function;
 
       // When
       await decorator(argMock, ctxMock);
@@ -104,7 +104,7 @@ describe('@Session()', () => {
 
     it('should return sessionService from extractSessionFromContext', async () => {
       // Given
-      const decorator = Session(moduleNameMock) as Function;
+      const decorator = SessionDecorator(moduleNameMock) as Function;
 
       const boundFunctionMock = Symbol('boundFunctionMock');
       const bindMock = jest.fn().mockReturnValue(boundFunctionMock);
@@ -130,7 +130,7 @@ describe('@Session()', () => {
   describe('Session()', () => {
     it('should call createParamDecorator()', () => {
       // When
-      Session(moduleNameMock);
+      SessionDecorator(moduleNameMock);
 
       // Then
       expect(createParamDecoratorMock).toHaveBeenCalledTimes(1);
@@ -146,7 +146,7 @@ describe('@Session()', () => {
       );
 
       // When
-      const result = Session(moduleNameMock);
+      const result = SessionDecorator(moduleNameMock);
 
       // Then
       expect(result).toBe(createParamDecoratorMockedResult);

@@ -17,8 +17,7 @@ import {
 import { ApiContentType } from '@fc/app';
 import { ForbidRefresh } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import { OidcClientSession } from '@fc/oidc-client';
-import { ISessionService, Session } from '@fc/session';
+import { ISessionService, Session, SessionDecorator } from '@fc/session';
 
 import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
@@ -45,10 +44,10 @@ export class OidcProviderController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1018
      * @ticket FC-1018
      */
-    @Session('OidcClient')
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient')
+    sessionOidc: ISessionService<Session>,
   ): Promise<void> {
-    const session: OidcClientSession = sessionOidc.get();
+    const session: Session = sessionOidc.get();
 
     return this.oidcProviderConfigApp.finishInteraction(req, res, session);
   }

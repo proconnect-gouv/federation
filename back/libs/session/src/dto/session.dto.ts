@@ -11,10 +11,9 @@ import {
 } from 'class-validator';
 
 import { IsUrlRequiredTldFromConfig, PartialExcept } from '@fc/common';
+import { IOidcIdentity } from '@fc/oidc/interfaces';
 
-import { IOidcIdentity } from '../interfaces';
-
-export class OidcSession {
+export class Session {
   @IsOptional()
   @IsAscii()
   @IsNotEmpty()

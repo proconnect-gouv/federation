@@ -26,7 +26,7 @@ import { SessionService } from '../services';
  * @note Since NestJS built-in helper `createParamDecorator` expects only one parameter,
  * we use a closure to make multiple arguments available in the scope of the decorator.
  */
-export function Session(moduleName: string, dto?: Class<unknown>) {
+export function SessionDecorator(moduleName: string, dto?: Class<unknown>) {
   /**
    * @param _arg `moduleName` and `_arg` are the same variable (first argument of the decorator)
    */

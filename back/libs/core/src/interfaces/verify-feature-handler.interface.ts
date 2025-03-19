@@ -1,9 +1,8 @@
 import { IFeatureHandler } from '@fc/feature-handler';
-import { OidcClientSession } from '@fc/oidc-client';
-import { ISessionService } from '@fc/session';
+import { ISessionService, Session } from '@fc/session';
 
 export interface IVerifyFeatureHandlerHandleArgument {
-  sessionOidc: ISessionService<OidcClientSession>;
+  sessionOidc: ISessionService<Session>;
   trackingContext?: Record<string, unknown>;
 }
 export interface IVerifyFeatureHandler

@@ -14,17 +14,16 @@ import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientConfigService,
   OidcClientService,
-  OidcClientSession,
   TokenParams,
 } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
+import { Session, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { AppConfig, GetOidcCallbackSessionDto } from '../dto';
+import { AppConfig, GetOidcCallbackCoreSessionDto } from '../dto';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaFqdnService,
@@ -133,7 +132,7 @@ describe('OidcClient Controller', () => {
     uid: 'uid',
   };
 
-  const oidcClientSessionDataMock: OidcClientSession = {
+  const sessionDataMock: Session = {
     spId: spIdMock,
     idpId: idpIdMock,
     idpNonce: nonceMock,
@@ -266,7 +265,7 @@ describe('OidcClient Controller', () => {
     };
 
     identityProviderServiceMock.getById.mockReturnValue(idpMock);
-    sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
+    sessionServiceMock.get.mockReturnValue(sessionDataMock);
 
     oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
       state: stateMock,
@@ -305,7 +304,7 @@ describe('OidcClient Controller', () => {
         acceptsDefaultIdp: true,
       };
       sessionServiceMock.get.mockReturnValueOnce({
-        ...oidcClientSessionDataMock,
+        ...sessionDataMock,
         login_hint: 'harry.potter@hogwarts.uk',
       });
 
@@ -619,7 +618,7 @@ describe('OidcClient Controller', () => {
       expect(sessionServiceMock.duplicate).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.duplicate).toHaveBeenCalledWith(
         res,
-        GetOidcCallbackSessionDto,
+        GetOidcCallbackCoreSessionDto,
       );
     });
 

@@ -8,10 +8,10 @@ import {
 } from 'class-validator';
 
 import { PartialExcept } from '@fc/common';
-import { CoreBaseOidcClientSessionDto, CoreRoutes } from '@fc/core';
+import { CoreBaseSessionDto, CoreRoutes } from '@fc/core';
 import { IOidcIdentity } from '@fc/oidc';
 
-export class GetLoginOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
+export class GetLoginSessionDto extends CoreBaseSessionDto {
   // Metadata: We MUST have an accountId
   @IsString()
   @IsNotEmpty()

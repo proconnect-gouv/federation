@@ -3,15 +3,14 @@ import { intersection } from 'lodash';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { OidcSession } from '@fc/oidc';
-import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
+import { Session } from '@fc/session';
 
 @Injectable()
 export class OidcAcrService {
   constructor(private readonly config: ConfigService) {}
-  getInteractionAcr(session: OidcSession): string {
-    const { idpAcr }: OidcClientSession = session;
+  getInteractionAcr(session: Session): string {
+    const { idpAcr } = session;
 
     const {
       configuration: { acrValues: supportedAcrValues },

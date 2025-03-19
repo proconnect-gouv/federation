@@ -1,14 +1,14 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { IsIn, IsNotEmpty, IsObject, IsString } from 'class-validator';
 
 import { PartialExcept } from '@fc/common';
-import { CoreBaseOidcClientSessionDto } from '@fc/core';
+import { CoreBaseSessionDto } from '@fc/core';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 
 import { IAgentIdentityWithPublicness } from '../interfaces';
 
-export class GetVerifyOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
+export class GetVerifySessionDto extends CoreBaseSessionDto {
   // Metadata: We MUST restrict the routes we can come from
   @IsString()
   @IsIn([OidcClientRoutes.OIDC_CALLBACK, OidcProviderRoutes.AUTHORIZATION])
@@ -39,10 +39,4 @@ export class GetVerifyOidcClientSessionDto extends CoreBaseOidcClientSessionDto 
   readonly idpIdentity:
     | PartialExcept<IAgentIdentityWithPublicness, 'sub'>
     | IAgentIdentityWithPublicness;
-}
-
-export class GetVerifySessionDto {
-  @Expose()
-  @Type(() => GetVerifyOidcClientSessionDto)
-  readonly OidcClient: GetVerifyOidcClientSessionDto;
 }

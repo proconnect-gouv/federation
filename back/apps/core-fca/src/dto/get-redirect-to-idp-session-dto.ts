@@ -1,12 +1,12 @@
 import { Expose } from 'class-transformer';
 import { IsIn, IsString } from 'class-validator';
 
-import { CoreBaseOidcClientSessionDto, CoreRoutes } from '@fc/core';
+import { CoreBaseSessionDto, CoreRoutes } from '@fc/core';
 import { OidcClientRoutes } from '@fc/oidc-client';
 
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 
-export class GetRedirectToIdpOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
+export class GetRedirectToIdpSessionDto extends CoreBaseSessionDto {
   // Metadata: We MUST restrict the routes we can come from
   @IsString()
   @IsIn([
@@ -17,7 +17,7 @@ export class GetRedirectToIdpOidcClientSessionDto extends CoreBaseOidcClientSess
   readonly stepRoute: string;
 }
 
-export class GetIdentityProviderSelectionOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
+export class GetIdentityProviderSelectionSessionDto extends CoreBaseSessionDto {
   // Metadata: We MUST restrict the routes we can come from
   @IsString()
   @IsIn([CoreRoutes.INTERACTION, OidcClientRoutes.REDIRECT_TO_IDP])

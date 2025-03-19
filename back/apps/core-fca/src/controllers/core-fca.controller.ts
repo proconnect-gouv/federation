@@ -22,15 +22,14 @@ import { CsrfToken } from '@fc/csrf';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { NotificationsService } from '@fc/notifications';
-import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { ISessionService, Session } from '@fc/session';
+import { ISessionService, Session, SessionDecorator } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import {
   AppConfig,
-  GetInteractionOidcClientSessionDto,
-  GetVerifyOidcClientSessionDto,
+  GetInteractionSessionDto,
+  GetVerifySessionDto,
 } from '../dto';
 import { CoreFcaFqdnService, CoreFcaVerifyService } from '../services';
 
@@ -71,8 +70,8 @@ export class CoreFcaController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient', GetInteractionOidcClientSessionDto)
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient', GetInteractionSessionDto)
+    sessionOidc: ISessionService<Session>,
   ): Promise<void> {
     const { spName, stepRoute, login_hint: email } = sessionOidc.get();
 
@@ -118,8 +117,8 @@ export class CoreFcaController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient', GetVerifyOidcClientSessionDto)
-    sessionOidc: ISessionService<OidcClientSession>,
+    @SessionDecorator('OidcClient', GetVerifySessionDto)
+    sessionOidc: ISessionService<Session>,
   ) {
     const { idpId, interactionId, spRedirectUri, isSilentAuthentication } =
       sessionOidc.get();

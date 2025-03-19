@@ -6,15 +6,13 @@ import { ConfigService } from '@fc/config';
 import { CORE_AUTH_SERVICE, CoreAuthorizationService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
 import {
   OidcClientConfig,
   OidcClientIdpDisabledException,
   OidcClientService,
 } from '@fc/oidc-client';
-import { SessionService } from '@fc/session';
+import { Session, SessionService } from '@fc/session';
 
-import { CoreFcaOidcClientSession } from '../dto/core-fca-oidc-client-session.dto';
 import { CoreFcaAgentIdpDisabledException } from '../exceptions';
 import { CoreFcaUnauthorizedEmailException } from '../exceptions/core-fca-unauthorized-email-exception';
 import {
@@ -58,7 +56,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       'acr_values' | 'login_hint' | 'claims'
     >,
   ): Promise<void> {
-    const { spId } = this.session.get<OidcSession>('OidcClient');
+    const { spId } = this.session.get<Session>('OidcClient');
 
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
@@ -85,8 +83,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
 
     const { name: idpName, title: idpLabel } =
       await this.identityProvider.getById(idpId);
-    // from OidcClientSession to CoreFcaOidcClientSession because we add email
-    const sessionPayload: CoreFcaOidcClientSession = {
+    const sessionPayload: Session = {
       idpId,
       idpName,
       idpLabel,
@@ -95,7 +92,6 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       idpIdentity: undefined,
       spIdentity: undefined,
       accountId: undefined,
-      login_hint: login_hint,
     };
 
     this.session.set('OidcClient', sessionPayload);
