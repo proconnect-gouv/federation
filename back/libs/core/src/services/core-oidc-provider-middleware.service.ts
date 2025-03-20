@@ -285,12 +285,11 @@ export class CoreOidcProviderMiddlewareService {
   }
 
   protected isSsoAvailable(): boolean {
-    const { enableSso } = this.config.get<CoreConfig>('Core');
     const { spIdentity } = this.sessionService.get<Session>('OidcClient') || {};
 
     const hasSpIdentity = Boolean(spIdentity);
 
-    return enableSso && hasSpIdentity;
+    return hasSpIdentity;
   }
 
   protected async redirectToSso(ctx: OidcCtx): Promise<void> {

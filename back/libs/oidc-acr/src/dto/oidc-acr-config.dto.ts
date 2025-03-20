@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 import { AcrLevels } from '../validators';
 
@@ -23,9 +23,4 @@ export class OidcAcrConfig {
 
   @IsString()
   readonly defaultAcrValue: string;
-
-  @IsOptional()
-  @IsString({ each: true })
-  @IsArray()
-  readonly allowedSsoAcrs?: string[];
 }
