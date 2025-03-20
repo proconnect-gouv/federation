@@ -2,7 +2,7 @@
   stage: 'Build Back'
   image: ${BUILD_IMAGE}
   tags:
-    - build
+    - build-fca
   only:
     - tags
   environment:
@@ -15,6 +15,7 @@
   services:
     - name: docker:25.0.5-dind
       command: ['--experimental']
+      alias: docker
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
     - rm -rf $FC_ROOT/fc-docker
