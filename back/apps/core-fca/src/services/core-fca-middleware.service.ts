@@ -4,11 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import {
-  CORE_SERVICE,
-  CoreConfig,
-  CoreOidcProviderMiddlewareService,
-} from '@fc/core';
+import { CORE_SERVICE, CoreOidcProviderMiddlewareService } from '@fc/core';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
 import { stringToArray } from '@fc/oidc';
@@ -163,7 +159,7 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     await this.checkRedirectToSso(ctx);
   }
 
-  private async isSsoSession() {
+  private async isSessionValid() {
     const data = this.sessionService.get<Session>('OidcClient');
 
     if (!data) {
@@ -181,11 +177,9 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
 
   private async renewSession(ctx: OidcCtx): Promise<void> {
     const { res } = ctx;
+    const isSessionValid = await this.isSessionValid();
 
-    const { enableSso } = this.config.get<CoreConfig>('Core');
-    const isSsoSession = await this.isSsoSession();
-
-    if (enableSso && isSsoSession) {
+    if (isSessionValid) {
       await this.sessionService.duplicate(res, GetAuthorizeCoreSessionDto);
       this.logger.debug('Session has been detached and duplicated');
     } else {

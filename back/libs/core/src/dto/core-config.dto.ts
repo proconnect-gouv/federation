@@ -1,11 +1,8 @@
-import { IsArray, IsBoolean, IsEmail, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsEmail, IsString, IsUrl } from 'class-validator';
 
 export class CoreConfig {
   @IsUrl()
   readonly defaultRedirectUri: string;
-
-  @IsBoolean()
-  readonly enableSso: boolean;
 
   @IsArray()
   @IsString({ each: true })

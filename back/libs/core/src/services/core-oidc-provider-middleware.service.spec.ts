@@ -892,16 +892,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
   describe('isSsoAvailable', () => {
     const idpAcrMock = 'eidas2';
 
-    beforeEach(() => {
-      configServiceMock.get
-        .mockReturnValueOnce({
-          enableSso: true,
-        })
-        .mockReturnValueOnce({
-          allowedSsoAcrs: ['eidas2'],
-        });
-    });
-
     it('should call session.get()', () => {
       sessionServiceMock.get.mockReturnValueOnce({
         idpAcr: idpAcrMock,
