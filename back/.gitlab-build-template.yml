@@ -9,7 +9,7 @@
     name: build
   variables:
     GIT_STRATEGY: none
-    DOCKER_HOST: tcp://docker:2375
+    DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: ''
     RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
   services:
@@ -17,6 +17,7 @@
       alias: docker
       command: ['--experimental']
   before_script:
+    - docker info || true
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
     - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
