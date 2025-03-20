@@ -14,6 +14,7 @@
     RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
   services:
     - name: docker:25.0.5-dind
+      alias: docker
       command: ['--experimental']
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
