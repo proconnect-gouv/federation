@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-_migrations-postgres() {
+_migrations_postgres() {
   cd ${WORKING_DIR}
   $DOCKER_COMPOSE exec ${NO_TTY} "${1}" yarn typeorm:migrations-run
 }
 
-_migrations-generate-postgres() {
+_migrations_generate_postgres() {
   cd ${WORKING_DIR}
   $DOCKER_COMPOSE exec ${NO_TTY} "${1}" yarn typeorm:migrations-generate "${2}"
 }
 
-_fixtures-postgres() {
+_fixtures_postgres() {
   cd ${WORKING_DIR}
   $DOCKER_COMPOSE exec ${NO_TTY} "${1}" yarn typeorm:fixtures:load
 }
