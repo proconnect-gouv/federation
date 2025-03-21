@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 _generate_oidc_provider_exceptions() {
-  cd $FC_ROOT/fc/back/node_modules/oidc-provider/lib
+  cd $FC_ROOT/proconnect-federation/back/node_modules/oidc-provider/lib
 
-  local exceptionDir="${FC_ROOT}/fc/back/libs/oidc-provider/src/exceptions/runtime"
+  local exceptionDir="${FC_ROOT}/proconnect-federation/back/libs/oidc-provider/src/exceptions/runtime"
 
   local pattern="${exceptionDir}/*.exception.ts"
 
@@ -110,7 +110,7 @@ import { ${className} } from './${relativeFileName}';"
   echo "Generate translation file"
   echo "${i18n}" >"${translationlFile}"
 
-  cd $FC_ROOT/fc/back
+  cd $FC_ROOT/proconnect-federation/back
 
   echo "Auto lint generated files"
   npx eslint --quiet --fix $exceptionDir
