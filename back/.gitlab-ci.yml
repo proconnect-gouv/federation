@@ -6,7 +6,7 @@ include:
 
 variables:
   CYPRESS_CACHE_FOLDER: '${CI_PROJECT_DIR}/.cache/Cypress'
-  FC_ROOT: '${CI_BUILDS_DIR}/france-connect'
+  FC_ROOT: '${CI_BUILDS_DIR}/proconnect'
   GIT_DEPTH: 0
   PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
   YARN_CACHE_FOLDER: ${CI_PROJECT_DIR}/.cache/yarn
