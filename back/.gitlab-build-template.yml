@@ -9,12 +9,9 @@
     name: build
   variables:
     GIT_STRATEGY: none
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ''
     RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
   services:
-    - name: docker:25.0.5-dind
-      command: ['--experimental']
+    - name: docker:27-dind
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
     - rm -rf $FC_ROOT/fc-docker
@@ -22,5 +19,6 @@
   script:
     - cd $FC_ROOT/fc-docker
     - export NODE_VERSION=v22.13.0
+    - export GIT_REPOSITORY=gitlab.dev-franceconnect.fr/agent-connect/federation.git
     - ./build.sh $APP $RELEASE_VERSION
     - echo -e "\e[1;34m$MSG $RELEASE_VERSION\e[0m"
