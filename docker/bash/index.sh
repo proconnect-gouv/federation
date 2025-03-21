@@ -6,7 +6,7 @@ if [ -z "${FC_ROOT}" ]; then
   exit 1
 fi
 
-INCLUDE_DIR="$FC_ROOT/fc/docker/bash"
+INCLUDE_DIR="${FC_ROOT}/proconnect-federation/docker/bash"
 
 source "${INCLUDE_DIR}/utils/index.sh"
 source "${INCLUDE_DIR}/config/index.sh"

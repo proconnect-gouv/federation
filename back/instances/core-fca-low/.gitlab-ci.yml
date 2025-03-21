@@ -16,6 +16,7 @@
     max: 2
   variables:
     TZ: 'Europe/Paris'
+    VERBOSE: 'true'
     CYPRESS_PLATFORM: 'fca-low'
     CYPRESS_TEST_ENV: 'docker'
     CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
@@ -53,7 +54,7 @@
       policy: pull
   before_script:
     - shopt -s expand_aliases
-    - alias docker-stack=${FC_ROOT}/fc/docker/docker-stack
+    - alias docker-stack=${FC_ROOT}/proconnect-federation/docker/docker-stack
     # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_FCA_LOW:-$BDD_TAGS}
     - echo "BDD_TAGS=$BDD_TAGS"
@@ -66,7 +67,7 @@
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - RETURN_CODE=0
     # Bind sources in docker volumes
-    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
+    - ln -s $CI_PROJECT_DIR ${FC_ROOT}/proconnect-federation/docker/volumes/src/fc
     # Return to project directory
     - wait
     - cd $CI_PROJECT_DIR
@@ -88,7 +89,7 @@
     - if [ "${CI_JOB_STATUS}" == "failed" ]; then ${CI_PROJECT_DIR}/back/scripts/ci/extract-pm2-rp-logs.sh; fi
     # Exit with return code
     - exit ${RETURN_CODE:-0}
-    - ${FC_ROOT}/fc/docker/docker-stack halt
+    - ${FC_ROOT}/proconnect-federation/docker/docker-stack halt
 
 #
 
@@ -111,11 +112,11 @@ fca-low-chrome-desktop:
   extends: .base_end_to_end
   script:
     # Shallow clone depth 1 FC-APP repository
-    - rm -rf $FC_ROOT/fc-apps
-    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $FC_ROOT/fc-apps
-    - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
+    - rm -rf ${FC_ROOT}/fc-apps
+    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git ${FC_ROOT}/fc-apps
+    - ln -s ${FC_ROOT}/fc-apps ${FC_ROOT}/proconnect-federation/docker/volumes/src/fc-apps
     - docker-stack up bdd-fca-low
-    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ ${FC_ROOT}/fc-apps/ || true
     # Start the NodeJS apps
     - docker-stack start-all-ci
     # Ensure the required apps are running

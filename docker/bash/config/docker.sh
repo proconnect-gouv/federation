@@ -2,7 +2,7 @@
 
 #### Global Variables:
 COMPOSE_PROJECT_NAME=fc
-COMPOSE_DIR="${FC_ROOT}/fc/docker/compose"
+COMPOSE_DIR="${FC_ROOT}/proconnect-federation/docker/compose"
 COMPOSE_FILES=$(find ${COMPOSE_DIR} -not -path "${COMPOSE_DIR}/OS/*" -not -path "${COMPOSE_DIR}/CI/*" -name "*.yml")
 
 COMPOSE_DIR_OS_SPECIFIC="${COMPOSE_DIR}/OS/$(uname -s)"
@@ -17,7 +17,7 @@ if [ -n "$CI" ]; then
   COMPOSE_FILES_CI_SPECIFIC=$(find "${COMPOSE_DIR}/CI" -name "*.yml")
 fi
 
-VOLUMES_DIR="${FC_ROOT}/fc/docker/volumes"
+VOLUMES_DIR="${FC_ROOT}/proconnect-federation/docker/volumes"
 WORKING_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
 DOCKER_REGISTRY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc/nodejs:${NODE_VERSION}-dev"
 if [ "${FC_DOCKER_COMPOSE}" ]; then
