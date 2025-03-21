@@ -14,6 +14,8 @@
     - cypress-fca
   retry:
     max: 2
+  services:
+    - name: docker:27-dind
   variables:
     TZ: 'Europe/Paris'
     VERBOSE: 'true'
