@@ -18,7 +18,7 @@ if [ -n "$CI" ]; then
 fi
 
 VOLUMES_DIR="${FC_ROOT}/proconnect-federation/docker/volumes"
-WORKING_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
+WORKING_DIR="${FC_ROOT}/proconnect-federation/docker"
 DOCKER_REGISTRY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc/nodejs:${NODE_VERSION}-dev"
 if [ "${FC_DOCKER_COMPOSE}" ]; then
   DOCKER_COMPOSE="${FC_DOCKER_COMPOSE}"

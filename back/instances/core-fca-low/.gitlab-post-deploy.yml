@@ -28,7 +28,6 @@ quality-fca-low-release:
     # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_FCA_LOW:-$BDD_TAGS}
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
-    - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
