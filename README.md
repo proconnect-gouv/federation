@@ -28,6 +28,7 @@ This guide provides steps to run the ProConnect Fédération within a custom doc
 brew install bash
 brew install coreutils
 ```
+
 Install the latest version of bash.
 Install coreutils gives you access to the timeout function.
 
@@ -51,7 +52,7 @@ export CYPRESS_FC_ROOT=$FC_ROOT
 export FC_DOCKER_REGISTRY=registry.gitlab.dev-franceconnect.fr/france-connect/fc
 
 # Alias for the docker-stack command (you can add it to your "~/.bash_aliases" if you prefer but don't forget to set the variables before the .bash_aliases sourcing in your .bashrc 😉) :
-alias dks=$FC_ROOT/fc/docker/docker-stack
+alias dks=$FC_ROOT/proconnect-federation/docker/docker-stack
 
 # If you use version 2 of docker compose
 export FC_DOCKER_COMPOSE='docker compose'
@@ -72,8 +73,8 @@ git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc-apps.git
 - Link the cloned repository in the docker volumes
 
 ```bash
-cd $FC_ROOT/fc/docker/volumes/src
-ln -s $FC_ROOT/fc
+cd $FC_ROOT/proconnect-federation/docker/volumes/src
+ln -s $FC_ROOT/proconnect-federation
 ln -s $FC_ROOT/fc-apps
 ```
 
@@ -113,6 +114,7 @@ dks switch bdd-fca-low
 Then go to https://exploitation-fca-low.docker.dev-franceconnect.fr/login.
 
 Login with:
+
 - Username: `jean_moust`
 - Password: `georgesmoustaki`
 - TOTP: enter this secret in your totp app `KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD`
@@ -142,6 +144,7 @@ Alternatively, you can use `dks log core-fca-low`.
 
 By default, only the core-fca service runs in watch mode.
 To apply changes to either the idp, sp or data provider, execute the following command:
+
 ```bash
 dks start fia1-low
 ```
@@ -163,7 +166,7 @@ dks help
 These tests are included directly in source code rather than in a dedicated test folder.
 
 ```bash
-cd $FC_ROOT/fc/back
+cd $FC_ROOT/proconnect-federation/back
 yarn test --coverage --maxWorkers=50%
 ```
 
@@ -172,7 +175,7 @@ yarn test --coverage --maxWorkers=50%
 ### Prerequisites
 
 ```bash
-cd $FC_ROOT/fc/quality/fca
+cd $FC_ROOT/proconnect-federation/quality/fca
 yarn install
 ```
 
@@ -180,7 +183,7 @@ yarn install
 
 ```bash
 dks switch bdd-fca-low
-cd $FC_ROOT/fc/quality/fca
+cd $FC_ROOT/proconnect-federation/quality/fca
 yarn start:low
 ```
 
@@ -188,17 +191,17 @@ yarn start:low
 
 ```bash
 dks switch bdd-fca-low
-cd $FC_ROOT/fc/quality/fca
+cd $FC_ROOT/proconnect-federation/quality/fca
 yarn test:low:snapshot
 ```
 
 ## Run static tests
 
 ```bash
-cd $FC_ROOT/fc/quality/fca
+cd $FC_ROOT/proconnect-federation/quality/fca
 yarn lint --fix
 yarn prettier --write
-cd $FC_ROOT/fc/back
+cd $FC_ROOT/proconnect-federation/back
 yarn doc
 yarn lint --fix
 yarn prettier --write
