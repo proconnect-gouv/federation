@@ -112,7 +112,7 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${FC_ROOT}/fc/docker/log-hub:/var/www/app'
+      - '${FC_ROOT}/proconnect-federation/docker/log-hub:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
