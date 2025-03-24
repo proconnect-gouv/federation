@@ -18,7 +18,7 @@
     - name: docker:27-dind
   variables:
     TZ: 'Europe/Paris'
-    VERBOSE: 'true'
+    VERBOSE: 1
     CYPRESS_PLATFORM: 'fca-low'
     CYPRESS_TEST_ENV: 'docker'
     CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
@@ -63,21 +63,21 @@
     # Check FC Apps version for FCA
     - echo "PC_APPS_VERSION=${PC_APPS_VERSION}"
     # Ensure a clean docker environnement
-    - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack prune-ci
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - RETURN_CODE=0
     # Bind sources in docker volumes
-    - ln -s $CI_PROJECT_DIR ${FC_ROOT}/proconnect-federation/docker/volumes/src/fc
+    - ln -s $CI_PROJECT_DIR ${FC_ROOT}/proconnect-federation/docker/volumes/src/proconnect-federation
     # Return to project directory
     - wait
     - cd $CI_PROJECT_DIR
     # Up the docker-stack with minimal requirement
     - export NODE_VERSION=v22.13.0
+
+    # try to add manually the network fc_public
+    - docker network create --driver bridge fc_public
     - docker-stack up core-fca-low
     - docker exec fc_core-fca-low_1 bash -c "node --version"
-    - docker exec fc_core-fca-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
   interruptible: true
   artifacts:
     expire_in: 1 hrs
@@ -107,6 +107,8 @@ fca-low-snapshot:
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting visual checks"
     - cd $CI_PROJECT_DIR/quality/fca
+    ## temp log to display quality content
+    - ls -la
     - yarn test:low:snapshot -c video=${CYPRESS_VIDEO}
     - yarn report
 
