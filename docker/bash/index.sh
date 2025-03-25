@@ -20,7 +20,7 @@ _command_register "migrations-partners-back" "_migrations_postgres partners-back
 _command_register "migrations-generate-partners-back" "_migrations_generate_postgres partners-back" "" # Description to be defined
 _command_register "fixtures-partners-back" "_fixtures_postgres 'partners-back'" ""                     # Description to be defined
 
-_command_register "fixtures" "_hook_fc_apps" "Init postgres FC-Apps : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"
+_command_register "fixtures" "_hook_fc_apps" "Init postgres Exploitation : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"
 
 ### Mongo
 _command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" ""             # Description to be defined # Deprecated

@@ -116,11 +116,11 @@ fca-low-chrome-desktop:
   extends: .base_end_to_end
   script:
     # Shallow clone depth 1 FC-APP repository
-    - rm -rf ${FC_ROOT}/fc-apps
-    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git ${FC_ROOT}/fc-apps
-    - ln -s ${FC_ROOT}/fc-apps ${FC_ROOT}/proconnect-federation/docker/volumes/src/fc-apps
+    - rm -rf ${FC_ROOT}/proconnect-exploitation
+    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/proconnect/proconnect-exploitation.git ${FC_ROOT}/proconnect-exploitation
+    - ln -s ${FC_ROOT}/proconnect-exploitation ${FC_ROOT}/proconnect-federation/docker/volumes/src/proconnect-exploitation
     - docker-stack up bdd-fca-low
-    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ ${FC_ROOT}/fc-apps/ || true
+    - rsync -a $CI_PROJECT_DIR/cache/proconnect-exploitation/ ${FC_ROOT}/proconnect-exploitation/ || true
     # Start the NodeJS apps
     - docker-stack start-all-ci
     # Ensure the required apps are running

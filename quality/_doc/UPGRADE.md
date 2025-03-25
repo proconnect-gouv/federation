@@ -33,13 +33,13 @@
 5. Check the impact on a test execution
 6. Adjust the Cypress tests
 7. Adjust the Cypress plugins
-8. Run the tests BDD on FC+ and E2E on FC-APPS to check the stability of the run
+8. Run the tests BDD on FC+ and E2E on proconnect-exploitation to check the stability of the run
 9. Run the tests BDD on FC+, FC v2, agent-connect, user-dashboard, FC legacy
-10. Run the tests E2E on FC-APPS and agent-connect
+10. Run the tests E2E on proconnect-exploitation and agent-connect
 
 ### Known issues
 
 1. `cypress`:
-From v13.6.1, there are more logs in the command line when executing tests. As Cypress has solved the issue with linux logs.
+   From v13.6.1, there are more logs in the command line when executing tests. As Cypress has solved the issue with linux logs.
 2. `cypress-maildev`:
-The v1.3.2 changed the navigation to the mail content. `maildevVisitMessageById` uses a `cy.origin` call which prevents its usage on our local stack. (see https://github.com/Clebiez/cypress-maildev/pull/12/files)
+   The v1.3.2 changed the navigation to the mail content. `maildevVisitMessageById` uses a `cy.origin` call which prevents its usage on our local stack. (see https://github.com/Clebiez/cypress-maildev/pull/12/files)
