@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-source "$INCLUDE_DIR/hooks/fc-apps.sh"
-source "$INCLUDE_DIR/hooks/legacy-fc-commons.sh"
+source "$INCLUDE_DIR/hooks/exploitation.sh"
 source "$INCLUDE_DIR/hooks/lemon-ldap.sh"
 source "$INCLUDE_DIR/hooks/mongo.sh"
-source "$INCLUDE_DIR/hooks/partners.sh"
 
 # Container initialisation hooks
 #
@@ -25,38 +23,8 @@ function _init_hooks() {
   *"mongo-fca-low"*)
     _hook_mongo "mongo-fca-low"
     ;;
-  *"mongo-fcp-low"*)
-    _hook_mongo "mongo-fcp-low"
-    ;;
-  *"mongo-fcp-high"*)
-    _hook_mongo "mongo-fcp-high"
-    ;;
-  *"pg-exploitation-high")
-    _hook_fc_apps "exploitation-high"
-    ;;
   *"pg-exploitation-fca-low")
     _hook_fc_apps "exploitation-fca-low"
-    ;;
-  *"pg-exploitation")
-    _hook_fc_apps "fc-exploitation"
-    ;;
-  *"pg-support"*)
-    _hook_fc_apps "fc-support"
-    ;;
-  *"partners-back"*)
-    _hook_partners "partners-back"
-    ;;
-  *"elasticsearch"*)
-    # Waiting for ES to be up
-    sleep 15
-    echo "Initialize user-dashboard data..."
-    _init_ud
-    ;;
-  "fc-core")
-    _fc_common_symlink "fc-core"
-    ;;
-  "partenaires")
-    _fc_common_symlink "partenaires"
     ;;
   *)
     # Erase line content for containers that don't have an init section
