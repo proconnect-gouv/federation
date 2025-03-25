@@ -91,7 +91,7 @@
     - if [ "${CI_JOB_STATUS}" == "failed" ]; then ${CI_PROJECT_DIR}/back/scripts/ci/extract-pm2-rp-logs.sh; fi
     # Exit with return code
     - exit ${RETURN_CODE:-0}
-    - ${FC_ROOT}/proconnect-federation/docker/docker-stack halt
+    - docker-stack halt
 
 #
 

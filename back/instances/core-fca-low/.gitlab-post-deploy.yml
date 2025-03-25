@@ -29,7 +29,7 @@ quality-fca-low-release:
     - BDD_TAGS=${BDD_TAGS_FCA_LOW:-$BDD_TAGS}
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - shopt -s expand_aliases
-    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
+    - alias docker-stack=$FC_ROOT/proconnect-federation/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/quality/fca && yarn install --frozen-lockfile
     - cd $CI_PROJECT_DIR
@@ -51,4 +51,4 @@ quality-fca-low-release:
     paths:
       - quality/fca/cypress/reports/cucumber/html-report
   after_script:
-    - $FC_ROOT/fc/docker/docker-stack halt
+    - $FC_ROOT/proconnect-federation/docker/docker-stack halt
