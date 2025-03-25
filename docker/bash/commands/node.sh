@@ -142,12 +142,6 @@ _install_dependencies() {
 
   for app in ${apps}; do
     echo "Installing dependencies for [${app}]:"
-    if [ "${PROXY_EXPLOITATION}" ]; then
-      echo "Setting up yarn proxy for [${app}]..."
-      cd ${WORKING_DIR}
-      $DOCKER_COMPOSE exec ${NO_TTY} "${app}" bash -c "yarn config set proxy ${PROXY_EXPLOITATION} && yarn config set https-proxy ${PROXY_EXPLOITATION}"
-    fi
-
     cd ${WORKING_DIR}
     $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "/opt/scripts/install.sh"
   done
