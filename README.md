@@ -64,10 +64,10 @@ export FC_DOCKER_COMPOSE='docker compose'
 mkdir -p $FC_ROOT && cd $FC_ROOT
 
 # The main repository
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc.git
+git clone ssh://git@gitlab.dev-franceconnect.fr:2222/proconnect/proconnect-federation.git
 
 # Backoffice apps
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc-apps.git
+git clone ssh://git@gitlab.dev-franceconnect.fr:2222/proconnect/proconnect-exploitation.git
 ```
 
 - Link the cloned repository in the docker volumes
@@ -75,7 +75,7 @@ git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc-apps.git
 ```bash
 cd $FC_ROOT/proconnect-federation/docker/volumes/src
 ln -s $FC_ROOT/proconnect-federation
-ln -s $FC_ROOT/fc-apps
+ln -s $FC_ROOT/proconnect-exploitation
 ```
 
 - pull FC docker images, you will need to authenticate against the FC docker registry:
@@ -119,7 +119,7 @@ Login with:
 - Password: `georgesmoustaki`
 - TOTP: enter this secret in your totp app `KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD`
 
-More credentials can be found here : `fc-apps/shared/fixtures/User.yml`.
+More credentials can be found here : `proconnect-exploitation/shared/fixtures/User.yml`.
 
 ### Testing the installation
 
