@@ -108,7 +108,6 @@ fca-low-snapshot:
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting visual checks"
     - cd $CI_PROJECT_DIR/quality/fca
     ## temp log to display quality content
-    - ls -la
     - yarn test:low:snapshot -c video=${CYPRESS_VIDEO}
     - yarn report
 
@@ -126,9 +125,8 @@ fca-low-chrome-desktop:
     # Ensure the required apps are running
     - docker-stack wait "core-fca-low" "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
     - docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login"
-    #
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks with tags $BDD_TAGS"
     - cd $CI_PROJECT_DIR/quality/fca
-    - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
+    - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS"
     - yarn report
