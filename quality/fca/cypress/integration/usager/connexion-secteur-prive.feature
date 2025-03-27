@@ -6,6 +6,7 @@ Fonctionnalité: Connexion Partenaires
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "albus.dumbledore@hogwarts.uk"
     Et que je clique sur le bouton de connexion
+    Et que j'utilise un compte usager privé
     Quand je m'authentifie
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500015"
