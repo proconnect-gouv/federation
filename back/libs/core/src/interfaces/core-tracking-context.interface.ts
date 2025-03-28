@@ -7,7 +7,7 @@ export interface ICoreTrackingContext {
   readonly browsingSessionId?: string;
   readonly sessionId: string;
 
-  readonly isSso?: boolean;
+  readonly reusesActiveSession?: boolean;
   readonly interactionId: string;
   readonly claims?: string[];
   readonly scope?: string;

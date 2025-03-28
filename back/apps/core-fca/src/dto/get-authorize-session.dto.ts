@@ -10,6 +10,7 @@ import {
 
 import { PartialExcept } from '@fc/common';
 import { CoreBaseSessionDto } from '@fc/core';
+import { I18nSession } from '@fc/i18n';
 import { IdentityForSpDto, IOidcIdentity } from '@fc/oidc';
 
 /**
@@ -75,4 +76,8 @@ export class GetAuthorizeCoreSessionDto {
   @Expose()
   @Type(() => GetAuthorizeSessionDto)
   readonly OidcClient: GetAuthorizeSessionDto;
+
+  @Expose()
+  @Type(() => I18nSession)
+  readonly I18n: I18nSession;
 }

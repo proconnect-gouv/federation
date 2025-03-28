@@ -2,6 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 import { CoreBaseSessionDto } from '@fc/core';
+import { I18nSession } from '@fc/i18n';
 import { OidcClientRoutes } from '@fc/oidc-client';
 
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
@@ -51,4 +52,8 @@ export class GetOidcCallbackCoreSessionDto {
   @Expose()
   @Type(() => GetOidcCallbackSessionDto)
   readonly OidcClient: GetOidcCallbackSessionDto;
+
+  @Expose()
+  @Type(() => I18nSession)
+  readonly I18n: I18nSession;
 }

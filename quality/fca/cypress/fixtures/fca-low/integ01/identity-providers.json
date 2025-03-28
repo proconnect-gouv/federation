@@ -5,8 +5,7 @@
       "moncomptepro",
       "whitelisté",
       "non blacklisté",
-      "rattaché à un ministère avec plusieurs FI",
-      "non autorisé pour idp_hint"
+      "rattaché à un ministère avec plusieurs FI"
     ],
     "title": "MonComptePro Identity Provider",
     "url": "https://identite-sandbox.proconnect.gouv.fr",
@@ -21,8 +20,7 @@
       "FI eidas1 avec signature ES256",
       "whitelisté",
       "non blacklisté",
-      "rattaché à un ministère avec plusieurs FI",
-      "non autorisé pour idp_hint"
+      "rattaché à un ministère avec plusieurs FI"
     ],
     "title": "Identity Provider 1 - HS256",
     "url": "https://fia1v2.integ01.dev-agentconnect.fr",

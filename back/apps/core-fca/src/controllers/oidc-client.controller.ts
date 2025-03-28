@@ -287,6 +287,8 @@ export class OidcClientController {
     @SessionDecorator('OidcClient', GetOidcCallbackSessionDto)
     sessionOidc: ISessionService<Session>,
   ) {
+    // The session is duplicated here to mitigate cookie-theft-based attacks.
+    // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
     await this.sessionService.duplicate(res, GetOidcCallbackCoreSessionDto);
     this.logger.debug('Session has been detached and duplicated');
 

@@ -4,7 +4,7 @@ export interface ICoreTrackingProviders {
   readonly sessionId: string | null;
   readonly interactionId: string | null;
   readonly interactionAcr: string | null;
-  readonly isSso: boolean;
+  readonly reusesActiveSession: boolean;
 
   readonly spId: string | null;
   readonly spAcr: string | null;

@@ -126,6 +126,7 @@ export default {
       userinfoEncryptionEncValues: ['A256GCM'],
       userinfoSigningAlgValues: ['ES256', 'RS256', 'HS256'],
     },
+    extraParams: ['idp_hint'],
     jwks: {
       keys: [
         ...env.json('CRYPTO_SIG_ES256_PRIV_KEYS'),

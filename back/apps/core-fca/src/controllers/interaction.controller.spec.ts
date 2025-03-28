@@ -15,10 +15,10 @@ import { TrackedEventInterface, TrackingService } from '@fc/tracking';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcaFqdnService, CoreFcaVerifyService } from '../services';
-import { CoreFcaController } from './core-fca.controller';
+import { InteractionController } from './interaction.controller';
 
 describe('CoreFcaController', () => {
-  let coreController: CoreFcaController;
+  let coreController: InteractionController;
 
   const params = { uid: 'abcdefghijklmnopqrstuvwxyz0123456789' };
   const interactionIdMock = 'interactionIdMockValue';
@@ -178,7 +178,7 @@ describe('CoreFcaController', () => {
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [CoreFcaController],
+      controllers: [InteractionController],
       providers: [
         OidcProviderService,
         IdentityProviderAdapterMongoService,
@@ -212,7 +212,7 @@ describe('CoreFcaController', () => {
       .useValue(notificationsServiceMock)
       .compile();
 
-    coreController = app.get<CoreFcaController>(CoreFcaController);
+    coreController = app.get<InteractionController>(InteractionController);
 
     jest.resetAllMocks();
     jest.restoreAllMocks();

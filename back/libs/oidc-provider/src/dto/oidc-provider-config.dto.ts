@@ -724,6 +724,10 @@ export class Configuration {
   @Type(() => EnabledJWA)
   readonly enabledJWA: EnabledJWA;
 
+  @IsArray()
+  @IsOptional()
+  readonly extraParams?: string[];
+
   /**
    * clients is not loaded from real configuration
    * but is loaded from database after configuration is initialized.

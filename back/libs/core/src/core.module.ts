@@ -12,6 +12,7 @@ import { FlowStepsModule } from '@fc/flow-steps';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { OidcAcrModule } from '@fc/oidc-acr';
 import { IIdentityProviderAdapter, OidcClientModule } from '@fc/oidc-client';
+import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import {
   IOidcProviderConfigAppService,
   OidcProviderModule,
@@ -81,6 +82,10 @@ export class CoreModule {
         {
           provide: CORE_SERVICE,
           useExisting: CoreServiceInterface,
+        },
+        {
+          provide: IDENTITY_PROVIDER_SERVICE,
+          useExisting: IdentityProviderAdapterMongoService,
         },
         CoreOidcProviderMiddlewareService,
         CoreVerifyService,

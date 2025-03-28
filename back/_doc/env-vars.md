@@ -47,7 +47,6 @@
 | App_HTTPS_SERVER_KEY | file |
 | App_SP_AUTHORIZED_FQDNS_CONFIGS | json |
 | App_VIEWS_PATHS | json |
-| Core_ALLOWED_IDP_HINTS | json |
 | EmailValidator_DEBOUNCE_API_KEY | string |
 | FQDN | string |
 | LoggerLegacy_FILE | string |

@@ -1,13 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { FlowStepsService } from '@fc/flow-steps';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { atHashFromAccessToken, IOidcClaims } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { AuthorizationParameters, OidcClientRoutes } from '@fc/oidc-client';
+import { AuthorizationParameters } from '@fc/oidc-client';
+import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import {
   OidcCtx,
   OidcProviderConfig,
@@ -18,16 +19,10 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import {
-  Session,
-  SessionNoSessionIdException,
-  SessionService,
-} from '@fc/session';
+import { SessionNoSessionIdException, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
-import { CoreConfig } from '../dto';
-import { CoreRoutes } from '../enums';
-import { CoreClaimAmrException, CoreIdpHintException } from '../exceptions';
+import { CoreClaimAmrException } from '../exceptions';
 import { CoreServiceInterface } from '../interfaces';
 import { CORE_SERVICE } from '../tokens';
 
@@ -47,6 +42,8 @@ export class CoreOidcProviderMiddlewareService {
     @Inject(CORE_SERVICE)
     protected readonly core: CoreServiceInterface,
     protected readonly flowSteps: FlowStepsService,
+    @Inject(IDENTITY_PROVIDER_SERVICE)
+    protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}
 
   protected registerMiddleware(
@@ -55,6 +52,17 @@ export class CoreOidcProviderMiddlewareService {
     middleware: Function,
   ) {
     this.oidcProvider.registerMiddleware(step, pattern, middleware.bind(this));
+  }
+
+  protected koaErrorCatcherMiddlewareFactory(middleware: Function) {
+    return async function (ctx: OidcCtx) {
+      try {
+        await middleware.bind(this)(ctx);
+      } catch (e) {
+        ctx.oidc['isError'] = true;
+        await throwException(e);
+      }
+    };
   }
 
   protected getAuthorizationParameters({
@@ -132,62 +140,6 @@ export class CoreOidcProviderMiddlewareService {
     return eventContext;
   }
 
-  protected async trackAuthorize(
-    eventContext: TrackedEventContextInterface,
-  ): Promise<void> {
-    const { FC_AUTHORIZE_INITIATED } = this.tracking.TrackedEventsMap;
-
-    await this.tracking.track(FC_AUTHORIZE_INITIATED, eventContext);
-  }
-
-  protected async buildSessionWithNewInteraction(
-    ctx: OidcCtx,
-    eventContext: TrackedEventContextInterface,
-  ): Promise<{
-    interactionId: string;
-    spAcr: string;
-    spId: string;
-    spName: string;
-    spRedirectUri: string;
-    isSso: boolean;
-    stepRoute: string;
-  }> {
-    const { interactionId } = eventContext.fc;
-    const { isSso } = ctx;
-
-    const {
-      acr_values: spAcr,
-      client_id: spId,
-      redirect_uri: spRedirectUri,
-      state,
-    } = ctx.oidc.params;
-
-    /**
-     * We  have to cast properties of `ctx.oidc.params` to `string`
-     * since `oidc-provider`defines them as `unknown`
-     */
-    const { name: spName } = await this.serviceProvider.getById(spId as string);
-
-    const sessionProperties = {
-      interactionId,
-      spAcr: spAcr as string | undefined,
-      spId: spId as string,
-      spRedirectUri: spRedirectUri as string,
-      spName,
-      spState: state,
-      isSso,
-      /**
-       * Explicit stepRoute set
-       *
-       * we can not rely on @SetStep() decorator
-       * since we reset the session.
-       */
-      stepRoute: OidcProviderRoutes.AUTHORIZATION,
-    };
-
-    return sessionProperties;
-  }
-
   protected async overrideClaimAmrMiddleware(ctx) {
     const { claims }: { claims: IOidcClaims } = ctx.oidc;
 
@@ -206,120 +158,33 @@ export class CoreOidcProviderMiddlewareService {
 
     if (!spAmrIsAuthorized) {
       ctx.oidc['isError'] = true;
-      const exception = new CoreClaimAmrException();
-      await throwException(exception);
+      throw new CoreClaimAmrException();
     }
   }
 
   protected async tokenMiddleware(ctx: OidcCtx) {
-    try {
-      const sessionId = this.getSessionId(ctx);
-      await this.sessionService.initCache(sessionId);
+    const sessionId = this.getSessionId(ctx);
+    await this.sessionService.initCache(sessionId);
 
-      const { AccessToken } = ctx.oidc.entities;
-      const atHash = atHashFromAccessToken(AccessToken);
+    const { AccessToken } = ctx.oidc.entities;
+    const atHash = atHashFromAccessToken(AccessToken);
 
-      await this.sessionService.setAlias(atHash, sessionId);
+    await this.sessionService.setAlias(atHash, sessionId);
 
-      const eventContext = this.getEventContext(ctx);
+    const eventContext = this.getEventContext(ctx);
 
-      const { SP_REQUESTED_FC_TOKEN } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);
-    } catch (exception) {
-      ctx.oidc['isError'] = true;
-      await throwException(exception);
-    }
+    const { SP_REQUESTED_FC_TOKEN } = this.tracking.TrackedEventsMap;
+    await this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);
   }
 
   protected async userinfoMiddleware(ctx) {
-    try {
-      const sessionId = this.getSessionId(ctx);
-      await this.sessionService.initCache(sessionId);
+    const sessionId = this.getSessionId(ctx);
+    await this.sessionService.initCache(sessionId);
 
-      const eventContext = this.getEventContext(ctx);
-
-      const { SP_REQUESTED_FC_USERINFO } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(SP_REQUESTED_FC_USERINFO, eventContext);
-    } catch (exception) {
-      ctx.oidc['isError'] = true;
-      await throwException(exception);
-    }
-  }
-
-  private shouldAbortIdpHint(ctx: OidcCtx) {
-    const { req } = ctx;
-    const idpHint = req.query.idp_hint as string;
-
-    return ctx.isSso || !idpHint;
-  }
-
-  private trackRedirectToIdp(ctx: OidcCtx) {
-    const eventContext = this.getEventContext(ctx);
-    const { FC_REDIRECTED_TO_HINTED_IDP } = this.tracking.TrackedEventsMap;
-    return this.tracking.track(FC_REDIRECTED_TO_HINTED_IDP, eventContext);
-  }
-
-  protected async redirectToHintedIdpMiddleware(ctx: OidcCtx) {
-    const { req, res } = ctx;
-    const idpHint = req.query.idp_hint as string;
-    const { allowedIdpHints } = this.config.get<CoreConfig>('Core');
-    const acr_values = ctx.oidc.params.acr_values as string;
-
-    if (this.shouldAbortIdpHint(ctx)) {
-      return;
-    }
-
-    if (!allowedIdpHints.includes(idpHint)) {
-      return throwException(new CoreIdpHintException());
-    }
-
-    this.flowSteps.setStep(OidcClientRoutes.REDIRECT_TO_IDP);
-
-    try {
-      await this.core.redirectToIdp(res, idpHint, { acr_values });
-      await this.sessionService.commit();
-      await this.trackRedirectToIdp(ctx);
-    } catch (error) {
-      await throwException(error);
-    }
-  }
-
-  protected isSsoAvailable(): boolean {
-    const { spIdentity } = this.sessionService.get<Session>('OidcClient') || {};
-
-    const hasSpIdentity = Boolean(spIdentity);
-
-    return hasSpIdentity;
-  }
-
-  protected async redirectToSso(ctx: OidcCtx): Promise<void> {
-    const { res } = ctx;
-    const interactionId = this.oidcProvider.getInteractionIdFromCtx(ctx);
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-
-    const url = `${urlPrefix}${CoreRoutes.INTERACTION_VERIFY.replace(
-      ':uid',
-      interactionId,
-    )}`;
-
-    await this.trackSso(ctx);
-
-    res.redirect(url);
-  }
-
-  protected async trackSso(ctx: OidcCtx): Promise<void> {
     const eventContext = this.getEventContext(ctx);
 
-    const { FC_SSO_INITIATED } = this.tracking.TrackedEventsMap;
-
-    await this.tracking.track(FC_SSO_INITIATED, eventContext);
-  }
-
-  protected async checkRedirectToSso(ctx: OidcCtx): Promise<void> {
-    if (ctx.isSso) {
-      this.logger.info('SSO detected, skipping IdP authentication.');
-      await this.redirectToSso(ctx);
-    }
+    const { SP_REQUESTED_FC_USERINFO } = this.tracking.TrackedEventsMap;
+    await this.tracking.track(SP_REQUESTED_FC_USERINFO, eventContext);
   }
 
   private getSessionId(ctx: OidcCtx): string {
