@@ -183,6 +183,13 @@ Then(
 );
 
 Given(
+  /je rentre un id qui ne correspond à aucun fournisseur d'identité dans le champ idp_hint/,
+  function () {
+    setIdpHint('not-an-idp-id');
+  },
+);
+
+Given(
   /je rentre l'id du fournisseur d'identité "([^"]+)" dans le champ idp_hint/,
   function (idpDescription: string) {
     const { id: idpId } = getIdentityProviderByDescription(idpDescription);

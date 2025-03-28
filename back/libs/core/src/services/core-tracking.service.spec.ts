@@ -74,7 +74,7 @@ describe('CoreTrackingService', () => {
     dpTitle: 'dp_title',
     accountId: undefined,
     browsingSessionId: undefined,
-    isSso: undefined,
+    reusesActiveSession: undefined,
     spId: undefined,
     spAcr: undefined,
     spName: undefined,
@@ -331,7 +331,7 @@ describe('CoreTrackingService', () => {
         interactionId: null,
         interactionAcr: null,
         sessionId: sessionIdMock,
-        isSso: null,
+        reusesActiveSession: null,
 
         spId: null,
         spAcr: null,
@@ -363,7 +363,7 @@ describe('CoreTrackingService', () => {
         sessionId: sessionIdMock,
         interactionId: interactionIdMock,
         interactionAcr: interactionAcrMock,
-        isSso: null,
+        reusesActiveSession: null,
 
         spId: 'clientId',
         spName: 'some spName',
@@ -390,7 +390,7 @@ describe('CoreTrackingService', () => {
         sessionId: sessionIdMock,
         interactionId: null,
         interactionAcr: null,
-        isSso: null,
+        reusesActiveSession: null,
 
         spId: 'spIdMock',
         spName: 'spNameMock',
@@ -427,7 +427,7 @@ describe('CoreTrackingService', () => {
         browsingSessionId: browsingSessionIdMock,
         interactionId: null,
         interactionAcr: null,
-        isSso: null,
+        reusesActiveSession: null,
 
         spId: 'spIdMock',
         spName: 'spNameMock',
@@ -465,7 +465,7 @@ describe('CoreTrackingService', () => {
         browsingSessionId: browsingSessionIdMock,
         interactionId: null,
         interactionAcr: null,
-        isSso: null,
+        reusesActiveSession: null,
 
         spId: null,
         spName: null,

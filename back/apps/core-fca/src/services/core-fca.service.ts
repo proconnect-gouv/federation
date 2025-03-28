@@ -51,9 +51,11 @@ export class CoreFcaService implements CoreFcaServiceInterface {
           },
         },
       },
-    }: Pick<
-      CoreFcaAuthorizationParametersInterface,
-      'acr_values' | 'login_hint' | 'claims'
+    }: Partial<
+      Pick<
+        CoreFcaAuthorizationParametersInterface,
+        'acr_values' | 'login_hint' | 'claims'
+      >
     >,
   ): Promise<void> {
     const { spId } = this.session.get<Session>('OidcClient');

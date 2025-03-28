@@ -12,8 +12,7 @@
     "descriptions": [
       "par défaut",
       "FI eidas1 avec signature RS256",
-      "actif",
-      "autorisé pour idp_hint"
+      "actif"
     ],
     "title": "Identity Provider 1 - eIDAS faible - ES256",
     "url": "https://fia1-low.docker.dev-franceconnect.fr",
@@ -25,7 +24,6 @@
     "descriptions": [
       "FI eidas1 avec signature RS256",
       "différent",
-      "non autorisé pour idp_hint",
       "sans siret par défaut"
     ],
     "title": "Identity Provider 2 - eIDAS faible - RS256",

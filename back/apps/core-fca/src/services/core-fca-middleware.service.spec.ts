@@ -1,14 +1,17 @@
 import { ValidationError } from 'class-validator';
-import { v4 as uuid } from 'uuid';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { CORE_SERVICE } from '@fc/core';
+import { CORE_SERVICE, CoreIdpHintException } from '@fc/core';
+import { CoreFcaService } from '@fc/core-fca';
 import { FlowStepsService } from '@fc/flow-steps';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
+import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import {
   OidcCtx,
   OidcProviderErrorService,
@@ -16,7 +19,7 @@ import {
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { Session, SessionService } from '@fc/session';
-import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
+import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
@@ -24,7 +27,6 @@ import { getSessionServiceMock } from '@mocks/session';
 import { GetAuthorizeCoreSessionDto, GetAuthorizeSessionDto } from '../dto';
 import { CoreFcaMiddlewareService } from './core-fca-middleware.service';
 
-jest.mock('uuid');
 jest.mock('@fc/common', () => ({
   ...jest.requireActual('@fc/common'),
   validateDto: jest.fn(),
@@ -32,8 +34,6 @@ jest.mock('@fc/common', () => ({
 
 describe('CoreFcaMiddlewareService', () => {
   let service: CoreFcaMiddlewareService;
-
-  const uuidMock = jest.mocked(uuid);
 
   const loggerServiceMock = getLoggerMock();
 
@@ -91,12 +91,10 @@ describe('CoreFcaMiddlewareService', () => {
     spName: 'my great SP',
   };
 
-  const interactionIdValueMock = '42';
   const sessionIdMockValue = '42';
   const spAcrMock = 'eidas3';
   const spIdMock = 'spIdValue';
   const ipMock = '123.123.123.123';
-  const spNameMock = 'Mon SP';
   const sourcePortMock = '443';
   const xForwardedForOriginalMock = '123.123.123.123,124.124.124.124';
   const reqMock = {
@@ -110,13 +108,6 @@ describe('CoreFcaMiddlewareService', () => {
   };
   const resMock = {
     redirect: jest.fn(),
-  };
-
-  const eventCtxMock: TrackedEventContextInterface = {
-    fc: {
-      interactionId: interactionIdValueMock,
-    },
-    req: reqMock,
   };
 
   const coreFcaServiceMock = {};
@@ -141,6 +132,10 @@ describe('CoreFcaMiddlewareService', () => {
         {
           provide: CORE_SERVICE,
           useValue: coreFcaServiceMock,
+        },
+        {
+          provide: IDENTITY_PROVIDER_SERVICE,
+          useValue: {},
         },
         FlowStepsService,
       ],
@@ -175,13 +170,13 @@ describe('CoreFcaMiddlewareService', () => {
   });
 
   describe('onModuleInit()', () => {
-    it('should register 8 middlewares', () => {
+    it('should register 6 middlewares', () => {
       // Given
       service['registerMiddleware'] = jest.fn();
       // When
       service.onModuleInit();
       // Then
-      expect(service['registerMiddleware']).toHaveBeenCalledTimes(7);
+      expect(service['registerMiddleware']).toHaveBeenCalledTimes(6);
     });
   });
 
@@ -198,7 +193,8 @@ describe('CoreFcaMiddlewareService', () => {
       const mockOverrideAuthorizePrompt = (service[
         'getAuthorizationParameters'
       ] = jest.fn().mockReturnValue(ctxMock));
-      service['isSsoAvailable'] = jest.fn();
+
+      sessionServiceMock['get'] = jest.fn();
       service['isPromptStrictlyEqualNone'] = jest.fn();
       service['overrideAuthorizePrompt'] = mockOverrideAuthorizePrompt;
 
@@ -208,7 +204,7 @@ describe('CoreFcaMiddlewareService', () => {
       // Then
       expect(mockOverrideAuthorizePrompt).toHaveBeenCalledWith(ctxMock);
 
-      expect(service['isSsoAvailable']).not.toHaveBeenCalled();
+      expect(sessionServiceMock['get']).not.toHaveBeenCalled();
       expect(service['isPromptStrictlyEqualNone']).not.toHaveBeenCalled();
       expect(sessionServiceMock.set).not.toHaveBeenCalled();
     });
@@ -223,7 +219,9 @@ describe('CoreFcaMiddlewareService', () => {
       service['getAuthorizationParameters'] = jest
         .fn()
         .mockReturnValue(ctxMock);
-      service['isSsoAvailable'] = jest.fn().mockReturnValue(true);
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: { sub: 'subValue' },
+      });
       service['isPromptStrictlyEqualNone'] = jest.fn().mockReturnValue(true);
       service['overrideAuthorizePrompt'] = mockOverrideAuthorizePrompt;
 
@@ -250,7 +248,9 @@ describe('CoreFcaMiddlewareService', () => {
       service['getAuthorizationParameters'] = jest
         .fn()
         .mockReturnValue(ctxMock);
-      service['isSsoAvailable'] = jest.fn().mockReturnValue(false);
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: null,
+      });
       service['isPromptStrictlyEqualNone'] = jest.fn().mockReturnValue(true);
       service['overrideAuthorizePrompt'] = mockOverrideAuthorizePrompt;
 
@@ -277,7 +277,9 @@ describe('CoreFcaMiddlewareService', () => {
       service['getAuthorizationParameters'] = jest
         .fn()
         .mockReturnValue(ctxMock);
-      service['isSsoAvailable'] = jest.fn().mockReturnValue(true);
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: { sub: 'subValue' },
+      });
       service['isPromptStrictlyEqualNone'] = jest.fn().mockReturnValue(false);
       service['overrideAuthorizePrompt'] = mockOverrideAuthorizePrompt;
 
@@ -304,7 +306,9 @@ describe('CoreFcaMiddlewareService', () => {
       service['getAuthorizationParameters'] = jest
         .fn()
         .mockReturnValue(ctxMock);
-      service['isSsoAvailable'] = jest.fn().mockReturnValue(false);
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: null,
+      });
       service['isPromptStrictlyEqualNone'] = jest.fn().mockReturnValue(false);
       service['overrideAuthorizePrompt'] = mockOverrideAuthorizePrompt;
 
@@ -331,7 +335,9 @@ describe('CoreFcaMiddlewareService', () => {
       service['getAuthorizationParameters'] = jest
         .fn()
         .mockReturnValue(ctxMock);
-      service['isSsoAvailable'] = jest.fn().mockReturnValue(true);
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: { sub: 'subValue' },
+      });
       service['isPromptStrictlyEqualNone'] = jest.fn().mockReturnValue(false);
       service['overrideAuthorizePrompt'] = mockOverrideAuthorizePrompt;
 
@@ -367,167 +373,266 @@ describe('CoreFcaMiddlewareService', () => {
     );
   });
 
-  describe('afterAuthorizeMiddleware()', () => {
-    const getCtxMock = (hasError = false) => {
-      return {
-        oidc: {
-          isError: hasError,
-          params: { acr_values: spAcrMock, client_id: spIdMock },
-        },
-        req: reqMock,
-        res: resMock,
-      } as unknown as OidcCtx;
-    };
-
-    const sessionPropertiesMock = {
-      interactionId: interactionIdValueMock,
-      spAcr: spAcrMock,
-      spName: spNameMock,
-      spId: spIdMock,
-    };
+  describe('afterAuthorizeMiddleware', () => {
+    let configMock: ConfigService;
+    let loggerServiceMock: LoggerService;
+    let service: CoreFcaMiddlewareService;
+    let sessionServiceMock: jest.Mocked<SessionService>;
+    let identityProviderAdapterMock: jest.Mocked<IdentityProviderAdapterMongoService>;
+    let oidcProviderServiceMock: jest.Mocked<OidcProviderService>;
+    let serviceProviderMock: jest.Mocked<ServiceProviderAdapterMongoService>;
+    let coreFcaServiceMock: jest.Mocked<CoreFcaService>;
+    let trackingMock: jest.Mocked<TrackingService>;
+    let resMock: OidcCtx['res'];
+    let flowStepsServiceMock: jest.Mocked<FlowStepsService>;
 
     beforeEach(() => {
-      jest.resetAllMocks();
+      sessionServiceMock = {
+        get: jest.fn(),
+        set: jest.fn(),
+        commit: jest.fn(),
+        reset: jest.fn(),
+        duplicate: jest.fn(),
+      } as unknown as jest.Mocked<SessionService>;
 
-      service['isSsoAvailable'] = jest.fn();
-      service['buildSessionWithNewInteraction'] = jest.fn();
-      service['trackAuthorize'] = jest.fn();
-      service['checkRedirectToSso'] = jest.fn();
-      service['getEventContext'] = jest.fn();
-      service['renewSession'] = jest.fn();
-    });
+      oidcProviderServiceMock = {
+        getInteractionIdFromCtx: jest.fn(),
+      } as unknown as jest.Mocked<OidcProviderService>;
 
-    it('should call renewSession()', async () => {
-      // Given
-      const ctxMock = getCtxMock();
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockReturnValueOnce(sessionPropertiesMock);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      serviceProviderMock = {
+        getById: jest.fn(),
+      } as unknown as jest.Mocked<ServiceProviderAdapterMongoService>;
 
-      // When
-      await service['afterAuthorizeMiddleware'](ctxMock);
-
-      // Then
-      expect(service['renewSession']).toHaveBeenCalledTimes(1);
-      expect(service['renewSession']).toHaveBeenCalledWith(ctxMock);
-    });
-
-    it('should call isSsoAvailable() with the sessionService', async () => {
-      // Given
-      const ctxMock = getCtxMock(false);
-      service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockResolvedValue(sessionPropertiesMock);
-      // When
-      await service['afterAuthorizeMiddleware'](ctxMock);
-      // Then
-      expect(service['isSsoAvailable']).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call buildSessionWithNewInteraction() with the sessionService and ctx', async () => {
-      // Given
-      const ctxMock = getCtxMock(false);
-      service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockResolvedValue(sessionPropertiesMock);
-      // When
-      await service['afterAuthorizeMiddleware'](ctxMock);
-      // Then
-      expect(service['buildSessionWithNewInteraction']).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(service['buildSessionWithNewInteraction']).toHaveBeenCalledWith(
-        ctxMock,
-        eventCtxMock,
-      );
-    });
-
-    it('should call trackAuthorize() with ctx', async () => {
-      // Given
-      const ctxMock = getCtxMock(false);
-      const expected = {
-        fc: {
-          interactionId: '42',
+      trackingMock = {
+        track: jest.fn(),
+        TrackedEventsMap: {
+          FC_AUTHORIZE_INITIATED: {},
+          FC_SSO_INITIATED: {},
         },
-        req: {
-          headers: {
-            'x-forwarded-for': '123.123.123.123',
-            'x-forwarded-for-original': '123.123.123.123,124.124.124.124',
-            'x-forwarded-source-port': '443',
-          },
-          query: {
+      } as unknown as jest.Mocked<TrackingService>;
+
+      resMock = {
+        redirect: jest.fn(),
+      } as unknown as OidcCtx['res'];
+
+      loggerServiceMock = {
+        debug: jest.fn(),
+        info: jest.fn(),
+      } as unknown as LoggerService;
+
+      configMock = {
+        get: jest.fn().mockReturnValueOnce({ urlPrefix: '' }),
+      } as unknown as ConfigService;
+
+      coreFcaServiceMock = {
+        redirectToIdp: jest.fn(),
+      } as unknown as jest.Mocked<CoreFcaService>;
+
+      flowStepsServiceMock = {
+        setStep: jest.fn(),
+      } as unknown as jest.Mocked<FlowStepsService>;
+
+      identityProviderAdapterMock = {
+        getById: jest.fn(),
+      } as unknown as jest.Mocked<IdentityProviderAdapterMongoService>;
+
+      service = new CoreFcaMiddlewareService(
+        loggerServiceMock,
+        configMock,
+        oidcProviderServiceMock,
+        sessionServiceMock,
+        serviceProviderMock,
+        trackingMock,
+        {} as OidcProviderErrorService,
+        {} as OidcAcrService,
+        coreFcaServiceMock,
+        flowStepsServiceMock,
+        identityProviderAdapterMock,
+      );
+    });
+
+    it('should initialize session and track authorization', async () => {
+      // Setup mocks
+      const ctxMock: OidcCtx = {
+        oidc: {
+          params: {
             acr_values: 'eidas3',
             client_id: 'spIdValue',
+            redirect_uri: 'http://example.com',
+            state: 'state_value',
           },
-          sessionId: '42',
         },
+        req: {} as any,
+        res: { ...resMock, redirect: jest.fn() },
+      } as unknown as OidcCtx;
+
+      const eventContextMock = {
+        fc: { interactionId: 'interactionId' },
       };
-      service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockResolvedValue(sessionPropertiesMock);
-      // When
-      await service['afterAuthorizeMiddleware'](ctxMock);
-      // Then
-      expect(service['trackAuthorize']).toHaveBeenCalledTimes(1);
-      expect(service['trackAuthorize']).toHaveBeenCalledWith(expected);
-    });
 
-    it('should call `checkRedirectToSso()` with ctx with isSso = true', async () => {
-      // Given
-      const ctxMock = getCtxMock(false);
-      const isSsoMock = true;
+      service['getEventContext'] = jest.fn().mockReturnValue(eventContextMock);
+      service['renewSession'] = jest.fn();
+      serviceProviderMock.getById.mockResolvedValueOnce({
+        name: 'SP Name',
+        active: true,
+        entityId: 'entityIdValue',
+      });
 
-      service['isSsoAvailable'] = jest.fn().mockReturnValueOnce(true);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockResolvedValue(sessionPropertiesMock);
-      // When
-      await service['afterAuthorizeMiddleware'](ctxMock);
-      // Then
-      expect(ctxMock.isSso).toBe(isSsoMock);
-      expect(service['checkRedirectToSso']).toHaveBeenCalledTimes(1);
-      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(ctxMock);
-    });
+      sessionServiceMock.get.mockReturnValueOnce({ spIdentity: {} });
 
-    it('should call `redirectToSso()` with params ctx with isSso = false', async () => {
-      // Given
-      const ctxMock = getCtxMock(false);
-      const isSsoMock = false;
-      service['isSsoAvailable'] = jest.fn().mockReturnValueOnce(false);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockResolvedValue(sessionPropertiesMock);
-      // When
-      await service['afterAuthorizeMiddleware'](ctxMock);
-      // Then
-      expect(ctxMock.isSso).toBe(isSsoMock);
-      expect(service['checkRedirectToSso']).toHaveBeenCalledTimes(1);
-      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(ctxMock);
-    });
-
-    it('should call session.commit() one time', async () => {
-      // Given
-      const ctxMock = getCtxMock();
-
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockReturnValueOnce(sessionPropertiesMock);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-
-      // When
+      // Act
       await service['afterAuthorizeMiddleware'](ctxMock);
 
-      // Then
+      // Assert
+      expect(service['renewSession']).toHaveBeenCalledWith(ctxMock);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith('OidcClient', {
+        browsingSessionId: expect.any(String),
+        interactionId: 'interactionId',
+        reusesActiveSession: false,
+        spAcr: 'eidas3',
+        spId: 'spIdValue',
+        spName: 'SP Name',
+        spRedirectUri: 'http://example.com',
+        spState: 'state_value',
+        stepRoute: '/authorize',
+      });
       expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        trackingMock.TrackedEventsMap.FC_AUTHORIZE_INITIATED,
+        eventContextMock,
+      );
+    });
+
+    it('should redirect to interaction verify URL when user is already connected', async () => {
+      // Setup mocks
+      const ctxMock: OidcCtx = {
+        oidc: {
+          params: {
+            acr_values: 'eidas3',
+          },
+        },
+        req: {} as any,
+        res: resMock,
+      } as unknown as OidcCtx;
+
+      const eventContextMock = {
+        fc: { interactionId: 'interactionId' },
+      };
+
+      service['getEventContext'] = jest.fn().mockReturnValue(eventContextMock);
+      service['renewSession'] = jest.fn();
+      serviceProviderMock.getById.mockResolvedValueOnce({
+        name: 'SP Name',
+        active: true,
+        entityId: 'entityIdValue',
+      });
+
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: { sub: 'subValue' },
+      });
+      oidcProviderServiceMock.getInteractionIdFromCtx.mockReturnValueOnce(
+        'interactionId',
+      );
+
+      // Act
+      await service.afterAuthorizeMiddleware(ctxMock);
+
+      // Assert
+      expect(resMock.redirect).toHaveBeenCalledWith(
+        '/interaction/interactionId/verify',
+      );
+    });
+
+    it('should not redirect and just commit the session when user is not connected', async () => {
+      // Setup mocks
+      const ctxMock = {
+        oidc: {
+          params: {
+            acr_values: 'eidas3',
+          },
+        },
+        req: {} as any,
+        res: resMock,
+      } as unknown as OidcCtx;
+
+      const eventContextMock = {
+        fc: { interactionId: 'interactionId' },
+      };
+
+      service['getEventContext'] = jest.fn().mockReturnValue(eventContextMock);
+      service['renewSession'] = jest.fn();
+      serviceProviderMock.getById.mockResolvedValueOnce({
+        name: 'SP Name',
+        active: true,
+        entityId: 'entityIdValue',
+      });
+
+      sessionServiceMock.get.mockReturnValueOnce({});
+
+      // Act
+      await service.afterAuthorizeMiddleware(ctxMock);
+
+      // Assert
+      expect(resMock.redirect).not.toHaveBeenCalled();
+      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw CoreIdpHintException if idpHint is invalid', async () => {
+      // Setup
+      const ctxMock: OidcCtx = {
+        req: {} as any,
+        res: resMock,
+        oidc: {
+          params: { idp_hint: 'invalidIdp' },
+        },
+      } as unknown as OidcCtx;
+
+      identityProviderAdapterMock.getById.mockResolvedValueOnce(null);
+
+      await expect(service.afterAuthorizeMiddleware(ctxMock)).rejects.toThrow(
+        CoreIdpHintException,
+      );
+      expect(identityProviderAdapterMock.getById).toHaveBeenCalledWith(
+        'invalidIdp',
+      );
+    });
+
+    it('should redirect to idp when user idp_hint is provided', async () => {
+      // Setup
+      const ctxMock: OidcCtx = {
+        req: {} as any,
+        res: resMock,
+        oidc: {
+          params: {
+            acr_values: 'eidas3',
+            idp_hint: 'uidValue',
+          },
+        },
+      } as unknown as OidcCtx;
+
+      const hintedIdentityProviderMock = {
+        uid: 'uidValue',
+      } as unknown as IdentityProviderMetadata;
+
+      identityProviderAdapterMock.getById.mockResolvedValueOnce(
+        hintedIdentityProviderMock,
+      );
+      serviceProviderMock.getById.mockResolvedValueOnce({
+        name: 'SP Name',
+        active: true,
+        entityId: 'entityIdValue',
+      });
+
+      // Act
+      await service.afterAuthorizeMiddleware(ctxMock);
+
+      // Assert
+      expect(coreFcaServiceMock.redirectToIdp).toHaveBeenCalledTimes(1);
+      expect(coreFcaServiceMock.redirectToIdp).toHaveBeenCalledWith(
+        ctxMock.res,
+        'uidValue',
+        { acr_values: 'eidas3' },
+      );
     });
   });
 
@@ -654,29 +759,6 @@ describe('CoreFcaMiddlewareService', () => {
         resMock,
         GetAuthorizeCoreSessionDto,
       );
-    });
-  });
-
-  describe('getBrowsingSessionId', () => {
-    it('should return browsingSessionId from session if it exists', () => {
-      // Given
-      const sessionBrowsingSessionId = Symbol('sessionBrowsingSessionId');
-      sessionServiceMock.get.mockReturnValueOnce(sessionBrowsingSessionId);
-      // When
-      const result = service['getBrowsingSessionId']();
-      // Then
-      expect(result).toBe(sessionBrowsingSessionId);
-    });
-
-    it('should return new browsingSessionId from uuid execution if it does not exists in session', () => {
-      // Given
-      sessionServiceMock.get.mockReturnValueOnce(undefined);
-      const newBrowsingSessionId = Symbol('newBrowsingSessionId');
-      uuidMock.mockReturnValueOnce(newBrowsingSessionId);
-      // When
-      const result = service['getBrowsingSessionId']();
-      // Then
-      expect(result).toBe(newBrowsingSessionId);
     });
   });
 });

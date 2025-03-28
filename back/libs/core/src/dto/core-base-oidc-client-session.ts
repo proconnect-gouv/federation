@@ -28,7 +28,7 @@ export class CoreBaseSessionDto {
 
   @IsBoolean()
   @Expose()
-  readonly isSso: boolean;
+  readonly reusesActiveSession: boolean;
 
   /**
    * `stepRoute` is likely to be validated with an additional

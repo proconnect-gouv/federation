@@ -55,7 +55,7 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
     const {
       browsingSessionId,
       accountId,
-      isSso,
+      reusesActiveSession,
       interactionId,
       idpId,
       idpName,
@@ -72,7 +72,7 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
     this.sessionService.set('OidcClient', {
       browsingSessionId,
       accountId,
-      isSso,
+      reusesActiveSession,
       interactionId,
       idpId,
       idpName,

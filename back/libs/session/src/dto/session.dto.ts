@@ -171,7 +171,7 @@ export class Session {
 
   @IsOptional()
   @IsBoolean()
-  readonly isSso?: boolean;
+  readonly reusesActiveSession?: boolean;
 
   @IsOptional()
   @IsObject()

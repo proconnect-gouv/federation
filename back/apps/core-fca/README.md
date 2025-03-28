@@ -35,17 +35,17 @@ Pour des raisons UX, certaines vérifications métiers peuvent avoir été faite
 sequenceDiagram
   FS->>OidcProviderController: getAuthorize
   OidcProviderController ->> CoreOidcProviderMiddlewareService: afterAuthorizeMiddleware
-  CoreOidcProviderMiddlewareService ->> CoreFcaController: getInteraction
+  CoreOidcProviderMiddlewareService ->> InteractionController: getInteraction
 
-  CoreFcaController ->> CoreOidcProviderMiddlewareService: beforeAuthorizeMiddleware
+  InteractionController ->> CoreOidcProviderMiddlewareService: beforeAuthorizeMiddleware
   CoreOidcProviderMiddlewareService ->> CoreOidcProviderMiddlewareService: overrideAuthorizeAcrValues
   CoreOidcProviderMiddlewareService ->> CoreOidcProviderMiddlewareService: overrideAuthorizePrompt
   CoreOidcProviderMiddlewareService ->> OidcClientController: redirectToIdp
   OidcClientController ->> FI: (using CoreFcaService redirectToIdp)
 
   OidcProviderController ->> OidcClientController: getOidcCallback
-  OidcClientController ->> CoreFcaController: getVerify
-  CoreFcaController ->> OidcProviderController : getLogin
+  OidcClientController ->> InteractionController: getVerify
+  InteractionController ->> OidcProviderController : getLogin
   OidcProviderController ->> FS: via 303
 ```
 

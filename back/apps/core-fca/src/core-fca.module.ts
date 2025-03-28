@@ -29,6 +29,7 @@ import { MongooseModule } from '@fc/mongoose';
 import { NotificationsModule } from '@fc/notifications';
 import { OidcAcrModule } from '@fc/oidc-acr';
 import { OidcClientModule } from '@fc/oidc-client';
+import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import {
   OidcProviderGrantService,
   OidcProviderModule,
@@ -41,8 +42,8 @@ import { SessionModule } from '@fc/session';
 import { ViewTemplatesModule } from '@fc/view-templates';
 
 import {
-  CoreFcaController,
   DataProviderController,
+  InteractionController,
   OidcClientController,
   OidcProviderController,
 } from './controllers';
@@ -109,7 +110,7 @@ import { IsPhoneNumberFCAConstraint } from './validators';
     ),
   ],
   controllers: [
-    CoreFcaController,
+    InteractionController,
     OidcClientController,
     OidcProviderController,
     DataProviderController,
@@ -126,6 +127,10 @@ import { IsPhoneNumberFCAConstraint } from './validators';
     {
       provide: CORE_SERVICE,
       useClass: CoreFcaService,
+    },
+    {
+      provide: IDENTITY_PROVIDER_SERVICE,
+      useExisting: IdentityProviderAdapterMongoService,
     },
     CoreFcaDefaultAuthorizationHandler,
     CoreFcaMcpAuthorizationHandler,

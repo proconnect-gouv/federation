@@ -34,7 +34,7 @@ import {
 import { CoreFcaFqdnService, CoreFcaVerifyService } from '../services';
 
 @Controller()
-export class CoreFcaController {
+export class InteractionController {
   // More than 4 parameters authorized for a controller
   /* eslint-disable-next-line max-params */
   constructor(
