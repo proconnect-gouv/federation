@@ -15,3 +15,5 @@ services:
       - '${COMPOSE_DIR}/fca-low/.env/mongo-fca-low.env'
     networks:
       - data
+    ports:
+      - '27017:27017'

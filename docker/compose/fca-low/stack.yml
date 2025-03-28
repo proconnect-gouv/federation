@@ -8,6 +8,14 @@ services:
       - 'fsa1-low'
       - 'fia1-low'
 
+  min-api:
+    image: alpine
+    depends_on:
+      - 'core-fca-low'
+      - 'fsa1-low'
+      - 'fia1-low'
+      - 'partner-api'
+
   min-fca-rie:
     image: alpine
     depends_on:
@@ -34,6 +42,8 @@ services:
       # -- DP
       - 'dpa1-low'
       - 'dpa2-low'
+      # -- Espace Parteneires
+      - 'partner-api'
 
   all-fca-low:
     image: alpine
