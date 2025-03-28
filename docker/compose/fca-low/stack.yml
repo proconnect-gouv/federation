@@ -7,6 +7,7 @@ services:
       - 'core-fca-low'
       - 'fsa1-low'
       - 'fia1-low'
+      - 'partner-api'
 
   min-fca-rie:
     image: alpine

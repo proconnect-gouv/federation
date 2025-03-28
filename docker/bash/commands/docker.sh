@@ -7,6 +7,7 @@ _get_running_containers() {
 
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
   FC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
+  # python container
 }
 
 _reload_rp() {

@@ -1,0 +1,32 @@
+services:
+  partner-api:
+    hostname: partner-api
+    build:
+      context: '${WORKING_DIR}'
+      dockerfile: '${WORKING_DIR}/builds/partner-api/Dockerfile'
+      args:
+        PYTHON_VERSION: '3.7'
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      mongo-fca-low:
+        condition: service_healthy
+      squid:
+        condition: service_healthy
+    volumes:
+      - '${VOLUMES_DIR}/src/proconnect-federation/partner-api:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/log:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/fca-low/.env/partner-api.env'
+    tty: true
+    networks:
+      - fc
+      - data
+    init: true
+    command: 'uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4'
+    ports:
+      - '8000:8000'
