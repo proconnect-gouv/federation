@@ -46,7 +46,7 @@ Given('je supprime tous les cookies', function () {
   cy.clearAllCookies();
 });
 
-Then('les cookies AgentConnect sont présents', function () {
+Then('les cookies ProConnect sont présents', function () {
   const { fcaRootUrl, name } = this.env;
   const url = new URL(fcaRootUrl);
   const domain = url.hostname;
@@ -54,7 +54,7 @@ Then('les cookies AgentConnect sont présents', function () {
   checkCookieExists('pc_session_id', domain);
 
   cy.getCookies({ domain })
-    .should('have.length', 5)
+    .should('have.length', 7)
     .then((cookies: Cypress.Cookie[]) => {
       // FC cookies are intercepted by Cypress on integ01.
       // We force sameSite=none to test cross-domain.

@@ -5,8 +5,8 @@ const errorCode = locals.error.code ?? notProvided;
 const FI = $session('OidcClient.idpName') ?? notProvided;
 const errorId = locals.error.id ?? notProvided;
 const FS = $session('OidcClient.spName') ?? notProvided;
-const messageToDisplay = "Bonjour\n, je vous signale que j’ai rencontré une erreur dont le code est : " + errorCode + " et dont le message d'erreur est : " + errorMessage  + ".\n L’id de l'erreur est : " + errorId + ". Je souhaitais me connecter à : " + FS + ".\n Mon fournisseur d’identité est : " + FI + "." ;
-const contactHref = locals.exception.contactHref ?? `mailto:support+federation@proconnect.gouv.fr?subject=Signaler l'erreur ${locals.error.code} sur ProConnect&body=${messageToDisplay}`;
+const messageToDisplay = "Bonjour\n, je vous signale que j’ai rencontré une erreur dont le code est : " + errorCode + " et dont le message d’erreur est : " + errorMessage  + ".\n L’id de l’erreur est : " + errorId + ". Je souhaitais me connecter à : " + FS + ".\n Mon fournisseur d’identité est : " + FI + "." ;
+const contactHref = locals.exception.contactHref ?? `mailto:support+federation@proconnect.gouv.fr?subject=Signaler l’erreur ${locals.error.code} sur ProConnect&body=${messageToDisplay}`;
 %>
 <section class="fr-grid-row fr-grid-row--center fr-my-5w">
   <div class="fr-col-lg-8 fr-col-md-7 fr-col-sm-12">
