@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { CORE_AUTH_SERVICE, CoreAuthorizationService } from '@fc/core';
+import { UserSession } from '@fc/core-fca/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import {
@@ -11,7 +12,7 @@ import {
   OidcClientIdpDisabledException,
   OidcClientService,
 } from '@fc/oidc-client';
-import { Session, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 
 import { CoreFcaAgentIdpDisabledException } from '../exceptions';
 import { CoreFcaUnauthorizedEmailException } from '../exceptions/core-fca-unauthorized-email-exception';
@@ -58,7 +59,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       >
     >,
   ): Promise<void> {
-    const { spId } = this.session.get<Session>('OidcClient');
+    const { spId } = this.session.get<UserSession>('User');
 
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
@@ -85,7 +86,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
 
     const { name: idpName, title: idpLabel } =
       await this.identityProvider.getById(idpId);
-    const sessionPayload: Session = {
+    const sessionPayload: UserSession = {
       idpId,
       idpName,
       idpLabel,
@@ -96,7 +97,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       accountId: undefined,
     };
 
-    this.session.set('OidcClient', sessionPayload);
+    this.session.set('User', sessionPayload);
 
     res.redirect(authorizationUrl);
   }

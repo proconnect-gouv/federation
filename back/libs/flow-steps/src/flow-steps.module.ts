@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
-import { ForbidRefreshInterceptor, IsStepInterceptor } from './interceptors';
-import { FlowStepsService } from './services';
+import {
+  AuthorizeStepFromInterceptor,
+  SetStepInterceptor,
+} from './interceptors';
 
 @Module({
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: IsStepInterceptor,
+      useClass: AuthorizeStepFromInterceptor,
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: ForbidRefreshInterceptor,
+      useClass: SetStepInterceptor,
     },
-    FlowStepsService,
   ],
-  exports: [FlowStepsService],
 })
 export class FlowStepsModule {}

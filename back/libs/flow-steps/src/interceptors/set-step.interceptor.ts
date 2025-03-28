@@ -10,25 +10,28 @@ import { Reflector } from '@nestjs/core';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { SessionService } from '@fc/session';
 
-import { IsStep } from '../decorators';
-import { FlowStepsService } from '../services';
+import { SetStep } from '../decorators';
 
 @Injectable()
-export class IsStepInterceptor implements NestInterceptor {
+export class SetStepInterceptor implements NestInterceptor {
   constructor(
     private readonly config: ConfigService,
     private readonly reflector: Reflector,
-    private readonly flowStep: FlowStepsService,
+    private readonly session: SessionService,
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-    const isFlowStep = IsStep.get(this.reflector, context);
+    const isFlowStep = SetStep.get(this.reflector, context);
 
     if (!isFlowStep) {
       return next.handle();
     }
 
+    this.setStep(context);
+
+    // setStep will be called after controller execution
     return next.handle().pipe(
       tap({
         next: this.setStep.bind(this, context),
@@ -43,6 +46,6 @@ export class IsStepInterceptor implements NestInterceptor {
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const stepRoute = req.route.path.replace(urlPrefix, '');
 
-    this.flowStep.setStep(stepRoute);
+    this.session.set('FlowSteps', 'previousRoute', stepRoute);
   }
 }

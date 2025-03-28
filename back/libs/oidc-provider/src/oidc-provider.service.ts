@@ -10,9 +10,9 @@ import { HttpOptions } from 'openid-client';
 import { Global, Inject, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
+import { UserSession } from '@fc/core-fca';
 import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
-import { Session } from '@fc/session';
 
 import {
   OidcProviderMiddlewarePattern,
@@ -241,7 +241,7 @@ export class OidcProviderService {
     });
   }
 
-  finishInteraction(req: any, res: any, session: Session) {
+  finishInteraction(req: any, res: any, session: UserSession) {
     this.oidcProviderConfigApp.finishInteraction(req, res, session);
   }
 

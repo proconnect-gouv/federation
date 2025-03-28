@@ -1,2 +1,3 @@
-export * from './is-step.token';
-export * from './no-refresh.token';
+export const FLOW_STEP_SET_STEP_METADATA = 'FLOW_STEP_SET_STEP_METADATA';
+export const FLOW_STEP_AUTHORIZE_STEP_FROM_METADATA =
+  'FLOW_STEP_AUTHORIZE_STEP_FROM_METADATA';

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
+import { UserSession } from '@fc/core-fca';
 import { LoggerPluginServiceInterface } from '@fc/logger';
-import { Session, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 
 @Injectable()
 export class LoggerSessionService implements LoggerPluginServiceInterface {
@@ -14,8 +15,7 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
     });
 
     const sessionId = sessionService.getId();
-    const { browsingSessionId } =
-      sessionService.get<Session>('OidcClient') || {};
+    const { browsingSessionId } = sessionService.get<UserSession>('User') || {};
 
     const context = {
       sessionId,

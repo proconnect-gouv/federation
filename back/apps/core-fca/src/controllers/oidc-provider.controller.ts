@@ -13,11 +13,12 @@ import {
 } from '@nestjs/common';
 
 import { CoreMissingIdentityException, CoreRoutes } from '@fc/core';
-import { ForbidRefresh, IsStep } from '@fc/flow-steps';
+import { UserSessionDecorator } from '@fc/core-fca/decorators';
+import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
-import { ISessionService, Session, SessionDecorator } from '@fc/session';
+import { ISessionService } from '@fc/session';
 
-import { AuthorizeParamsDto, GetLoginSessionDto } from '../dto';
+import { AuthorizeParamsDto, GetLoginSessionDto, UserSession } from '../dto';
 
 @Controller()
 export class OidcProviderController {
@@ -40,7 +41,7 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  @IsStep()
+  @SetStep()
   getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDto) {
     // Pass the query to oidc-provider
     return next();
@@ -63,7 +64,7 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  @IsStep()
+  @SetStep()
   postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
     // Pass the query to oidc-provider
     return next();
@@ -75,8 +76,8 @@ export class OidcProviderController {
    */
   @Get(CoreRoutes.INTERACTION_LOGIN)
   @Header('cache-control', 'no-store')
-  @IsStep()
-  @ForbidRefresh()
+  @AuthorizeStepFrom([CoreRoutes.INTERACTION_VERIFY])
+  @SetStep()
   getLogin(
     @Req() req,
     @Res() res,
@@ -85,15 +86,15 @@ export class OidcProviderController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @SessionDecorator('OidcClient', GetLoginSessionDto)
-    sessionOidc: ISessionService<Session>,
+    @UserSessionDecorator(GetLoginSessionDto)
+    userSession: ISessionService<UserSession>,
   ) {
-    const { spIdentity } = sessionOidc.get();
+    const { spIdentity } = userSession.get();
     if (!spIdentity) {
       throw new CoreMissingIdentityException();
     }
 
-    const session: Session = sessionOidc.get();
+    const session = userSession.get();
     return this.oidcProvider.finishInteraction(req, res, session);
   }
 }

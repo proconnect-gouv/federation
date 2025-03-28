@@ -17,10 +17,12 @@ import {
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CoreRoutes } from '@fc/core';
+import { UserSessionDecorator } from '@fc/core-fca/decorators';
 import { CryptographyService } from '@fc/cryptography';
-import { CsrfToken, CsrfTokenGuard } from '@fc/csrf';
+import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
-import { ForbidRefresh, IsStep } from '@fc/flow-steps';
+import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
@@ -30,24 +32,18 @@ import {
   OidcClientService,
 } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import {
-  ISessionService,
-  Session,
-  SessionDecorator,
-  SessionService,
-} from '@fc/session';
+import { ISessionService, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import {
+  AppConfig,
   GetIdentityProviderSelectionSessionDto,
-  GetOidcCallbackCoreSessionDto,
   GetOidcCallbackSessionDto,
-  GetRedirectToIdpSessionDto,
   IdentityForSpDto,
   IdentityFromIdpDto,
   RedirectToIdp,
+  UserSession,
 } from '../dto';
-import { AppConfig } from '../dto/app-config.dto';
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
@@ -75,18 +71,22 @@ export class OidcClientController {
     private readonly emailValidatorService: EmailValidatorService,
     private readonly fqdnService: CoreFcaFqdnService,
     private readonly sanitizer: IdentitySanitizer,
+    private readonly csrfService: CsrfService,
   ) {}
 
   @Get(CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION)
   @Header('cache-control', 'no-store')
-  @IsStep()
+  @AuthorizeStepFrom([
+    CoreRoutes.INTERACTION, // Standard flow
+    OidcClientRoutes.REDIRECT_TO_IDP, // Navigation back
+  ])
+  @SetStep()
   async getIdentityProviderSelection(
-    @CsrfToken() csrfToken: string,
     @Res() res: Response,
-    @SessionDecorator('OidcClient', GetIdentityProviderSelectionSessionDto)
-    sessionOidc: ISessionService<Session>,
+    @UserSessionDecorator(GetIdentityProviderSelectionSessionDto)
+    userSession: ISessionService<UserSession>,
   ) {
-    const { login_hint: email } = sessionOidc.get();
+    const { login_hint: email } = userSession.get();
     const fqdnConfig = await this.fqdnService.getFqdnConfigFromEmail(email);
     const { acceptsDefaultIdp, identityProviders } = fqdnConfig;
 
@@ -100,6 +100,9 @@ export class OidcClientController {
         provider.title = 'Autre';
       }
     });
+
+    const csrfToken = this.csrfService.renew();
+    this.sessionService.set('Csrf', { csrfToken });
 
     const response = {
       acceptsDefaultIdp,
@@ -117,21 +120,19 @@ export class OidcClientController {
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
-  @IsStep()
-  @ForbidRefresh()
+  @AuthorizeStepFrom([
+    CoreRoutes.INTERACTION, // Standard flow
+    CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
+  ])
+  @SetStep()
   @UseGuards(CsrfTokenGuard)
   // eslint-disable-next-line complexity
   async redirectToIdp(
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: RedirectToIdp,
-    /**
-     * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
-     * @ticket FC-1020
-     */
-    @SessionDecorator('OidcClient', GetRedirectToIdpSessionDto)
-    sessionOidc: ISessionService<Session>,
+    @UserSessionDecorator()
+    userSession: ISessionService<UserSession>,
   ): Promise<void> {
     // if email is set, this controller is called from the interaction page
     // if identityProviderUid is set, this controller is called directly from the sp page via idp_hint or from the select-idp page
@@ -157,7 +158,7 @@ export class OidcClientController {
       authorizeParams['acr_values'] = filteredAcrValues;
     }
 
-    sessionOidc.set('login_hint', email);
+    userSession.set('login_hint', email);
 
     let idpName: string;
     let idpLabel: string;
@@ -228,10 +229,10 @@ export class OidcClientController {
   @Header('cache-control', 'no-store')
   async logoutFromIdp(
     @Res() res,
-    @SessionDecorator('OidcClient')
-    sessionOidc: ISessionService<Session>,
+    @UserSessionDecorator()
+    userSession: ISessionService<UserSession>,
   ) {
-    const { idpIdToken, idpId } = sessionOidc.get();
+    const { idpIdToken, idpId } = userSession.get();
 
     const { stateLength } = await this.oidcClientConfig.get();
     const idpState: string = this.crypto.genRandomString(stateLength);
@@ -252,16 +253,16 @@ export class OidcClientController {
   async redirectAfterIdpLogout(
     @Req() req,
     @Res() res,
-    @SessionDecorator('OidcClient')
-    sessionOidc: ISessionService<Session>,
+    @UserSessionDecorator()
+    userSession: ISessionService<UserSession>,
   ) {
-    const { oidcProviderLogoutForm } = sessionOidc.get();
+    const { oidcProviderLogoutForm } = userSession.get();
 
     const trackingContext: TrackedEventContextInterface = { req };
     const { FC_SESSION_TERMINATED } = this.tracking.TrackedEventsMap;
     await this.tracking.track(FC_SESSION_TERMINATED, trackingContext);
 
-    await this.sessionService.destroy(res);
+    await userSession.destroy();
 
     return { oidcProviderLogoutForm };
   }
@@ -273,8 +274,11 @@ export class OidcClientController {
   @Get(OidcClientRoutes.OIDC_CALLBACK)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @IsStep()
-  @ForbidRefresh()
+  @AuthorizeStepFrom([
+    OidcClientRoutes.REDIRECT_TO_IDP, // Standard flow
+    CoreRoutes.INTERACTION, // idp_hint flow
+  ])
+  @SetStep()
   // eslint-disable-next-line complexity
   async getOidcCallback(
     @Req() req,
@@ -284,16 +288,17 @@ export class OidcClientController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @SessionDecorator('OidcClient', GetOidcCallbackSessionDto)
-    sessionOidc: ISessionService<Session>,
+    @UserSessionDecorator(GetOidcCallbackSessionDto)
+    userSession: ISessionService<UserSession>,
   ) {
     // The session is duplicated here to mitigate cookie-theft-based attacks.
     // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
-    await this.sessionService.duplicate(res, GetOidcCallbackCoreSessionDto);
-    this.logger.debug('Session has been detached and duplicated');
+    await userSession.duplicate();
 
     const { idpId, idpNonce, idpState, interactionId, spId, login_hint } =
-      sessionOidc.get();
+      userSession.get();
+    // Remove nonce and state from session to prevent replay attacks
+    userSession.set({ idpNonce: null, idpState: null });
 
     const fqdn = this.fqdnService.getFqdnFromEmail(login_hint ?? '');
     const { IDP_CALLEDBACK } = this.tracking.TrackedEventsMap;
@@ -378,14 +383,13 @@ export class OidcClientController {
       });
     }
 
-    const identityExchange: Session = cloneDeep({
+    const identityExchange: UserSession = cloneDeep({
       amr,
-      idpAccessToken: accessToken,
       idpIdToken: idToken,
       idpAcr: acr,
       idpIdentity: transformedIdentity,
     });
-    sessionOidc.set(identityExchange);
+    userSession.set(identityExchange);
 
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');

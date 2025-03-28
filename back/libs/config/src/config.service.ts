@@ -11,7 +11,6 @@ import { Injectable } from '@nestjs/common';
  * but need to specify the full path to the helper
  */
 import { AppHelper } from '@fc/app/helpers/app-helper';
-import { getDtoErrors } from '@fc/common/helpers/dto-validation';
 
 import { UnknownConfigurationNameError } from './errors';
 import { IConfigOptions } from './interfaces';
@@ -40,7 +39,7 @@ export class ConfigService {
 
     if (errors.length > 0) {
       console.error('Invalid configuration Error');
-      console.error(getDtoErrors(errors));
+      console.error(errors);
       console.error('Exiting app');
       AppHelper.shutdown();
     }

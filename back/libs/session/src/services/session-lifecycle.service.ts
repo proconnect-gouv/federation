@@ -1,10 +1,8 @@
-import { ClassTransformOptions } from 'class-transformer';
 import { Request, Response } from 'express';
 import { cloneDeep } from 'lodash';
 
-import { Injectable, Type } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { getTransformed } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 
@@ -13,10 +11,6 @@ import { SessionCannotCommitUndefinedSession } from '../exceptions';
 import { SessionBackendStorageService } from './session-backend-storage.service';
 import { SessionCookiesService } from './session-cookies.service';
 import { SessionLocalStorageService } from './session-local-storage.service';
-
-export const DUPLICATE_OPTIONS: ClassTransformOptions = {
-  excludeExtraneousValues: true,
-};
 
 @Injectable()
 export class SessionLifecycleService {
@@ -71,26 +65,23 @@ export class SessionLifecycleService {
     return this.init(res);
   }
 
-  async duplicate(res: Response, schema: Type<unknown>) {
+  async duplicate(res: Response) {
     // Commit any pending changes
     await this.commit();
 
     // Fetch current session data
-    const { data: currentData } = this.localStorage.getStore();
-
-    // Keep only data in schema
-    const cleanData = getTransformed(currentData, schema, DUPLICATE_OPTIONS);
+    const { data } = cloneDeep(this.localStorage.getStore());
 
     // Init new session
     const newSessionId = this.init(res);
 
     this.localStorage.setStore({
-      data: cleanData,
+      data,
       id: newSessionId,
       sync: false,
     });
 
-    return cleanData;
+    return data;
   }
 
   async refresh(req: Request, res: Response): Promise<string> {

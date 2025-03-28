@@ -39,16 +39,21 @@ export class SessionLocalStorageService {
     return session.id;
   }
 
-  get<T>(moduleName: string): T;
+  get<T>(moduleName?: string): T;
   get<T>(moduleName: string, key: keyof T): T[keyof T];
-  get<T>(moduleName: string, key?: keyof T): T | T[keyof T] {
+  get<T>(moduleName?: string, key?: keyof T): T | T[keyof T] {
     const store = this.getStore();
 
-    if (key) {
-      return store.data[moduleName]?.[key];
+
+    if (!moduleName) {
+      return store.data;
     }
 
-    return store.data[moduleName];
+    if (!key) {
+      return store.data[moduleName];
+    }
+
+    return store.data[moduleName]?.[key];
   }
 
   set(moduleName: string, keyOrData: string | object, data?: unknown): void {

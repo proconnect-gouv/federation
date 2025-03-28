@@ -47,10 +47,8 @@ Fonctionnalité: Connexion Usager - session absente
     Et que je supprime les cookies AgentConnect
     Quand je m'authentifie
     Alors je suis redirigé vers la page erreur technique
-    # @todo #1481 Déclencher erreur "Y190001" (SessionNotFoundException au lieu de UndefinedStepRouteException)
-    # @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1481
-    Et le code d'erreur est "Y420002"
-    Et le message d'erreur est "Nous vous invitons à fermer tous les onglets de votre navigateur et à vous authentifier de nouveau en suivant les étapes de connexion."
+    Et le code d'erreur est "Y190001"
+    Et le message d'erreur est "Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous."
 
   Scénario: Erreur lors de la connexion - session absente sur la page multi FI
     Etant donné que je navigue sur la page fournisseur de service

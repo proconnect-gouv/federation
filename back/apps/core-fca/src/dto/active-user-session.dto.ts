@@ -1,11 +1,14 @@
 import { IsDefined } from 'class-validator';
 
 import { PartialExcept } from '@fc/common';
-import { IOidcIdentity } from '@fc/oidc';
+import { IdentityForSpDto, IOidcIdentity } from '@fc/oidc';
 
-export class GetLoginSessionDto {
+export class ActiveUserSessionDto {
   @IsDefined()
   readonly accountId: string;
+
+  @IsDefined()
+  readonly spIdentity: IdentityForSpDto;
 
   @IsDefined()
   readonly idpId: string;
@@ -17,8 +20,8 @@ export class GetLoginSessionDto {
   readonly idpLabel: string;
 
   @IsDefined()
-  readonly idpIdentity?: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
+  readonly idpIdToken: string;
 
   @IsDefined()
-  readonly spIdentity: IOidcIdentity;
+  readonly idpIdentity: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
 }

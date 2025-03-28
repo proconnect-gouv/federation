@@ -35,7 +35,7 @@ describe('getStackTraceArray()', () => {
     // When
     const result = getStackTraceArray(errorMock);
     // Then
-    expect(result).toEqual([...stackMok, ...originalErrorStackMock]);
+    expect(result).toEqual([...originalErrorStackMock, ...stackMok]);
   });
 
   it('should work seamlessly if original original error is provided but does not have a stack', () => {

@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { AccountFca, AccountFcaService, IIdpAgentKeys } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { IVerifyFeatureHandlerHandleArgument } from '@fc/core';
+import { UserSession } from '@fc/core-fca/dto';
 import { CoreFcaAgentAccountBlockedException } from '@fc/core-fca/exceptions/core-fca-account-blocked.exception';
 import { IAgentIdentity } from '@fc/core-fca/interfaces';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
@@ -14,7 +15,7 @@ import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcProviderConfig } from '@fc/oidc-provider';
-import { ISessionService, Session } from '@fc/session';
+import { ISessionService } from '@fc/session';
 
 @Injectable()
 @FeatureHandler('core-fca-default-verify')
@@ -152,7 +153,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   // @fixme Check with AC team what to do about that
   // eslint-disable-next-line max-params
   protected storeIdentityWithSessionService(
-    sessionOidc: ISessionService<Session>,
+    sessionOidc: ISessionService<UserSession>,
     sub: string,
     spIdentity: Partial<Omit<IOidcIdentity, 'sub'>>,
     accountId: string,
@@ -160,7 +161,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   ): void {
     const { idpIdentity, spId, amr, subs } = sessionOidc.get();
 
-    const session: Session = {
+    const session: UserSession = {
       amr,
       idpIdentity,
       spIdentity,

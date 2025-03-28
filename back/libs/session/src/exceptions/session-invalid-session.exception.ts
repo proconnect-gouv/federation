@@ -11,9 +11,4 @@ export class SessionInvalidSessionException extends SessionBaseException {
   static ERROR_DESCRIPTION = 'user authentication aborted';
   static HTTP_STATUS_CODE = HttpStatus.CONFLICT;
   static UI = 'Session.exceptions.sessionInvalidSession';
-
-  constructor(errors: string[]) {
-    super();
-    this.log = errors;
-  }
 }

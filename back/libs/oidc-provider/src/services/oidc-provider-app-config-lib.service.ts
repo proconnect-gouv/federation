@@ -7,14 +7,11 @@ import {
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
+import { UserSession } from '@fc/core-fca';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
-import {
-  Session,
-  SessionService,
-  SessionSubNotFoundException,
-} from '@fc/session';
+import { SessionService, SessionSubNotFoundException } from '@fc/session';
 
 import {
   OidcProviderRuntimeException,
@@ -105,8 +102,7 @@ export abstract class OidcProviderAppConfigLibService
 
       await this.checkSpId(spId);
 
-      const { spIdentity, subs } =
-        this.sessionService.get<Session>('OidcClient');
+      const { spIdentity, subs } = this.sessionService.get<UserSession>('User');
 
       const subSp = spId && subs[spId];
       await this.checkSub(subSp);
@@ -132,10 +128,10 @@ export abstract class OidcProviderAppConfigLibService
    *
    * @param {any} req
    * @param {any} res
-   * @param {Session} session Object that contains the session info
+   * @param {UserSession} session Object that contains the session info
    */
-  async finishInteraction(req: any, res: any, session: Session) {
-    const { amr, interactionAcr: acr }: Session = session;
+  async finishInteraction(req: any, res: any, session: UserSession) {
+    const { amr, interactionAcr: acr } = session;
     const sessionId = this.sessionService.getId();
 
     /**
@@ -195,7 +191,7 @@ export abstract class OidcProviderAppConfigLibService
     form: any,
     { method, uri, title }: LogoutFormParamsInterface,
   ): Promise<void> {
-    this.sessionService.set('OidcClient', 'oidcProviderLogoutForm', form);
+    this.sessionService.set('User', 'oidcProviderLogoutForm', form);
     await this.sessionService.commit();
 
     ctx.body = `<!DOCTYPE html>

@@ -6,10 +6,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { SessionService } from '@fc/session';
 
-import { IsStep } from '../decorators';
-import { FlowStepsService } from '../services';
-import { IsStepInterceptor } from './is-step.interceptor';
+import { getSessionServiceMock } from '@mocks/session';
+
+import { SetStep } from '../decorators';
+import { SetStepInterceptor } from './set-step.interceptor';
 
 jest.mock('@fc/session/helper', () => ({
   SessionService: jest.fn(),
@@ -24,7 +26,11 @@ jest.mock('rxjs', () => ({
 }));
 
 describe('IsStepInterceptor', () => {
-  let interceptor: IsStepInterceptor;
+  let interceptor: SetStepInterceptor;
+
+  const sessionServiceMock = {
+    setStep: jest.fn(),
+  };
 
   const httpContextMock = {
     getRequest: jest.fn(),
@@ -37,7 +43,7 @@ describe('IsStepInterceptor', () => {
     sessionId: 'sessionIdValue',
   };
 
-  const IsStepMock = jest.mocked(IsStep);
+  const IsStepMock = jest.mocked(SetStep);
 
   const tapMock = jest.mocked(tap);
 
@@ -57,28 +63,23 @@ describe('IsStepInterceptor', () => {
     urlPrefix: '/a/prefix',
   };
 
-  const flowStepMock = {
-    setStep: jest.fn(),
-  };
-
   beforeEach(async () => {
     jest.resetAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        IsStepInterceptor,
+        SetStepInterceptor,
         ConfigService,
         Reflector,
-        FlowStepsService,
       ],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(FlowStepsService)
-      .useValue(flowStepMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
-    interceptor = module.get<IsStepInterceptor>(IsStepInterceptor);
+    interceptor = module.get<SetStepInterceptor>(SetStepInterceptor);
 
     configServiceMock.get.mockReturnValue(configMock);
     httpContextMock.getRequest.mockReturnValue(reqMock);

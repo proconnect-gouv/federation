@@ -46,4 +46,4 @@ Fonctionnalité: Connexion Usager - idp_hint
     Quand je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page erreur du fournisseur de service
     Et le titre de l'erreur fournisseur de service est "idp_hint_not_found"
-    Et la description de l'erreur fournisseur de service est "The+provided+idp_hint+could+not+be+found"
+    Et la description de l'erreur fournisseur de service est "The%20provided%20idp_hint%20could%20not%20be%20found"

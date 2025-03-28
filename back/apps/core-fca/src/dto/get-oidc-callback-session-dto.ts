@@ -1,59 +1,18 @@
-import { Expose, Type } from 'class-transformer';
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined } from 'class-validator';
 
-import { CoreBaseSessionDto } from '@fc/core';
-import { I18nSession } from '@fc/i18n';
-import { OidcClientRoutes } from '@fc/oidc-client';
-
-import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
-
-export class GetOidcCallbackSessionDto extends CoreBaseSessionDto {
-  // Metadata: We MUST restrict the routes we can come from
-  @IsString()
-  @IsIn([
-    CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
-    OidcClientRoutes.REDIRECT_TO_IDP,
-  ])
-  @Expose()
-  readonly stepRoute: string;
-
-  // Identity Provider: We MUST have idpId
-  @IsString()
-  @IsNotEmpty()
-  @Expose()
+export class GetOidcCallbackSessionDto {
+  @IsDefined()
   readonly idpId: string;
 
-  // Identity Provider: We MUST have idpName
-  @IsString()
-  @IsNotEmpty()
-  @Expose()
+  @IsDefined()
   readonly idpName: string;
 
-  // Identity Provider: We MUST have idpLabel
-  @IsString()
-  @IsNotEmpty()
-  @Expose()
+  @IsDefined()
   readonly idpLabel: string;
 
-  // Identity Provider: We MUST have idpState
-  @IsString()
-  @IsNotEmpty()
-  @Expose()
+  @IsDefined()
   readonly idpState: string;
 
-  // Identity Provider: We MUST have idpNonce
-  @IsString()
-  @IsNotEmpty()
-  @Expose()
+  @IsDefined()
   readonly idpNonce: string;
-}
-
-export class GetOidcCallbackCoreSessionDto {
-  @Expose()
-  @Type(() => GetOidcCallbackSessionDto)
-  readonly OidcClient: GetOidcCallbackSessionDto;
-
-  @Expose()
-  @Type(() => I18nSession)
-  readonly I18n: I18nSession;
 }

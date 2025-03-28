@@ -3,9 +3,10 @@ import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
+import { UserSession } from '@fc/core-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { ISessionService, Session } from '@fc/session';
+import { ISessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import { CoreRoutes, ProcessCore } from '../enums';
@@ -41,7 +42,7 @@ export class CoreVerifyService {
    * @param req
    */
   async verify(
-    sessionOidc: ISessionService<Session>,
+    sessionOidc: ISessionService<UserSession>,
     trackingContext: TrackedEventContextInterface,
   ): Promise<void> {
     const { idpId } = sessionOidc.get();
@@ -59,7 +60,7 @@ export class CoreVerifyService {
     params: {
       urlPrefix: string;
       interactionId: string;
-      sessionOidc: ISessionService<Session>;
+      sessionOidc: ISessionService<UserSession>;
     },
     idpDisabled: boolean,
   ): Promise<string> {
