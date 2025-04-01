@@ -59,8 +59,8 @@ export class CoreFcaFqdnService {
     };
   }
 
-  getFqdnFromEmail(email: string): string {
-    return email.split('@').pop().toLowerCase();
+  getFqdnFromEmail(email: string | undefined): string | undefined {
+    return email?.split('@').pop().toLowerCase();
   }
 
   getSpAuthorizedFqdnsConfig(spId: string): {

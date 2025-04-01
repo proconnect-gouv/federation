@@ -44,7 +44,6 @@ export class SessionLocalStorageService {
   get<T>(moduleName?: string, key?: keyof T): T | T[keyof T] {
     const store = this.getStore();
 
-
     if (!moduleName) {
       return store.data;
     }

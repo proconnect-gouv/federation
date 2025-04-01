@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { Session } from '@fc/session';
+import { UserSession } from '@fc/core-fca';
 
 import { getConfigMock } from '@mocks/config';
 
@@ -39,7 +39,7 @@ describe('OidcAcrService', () => {
   describe('getInteractionAcr()', () => {
     it('should return the idpAcr value', () => {
       // Given
-      const sessionDataMock: Session = {
+      const sessionDataMock: UserSession = {
         spAcr: 'A',
         idpAcr: 'B',
       };
@@ -53,7 +53,7 @@ describe('OidcAcrService', () => {
 
     it('should return the default acr value', () => {
       // Given
-      const sessionDataMock: Session = {
+      const sessionDataMock: UserSession = {
         spAcr: 'A',
       };
 

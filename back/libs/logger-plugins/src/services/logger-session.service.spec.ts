@@ -70,7 +70,7 @@ describe('LoggerSessionService', () => {
       service.getContext();
 
       // Then
-      expect(sessionMock.get).toHaveBeenCalledExactlyOnceWith('OidcClient');
+      expect(sessionMock.get).toHaveBeenCalledExactlyOnceWith('User');
     });
 
     it('should return sessionId and browsingSessionId', () => {

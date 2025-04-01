@@ -10,11 +10,10 @@ import { SessionInvalidSessionException } from '@fc/session';
 import { ISessionService } from '@fc/session/interfaces';
 import { SessionService } from '@fc/session/services';
 
-export const UserSessionDecorator = createParamDecorator<
-  Class<unknown>,
-  any,
-  Promise<ISessionService<UserSession>>
->(async (mandatoryPropertiesDto, ctx: ExecutionContext) => {
+export const UserSessionDecoratorFactory = async (
+  mandatoryPropertiesDto: Class<unknown>,
+  ctx: ExecutionContext,
+): Promise<ISessionService<UserSession>> => {
   const sessionService =
     NestJsDependencyInjectionWrapper.get<SessionService>(SessionService);
 
@@ -61,4 +60,8 @@ export const UserSessionDecorator = createParamDecorator<
   }
 
   return boundSessionService;
-});
+};
+
+export const UserSessionDecorator = createParamDecorator(
+  UserSessionDecoratorFactory,
+);

@@ -78,7 +78,7 @@ const idpIdentityMock = {
 const idpIdMock = 'validIdValue';
 
 const sessionDataMock = {
-  OidcClient: {
+  User: {
     spIdentity: spIdentityMock,
     idpIdentity: idpIdentityMock,
     idpId: idpIdMock,

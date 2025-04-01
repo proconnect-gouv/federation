@@ -279,7 +279,6 @@ export class OidcClientController {
     CoreRoutes.INTERACTION, // idp_hint flow
   ])
   @SetStep()
-  // eslint-disable-next-line complexity
   async getOidcCallback(
     @Req() req,
     @Res() res,
@@ -300,7 +299,7 @@ export class OidcClientController {
     // Remove nonce and state from session to prevent replay attacks
     userSession.set({ idpNonce: null, idpState: null });
 
-    const fqdn = this.fqdnService.getFqdnFromEmail(login_hint ?? '');
+    const fqdn = this.fqdnService.getFqdnFromEmail(login_hint);
     const { IDP_CALLEDBACK } = this.tracking.TrackedEventsMap;
     await this.tracking.track(IDP_CALLEDBACK, { req, fqdn, email: login_hint });
     const tokenParams = {
@@ -339,9 +338,7 @@ export class OidcClientController {
       );
 
     const { FC_REQUESTED_IDP_USERINFO } = this.tracking.TrackedEventsMap;
-    const identityFqdn = this.fqdnService.getFqdnFromEmail(
-      identity.email ?? '',
-    );
+    const identityFqdn = this.fqdnService.getFqdnFromEmail(identity.email);
 
     await this.tracking.track(FC_REQUESTED_IDP_USERINFO, {
       req,

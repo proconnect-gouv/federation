@@ -66,7 +66,7 @@ describe('CoreOidcProviderConfigAppService', () => {
 
   const idpIdMock = 'idp_id';
   const sessionOidcMock = {
-    OidcClient: {
+    User: {
       idpId: idpIdMock,
       idpIdentity: {
         sub: 'idp_sub',
@@ -268,7 +268,7 @@ describe('CoreOidcProviderConfigAppService', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         oidcClientServiceMock.hasEndSessionUrlFromProvider,
-      ).toHaveBeenCalledWith(sessionOidcMock.OidcClient.idpId);
+      ).toHaveBeenCalledWith(sessionOidcMock.User.idpId);
     });
 
     it('should return result from call to hasEndSessionUrlFromProvider', async () => {

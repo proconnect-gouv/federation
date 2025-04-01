@@ -245,7 +245,7 @@ describe('CoreFcaService', () => {
       );
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith('OidcClient', {
+      expect(sessionServiceMock.set).toHaveBeenCalledWith('User', {
         idpId: idpIdMock,
         idpName: identityProviderMockResponse.name,
         idpLabel: identityProviderMockResponse.title,

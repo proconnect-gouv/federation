@@ -1,29 +1,22 @@
-import { cloneDeep } from 'lodash';
+import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import * as FcCommon from '@fc/common';
+import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { UserSession } from '@fc/core-fca';
 import { CryptographyService } from '@fc/cryptography';
-import { CsrfTokenGuard } from '@fc/csrf';
+import { CsrfService } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { IdentityProviderMetadata, IOidcIdentity } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import {
-  OidcClientConfigService,
-  OidcClientService,
-  TokenParams,
-} from '@fc/oidc-client';
+import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { Session, SessionService } from '@fc/session';
+import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { getLoggerMock } from '@mocks/logger';
-import { getSessionServiceMock } from '@mocks/session';
-
-import { AppConfig, GetOidcCallbackCoreSessionDto } from '../dto';
+import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaFqdnService,
@@ -32,717 +25,485 @@ import {
 } from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
-  cloneDeep: jest.fn(),
+jest.mock('@fc/common', () => ({
+  ...jest.requireActual('@fc/common'),
+  validateDto: jest.fn(),
 }));
 
-jest.mock('querystring', () => ({
-  encode: jest.fn(),
-}));
-
-jest.mock('@fc/common', () => {
-  return {
-    ...jest.requireActual('@fc/common'),
-    validateDto: jest.fn(),
-  };
-});
-
-describe('OidcClient Controller', () => {
+describe('OidcClientController', () => {
   let controller: OidcClientController;
-  let res;
-  let req;
 
-  const oidcClientServiceMock = {
-    utils: {
-      getAuthorizeUrl: jest.fn(),
-      wellKnownKeys: jest.fn(),
-      buildAuthorizeParameters: jest.fn(),
-      checkIdpDisabled: jest.fn(),
-    },
-    getEndSessionUrlFromProvider: jest.fn(),
-    getTokenFromProvider: jest.fn(),
-    getUserInfosFromProvider: jest.fn(),
-  };
-
-  const loggerServiceMock = getLoggerMock();
-
-  const spIdMock = 'spIdMock';
-  const idpIdMock = 'idpIdMock';
-  const stateMock = 'stateMock';
-  const nonceMock = 'nonceMock';
-  const idpIdTokenMock = 'idpIdTokenMock';
-  const oidcProviderLogoutFormMock =
-    '<form id="idLogout" method="post" action="https://endsession"><input type="hidden" name="xsrf" value="1233456azerty"/></form>';
-
-  const params = { uid: 'abcdefghijklmnopqrstuvwxyz0123456789' };
-  const interactionIdMock = 'interactionIdMockValue';
-  const acrMock = 'acrMockValue';
-  const spNameMock = 'some SP';
-
-  const sessionServiceMock = getSessionServiceMock();
-
-  const identityProviderServiceMock = {
-    getById: jest.fn(),
-    isActiveById: jest.fn(),
-  };
-
-  const trackingMock = {
-    track: jest.fn(),
-    TrackedEventsMap: {
-      FC_REQUESTED_IDP_USERINFO: Symbol('FC_REQUESTED_IDP_USERINFO'),
-    },
-  };
-
-  const configMock = {
-    configuration: { acrValues: ['acr'] },
-    defaultRedirectUri: 'https://hogwartsconnect.gouv.fr',
-    scope: 'some scope',
-    urlPrefix: '/api/v2',
-  };
-
-  const configServiceMock = {
-    get: jest.fn(),
-  };
-
-  const interactionDetailsResolved = {
-    params: {
-      acr_values: 'acr',
-      scope: 'toto titi',
-    },
-    prompt: Symbol('prompt'),
-    uid: Symbol('uid'),
-  };
-
-  const oidcAcrServiceMock = {
-    getFilteredAcrValues: jest.fn(),
-  };
-
-  const oidcProviderServiceMock = {
-    getInteraction: jest.fn(),
-  };
-
-  const providerIdMock = 'providerIdMockValue';
-
-  const identityMock = {
-    given_name: 'given_name',
-    sub: '1',
-    email: 'complete@identity.fr',
-    usual_name: 'usual_name',
-    uid: 'uid',
-  };
-
-  const sessionDataMock: Session = {
-    spId: spIdMock,
-    idpId: idpIdMock,
-    idpNonce: nonceMock,
-    idpState: stateMock,
-    interactionId: interactionIdMock,
-    spAcr: acrMock,
-    spIdentity: {} as IOidcIdentity,
-    spName: spNameMock,
-    idpIdToken: idpIdTokenMock,
-    oidcProviderLogoutForm: oidcProviderLogoutFormMock,
-  };
-
-  const trackingServiceMock: TrackingService = {
-    track: jest.fn(),
-    TrackedEventsMap: {
-      FC_FQDN_MISMATCH: Symbol('FC_FQDN_MISMATCH'),
-      IDP_CALLEDBACK: {},
-    },
-  } as unknown as TrackingService;
-
-  const coreServiceMock: Record<
-    keyof InstanceType<typeof CoreFcaService>,
-    jest.Mock
-  > = {
-    getIdentityProvidersByIds: jest.fn(),
-    redirectToIdp: jest.fn(),
-  };
-
-  const oidcClientConfigServiceMock = {
-    get: jest.fn(),
-  };
-
-  const cryptographyMock = {
-    genRandomString: jest.fn(),
-  };
-
-  const emailValidatorServiceMock = {
-    validate: jest.fn(),
-  };
-
-  const csrfTokenGuardMock = {
-    canActivate: () => true,
-  };
-
-  const coreFcaFqdnServiceMock = {
-    getFqdnFromEmail: jest.fn(),
-    getFqdnConfigFromEmail: jest.fn(),
-    isAllowedIdpForEmail: jest.fn(),
-  };
-
-  const identitySanitizerMock = {
-    sanitize: jest.fn(),
-  };
-
-  const validateDtoMock = jest.mocked(FcCommon.validateDto);
+  // Mocks for injected services
+  let configService: any;
+  let logger: any;
+  let oidcClient: any;
+  let oidcClientConfig: any;
+  let coreFca: any;
+  let oidcAcr: any;
+  let oidcProvider: any;
+  let identityProvider: any;
+  let sessionService: any;
+  let tracking: any;
+  let crypto: any;
+  let emailValidatorService: any;
+  let fqdnService: any;
+  let sanitizer: any;
+  let csrfService: any;
 
   beforeEach(async () => {
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
+    configService = { get: jest.fn() };
+    logger = { debug: jest.fn(), warning: jest.fn() };
+    oidcClient = {
+      utils: { wellKnownKeys: jest.fn() },
+      getTokenFromProvider: jest.fn(),
+      getUserInfosFromProvider: jest.fn(),
+      getEndSessionUrlFromProvider: jest.fn(),
+    };
+    oidcClientConfig = { get: jest.fn() };
+    coreFca = {
+      getIdentityProvidersByIds: jest.fn(),
+      redirectToIdp: jest.fn(),
+    };
+    oidcAcr = { getFilteredAcrValues: jest.fn() };
+    oidcProvider = { getInteraction: jest.fn() };
+    identityProvider = { getById: jest.fn() };
+    sessionService = {
+      set: jest.fn(),
+      get: jest.fn(),
+      destroy: jest.fn(),
+      duplicate: jest.fn(),
+    };
+    tracking = {
+      track: jest.fn(),
+      TrackedEventsMap: {
+        FC_REDIRECT_TO_IDP: 'FC_REDIRECT_TO_IDP',
+        FC_SESSION_TERMINATED: 'FC_SESSION_TERMINATED',
+        IDP_CALLEDBACK: 'IDP_CALLEDBACK',
+        FC_REQUESTED_IDP_TOKEN: 'FC_REQUESTED_IDP_TOKEN',
+        FC_REQUESTED_IDP_USERINFO: 'FC_REQUESTED_IDP_USERINFO',
+        FC_FQDN_MISMATCH: 'FC_FQDN_MISMATCH',
+      },
+    };
+    crypto = { genRandomString: jest.fn() };
+    emailValidatorService = { validate: jest.fn() };
+    fqdnService = {
+      getFqdnConfigFromEmail: jest.fn(),
+      getFqdnFromEmail: jest.fn(),
+      isAllowedIdpForEmail: jest.fn(),
+    };
+    sanitizer = { sanitize: jest.fn() };
+    csrfService = { renew: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OidcClientController],
       providers: [
-        OidcClientService,
-        LoggerService,
-        SessionService,
-        TrackingService,
         ConfigService,
-        IdentityProviderAdapterMongoService,
+        LoggerService,
+        OidcClientService,
+        OidcClientConfigService,
+        CoreFcaService,
         OidcAcrService,
         OidcProviderService,
+        IdentityProviderAdapterMongoService,
+        SessionService,
         TrackingService,
-        CoreFcaService,
-        OidcClientConfigService,
         CryptographyService,
         EmailValidatorService,
         CoreFcaFqdnService,
         IdentitySanitizer,
+        CsrfService,
       ],
     })
-      .overrideGuard(CsrfTokenGuard)
-      .useValue(csrfTokenGuardMock)
-      .overrideProvider(OidcClientService)
-      .useValue(oidcClientServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingMock)
       .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
-      .overrideProvider(IdentityProviderAdapterMongoService)
-      .useValue(identityProviderServiceMock)
-      .overrideProvider(OidcAcrService)
-      .useValue(oidcAcrServiceMock)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProviderServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingServiceMock)
-      .overrideProvider(CoreFcaService)
-      .useValue(coreServiceMock)
+      .useValue(configService)
+      .overrideProvider(LoggerService)
+      .useValue(logger)
+      .overrideProvider(OidcClientService)
+      .useValue(oidcClient)
       .overrideProvider(OidcClientConfigService)
-      .useValue(oidcClientConfigServiceMock)
+      .useValue(oidcClientConfig)
+      .overrideProvider(CoreFcaService)
+      .useValue(coreFca)
+      .overrideProvider(OidcAcrService)
+      .useValue(oidcAcr)
+      .overrideProvider(OidcProviderService)
+      .useValue(oidcProvider)
+      .overrideProvider(IdentityProviderAdapterMongoService)
+      .useValue(identityProvider)
+      .overrideProvider(SessionService)
+      .useValue(sessionService)
+      .overrideProvider(TrackingService)
+      .useValue(tracking)
       .overrideProvider(CryptographyService)
-      .useValue(cryptographyMock)
+      .useValue(crypto)
       .overrideProvider(EmailValidatorService)
-      .useValue(emailValidatorServiceMock)
+      .useValue(emailValidatorService)
       .overrideProvider(CoreFcaFqdnService)
-      .useValue(coreFcaFqdnServiceMock)
+      .useValue(fqdnService)
       .overrideProvider(IdentitySanitizer)
-      .useValue(identitySanitizerMock)
+      .useValue(sanitizer)
+      .overrideProvider(CsrfService)
+      .useValue(csrfService)
       .compile();
 
     controller = module.get<OidcClientController>(OidcClientController);
-
-    req = {
-      method: 'GET',
-      statusCode: 200,
-      params,
-    };
-    res = {
-      redirect: jest.fn(),
-      render: jest.fn(),
-    };
-
-    const idpMock: Partial<IdentityProviderMetadata> = {
-      name: 'nameValue',
-      title: 'titleValue',
-    };
-
-    identityProviderServiceMock.getById.mockReturnValue(idpMock);
-    sessionServiceMock.get.mockReturnValue(sessionDataMock);
-
-    oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
-      state: stateMock,
-      nonce: nonceMock,
-      scope: 'scopeMock',
-      providerUid: providerIdMock,
-      acr_values: 'acrMock',
-    });
-
-    oidcAcrServiceMock.getFilteredAcrValues.mockReturnValue(
-      interactionDetailsResolved.params.acr_values,
-    );
-
-    oidcProviderServiceMock.getInteraction.mockResolvedValue(
-      interactionDetailsResolved,
-    );
-
-    configServiceMock.get.mockReturnValue(configMock);
+    jest.clearAllMocks();
+    (validateDto as jest.Mock).mockReset();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+  describe('getIdentityProviderSelection', () => {
+    it('should render the identity provider selection view with proper response', async () => {
+      const res: Partial<Response> = { render: jest.fn() };
+      const email = 'user@example.com';
+      const userSession = {
+        get: jest.fn().mockReturnValue({ login_hint: email }),
+      } as unknown as ISessionService<UserSession>;
 
-  describe('getIdentityProviderSelection()', () => {
-    it('should render identity providers interaction page with default idp entitled "Autre"', async () => {
-      // Given
-      const hogwartsProviders = [
-        'ravenclaw_provider_id',
-        'slytherin_provider_id',
+      const fqdnConfig = {
+        acceptsDefaultIdp: true,
+        identityProviders: ['idp1', 'idp2'],
+      };
+      fqdnService.getFqdnConfigFromEmail.mockResolvedValue(fqdnConfig);
+
+      const providers = [
+        { title: 'Provider One', uid: 'idp1' },
+        { title: 'Provider Two', uid: 'default-idp' },
       ];
+      coreFca.getIdentityProvidersByIds.mockResolvedValue(providers);
 
-      const hogwardsFqdnConfig = {
-        fqdn: 'hogwarts.uk',
-        identityProviders: hogwartsProviders,
-        acceptsDefaultIdp: true,
-      };
-      sessionServiceMock.get.mockReturnValueOnce({
-        ...sessionDataMock,
-        login_hint: 'harry.potter@hogwarts.uk',
-      });
+      configService.get.mockReturnValue({ defaultIdpId: 'default-idp' });
+      csrfService.renew.mockReturnValue('csrf-token');
 
-      const defaultIdpId = 'gryffindor_provider_id';
-      configServiceMock.get.mockReturnValueOnce({
-        defaultIdpId: 'gryffindor_provider_id',
-      } satisfies Partial<InstanceType<typeof AppConfig>>);
-
-      coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValueOnce({
-        acceptsDefaultIdp: hogwardsFqdnConfig.acceptsDefaultIdp,
-        fqdn: hogwardsFqdnConfig.fqdn,
-        identityProviders: [
-          ...hogwardsFqdnConfig.identityProviders,
-          defaultIdpId,
-        ],
-      });
-
-      coreServiceMock.getIdentityProvidersByIds.mockResolvedValueOnce([
-        { title: 'Ravenclaw', uid: 'ravenclaw_provider_id' },
-        { title: 'Slytherin', uid: 'slytherin_provider_id' },
-        { title: 'Gryffindor', uid: 'gryffindor_provider_id' },
-      ]);
-
-      // When
       await controller.getIdentityProviderSelection(
-        'csrfMockValue',
-        res,
-        sessionServiceMock,
+        res as Response,
+        userSession,
       );
 
-      // Then
-      expect(coreServiceMock.getIdentityProvidersByIds).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(coreServiceMock.getIdentityProvidersByIds).toHaveBeenCalledWith([
-        ...hogwartsProviders,
-        defaultIdpId,
-      ]);
-
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-
-      expect(res.render).toHaveBeenCalledTimes(1);
+      // The provider with uid equal to defaultIdpId should have its title changed to "Autre"
+      expect(providers[1].title).toBe('Autre');
+      expect(sessionService.set).toHaveBeenCalledWith('Csrf', {
+        csrfToken: 'csrf-token',
+      });
       expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
-        csrfToken: 'csrfMockValue',
-        acceptsDefaultIdp: true,
-        email: 'harry.potter@hogwarts.uk',
-        providers: [
-          { title: 'Ravenclaw', uid: 'ravenclaw_provider_id' },
-          { title: 'Slytherin', uid: 'slytherin_provider_id' },
-          { title: 'Autre', uid: 'gryffindor_provider_id' },
-        ],
+        acceptsDefaultIdp: fqdnConfig.acceptsDefaultIdp,
+        csrfToken: 'csrf-token',
+        email,
+        providers,
       });
     });
   });
 
-  describe('redirectToIdp()', () => {
-    it('should redirect to a given identity provider', async () => {
-      // Given
-      const body = {
-        identityProviderUid: providerIdMock,
-        csrfToken: 'csrfMockValue',
-        email: 'harry.potter@hogwarts.uk',
-      };
+  describe('redirectToIdp', () => {
+    let req: any;
+    let res: Partial<Response>;
+    let userSession: any;
+    const email = 'user@example.com';
+    const interaction = { params: { acr_values: 'acr1' } };
 
-      // When
-      await controller.redirectToIdp(req, res, body, sessionServiceMock);
-
-      // Then
-      expect(coreServiceMock.redirectToIdp).toHaveBeenCalledTimes(1);
-      expect(coreServiceMock.redirectToIdp).toHaveBeenCalledWith(
-        res,
-        providerIdMock,
-        {
-          acr_values: interactionDetailsResolved.params.acr_values,
-          login_hint: body.email,
-        },
-      );
+    beforeEach(() => {
+      req = {};
+      res = { redirect: jest.fn() } as Partial<Response>;
+      userSession = {
+        set: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProvider.getInteraction.mockResolvedValue(interaction);
+      oidcAcr.getFilteredAcrValues.mockReturnValue('filtered-acr');
     });
 
-    it('should redirect to the unique identity provider', async () => {
-      // Given
-      const body = {
-        csrfToken: 'csrfMockValue',
-        email: 'harry.potter@hogwarts.uk',
-      };
-
-      coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValueOnce({
-        fqdn: 'hogwarts.uk',
-        identityProviders: [providerIdMock],
-        acceptsDefaultIdp: true,
+    it('should process redirection when identityProviderUid is provided', async () => {
+      const body = { email, identityProviderUid: 'idp123' } as any;
+      emailValidatorService.validate.mockResolvedValue(undefined);
+      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      identityProvider.getById.mockResolvedValue({
+        name: 'Idp Name',
+        title: 'Idp Title',
       });
 
-      // When
-      await controller.redirectToIdp(req, res, body, sessionServiceMock);
+      await controller.redirectToIdp(req, res as Response, body, userSession);
 
-      // Then
-      expect(coreServiceMock.redirectToIdp).toHaveBeenCalledTimes(1);
-      expect(coreServiceMock.redirectToIdp).toHaveBeenCalledWith(
-        res,
-        providerIdMock,
-        {
-          acr_values: interactionDetailsResolved.params.acr_values,
-          login_hint: body.email,
-        },
+      expect(emailValidatorService.validate).toHaveBeenCalledWith(email);
+      expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(email);
+      expect(oidcProvider.getInteraction).toHaveBeenCalledWith(req, res);
+      expect(oidcAcr.getFilteredAcrValues).toHaveBeenCalledWith('acr1');
+      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
+      expect(identityProvider.getById).toHaveBeenCalledWith('idp123');
+      expect(logger.debug).toHaveBeenCalledWith(
+        `Redirect "****@fqdn.com" to selected idp "Idp Title" (idp123)`,
       );
-    });
-
-    it('should redirect to identity provider selection page when no email was provided', async () => {
-      // Given
-      const body = {
-        csrfToken: 'csrfMockValue',
-        email: 'harry.potter@hogwarts.uk',
-      };
-
-      coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValueOnce({
-        fqdn: 'hogwarts.uk',
-        identityProviders: ['gryffindor_provider_id', 'slytherin_provider_id'],
-        acceptsDefaultIdp: true,
+      expect(tracking.track).toHaveBeenCalledWith('FC_REDIRECT_TO_IDP', {
+        req,
+        fqdn: 'fqdn.com',
+        idpId: 'idp123',
+        idpLabel: 'Idp Title',
+        idpName: 'Idp Name',
       });
-
-      // When
-      await controller.redirectToIdp(req, res, body, sessionServiceMock);
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(
-        '/api/v2/interaction/identity/select',
-      );
+      expect(coreFca.redirectToIdp).toHaveBeenCalledWith(res, 'idp123', {
+        login_hint: email,
+        acr_values: 'filtered-acr',
+      });
     });
 
-    it('should throw an CoreFcaAgentNoIdpException error when no default idp is found', async () => {
-      // Given
-      const body = {
-        csrfToken: 'csrfMockValue',
-        email: 'harry.potter@hogwarts.uk',
-      };
-
-      coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValueOnce({
-        fqdn: 'hogwarts.uk',
+    it('should throw an exception when no identity providers are available', async () => {
+      const body = { email, identityProviderUid: undefined } as any;
+      emailValidatorService.validate.mockResolvedValue(undefined);
+      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
         identityProviders: [],
-        acceptsDefaultIdp: false,
       });
 
-      // Then
       await expect(
-        controller.redirectToIdp(req, res, body, sessionServiceMock),
+        controller.redirectToIdp(req, res as Response, body, userSession),
       ).rejects.toThrow(CoreFcaAgentNoIdpException);
     });
+
+    it('should redirect to identity provider selection when multiple providers are available', async () => {
+      const body = { email, identityProviderUid: undefined } as any;
+      emailValidatorService.validate.mockResolvedValue(undefined);
+      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
+        identityProviders: ['idp1', 'idp2'],
+      });
+      configService.get.mockReturnValue({ urlPrefix: '/app' });
+
+      await controller.redirectToIdp(req, res as Response, body, userSession);
+
+      expect(logger.debug).toHaveBeenCalledWith(
+        '2 identity providers matching for "****@fqdn.com"',
+      );
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/app' + CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
+      );
+    });
+
+    it('should process redirection when a single identity provider is available and no identityProviderUid is provided', async () => {
+      const body = { email, identityProviderUid: undefined } as any;
+      emailValidatorService.validate.mockResolvedValue(undefined);
+      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
+        identityProviders: ['idp-single'],
+      });
+      identityProvider.getById.mockResolvedValue({
+        name: 'Single IdP',
+        title: 'Single Title',
+      });
+
+      await controller.redirectToIdp(req, res as Response, body, userSession);
+
+      expect(identityProvider.getById).toHaveBeenCalledWith('idp-single');
+      expect(logger.debug).toHaveBeenCalledWith(
+        'Redirect "****@fqdn.com" to unique idp "Single Title" (idp-single)',
+      );
+      expect(tracking.track).toHaveBeenCalledWith('FC_REDIRECT_TO_IDP', {
+        req,
+        fqdn: 'fqdn.com',
+        idpId: 'idp-single',
+        idpLabel: 'Single Title',
+        idpName: 'Single IdP',
+      });
+      expect(coreFca.redirectToIdp).toHaveBeenCalledWith(res, 'idp-single', {
+        login_hint: email,
+        acr_values: 'filtered-acr',
+      });
+    });
   });
 
-  describe('getWellKnownKeys()', () => {
-    it('should call oidc-client-service for wellKnownKeys', async () => {
-      // When
-      await controller.getWellKnownKeys();
-      // Then
-      expect(oidcClientServiceMock.utils.wellKnownKeys).toHaveBeenCalledTimes(
-        1,
-      );
+  describe('getWellKnownKeys', () => {
+    it('should return well known keys', async () => {
+      oidcClient.utils.wellKnownKeys.mockResolvedValue('keys');
+      const result = await controller.getWellKnownKeys();
+      expect(result).toBe('keys');
+      expect(oidcClient.utils.wellKnownKeys).toHaveBeenCalled();
     });
   });
 
   describe('logoutFromIdp', () => {
-    const endsessionurlMock =
-      'https://endsessionurl?id_token_hint=ureadable0123string&post_logout_redirect_uri=https://redirect-me-amigo-logout-callback&state=second-unreadble_string';
-    beforeEach(() => {
-      oidcClientServiceMock.getEndSessionUrlFromProvider.mockReturnValueOnce(
-        endsessionurlMock,
+    it('should redirect to the end session URL', async () => {
+      const res: Partial<Response> = { redirect: jest.fn() };
+      const userSession = {
+        get: jest
+          .fn()
+          .mockReturnValue({ idpIdToken: 'token', idpId: 'idp123' }),
+      } as unknown as ISessionService<UserSession>;
+      oidcClientConfig.get.mockResolvedValue({ stateLength: 10 });
+      crypto.genRandomString.mockReturnValue('random-state');
+      oidcClient.getEndSessionUrlFromProvider.mockResolvedValue(
+        'end-session-url',
       );
 
-      oidcClientConfigServiceMock.get.mockReturnValue({ stateLength: 32 });
-      cryptographyMock.genRandomString.mockReturnValueOnce(stateMock);
-    });
+      await controller.logoutFromIdp(res as Response, userSession);
 
-    it('should call oidc config', async () => {
-      // When
-      await controller.logoutFromIdp(res, sessionServiceMock);
-
-      // Then
-      expect(oidcClientConfigServiceMock.get).toHaveBeenCalledTimes(1);
-    });
-
-    it('should generate a random state of 32 characters', async () => {
-      // Given
-      const randSize = 32;
-
-      // When
-      await controller.logoutFromIdp(res, sessionServiceMock);
-
-      // Then
-      expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
-      expect(cryptographyMock.genRandomString).toHaveBeenCalledWith(randSize);
-    });
-
-    it('should call sessionOidc getter', async () => {
-      // When
-      await controller.logoutFromIdp(res, sessionServiceMock);
-
-      // Then
-      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call oidcClient getEndSessionUrlFromProvider', async () => {
-      // When
-      await controller.logoutFromIdp(res, sessionServiceMock);
-
-      // Then
-      expect(
-        oidcClientServiceMock.getEndSessionUrlFromProvider,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        oidcClientServiceMock.getEndSessionUrlFromProvider,
-      ).toHaveBeenCalledWith(idpIdMock, stateMock, idpIdTokenMock);
-    });
-
-    it('should redirect the user to the endSessionUrl', async () => {
-      // When
-      await controller.logoutFromIdp(res, sessionServiceMock);
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(endsessionurlMock);
+      expect(oidcClientConfig.get).toHaveBeenCalled();
+      expect(crypto.genRandomString).toHaveBeenCalledWith(10);
+      expect(oidcClient.getEndSessionUrlFromProvider).toHaveBeenCalledWith(
+        'idp123',
+        'random-state',
+        'token',
+      );
+      expect(res.redirect).toHaveBeenCalledWith('end-session-url');
     });
   });
 
   describe('redirectAfterIdpLogout', () => {
-    it('should call oidc session getter', async () => {
-      // When
-      await controller.redirectAfterIdpLogout(req, res, sessionServiceMock);
+    it('should track session termination, destroy the session and render the logout form', async () => {
+      const req = {} as Request;
+      const res: Partial<Response> = {};
+      const userSession = {
+        get: jest.fn().mockReturnValue({ oidcProviderLogoutForm: 'form-data' }),
+        destroy: jest.fn().mockResolvedValue(undefined),
+      } as unknown as ISessionService<UserSession>;
 
-      // Then
-      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call session destroy', async () => {
-      // When
-      await controller.redirectAfterIdpLogout(req, res, sessionServiceMock);
-
-      // Then
-      expect(sessionServiceMock.destroy).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.destroy).toHaveBeenCalledWith(res);
-    });
-
-    it('should return oidcProviderLogoutForm', async () => {
-      // When
       const result = await controller.redirectAfterIdpLogout(
         req,
         res,
-        sessionServiceMock,
+        userSession,
       );
-
-      // Then
-      expect(result).toEqual({
-        oidcProviderLogoutForm: oidcProviderLogoutFormMock,
+      expect(tracking.track).toHaveBeenCalledWith('FC_SESSION_TERMINATED', {
+        req,
       });
+      expect(userSession.destroy).toHaveBeenCalled();
+      expect(result).toEqual({ oidcProviderLogoutForm: 'form-data' });
     });
   });
 
-  describe('getOidcCallback()', () => {
-    const accessTokenMock = Symbol('accesToken');
-    const acrMock = Symbol('acr');
-    const amrMock = Symbol('amr');
-
-    const tokenParamsMock: TokenParams = {
-      state: stateMock,
-      nonce: nonceMock,
+  describe('getOidcCallback', () => {
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let userSession: any;
+    const sessionData = {
+      idpId: 'idp123',
+      idpNonce: 'nonce123',
+      idpState: 'state123',
+      interactionId: 'interaction123',
+      spId: 'sp123',
+      login_hint: 'user@example.com',
     };
-
-    const userInfoParamsMock = {
-      accessToken: accessTokenMock,
-      idpId: idpIdMock,
-    };
-
-    const identityExchangeMock = {
-      idpAccessToken: accessTokenMock,
-      idpAcr: acrMock,
-      idpIdentity: identityMock,
-      amr: amrMock,
-    };
-    const redirectMock = `/api/v2/interaction/${interactionIdMock}/verify`;
 
     beforeEach(() => {
-      res = {
-        redirect: jest.fn(),
+      req = {} as Request;
+      res = { redirect: jest.fn() } as Partial<Response>;
+      userSession = {
+        duplicate: jest.fn().mockResolvedValue(undefined),
+        get: jest.fn().mockReturnValue(sessionData),
+        set: jest.fn(),
       };
-
-      validateDtoMock.mockResolvedValue([]);
-
-      oidcClientServiceMock.getTokenFromProvider.mockReturnValueOnce({
-        accessToken: accessTokenMock,
-        acr: acrMock,
-        amr: amrMock,
+      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      tracking.track.mockResolvedValue(undefined);
+      oidcClient.getTokenFromProvider.mockResolvedValue({
+        accessToken: 'access-token',
+        idToken: 'id-token',
+        acr: 'acr-value',
+        amr: 'amr-value',
       });
-
-      oidcClientServiceMock.getUserInfosFromProvider.mockReturnValueOnce(
-        identityMock,
-      );
-
-      identitySanitizerMock.sanitize.mockResolvedValue({
-        given_name: 'given_name',
-        sub: '1',
-        email: 'complete@identity.fr',
-        usual_name: 'usual_name',
-        uid: 'uid',
+      oidcClient.getUserInfosFromProvider.mockResolvedValue({
+        email: 'user@example.com',
+        sub: 'sub123',
       });
+      (validateDto as jest.Mock).mockResolvedValue([]);
+      fqdnService.isAllowedIdpForEmail.mockResolvedValue(true);
+      configService.get.mockReturnValue({ urlPrefix: '/app' });
     });
 
-    it('should duplicate current session', async () => {
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-      // Then
-      expect(sessionServiceMock.duplicate).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.duplicate).toHaveBeenCalledWith(
-        res,
-        GetOidcCallbackCoreSessionDto,
+    it('should process OIDC callback when identity is valid (no validation errors)', async () => {
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
       );
-    });
 
-    it('should call token with providerId', async () => {
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // Then
-      expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
-        1,
+      expect(userSession.duplicate).toHaveBeenCalled();
+      expect(userSession.get).toHaveBeenCalled();
+      // Expect nonce and state removal
+      expect(userSession.set).toHaveBeenCalledWith({
+        idpNonce: null,
+        idpState: null,
+      });
+      expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(
+        'user@example.com',
       );
-      expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
-        idpIdMock,
-        tokenParamsMock,
+      expect(tracking.track).toHaveBeenCalledWith('IDP_CALLEDBACK', {
         req,
-        { sp_id: spIdMock },
+        fqdn: 'fqdn.com',
+        email: 'user@example.com',
+      });
+      expect(oidcClient.getTokenFromProvider).toHaveBeenCalledWith(
+        'idp123',
+        { state: 'state123', nonce: 'nonce123' },
+        req,
+        { sp_id: 'sp123' },
+      );
+      expect(tracking.track).toHaveBeenCalledWith('FC_REQUESTED_IDP_TOKEN', {
+        req,
+        fqdn: 'fqdn.com',
+        email: 'user@example.com',
+      });
+      expect(oidcClient.getUserInfosFromProvider).toHaveBeenCalledWith(
+        { accessToken: 'access-token', idpId: 'idp123' },
+        req,
+      );
+      // Called twice: once for login_hint and once for identity email
+      expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(
+        'user@example.com',
+      );
+      expect(tracking.track).toHaveBeenCalledWith('FC_REQUESTED_IDP_USERINFO', {
+        req,
+        fqdn: 'fqdn.com',
+        email: 'user@example.com',
+        idpSub: 'sub123',
+      });
+      expect(validateDto).toHaveBeenCalled();
+      expect(fqdnService.isAllowedIdpForEmail).toHaveBeenCalledWith(
+        'idp123',
+        'user@example.com',
+      );
+      expect(userSession.set).toHaveBeenCalledWith({
+        amr: 'amr-value',
+        idpIdToken: 'id-token',
+        idpAcr: 'acr-value',
+        idpIdentity: { email: 'user@example.com', sub: 'sub123' },
+      });
+      expect(configService.get).toHaveBeenCalledWith('App');
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/app/interaction/interaction123/verify',
       );
     });
 
-    it('should call userinfo with acesstoken, dto and context', async () => {
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
+    it('should process OIDC callback when identity validation errors occur (sanitization branch and FQDN mismatch)', async () => {
+      // Simulate errors so that the sanitizer is called
+      (validateDto as jest.Mock).mockResolvedValue(['error']);
+      const sanitizedIdentity = {
+        email: 'sanitized@example.com',
+        sub: 'sub-sanitized',
+      };
+      sanitizer.sanitize.mockResolvedValue(sanitizedIdentity);
+      fqdnService.isAllowedIdpForEmail.mockResolvedValue(false);
 
-      // Then
-      expect(
-        oidcClientServiceMock.getUserInfosFromProvider,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        oidcClientServiceMock.getUserInfosFromProvider,
-      ).toHaveBeenCalledWith(userInfoParamsMock, req);
-    });
-
-    it('should call not the sanitizer if validation has succeed', async () => {
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // Then
-      expect(identitySanitizerMock.sanitize).toHaveBeenCalledTimes(0);
-    });
-
-    it('should call the sanitizer if validation has failed', async () => {
-      // Given
-      const validateDtoMock = jest.mocked(FcCommon.validateDto);
-      const errorsMock = [
-        {
-          property: 'email',
-          constraints: { isEmail: 'email must be an email' },
-        },
-      ];
-      validateDtoMock.mockResolvedValue(errorsMock);
-
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // Then
-      expect(identitySanitizerMock.sanitize).toHaveBeenCalledTimes(1);
-      expect(identitySanitizerMock.sanitize).toHaveBeenCalledWith(
-        identityMock,
-        idpIdMock,
-        errorsMock,
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
       );
-    });
 
-    it('should track fqdn missmatch if detected', async () => {
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // Then
-      expect(trackingServiceMock.track).toHaveBeenCalledTimes(4);
-      expect(trackingServiceMock.track).toHaveBeenCalledWith(
-        trackingServiceMock.TrackedEventsMap.FC_FQDN_MISMATCH,
-        { req },
+      expect(sanitizer.sanitize).toHaveBeenCalledWith(
+        { email: 'user@example.com', sub: 'sub123' },
+        'idp123',
+        ['error'],
       );
-    });
-
-    it('should create an object with cloned values', async () => {
-      // Given
-      const cloneDeepMock = jest.mocked(cloneDeep);
-
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // Then
-      expect(cloneDeepMock).toHaveBeenCalledTimes(1);
-      expect(cloneDeepMock).toHaveBeenLastCalledWith(identityExchangeMock);
-    });
-
-    it('should set session with identity result.', async () => {
-      // Given
-      const clonedIdentityMock = Symbol();
-      jest.mocked(cloneDeep).mockReturnValueOnce(clonedIdentityMock);
-
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // assert
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith(clonedIdentityMock);
-    });
-
-    it('should track empty email.', async () => {
-      // Given
-      oidcClientServiceMock.getUserInfosFromProvider
-        .mockReset()
-        .mockReturnValueOnce({});
-
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // assert
-      expect(trackingServiceMock.track).toHaveBeenCalledTimes(4);
-      expect(trackingServiceMock.track).toHaveBeenCalledWith(
-        trackingServiceMock.TrackedEventsMap.FC_REQUESTED_IDP_USERINFO,
-        { req, fqdn: undefined },
+      expect(logger.warning).toHaveBeenCalledWith(
+        'Identity from "idp123" using "***@fqdn.com" is not allowed',
       );
-    });
-
-    it('should redirect user after token and userinfo received and saved', async () => {
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(redirectMock);
+      expect(tracking.track).toHaveBeenCalledWith('FC_FQDN_MISMATCH', {
+        req,
+        fqdn: 'fqdn.com',
+      });
+      expect(userSession.set).toHaveBeenCalledWith({
+        amr: 'amr-value',
+        idpIdToken: 'id-token',
+        idpAcr: 'acr-value',
+        idpIdentity: sanitizedIdentity,
+      });
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/app/interaction/interaction123/verify',
+      );
     });
   });
 });

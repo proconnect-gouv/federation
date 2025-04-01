@@ -45,6 +45,14 @@ describe('CoreFcaFqdnService', () => {
   });
 
   describe('getFqdnFromEmail', () => {
+    it('should only return the undefined from an undefined email address', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail(undefined);
+
+      // Then
+      expect(fqdn).toBe(undefined);
+    });
+
     it('should only return the full qualified domain name from an email address', () => {
       // When
       const fqdn = service.getFqdnFromEmail('hermione.granger@hogwards.uk');

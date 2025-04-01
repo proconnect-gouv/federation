@@ -4,10 +4,10 @@ import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept } from '@fc/common';
+import { UserSession } from '@fc/core-fca';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { IdentityProviderMetadata, IOidcIdentity } from '@fc/oidc';
-import { Session } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { getSessionServiceMock } from '@mocks/session';
@@ -32,7 +32,7 @@ describe('CoreVerifyService', () => {
     sub: 'some idpSub',
   } as PartialExcept<IOidcIdentity, 'sub'>;
 
-  const sessionDataMock: Session = {
+  const sessionDataMock: UserSession = {
     idpId: '42',
     idpAcr: 'eidas3',
     idpName: 'my favorite Idp',

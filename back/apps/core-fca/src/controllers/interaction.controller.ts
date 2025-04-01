@@ -175,7 +175,7 @@ export class InteractionController {
       return this.coreFca.redirectToIdp(res, idpHint, { acr_values: spAcr });
     }
 
-    const fqdn = this.fqdnService.getFqdnFromEmail(loginHint ?? '');
+    const fqdn = this.fqdnService.getFqdnFromEmail(loginHint);
     const { FC_SHOWED_IDP_CHOICE } = this.tracking.TrackedEventsMap;
     await this.tracking.track(FC_SHOWED_IDP_CHOICE, { ...eventContext, fqdn });
 

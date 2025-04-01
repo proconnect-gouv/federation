@@ -169,6 +169,14 @@ describe('SessionLocalStorageService', () => {
       // Then
       expect(result).toBe(sessionMock.data[moduleName]);
     });
+
+    it('should return value corresponding to the session data if there is NO module argument', () => {
+      // When
+      const result = service.get();
+
+      // Then
+      expect(result).toBe(sessionMock.data);
+    });
   });
 
   describe('set()', () => {

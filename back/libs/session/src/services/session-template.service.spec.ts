@@ -11,9 +11,6 @@ import { SessionService } from './session.service';
 import { SessionTemplateService } from './session-template.service';
 
 jest.mock('lodash');
-jest.mock('../helper', () => ({
-  extractSessionFromRequest: jest.fn(),
-}));
 
 const sessionServiceMock = getSessionServiceMock();
 
