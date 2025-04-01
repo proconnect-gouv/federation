@@ -2,10 +2,9 @@ services:
   partner-api:
     hostname: partner-api
     build:
-      context: '${WORKING_DIR}'
-      dockerfile: '${WORKING_DIR}/builds/partner-api/Dockerfile'
-      args:
-        PYTHON_VERSION: '3.7'
+      # dockerfile: '${WORKING_DIR}/builds/partner-api/Dockerfile'
+      context: '${VOLUMES_DIR}/src/proconnect-federation'
+      dockerfile: 'docker/builds/partner-api/Dockerfile'
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -27,6 +26,11 @@ services:
       - fc
       - data
     init: true
-    command: 'uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4'
     ports:
       - '8000:8000'
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
