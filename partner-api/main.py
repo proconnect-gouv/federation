@@ -102,6 +102,7 @@ async def healthz():
     app.collection = app.db.get_collection("client")
     print(app.collection)
     print('connected to db')
+    return "ok"
 
     # cursor = app.collection.find({"email": request.state.email})
     # elts = await cursor.to_list(None)
@@ -109,17 +110,12 @@ async def healthz():
     # ping_response = await app.db.command("ping")
     # if int(ping_response["ok"]) != 1:  # pragma: no cover
     #     raise HTTPException(status_code=500, detail="Database connection failed")
-    return "ok"
 
 @app.get("/api/oidc_clients")
 @encode_response
 async def list_oidc_clients(request: Request):
-
     app.db = app.mongodb_client.get_default_database()
     app.collection = app.db.get_collection("client")
-    print(app.collection)
-    print('connected to db')
-
     cursor = app.collection.find({"email": request.state.email})
     elts = await cursor.to_list(None)
     return elts

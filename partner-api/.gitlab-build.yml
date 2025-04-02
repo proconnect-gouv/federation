@@ -1,0 +1,25 @@
+.default-job:
+  image: python:3-alpine
+  services:
+    - docker:27-dind
+  tags:
+    - build
+  environment:
+    name: build-fca
+
+build-partner-api:
+  extends: .default-job
+  stage: 'Build PartnerApi'
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $PC_DOCKER_REGISTRY
+    - ls -lah partner-api/pyproject.toml # Debug: Ensure the file exists
+    - docker build --compress --no-cache -f docker/builds/partner-api/Dockerfile -t ${PC_DOCKER_REGISTRY}/api-partner:latest .
+    # TODO: Add a specific tag for the version
+    - docker push ${PC_DOCKER_REGISTRY}/api-partner:latest
+    - docker logout $PC_DOCKER_REGISTRY
+  only:
+    - tags
+  variables:
+    FC_ROOT: '${CI_PROJECT_DIR}/proconnect'
+    PC_DOCKER_REGISTRY: 'registry.gitlab.dev-franceconnect.fr/proconnect/proconnect-federation'
+    DOCKER_DRIVER: overlay2

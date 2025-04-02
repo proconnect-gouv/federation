@@ -4,12 +4,14 @@ stages:
   - test # we need to use a stage named "test" cf https://docs.gitlab.com/ee/user/application_security/sast/#requirements
   - Cache
   - Review
+  - Build PartnerApi
   - Build Back
   - Tag Back
   - Post-deploy
 
 include:
-  - '/back/.gitlab-ci.yml'
+  - 'partner-api/.gitlab-build.yml'
+  - 'back/.gitlab-ci.yml'
   - '.gitlab-ci-security-scanning.yml'
 
 variables:
