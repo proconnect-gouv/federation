@@ -13,7 +13,7 @@ build-partner-api:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $PC_DOCKER_REGISTRY
     - ls -lah partner-api/pyproject.toml # Debug: Ensure the file exists
-    - docker build --compress --no-cache -f docker/builds/partner-api/Dockerfile.prod -t ${PC_DOCKER_REGISTRY}/api-partner:latest .
+    - docker build --compress --no-cache -f docker/builds/partner-api/Dockerfile.prod -t ${PC_DOCKER_REGISTRY}/api-partner:latest ./partner-api
     # TODO: Add a specific tag for the version
     - docker push ${PC_DOCKER_REGISTRY}/api-partner:latest
     - docker logout $PC_DOCKER_REGISTRY

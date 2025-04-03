@@ -2,8 +2,8 @@ FROM python:3.13.2-slim
 
 WORKDIR /var/www/app
 
-# Get prypject.toml from context
-COPY partner-api/ .
+# Get prypoject.toml from context
+COPY pyproject.toml .
 
 # Install dependencies
 RUN pip install .
