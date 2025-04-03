@@ -23,6 +23,14 @@ CONFIG = {
     "max_timestamp_diff": 300,  # 5 minutes
 }
 
+print(CONFIG["mongodb_url"])
+print(CONFIG["mongodb_username"])
+print(CONFIG["mongodb_password"][:3])
+print(CONFIG["mongodb_certificate_filepath"])
+print(CONFIG["mongodb_ca_filepath"])
+print(CONFIG["api_secret"][:3])
+print(CONFIG["max_timestamp_diff"])
+
 class OidcClient(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -33,6 +41,7 @@ class OidcClient(BaseModel):
     id_token_signed_response_alg: Literal["RS256", "ES256", "HS256"] | None = None
     userinfo_signed_response_alg: Literal["RS256", "ES256", "HS256"] | None = None
     active: bool | None = None
+
 
 def validate_objectid(_id: str) -> ObjectId:
     try:
@@ -53,75 +62,50 @@ async def lifespan(app: FastAPI):
         tlsCAFile=CONFIG["mongodb_ca_filepath"],
         tlsCertificateKeyFile=CONFIG["mongodb_certificate_filepath"],
     )
+
     app.db = app.mongodb_client.get_default_database()
     app.collection = app.db.get_collection("client")
     ping_response = {"ok": 0}
     # Wait for database to be ready
-    for _ in range(10):
+    for i in range(10):
         try:
+            print(i)
             ping_response = await app.db.command("ping")
+            print(ping_response)
             break
-        except:  # pragma: no cover
+        except Exception as e:  # pragma: no cover
+            print(e)
             await asyncio.sleep(1)
     if int(ping_response["ok"]) != 1:  # pragma: no cover
         raise Exception("Problem connecting to database.")
+    print("yield")
     yield
     # Shutdown
     app.mongodb_client.close()
 
 
 app = FastAPI(lifespan=lifespan)
-# app = FastAPI()
 
 # Middleware to verify signature on /api/*
 app.middleware("http")(lambda request, call_next: verify_signature(request, call_next, CONFIG))
 
-@app.get("/")
-async def read_root():
-    client = AsyncIOMotorClient("mongodb://mongo-fca-low:27017/core-fca-low?authSource=core-fca-low&directConnection=true")
-    try:
-        await client.admin.command("ping")  # Run a simple ping command
-        print("Connected to MongoDB successfully!")
-    except Exception as e:
-        print(f"MongoDB connection error: {e}")
-    return {"Hello": "World"}
-
-# todo: delete after debugging
-@app.get("/test-debug")
-async def healthz():
-    print('healthz')
-    print(os.getenv("MONGODB_URL"))
-    app.mongodb_client = AsyncIOMotorClient(
-        CONFIG["mongodb_url"],
-        username=CONFIG["mongodb_username"],
-        password=CONFIG["mongodb_password"],
-        tls=True,
-        tlsCAFile=CONFIG["mongodb_ca_filepath"],
-        tlsCertificateKeyFile=CONFIG["mongodb_certificate_filepath"],
-    )
-    app.db = app.mongodb_client.get_default_database()
-    app.collection = app.db.get_collection("client")
-    print(app.collection)
-    print('connected to db')
-    return "ok"
 
 @app.get("/healthz")
 async def healthz():
-    cursor = app.collection.find({"email": request.state.email})
-    elts = await cursor.to_list(None)
-    print(elts)
     ping_response = await app.db.command("ping")
+    print(ping_response)
     if int(ping_response["ok"]) != 1:  # pragma: no cover
         raise HTTPException(status_code=500, detail="Database connection failed")
+    return "ok"
+
 
 @app.get("/api/oidc_clients")
 @encode_response
 async def list_oidc_clients(request: Request):
-    app.db = app.mongodb_client.get_default_database()
-    app.collection = app.db.get_collection("client")
     cursor = app.collection.find({"email": request.state.email})
     elts = await cursor.to_list(None)
     return elts
+
 
 @app.post("/api/oidc_clients")
 @encode_response
@@ -133,16 +117,13 @@ async def create_oidc_client(data: OidcClient, request: Request):
             "createdAt": datetime.now(),
             "updatedAt": datetime.now(),
             "updatedBy": "espace-partenaires",
-
             # TODO: fix these fields?
             "title": "Nouvelle application",
             "site": ["https://site.com"],
-
             # Generate IDs in correct format
             "key": secrets.token_hex(32),  # 64 hex chars
             "client_secret": secrets.token_hex(32),  # 64 hex chars
             "entityId": secrets.token_hex(32),  # 64 hex chars
-
             "credentialsFlow": False,
             "claims": ["amr"],
             "IPServerAddressesAndRanges": ["1.1.1.1"],
@@ -168,6 +149,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
     )
     result = await app.collection.insert_one(d)
     if not result.acknowledged:  # pragma: no cover
+        print("create_oidc_client update error")
         raise HTTPException(status_code=500)
     return d
 
@@ -177,6 +159,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
 async def get_oidc_client(id: str, request: Request):
     oid = validate_objectid(id)
     if not (elt := await app.collection.find_one({"_id": oid, "email": request.state.email})):
+        print(f"get_oidc_client : {request.state.email}")
         raise HTTPException(status_code=404)
     return elt
 
@@ -196,6 +179,7 @@ async def update_oidc_client(id: str, updates: OidcClient, request: Request):
         {"_id": oid, "email": request.state.email}, {"$set": d}
     )
     if not result.matched_count:
+        print(f"HTTP 404 update_oidc_client : {request.matched_count}")
         raise HTTPException(status_code=404)
     updated = await app.collection.find_one({"_id": oid})
     return updated
