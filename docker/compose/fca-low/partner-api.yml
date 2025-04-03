@@ -2,7 +2,6 @@ services:
   partner-api:
     hostname: partner-api
     build:
-      # dockerfile: '${WORKING_DIR}/builds/partner-api/Dockerfile'
       context: '${VOLUMES_DIR}/src/proconnect-federation'
       dockerfile: 'docker/builds/partner-api/Dockerfile'
     user: ${CURRENT_UID}

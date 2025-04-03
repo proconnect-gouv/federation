@@ -70,8 +70,8 @@ async def lifespan(app: FastAPI):
     app.mongodb_client.close()
 
 
-# app = FastAPI(lifespan=lifespan)
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
+# app = FastAPI()
 
 # Middleware to verify signature on /api/*
 app.middleware("http")(lambda request, call_next: verify_signature(request, call_next, CONFIG))
@@ -86,7 +86,8 @@ async def read_root():
         print(f"MongoDB connection error: {e}")
     return {"Hello": "World"}
 
-@app.get("/healthz")
+# todo: delete after debugging
+@app.get("/test-debug")
 async def healthz():
     print('healthz')
     print(os.getenv("MONGODB_URL"))
@@ -104,12 +105,14 @@ async def healthz():
     print('connected to db')
     return "ok"
 
-    # cursor = app.collection.find({"email": request.state.email})
-    # elts = await cursor.to_list(None)
-    # print(elts)
-    # ping_response = await app.db.command("ping")
-    # if int(ping_response["ok"]) != 1:  # pragma: no cover
-    #     raise HTTPException(status_code=500, detail="Database connection failed")
+@app.get("/healthz")
+async def healthz():
+    cursor = app.collection.find({"email": request.state.email})
+    elts = await cursor.to_list(None)
+    print(elts)
+    ping_response = await app.db.command("ping")
+    if int(ping_response["ok"]) != 1:  # pragma: no cover
+        raise HTTPException(status_code=500, detail="Database connection failed")
 
 @app.get("/api/oidc_clients")
 @encode_response
