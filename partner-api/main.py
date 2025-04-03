@@ -26,14 +26,6 @@ CONFIG = {
 
 logger = logging.getLogger("gunicorn.error")
 
-logger.info(CONFIG["mongodb_url"])
-logger.info(CONFIG["mongodb_username"])
-logger.info(CONFIG["mongodb_password"][:3])
-logger.info(CONFIG["mongodb_certificate_filepath"])
-logger.info(CONFIG["mongodb_ca_filepath"])
-logger.info(CONFIG["api_secret"][:3])
-logger.info(CONFIG["max_timestamp_diff"])
-
 class OidcClient(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -95,16 +87,6 @@ app.middleware("http")(lambda request, call_next: verify_signature(request, call
 
 @app.get("/healthz")
 async def healthz():
-    logger.info(CONFIG["mongodb_url"])
-    logger.info(CONFIG["mongodb_username"])
-    logger.info(CONFIG["mongodb_password"][:3])
-    logger.info(CONFIG["mongodb_certificate_filepath"])
-    logger.info(CONFIG["mongodb_ca_filepath"])
-    logger.info(CONFIG["api_secret"][:3])
-    logger.info(CONFIG["max_timestamp_diff"])
-
-    print(CONFIG)
-
     ping_response = await app.db.command("ping")
     logger.info(ping_response)
     if int(ping_response["ok"]) != 1:  # pragma: no cover
