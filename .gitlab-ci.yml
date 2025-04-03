@@ -11,8 +11,8 @@ stages:
 
 include:
   - 'partner-api/.gitlab-build.yml'
-  - 'back/.gitlab-ci.yml'
-  - '.gitlab-ci-security-scanning.yml'
+  # - 'back/.gitlab-ci.yml'
+  # - '.gitlab-ci-security-scanning.yml'
 
 variables:
   DOCKER_BUILDKIT: 1
