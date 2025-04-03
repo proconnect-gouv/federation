@@ -1,4 +1,6 @@
-FROM python:3.13.2-slim
+FROM python:3-alpine
+
+RUN apk add curl
 
 WORKDIR /var/www/app
 
