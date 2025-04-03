@@ -11,6 +11,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, ConfigDict, HttpUrl, constr
 
 from middleware import encode_response, verify_signature
+import logging
 
 # All config in one place
 CONFIG = {
@@ -23,13 +24,13 @@ CONFIG = {
     "max_timestamp_diff": 300,  # 5 minutes
 }
 
-print(CONFIG["mongodb_url"])
-print(CONFIG["mongodb_username"])
-print(CONFIG["mongodb_password"][:3])
-print(CONFIG["mongodb_certificate_filepath"])
-print(CONFIG["mongodb_ca_filepath"])
-print(CONFIG["api_secret"][:3])
-print(CONFIG["max_timestamp_diff"])
+logging.info(CONFIG["mongodb_url"])
+logging.info(CONFIG["mongodb_username"])
+logging.info(CONFIG["mongodb_password"][:3])
+logging.info(CONFIG["mongodb_certificate_filepath"])
+logging.info(CONFIG["mongodb_ca_filepath"])
+logging.info(CONFIG["api_secret"][:3])
+logging.info(CONFIG["max_timestamp_diff"])
 
 class OidcClient(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -69,16 +70,16 @@ async def lifespan(app: FastAPI):
     # Wait for database to be ready
     for i in range(10):
         try:
-            print(i)
+            logging.info(i)
             ping_response = await app.db.command("ping")
-            print(ping_response)
+            logging.info(ping_response)
             break
         except Exception as e:  # pragma: no cover
-            print(e)
+            logging.info(e)
             await asyncio.sleep(1)
     if int(ping_response["ok"]) != 1:  # pragma: no cover
         raise Exception("Problem connecting to database.")
-    print("yield")
+    logging.info("yield")
     yield
     # Shutdown
     app.mongodb_client.close()
@@ -93,7 +94,7 @@ app.middleware("http")(lambda request, call_next: verify_signature(request, call
 @app.get("/healthz")
 async def healthz():
     ping_response = await app.db.command("ping")
-    print(ping_response)
+    logging.info(ping_response)
     if int(ping_response["ok"]) != 1:  # pragma: no cover
         raise HTTPException(status_code=500, detail="Database connection failed")
     return "ok"
@@ -149,7 +150,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
     )
     result = await app.collection.insert_one(d)
     if not result.acknowledged:  # pragma: no cover
-        print("create_oidc_client update error")
+        logging.info("create_oidc_client update error")
         raise HTTPException(status_code=500)
     return d
 
@@ -159,7 +160,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
 async def get_oidc_client(id: str, request: Request):
     oid = validate_objectid(id)
     if not (elt := await app.collection.find_one({"_id": oid, "email": request.state.email})):
-        print(f"get_oidc_client : {request.state.email}")
+        logging.info(f"get_oidc_client : {request.state.email}")
         raise HTTPException(status_code=404)
     return elt
 
@@ -179,7 +180,7 @@ async def update_oidc_client(id: str, updates: OidcClient, request: Request):
         {"_id": oid, "email": request.state.email}, {"$set": d}
     )
     if not result.matched_count:
-        print(f"HTTP 404 update_oidc_client : {request.matched_count}")
+        logging.info(f"HTTP 404 update_oidc_client : {request.matched_count}")
         raise HTTPException(status_code=404)
     updated = await app.collection.find_one({"_id": oid})
     return updated
