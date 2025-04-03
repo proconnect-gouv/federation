@@ -12,6 +12,8 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 import logging
 
+logger = logging.getLogger("gunicorn.error")
+
 def encode_response(func: Callable):
     """Decorator to encode MongoDB responses as JSON"""
 
@@ -26,7 +28,7 @@ def encode_response(func: Callable):
 async def verify_signature(request: Request, call_next, config: Dict):
     """Middleware to verify request signatures"""
 
-    logging.info(request.url)
+    logger.info(request.url)
 
     if not request.url.path.startswith("/api"):
         return await call_next(request)
@@ -35,21 +37,21 @@ async def verify_signature(request: Request, call_next, config: Dict):
     timestamp = request.headers.get("X-Timestamp")
     email = request.query_params.get("email")
 
-    logging.info(f"timestamp: {timestamp} - email : {email}")
+    logger.info(f"timestamp: {timestamp} - email : {email}")
 
     if not all([signature, timestamp, email]):
         return JSONResponse(status_code=401, content={"detail": "Missing authentication headers"})
 
     # Verify email format
     if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email):
-        logging.info(f"email error : {email}")
+        logger.info(f"email error : {email}")
         return JSONResponse(status_code=422, content={"detail": "Invalid email"})
 
     # Verify timestamp freshness
     ts = int(timestamp)
     now = int(time.time())
     if abs(now - ts) > config["max_timestamp_diff"]:
-        logging.info(f"max timestamp diff error : now : {now} - ts : {ts}")
+        logger.info(f"max timestamp diff error : now : {now} - ts : {ts}")
         return JSONResponse(status_code=401, content={"detail": "Timestamp expired"})
 
     # Build message exactly as client does
@@ -66,7 +68,7 @@ async def verify_signature(request: Request, call_next, config: Dict):
     ).hexdigest()
 
     if not hmac.compare_digest(signature, expected):
-        logging.info("digest error")
+        logger.info("digest error")
         return JSONResponse(status_code=401, content={"detail": "Invalid signature"})
 
     # Add verified email to request state
