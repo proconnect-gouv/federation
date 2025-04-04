@@ -139,7 +139,6 @@ async def create_oidc_client(data: OidcClient, request: Request):
                 "idp_acr",
                 "custom",
             ],
-            "jwks_uri": "",
         }
     )
     result = await app.collection.insert_one(d)
