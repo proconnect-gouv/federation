@@ -10,6 +10,7 @@ from fastapi import FastAPI, HTTPException, Request
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, ConfigDict, HttpUrl, constr
 
+from crypt import decrypt_symetric, encrypt_symetric
 from middleware import encode_response, verify_signature
 import logging
 
@@ -20,6 +21,7 @@ CONFIG = {
     "mongodb_password": os.getenv("MONGODB_PASSWORD"),
     "mongodb_certificate_filepath": os.getenv("MONGODB_CERTIFICATE_FILEPATH"),
     "mongodb_ca_filepath": os.getenv("MONGODB_CA_FILEPATH"),
+    "client_secret_cipher_pass": os.getenv("CLIENT_SECRET_CIPHER_PASS"),
     "api_secret": os.getenv("API_SECRET"),  # shared secret
     "max_timestamp_diff": 300,  # 5 minutes
 }
@@ -84,6 +86,10 @@ app = FastAPI(lifespan=lifespan)
 # Middleware to verify signature on /api/*
 app.middleware("http")(lambda request, call_next: verify_signature(request, call_next, CONFIG))
 
+def format_oidc_client(elt: dict):
+     elt["client_secret"] = decrypt_symetric(
+         CONFIG["client_secret_cipher_pass"], elt["client_secret"]
+     )
 
 @app.get("/healthz")
 async def healthz():
@@ -99,6 +105,8 @@ async def healthz():
 async def list_oidc_clients(request: Request):
     cursor = app.collection.find({"email": request.state.email})
     elts = await cursor.to_list(None)
+    for elt in elts:
+        format_oidc_client(elt)
     return elts
 
 
@@ -112,6 +120,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
             "createdAt": datetime.now(),
             "updatedAt": datetime.now(),
             "updatedBy": "espace-partenaires",
+            "secretUpdatedAt": datetime.now(),
             # TODO: fix these fields?
             "title": "Nouvelle application",
             "site": ["https://site.com"],
@@ -119,6 +128,12 @@ async def create_oidc_client(data: OidcClient, request: Request):
             "key": secrets.token_hex(32),  # 64 hex chars
             "client_secret": secrets.token_hex(32),  # 64 hex chars
             "entityId": secrets.token_hex(32),  # 64 hex chars
+            # Generate IDs in correct format, 64 hex chars
+             "key": secrets.token_hex(32),
+             "client_secret": encrypt_symetric(
+                 CONFIG["client_secret_cipher_pass"], secrets.token_hex(32)
+             ),
+            "entityId": secrets.token_hex(32),
             "credentialsFlow": False,
             "claims": ["amr"],
             "IPServerAddressesAndRanges": ["1.1.1.1"],
@@ -155,6 +170,7 @@ async def get_oidc_client(id: str, request: Request):
     if not (elt := await app.collection.find_one({"_id": oid, "email": request.state.email})):
         logger.info(f"get_oidc_client : {request.state.email}")
         raise HTTPException(status_code=404)
+    format_oidc_client(elt)
     return elt
 
 

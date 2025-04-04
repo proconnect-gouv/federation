@@ -8,6 +8,7 @@ dependencies = [
     "motor==3.7.0",
     "uvicorn==0.34.0",
     "pydantic==2.10.6",
+    "cryptography==44.0.2"
 ]
 
 [project.optional-dependencies]
@@ -45,7 +46,7 @@ line-length = 99
 
 
 [tool.ruff.lint]
-ignore = ["DJ001", "PLR2004", "S101", "PLR0913", "PLR0911"]
+ignore = ["DJ001", "PLR2004", "S101", "PLR0913", "PLR0911", "PLR0915"]
 select = [
     "B",     # flake8-bugbear
     "BLE",   # flake8-blind-except

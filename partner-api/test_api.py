@@ -12,6 +12,7 @@ from asgi_lifespan import LifespanManager
 from fastapi import Request
 from httpx import ASGITransport, AsyncClient, Response
 
+from crypt import decrypt_symetric
 from main import CONFIG, app
 
 # Protection against running tests on production database
@@ -327,6 +328,10 @@ async def test_oidc_client_lifecycle(client):
     assert created_app["createdAt"] is not None
     assert created_app["updatedAt"] is not None
     assert created_app["updatedBy"] == "espace-partenaires"
+    assert (
+         len(decrypt_symetric(CONFIG["client_secret_cipher_pass"], created_app["client_secret"]))
+         == 64
+     )
     app_id = created_app["_id"]
 
     # Try to list apps with different email
