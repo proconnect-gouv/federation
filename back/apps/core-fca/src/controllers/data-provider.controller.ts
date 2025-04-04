@@ -49,14 +49,14 @@ export class DataProviderController {
         body.client_secret,
       );
 
-    const userSession = await this.dataProviderService.getSessionByAccessToken(
+    const session = await this.dataProviderService.getSessionByAccessToken(
       body.token,
     );
 
     // 'token_introspection' follows the data structure describes in https://datatracker.ietf.org/doc/html/rfc7662.
     const tokenIntrospection =
       await this.dataProviderService.generateTokenIntrospection(
-        userSession,
+        session,
         body.token,
         dataProvider,
       );

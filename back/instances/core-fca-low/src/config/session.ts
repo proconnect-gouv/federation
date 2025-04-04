@@ -43,17 +43,17 @@ export default {
     // Disconnect flow
     OidcClientRoutes.DISCONNECT_FROM_IDP,
     OidcClientRoutes.CLIENT_LOGOUT_CALLBACK,
-
-    // Error
-    CoreRoutes.REDIRECT_TO_SP_WITH_ERROR,
   ],
   templateExposed: {
-    OidcClient: { spName: true, idpName: true },
+    User: { spName: true, idpName: true },
   },
   schema: CoreFcaSession,
   defaultData: {
     I18n: {
       language: I18nConfig.defaultLanguage,
     },
+    User: {},
+    Csrf: {},
+    FlowSteps: {},
   },
 } as SessionConfig;

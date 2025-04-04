@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { UserSession } from '@fc/core-fca';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
-import { Session } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -194,7 +194,7 @@ describe('MailerService', () => {
       family_name: 'TEACH',
       email: undefined,
     };
-    const sessionDataMock: Session = {
+    const sessionDataMock: UserSession = {
       idpId: '42',
       idpAcr: 'eidas3',
       idpName: 'my favorite Idp',

@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { getTransformed } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 
@@ -11,19 +10,13 @@ import { getConfigMock } from '@mocks/config';
 import { SessionCannotCommitUndefinedSession } from '../exceptions';
 import { SessionBackendStorageService } from './session-backend-storage.service';
 import { SessionCookiesService } from './session-cookies.service';
-import {
-  DUPLICATE_OPTIONS,
-  SessionLifecycleService,
-} from './session-lifecycle.service';
+import { SessionLifecycleService } from './session-lifecycle.service';
 import { SessionLocalStorageService } from './session-local-storage.service';
 
 jest.mock('@fc/common');
 
 describe('SessionLifecycleService', () => {
   let service: SessionLifecycleService;
-
-  const getTransformedMock = jest.mocked(getTransformed);
-  const getTransformedResult = Symbol('getTransformedResult');
 
   const configMock = getConfigMock();
   const sessionIdLength = Symbol('sessionIdLength');
@@ -94,8 +87,6 @@ describe('SessionLifecycleService', () => {
 
     cryptographyMock.genRandomString.mockReturnValue(randomStringValue);
     configMock.get.mockReturnValue({ defaultData, sessionIdLength });
-
-    getTransformedMock.mockReturnValue(getTransformedResult);
   });
 
   it('should be defined', () => {
@@ -233,8 +224,6 @@ describe('SessionLifecycleService', () => {
 
   describe('duplicate()', () => {
     // Given
-    class SchemaMock {}
-
     const storeMock = {
       data: {},
     };
@@ -250,7 +239,7 @@ describe('SessionLifecycleService', () => {
 
     it('should call commit()', async () => {
       // When
-      await service.duplicate(res, SchemaMock);
+      await service.duplicate(res);
 
       // Then
       expect(service.commit).toHaveBeenCalledTimes(1);
@@ -258,28 +247,15 @@ describe('SessionLifecycleService', () => {
 
     it('should call localStorage.getStore()', async () => {
       // When
-      await service.duplicate(res, SchemaMock);
+      await service.duplicate(res);
 
       // Then
       expect(localStorageMock.getStore).toHaveBeenCalledTimes(1);
     });
 
-    it('should call getTransformed()', async () => {
-      // When
-      await service.duplicate(res, SchemaMock);
-
-      // Then
-      expect(getTransformedMock).toHaveBeenCalledTimes(1);
-      expect(getTransformedMock).toHaveBeenCalledWith(
-        storeMock.data,
-        SchemaMock,
-        DUPLICATE_OPTIONS,
-      );
-    });
-
     it('should call session.ini()', async () => {
       // When
-      await service.duplicate(res, SchemaMock);
+      await service.duplicate(res);
 
       // Then
       expect(service.init).toHaveBeenCalledTimes(1);
@@ -288,23 +264,15 @@ describe('SessionLifecycleService', () => {
 
     it('should call localStorage.set()', async () => {
       // When
-      await service.duplicate(res, SchemaMock);
+      await service.duplicate(res);
 
       // Then
       expect(localStorageMock.setStore).toHaveBeenCalledTimes(1);
       expect(localStorageMock.setStore).toHaveBeenCalledWith({
-        data: getTransformedResult,
+        data: {},
         id: initResult,
         sync: false,
       });
-    });
-
-    it('should return result from getTransformed', async () => {
-      // When
-      const result = await service.duplicate(res, SchemaMock);
-
-      // Then
-      expect(result).toBe(getTransformedResult);
     });
   });
 

@@ -4,13 +4,11 @@ export function getStackTraceArray(exception: any) {
 
   if (exception.originalError) {
     const originalStack = exception.originalError.stack || '';
-    stackTrace = stackTrace.concat(originalStack.split('\n'));
+    stackTrace = originalStack.split('\n').concat(stackTrace);
   }
 
-  // Remove last empty element if any
-  if (stackTrace[stackTrace.length - 1] === '') {
-    stackTrace.pop();
-  }
+  // Remove empty element if any
+  stackTrace = stackTrace.filter(Boolean);
 
   return stackTrace;
 }

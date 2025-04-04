@@ -1,8 +1,8 @@
 import { ExecutionContext, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { FLOW_STEP_IS_STEP_METADATA } from '../tokens';
-import { IsStep } from './is-step.decorator';
+import { FLOW_STEP_SET_STEP_METADATA } from '../tokens';
+import { SetStep } from './set-step.decorator';
 
 jest.mock('@nestjs/common', () => {
   return {
@@ -21,14 +21,14 @@ describe('IsStep', () => {
     setMetadataMock = jest.mocked(SetMetadata);
   });
 
-  it('set the FLOW_STEP_IS_STEP_METADATA flag as true', () => {
+  it('set the FLOW_STEP_SET_STEP_METADATA flag as true', () => {
     // When
-    IsStep();
+    SetStep();
 
     // Then
     expect(setMetadataMock).toHaveBeenCalledTimes(1);
     expect(setMetadataMock).toHaveBeenCalledWith(
-      FLOW_STEP_IS_STEP_METADATA,
+      FLOW_STEP_SET_STEP_METADATA,
       true,
     );
   });
@@ -55,7 +55,7 @@ describe('get', () => {
 
   it('should retrieve the flag from context', () => {
     // When
-    const permissions = IsStep.get(reflector, context);
+    const permissions = SetStep.get(reflector, context);
 
     // Then
     expect(permissions).toBe(isStepFlag);
@@ -63,7 +63,7 @@ describe('get', () => {
 
   it('should retrieve the handler from the context', () => {
     // When
-    IsStep.get(reflector, context);
+    SetStep.get(reflector, context);
 
     // Then
     expect(context.getHandler).toHaveBeenCalledTimes(1);
@@ -72,12 +72,12 @@ describe('get', () => {
 
   it('should retrieve the metadata from the context', () => {
     // When
-    IsStep.get(reflector, context);
+    SetStep.get(reflector, context);
 
     // Then
     expect(reflector.get).toHaveBeenCalledTimes(1);
     expect(reflector.get).toHaveBeenCalledWith(
-      FLOW_STEP_IS_STEP_METADATA,
+      FLOW_STEP_SET_STEP_METADATA,
       handlerMock,
     );
   });
@@ -87,7 +87,7 @@ describe('get', () => {
     jest.mocked(reflector.get).mockReset().mockReturnValueOnce(undefined);
 
     // When
-    const permissions = IsStep.get(reflector, context);
+    const permissions = SetStep.get(reflector, context);
 
     // Then
     expect(permissions).toBe(undefined);

@@ -1,2 +1,2 @@
-export * from './forbid-refresh.decorator';
-export * from './is-step.decorator';
+export * from './authorize-step-from.decorator';
+export * from './set-step.decorator';

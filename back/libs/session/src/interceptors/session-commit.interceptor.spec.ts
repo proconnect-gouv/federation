@@ -13,10 +13,6 @@ import { getSessionServiceMock } from '@mocks/session';
 import { SessionService } from '../services';
 import { SessionCommitInterceptor } from './session-commit.interceptor';
 
-jest.mock('../helper', () => ({
-  extractSessionFromRequest: jest.fn(),
-}));
-
 describe('SessionCommitInterceptor', () => {
   let interceptor: SessionCommitInterceptor;
 

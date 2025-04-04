@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
-import { FlowStepsService } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { atHashFromAccessToken } from '@fc/oidc';
@@ -109,10 +108,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
     getById: jest.fn(),
   };
 
-  const flowStepsMock = {
-    setStep: jest.fn(),
-  };
-
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -136,7 +131,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
           provide: IDENTITY_PROVIDER_SERVICE,
           useValue: identityProviderAdapterMock,
         },
-        FlowStepsService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -155,8 +149,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       .useValue(configServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderAdapterMock)
-      .overrideProvider(FlowStepsService)
-      .useValue(flowStepsMock)
       .compile();
 
     service = module.get<CoreOidcProviderMiddlewareService>(

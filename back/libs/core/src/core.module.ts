@@ -8,7 +8,6 @@ import {
   HttpExceptionFilter,
   UnknownHtmlExceptionFilter,
 } from '@fc/exceptions';
-import { FlowStepsModule } from '@fc/flow-steps';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { OidcAcrModule } from '@fc/oidc-acr';
 import { IIdentityProviderAdapter, OidcClientModule } from '@fc/oidc-client';
@@ -56,7 +55,6 @@ export class CoreModule {
       module: CoreModule,
       imports: [
         ExceptionsModule,
-        FlowStepsModule,
         ServiceProviderAdapterMongoModule,
         SessionModule,
         OidcAcrModule,

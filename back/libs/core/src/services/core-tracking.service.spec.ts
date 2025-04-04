@@ -2,7 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { overrideWithSourceIfNotNull } from '@fc/common/helpers';
 import { ConfigService } from '@fc/config';
-import { Session, SessionService } from '@fc/session';
+import { UserSession } from '@fc/core-fca';
+import { SessionService } from '@fc/session';
 import { extractNetworkInfoFromHeaders } from '@fc/tracking-context';
 
 import { getSessionServiceMock } from '@mocks/session';
@@ -87,10 +88,9 @@ describe('CoreTrackingService', () => {
 
   const interactionAcrMock = 'interactionAcrMock';
 
-  const sessionDataMock: Session = {
+  const sessionDataMock: UserSession = {
     accountId: 'accountId Mock Value',
     browsingSessionId: 'browsingSessionId Mock Value',
-    sessionId: sessionIdMock,
     interactionId: interactionIdMock,
     interactionAcr: interactionAcrMock,
 
@@ -167,6 +167,7 @@ describe('CoreTrackingService', () => {
         category: eventMock.category,
         event: eventMock.event,
         ip: ipMock,
+        reusesActiveSession: undefined,
         source: {
           address: ipMock,
           port: sourcePortMock,
@@ -176,6 +177,7 @@ describe('CoreTrackingService', () => {
         },
         claims: 'foo bar',
         scope: 'fizz buzz',
+        sessionId: 'sessionIdValue',
         dpId: 'dp_uid',
         dpClientId: 'dp_client_id',
         dpTitle: 'dp_title',
@@ -222,7 +224,7 @@ describe('CoreTrackingService', () => {
         req: {},
       };
       const extractedContextMockValue = { ...extractedValueMock };
-      extractedContextMockValue.claims = undefined;
+      extractedContextMockValue['claims'] = undefined;
       service['extractContext'] = jest
         .fn()
         .mockReturnValueOnce(extractedContextMockValue);
@@ -319,7 +321,7 @@ describe('CoreTrackingService', () => {
       service['getDataFromSession'](sessionIdMock);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(2);
-      expect(sessionServiceMock.get).toHaveBeenNthCalledWith(1, 'OidcClient');
+      expect(sessionServiceMock.get).toHaveBeenNthCalledWith(1, 'User');
       expect(sessionServiceMock.get).toHaveBeenNthCalledWith(2, 'Device');
     });
 
@@ -403,7 +405,7 @@ describe('CoreTrackingService', () => {
         idpSub: null,
         idpLabel: null,
       };
-      const sessionMock: Session = {
+      const sessionMock: UserSession = {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spAcr: 'spAcrMock',
@@ -440,7 +442,7 @@ describe('CoreTrackingService', () => {
         idpSub: null,
         idpLabel: null,
       };
-      const sessionMock: Session = {
+      const sessionMock: UserSession = {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spAcr: 'spAcrMock',
@@ -478,7 +480,7 @@ describe('CoreTrackingService', () => {
         idpSub: null,
         idpLabel: null,
       };
-      const sessionMock: Session = {
+      const sessionMock: UserSession = {
         subs: {},
         spIdentity: {},
         browsingSessionId: browsingSessionIdMock,

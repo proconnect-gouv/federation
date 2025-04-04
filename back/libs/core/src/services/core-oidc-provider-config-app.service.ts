@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { CoreFcaSession } from '@fc/core-fca';
 import { LoggerService } from '@fc/logger';
 import { OidcClientRoutes, OidcClientService } from '@fc/oidc-client';
 import {
@@ -11,7 +12,7 @@ import {
   OidcProviderErrorService,
   OidcProviderGrantService,
 } from '@fc/oidc-provider';
-import { Session, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import { CoreMissingAtHashException } from '../exceptions';
@@ -42,9 +43,8 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
 
     const sessionId = await this.getSessionId(ctx);
 
-    const session = await this.sessionService.getDataFromBackend<{
-      OidcClient: Session;
-    }>(sessionId);
+    const session =
+      await this.sessionService.getDataFromBackend<CoreFcaSession>(sessionId);
     const { req } = ctx;
 
     /**
@@ -67,9 +67,9 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
       spAcr,
       spName,
       subs,
-    } = session.OidcClient;
+    } = session.User;
 
-    this.sessionService.set('OidcClient', {
+    this.sessionService.set('User', {
       browsingSessionId,
       accountId,
       reusesActiveSession,

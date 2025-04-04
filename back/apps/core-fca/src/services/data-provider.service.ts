@@ -82,7 +82,7 @@ export class DataProviderService {
   }
 
   async generateTokenIntrospection(
-    userSession: CoreFcaSession,
+    session: CoreFcaSession,
     accessToken: string,
     dataProvider: DataProviderMetadata,
   ): Promise<TokenIntrospectionInterface> {
@@ -100,15 +100,11 @@ export class DataProviderService {
     const { expire, payload: interaction } =
       await adapter.getExpireAndPayload<AccessToken>(accessToken);
 
-    if (expire <= 0 || !userSession) {
+    if (expire <= 0 || !session) {
       return this.generateExpiredResponse();
     }
 
-    return await this.generateValidResponse(
-      dataProvider,
-      userSession,
-      interaction,
-    );
+    return await this.generateValidResponse(dataProvider, session, interaction);
   }
 
   generateExpiredResponse(): TokenIntrospectionInterface {
@@ -136,7 +132,7 @@ export class DataProviderService {
 
   private async generateValidResponse(
     dataProvider: DataProviderMetadata,
-    userSession: CoreFcaSession,
+    session: CoreFcaSession,
     interaction: AccessToken,
   ): Promise<TokenIntrospectionInterface> {
     const {
@@ -152,8 +148,8 @@ export class DataProviderService {
     } = interaction;
 
     const {
-      OidcClient: { idpIdentity, idpId },
-    } = userSession;
+      User: { idpIdentity, idpId },
+    } = session;
 
     const dpSub = await this.generateDataProviderSub(idpIdentity, idpId);
     // Limit scopes returned to prevent data provider from learning more about the network than necessary.

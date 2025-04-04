@@ -3,11 +3,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CoreMissingIdentityException } from '@fc/core';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { Session, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 
 import { getSessionServiceMock } from '@mocks/session';
 
-import { AuthorizeParamsDto } from '../dto';
+import { AuthorizeParamsDto, UserSession } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
 
 describe('OidcProviderController', () => {
@@ -34,7 +34,7 @@ describe('OidcProviderController', () => {
   const idpIdMock = 'idpIdMockValue';
   const interactionFinishedValue = Symbol('interactionFinishedValue');
 
-  const sessionDataMock: Session = {
+  const sessionDataMock: UserSession = {
     spId: spIdMock,
     idpId: idpIdMock,
     idpNonce: idpNonceMock,

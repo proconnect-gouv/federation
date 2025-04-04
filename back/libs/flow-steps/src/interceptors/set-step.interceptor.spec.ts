@@ -6,25 +6,30 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { SessionService } from '@fc/session';
 
-import { IsStep } from '../decorators';
-import { FlowStepsService } from '../services';
-import { IsStepInterceptor } from './is-step.interceptor';
+// import { getSessionServiceMock } from '@mocks/session';
+import { SetStep } from '../decorators';
+import { SetStepInterceptor } from './set-step.interceptor';
 
-jest.mock('@fc/session/helper', () => ({
+jest.mock('@fc/session', () => ({
   SessionService: jest.fn(),
 }));
 
 jest.mock('../decorators', () => ({
-  IsStep: jest.fn(),
+  SetStep: jest.fn(),
 }));
 
 jest.mock('rxjs', () => ({
   tap: jest.fn(),
 }));
 
-describe('IsStepInterceptor', () => {
-  let interceptor: IsStepInterceptor;
+describe('SetStepInterceptor', () => {
+  let interceptor: SetStepInterceptor;
+
+  const sessionServiceMock = {
+    set: jest.fn(),
+  };
 
   const httpContextMock = {
     getRequest: jest.fn(),
@@ -37,7 +42,7 @@ describe('IsStepInterceptor', () => {
     sessionId: 'sessionIdValue',
   };
 
-  const IsStepMock = jest.mocked(IsStep);
+  const SetStepMock = jest.mocked(SetStep);
 
   const tapMock = jest.mocked(tap);
 
@@ -57,28 +62,19 @@ describe('IsStepInterceptor', () => {
     urlPrefix: '/a/prefix',
   };
 
-  const flowStepMock = {
-    setStep: jest.fn(),
-  };
-
   beforeEach(async () => {
     jest.resetAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        IsStepInterceptor,
-        ConfigService,
-        Reflector,
-        FlowStepsService,
-      ],
+      providers: [SetStepInterceptor, ConfigService, Reflector, SessionService],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(FlowStepsService)
-      .useValue(flowStepMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
-    interceptor = module.get<IsStepInterceptor>(IsStepInterceptor);
+    interceptor = module.get<SetStepInterceptor>(SetStepInterceptor);
 
     configServiceMock.get.mockReturnValue(configMock);
     httpContextMock.getRequest.mockReturnValue(reqMock);
@@ -89,20 +85,20 @@ describe('IsStepInterceptor', () => {
   });
 
   describe('intercept', () => {
-    it('should retrieve flag from IsStep decorator', () => {
+    it('should retrieve flag from SetStep decorator', () => {
       // Given
-      IsStepMock.get = jest.fn().mockReturnValueOnce(false);
+      SetStepMock.get = jest.fn().mockReturnValueOnce(false);
 
       // When
       interceptor.intercept(contextMock, nextMock);
 
       // Then
-      expect(IsStepMock.get).toHaveBeenCalledTimes(1);
+      expect(SetStepMock.get).toHaveBeenCalledTimes(1);
     });
 
     describe('if flag is not set', () => {
       beforeEach(() => {
-        IsStepMock.get = jest.fn().mockReturnValueOnce(false);
+        SetStepMock.get = jest.fn().mockReturnValueOnce(false);
       });
 
       it('should return result from next.handle()', () => {
@@ -137,7 +133,7 @@ describe('IsStepInterceptor', () => {
       beforeEach(() => {
         // Given
         nextMock.handle.mockReturnValueOnce(handleResultMock);
-        IsStepMock.get = jest.fn().mockReturnValueOnce(true);
+        SetStepMock.get = jest.fn().mockReturnValueOnce(true);
       });
 
       it('should call handle().pipe()', () => {
@@ -164,8 +160,12 @@ describe('IsStepInterceptor', () => {
       interceptor['setStep'](contextMock);
 
       // Then
-      expect(flowStepMock.setStep).toHaveBeenCalledTimes(1);
-      expect(flowStepMock.setStep).toHaveBeenCalledWith('/and/some/uri');
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(
+        'FlowSteps',
+        'previousRoute',
+        '/and/some/uri',
+      );
     });
   });
 });

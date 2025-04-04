@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { Injectable, Type } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { SessionBackendStorageService } from './session-backend-storage.service';
 import { SessionCookiesService } from './session-cookies.service';
@@ -23,10 +23,9 @@ export class SessionService {
    *
    * Usual methods to get and set data in session
    */
-
-  get<T>(moduleName: string): T;
+  get<T>(moduleName?: string): T;
   get<T>(moduleName: string, key: keyof T): T[keyof T];
-  get<T>(moduleName: string, key?: keyof T): T | T[keyof T] {
+  get<T>(moduleName?: string, key?: keyof T): T | T[keyof T] {
     return this.localStorage.get<T>(moduleName, key);
   }
 
@@ -61,8 +60,8 @@ export class SessionService {
     return this.lifecycle.commit();
   }
 
-  duplicate(res: Response, schema: Type<unknown>) {
-    return this.lifecycle.duplicate(res, schema);
+  duplicate(res: Response) {
+    return this.lifecycle.duplicate(res);
   }
 
   refresh(req: Request, res: Response): Promise<string> {

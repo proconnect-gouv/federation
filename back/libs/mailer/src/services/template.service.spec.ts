@@ -5,8 +5,8 @@ import * as ejs from 'ejs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept } from '@fc/common';
+import { UserSession } from '@fc/core-fca';
 import { IOidcIdentity } from '@fc/oidc';
-import { Session } from '@fc/session';
 
 import { TemplateService } from './template.service';
 
@@ -83,7 +83,7 @@ describe('TemplateService', () => {
       family_name: 'TEACH',
       email: undefined,
     } as PartialExcept<IOidcIdentity, 'sub'>;
-    const sessionDataMock: Session = {
+    const sessionDataMock: UserSession = {
       idpId: '42',
       idpAcr: 'eidas3',
       idpName: 'my favorite Idp',

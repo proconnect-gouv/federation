@@ -466,7 +466,7 @@ describe('SessionBackendStorageService', () => {
 
       // Then
       expect(loggerMock.crit).toHaveBeenCalledWith(
-        'SessionService:validate() Invalid session data from Redis',
+        'SessionBackendStorageService:validate() Invalid session data from Redis.',
       );
     });
   });

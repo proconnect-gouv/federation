@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 
-import { Type } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { SessionService } from './session.service';
@@ -240,23 +239,17 @@ describe('SessionService', () => {
 
   describe('duplicate()', () => {
     it('should call lifecycle.duplicate()', async () => {
-      // Given
-      const schema = {} as Type<unknown>;
-
       // When
-      await service.duplicate(res, schema);
+      await service.duplicate(res);
 
       // Then
       expect(lifecycleMock.duplicate).toHaveBeenCalledTimes(1);
-      expect(lifecycleMock.duplicate).toHaveBeenCalledWith(res, schema);
+      expect(lifecycleMock.duplicate).toHaveBeenCalledWith(res);
     });
 
     it('should return result of lifecycle.duplicate()', async () => {
-      // Given
-      const schema = {} as Type<unknown>;
-
       // When
-      const result = await service.duplicate(res, schema);
+      const result = await service.duplicate(res);
 
       // Then
       expect(result).toBe('mockedReturnValue::duplicate');

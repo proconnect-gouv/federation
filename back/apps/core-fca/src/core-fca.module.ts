@@ -12,7 +12,7 @@ import {
   CoreModule,
   CoreVerifyService,
 } from '@fc/core';
-import { CsrfModule } from '@fc/csrf';
+import { CsrfModule, CsrfService } from '@fc/csrf';
 import { DataProviderAdapterMongoModule } from '@fc/data-provider-adapter-mongo';
 import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
 import { FeatureHandlerModule } from '@fc/feature-handler';
@@ -137,6 +137,7 @@ import { IsPhoneNumberFCAConstraint } from './validators';
     CoreFcaVerifyService,
     CoreFcaDefaultVerifyHandler,
     CoreFcaMcpVerifyHandler,
+    CsrfService,
     OidcProviderConfigAppService,
     CoreFcaService,
     CoreFcaMiddlewareService,

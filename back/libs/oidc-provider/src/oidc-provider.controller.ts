@@ -8,16 +8,13 @@ import {
   Post,
   Query,
   Req,
-  Res,
   UseFilters,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
 import { ApiContentType } from '@fc/app';
-import { ForbidRefresh } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import { ISessionService, Session, SessionDecorator } from '@fc/session';
 
 import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
@@ -32,25 +29,6 @@ export class OidcProviderController {
     private readonly oidcProviderConfigApp: IOidcProviderConfigAppService,
     private readonly logger: LoggerService,
   ) {}
-
-  @Post(OidcProviderRoutes.REDIRECT_TO_SP)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @ForbidRefresh()
-  getLogin(
-    @Req() req,
-    @Res() res,
-    /**
-     * @TODO #1018 Refactoriser la partie API du controller core-fca
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1018
-     * @ticket FC-1018
-     */
-    @SessionDecorator('OidcClient')
-    sessionOidc: ISessionService<Session>,
-  ): Promise<void> {
-    const session: Session = sessionOidc.get();
-
-    return this.oidcProviderConfigApp.finishInteraction(req, res, session);
-  }
 
   @Post(OidcProviderRoutes.TOKEN)
   @Header('Content-Type', ApiContentType.JSON)

@@ -1,34 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { PartialExcept } from '@fc/common';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { Session } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
-import { getSessionServiceMock } from '@mocks/session';
 
 import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 import { OidcProviderController } from './oidc-provider.controller';
 import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
-
-const interactionIdMock = 'interactionIdMockValue';
-const acrMock = 'acrMockValue';
-const spNameMock = 'spNameValue';
-const idpStateMock = 'idpStateMockValue';
-const idpNonceMock = 'idpNonceMock';
-
-const sessionDataMock: Session = {
-  interactionId: interactionIdMock,
-  spAcr: acrMock,
-  spIdentity: {} as PartialExcept<IOidcIdentity, 'sub'>,
-  spName: spNameMock,
-  idpState: idpStateMock,
-  idpNonce: idpNonceMock,
-};
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -50,8 +31,6 @@ describe('OidcProviderController', () => {
   const serviceProviderServiceMock = {
     isActive: jest.fn(),
   };
-
-  const sessionServiceMock = getSessionServiceMock();
 
   const oidcProviderConfigAppMock = {
     finishInteraction: jest.fn(),
@@ -103,26 +82,6 @@ describe('OidcProviderController', () => {
       oidcProviderController.getUserInfo(next, reqMock);
       // Then
       expect(next).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('getLogin()', () => {
-    it('should call service.finishInteraction', async () => {
-      // Given
-      const req = {};
-      const res = {};
-      sessionServiceMock.get.mockReturnValueOnce(sessionDataMock);
-      // When
-      await oidcProviderController.getLogin(req, res, sessionServiceMock);
-      // Then
-      expect(oidcProviderConfigAppMock.finishInteraction).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(oidcProviderConfigAppMock.finishInteraction).toHaveBeenCalledWith(
-        req,
-        res,
-        sessionDataMock,
-      );
     });
   });
 

@@ -3,7 +3,8 @@ import { Request } from 'express';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CORE_VERIFY_SERVICE, CoreRoutes, CoreVerifyService } from '@fc/core';
-import { ISessionService, Session } from '@fc/session';
+import { UserSession } from '@fc/core-fca/dto';
+import { ISessionService } from '@fc/session';
 import { TrackedEventContextInterface } from '@fc/tracking';
 
 @Injectable()
@@ -18,7 +19,7 @@ export class CoreFcaVerifyService {
     params: {
       urlPrefix: string;
       interactionId: string;
-      sessionOidc: ISessionService<Session>;
+      sessionOidc: ISessionService<UserSession>;
     },
   ): Promise<string> {
     const { sessionOidc, urlPrefix } = params;

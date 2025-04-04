@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
-import { FlowStepsService } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { atHashFromAccessToken, IOidcClaims } from '@fc/oidc';
@@ -41,7 +40,6 @@ export class CoreOidcProviderMiddlewareService {
     protected readonly oidcAcr: OidcAcrService,
     @Inject(CORE_SERVICE)
     protected readonly core: CoreServiceInterface,
-    protected readonly flowSteps: FlowStepsService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}

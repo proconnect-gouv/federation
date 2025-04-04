@@ -1,8 +1,9 @@
+import { UserSession } from '@fc/core-fca';
 import { IFeatureHandler } from '@fc/feature-handler';
-import { ISessionService, Session } from '@fc/session';
+import { ISessionService } from '@fc/session';
 
 export interface IVerifyFeatureHandlerHandleArgument {
-  sessionOidc: ISessionService<Session>;
+  sessionOidc: ISessionService<UserSession>;
   trackingContext?: Record<string, unknown>;
 }
 export interface IVerifyFeatureHandler

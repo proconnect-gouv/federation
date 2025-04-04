@@ -1,5 +1,3 @@
-import { RedisQueryResult } from '../services';
-
 /**
  * To understand, please read the following documentation
  * @see https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#extends
@@ -31,7 +29,11 @@ export interface ISessionService<T> {
    */
   set(value: Partial<T>): boolean;
 
-  setAlias(value: string): Promise<RedisQueryResult[]>;
-
   commit(): Promise<boolean>;
+
+  duplicate(): Promise<boolean>;
+
+  reset(): Promise<boolean>;
+
+  destroy(): Promise<boolean>;
 }

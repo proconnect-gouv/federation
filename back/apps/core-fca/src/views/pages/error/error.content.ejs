@@ -2,9 +2,9 @@
 const notProvided = "non renseigné"
 const errorMessage = locals.error.message ?? notProvided;
 const errorCode = locals.error.code ?? notProvided; 
-const FI = $session('OidcClient.idpName') ?? notProvided;
+const FI = $session('User.idpName') ?? notProvided;
 const errorId = locals.error.id ?? notProvided;
-const FS = $session('OidcClient.spName') ?? notProvided;
+const FS = $session('User.spName') ?? notProvided;
 const messageToDisplay = "Bonjour\n, je vous signale que j’ai rencontré une erreur dont le code est : " + errorCode + " et dont le message d’erreur est : " + errorMessage  + ".\n L’id de l’erreur est : " + errorId + ". Je souhaitais me connecter à : " + FS + ".\n Mon fournisseur d’identité est : " + FI + "." ;
 const contactHref = locals.exception.contactHref ?? `mailto:support+federation@proconnect.gouv.fr?subject=Signaler l’erreur ${locals.error.code} sur ProConnect&body=${messageToDisplay}`;
 %>

@@ -3,14 +3,11 @@ import { KoaContextWithOIDC, Provider } from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { UserSession } from '@fc/core-fca';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
-import {
-  Session,
-  SessionService,
-  SessionSubNotFoundException,
-} from '@fc/session';
+import { SessionService, SessionSubNotFoundException } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
@@ -319,7 +316,7 @@ describe('OidcProviderAppConfigLibService', () => {
       const resolvedValue = Symbol('resolved value');
 
       providerMock.interactionFinished.mockResolvedValueOnce(resolvedValue);
-      const sessionDataMock: Session = {
+      const sessionDataMock: UserSession = {
         spAcr: 'spAcrValue',
         spIdentity: {},
       };
@@ -344,7 +341,7 @@ describe('OidcProviderAppConfigLibService', () => {
       } as IOidcIdentity;
       const interactionAcrMock = 'interactionAcrMock';
 
-      const sessionDataMock: Session = {
+      const sessionDataMock: UserSession = {
         spAcr: spAcrMock,
         amr: amrValueMock,
         interactionId: interactionIdMock,
@@ -403,7 +400,7 @@ describe('OidcProviderAppConfigLibService', () => {
       // Given
       const nativeError = new Error('invalid_request');
       providerMock.interactionFinished.mockRejectedValueOnce(nativeError);
-      const sessionDataMock: Session = {
+      const sessionDataMock: UserSession = {
         spAcr: 'spAcrValue',
         spIdentity: {},
       };
@@ -471,7 +468,7 @@ describe('OidcProviderAppConfigLibService', () => {
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith(
-        'OidcClient',
+        'User',
         logoutFormProperty,
         form,
       );
