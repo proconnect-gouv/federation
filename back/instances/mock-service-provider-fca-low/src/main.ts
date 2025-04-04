@@ -23,7 +23,8 @@ declare module 'express-session' {
 const HOST = `https://${process.env.FQDN}`;
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 const SITE_TITLE = process.env.APP_NAME;
-const STYLESHEET_URL = 'https://unpkg.com/bamboo.css';
+const STYLESHEET_URL =
+  process.env.STYLESHEET_URL || 'https://unpkg.com/bamboo.css';
 const CALLBACK_URL = '/oidc-callback';
 const PC_CLIENT_ID = process.env.IdentityProviderAdapterEnv_CLIENT_ID;
 const PC_CLIENT_SECRET = decrypt(
