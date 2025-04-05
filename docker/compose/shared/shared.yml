@@ -62,6 +62,8 @@ services:
           - docker.dev-franceconnect.fr
           # Stack Documentation 11TY
           - doc-example.docker.dev-franceconnect.fr
+          # Espace partenaires
+          - partner-api.docker.dev-franceconnect.fr
       fc:
       rie:
         aliases:

@@ -35,6 +35,8 @@ services:
       # -- DP
       - 'dpa1-low'
       - 'dpa2-low'
+      # -- Espace Parteneires
+      - 'partner-api'
 
   all-fca-low:
     image: alpine

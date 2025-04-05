@@ -123,7 +123,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
             "secretUpdatedAt": datetime.now(),
             # TODO: fix these fields?
             "title": "Nouvelle application",
-            "site": ["https://site.com"],
+            "site": "https://site.com",
             # Generate IDs in correct format
             "key": secrets.token_hex(32),  # 64 hex chars
             "client_secret": secrets.token_hex(32),  # 64 hex chars
@@ -154,12 +154,25 @@ async def create_oidc_client(data: OidcClient, request: Request):
                 "idp_acr",
                 "custom",
             ],
+            "id_token_signed_response_alg" : "HS256",
+            "id_token_encrypted_response_alg" : "",
+            "id_token_encrypted_response_enc" : "",
+            "userinfo_signed_response_alg" : "HS256",
+            "userinfo_encrypted_response_alg" : "",
+            "userinfo_encrypted_response_enc" : "",
+            "identityConsent" : False,
+            "trustedIdentity" : False,
+            "featureHandlers" : {
+                "none" : ""
+            },
+            "__v" : 4,
         }
     )
     result = await app.collection.insert_one(d)
     if not result.acknowledged:  # pragma: no cover
         logger.info("create_oidc_client update error")
         raise HTTPException(status_code=500)
+    format_oidc_client(d)
     return d
 
 
@@ -192,4 +205,5 @@ async def update_oidc_client(id: str, updates: OidcClient, request: Request):
         logger.info(f"HTTP 404 update_oidc_client : {request.matched_count}")
         raise HTTPException(status_code=404)
     updated = await app.collection.find_one({"_id": oid})
+    format_oidc_client(updated)
     return updated

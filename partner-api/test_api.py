@@ -190,6 +190,7 @@ async def test_create_oidc_client(client):
     assert data["name"] == app_data["name"]
     assert data["email"] == "test@example.com"
     assert "_id" in data
+    assert len(data["client_secret"]) == 64
 
     # Try to create with invalid email
     response = await api_call(
@@ -232,17 +233,26 @@ async def test_update_fields_whitelist(client):
     assert created["redirect_uris"] == valid_data["redirect_uris"]
     app_id = created["_id"]
 
-    # Try to update with non-whitelisted fields
-    updates = {
-        "name": "Updated App",
+    for k, v in {
         "not_allowed": "value",
-        "redirect_uris": ["https://updated.com/callback"],
         "random_field": True,
-    }
-    response = await api_call(
-        client, "PATCH", f"/api/oidc_clients/{app_id}?email=test@example.com", json_data=updates
-    )
-    assert response.status_code == 422
+        "client_secret": "secret",
+        "updatedBy": "nope",
+        "_id": "nope",
+    }.items():
+        # Try to update with non-whitelisted fields
+        updates = {
+            "name": "Updated App",
+            "redirect_uris": ["https://updated.com/callback"],
+        }
+        updates.update({k: v})
+        response = await api_call(
+            client,
+            "PATCH",
+            f"/api/oidc_clients/{app_id}?email=test@example.com",
+            json_data=updates,
+        )
+        assert response.status_code == 422, f"Expected 422 for {k}={v}"
 
     # Try to update the email of an app (forbidden for now)
     updates = {"email": "other@example.com"}
@@ -271,6 +281,7 @@ async def test_update_fields_whitelist(client):
     data = response.json()
     assert data["name"] == valid_updates["name"]
     assert data["redirect_uris"] == valid_updates["redirect_uris"]
+    assert len(data["client_secret"]) == 64
 
 
 @pytest.mark.asyncio
@@ -328,10 +339,8 @@ async def test_oidc_client_lifecycle(client):
     assert created_app["createdAt"] is not None
     assert created_app["updatedAt"] is not None
     assert created_app["updatedBy"] == "espace-partenaires"
-    assert (
-         len(decrypt_symetric(CONFIG["client_secret_cipher_pass"], created_app["client_secret"]))
-         == 64
-     )
+    assert len(created_app["client_secret"]) == 64
+
     app_id = created_app["_id"]
 
     # Try to list apps with different email
@@ -367,6 +376,7 @@ async def test_oidc_client_lifecycle(client):
     assert len(apps) == 1
     assert apps[0]["_id"] == app_id
     assert apps[0]["name"] == app_data["name"]
+    assert len(apps[0]["client_secret"]) == 64
 
     # Get app directly
     get_response = await api_call(
@@ -388,6 +398,7 @@ async def test_oidc_client_lifecycle(client):
     updated_app = patch_response.json()
     assert updated_app["name"] == updates["name"]
     assert updated_app["redirect_uris"] == updates["redirect_uris"]
+    assert len(updated_app["client_secret"]) == 64
 
     # Get app again and verify update
     get_response = await api_call(
