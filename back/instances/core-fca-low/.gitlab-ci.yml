@@ -74,7 +74,7 @@
     # Up the docker-stack with minimal requirement
     - export NODE_VERSION=v22.13.0
 
-    # try to add manually the network fc_public
+    # add manually the network fc_public
     - docker network create --driver bridge fc_public
     - docker-stack up core-fca-low
     - docker exec fc_core-fca-low_1 bash -c "node --version"
