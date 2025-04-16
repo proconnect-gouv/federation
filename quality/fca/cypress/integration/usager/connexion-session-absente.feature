@@ -1,11 +1,19 @@
 #language: fr
 Fonctionnalité: Connexion Usager - session absente
 
+  @ignoreInteg01
   Scénario: Connexion OK - vérification des cookies ProConnect après l'appel authorize
     Etant donné que je navigue sur la page fournisseur de service
     Quand je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page interaction
-    Et les cookies ProConnect sont présents
+    Et les cookies ProConnect docker sont présents
+
+  @ignoreDocker
+  Scénario: Connexion OK - vérification des cookies ProConnect après l'appel authorize en integ
+    Etant donné que je navigue sur la page fournisseur de service
+    Quand je clique sur le bouton ProConnect
+    Alors je suis redirigé vers la page interaction
+    Et les cookies ProConnect integ01 sont présents
 
   Scénario: Connexion OK - session inconnue lors de l'appel authorize
     Etant donné que je force un sessionId inexistant dans le cookie de session AgentConnect
