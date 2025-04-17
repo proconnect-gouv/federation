@@ -43,7 +43,7 @@ quality-fca-low-release:
     - cd $CI_PROJECT_DIR/quality/fca
     - yarn cypress install
     - yarn cypress verify
-    - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
+    - yarn test:low:chrome-desktop -c video=false --env TAGS="$BDD_TAGS" || RETURN_CODE=1
     - yarn report
     - exit $RETURN_CODE
   dependencies: []

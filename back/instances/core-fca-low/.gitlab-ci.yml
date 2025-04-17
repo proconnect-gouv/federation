@@ -108,7 +108,7 @@ fca-low-snapshot:
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting visual checks"
     - cd $CI_PROJECT_DIR/quality/fca
     ## temp log to display quality content
-    - yarn test:low:snapshot -c video=${CYPRESS_VIDEO}
+    - yarn test:low:snapshot -c video=false
     - yarn report
 
 fca-low-chrome-desktop:
@@ -128,5 +128,5 @@ fca-low-chrome-desktop:
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks with tags $BDD_TAGS"
     - cd $CI_PROJECT_DIR/quality/fca
-    - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS"
+    - yarn test:low:chrome-desktop -c video=false --env TAGS="$BDD_TAGS"
     - yarn report
