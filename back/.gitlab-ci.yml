@@ -1,6 +1,6 @@
 include:
-  # - 'back/instances/**/.gitlab-build.yml'
-  # - 'back/instances/**/.gitlab-ci.yml'
+  - 'back/instances/**/.gitlab-build.yml'
+  - 'back/instances/**/.gitlab-ci.yml'
   - 'back/instances/**/.gitlab-post-deploy.yml'
 
 variables:
