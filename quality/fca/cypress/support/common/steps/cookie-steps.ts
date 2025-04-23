@@ -46,26 +46,31 @@ Given('je supprime tous les cookies', function () {
   cy.clearAllCookies();
 });
 
-Then('les cookies ProConnect sont présents', function () {
-  const { fcaRootUrl, name } = this.env;
-  const url = new URL(fcaRootUrl);
-  const domain = url.hostname;
+Then(
+  /^les cookies ProConnect (docker|integ01) sont présents$/,
+  function (env: string) {
+    const { fcaRootUrl, name } = this.env;
+    const url = new URL(fcaRootUrl);
+    const domain = url.hostname;
 
-  checkCookieExists('pc_session_id', domain);
+    checkCookieExists('pc_session_id', domain);
 
-  cy.getCookies({ domain })
-    .should('have.length', 7)
-    .then((cookies: Cypress.Cookie[]) => {
-      // FC cookies are intercepted by Cypress on integ01.
-      // We force sameSite=none to test cross-domain.
-      // The sameSite check can only be done on the docker environment.
-      if (name === 'docker') {
-        cookies.forEach((cookie) =>
-          expect(cookie).to.have.property('sameSite', 'lax'),
-        );
-      }
-    });
-});
+    // there is 1 more cookie in integ01 env
+    const cookiesCount = env === 'docker' ? 7 : 8;
+    cy.getCookies({ domain })
+      .should('have.length', cookiesCount)
+      .then((cookies: Cypress.Cookie[]) => {
+        // FC cookies are intercepted by Cypress on integ01.
+        // We force sameSite=none to test cross-domain.
+        // The sameSite check can only be done on the docker environment.
+        if (name === 'docker') {
+          cookies.forEach((cookie) =>
+            expect(cookie).to.have.property('sameSite', 'lax'),
+          );
+        }
+      });
+  },
+);
 
 When(
   'je force un sessionId inexistant dans le cookie de session AgentConnect',

@@ -1,6 +1,8 @@
 quality-fca-low-release:
   stage: 'Post-deploy'
   image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/ci-cd/e2e:cypress-base-22.13.0
+  services:
+    - name: docker:27-dind
   tags:
     - cypress
   only:
@@ -34,14 +36,14 @@ quality-fca-low-release:
     - cd $CI_PROJECT_DIR/quality/fca && yarn install --frozen-lockfile
     - cd $CI_PROJECT_DIR
   script:
+    # add manually the network fc_public
+    - docker network create --driver bridge fc_public
     # Build the nginx proxy to access /integ01/fca.html
     - docker-stack up rp-all
     - cd $CI_PROJECT_DIR/quality/fca
-    - export CYPRESS_EXPLOIT_USER_PASS=$EXPLOIT_FCA_LOW_INT_PWD
-    - export CYPRESS_EXPLOIT_USER_TOTP=$EXPLOIT_FCA_LOW_INT_TOTP
     - yarn cypress install
     - yarn cypress verify
-    - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
+    - yarn test:low:chrome-desktop -c video=false --env TAGS="$BDD_TAGS" || RETURN_CODE=1
     - yarn report
     - exit $RETURN_CODE
   dependencies: []
