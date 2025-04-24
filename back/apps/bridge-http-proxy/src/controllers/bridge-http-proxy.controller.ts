@@ -27,7 +27,7 @@ export class BridgeHttpProxyController {
 
   @Get(BridgeHttpProxyRoutes.HEALTHCHECK_LIVE)
   healthcheck(): string {
-    return "ok";
+    return 'ok';
   }
 
   /**
@@ -69,7 +69,9 @@ export class BridgeHttpProxyController {
     const { originalUrl, method } = req;
     const { host, 'x-forwarded-proto': xForwardedProto } = headers;
 
-    this.logger.info(`${method} ${xForwardedProto || 'https'}://${host}${originalUrl}`);
+    this.logger.info(
+      `${method} ${xForwardedProto || 'https'}://${host}${originalUrl}`,
+    );
 
     const response: BridgeProtocol<object> = await this.broker.proxyRequest(
       originalUrl,
