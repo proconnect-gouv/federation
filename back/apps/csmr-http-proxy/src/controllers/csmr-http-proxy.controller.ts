@@ -23,7 +23,6 @@ export class CsmrHttpProxyController {
 
   @Get("/livez")
   healthcheck(): string {
-    console.log("ping...");
     return "ok";
   }
 
