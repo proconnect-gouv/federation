@@ -13,7 +13,6 @@ import { MongooseConfig } from '@fc/mongoose';
 import { OidcAcrConfig } from '@fc/oidc-acr';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
-import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { RedisConfig } from '@fc/redis';
 import { ScopesConfig } from '@fc/scopes';
 import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
@@ -87,11 +86,6 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => SessionConfig)
   readonly Session: SessionConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => OverrideOidcProviderConfig)
-  readonly OverrideOidcProvider: OverrideOidcProviderConfig;
 
   @IsObject()
   @ValidateNested()
