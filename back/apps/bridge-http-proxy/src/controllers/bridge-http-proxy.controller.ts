@@ -27,7 +27,6 @@ export class BridgeHttpProxyController {
 
   @Get(BridgeHttpProxyRoutes.HEALTHCHECK_LIVE)
   healthcheck(): string {
-    console.log("ping...");
     return "ok";
   }
 
