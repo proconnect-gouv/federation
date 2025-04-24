@@ -25,6 +25,11 @@ export class BridgeHttpProxyController {
     private readonly broker: BridgeHttpProxyService,
   ) {}
 
+  @Get(BridgeHttpProxyRoutes.HEALTHCHECK_LIVE)
+  healthcheck(): string {
+    return "ok";
+  }
+
   /**
    * Catch all 'GET' routes needed for a cinematic
    * * /.well-known/openid-configuration
@@ -64,7 +69,7 @@ export class BridgeHttpProxyController {
     const { originalUrl, method } = req;
     const { host, 'x-forwarded-proto': xForwardedProto } = headers;
 
-    this.logger.info(`${method} ${xForwardedProto}://${host}${originalUrl}`);
+    this.logger.info(`${method} ${xForwardedProto || 'https'}://${host}${originalUrl}`);
 
     const response: BridgeProtocol<object> = await this.broker.proxyRequest(
       originalUrl,

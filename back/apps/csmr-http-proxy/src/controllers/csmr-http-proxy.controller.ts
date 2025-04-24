@@ -1,4 +1,4 @@
-import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { ValidationException } from '@fc/exceptions';
@@ -20,6 +20,11 @@ export class CsmrHttpProxyController {
     private readonly logger: LoggerService,
     private readonly proxy: CsmrHttpProxyService,
   ) {}
+
+  @Get("/livez")
+  healthcheck(): string {
+    return "ok";
+  }
 
   @MessagePattern(HttpProxyProtocol.Commands.HTTP_PROXY)
   @UsePipes(
