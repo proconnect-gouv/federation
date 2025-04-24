@@ -45,7 +45,7 @@ CMD ["node", "/app/dist/instances/app/main.js"]
 
 USER root
 
-ENV EMULATE_PM2=1
+ENV EMULATE_PM2=0
 
 RUN mkdir -p /data/log/app && chown node:node /data/log/app
 
