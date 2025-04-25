@@ -21,9 +21,9 @@ export class CsmrHttpProxyController {
     private readonly proxy: CsmrHttpProxyService,
   ) {}
 
-  @Get("/livez")
+  @Get('/livez')
   healthcheck(): string {
-    return "ok";
+    return 'ok';
   }
 
   @MessagePattern(HttpProxyProtocol.Commands.HTTP_PROXY)

@@ -1,0 +1,59 @@
+name: 💚 CI Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Static test of the back directory
+  test_static_back:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.13.0
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: back/node_modules
+          key: ${{ runner.os }}-node-modules-back-${{ hashFiles('back/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-back-
+      - name: Install dependencies and run linting
+        working-directory: ./back
+        run: |
+          yarn install --ignore-engines --frozen-lockfile --no-progress
+          yarn doc
+          git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
+          yarn lint
+          yarn prettier
+          yarn tsc --noEmit
+
+  # Static test of the quality directory
+  test_static_quality:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.13.0
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: quality/node_modules
+          key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-quality-
+      - name: Install dependencies and run linting
+        working-directory: ./quality
+        run: |
+          yarn install --ignore-engines --frozen-lockfile --no-progress
+          yarn lint
+          yarn prettier
+          yarn tsc --noEmit
