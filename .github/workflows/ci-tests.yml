@@ -115,3 +115,37 @@ jobs:
       - name: Test code coverage
         run: |
           yarn test --coverage
+
+  test_snapshot:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./quality/fca
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up dockerx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Start docker stack
+        working-directory: ./docker
+        run: |
+          ./docker-stack prune-ci
+          docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+          RETURN_CODE=0
+          ln -s volumes/src/federation
+          docker network create --driver bridge fc_public
+          ./docker-stack up min-fca-low
+          ./docker-stack start-all-ci
+
+      - name: Test snapshots
+        run: |
+          yarn test:low:snapshot -c video=false
+          yarn report
+
+  # test_e2e:
+  #   runs-on: ubuntu-24.04
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
