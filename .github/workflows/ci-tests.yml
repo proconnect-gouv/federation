@@ -4,15 +4,11 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    tags:
-      - '*'
 
 jobs:
   # Static test of the back directory
   test_static_back:
-    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,8 +24,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-modules-back-
       - name: Install dependencies and run linting
+        working-directory: ./back
         run: |
-          cd back
           yarn install --ignore-engines --frozen-lockfile --no-progress
           yarn doc
           git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
@@ -39,8 +35,7 @@ jobs:
 
   # Static test of the quality directory
   test_static_quality:
-    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -56,8 +51,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-modules-quality-
       - name: Install dependencies and run linting
+        working-directory: ./quality
         run: |
-          cd quality
           yarn install --ignore-engines --frozen-lockfile --no-progress
           yarn lint
           yarn prettier
