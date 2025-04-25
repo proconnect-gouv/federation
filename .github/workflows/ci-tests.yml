@@ -6,7 +6,6 @@ on:
       - main
 
 jobs:
-  # Static test of the back directory
   test_static_back:
     runs-on: ubuntu-24.04
     steps:
@@ -23,17 +22,23 @@ jobs:
           key: ${{ runner.os }}-node-modules-back-${{ hashFiles('back/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-back-
-      - name: Install dependencies and run linting
+      - name: Install dependencies
         working-directory: ./back
         run: |
           yarn install --ignore-engines --frozen-lockfile --no-progress
+      - name: Check doc
+        working-directory: ./back
+        run: |
           yarn doc
           git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
+      - name: Check code style
+        working-directory: ./back
+        run: |
           yarn lint
           yarn prettier
+      - name: Check transpilation
           yarn tsc --noEmit
 
-  # Static test of the quality directory
   test_static_quality:
     runs-on: ubuntu-24.04
     steps:
@@ -54,6 +59,10 @@ jobs:
         working-directory: ./quality
         run: |
           yarn install --ignore-engines --frozen-lockfile --no-progress
+      - name: Check code style
+        working-directory: ./quality
+        run: |
           yarn lint
           yarn prettier
+      - name: Check transpilation
           yarn tsc --noEmit
