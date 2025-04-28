@@ -144,7 +144,7 @@ export class CoreTrackingService {
       reusesActiveSession = null,
 
       spId = null,
-      spAcr = null,
+      spEssentialAcr = null,
       spName = null,
       subs = {},
 
@@ -166,7 +166,7 @@ export class CoreTrackingService {
       sessionId,
 
       spId,
-      spAcr,
+      spEssentialAcr,
       spName,
       spSub: subs[spId] || null,
 

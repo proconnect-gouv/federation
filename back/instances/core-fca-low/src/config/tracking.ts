@@ -101,9 +101,6 @@ export default {
       step: '7.0.0',
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FC_REDIRECTED_TO_SP',
-      interceptRoutes: [
-        { method: RequestMethod.GET, path: CoreRoutes.INTERACTION_LOGIN },
-      ],
     },
 
     // Discovery

@@ -5,17 +5,12 @@ import { AccountModule } from '@fc/account';
 import { AccountFcaModule } from '@fc/account-fca';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import {
-  CORE_AUTH_SERVICE,
   CORE_SERVICE,
-  CORE_VERIFY_SERVICE,
-  CoreAuthorizationService,
   CoreModule,
-  CoreVerifyService,
 } from '@fc/core';
 import { CsrfModule, CsrfService } from '@fc/csrf';
 import { DataProviderAdapterMongoModule } from '@fc/data-provider-adapter-mongo';
 import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
-import { FeatureHandlerModule } from '@fc/feature-handler';
 import { FlowStepsModule } from '@fc/flow-steps';
 import { FqdnToIdpAdapterMongoModule } from '@fc/fqdn-to-idp-adapter-mongo';
 import { HttpProxyModule } from '@fc/http-proxy';
@@ -48,17 +43,10 @@ import {
   OidcProviderController,
 } from './controllers';
 import {
-  CoreFcaDefaultAuthorizationHandler,
-  CoreFcaDefaultVerifyHandler,
-  CoreFcaMcpAuthorizationHandler,
-  CoreFcaMcpVerifyHandler,
-} from './handlers';
-import {
   CoreFcaFqdnService,
   CoreFcaMiddlewareService,
   CoreFcaService,
   CoreFcaTrackingService,
-  CoreFcaVerifyService,
   DataProviderService,
   IdentitySanitizer,
   OidcProviderConfigAppService,
@@ -94,7 +82,6 @@ import { IsPhoneNumberFCAConstraint } from './validators';
     ),
     FlowStepsModule,
     NotificationsModule,
-    FeatureHandlerModule,
     CsrfModule,
     AccountFcaModule,
     ViewTemplatesModule,
@@ -117,14 +104,6 @@ import { IsPhoneNumberFCAConstraint } from './validators';
   ],
   providers: [
     {
-      provide: CORE_AUTH_SERVICE,
-      useClass: CoreAuthorizationService,
-    },
-    {
-      provide: CORE_VERIFY_SERVICE,
-      useClass: CoreVerifyService,
-    },
-    {
       provide: CORE_SERVICE,
       useClass: CoreFcaService,
     },
@@ -132,11 +111,6 @@ import { IsPhoneNumberFCAConstraint } from './validators';
       provide: IDENTITY_PROVIDER_SERVICE,
       useExisting: IdentityProviderAdapterMongoService,
     },
-    CoreFcaDefaultAuthorizationHandler,
-    CoreFcaMcpAuthorizationHandler,
-    CoreFcaVerifyService,
-    CoreFcaDefaultVerifyHandler,
-    CoreFcaMcpVerifyHandler,
     CsrfService,
     OidcProviderConfigAppService,
     CoreFcaService,

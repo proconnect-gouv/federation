@@ -17,17 +17,12 @@ import {
   OidcProviderRuntimeException,
   OidcProviderSpIdNotFoundException,
 } from '../exceptions';
-import {
-  IOidcProviderConfigAppService,
-  LogoutFormParamsInterface,
-} from '../interfaces';
+import { LogoutFormParamsInterface } from '../interfaces';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
 import { OidcProviderGrantService } from './oidc-provider-grant.service';
 
 @Injectable()
-export abstract class OidcProviderAppConfigLibService
-  implements IOidcProviderConfigAppService
-{
+export abstract class OidcProviderAppConfigLibService {
   protected provider: Provider;
 
   // Dependency injection can require more than 4 parameters
@@ -116,22 +111,17 @@ export abstract class OidcProviderAppConfigLibService
     }
   }
 
-  /**
-   * @todo #1023 je type les entrées et sortie correctement et non pas avec any
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1023
-   * @ticket #FC-1023
-   */
-  /**
-   * Wrap `oidc-provider` method to
-   *  - lower coupling in other modules
-   *  - handle exceptions
-   *
-   * @param {any} req
-   * @param {any} res
-   * @param {UserSession} session Object that contains the session info
-   */
-  async finishInteraction(req: any, res: any, session: UserSession) {
-    const { amr, interactionAcr: acr } = session;
+  async finishInteraction(
+    req: any,
+    res: any,
+    {
+      amr,
+      acr,
+    }: {
+      amr: InteractionResults['login']['amr'];
+      acr: InteractionResults['login']['acr'];
+    },
+  ) {
     const sessionId = this.sessionService.getId();
 
     /**
@@ -139,7 +129,6 @@ export abstract class OidcProviderAppConfigLibService
      * For all available options, refer to `oidc-provider` documentation:
      * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#user-flows
      */
-
     const grant = await this.grantService.generateGrant(
       this.provider,
       req,

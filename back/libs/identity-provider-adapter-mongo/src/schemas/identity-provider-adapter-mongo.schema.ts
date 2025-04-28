@@ -2,8 +2,6 @@ import { Document, Schema as SchemaNative } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { IFeatureHandlerDatabase } from '@fc/feature-handler';
-
 @Schema({ collection: 'provider', strict: true })
 export class IdentityProvider extends Document {
   @Prop({ type: String })
@@ -46,7 +44,7 @@ export class IdentityProvider extends Document {
   userinfo_encrypted_response_enc: string;
 
   @Prop({ type: SchemaNative.Types.Mixed })
-  featureHandlers: IFeatureHandlerDatabase;
+  featureHandlers: any;
 
   @Prop({ type: [String] })
   allowedAcr: string[];

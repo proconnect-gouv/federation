@@ -11,7 +11,6 @@ import {
   IsUUID,
 } from 'class-validator';
 
-import { PartialExcept } from '@fc/common';
 import { IOidcIdentity } from '@fc/oidc/interfaces';
 
 // Properties annotated with @Expose will be the only ones included during cookie renewal/duplication.
@@ -79,7 +78,7 @@ export class UserSession {
   @IsString()
   @IsNotEmpty()
   @Expose()
-  readonly spAcr?: string;
+  readonly spEssentialAcr?: string;
 
   @IsOptional()
   @IsString()
@@ -157,24 +156,10 @@ export class UserSession {
   @Expose()
   readonly idpNonce?: string;
 
-  /**
-   * @todo #485 This section require a deep type validation
-   * It should be done in a session integrity validation ticket
-   * that handle errors in case one of the session's member
-   * is not valid.
-   * @author Brice
-   * @date 2021-04-21
-   * @ticket #FC-485
-   * @sample
-   *   @ValidateNested()
-   *   @Type (() => IOidcIdentity)
-   *   readonly idpIdentity?: IOidcIdentity;
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/485
-   */
   @IsOptional()
   @IsObject()
   @Expose()
-  readonly idpIdentity?: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
+  readonly idpIdentity?: Partial<IOidcIdentity>;
 
   @IsOptional()
   @IsObject()

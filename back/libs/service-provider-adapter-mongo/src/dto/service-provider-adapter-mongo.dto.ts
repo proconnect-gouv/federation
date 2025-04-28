@@ -9,7 +9,6 @@ import {
 
 // Creates a cyclic dependency
 import { IsEqualToConfig, IsUrlRequiredTldFromConfig } from '@fc/common';
-import { SUPPORTED_SIG_ALG } from '@fc/cryptography';
 
 import { ServiceProviderAdapterMongoConfig } from './service-provider-adapter-mongo-config.dto';
 
@@ -51,7 +50,7 @@ export class ServiceProviderAdapterMongoDTO {
   readonly claims: string[];
 
   @IsString()
-  @IsIn(SUPPORTED_SIG_ALG)
+  @IsIn(['ES256', 'RS256', 'HS256'])
   readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';
 
   @IsString()
@@ -86,11 +85,11 @@ export class ServiceProviderAdapterMongoDTO {
   @IsString({ each: true })
   idpFilterList?: string[];
 
+  // 'public' = sp that accepts public servants only
+  // 'private' = sp that also accepts private sector employees
   @IsString()
-  @IsIn(['private', 'public'], {
-    message: 'The service provider type should be specified',
-  })
-  readonly type: string;
+  @IsIn(['private', 'public'])
+  readonly type: 'private' | 'public';
 
   @IsOptional()
   @IsBoolean()

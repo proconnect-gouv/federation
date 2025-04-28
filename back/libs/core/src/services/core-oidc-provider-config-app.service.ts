@@ -63,8 +63,8 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
       idpAcr,
       idpIdToken,
       idpIdentity,
+      spEssentialAcr,
       spId,
-      spAcr,
       spName,
       subs,
     } = session.User;
@@ -80,8 +80,8 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
       idpAcr,
       idpIdToken,
       idpIdentity: { sub: idpIdentity.sub },
+      spEssentialAcr,
       spId,
-      spAcr,
       spName,
       subs,
     });

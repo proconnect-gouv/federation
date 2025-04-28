@@ -36,8 +36,6 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     protected readonly tracking: TrackingService,
     protected readonly oidcErrorService: OidcProviderErrorService,
     protected readonly oidcAcr: OidcAcrService,
-    @Inject(CORE_SERVICE)
-    protected readonly core: CoreFcaService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {
@@ -50,7 +48,6 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
       tracking,
       oidcErrorService,
       oidcAcr,
-      core,
       identityProvider,
     );
   }

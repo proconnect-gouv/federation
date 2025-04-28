@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { PartialExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core-fca';
 import { LoggerService } from '@fc/logger';
@@ -187,7 +186,7 @@ describe('MailerService', () => {
     };
     const idpIdentityMock = {
       sub: 'some idpSub',
-    } as PartialExcept<IOidcIdentity, 'sub'>;
+    } as Partial<IOidcIdentity>;
     const spIdentityWithEmailMock = {
       sub: 'some spSub',
       given_name: 'Edward',

@@ -126,7 +126,6 @@ export class OidcClientController {
   ])
   @SetStep()
   @UseGuards(CsrfTokenGuard)
-  // eslint-disable-next-line complexity
   async redirectToIdp(
     @Req() req: Request,
     @Res() res: Response,
@@ -143,20 +142,6 @@ export class OidcClientController {
     await this.emailValidatorService.validate(email);
 
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
-
-    const {
-      params: { acr_values: requestedAcrValues },
-    } = await this.oidcProvider.getInteraction(req, res);
-
-    const authorizeParams = {
-      login_hint: email,
-    };
-
-    const filteredAcrValues =
-      this.oidcAcr.getFilteredAcrValues(requestedAcrValues);
-    if (filteredAcrValues) {
-      authorizeParams['acr_values'] = filteredAcrValues;
-    }
 
     userSession.set('login_hint', email);
 
@@ -209,8 +194,8 @@ export class OidcClientController {
     };
     const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
     await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);
-    // we need to keep idpId as 2nd parameter for the idp_hint
-    return this.coreFca.redirectToIdp(res, idpId, authorizeParams);
+
+    return this.coreFca.redirectToIdp(req, res, idpId);
   }
 
   /**
@@ -388,7 +373,6 @@ export class OidcClientController {
     });
     userSession.set(identityExchange);
 
-    // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 

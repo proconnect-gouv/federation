@@ -16,10 +16,6 @@ import {
 } from 'class-validator';
 
 import { IsIncludedInConfig } from '@fc/common';
-import {
-  IFeatureHandlerDatabase,
-  IsRegisteredHandler,
-} from '@fc/feature-handler';
 import { Amr, ResponseTypes } from '@fc/oidc';
 
 import { JwksUriValidator } from './jwksuri.validator';
@@ -81,8 +77,8 @@ export class MetadataIdpAdapterMongoDTO {
   @IsOptional()
   readonly amr?: Amr[];
 
-  @IsRegisteredHandler()
-  readonly featureHandlers: IFeatureHandlerDatabase;
+  @IsObject()
+  readonly featureHandlers: any;
 
   @IsOptional()
   @IsObject()

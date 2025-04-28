@@ -22,8 +22,6 @@ import { SessionNoSessionIdException, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import { CoreClaimAmrException } from '../exceptions';
-import { CoreServiceInterface } from '../interfaces';
-import { CORE_SERVICE } from '../tokens';
 
 @Injectable()
 export class CoreOidcProviderMiddlewareService {
@@ -38,8 +36,6 @@ export class CoreOidcProviderMiddlewareService {
     protected readonly tracking: TrackingService,
     protected readonly oidcErrorService: OidcProviderErrorService,
     protected readonly oidcAcr: OidcAcrService,
-    @Inject(CORE_SERVICE)
-    protected readonly core: CoreServiceInterface,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}

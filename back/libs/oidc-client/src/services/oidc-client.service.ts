@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { LoggerService } from '@fc/logger';
-import { BaseOidcIdentityInterface, IOidcIdentity } from '@fc/oidc';
+import { IOidcIdentity } from '@fc/oidc';
 import { TrackedEventContextInterface } from '@fc/tracking';
 
 import { MinIdentityDto, TokenResultDto } from '../dto';
@@ -90,9 +90,7 @@ export class OidcClientService {
     return tokenResult;
   }
 
-  async getUserInfosFromProvider<
-    T extends BaseOidcIdentityInterface = IOidcIdentity,
-  >(
+  async getUserInfosFromProvider<T = IOidcIdentity>(
     { accessToken, idpId }: UserInfosParams,
     _context: TrackedEventContextInterface,
   ): Promise<T> {
@@ -114,7 +112,7 @@ export class OidcClientService {
     }
 
     const errors = await validateDto(
-      identity,
+      identity as object,
       MinIdentityDto,
       {
         whitelist: true,
