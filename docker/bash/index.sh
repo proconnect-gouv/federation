@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-if [ -z "${FC_ROOT}" ]; then
-  read -p "Missing FC_ROOT path. Please fill in: " FC_ROOT
+if [ -z "${PC_ROOT}" ]; then
+  read -p "Missing PC_ROOT path. Please fill in: " PC_ROOT
   exit 1
 fi
 
-INCLUDE_DIR="${FC_ROOT}/proconnect-federation/docker/bash"
+INCLUDE_DIR="${PC_ROOT}/federation/docker/bash"
 
 source "${INCLUDE_DIR}/utils/index.sh"
 source "${INCLUDE_DIR}/config/index.sh"
@@ -14,12 +14,6 @@ source "${INCLUDE_DIR}/commands/index.sh"
 source "${INCLUDE_DIR}/hooks/index.sh"
 
 ## Data initialisation
-
-### Postgres
-_command_register "migrations-partners-back" "_migrations_postgres partners-back" ""                   # Description to be defined
-_command_register "migrations-generate-partners-back" "_migrations_generate_postgres partners-back" "" # Description to be defined
-_command_register "fixtures-partners-back" "_fixtures_postgres 'partners-back'" ""                     # Description to be defined
-
 _command_register "fixtures" "_hook_fc_apps" "Init postgres Exploitation : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"
 
 ### Mongo
@@ -30,21 +24,6 @@ _command_register "reset-mongo-as-prod" "_reset_mongodb_as_prod" "reset-mongo-as
 
 ### Redis
 _command_register "redis" "_redis_cli" "Connect to redis cli: redis <db>"
-
-### Elastic
-_command_register "init-ud" "_init_ud" "init-ud => Initialize data for user dashboard"
-_command_register "reset-stats" "_reset_stats" "reset-stats => drop stats index"
-_command_register "es-create-ingest-pipeline" "_create_es_ingest_pipeline" "" # Description to be defined
-_command_register "generate-legacy-traces" "_generate_legacy_traces" "Generate FC legacy connection logs and inject them into Elasticsearch"
-_command_register "generate-v2-traces" "_generate_v2_traces" "Generate FC+ connection logs and inject them into Elasticsearch from '/quality/fcp/data/userdashboard/quality/fcp/data/userdashboard/populate-account-traces.script.js'"
-_command_register "create-es-alias" "_create_es_alias" "create automatic es alias for FC legacy & FC v2 during _init_ud"
-_command_register "create-es-alias-legacy" "_create_es_alias_legacy" "create manual es alias for FC legacy"
-_command_register "create-es-alias-v2" "_create_es_alias_v2" "create manual es alias for FC v2"
-_command_register "generate-metrics" "_generate_metrics" "" # Description to be defined
-_command_register "generate-stats" "_generate_stats" "generate-stats => restore all stats (logs, event and metrics) index"
-_command_register "generate-events" "_generate_events" "restore logs and events index"
-_command_register "delete-indexes" "_delete_indexes" ""        # Description to be defined
-_command_register "restore-snapshot" "_es_restore_snapshot" "" # Description to be defined # Deprecated
 
 ## Nodejs apps
 _command_register "start" "_start" "start application"
@@ -89,27 +68,18 @@ _command_register "list" "_list_services" "List available services / stacks: lis
 
 ## General / utils
 _command_register "help" "_command_list" "Display this help: help <search term>"
-
 _command_register "reload-rp" "_reload_rp" "Reload Reverse proxy"
-
 _command_register "compose" "_compose" "Run a docker compose command on project"
-
 _command_register "llng-configure" "_llng_configure" "Restore LemonLDAP configuration from ./docker/volumes/llng/llng-conf.json dump file"
-
 _command_register "wait" "wait_for_nodejs" "Wait for a nodejs HTTP service to respond on an URL or try to display logs"
-
 _command_register "log-rotate" "_log_rotate" "log-rotate Rotate the logs and send SIGUSR"
-
 _command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo shell"
+
 ### Legacy aliases for mongo shell access
 _command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "
-_command_register "mongo-shell-core-fcp-high" "_mongo_shell_core_fcp_high" "[deprecated] Open mongo shell for core-fcp-high"
-_command_register "mongo-shell-core-fcp-low" "_mongo_shell_core_fcp_low" "[deprecated] Open mongo shell for core-fcp-low"
-_command_register "mongo-shell-core-legacy" "_mongo_shell_core_legacy" "[deprecated] Open mongo shell for core-legacy"
 _command_register "mongo-script" "_mongo_script" "Execute MongoDB <script> on given <container>: docker-stack mongo-script <container> <script>"
 
 _command_register "inspect-files-back" "_get_back_app_files" "inspect-files-for-app <app> => Extract files needed for a built application, based on webpack stats. App must be built before running this command"
-_command_register "inspect-files-front" "_get_front_app_files" "inspect-files-for-app <app> => Extract files needed for a built application, based on webpack stats. App must be built before running this command"
 _command_register "inspect-updated-files-for-apps" "_get_modified_files_for_apps" "inspect-updated-files-for-apps <app1> [<app2> <app3> ...] <git revision> => Compare list if files needed for an application to list of files modified for the given revision "
 
 _command_register "add" "_add_node_app" "Start a node application."
