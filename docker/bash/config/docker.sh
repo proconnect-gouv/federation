@@ -2,7 +2,7 @@
 
 #### Global Variables:
 COMPOSE_PROJECT_NAME=fc
-COMPOSE_DIR="${FC_ROOT}/federation/docker/compose"
+COMPOSE_DIR="${PC_ROOT}/federation/docker/compose"
 COMPOSE_FILES=$(find ${COMPOSE_DIR} -not -path "${COMPOSE_DIR}/OS/*" -not -path "${COMPOSE_DIR}/CI/*" -name "*.yml")
 
 COMPOSE_DIR_OS_SPECIFIC="${COMPOSE_DIR}/OS/$(uname -s)"
@@ -17,8 +17,8 @@ if [ -n "$CI" ]; then
   COMPOSE_FILES_CI_SPECIFIC=$(find "${COMPOSE_DIR}/CI" -name "*.yml")
 fi
 
-VOLUMES_DIR="${FC_ROOT}/federation/docker/volumes"
-WORKING_DIR="${FC_ROOT}/federation/docker"
+VOLUMES_DIR="${PC_ROOT}/federation/docker/volumes"
+WORKING_DIR="${PC_ROOT}/federation/docker"
 # TODO: Use the GitHub directory when the Node image is available, or remove the dependency on the Node image
 DOCKER_REGISTRY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc/nodejs:${NODE_VERSION}-dev"
 if [ "${PC_DOCKER_COMPOSE}" ]; then

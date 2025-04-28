@@ -79,8 +79,5 @@ _command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo
 _command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "
 _command_register "mongo-script" "_mongo_script" "Execute MongoDB <script> on given <container>: docker-stack mongo-script <container> <script>"
 
-_command_register "inspect-files-back" "_get_back_app_files" "inspect-files-for-app <app> => Extract files needed for a built application, based on webpack stats. App must be built before running this command"
-_command_register "inspect-updated-files-for-apps" "_get_modified_files_for_apps" "inspect-updated-files-for-apps <app1> [<app2> <app3> ...] <git revision> => Compare list if files needed for an application to list of files modified for the given revision "
-
 _command_register "add" "_add_node_app" "Start a node application."
 _command_run "$1" "${@:2}"
