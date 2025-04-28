@@ -53,9 +53,6 @@ export FC_DOCKER_REGISTRY=registry.gitlab.dev-franceconnect.fr/france-connect/fc
 
 # Alias for the docker-stack command (you can add it to your "~/.bash_aliases" if you prefer but don't forget to set the variables before the .bash_aliases sourcing in your .bashrc 😉) :
 alias dks=$PC_ROOT/federation/docker/docker-stack
-
-# If you use version 2 of docker compose
-export PC_DOCKER_COMPOSE='docker compose'
 ```
 
 - Clone every needed repository
@@ -94,7 +91,7 @@ You will be prompted for:
 ### Running AgentConnect
 
 ```bash
-dks switch min-fca-low
+dks switch small
 ```
 
 On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion with :
@@ -108,7 +105,7 @@ You are now connected to fsa1!
 ### Running FC exploitation for AgentConnect
 
 ```bash
-dks switch bdd-fca-low
+dks switch medium
 ```
 
 Then go to https://exploitation-fca-low.docker.dev-franceconnect.fr/login.
@@ -119,7 +116,7 @@ Login with:
 - Password: `georgesmoustaki`
 - TOTP: enter this secret in your totp app `KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD`
 
-More credentials can be found here : `proconnect-exploitation/shared/fixtures/User.yml`.
+More credentials can be found here : `federation-admin/shared/fixtures/User.yml`.
 
 ### Testing the installation
 
@@ -182,7 +179,7 @@ yarn install
 ### Run tests from the Cypress UI
 
 ```bash
-dks switch bdd-fca-low
+dks switch medium
 cd $PC_ROOT/federation/quality/fca
 yarn start:low
 ```
@@ -190,7 +187,7 @@ yarn start:low
 ## Visualization Tests
 
 ```bash
-dks switch bdd-fca-low
+dks switch medium
 cd $PC_ROOT/federation/quality/fca
 yarn test:low:snapshot
 ```

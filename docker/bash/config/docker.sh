@@ -21,11 +21,8 @@ VOLUMES_DIR="${PC_ROOT}/federation/docker/volumes"
 WORKING_DIR="${PC_ROOT}/federation/docker"
 # TODO: Use the GitHub directory when the Node image is available, or remove the dependency on the Node image
 DOCKER_REGISTRY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc/nodejs:${NODE_VERSION}-dev"
-if [ "${PC_DOCKER_COMPOSE}" ]; then
-  DOCKER_COMPOSE="${PC_DOCKER_COMPOSE}"
-else
-  DOCKER_COMPOSE='docker compose'
-fi
+
+DOCKER_COMPOSE='docker compose'
 
 # https://docs.docker.com/compose/migrate/#service-container-names
 export COMPOSE_COMPATIBILITY=1
