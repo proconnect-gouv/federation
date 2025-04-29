@@ -33,9 +33,7 @@
 5. Check the impact on a test execution
 6. Adjust the Cypress tests
 7. Adjust the Cypress plugins
-8. Run the tests BDD on FC+ and E2E on proconnect-exploitation to check the stability of the run
-9. Run the tests BDD on FC+, FC v2, agent-connect, user-dashboard, FC legacy
-10. Run the tests E2E on proconnect-exploitation and agent-connect
+8. Run the tests BDD on federation and E2E on federation-admin to check the stability of the run
 
 ### Known issues
 

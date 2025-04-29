@@ -106,7 +106,7 @@ _prune_all() {
   npm cache clean --force
   yarn cache clean
   sudo du -sh /var/cache/apt/archives
-  cd $FC_ROOT
+  cd $PC_ROOT
   find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
 }
 

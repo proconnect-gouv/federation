@@ -2,15 +2,15 @@
 
 ## Description
 
-This directory contains everything to run a local FranceConnect or AgentConnect stack. This local environment is as close as possible to the other distant ones (proxy, rp, a virtual HSM ...). Be careful not to launch too many containers as it could take too much resources (we are working on that).
+This directory contains everything to run a local ProConnect stack. This local environment is as close as possible to the other distant ones (proxy, rp ...). Be careful not to launch too many containers as it could take too much resources (we are working on that).
 
 ## Content
 
-- The core applications (core-\*) which are the main applications of FranceConnect (FC), AgentConnect (AC) and FranceConnect+ (FC+).
-- The back office applications (exploitation-\*) used to manage the projects.
-- The identities providers mocks (fip-_ for FC and FC+, fia-_ for AC).
-- The services providers mocks (fsp-_ for FC and FC+, fsa-_ for AC).
-- All software needed alongside those apps to make the stack work (MongoDB, Redis, SoftHSM, NginX, Squid, Elasticsearch, ...).
+- The core applications (core-\*) which are the main application of ProConnect.
+- The back office applications (admin-\*) used to manage the project.
+- The identities providers mocks (fia-\*).
+- The services providers mocks (fsa-\* for AC).
+- All software needed alongside those apps to make the stack work (MongoDB, Redis, NginX, Squid, ...).
 
 ## Some advanced usage
 
@@ -29,13 +29,12 @@ dks reset-db-core-fca-low
 ### Execute a shell command in a container
 
 ```bash
-# some commands may not work as expected since a refacto is in progress
 dks exec <container_name> <command>
 ```
 
 ### Troubleshooting
 
-You may experience some docker network issues with docker containers, for exemple in case of a switch of network on the hosts or long inactivity of the stack.
+You may experience some docker network issues with docker containers, for example in case of a switch of network on the hosts or long inactivity of the stack.
 
 In most case you can get back a healthy state by resetting the stack with `dks prune`
 
@@ -57,7 +56,7 @@ This directory contains all compose files with their environement files. The con
 
 ```
 compose/
-  shared/ -> contains compose files for shared bricks (proxys, rnipp-mock, ...)
+  shared/ -> contains compose files for shared bricks (proxys, ...)
     .env/
       base-env.env -> Contains ENV vars shared between all NodeJS apps
   stack-name/
@@ -85,7 +84,7 @@ volumes/
       ...
 ```
 
-⚠️ Some volumes are symbolic links to source code from in /back or /front folders.
+⚠️ Some volumes are symbolic links to source code from in /back folder.
 
 ## How To
 
@@ -103,7 +102,7 @@ services:
   <my_application>:
     image: alpine
     depends_on:
-      - '<my_application>-<front/back>'
+      - '<my_application>-<back>'
 
   bdd-<my_application>:
     image: alpine
@@ -116,15 +115,15 @@ services:
 
 ```yml
 services:
-  <my_application>-<back/front>:
-    hostname: <my_application>-<back/front>
+  <my_application>-<back>:
+    hostname: <my_application>-<back>
     image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
       - <...any_required_service...>
     volumes:
-      - '${VOLUMES_DIR}/src/fc/<back/front>:/var/www/app'
+      - '${VOLUMES_DIR}/src/fc/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
       - <...others_required_volumes...>
@@ -134,26 +133,4 @@ services:
       - public
     init: true
     command: 'pm2 logs'
-```
-
-#### Front Application
-
-- create the `<my_application>/.env/<my_application>-front.env` file
-
-```yml
-PM2_SCRIPT=yarn start <my_application>
-PM2_CI_SCRIPT=yarn preview <my_application>
-VIRTUAL_HOST=<my_application>.docker.dev-franceconnect.fr
-VIRTUAL_HOST_PATH=/
-APP_VERSION=DOCKER
-```
-
-- add the application to the stack dependencies `<my_application>/stack.yml` file
-
-```yml
-services:
-  <my_application>:
-    image: alpine
-    depends_on:
-      - '<my_application>-front'
 ```
