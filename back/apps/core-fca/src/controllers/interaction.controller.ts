@@ -22,6 +22,8 @@ import {
   CoreRoutes,
   Interaction,
 } from '@fc/core';
+import { CoreAcrNotSatisfiedException } from '@fc/core/exceptions/core-acr-not-satisfied.exception';
+import { CoreLoginRequiredException } from '@fc/core/exceptions/core-login-required.exception';
 import { UserSessionDecorator } from '@fc/core-fca/decorators';
 import { CoreFcaRoutes } from '@fc/core-fca/enums/core-fca-routes.enum';
 import {
@@ -238,21 +240,13 @@ export class InteractionController {
       isSilentAuthentication,
       spEssentialAcr,
       spId,
-      spRedirectUri,
       subs,
     } = userSessionService.get();
 
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
     if (!isIdpActive) {
       if (isSilentAuthentication) {
-        const redirectUrl = new URL(spRedirectUri);
-        const errorParams = new URLSearchParams({
-          error: 'login_required',
-          error_description: 'End-User authentication is required',
-        });
-        redirectUrl.search = errorParams.toString();
-
-        return res.redirect(redirectUrl.toString());
+        throw new CoreLoginRequiredException();
       }
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
@@ -282,14 +276,7 @@ export class InteractionController {
     });
 
     if (!interactionAcr) {
-      const redirectUrl = new URL(spRedirectUri);
-      const errorParams = new URLSearchParams({
-        error: 'access_denied',
-        error_description: 'None of the requested ACRs could be obtained.',
-      });
-      redirectUrl.search = errorParams.toString();
-
-      return res.redirect(redirectUrl.toString());
+      throw new CoreAcrNotSatisfiedException();
     }
 
     const account = await this.getOrCreateAccount(idpId, idpIdentity.sub);

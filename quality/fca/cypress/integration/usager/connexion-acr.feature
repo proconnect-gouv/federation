@@ -40,7 +40,7 @@ Fonctionnalité: Connexion Usager - ACR
     Et je m'authentifie
     Alors je suis redirigé vers la page erreur du fournisseur de service
     Et le titre de l'erreur fournisseur de service est "access_denied"
-    Et la description de l'erreur fournisseur de service est "None+of+the+requested+ACRs+could+be+obtained."
+    Et la description de l'erreur fournisseur de service est "requested%20ACRs%20could%20not%20be%20satisfied"
     Exemples:
       | acr    | idpAcr |
       | eidas1 | eidas2 |

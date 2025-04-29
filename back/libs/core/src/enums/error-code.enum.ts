@@ -15,4 +15,6 @@ export enum ErrorCode {
   AGENT_NOT_FOUND = 15,
   IDP_HINT_NOT_FOUND = 16,
   MISSING_AT_HASH = 19,
+  ACR_NOT_SATISFIED = 20,
+  LOGIN_REQUIRED = 21,
 }
