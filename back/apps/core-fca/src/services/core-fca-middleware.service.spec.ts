@@ -55,9 +55,7 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
     throwError: jest.fn(),
   };
 
-  const oidcAcrServiceMock = {
-    getKnownAcrValues: jest.fn(),
-  };
+  const oidcAcrServiceMock = {};
 
   const coreFcaServiceMock = {};
 
