@@ -46,7 +46,11 @@ import {
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
-import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
+import {
+  Track,
+  TrackedEventContextInterface,
+  TrackingService,
+} from '@fc/tracking';
 
 import {
   ActiveUserSessionDto,
@@ -221,6 +225,7 @@ export class InteractionController {
     CoreRoutes.INTERACTION, // Reuse of an existing session
   ])
   @SetStep()
+  @Track('FC_REDIRECTED_TO_SP')
   // eslint-disable-next-line complexity
   async getVerify(
     @Req() req: Request,

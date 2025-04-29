@@ -1,1 +1,2 @@
-export * from './app-tracking-service.token';
+export const APP_TRACKING_SERVICE = Symbol('APP_TRACKING_SERVICE');
+export const TRACKING_TRACK_METADATA = 'TRACKING_TRACK_METADATA';

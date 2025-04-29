@@ -33,7 +33,11 @@ import {
 } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, SessionService } from '@fc/session';
-import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
+import {
+  Track,
+  TrackedEventContextInterface,
+  TrackingService,
+} from '@fc/tracking';
 
 import {
   AppConfig,
@@ -125,6 +129,7 @@ export class OidcClientController {
     CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
   ])
   @SetStep()
+  @Track('IDP_CHOSEN')
   @UseGuards(CsrfTokenGuard)
   async redirectToIdp(
     @Req() req: Request,
@@ -206,12 +211,14 @@ export class OidcClientController {
    */
   @Get(OidcClientRoutes.WELL_KNOWN_KEYS)
   @Header('cache-control', 'public, max-age=600')
+  @Track('IDP_REQUESTED_FC_JWKS')
   async getWellKnownKeys() {
     return await this.oidcClient.utils.wellKnownKeys();
   }
 
   @Post(OidcClientRoutes.DISCONNECT_FROM_IDP)
   @Header('cache-control', 'no-store')
+  @Track('FC_REQUESTED_LOGOUT_FROM_IDP')
   async logoutFromIdp(
     @Res() res,
     @UserSessionDecorator()
