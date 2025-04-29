@@ -70,13 +70,6 @@ export class UserSession {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  // @IsUrlRequiredTldFromConfig()
-  @Expose()
-  readonly spRedirectUri?: string;
-
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
   @Expose()
   readonly spEssentialAcr?: string;
 

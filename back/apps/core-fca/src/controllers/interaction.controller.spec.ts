@@ -241,7 +241,6 @@ describe('InteractionController', () => {
         interactionId: 'interaction123',
         spAcr: 'acr1',
         spId: 'sp1',
-        spRedirectUri: 'http://sp/redirect',
         spName: 'SP Name',
         spState: 'state123',
         reusesActiveSession: true,
@@ -296,7 +295,6 @@ describe('InteractionController', () => {
         interactionId: 'interaction123',
         spAcr: 'acr1',
         spId: 'sp1',
-        spRedirectUri: 'http://sp/redirect',
         spName: 'SP Name',
         spState: 'state123',
         reusesActiveSession: false,
@@ -367,7 +365,6 @@ describe('InteractionController', () => {
         interactionId: 'interaction123',
         spAcr: 'acr1',
         spId: 'sp1',
-        spRedirectUri: 'http://sp/redirect',
         spName: 'SP Name',
         spState: 'state123',
         reusesActiveSession: false,
@@ -439,7 +436,6 @@ describe('InteractionController', () => {
     const sessionData = {
       idpId: 'idp1',
       interactionId: 'interaction123',
-      spRedirectUri: 'http://sp/redirect',
       isSilentAuthentication: false,
     };
 

@@ -109,7 +109,6 @@ export class InteractionController {
       uid: interactionId,
       params: {
         client_id: spId,
-        redirect_uri: spRedirectUri,
         state: spState,
         idp_hint: idpHint,
         login_hint: loginHint,
@@ -160,7 +159,6 @@ export class InteractionController {
       interactionId,
       spEssentialAcr,
       spId,
-      spRedirectUri,
       spName,
       spState,
       reusesActiveSession: canReuseActiveSession,
