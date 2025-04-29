@@ -1,45 +1,11 @@
 #!/usr/bin/env bash
+NODE_VERSION=v22.13.0
+export  NODE_VERSION
+
+DOCKER_COMPOSE="docker compose"
 
 _up() {
-  task " * Checking required services" \
-    "_check_for_unknown_services" "${@}"
-
-  echo " * Starting services: $(format_emphasis $(join_by ", " "${@}"))"
-
-  task " * Pull fresh node image" \
-    "_pull_node_image"
-
-  task " * Up containers" \
-    "_do_up" "${@}"
-
-  task " * Populate global variables"
-  "_get_running_containers"
-
-  task " * Automatically install dependencies for started containers" \
-    "_auto_install_dependencies"
-
-  echo " * Automatically run init scripts for started containers"
-  _auto_init_containers
-}
-
-_add_node_app() {
-  task " * Up containers" \
-    "_do_up" "${@}"
-
-  _start "${@}"
-}
-
-_do_up() {
-  # Get wanted services
-
-  echo "TEST========>  ${@}"
-  local services=$(_get_services "$@")
-
-  cd ${WORKING_DIR}
-  $DOCKER_COMPOSE up --build -d $services
-}
-
-_check_for_unknown_services() {
+  echo " * Checking required services"
   local asked=$(_get_services "$@")
   local available=$(_list_services)
 
@@ -51,9 +17,17 @@ _check_for_unknown_services() {
       exit 1
     fi
   done
-}
 
-_get_services() {
+  echo " * Starting services: $(format_emphasis $(join_by ", " "${@}"))"
+
+  task " * Build fresh node image" \
+    "_build_node_image"
+
+  echo "* Build fresh node image"
+  docker build -t ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev -f ${PC_ROOT}/federation/docker/builds/node/Dockerfile .
+
+  echo "* Up containers"
+  # Get wanted services
   local apps=${@:-none}
   local services=rp-all
 
@@ -61,19 +35,45 @@ _get_services() {
     services="$services $app"
   done
 
-  echo $services
-}
+  echo "Services ========>  ${services}"
+  # docker compose up services
+  cd ${WORKING_DIR}
+  $DOCKER_COMPOSE up --build -d $services
 
-_auto_install_dependencies() {
+  echo " * Populate global variables"
+  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
+  local raw_all_containers=$(docker ps --format '{{.Names}}')
+  NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
+  FC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
+
+  echo " * Automatically install dependencies for started containers"
   if [ "${NODEJS_CONTAINERS:-xxx}" != "xxx" ]; then
     echo "Installing node modules..."
     echo " * Installing dependencies for $(format_emphasis "${NODEJS_CONTAINERS}")"
     _install_dependencies $NODEJS_CONTAINERS
   fi
-}
 
-_auto_init_containers() {
+  echo " * Automatically run init scripts for started containers"
   for app in ${FC_CONTAINERS}; do
     task "   * init $(format_emphasis "${app}")" "_init_hooks" "${app}"
   done
+}
+
+_add_node_app() {
+  task " * Up containers" \
+    "_do_up" "${@}"
+
+  _start "${@}"
+}
+
+# still used in logs.sh
+_do_up() {
+  # Get wanted services
+
+  echo "TEST========>  ${@}"
+  local services=$(_get_services "$@")
+  echo "Services ========>  ${services}"
+
+  cd ${WORKING_DIR}
+  $DOCKER_COMPOSE up --build -d $services
 }

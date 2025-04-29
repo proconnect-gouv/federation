@@ -7,11 +7,12 @@ if [ -z "${PC_ROOT}" ]; then
 fi
 
 INCLUDE_DIR="${PC_ROOT}/federation/docker/bash"
+PC_DOCKER_REGISTRY="ghcr.io/proconnect-gouv/federation"
 
 source "${INCLUDE_DIR}/utils/index.sh"
-source "${INCLUDE_DIR}/config/index.sh"
+source "${INCLUDE_DIR}/config.sh"
 source "${INCLUDE_DIR}/commands/index.sh"
-source "${INCLUDE_DIR}/hooks/index.sh"
+source "${INCLUDE_DIR}/hooks.sh"
 
 ## Data initialisation
 _command_register "fixtures" "_hook_fc_apps" "Init postgres Exploitation : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Disable TTY on CI env
+[ $CI ] && NO_TTY=" -T" || NO_TTY=""
+
 #### Global Variables:
 COMPOSE_PROJECT_NAME=fc
 COMPOSE_DIR="${PC_ROOT}/federation/docker/compose"
@@ -19,13 +22,6 @@ fi
 
 VOLUMES_DIR="${PC_ROOT}/federation/docker/volumes"
 WORKING_DIR="${PC_ROOT}/federation/docker"
-# TODO: Use the GitHub directory when the Node image is available, or remove the dependency on the Node image
-DOCKER_REGISTRY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc/nodejs:${NODE_VERSION}-dev"
-
-DOCKER_COMPOSE='docker compose'
-
-# https://docs.docker.com/compose/migrate/#service-container-names
-export COMPOSE_COMPATIBILITY=1
 
 # https://docs.docker.com/compose/reference/envvars/#compose_file
 COMPOSE_PATH_SEPARATOR=":"
@@ -36,8 +32,6 @@ export COMPOSE_DIR
 export VOLUMES_DIR
 export COMPOSE_PROJECT_NAME
 export WORKING_DIR
-export DOCKER_COMPOSE
-export COMPOSE_COMPATIBILITY
 
 # Get current uid/gid to use it within docker-compose:
 # see https://medium.com/redbubble/running-a-docker-container-as-a-non-root-user-7d2e00f8ee15
@@ -45,3 +39,20 @@ export COMPOSE_COMPATIBILITY
 export CURRENT_UID="$(id -u):$(grep docker /etc/group | cut -d: -f3)"
 
 export LOGS_PATH="${WORKING_DIR}/volumes/log"
+
+#!/usr/bin/env bash
+
+MONGO_DEFAULT_USER="rootAdmin"
+MONGO_DEFAULT_PASS="pass"
+
+#!/usr/bin/env bash
+
+#### Formating helpers
+STYLE_SUCCESS="\e[1;36m"
+STYLE_FAILURE="\e[1;41m"
+STYLE_WARNING="\e[1;33m"
+STYLE_EMPHASIS="\e[3m"
+STYLE_RESET="\e[0;0m"
+
+
+# source "${INCLUDE_DIR}/config/task.sh"

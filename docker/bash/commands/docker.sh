@@ -68,6 +68,12 @@ _list_services() {
   fi
 }
 
+_build_node_image() {
+  # shoudl build a node image
+  # I would like to pull a docker image from a Dockerfile
+  docker build -t ${PC_DOCKER_REGISTRY}/nodejs:22.13.0-dev -f ${PC_ROOT}/federation/docker/builds/node/Dockerfile .
+}
+
 _pull_node_image() {
   if [ -z ${OFFLINE} ]; then
     _do_pull
