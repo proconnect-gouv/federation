@@ -131,12 +131,11 @@ jobs:
         working-directory: ./docker
         run: |
           ./docker-stack prune-ci
-          docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-          RETURN_CODE=0
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           ln -s volumes/src/federation
           docker network create --driver bridge fc_public
-          ./docker-stack up min-fca-low
-          ./docker-stack start-all-ci
+          VERBOSE=1 ./docker-stack up small
+          VERBOSE=1 ./docker-stack start-all-ci
 
       - name: Test snapshots
         run: |
