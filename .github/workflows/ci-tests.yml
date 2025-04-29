@@ -3,7 +3,6 @@ name: 💚 CI Tests
 on:
   pull_request:
     branches:
-      - '*'
 
 jobs:
   test_static_back:
@@ -18,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.13.0
+          node-version-file: ./back/package.json
 
       - name: Cache Node.js dependencies
         id: federation-yarn-cache
@@ -60,7 +59,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.13.0
+          node-version-file: ./back/package.json
 
       - name: Cache Node.js dependencies
         id: quality-yarn-cache
@@ -96,7 +95,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.13.0
+          node-version-file: ./back/package.json
 
       - name: Cache Node.js dependencies
         id: federation-yarn-cache
