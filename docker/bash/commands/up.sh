@@ -4,10 +4,76 @@ export  NODE_VERSION
 
 DOCKER_COMPOSE="docker compose"
 
+function _hook_fc_apps() {
+  local apps=${@:-fc-exploitation}
+
+  for app in ${apps}; do
+    local db_container=$(echo "$app" | sed 's/^fc-*//')
+    echo "  Fixture for ${app} app..."
+    cd ${WORKING_DIR}
+    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
+    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
+    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
+
+    cd ${PC_ROOT}/federation-admin/shared/cypress/support/ && ./db.sh ${db_container} create
+  done
+}
+
+#!/usr/bin/env bash
+
+function _hook_lemon_ldap() {
+  # Sleep to wait for configuration initialization
+  echo "Restore LemonLDAP configuration"
+  cd ${WORKING_DIR}
+  ${DOCKER_COMPOSE} exec fia-llng-low bash /scripts/init.sh
+  echo "Loaded !"
+}
+
+#!/usr/bin/env bash
+
+function _hook_mongo() {
+  local app="$1"
+
+  # Sleep to wait for mongodb replicat initialization
+  sleep 10
+  _reset_mongodb "$app"
+}
+
+# Container initialisation hooks
+#
+# This runs arbitrary code if a container is started
+# matching on the container name
+#
+# Hooks are called in the `docker-stack up <stack>` command,
+# after all other automatic procedures.
+# Nodejs dependencies are already installed at this stage
+function _init_hooks() {
+
+  local container=$1
+
+  case $container in
+  *"lemon-ldap"*)
+    _hook_lemon_ldap
+    ;;
+  *"mongo-fca-low"*)
+    _hook_mongo "mongo-fca-low"
+    ;;
+  *"pg-exploitation-fca-low")
+    _hook_fc_apps "exploitation-fca-low"
+    ;;
+  *)
+    # Erase line content for containers that don't have an init section
+    # This way we only display task for containers that have actually done something
+    # Note that number of space characters is arbitrary but should work in most cases
+    _task_result "\r                                                                 \r"
+    ;;
+  esac
+}
+
 _up() {
   echo " * Checking required services"
   local asked=$(_get_services "$@")
-  local available=$(_list_services)
+  local available=$(docker compose ps --services | sort)
 
   for service in $asked; do
    declare -i match=$(echo "$available" | grep "^$service$" | wc -l)
@@ -43,37 +109,29 @@ _up() {
   echo " * Populate global variables"
   local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
   local raw_all_containers=$(docker ps --format '{{.Names}}')
+
+  # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
+  
   FC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
 
   echo " * Automatically install dependencies for started containers"
   if [ "${NODEJS_CONTAINERS:-xxx}" != "xxx" ]; then
     echo "Installing node modules..."
     echo " * Installing dependencies for $(format_emphasis "${NODEJS_CONTAINERS}")"
-    _install_dependencies $NODEJS_CONTAINERS
+
+    apps=${@:-no-container}
+
+    for app in ${apps}; do
+      echo "Installing dependencies for [${app}]:"
+      cd ${WORKING_DIR}
+      echo "WORKING_DIR: ${WORKING_DIR}"
+      $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "cd /var/www/app && yarn install --frozen-lockfile --ignore-engines"
+    done
   fi
 
   echo " * Automatically run init scripts for started containers"
   for app in ${FC_CONTAINERS}; do
     task "   * init $(format_emphasis "${app}")" "_init_hooks" "${app}"
   done
-}
-
-_add_node_app() {
-  task " * Up containers" \
-    "_do_up" "${@}"
-
-  _start "${@}"
-}
-
-# still used in logs.sh
-_do_up() {
-  # Get wanted services
-
-  echo "TEST========>  ${@}"
-  local services=$(_get_services "$@")
-  echo "Services ========>  ${services}"
-
-  cd ${WORKING_DIR}
-  $DOCKER_COMPOSE up --build -d $services
 }

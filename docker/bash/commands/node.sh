@@ -137,21 +137,6 @@ _stop_all() {
   _stop $NODEJS_CONTAINERS
 }
 
-_install_dependencies() {
-  apps=${@:-no-container}
-
-  for app in ${apps}; do
-    echo "Installing dependencies for [${app}]:"
-    cd ${WORKING_DIR}
-    $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "/opt/scripts/install.sh"
-  done
-}
-
-_install_dependencies_all() {
-  _get_running_containers
-  _install_dependencies $NODEJS_CONTAINERS
-}
-
 _log_rotate() {
   echo "Send SIGUSR2 to core-fcp-high app..."
   cd ${WORKING_DIR}

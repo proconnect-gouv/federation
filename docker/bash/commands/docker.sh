@@ -52,22 +52,6 @@ _exec() {
   esac
 }
 
-_list_services() {
-  local search=$1
-
-  DOCKER_COMPOSE_SERVICES_CMD="${DOCKER_COMPOSE} ps"
-
-  if $DOCKER_COMPOSE version | grep -iq 'docker compose version v\?2'; then
-    DOCKER_COMPOSE_SERVICES_CMD="${DOCKER_COMPOSE} config"
-  fi
-
-  if [ -z ${search} ]; then
-    $DOCKER_COMPOSE_SERVICES_CMD --services | sort
-  else
-    $DOCKER_COMPOSE_SERVICES_CMD --services | grep "${search}" | sort
-  fi
-}
-
 _build_node_image() {
   # shoudl build a node image
   # I would like to pull a docker image from a Dockerfile

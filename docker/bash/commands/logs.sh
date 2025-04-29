@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+_do_up() {
+  # Get wanted services
+
+  echo "TEST========>  ${@}"
+  local services=$(_get_services "$@")
+  echo "Services ========>  ${services}"
+
+  cd ${WORKING_DIR}
+  $DOCKER_COMPOSE up --build -d $services
+}
+
 
 _logs() {
   local option=$1
