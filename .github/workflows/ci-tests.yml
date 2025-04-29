@@ -22,7 +22,7 @@ jobs:
 
       - name: Cache Node.js dependencies
         id: federation-yarn-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: back/node_modules
           key: ${{ runner.os }}-node-modules-back-${{ hashFiles('back/yarn.lock') }}
@@ -64,7 +64,7 @@ jobs:
 
       - name: Cache Node.js dependencies
         id: quality-yarn-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: quality/node_modules
           key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
@@ -100,7 +100,7 @@ jobs:
 
       - name: Cache Node.js dependencies
         id: federation-yarn-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: back/node_modules
           key: ${{ runner.os }}-node-modules-back-${{ hashFiles('back/yarn.lock') }}
