@@ -93,20 +93,13 @@ export default {
       event: 'FC_REDIRECTED_TO_SP',
     },
 
-    // Discovery
-    SP_REQUESTED_FC_JWKS: {
-      step: '7.1.0',
-      category: EventsCategories.DISCOVERY,
-      event: 'SP_REQUESTED_FC_JWKS',
-    },
-
     SP_REQUESTED_FC_TOKEN: {
-      step: '7.2.0',
+      step: '7.1.0',
       category: EventsCategories.BACK_CINEMATIC,
       event: 'SP_REQUESTED_FC_TOKEN',
     },
     SP_REQUESTED_FC_USERINFO: {
-      step: '7.3.0',
+      step: '7.2.0',
       category: EventsCategories.BACK_CINEMATIC,
       event: 'SP_REQUESTED_FC_USERINFO',
     },
