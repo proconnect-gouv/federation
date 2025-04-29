@@ -1,21 +1,20 @@
-####################
-####################
 services:
-  min-fca-low:
+  small:
     image: alpine
     depends_on:
       - 'core-fca-low'
       - 'fsa1-low'
       - 'fia1-low'
 
-  min-fca-rie:
+  small-rie:
     image: alpine
     depends_on:
       - 'core-fca-rie'
       - 'fsa1-low'
       - 'fia1-low'
 
-  bdd-fca-low:
+  # -- used for e2e tests
+  medium:
     image: alpine
     depends_on:
       - 'core-fca-low'
@@ -35,7 +34,7 @@ services:
       - 'dpa1-low'
       - 'dpa2-low'
 
-  all-fca-low:
+  large:
     image: alpine
     depends_on:
       - 'core-fca-low'
@@ -62,25 +61,13 @@ services:
       - 'fia-llng-low'
       - 'openldap'
 
-  hybridge-fca-low:
+  hybridge:
     image: alpine
     depends_on:
-      - 'min-fca-low'
+      - 'small'
       - 'rp-bridge-proxy'
       - 'bridge-proxy-rie'
       ### RIE
       - 'lemon-ldap'
       - 'csmr-rie'
       - 'fia-rie-low'
-
-  dp-fca-low:
-    image: alpine
-    depends_on:
-      - 'core-fca-low'
-      # -- SP
-      - 'fsa1-low'
-      # -- IdP
-      - 'fia1-low'
-      # -- DP
-      - 'dpa1-low'
-      - 'dpa2-low'

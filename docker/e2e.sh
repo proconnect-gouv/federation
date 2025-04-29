@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
-if [ -z "$FC_ROOT"  ]
+if [ -z "$PC_ROOT"  ]
 then
-  read -p "Missing FC_ROOT path. Please fill in: " FC_ROOT
+  read -p "Missing PC_ROOT path. Please fill in: " PC_ROOT
 fi
 
 #### Global Functions:
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
 # Node needs to be set before docker.
-source "$FC_ROOT/fc/docker/bash/config/node.sh"
-source "$FC_ROOT/fc/docker/bash/config/docker.sh"
+source "$PC_ROOT/fc/docker/bash/config/node.sh"
+source "$PC_ROOT/fc/docker/bash/config/docker.sh"
 
 _e2e_idp_insert() {
   echo "Insert idp in `core-fcp-high` database..."

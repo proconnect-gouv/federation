@@ -40,42 +40,39 @@ Now we will set up the working environment for the docker-stack.
 
 ```bash
 # change /path/to/france/connect/workspace/ by actual path to your working directory:
-export FC_ROOT=/path/to/france/connect/workspace/
+export PC_ROOT=/path/to/proconnect/workspace/
 
 # Workaround for UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. (read timeout=70) :
 export COMPOSE_HTTP_TIMEOUT=200
 
 # Makes cypress aware of root path, not having to create relative path from e2E test file
-export CYPRESS_FC_ROOT=$FC_ROOT
+export CYPRESS_PC_ROOT=$PC_ROOT
 
-# Setup the docker registry url
+# Setup the docker registry url (for now, we still continue to use the FranceConnect container registry)
 export FC_DOCKER_REGISTRY=registry.gitlab.dev-franceconnect.fr/france-connect/fc
 
 # Alias for the docker-stack command (you can add it to your "~/.bash_aliases" if you prefer but don't forget to set the variables before the .bash_aliases sourcing in your .bashrc 😉) :
-alias dks=$FC_ROOT/proconnect-federation/docker/docker-stack
-
-# If you use version 2 of docker compose
-export FC_DOCKER_COMPOSE='docker compose'
+alias dks=$PC_ROOT/federation/docker/docker-stack
 ```
 
 - Clone every needed repository
 
 ```bash
-mkdir -p $FC_ROOT && cd $FC_ROOT
+mkdir -p $PC_ROOT && cd $PC_ROOT
 
 # The main repository
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/proconnect/proconnect-federation.git
+git clone git@github.com:proconnect-gouv/federation.git
 
-# Backoffice apps
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/proconnect/proconnect-exploitation.git
+# Backoffice app
+git clone git@github.com:proconnect-gouv/federation-admin.git
 ```
 
 - Link the cloned repository in the docker volumes
 
 ```bash
-cd $FC_ROOT/proconnect-federation/docker/volumes/src
-ln -s $FC_ROOT/proconnect-federation
-ln -s $FC_ROOT/proconnect-exploitation
+cd $PC_ROOT/federation/docker/volumes/src
+ln -s $PC_ROOT/federation
+ln -s $PC_ROOT/federation-admin
 ```
 
 - pull FC docker images, you will need to authenticate against the FC docker registry:
@@ -94,7 +91,7 @@ You will be prompted for:
 ### Running AgentConnect
 
 ```bash
-dks switch min-fca-low
+dks switch small
 ```
 
 On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion with :
@@ -108,7 +105,7 @@ You are now connected to fsa1!
 ### Running FC exploitation for AgentConnect
 
 ```bash
-dks switch bdd-fca-low
+dks switch medium
 ```
 
 Then go to https://exploitation-fca-low.docker.dev-franceconnect.fr/login.
@@ -119,7 +116,7 @@ Login with:
 - Password: `georgesmoustaki`
 - TOTP: enter this secret in your totp app `KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD`
 
-More credentials can be found here : `proconnect-exploitation/shared/fixtures/User.yml`.
+More credentials can be found here : `federation-admin/shared/fixtures/User.yml`.
 
 ### Testing the installation
 
@@ -166,7 +163,7 @@ dks help
 These tests are included directly in source code rather than in a dedicated test folder.
 
 ```bash
-cd $FC_ROOT/proconnect-federation/back
+cd $PC_ROOT/federation/back
 yarn test --coverage --maxWorkers=50%
 ```
 
@@ -175,33 +172,33 @@ yarn test --coverage --maxWorkers=50%
 ### Prerequisites
 
 ```bash
-cd $FC_ROOT/proconnect-federation/quality/fca
+cd $PC_ROOT/federation/quality/fca
 yarn install
 ```
 
 ### Run tests from the Cypress UI
 
 ```bash
-dks switch bdd-fca-low
-cd $FC_ROOT/proconnect-federation/quality/fca
+dks switch medium
+cd $PC_ROOT/federation/quality/fca
 yarn start:low
 ```
 
 ## Visualization Tests
 
 ```bash
-dks switch bdd-fca-low
-cd $FC_ROOT/proconnect-federation/quality/fca
+dks switch medium
+cd $PC_ROOT/federation/quality/fca
 yarn test:low:snapshot
 ```
 
 ## Run static tests
 
 ```bash
-cd $FC_ROOT/proconnect-federation/quality/fca
+cd $PC_ROOT/federation/quality/fca
 yarn lint --fix
 yarn prettier --write
-cd $FC_ROOT/proconnect-federation/back
+cd $PC_ROOT/federation/back
 yarn doc
 yarn lint --fix
 yarn prettier --write

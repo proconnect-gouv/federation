@@ -67,6 +67,7 @@ _get_services() {
 _auto_install_dependencies() {
   if [ "${NODEJS_CONTAINERS:-xxx}" != "xxx" ]; then
     echo "Installing node modules..."
+    echo " * Installing dependencies for $(format_emphasis "${NODEJS_CONTAINERS}")"
     _install_dependencies $NODEJS_CONTAINERS
   fi
 }

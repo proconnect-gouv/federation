@@ -26,7 +26,7 @@ services:
     depends_on:
       - 'squid'
     volumes:
-      - '${VOLUMES_DIR}/src/proconnect-federation/back:/var/www/app'
+      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -61,7 +61,7 @@ services:
       - broker
       - squid-rie
     volumes:
-      - '${VOLUMES_DIR}/src/proconnect-federation/back:/var/www/app'
+      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'

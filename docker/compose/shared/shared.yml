@@ -5,7 +5,7 @@ services:
     image: alpine
     depends_on:
       - 'rp-all'
-      - 'all-fca-low'
+      - 'large'
 
   ####################
   # Shared Services
@@ -112,7 +112,7 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${FC_ROOT}/proconnect-federation/docker/log-hub:/var/www/app'
+      - '${PC_ROOT}/federation/docker/log-hub:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -262,31 +262,6 @@ services:
     networks:
       - data
       - public
-
-  ####################
-  # Tracks related services
-  ####################
-
-  elasticsearch:
-    image: elasticsearch:7.17.9
-    volumes:
-      - '${VOLUMES_DIR}/elasticsearch/data:/usr/share/elasticsearch/data'
-      - '${VOLUMES_DIR}/elasticsearch/config/users:/usr/share/elasticsearch/config/users:ro'
-      - '${VOLUMES_DIR}/elasticsearch/config/users_roles:/usr/share/elasticsearch/config/users_roles:ro'
-      - '${VOLUMES_DIR}/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
-      - '${VOLUMES_DIR}/elasticsearch/config/elasticsearch.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro'
-      - '${VOLUMES_DIR}/elasticsearch/config/elasticsearch.key:/usr/share/elasticsearch/config/elasticsearch.key:ro'
-      - '${VOLUMES_DIR}/elasticsearch/index/:/index'
-      - '${VOLUMES_DIR}/elasticsearch/ingest_pipelines:/ingest_pipelines'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-    networks:
-      - data
-      - public
-    ports:
-      - '9200:9200'
-    environment:
-      - 'discovery.type=single-node'
-      - 'ES_JAVA_OPTS=-Xms64m -Xmx256m'
 
 ####################
 # Networks

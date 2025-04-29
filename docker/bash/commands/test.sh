@@ -33,7 +33,7 @@ _e2e() {
   if [ "${@:-xxx}" = "run" ]; then
     command='run'
   fi
-  cd ${FC_ROOT}/${directory} && npx cypress ${command}
+  cd ${PC_ROOT}/${directory} && npx cypress ${command}
 }
 
 unit_test_watch_coverage() {

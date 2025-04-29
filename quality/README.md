@@ -57,7 +57,7 @@ You can create a test pipeline in Gitlab from a merge request branch
 | -------------------- | ------------------------------------------------------------------------------------ |
 | CI_PIPELINE_SOURCE   | merge_request_event                                                                  |
 | CI_MERGE_REQUEST_IID | id of the merge request for instance 860 for the merge request /-/merge_requests/860 |
-| PC_APPS_VERSION      | branch from proconnect-exploitation repository only if not staging                   |
+| PC_APPS_VERSION      | branch from federation-admin repository only if not staging                          |
 
 ## Scripts
 
