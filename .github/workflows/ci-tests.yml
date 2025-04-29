@@ -133,7 +133,7 @@ jobs:
           ./docker-stack prune-ci
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           ln -s volumes/src/federation
-          docker network create --driver bridge fc_public
+          docker network create --driver bridge pc_public
           VERBOSE=1 ./docker-stack up small
           VERBOSE=1 ./docker-stack start-all-ci
 

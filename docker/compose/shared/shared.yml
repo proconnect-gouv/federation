@@ -13,7 +13,7 @@ services:
 
   rp-all:
     image: nginx:1.14.2
-    container_name: fc-rp-all
+    container_name: pc-rp-all
     environment:
       DHPARAM_GENERATION: 'false'
     depends_on:

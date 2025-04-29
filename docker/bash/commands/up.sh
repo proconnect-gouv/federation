@@ -71,50 +71,35 @@ function _init_hooks() {
 }
 
 _up() {
-  echo " * Checking required services"
-  local asked=$(_get_services "$@")
-  local available=$(docker compose ps --services | sort)
-
-  for service in $asked; do
-   declare -i match=$(echo "$available" | grep "^$service$" | wc -l)
-
-    if [ $match -eq 0 ]; then
-      echo "Service / Stack Not Found: $service"
-      exit 1
-    fi
-  done
-
-  echo " * Starting services: $(format_emphasis $(join_by ", " "${@}"))"
-
-  task " * Build fresh node image" \
-    "_build_node_image"
-
-  echo "* Build fresh node image"
-  docker build -t ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev -f ${PC_ROOT}/federation/docker/builds/node/Dockerfile .
-
-  echo "* Up containers"
-  # Get wanted services
+  echo " * Get required services"
+  # get asked services
   local apps=${@:-none}
   local services=rp-all
 
   for app in $apps; do
     services="$services $app"
   done
+  echo " * Required services are: ${services}"
 
-  echo "Services ========>  ${services}"
+  # Build node image
+  echo " * Build fresh node image"
+  docker build -t ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev -f ${PC_ROOT}/federation/docker/builds/node/Dockerfile .
+
   # docker compose up services
+  echo " * Docker compose up services: ${services}"
   cd ${WORKING_DIR}
   $DOCKER_COMPOSE up --build -d $services
 
-  echo " * Populate global variables"
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
-  local raw_all_containers=$(docker ps --format '{{.Names}}')
-
   # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
+  echo " * Populate global variables"
+  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
+  local raw_all_containers=$(docker ps --format '{{.Names}}')
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
   
+  # Find all containers and store it into $FC_CONTAINERS
   FC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
 
+  # Execute starting scripts in build containers
   echo " * Automatically install dependencies for started containers"
   if [ "${NODEJS_CONTAINERS:-xxx}" != "xxx" ]; then
     echo "Installing node modules..."

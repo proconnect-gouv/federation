@@ -18,7 +18,7 @@ _container_to_compose_name() {
   local output=""
 
   for container in ${input}; do
-    local name=$(echo ${container} | sed -E 's/^fc_(.*)_1$/\1/')
+    local name=$(echo ${container} | sed -E 's/^pc-(.*)-1$/\1/')
     output=$(echo -e "${output}\n${name}")
   done
 

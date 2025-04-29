@@ -4,7 +4,7 @@
 [ $CI ] && NO_TTY=" -T" || NO_TTY=""
 
 #### Global Variables:
-COMPOSE_PROJECT_NAME=fc
+COMPOSE_PROJECT_NAME=pc
 COMPOSE_DIR="${PC_ROOT}/federation/docker/compose"
 COMPOSE_FILES=$(find ${COMPOSE_DIR} -not -path "${COMPOSE_DIR}/OS/*" -not -path "${COMPOSE_DIR}/CI/*" -name "*.yml")
 

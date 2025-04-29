@@ -9,4 +9,4 @@ dest = "/etc/nginx/html/index.html"
 watch = true
 
 [config.NotifyContainers]
-fc-rp-all = 1
+pc-rp-all = 1
