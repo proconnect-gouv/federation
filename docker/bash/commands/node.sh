@@ -11,8 +11,8 @@ _start() {
   _clean_fc_dist "${apps}"
 
   for app in ${apps}; do
-    task "   * Starting app \e[3m${app}\e[0m" \
-      "_do_start" "${app}"
+    echo "   * Starting app ${app}"
+      _do_start "${app}"
   done
 
   # Reload RP in case the app took to long and was consired down by Nginx

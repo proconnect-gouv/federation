@@ -44,12 +44,6 @@ services:
   ##   RIE network
   ##
   ####################
-
-  squid-rie:
-    image: ${FC_DOCKER_REGISTRY}/squid:4.6
-    networks:
-      - rie
-
   csmr-rie:
     hostname: csmr-rie
     image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev

@@ -50,10 +50,6 @@ _up() {
   done
   echo " * Required services are: ${services}"
 
-  # Build node image
-  echo " * Build fresh node image"
-  docker build -t ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev -f ${PC_ROOT}/federation/docker/builds/node/Dockerfile .
-
   # docker compose up services
   echo " * Docker compose up services: ${services}"
   cd ${WORKING_DIR}
@@ -61,7 +57,10 @@ _up() {
 
   # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
   echo " * Populate global variables"
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
+  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
+
+  echo " * Found nodejs containers: ${raw_nodejs_containers}"
+
   local raw_all_containers=$(docker ps --format '{{.Names}}')
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
   
@@ -70,17 +69,17 @@ _up() {
 
   # Execute starting scripts in build containers
   echo " * Automatically install dependencies for started containers"
+  
   if [ "${NODEJS_CONTAINERS:-xxx}" != "xxx" ]; then
     echo "Installing node modules..."
     echo " * Installing dependencies for $(format_emphasis "${NODEJS_CONTAINERS}")"
 
     apps=${@:-no-container}
 
-    for app in ${apps}; do
-      echo "Installing dependencies for [${app}]:"
+    for app in ${NODEJS_CONTAINERS}; do
+      echo "Installing dependencies for ${app}:"
       cd ${WORKING_DIR}
-      echo "WORKING_DIR: ${WORKING_DIR}"
-      $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "cd /var/www/app && yarn install --frozen-lockfile --ignore-engines"
+      $DOCKER_COMPOSE exec ${NO_TTY} "${app}" sh -c "cd /var/www/app && yarn install --frozen-lockfile --ignore-engines"
     done
   fi
 
