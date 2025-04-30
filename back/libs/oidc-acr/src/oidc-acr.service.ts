@@ -1,5 +1,4 @@
 import { get, intersection, isArray, isEmpty, isString } from 'lodash';
-import { UnknownObject } from 'oidc-provider';
 
 import { Injectable } from '@nestjs/common';
 
@@ -7,40 +6,7 @@ import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core-fca';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 
-export type SimplifiedInteraction = {
-  uid: string;
-  params: {
-    acr_values: string;
-    client_id: string;
-    redirect_uri: string;
-    state: string;
-    idp_hint: string;
-    login_hint: string;
-  };
-  prompt: {
-    name: 'login' | 'consent' | string;
-    reasons: string[];
-    details:
-      | {
-          acr: {
-            essential: boolean;
-            value?: string;
-            values?: string[];
-          };
-        }
-      | UnknownObject;
-  };
-};
-
-export type AcrValues = string;
-
-export type AcrClaims = {
-  essential: true;
-  value?: string;
-  values?: string[];
-};
-
-const DEFAULT_ACR_VALUE = 'eidas1';
+import { AcrClaims, AcrValues, SimplifiedInteraction } from './oidc-acr.type';
 
 @Injectable()
 export class OidcAcrService {
@@ -65,7 +31,9 @@ export class OidcAcrService {
     } = this.config.get<OidcProviderConfig>('OidcProvider');
 
     if (!supportedAcrValues.includes(idpAcr)) {
-      return DEFAULT_ACR_VALUE;
+      // If the IdP's ACR value is not supported, fallback to 'eidas1'
+      // Note: Some IdPs, especially from Fonction Publique Territoriale, may use lower ACRs
+      return 'eidas1';
     }
 
     return idpAcr;
@@ -143,6 +111,6 @@ export class OidcAcrService {
       };
     }
 
-    return { acrValues: DEFAULT_ACR_VALUE };
+    return {};
   }
 }

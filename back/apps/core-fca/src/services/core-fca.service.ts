@@ -4,9 +4,7 @@ import { isEmpty } from 'lodash';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import {
-  CoreServiceInterface,
-} from '@fc/core';
+import { CoreServiceInterface } from '@fc/core';
 import { AppConfig, UserSession } from '@fc/core-fca/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -87,8 +85,11 @@ export class CoreFcaService implements CoreServiceInterface {
 
     const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
 
+    // these specific behaviors are legacy implementations and should be homogenized in the future
     if (idpId === defaultIdpId) {
       authorizeParams['scope'] += ' is_service_public';
+    } else if (!acrValues && !acrClaims) {
+      authorizeParams['acr_values'] = 'eidas1';
     }
 
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
