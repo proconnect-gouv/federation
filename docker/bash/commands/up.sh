@@ -39,37 +39,6 @@ function _hook_mongo() {
   _reset_mongodb "$app"
 }
 
-# Container initialisation hooks
-#
-# This runs arbitrary code if a container is started
-# matching on the container name
-#
-# Hooks are called in the `docker-stack up <stack>` command,
-# after all other automatic procedures.
-# Nodejs dependencies are already installed at this stage
-function _init_hooks() {
-
-  local container=$1
-
-  case $container in
-  *"lemon-ldap"*)
-    _hook_lemon_ldap
-    ;;
-  *"mongo-fca-low"*)
-    _hook_mongo "mongo-fca-low"
-    ;;
-  *"pg-exploitation-fca-low")
-    _hook_fc_apps "exploitation-fca-low"
-    ;;
-  *)
-    # Erase line content for containers that don't have an init section
-    # This way we only display task for containers that have actually done something
-    # Note that number of space characters is arbitrary but should work in most cases
-    _task_result "\r                                                                 \r"
-    ;;
-  esac
-}
-
 _up() {
   echo " * Get required services"
   # get asked services
@@ -117,6 +86,26 @@ _up() {
 
   echo " * Automatically run init scripts for started containers"
   for app in ${FC_CONTAINERS}; do
-    task "   * init $(format_emphasis "${app}")" "_init_hooks" "${app}"
+    # Container initialisation hooks
+    #
+    # This runs arbitrary code if a container is started
+    # matching on the container name
+    #
+    # Hooks are called in the `docker-stack up <stack>` command,
+    # after all other automatic procedures.
+    # Nodejs dependencies are already installed at this stage
+    case $app in
+    *"lemon-ldap"*)
+      _hook_lemon_ldap
+      ;;
+    *"mongo-fca-low"*)
+      _hook_mongo "mongo-fca-low"
+      ;;
+    *"pg-exploitation-fca-low")
+      _hook_fc_apps "exploitation-fca-low"
+      ;;
+    *)
+      ;;
+    esac
   done
 }
