@@ -11,8 +11,6 @@ services:
         condition: service_healthy
       redis-pwd:
         condition: service_healthy
-      squid:
-        condition: service_healthy
     volumes:
       - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'

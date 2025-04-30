@@ -23,8 +23,6 @@ services:
     image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
-    depends_on:
-      - 'squid'
     volumes:
       - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
@@ -59,7 +57,6 @@ services:
     working_dir: /var/www/app
     depends_on:
       - broker
-      - squid-rie
     volumes:
       - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'

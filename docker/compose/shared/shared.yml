@@ -85,27 +85,6 @@ services:
       - rie
     command: -config /etc/docker-gen/config
 
-  squid:
-    image: ubuntu/squid
-    ulimits:
-      nofile:
-        soft: 1048576
-        hard: 1048576
-    extra_hosts:
-      - auth.llng.docker.dev-franceconnect.fr:172.16.1.254
-      - fia-rie-low.docker.dev-franceconnect.fr:172.16.1.254
-    networks:
-      - public
-      - fc
-      - exploitation
-      - rie
-    healthcheck:
-      test: ['CMD', 'bash', '-c', 'echo >/dev/tcp/localhost/3128 || exit 1']
-      interval: 1s
-      timeout: 1s
-      retries: 1
-      start_period: 1s
-
   log-hub:
     hostname: log-hub
     image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
@@ -132,8 +111,6 @@ services:
       dockerfile: '${WORKING_DIR}/builds/broker/Dockerfile'
     # Specify hostname to fix cluster name
     hostname: broker
-    depends_on:
-      - 'squid'
     networks:
       - data
     ports:
