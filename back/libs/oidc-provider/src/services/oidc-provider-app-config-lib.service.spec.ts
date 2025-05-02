@@ -20,7 +20,6 @@ import {
 import { LogoutFormParamsInterface } from '../interfaces';
 import { OidcProviderAppConfigLibService } from './oidc-provider-app-config-lib.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
-import { OidcProviderGrantService } from './oidc-provider-grant.service';
 
 jest.mock('@fc/exceptions/helpers', () => ({
   ...jest.requireActual('@fc/exceptions/helpers'),
@@ -41,11 +40,6 @@ describe('OidcProviderAppConfigLibService', () => {
 
   const errorServiceMock = {
     throwError: jest.fn(),
-  };
-
-  const oidcProviderGrantServiceMock = {
-    generateGrant: jest.fn(),
-    saveGrant: jest.fn(),
   };
 
   const providerMock = {
@@ -76,7 +70,6 @@ describe('OidcProviderAppConfigLibService', () => {
         LoggerService,
         SessionService,
         OidcProviderErrorService,
-        OidcProviderGrantService,
         ConfigService,
       ],
     })
@@ -86,8 +79,6 @@ describe('OidcProviderAppConfigLibService', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderErrorService)
       .useValue(errorServiceMock)
-      .overrideProvider(OidcProviderGrantService)
-      .useValue(oidcProviderGrantServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .compile();

@@ -10,7 +10,6 @@ import {
   OidcCtx,
   OidcProviderAppConfigLibService,
   OidcProviderErrorService,
-  OidcProviderGrantService,
 } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
@@ -24,12 +23,11 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
     protected readonly logger: LoggerService,
     protected readonly sessionService: SessionService,
     protected readonly errorService: OidcProviderErrorService,
-    protected readonly grantService: OidcProviderGrantService,
     protected readonly config: ConfigService,
     protected readonly oidcClient: OidcClientService,
     protected readonly tracking: TrackingService,
   ) {
-    super(logger, sessionService, errorService, grantService, config);
+    super(logger, sessionService, errorService, config);
   }
 
   /**

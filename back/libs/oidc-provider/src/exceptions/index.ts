@@ -3,7 +3,6 @@ export * from './oidc-provider-base.exception';
 export * from './oidc-provider-base-redirect.exception';
 export * from './oidc-provider-base-rendered.exception';
 export * from './oidc-provider-binding.exception';
-export * from './oidc-provider-grant-save.exception';
 export * from './oidc-provider-initialisation.exception';
 export * from './oidc-provider-interaction-no-found.exception';
 export * from './oidc-provider-no-wrapper.exception';

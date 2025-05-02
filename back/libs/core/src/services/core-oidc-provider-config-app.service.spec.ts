@@ -3,11 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
-import {
-  OidcCtx,
-  OidcProviderErrorService,
-  OidcProviderGrantService,
-} from '@fc/oidc-provider';
+import { OidcCtx, OidcProviderErrorService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
@@ -24,11 +20,6 @@ describe('CoreOidcProviderConfigAppService', () => {
 
   const errorServiceMock = {
     throwError: jest.fn(),
-  };
-
-  const oidcProviderGrantServiceMock = {
-    generateGrant: jest.fn(),
-    saveGrant: jest.fn(),
   };
 
   const oidcClientServiceMock = {
@@ -96,7 +87,6 @@ describe('CoreOidcProviderConfigAppService', () => {
         LoggerService,
         SessionService,
         OidcProviderErrorService,
-        OidcProviderGrantService,
         OidcClientService,
         ConfigService,
         TrackingService,
@@ -106,8 +96,6 @@ describe('CoreOidcProviderConfigAppService', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderErrorService)
       .useValue(errorServiceMock)
-      .overrideProvider(OidcProviderGrantService)
-      .useValue(oidcProviderGrantServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(OidcClientService)

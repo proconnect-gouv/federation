@@ -4,10 +4,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { AccountModule } from '@fc/account';
 import { AccountFcaModule } from '@fc/account-fca';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import {
-  CORE_SERVICE,
-  CoreModule,
-} from '@fc/core';
+import { CORE_SERVICE, CoreModule } from '@fc/core';
 import { CsrfModule, CsrfService } from '@fc/csrf';
 import { DataProviderAdapterMongoModule } from '@fc/data-provider-adapter-mongo';
 import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
@@ -25,10 +22,7 @@ import { NotificationsModule } from '@fc/notifications';
 import { OidcAcrModule } from '@fc/oidc-acr';
 import { OidcClientModule } from '@fc/oidc-client';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
-import {
-  OidcProviderGrantService,
-  OidcProviderModule,
-} from '@fc/oidc-provider';
+import { OidcProviderModule } from '@fc/oidc-provider';
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -115,7 +109,6 @@ import { IsPhoneNumberFCAConstraint } from './validators';
     OidcProviderConfigAppService,
     CoreFcaService,
     CoreFcaMiddlewareService,
-    OidcProviderGrantService,
     CoreFcaFqdnService,
     DataProviderService,
     IsPhoneNumberFCAConstraint,

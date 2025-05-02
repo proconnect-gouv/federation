@@ -132,6 +132,13 @@ Then(
   },
 );
 
+Then(
+  'la cinématique a renvoyé le claim {string}',
+  function (claimName: string) {
+    cy.contains(new RegExp('  "' + claimName + '": ".*",', 'g'));
+  },
+);
+
 Then("la cinématique a renvoyé l'amr {string}", function (amrValue: string) {
   cy.contains(`"amr": [\n    "${amrValue}"\n  ],`);
 });
