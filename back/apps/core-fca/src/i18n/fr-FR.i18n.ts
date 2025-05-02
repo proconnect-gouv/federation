@@ -238,8 +238,6 @@ export const frFR: I18nTranslationsMapType = {
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Session.exceptions.sessionCannotCommitUndefinedSession':
     'Votre session a expiré, fermez l’onglet de votre navigateur et reconnectez-vous.',
-  'Session.exceptions.sessionInvalidSessionData':
-    'Votre session est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Session.exceptions.sessionInvalidSession':
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Session.exceptions.sessionNoSessionId':
