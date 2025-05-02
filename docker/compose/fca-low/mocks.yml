@@ -7,7 +7,11 @@ services:
 
   fsa1-low:
     hostname: fsa1-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-service-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -33,7 +37,11 @@ services:
 
   fsa2-low:
     hostname: fsa2-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-service-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -59,7 +67,11 @@ services:
 
   fsa3-low:
     hostname: fsa3-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-service-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -85,7 +97,11 @@ services:
 
   fsa4-low:
     hostname: fsa4-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-service-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -115,7 +131,11 @@ services:
 
   fia1-low:
     hostname: fia1-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-identity-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -140,7 +160,11 @@ services:
 
   fia2-low:
     hostname: fia2-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-identity-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -165,7 +189,11 @@ services:
 
   fia4-low:
     hostname: fia4-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-identity-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -190,7 +218,11 @@ services:
 
   fia5-low:
     hostname: fia5-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-identity-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -215,7 +247,11 @@ services:
 
   fia8-low:
     hostname: fia8-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-identity-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -240,7 +276,11 @@ services:
 
   moncomptepro:
     hostname: moncomptepro
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    build:
+      args:
+        - INSTANCE=mock-identity-provider-fca-low
+      context: ../../../back
+      target: builder
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
