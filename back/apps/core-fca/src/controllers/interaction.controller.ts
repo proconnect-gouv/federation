@@ -225,6 +225,8 @@ export class InteractionController {
     CoreRoutes.INTERACTION, // Reuse of an existing session
   ])
   @SetStep()
+  // Note: The FC_REDIRECTED_TO_SP event is logged regardless of whether Panva's oidc-provider
+  // successfully redirects to the service provider or encounters an error
   @Track('FC_REDIRECTED_TO_SP')
   // eslint-disable-next-line complexity
   async getVerify(
