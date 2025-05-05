@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-# Define the root directory relative to this script's location
+# Define the path directories relative to this script's location
 DOCKER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
+export FEDERATION_DIR="$(dirname "${DOCKER_DIR}")"
 DOCKER_BASH_DIR="${DOCKER_DIR}/bash"
-PC_DOCKER_REGISTRY="ghcr.io/proconnect-gouv/federation"
-export PC_DOCKER_REGISTRY
+export PC_DOCKER_REGISTRY="ghcr.io/proconnect-gouv/federation"
+export PC_ROOT="$(dirname "${FEDERATION_DIR}")"
 
 source "${DOCKER_BASH_DIR}/utils/index.sh"
 source "${DOCKER_BASH_DIR}/config.sh"

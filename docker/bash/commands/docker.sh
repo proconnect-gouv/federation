@@ -52,11 +52,6 @@ _exec() {
   esac
 }
 
-_build_node_image() {
-  # I would like to pull a docker image from a Dockerfile
-  docker build -t ${PC_DOCKER_REGISTRY}/nodejs:22.13.0-dev -f ${PC_ROOT}/federation/docker/builds/node/Dockerfile .
-}
-
 _do_pull() {
   timeout 5 docker login ${PC_DOCKER_REGISTRY} || _pull_failure
   docker pull ${DOCKER_REGISTRY_URI} || _pull_failure
