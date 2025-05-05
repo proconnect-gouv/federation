@@ -18,8 +18,10 @@ import {
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
-import { CoreFcaAgentIdpDisabledException } from '../exceptions';
-import { CoreFcaUnauthorizedEmailException } from '../exceptions/core-fca-unauthorized-email-exception';
+import {
+  CoreFcaAgentIdpDisabledException,
+  CoreFcaUnauthorizedEmailException,
+} from '../exceptions';
 import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 
 @Injectable()

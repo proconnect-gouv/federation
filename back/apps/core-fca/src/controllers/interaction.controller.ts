@@ -22,15 +22,6 @@ import {
   CoreRoutes,
   Interaction,
 } from '@fc/core';
-import { CoreAcrNotSatisfiedException } from '@fc/core/exceptions/core-acr-not-satisfied.exception';
-import { CoreLoginRequiredException } from '@fc/core/exceptions/core-login-required.exception';
-import { UserSessionDecorator } from '@fc/core-fca/decorators';
-import { CoreFcaRoutes } from '@fc/core-fca/enums/core-fca-routes.enum';
-import {
-  CoreFcaAgentAccountBlockedException,
-  CoreFcaAgentNotFromPublicServiceException,
-} from '@fc/core-fca/exceptions';
-import { IAgentIdentity } from '@fc/core-fca/interfaces';
 import { CsrfService } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -52,12 +43,21 @@ import {
   TrackingService,
 } from '@fc/tracking';
 
+import { UserSessionDecorator } from '../decorators';
 import {
   ActiveUserSessionDto,
   AppConfig,
   GetVerifySessionDto,
   UserSession,
 } from '../dto';
+import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
+import {
+  CoreAcrNotSatisfiedException,
+  CoreFcaAgentAccountBlockedException,
+  CoreFcaAgentNotFromPublicServiceException,
+  CoreLoginRequiredException,
+} from '../exceptions';
+import { IAgentIdentity } from '../interfaces';
 import { CoreFcaFqdnService, CoreFcaService } from '../services';
 
 @Controller()

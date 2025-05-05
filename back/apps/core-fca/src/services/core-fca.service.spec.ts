@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -38,6 +38,10 @@ describe('CoreFcaService', () => {
 
   const idpIdMock = 'idpIdMockValue';
   const spIdMock = 'spIdMockValue';
+  const reqMock = {
+    redirect: jest.fn(),
+    render: jest.fn(),
+  } as unknown as Request;
   const resMock = {
     redirect: jest.fn(),
     render: jest.fn(),
@@ -100,10 +104,6 @@ describe('CoreFcaService', () => {
         OidcClientService,
         IdentityProviderAdapterMongoService,
         FqdnToIdpAdapterMongoService,
-        {
-          provide: CORE_AUTH_SERVICE,
-          useClass: CoreAuthorizationService,
-        },
         SessionService,
         CoreFcaFqdnService,
         LoggerService,
@@ -117,8 +117,6 @@ describe('CoreFcaService', () => {
       .useValue(identityProviderMock)
       .overrideProvider(FqdnToIdpAdapterMongoService)
       .useValue(fqdnToIdpAdapterMongoMock)
-      .overrideProvider(CORE_AUTH_SERVICE)
-      .useValue(coreAuthorizationServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CoreFcaFqdnService)
@@ -151,11 +149,6 @@ describe('CoreFcaService', () => {
   });
 
   describe('redirectToIdp', () => {
-    const authorizationParametersMock = {
-      acr_values: acrMock,
-      login_hint: 'example@email.com',
-    };
-
     beforeEach(() => {
       sessionServiceMock.get.mockReturnValue({
         spId: spIdMock,
@@ -164,11 +157,7 @@ describe('CoreFcaService', () => {
 
     it('should call config.get to retrieve configured parameters', async () => {
       // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
 
       // Then
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
@@ -176,12 +165,11 @@ describe('CoreFcaService', () => {
     });
 
     it('should call oidcClient.utils.checkIdpDisabled()', async () => {
+      // Mock to avoid affecting other parts
+      oidcMock.utils.checkIdpDisabled.mockReturnValueOnce(undefined);
+
       // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
       // Then
       expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledTimes(1);
       expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledWith(idpIdMock);
@@ -189,22 +177,14 @@ describe('CoreFcaService', () => {
 
     it('should call oidcClient.utils.buildAuthorizeParameters()', async () => {
       // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
       // Then
       expect(oidcMock.utils.buildAuthorizeParameters).toHaveBeenCalledTimes(1);
     });
 
     it('should call identityProvider.getById()', async () => {
       // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
       // Then
       expect(identityProviderMock.getById).toHaveBeenCalledTimes(1);
       expect(identityProviderMock.getById).toHaveBeenCalledWith(idpIdMock);
@@ -212,11 +192,7 @@ describe('CoreFcaService', () => {
 
     it('should call coreAuthorization.getAuthorizeUrl()', async () => {
       // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
       // Then
       expect(
         coreAuthorizationServiceMock.getAuthorizeUrl,
@@ -237,11 +213,7 @@ describe('CoreFcaService', () => {
 
     it('should call sessionService.set()', async () => {
       // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith('User', {
@@ -258,11 +230,7 @@ describe('CoreFcaService', () => {
 
     it('should call res.redirect()', async () => {
       // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
       // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
       expect(resMock.redirect).toHaveBeenCalledWith(authorizeUrlMock);

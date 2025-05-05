@@ -10,7 +10,7 @@ import { HttpOptions } from 'openid-client';
 import { Global, Inject, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
-import { OidcProviderConfigAppService, UserSession } from '@fc/core-fca';
+import { OidcProviderConfigAppService } from '@fc/core-fca';
 import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
 
