@@ -2,23 +2,27 @@ import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { CoreIdpHintException, CoreRoutes, CoreVerifyService } from '@fc/core';
+import { CoreIdpHintException } from '@fc/core';
 import { CsrfService } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { NotificationsService } from '@fc/notifications';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionService } from '@fc/session';
+import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { UserSession } from '../dto';
 import {
-  CoreFcaFqdnService,
-  CoreFcaService,
-  CoreFcaVerifyService,
-} from '../services';
+  CoreAcrNotSatisfiedException,
+  CoreFcaAgentAccountBlockedException,
+  CoreFcaAgentNotFromPublicServiceException,
+  CoreLoginRequiredException,
+} from '../exceptions';
+import { CoreFcaFqdnService, CoreFcaService } from '../services';
 import { InteractionController } from './interaction.controller';
 // --- Mocks for external dependencies ---
 
@@ -37,24 +41,35 @@ describe('InteractionController', () => {
   // Mocks for all dependencies injected in the constructor:
   let oidcProviderMock: any;
   let identityProviderMock: any;
+  let oidcAcrMock: any;
   let serviceProviderMock: any;
   let configServiceMock: any;
   let notificationsMock: any;
   let fqdnServiceMock: any;
-  let coreFcaVerifyMock: any;
-  let coreVerifyMock: any;
   let trackingMock: any;
   let sessionServiceMock: any; // for Csrf only
   let coreFcaMock: any;
   let csrfServiceMock: any;
 
+  const accountFcaServiceMock = {
+    upsertWithSub: jest.fn(),
+    getAccountByIdpAgentKeys: jest.fn(),
+    createAccount: jest.fn(),
+  };
+
   beforeEach(async () => {
     oidcProviderMock = {
       getInteraction: jest.fn(),
+      finishInteraction: jest.fn(),
     };
     identityProviderMock = {
       getById: jest.fn(),
       isActiveById: jest.fn(),
+    };
+    oidcAcrMock = {
+      getFilteredAcrParamsFromInteraction: jest.fn(),
+      getInteractionAcr: jest.fn(),
+      isEssentialAcrSatisfied: jest.fn(),
     };
     serviceProviderMock = {
       getById: jest.fn(),
@@ -67,13 +82,6 @@ describe('InteractionController', () => {
     };
     fqdnServiceMock = {
       getFqdnFromEmail: jest.fn(),
-    };
-    coreFcaVerifyMock = {
-      handleErrorLoginRequired: jest.fn(),
-      handleVerifyIdentity: jest.fn(),
-    };
-    coreVerifyMock = {
-      handleUnavailableIdp: jest.fn(),
     };
     trackingMock = {
       track: jest.fn(),
@@ -98,14 +106,13 @@ describe('InteractionController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [InteractionController],
       providers: [
+        AccountFcaService,
         OidcProviderService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
         ConfigService,
         CoreFcaService,
         CoreFcaFqdnService,
-        CoreFcaVerifyService,
-        CoreVerifyService,
         CsrfService,
         TrackingService,
         OidcAcrService,
@@ -113,18 +120,18 @@ describe('InteractionController', () => {
         NotificationsService,
       ],
     })
+      .overrideProvider(AccountFcaService)
+      .useValue(accountFcaServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderMock)
+      .overrideProvider(OidcAcrService)
+      .useValue(oidcAcrMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderMock)
       .overrideProvider(CoreFcaFqdnService)
       .useValue(fqdnServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreFcaMock)
-      .overrideProvider(CoreFcaVerifyService)
-      .useValue(coreFcaVerifyMock)
-      .overrideProvider(CoreVerifyService)
-      .useValue(coreVerifyMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(CsrfService)
@@ -159,357 +166,414 @@ describe('InteractionController', () => {
   });
 
   describe('getInteraction()', () => {
-    // Create local mocks for req, res and the injected user session.
-    const req: any = { sessionId: 'session1' };
-    let res: Partial<Response>;
-    let userSession: any; // this is the session passed by the UserSessionDecorator
-
-    // Default interaction returned by oidcProvider.getInteraction
-    const interactionData = {
-      uid: 'interaction123',
-      params: {
-        acr_values: 'acr1',
-        client_id: 'sp1',
-        redirect_uri: 'http://sp/redirect',
-        state: 'state123',
-        idp_hint: 'idpHintVal',
-        login_hint: 'user@example.com',
-      },
-    };
-
     beforeEach(() => {
-      res = {
-        redirect: jest.fn(),
-        render: jest.fn(),
-      };
-      // The userSession mock with its own session methods:
-      userSession = {
-        get: jest.fn(),
-        duplicate: jest.fn(),
+      serviceProviderMock.getById.mockResolvedValue({ name: 'spName' });
+      oidcAcrMock.getFilteredAcrParamsFromInteraction.mockReturnValue({
+        acr_values: 'high',
+      });
+      oidcAcrMock.isEssentialAcrSatisfied.mockReturnValue(true);
+      configServiceMock.get.mockReturnValue({ urlPrefix: '/prefix' });
+    });
+
+    it('should reset user session if there is no active session', async () => {
+      const req = {} as Request;
+      const res = { render: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({}),
         reset: jest.fn(),
         set: jest.fn(),
         commit: jest.fn(),
-      };
-      oidcProviderMock.getInteraction.mockReset();
-      configServiceMock.get.mockImplementation((key: string) => {
-        if (key === 'App') {
-          return {
-            urlPrefix: '/prefix',
-            defaultEmailRenater: 'default@renater.com',
-          };
-        }
-        return {};
-      });
-    });
-
-    it('should reuse an active session and redirect to INTERACTION_VERIFY', async () => {
-      // Simulate an active session: validateDto returns no errors
-      (validateDto as jest.Mock).mockResolvedValue([]);
-      // And the session has an idpId matching the hinted idp
-      userSession.get.mockReturnValue({ idpId: 'idpHintVal' });
-      // identityProvider returns a valid (non-empty) idp
-      identityProviderMock.getById.mockResolvedValue({ uid: 'idpHintVal' });
-      // serviceProvider returns SP info
-      serviceProviderMock.getById.mockResolvedValue({ name: 'SP Name' });
-      // Prepare interaction data without any hints
-      const interactionNoHints = {
+      } as unknown as ISessionService<UserSession>;
+      const interaction = {
         uid: 'interaction123',
-        params: {
-          acr_values: 'acr1',
-          client_id: 'sp1',
-          redirect_uri: 'http://sp/redirect',
-          state: 'state123',
-          idp_hint: null,
-          login_hint: null,
-        },
+        params: { client_id: 'sp123', login_hint: 'hint@example.com' },
       };
-      oidcProviderMock.getInteraction.mockResolvedValue(interactionNoHints);
+      oidcProviderMock.getInteraction.mockResolvedValue(interaction);
+      (validateDto as jest.Mock).mockReturnValue([
+        new Error('not a valid session'),
+      ]);
 
       await controller.getInteraction(
-        req as Request,
-        res as Response,
-        {} as any,
-        userSession,
-      );
-
-      // For an active session, the session is duplicated
-      expect(userSession.duplicate).toHaveBeenCalled();
-      expect(userSession.reset).not.toHaveBeenCalled();
-
-      // The session should be updated with interaction details and reuse flag
-      expect(userSession.set).toHaveBeenCalledWith({
-        interactionId: 'interaction123',
-        spAcr: 'acr1',
-        spId: 'sp1',
-        spName: 'SP Name',
-        spState: 'state123',
-        reusesActiveSession: true,
-      });
-      expect(userSession.commit).toHaveBeenCalled();
-
-      // Tracking calls should be made for both authorization initiation and SSO
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        'EVENT_AUTHORIZE_INITIATED',
-        {
-          fc: { interactionId: 'interaction123' },
-          req,
-          sessionId: req.sessionId,
-        },
-      );
-      expect(trackingMock.track).toHaveBeenCalledWith('EVENT_SSO_INITIATED', {
-        fc: { interactionId: 'interaction123' },
         req,
-        sessionId: req.sessionId,
-      });
-
-      // Should redirect to the INTERACTION_VERIFY URL built with the urlPrefix and interaction id
-      const expectedUrl = `/prefix${CoreRoutes.INTERACTION_VERIFY.replace(':uid', 'interaction123')}`;
-      expect(res.redirect).toHaveBeenCalledWith(expectedUrl);
-    });
-
-    it('should redirect to the hinted IdP when session is inactive and idpHint is provided', async () => {
-      // Simulate an inactive session: validateDto returns errors
-      (validateDto as jest.Mock).mockResolvedValue(['error']);
-      userSession.get.mockReturnValue({});
-      // identityProvider returns a valid hinted idp
-      identityProviderMock.getById.mockResolvedValue({ uid: 'idpHintVal' });
-      serviceProviderMock.getById.mockResolvedValue({ name: 'SP Name' });
-      oidcProviderMock.getInteraction.mockResolvedValue(interactionData);
-
-      await controller.getInteraction(
-        req as Request,
         res as Response,
         {} as any,
-        userSession,
+        userSessionService,
       );
 
-      // For inactive session, the controller resets and then sets a new browsingSessionId
-      expect(userSession.reset).toHaveBeenCalled();
-      expect(userSession.set).toHaveBeenCalledWith({
+      expect(userSessionService.reset).toHaveBeenCalled();
+      expect(userSessionService.set).toHaveBeenCalledWith({
         browsingSessionId: 'uuid-mock',
       });
-      expect(userSession.duplicate).not.toHaveBeenCalled();
-
-      // Session is then updated with interaction details; since the user is not connected, reusesActiveSession is false
-      expect(userSession.set).toHaveBeenCalledWith({
-        interactionId: 'interaction123',
-        spAcr: 'acr1',
-        spId: 'sp1',
-        spName: 'SP Name',
-        spState: 'state123',
-        reusesActiveSession: false,
-      });
-      expect(userSession.commit).toHaveBeenCalled();
-
-      // Tracking: FC_AUTHORIZE_INITIATED and then, because an idpHint exists, FC_REDIRECTED_TO_HINTED_IDP
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        'EVENT_AUTHORIZE_INITIATED',
-        {
-          fc: { interactionId: 'interaction123' },
-          req,
-          sessionId: req.sessionId,
-        },
-      );
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        'EVENT_REDIRECTED_TO_HINTED_IDP',
-        {
-          fc: { interactionId: 'interaction123' },
-          req,
-          sessionId: req.sessionId,
-        },
-      );
-
-      // Then the controller should delegate to coreFca.redirectToIdp
-      expect(coreFcaMock.redirectToIdp).toHaveBeenCalledWith(
-        res,
-        'idpHintVal',
-        { acr_values: 'acr1' },
-      );
     });
 
-    it('should render the interaction view when session is inactive and no idpHint is provided', async () => {
-      // Prepare interaction data without any idp_hint
-      const interactionNoIdpHint = {
+    it('should duplicate user session if session is active and valid', async () => {
+      const req = {} as Request;
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({ interactionId: 'interaction123' }),
+        duplicate: jest.fn(),
+        set: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProviderMock.getInteraction.mockResolvedValue({
         uid: 'interaction123',
-        params: {
-          acr_values: 'acr1',
-          client_id: 'sp1',
-          redirect_uri: 'http://sp/redirect',
-          state: 'state123',
-          idp_hint: null,
-          login_hint: 'user@example.com',
-        },
-      };
-      oidcProviderMock.getInteraction.mockResolvedValue(interactionNoIdpHint);
-      (validateDto as jest.Mock).mockResolvedValue(['error']);
-      userSession.get.mockReturnValue({});
-      serviceProviderMock.getById.mockResolvedValue({ name: 'SP Name' });
-      fqdnServiceMock.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      notificationsMock.getNotificationToDisplay.mockResolvedValue('notif');
-      csrfServiceMock.renew.mockReturnValue('csrf-token');
+        params: { client_id: 'sp123' },
+      });
 
       await controller.getInteraction(
-        req as Request,
+        req,
         res as Response,
         {} as any,
-        userSession,
+        userSessionService,
       );
 
-      expect(userSession.reset).toHaveBeenCalled();
-      expect(userSession.set).toHaveBeenCalledWith({
-        browsingSessionId: 'uuid-mock',
-      });
-      expect(userSession.duplicate).not.toHaveBeenCalled();
-
-      expect(userSession.set).toHaveBeenCalledWith({
-        interactionId: 'interaction123',
-        spAcr: 'acr1',
-        spId: 'sp1',
-        spName: 'SP Name',
-        spState: 'state123',
-        reusesActiveSession: false,
-      });
-      expect(userSession.commit).toHaveBeenCalled();
-
-      // Tracking: FC_AUTHORIZE_INITIATED and then FC_SHOWED_IDP_CHOICE (with fqdn information)
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        'EVENT_AUTHORIZE_INITIATED',
-        {
-          fc: { interactionId: 'interaction123' },
-          req,
-          sessionId: req.sessionId,
-        },
-      );
-      expect(fqdnServiceMock.getFqdnFromEmail).toHaveBeenCalledWith(
-        'user@example.com',
-      );
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        'EVENT_SHOWED_IDP_CHOICE',
-        {
-          fc: { interactionId: 'interaction123' },
-          req,
-          sessionId: req.sessionId,
-          fqdn: 'fqdn.com',
-        },
-      );
-
-      // Then obtain the notification and default email, renew Csrf and store it using the injected sessionService
-      expect(notificationsMock.getNotificationToDisplay).toHaveBeenCalled();
-      expect(csrfServiceMock.renew).toHaveBeenCalled();
-      expect(sessionServiceMock.set).toHaveBeenCalledWith('Csrf', {
-        csrfToken: 'csrf-token',
-      });
-
-      // Finally, render the 'interaction' view with the expected values
-      expect(res.render).toHaveBeenCalledWith('interaction', {
-        csrfToken: 'csrf-token',
-        defaultEmailRenater: 'default@renater.com',
-        notification: 'notif',
-        spName: 'SP Name',
-        loginHint: 'user@example.com',
-      });
+      expect(userSessionService.duplicate).toHaveBeenCalled();
     });
 
-    it('should throw CoreIdpHintException when idpHint is provided but identityProvider returns empty', async () => {
-      oidcProviderMock.getInteraction.mockResolvedValue(interactionData);
-      (validateDto as jest.Mock).mockResolvedValue([]);
-      userSession.get.mockReturnValue({});
-      // When idp_hint is present but identityProvider.getById returns an empty object,
-      // lodash’s isEmpty() will consider it empty and the controller should throw.
-      identityProviderMock.getById.mockResolvedValue({});
+    it('should redirect to INTERACTION_VERIFY when session is reused', async () => {
+      const req = {} as Request;
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({ interactionId: 'interaction123' }),
+        duplicate: jest.fn(),
+        set: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: 'interaction123',
+        params: { client_id: 'sp123' },
+      });
+
+      await controller.getInteraction(
+        req,
+        res as Response,
+        {} as any,
+        userSessionService,
+      );
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/prefix/interaction/interaction123/verify',
+      );
+    });
+
+    it('should call redirectToIdp when a valid IdP hint exists', async () => {
+      const req = { sessionId: 'session1' } as unknown as Request;
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({}),
+        duplicate: jest.fn(),
+        set: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: 'interaction123',
+        params: { client_id: 'sp123', idp_hint: 'idp123' },
+      });
+      identityProviderMock.getById.mockResolvedValue({ id: 'idp123' });
+
+      await controller.getInteraction(
+        req,
+        res as Response,
+        {} as any,
+        userSessionService,
+      );
+
+      expect(identityProviderMock.getById).toHaveBeenCalledWith('idp123');
+      expect(coreFcaMock.redirectToIdp).toHaveBeenCalledWith(
+        req,
+        res,
+        'idp123',
+      );
+    });
+
+    it('should throw CoreIdpHintException for invalid IdP hints', async () => {
+      const req = {} as Request;
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn(),
+        duplicate: jest.fn(),
+        set: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: 'interaction123',
+        params: { client_id: 'sp123', idp_hint: 'unknown-idp' },
+      });
+      identityProviderMock.getById.mockResolvedValue(null);
+
       await expect(
         controller.getInteraction(
-          req as Request,
+          req,
           res as Response,
           {} as any,
-          userSession,
+          userSessionService,
         ),
       ).rejects.toThrow(CoreIdpHintException);
+    });
+
+    it('should render the interaction page if no IdP hint is provided', async () => {
+      const req = {} as Request;
+      const res = { render: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({}),
+        set: jest.fn(),
+        reset: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      notificationsMock.getNotificationToDisplay.mockResolvedValue(
+        'notification',
+      );
+      configServiceMock.get.mockReturnValue({ defaultEmailRenater: 'email' });
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: 'interaction123',
+        params: { client_id: 'sp123', login_hint: 'user@example.com' },
+      });
+      csrfServiceMock.renew.mockReturnValue('csrfToken');
+      (validateDto as jest.Mock).mockReturnValue([
+        new Error('not a valid session'),
+      ]);
+
+      await controller.getInteraction(
+        req,
+        res as Response,
+        {} as any,
+        userSessionService,
+      );
+
+      expect(res.render).toHaveBeenCalledWith('interaction', {
+        csrfToken: 'csrfToken',
+        defaultEmailRenater: 'email',
+        notification: 'notification',
+        spName: 'spName',
+        loginHint: 'user@example.com',
+      });
     });
   });
 
   describe('getVerify()', () => {
-    const req: any = { sessionId: 'session1' };
-    let res: Partial<Response>;
-    let userSession: any;
-    // Prepare session data extracted by the decorator
-    const sessionData = {
-      idpId: 'idp1',
-      interactionId: 'interaction123',
-      isSilentAuthentication: false,
-    };
-
-    beforeEach(() => {
-      res = { redirect: jest.fn() };
-      userSession = { get: jest.fn().mockReturnValue(sessionData) };
-      configServiceMock.get.mockImplementation((key: string) => {
-        if (key === 'App') {
-          return { urlPrefix: '/prefix' };
-        }
-        return {};
-      });
-    });
-
-    it('should redirect using handleErrorLoginRequired when IdP is not active and silent authentication is true', async () => {
-      sessionData.isSilentAuthentication = true;
-      identityProviderMock.isActiveById.mockResolvedValue(false);
-      coreFcaVerifyMock.handleErrorLoginRequired.mockReturnValue('error-url');
-
-      await controller.getVerify(
-        req as Request,
-        res as Response,
-        {} as any,
-        userSession,
-      );
-
-      expect(identityProviderMock.isActiveById).toHaveBeenCalledWith('idp1');
-      expect(coreFcaVerifyMock.handleErrorLoginRequired).toHaveBeenCalledWith(
-        'http://sp/redirect',
-      );
-      expect(res.redirect).toHaveBeenCalledWith('error-url');
-    });
-
-    it('should redirect using handleUnavailableIdp when IdP is not active and silent authentication is false', async () => {
-      sessionData.isSilentAuthentication = false;
-      identityProviderMock.isActiveById.mockResolvedValue(false);
-      coreVerifyMock.handleUnavailableIdp.mockResolvedValue('unavailable-url');
-
-      await controller.getVerify(
-        req as Request,
-        res as Response,
-        {} as any,
-        userSession,
-      );
-
-      expect(coreVerifyMock.handleUnavailableIdp).toHaveBeenCalledWith(
-        req,
-        {
-          urlPrefix: '/prefix',
+    it('should successfully complete the interaction when the IdP is active and conditions are satisfied', async () => {
+      const req = { sessionId: 'session1' } as unknown as Request;
+      const res: Partial<Response> = { redirect: jest.fn() };
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
           interactionId: 'interaction123',
-          sessionOidc: userSession,
-        },
-        true,
-      );
-      expect(res.redirect).toHaveBeenCalledWith('unavailable-url');
-    });
+          idpAcr: 'high',
+          spEssentialAcr: 'high',
+          spId: 'sp123',
+          idpId: 'idp123',
+          idpIdentity: { sub: 'user1', extraClaims: 'extra' },
+          subs: {},
+        }),
+        set: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      const interactionAcr = 'high';
 
-    it('should redirect using handleVerifyIdentity when IdP is active', async () => {
       identityProviderMock.isActiveById.mockResolvedValue(true);
-      coreFcaVerifyMock.handleVerifyIdentity.mockResolvedValue('verify-url');
+      serviceProviderMock.getById.mockResolvedValue({ type: 'private' });
+      oidcAcrMock.getInteractionAcr.mockReturnValue(interactionAcr);
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue({
+        id: 'account123',
+        sub: 'sub123',
+        active: true,
+        idpIdentityKeys: [],
+      });
+      oidcProviderMock.finishInteraction.mockResolvedValue(undefined);
+      configServiceMock.get.mockReturnValueOnce({
+        configuration: { claims: ['sub'] },
+      });
 
       await controller.getVerify(
-        req as Request,
+        req,
         res as Response,
         {} as any,
-        userSession,
+        userSessionService,
       );
 
-      expect(coreFcaVerifyMock.handleVerifyIdentity).toHaveBeenCalledWith(req, {
-        urlPrefix: '/prefix',
-        interactionId: 'interaction123',
-        sessionOidc: userSession,
+      expect(oidcAcrMock.getInteractionAcr).toHaveBeenCalledWith({
+        idpAcr: 'high',
+        spEssentialAcr: 'high',
       });
-      expect(res.redirect).toHaveBeenCalledWith('verify-url');
+      expect(
+        accountFcaServiceMock.getAccountByIdpAgentKeys,
+      ).toHaveBeenCalledWith({ idpUid: 'idp123', idpSub: 'user1' });
+      expect(userSessionService.set).toHaveBeenCalledWith({
+        spIdentity: {
+          custom: { extraClaims: 'extra' },
+          idp_acr: 'high',
+          idp_id: 'idp123',
+        },
+        interactionAcr,
+        accountId: 'account123',
+        subs: { sp123: 'sub123' },
+      });
+      expect(oidcProviderMock.finishInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+        {
+          acr: interactionAcr,
+        },
+      );
+    });
+
+    it('should throw CoreLoginRequiredException when IdP is inactive and in silent authentication mode', async () => {
+      const req = {} as Request;
+      const res = {} as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          isSilentAuthentication: true,
+          idpId: 'idp123',
+        }),
+      } as unknown as ISessionService<UserSession>;
+
+      identityProviderMock.isActiveById.mockResolvedValue(false);
+
+      await expect(
+        controller.getVerify(req, res, {} as any, userSessionService),
+      ).rejects.toThrow(CoreLoginRequiredException);
+    });
+
+    it('should redirect to INTERACTION route when IdP is inactive and not in silent authentication mode', async () => {
+      const req = { sessionId: 'session1' } as unknown as Request;
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          isSilentAuthentication: false,
+          interactionId: 'interaction123',
+          idpId: 'idp123',
+        }),
+      } as unknown as ISessionService<UserSession>;
+
+      identityProviderMock.isActiveById.mockResolvedValue(false);
+      configServiceMock.get.mockReturnValueOnce({ urlPrefix: '/prefix' });
+
+      await controller.getVerify(req, res, {} as any, userSessionService);
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/prefix/interaction/interaction123',
+      );
+    });
+
+    it('should throw CoreFcaAgentNotFromPublicServiceException for private sector identity not allowed by SP', async () => {
+      const req = {} as Request;
+      const res = {} as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          spId: 'sp123',
+          idpId: 'idp123',
+          idpIdentity: { is_service_public: false },
+        }),
+      } as unknown as ISessionService<UserSession>;
+
+      identityProviderMock.isActiveById.mockResolvedValue(true);
+      serviceProviderMock.getById.mockResolvedValue({ type: 'public' });
+
+      await expect(
+        controller.getVerify(req, res, {} as any, userSessionService),
+      ).rejects.toThrow(CoreFcaAgentNotFromPublicServiceException);
+    });
+
+    it('should throw CoreAcrNotSatisfiedException when interactionAcr is not satisfied', async () => {
+      const req = {} as Request;
+      const res = {} as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          spEssentialAcr: 'high',
+          idpAcr: 'low',
+        }),
+      } as unknown as ISessionService<UserSession>;
+
+      identityProviderMock.isActiveById.mockResolvedValue(true);
+      serviceProviderMock.getById.mockResolvedValue({ type: 'public' });
+      oidcAcrMock.getInteractionAcr.mockReturnValue(null);
+
+      await expect(
+        controller.getVerify(req, res, {} as any, userSessionService),
+      ).rejects.toThrow(CoreAcrNotSatisfiedException);
+    });
+  });
+
+  describe('getOrCreateAccount', () => {
+    const idpUid = 'mock-idp-uid';
+    const idpSub = 'mock-idp-sub';
+    const idpAgentKeys = { idpUid, idpSub };
+
+    it('should create a new account if no existing account is found', async () => {
+      const mockAccount = {
+        id: 'mock-account-id',
+        active: true,
+        idpIdentityKeys: [],
+        lastConnection: new Date(),
+      };
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue(null);
+      accountFcaServiceMock.createAccount.mockReturnValue(mockAccount);
+      accountFcaServiceMock.upsertWithSub.mockResolvedValue(undefined);
+
+      const result = await controller['getOrCreateAccount'](idpUid, idpSub);
+
+      expect(accountFcaServiceMock.createAccount).toHaveBeenCalled();
+      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledWith(
+        mockAccount,
+      );
+      expect(result).toEqual(mockAccount);
+    });
+
+    it('should throw CoreFcaAgentAccountBlockedException if the account is inactive', async () => {
+      const mockAccount = {
+        id: 'mock-account-id',
+        active: false,
+        idpIdentityKeys: [],
+      };
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue(
+        mockAccount,
+      );
+
+      await expect(
+        controller['getOrCreateAccount'](idpUid, idpSub),
+      ).rejects.toThrow(CoreFcaAgentAccountBlockedException);
+    });
+
+    it('should update lastConnection and upsert the account if it is active', async () => {
+      const mockAccount = {
+        id: 'mock-account-id',
+        active: true,
+        idpIdentityKeys: [],
+        lastConnection: new Date(),
+      };
+      const currentTime = new Date();
+      jest.useFakeTimers().setSystemTime(currentTime);
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue(
+        mockAccount,
+      );
+      accountFcaServiceMock.upsertWithSub.mockResolvedValue(undefined);
+
+      const result = await controller['getOrCreateAccount'](idpUid, idpSub);
+
+      expect(mockAccount.lastConnection).toEqual(currentTime);
+      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledWith(
+        mockAccount,
+      );
+      expect(result).toEqual(mockAccount);
+    });
+
+    it('should append idpAgentKeys if they are not found and upsert the account', async () => {
+      const mockAccount = {
+        id: 'mock-account-id',
+        active: true,
+        idpIdentityKeys: [],
+        lastConnection: new Date(),
+      };
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue(
+        mockAccount,
+      );
+      accountFcaServiceMock.upsertWithSub.mockResolvedValue(undefined);
+
+      const result = await controller['getOrCreateAccount'](idpUid, idpSub);
+
+      expect(mockAccount.idpIdentityKeys).toContainEqual(idpAgentKeys);
+      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledWith(
+        mockAccount,
+      );
+      expect(result).toEqual(mockAccount);
     });
   });
 });

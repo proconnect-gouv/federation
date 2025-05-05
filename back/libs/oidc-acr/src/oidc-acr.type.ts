@@ -3,7 +3,7 @@ import { UnknownObject } from 'oidc-provider';
 export type SimplifiedInteraction = {
   uid: string;
   params: {
-    acr_values: string;
+    acr_values?: string;
     client_id: string;
     redirect_uri: string;
     state: string;

@@ -8,6 +8,7 @@ import {
 export const Track = (event: string) =>
   SetMetadata(TRACKING_TRACK_METADATA, event);
 
+/* istanbul ignore next */
 Track.get = function (
   reflector: Reflector,
   ctx: ExecutionContext,

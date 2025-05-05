@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { FlowStepsSession } from '@fc/flow-steps';
-import { AuthorizeStepFrom } from '@fc/flow-steps/decorators/authorize-step-from.decorator';
+import { AuthorizeStepFrom } from '../decorators';
 import { SessionNotFoundException, SessionService } from '@fc/session';
 
 import {

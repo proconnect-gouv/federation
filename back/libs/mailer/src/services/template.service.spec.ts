@@ -89,7 +89,7 @@ describe('TemplateService', () => {
       idpIdentity: idpIdentityMock,
 
       spId: 'sp_id',
-      spAcr: 'eidas3',
+      spEssentialAcr: 'eidas3',
       spName: 'my great SP',
       spIdentity: spIdentityWithEmailMock,
     };

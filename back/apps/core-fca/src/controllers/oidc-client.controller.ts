@@ -66,8 +66,6 @@ export class OidcClientController {
     private readonly oidcClient: OidcClientService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFca: CoreFcaService,
-    private readonly oidcAcr: OidcAcrService,
-    private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
