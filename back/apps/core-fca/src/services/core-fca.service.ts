@@ -1,7 +1,8 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { isEmpty } from 'lodash';
+import { AuthorizationParameters } from 'openid-client';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { CoreServiceInterface } from '@fc/core';
@@ -19,7 +20,6 @@ import { SessionService } from '@fc/session';
 
 import { CoreFcaAgentIdpDisabledException } from '../exceptions';
 import { CoreFcaUnauthorizedEmailException } from '../exceptions/core-fca-unauthorized-email-exception';
-import { CoreFcaAuthorizationParametersInterface } from '../interfaces';
 import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 
 @Injectable()
@@ -58,7 +58,7 @@ export class CoreFcaService implements CoreServiceInterface {
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizeParams: CoreFcaAuthorizationParametersInterface = {
+    const authorizeParams: AuthorizationParameters = {
       state,
       nonce,
       scope,

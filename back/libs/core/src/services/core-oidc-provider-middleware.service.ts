@@ -1,3 +1,5 @@
+import { AuthorizationParameters } from 'openid-client';
+
 import { Inject, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
@@ -6,7 +8,6 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerService } from '@fc/logger';
 import { atHashFromAccessToken, IOidcClaims } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { AuthorizationParameters } from '@fc/oidc-client';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import {
   OidcCtx,
