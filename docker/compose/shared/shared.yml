@@ -87,7 +87,7 @@ services:
 
   log-hub:
     hostname: log-hub
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -226,7 +226,7 @@ services:
   ####################
 
   openldap:
-    image: ${FC_DOCKER_REGISTRY}/openldap:0.2
+    image: ${PC_DOCKER_REGISTRY}/openldap:0.2
     networks:
       - rie
 

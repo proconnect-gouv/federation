@@ -6,6 +6,7 @@ DOCKER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 DOCKER_BASH_DIR="${DOCKER_DIR}/bash"
 PC_DOCKER_REGISTRY="ghcr.io/proconnect-gouv/federation"
+export PC_DOCKER_REGISTRY
 
 source "${DOCKER_BASH_DIR}/utils/index.sh"
 source "${DOCKER_BASH_DIR}/config.sh"
