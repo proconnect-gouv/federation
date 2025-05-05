@@ -4,7 +4,7 @@ services:
   core-fca-low:
     hostname: core-fca-low
     # image: node:lts-alpine
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
