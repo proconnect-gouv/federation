@@ -8,7 +8,7 @@ _log() {
 
 _start() {
   local apps="${@:-no-container}"
-  _clean_fc_dist "${apps}"
+  _clean_pc_dist "${apps}"
 
   for app in ${apps}; do
     echo "   * Starting app ${app}"
@@ -21,7 +21,7 @@ _start() {
 
 _start_prod() {
   local apps="${@:-no-container}"
-  _clean_fc_dist "${apps}"
+  _clean_pc_dist "${apps}"
 
   for app in ${apps}; do
     task "   * Starting app \e[3m${app}\e[0m" \
@@ -65,7 +65,7 @@ _detect_instances() {
   echo "${instances}" | sort | uniq | grep -oE "[a-zA-Z0-9-]+"
 }
 
-_clean_fc_dist() {
+_clean_pc_dist() {
   local apps="${@:-no-container}"
   local instances=$(_detect_instances "${apps}")
 

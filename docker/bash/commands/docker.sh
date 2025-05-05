@@ -53,7 +53,7 @@ _exec() {
 }
 
 _do_pull() {
-  timeout 5 docker login ${PC_DOCKER_REGISTRY} || _pull_failure
+  timeout 5 docker login ${FC_DOCKER_REGISTRY} || _pull_failure
   docker pull ${DOCKER_REGISTRY_URI} || _pull_failure
 }
 
@@ -93,7 +93,7 @@ _prune_ci() {
 _get_env() {
   local app=${1}
   local varName=${2}
-  local containerName="${COMPOSE_PROJECT_NAME}_${app}_1"
+  local containerName="${COMPOSE_PROJECT_NAME}-${app}-1"
   local expression='${'${varName}'}'
 
   docker exec ${containerName} bash -c "echo ${expression}"
