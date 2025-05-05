@@ -37,8 +37,7 @@
     "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env",
     "doc": "yarn doc:exceptions && yarn doc:env",
     "generate-insee:country": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-country",
-    "generate-insee:city": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-city",
-    "generate-oidc-provider-exceptions": "./libs/oidc-provider/src/cli/scaffold-exceptions/run.sh"
+    "generate-insee:city": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-city"
   },
   "resolutions": {
     "cookie-signature": "1.2.0",
