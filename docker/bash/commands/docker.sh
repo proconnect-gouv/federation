@@ -10,7 +10,7 @@ _get_running_containers() {
 }
 
 _reload_rp() {
-  docker exec fc-rp-all service nginx reload
+  docker exec pc-rp-all service nginx reload
 }
 
 _container_to_compose_name() {

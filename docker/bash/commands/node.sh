@@ -15,8 +15,8 @@ _start() {
       _do_start "${app}"
   done
 
-  # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload_rp"
+  # Reload RP in case the app took to long and was considered down by Nginx
+  _reload_rp
 }
 
 _start_prod() {
@@ -28,8 +28,8 @@ _start_prod() {
       "_do_start_prod" "${app}"
   done
 
-  # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload_rp"
+  # Reload RP in case the app took to long and was considered down by Nginx
+  _reload_rp
 }
 
 _start_dev() {
@@ -39,8 +39,8 @@ _start_dev() {
       "_do_start_dev" "${app}"
   done
 
-  # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload_rp"
+  # Reload RP in case the app took to long and was considered down by Nginx
+  _reload_rp
 }
 
 _start_ci() {
@@ -50,8 +50,8 @@ _start_ci() {
       "_do_start_ci" "${app}"
   done
 
-  # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload_rp"
+  # Reload RP in case the app took to long and was considered down by Nginx
+  _reload_rp
 }
 
 _detect_instances() {
