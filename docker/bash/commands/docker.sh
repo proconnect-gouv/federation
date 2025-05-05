@@ -77,7 +77,7 @@ _prune() {
 }
 
 _prune_all() {
-  cat "${INCLUDE_DIR}/txt/atomic.art.txt"
+  cat "${DOCKER_BASH_DIR}/txt/atomic.art.txt"
   _halt
   docker system prune -af
   docker image prune -af

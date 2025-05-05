@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-if [ -z "${PC_ROOT}" ]; then
-  read -p "Missing PC_ROOT path. Please fill in: " PC_ROOT
-  exit 1
-fi
+# Define the root directory relative to this script's location
+DOCKER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-INCLUDE_DIR="${PC_ROOT}/federation/docker/bash"
+DOCKER_BASH_DIR="${DOCKER_DIR}/bash"
 PC_DOCKER_REGISTRY="ghcr.io/proconnect-gouv/federation"
 
-source "${INCLUDE_DIR}/utils/index.sh"
-source "${INCLUDE_DIR}/config.sh"
-source "${INCLUDE_DIR}/commands/index.sh"
+source "${DOCKER_BASH_DIR}/utils/index.sh"
+source "${DOCKER_BASH_DIR}/config.sh"
+source "${DOCKER_BASH_DIR}/commands/index.sh"
 
 ## Data initialisation
 _command_register "fixtures" "_hook_fc_apps" "Init postgres Exploitation : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"
