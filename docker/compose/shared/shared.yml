@@ -52,16 +52,10 @@ services:
           - exploitation-fca-low.docker.dev-franceconnect.fr
           - exploitation-high.docker.dev-franceconnect.fr
           # Mock Data Provider
-          - dpp1-high.docker.dev-franceconnect.fr
-          - dpp2-high.docker.dev-franceconnect.fr
-          - dpp1-low.docker.dev-franceconnect.fr
-          - dpp2-low.docker.dev-franceconnect.fr
           - dpa1-low.docker.dev-franceconnect.fr
           - dpa2-low.docker.dev-franceconnect.fr
           # Generic
           - docker.dev-franceconnect.fr
-          # Stack Documentation 11TY
-          - doc-example.docker.dev-franceconnect.fr
       fc:
       rie:
         aliases:
