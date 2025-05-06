@@ -175,6 +175,18 @@ jobs:
           yarn test:low:snapshot -c video=false
           yarn report
 
+      - name: Debug Cypress Artifacts
+        run: ls -R ../.cache/Cypress
+
+      - name: Upload Cypress Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: |
+            ../.cache/Cypress/screenshots
+            ../.cache/Cypress/videos
+            ../.cache/Cypress/reports
+
   # test_e2e:
   #   runs-on: ubuntu-24.04
   #   steps:
