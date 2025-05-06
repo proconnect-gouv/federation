@@ -151,14 +151,14 @@ jobs:
           ./docker-stack up small
           ./docker-stack start-all-ci
 
-      - name: Cache Node.js dependencies
-        id: quality-yarn-cache
-        uses: actions/cache@v4
-        with:
-          path: quality/node_modules
-          key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-quality-
+      # - name: Cache Node.js dependencies
+      #   id: quality-yarn-cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: quality/node_modules
+      #     key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-node-modules-quality-
 
       - name: Install dependencies
         if: steps.quality-yarn-cache.outputs.cache-hit != 'true'
