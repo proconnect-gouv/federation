@@ -25,13 +25,11 @@ import { EmailValidatorService } from '@fc/email-validator/services';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientConfigService,
   OidcClientRoutes,
   OidcClientService,
 } from '@fc/oidc-client';
-import { OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, SessionService } from '@fc/session';
 import {
   Track,
