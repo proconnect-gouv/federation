@@ -88,21 +88,17 @@ You will be prompted for:
 
 ## Run the application
 
-### Running AgentConnect
+### Running ProConnect Fédération
 
 ```bash
 dks switch small
 ```
 
-On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion with :
-
-- On the AgentConnect page use this email: `test@fia1.fr`
-- Change the login to: `test`
-- Leave the password empty
+On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion with: `test@fia1.fr`
 
 You are now connected to fsa1!
 
-### Running FC exploitation for AgentConnect
+### Running FC exploitation for ProConnect
 
 ```bash
 dks switch medium
