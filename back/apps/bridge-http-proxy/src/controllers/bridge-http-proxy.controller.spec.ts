@@ -165,14 +165,14 @@ describe('BrokerProxyController', () => {
       });
 
       // When
-      await controller['allRequest'](reqMock, headersMock, resMock);
+      await controller['allRequest'](reqMock, { host: 'url.com' }, resMock);
 
       // Then
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledTimes(1);
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledWith(
         '/fizz',
         'GET',
-        { host: 'url.com', 'x-forwarded-proto': 'https' },
+        { host: 'url.com' },
         undefined,
       );
 
