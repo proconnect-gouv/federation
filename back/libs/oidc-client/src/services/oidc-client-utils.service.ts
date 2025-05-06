@@ -176,10 +176,7 @@ export class OidcClientUtilsService {
     await client.revoke(accessToken);
   }
 
-  async getUserInfo<T>(
-    accessToken: string,
-    idpId: string,
-  ): Promise<T> {
+  async getUserInfo<T>(accessToken: string, idpId: string): Promise<T> {
     const client = await this.issuer.getClient(idpId);
 
     const userInfo = await client.userinfo<T>(accessToken);

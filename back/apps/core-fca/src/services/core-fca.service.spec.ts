@@ -275,9 +275,7 @@ describe('CoreFcaService', () => {
         name: 'mockName',
         title: 'mockTitle',
       });
-      oidcMock.utils.checkIdpDisabled.mockRejectedValueOnce(
-        new Error(),
-      );
+      oidcMock.utils.checkIdpDisabled.mockRejectedValueOnce(new Error());
 
       // When / Then
       await expect(

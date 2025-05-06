@@ -15,12 +15,12 @@ export type SimplifiedInteraction = {
     reasons: string[];
     details:
       | {
-      acr: {
-        essential: boolean;
-        value?: string;
-        values?: string[];
-      };
-    }
+          acr: {
+            essential: boolean;
+            value?: string;
+            values?: string[];
+          };
+        }
       | UnknownObject;
   };
 };
