@@ -127,19 +127,27 @@ jobs:
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v2
 
+      - name: Set FEDERATION_ROOT environment variable
+        working-directory: ./
+        run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
+
       - name: Connect to docker registry
         working-directory: ./docker
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Create symlink to federation root
+        working-directory: ./docker/volumes/src
+        run: |
+          set -x
+          ln -s $FEDERATION_ROOT
+
       - name: Start docker stack
         working-directory: ./docker
         run: |
           set -x
-          ./docker-stack help
+            docker network create --driver bridge pc_public
           ./docker-stack prune-ci
-          ln -s volumes/src/federation
-          docker network create --driver bridge pc_public
           ./docker-stack up small
           ./docker-stack start-all-ci
 
