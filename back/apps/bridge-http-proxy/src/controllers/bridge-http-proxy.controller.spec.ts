@@ -61,6 +61,13 @@ describe('BrokerProxyController', () => {
     expect(controller).toBeDefined();
   });
 
+  describe('healthcheck()', () => {
+    it("should return 'ok'", () => {
+      const result = controller.healthcheck();
+      expect(result).toBe('ok');
+    });
+  });
+
   describe('get()', () => {
     it('should log URL idp called and call allRequest private method', async () => {
       // Given
