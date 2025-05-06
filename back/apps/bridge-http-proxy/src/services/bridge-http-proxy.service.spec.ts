@@ -237,18 +237,15 @@ describe('BridgeHttpProxyService', () => {
         data: undefined,
         headers: {
           host: 'foo.fr',
-          'x-forwarded-proto': 'https',
         },
         method: 'POST',
         url: 'https://foo.fr/bizz/bud',
       };
 
       // When
-      const result = service['createMessage'](
-        originalUrlMock,
-        method,
-        headersMock,
-      );
+      const result = service['createMessage'](originalUrlMock, method, {
+        host: 'foo.fr',
+      });
 
       // Then
       expect(result).toStrictEqual(expected);
