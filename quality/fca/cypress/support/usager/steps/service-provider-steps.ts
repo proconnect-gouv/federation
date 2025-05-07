@@ -14,6 +14,7 @@ import {
   removePrompt,
   setAcrValues,
   setAsRequestedClaims,
+  setAsVoluntaryClaims,
   setIdpHint,
   setLoginHint,
   setPrompt,
@@ -30,6 +31,13 @@ When(
   function (description: string) {
     const serviceProvider = getServiceProviderByDescription(description);
     cy.visit(serviceProvider.url);
+  },
+);
+
+Given(
+  'le fournisseur de service demande le claim {string}',
+  function (claim: string) {
+    setAsVoluntaryClaims(claim);
   },
 );
 
@@ -121,6 +129,13 @@ Then(
   'la cinématique a utilisé le niveau de sécurité {string}',
   function (acrValue: string) {
     cy.contains(`"acr": "${acrValue}"`);
+  },
+);
+
+Then(
+  'la cinématique a renvoyé le claim {string}',
+  function (claimName: string) {
+    cy.contains(new RegExp('  "' + claimName + '": ".*",', 'g'));
   },
 );
 

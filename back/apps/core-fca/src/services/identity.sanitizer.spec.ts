@@ -11,8 +11,10 @@ import { IdentityProviderMetadata } from '@fc/oidc';
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
-import { CoreFcaInvalidIdentityException } from '../exceptions';
-import { NoDefaultSiretException } from '../exceptions/no-default-idp-siret.exception';
+import {
+  CoreFcaInvalidIdentityException,
+  NoDefaultSiretException,
+} from '../exceptions';
 import { IdentitySanitizer } from './identity.sanitizer';
 
 // This code make it possible to spyOn on the validateDto function

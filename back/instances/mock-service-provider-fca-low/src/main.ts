@@ -84,9 +84,7 @@ const AUTHORIZATION_DEFAULT_PARAMS = {
   login_hint: LOGIN_HINT || null,
   claims: {
     id_token: {
-      amr: {
-        essential: true,
-      },
+      amr: null,
     },
   },
 };

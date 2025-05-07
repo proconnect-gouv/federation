@@ -152,7 +152,6 @@ export class SessionBackendStorageService {
     const errors = await validateDto(session, schema, validationOptions);
 
     if (errors.length > 0) {
-      console.debug({ sessionValidationErrors: errors });
       this.logger.crit(
         'SessionBackendStorageService:validate() Invalid session data from Redis.',
       );

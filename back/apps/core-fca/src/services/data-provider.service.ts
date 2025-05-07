@@ -133,22 +133,12 @@ export class DataProviderService {
   private async generateValidResponse(
     dataProvider: DataProviderMetadata,
     session: CoreFcaSession,
-    interaction: AccessToken,
+    accessToken: AccessToken,
   ): Promise<TokenIntrospectionInterface> {
-    const {
-      claims: {
-        id_token: {
-          acr: { values: acrValues },
-        },
-      },
-      iat,
-      exp,
-      jti,
-      clientId: spClientId,
-    } = interaction;
+    const { iat, exp, jti, clientId } = accessToken;
 
     const {
-      User: { idpIdentity, idpId },
+      User: { idpIdentity, idpId, interactionAcr },
     } = session;
 
     const dpSub = await this.generateDataProviderSub(idpIdentity, idpId);
@@ -156,16 +146,16 @@ export class DataProviderService {
     // @see https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2
     const authorizedScopes = this.filterScopes(
       dataProvider.scopes,
-      interaction.scope,
+      accessToken.scope,
     );
 
     return {
       active: true,
-      aud: spClientId,
+      aud: clientId,
       sub: dpSub,
       iat,
       exp,
-      acr: acrValues.join(' '),
+      acr: interactionAcr,
       jti,
       scope: authorizedScopes.join(' '),
     };

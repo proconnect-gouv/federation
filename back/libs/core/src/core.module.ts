@@ -29,10 +29,8 @@ import { AppTrackingServiceAbstract, TrackingModule } from '@fc/tracking';
 import { CoreServiceInterface } from './interfaces';
 import {
   CoreAccountService,
-  CoreAuthorizationService,
   CoreOidcProviderConfigAppService,
   CoreOidcProviderMiddlewareService,
-  CoreVerifyService,
 } from './services';
 import { CORE_SERVICE } from './tokens';
 
@@ -41,7 +39,7 @@ export class CoreModule {
   // More than 4 parameters authorized for dependency injection
   // eslint-disable-next-line max-params
   static register(
-    CoreServiceInterface: Type<CoreServiceInterface>,
+    CoreService: Type<CoreServiceInterface>,
     OidcProviderConfigApp: Type<IOidcProviderConfigAppService>,
     ServiceProviderClass: Type<IServiceProviderAdapter>,
     ServiceProviderModule: Type<ModuleMetadata>,
@@ -79,15 +77,13 @@ export class CoreModule {
         CoreOidcProviderConfigAppService,
         {
           provide: CORE_SERVICE,
-          useExisting: CoreServiceInterface,
+          useExisting: CoreService,
         },
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useExisting: IdentityProviderAdapterMongoService,
         },
         CoreOidcProviderMiddlewareService,
-        CoreVerifyService,
-        CoreAuthorizationService,
         ExceptionOccurredHandler,
         UnknownHtmlExceptionFilter,
         OidcProviderRenderedHtmlExceptionFilter,
@@ -119,10 +115,8 @@ export class CoreModule {
       exports: [
         CoreAccountService,
         CoreOidcProviderMiddlewareService,
-        CoreVerifyService,
         CoreOidcProviderConfigAppService,
         trackingModule,
-        CoreAuthorizationService,
       ],
     };
   }

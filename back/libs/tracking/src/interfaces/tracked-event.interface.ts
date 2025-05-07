@@ -28,13 +28,6 @@ export interface TrackedEventInterface {
   readonly step?: string;
 
   /**
-   * Automatically track a given route
-   *
-   * The given route will be automatically tracked
-   */
-  readonly interceptRoutes?: InterceptRouteInterface[];
-
-  /**
    * Automatically track exception
    */
   readonly exceptions?: Array<Type<FcException>>;

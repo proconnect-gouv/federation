@@ -1,49 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { CoreMissingIdentityException } from '@fc/core';
-import { IOidcIdentity } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
 
-import { getSessionServiceMock } from '@mocks/session';
-
-import { AuthorizeParamsDto, UserSession } from '../dto';
+import { AuthorizeParamsDto } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
-
-  const sessionServiceMock = getSessionServiceMock();
 
   const oidcProviderServiceMock = {
     getInteraction: jest.fn(),
     finishInteraction: jest.fn(),
   };
 
-  const sessionIdMock = 'session-id-mock';
-
-  const reqMock = Symbol('req');
-
-  const randomStringMock = 'randomStringMockValue';
-  const interactionIdMock = 'interactionIdMockValue';
-  const acrMock = 'acrMockValue';
-  const spIdMock = 'spIdMockValue';
-  const spNameMock = 'some SP';
-  const idpStateMock = 'idpStateMockValue';
-  const idpNonceMock = 'idpNonceMock';
-  const idpIdMock = 'idpIdMockValue';
   const interactionFinishedValue = Symbol('interactionFinishedValue');
-
-  const sessionDataMock: UserSession = {
-    spId: spIdMock,
-    idpId: idpIdMock,
-    idpNonce: idpNonceMock,
-    idpState: idpStateMock,
-    interactionId: interactionIdMock,
-    spAcr: acrMock,
-    spIdentity: {} as IOidcIdentity,
-    spName: spNameMock,
-  };
 
   const interactionDetailsResolved = {
     params: {
@@ -58,10 +28,8 @@ describe('OidcProviderController', () => {
 
     const app: TestingModule = await Test.createTestingModule({
       controllers: [OidcProviderController],
-      providers: [OidcProviderService, SessionService],
+      providers: [OidcProviderService],
     })
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .compile();
@@ -75,9 +43,6 @@ describe('OidcProviderController', () => {
     oidcProviderServiceMock.getInteraction.mockResolvedValue(
       interactionDetailsResolved,
     );
-
-    sessionServiceMock.get.mockReturnValue(sessionDataMock);
-    sessionServiceMock.reset.mockResolvedValueOnce(sessionIdMock);
   });
 
   describe('getAuthorize()', () => {
@@ -101,52 +66,6 @@ describe('OidcProviderController', () => {
       oidcProviderController.postAuthorize(nextMock, bodyMock);
       // Then
       expect(nextMock).toHaveReturnedTimes(1);
-    });
-  });
-
-  describe('getLogin()', () => {
-    it('should throw an exception if no identity in session', () => {
-      // Given
-      const next = jest.fn();
-      sessionServiceMock.get.mockReturnValueOnce({
-        csrfToken: randomStringMock,
-        interactionId: interactionIdMock,
-        spAcr: acrMock,
-        spName: spNameMock,
-      });
-      // Then
-      expect(() =>
-        oidcProviderController.getLogin(reqMock, next, sessionServiceMock),
-      ).toThrow(CoreMissingIdentityException);
-    });
-
-    it('should call next', () => {
-      // Given
-      const res = {};
-      // When
-      oidcProviderController.getLogin(reqMock, res, sessionServiceMock);
-      // Then
-      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
-        reqMock,
-        res,
-        sessionDataMock,
-      );
-    });
-
-    it('should return result from controller.oidcProvider.finishInteraction()', () => {
-      // Given
-      const res = {};
-      // When
-      const result = oidcProviderController.getLogin(
-        reqMock,
-        res,
-        sessionServiceMock,
-      );
-      // Then
-      expect(result).toBe(interactionFinishedValue);
     });
   });
 });

@@ -810,6 +810,9 @@ export class Configuration {
   @IsOptional()
   readonly clientBasedCORS?: ClientBasedCORSCallback;
 
+  @IsOptional()
+  readonly loadExistingGrant?: (ctx: any) => Promise<any>;
+
   @ValidateNested()
   @Type(() => Jwks)
   @IsOptional()
