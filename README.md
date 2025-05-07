@@ -48,8 +48,8 @@ export COMPOSE_HTTP_TIMEOUT=200
 # Makes cypress aware of root path, not having to create relative path from e2E test file
 export CYPRESS_PC_ROOT=$PC_ROOT
 
-# Setup the docker registry url (for now, we still continue to use the FranceConnect container registry)
-export FC_DOCKER_REGISTRY=registry.gitlab.dev-franceconnect.fr/france-connect/fc
+# Setup the docker registry url (for now, we still continue to use the ProConnect container registry)
+export PC_DOCKER_REGISTRY= ghcr.io/proconnect-gouv/federation
 
 # Alias for the docker-stack command (you can add it to your "~/.bash_aliases" if you prefer but don't forget to set the variables before the .bash_aliases sourcing in your .bashrc 😉) :
 alias dks=$PC_ROOT/federation/docker/docker-stack
@@ -63,7 +63,7 @@ mkdir -p $PC_ROOT && cd $PC_ROOT
 # The main repository
 git clone git@github.com:proconnect-gouv/federation.git
 
-# Backoffice app
+# Back office app
 git clone git@github.com:proconnect-gouv/federation-admin.git
 ```
 
@@ -78,12 +78,12 @@ ln -s $PC_ROOT/federation-admin
 - pull FC docker images, you will need to authenticate against the FC docker registry:
 
 ```bash
-docker login $FC_DOCKER_REGISTRY
+docker login $PC_DOCKER_REGISTRY
 ```
 
 You will be prompted for:
 
-- a username: use your gitlab.dev-franceconnect.fr username
+- a username: use your github.com/proconnect-gouv/federation username
 - a password: as two-factor authentication is mandatory, you'll need to create an access token with only "read_registry" permission from your account settings: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html. If you are not from the internal team, please ask an FC for one through support.
 
 ## Run the application

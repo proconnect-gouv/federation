@@ -49,7 +49,7 @@ function _command_list() {
   echo "---------------------------"
   echo "Use env variable 'VERBOSE' to get verbose output"
   echo "ex."
-  echo "> VERBOSE=1 docker-stack up min-core-legacy"
+  echo "> VERBOSE=1 docker-stack up small"
 }
 
 function _do_list_commands() {

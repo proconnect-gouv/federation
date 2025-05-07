@@ -8,28 +8,28 @@ _log() {
 
 _start() {
   local apps="${@:-no-container}"
-  _clean_fc_dist "${apps}"
+  _clean_pc_dist "${apps}"
 
   for app in ${apps}; do
-    task "   * Starting app \e[3m${app}\e[0m" \
-      "_do_start" "${app}"
+    echo "   * Starting app ${app}"
+      _do_start "${app}"
   done
 
-  # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload_rp"
+  # Reload RP in case the app took to long and was considered down by Nginx
+  _reload_rp
 }
 
 _start_prod() {
   local apps="${@:-no-container}"
-  _clean_fc_dist "${apps}"
+  _clean_pc_dist "${apps}"
 
   for app in ${apps}; do
     task "   * Starting app \e[3m${app}\e[0m" \
       "_do_start_prod" "${app}"
   done
 
-  # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload_rp"
+  # Reload RP in case the app took to long and was considered down by Nginx
+  _reload_rp
 }
 
 _start_dev() {
@@ -39,19 +39,18 @@ _start_dev() {
       "_do_start_dev" "${app}"
   done
 
-  # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload_rp"
+  # Reload RP in case the app took to long and was considered down by Nginx
+  _reload_rp
 }
 
 _start_ci() {
   local apps="${@:-no-container}"
   for app in ${apps}; do
-    task "   * Starting app (CI mode) \e[3m${app}\e[0m" \
-      "_do_start_ci" "${app}"
+      _do_start_ci "${app}"
   done
 
-  # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload_rp"
+  # Reload RP in case the app took to long and was considered down by Nginx
+  _reload_rp
 }
 
 _detect_instances() {
@@ -65,7 +64,7 @@ _detect_instances() {
   echo "${instances}" | sort | uniq | grep -oE "[a-zA-Z0-9-]+"
 }
 
-_clean_fc_dist() {
+_clean_pc_dist() {
   local apps="${@:-no-container}"
   local instances=$(_detect_instances "${apps}")
 
@@ -135,21 +134,6 @@ _do_stop() {
 _stop_all() {
   _get_running_containers
   _stop $NODEJS_CONTAINERS
-}
-
-_install_dependencies() {
-  apps=${@:-no-container}
-
-  for app in ${apps}; do
-    echo "Installing dependencies for [${app}]:"
-    cd ${WORKING_DIR}
-    $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "/opt/scripts/install.sh"
-  done
-}
-
-_install_dependencies_all() {
-  _get_running_containers
-  _install_dependencies $NODEJS_CONTAINERS
 }
 
 _log_rotate() {
