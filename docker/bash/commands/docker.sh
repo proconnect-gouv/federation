@@ -52,20 +52,6 @@ _exec() {
   esac
 }
 
-_do_pull() {
-  timeout 5 docker login ${FC_DOCKER_REGISTRY} || _pull_failure
-  docker pull ${DOCKER_REGISTRY_URI} || _pull_failure
-}
-
-_pull_failure() {
-  echo "Could not fetch fresh nodejs Image, not connected to the Internet or maybe need to login"
-  echo "Use 'OFFLINE' env var to skip:"
-  echo " > OFFLINE=1 ${@}"
-  echo "Or 'VERBOSE' env var to be prompted for login"
-  echo " > VERBOSE=1 ${@}"
-  exit 1
-}
-
 _prune() {
   _halt
   $DOCKER_COMPOSE down -v --remove-orphans
