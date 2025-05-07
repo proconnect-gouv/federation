@@ -5,10 +5,10 @@ export  NODE_VERSION
 DOCKER_COMPOSE="docker compose"
 
 function _hook_fc_apps() {
-  local apps=${@:-fc-exploitation}
+  local apps=${@:-pc-exploitation-fca-low}
 
   for app in ${apps}; do
-    local db_container=$(echo "$app" | sed 's/^fc-*//')
+    local db_container=$(echo "$app" | sed 's/^pc-*//')
     echo "  Fixture for ${app} app..."
     cd ${WORKING_DIR}
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
