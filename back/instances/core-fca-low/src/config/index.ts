@@ -12,7 +12,6 @@ import LoggerLegacy from './logger-legacy';
 import Mongoose from './mongoose';
 import OidcClient from './oidc-client';
 import OidcProvider from './oidc-provider';
-import OverrideOidcProvider from './override-oidc-provider';
 import Redis from './redis';
 import Scopes from './scopes';
 import ServiceProviderAdapterMongo from './service-provider-adapter-mongo';
@@ -35,7 +34,6 @@ export default {
   IdentityProviderAdapterMongo,
   Session,
   Tracking,
-  OverrideOidcProvider,
   DataProviderAdapterMongo,
   Scopes,
 } as CoreFcaConfig;

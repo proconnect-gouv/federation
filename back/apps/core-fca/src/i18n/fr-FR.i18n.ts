@@ -221,12 +221,6 @@ export const frFR: I18nTranslationsMapType = {
   'OidcProvider.exceptions.InvalidRedirectUri.6350':
     'L’URL de callback n’est pas valide',
 
-  // override-oidc-provider
-  'OverrideOidcProvider.exceptions.cryptographyGateway':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-  'OverrideOidcProvider.exceptions.cryptographyInvalidPayloadFormat':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-
   // session
   'Session.exceptions.sessionBadAlias':
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',

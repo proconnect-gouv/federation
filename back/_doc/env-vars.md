@@ -68,7 +68,6 @@
 | OidcProvider_ERROR_URI_BASE | string |
 | OidcProvider_IS_LOCALHOST_ALLOWED | boolean |
 | OidcProvider_PREFIX | string |
-| OverrideOidcProvider_CRYPTO_SIG_HSM_PUB_KEYS | json |
 | REQUEST_TIMEOUT | string |
 | Redis_CACERT | file |
 | Redis_DB | number |
