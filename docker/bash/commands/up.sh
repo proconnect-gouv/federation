@@ -15,7 +15,7 @@ function _hook_fc_apps() {
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
 
-    cd ${PC_ROOT}/federation-admin/shared/cypress/support/ && ./db.sh ${db_container} create
+    cd ${FEDERATION_DIR}/docker/volumes/src/federation-admin/shared/cypress/support/ && ./db.sh ${db_container} create
   done
 }
 

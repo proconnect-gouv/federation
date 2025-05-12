@@ -148,7 +148,7 @@ jobs:
         working-directory: ./docker
         run: |
           set -x
-            docker network create --driver bridge pc_public
+          docker network create --driver bridge pc_public
           ./docker-stack prune-ci
           ./docker-stack up small
           ./docker-stack start-all-ci
@@ -173,6 +173,85 @@ jobs:
         working-directory: ./quality/fca
         run: |
           yarn test:low:snapshot -c video=false
+          yarn report
+
+      - name: Upload Cypress Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: |
+            quality/fca/cypress/reports/cucumber/html-report
+            quality/fca/cypress/snapshots/diff
+            artifacts-logs
+
+  test_e2e:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./quality/fca
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up dockerx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Docker BuildKit
+        run: |
+          export DOCKER_BUILDKIT=1
+          export COMPOSE_BAKE=true
+
+      - name: Set FEDERATION_ROOT environment variable
+        working-directory: ./
+        run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
+
+      - name: Connect to docker registry
+        working-directory: ./docker
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Create symlink to federation root
+        working-directory: ./docker/volumes/src
+        run: |
+          set -x
+          ln -s $FEDERATION_ROOT
+
+      - name: Clone federation-admin repository
+        uses: actions/checkout@v4
+        with:
+          repository: proconnect-gouv/federation-admin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./docker/volumes/src/federation-admin
+
+      - name: Start docker stack
+        working-directory: ./docker
+        run: |
+          set -x
+          docker network create --driver bridge pc_public
+          ./docker-stack prune-ci
+          ./docker-stack up medium
+          ./docker-stack start-all-ci
+
+      - name: Cache quality Node.js dependencies
+        id: quality-yarn-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            quality/node_modules
+            ../.cache/Cypress
+          key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-quality-
+
+      - name: Install quality dependencies
+        if: steps.quality-yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          yarn install --ignore-engines --frozen-lockfile --no-progress
+
+      - name: Execute e2e tests
+        working-directory: ./quality/fca
+        run: |
+          yarn test:low:chrome-desktop -c video=false --env TAGS="$BDD_TAGS"
           yarn report
 
       - name: Upload Cypress Artifacts
