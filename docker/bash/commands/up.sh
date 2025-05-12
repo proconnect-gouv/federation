@@ -85,7 +85,7 @@ _up() {
 
   echo " * Automatically run init scripts for started containers"
   for app in ${FC_CONTAINERS}; do
-    # Container initialisation hooks
+    # Container initialization hooks
     #
     # This runs arbitrary code if a container is started
     # matching on the container name

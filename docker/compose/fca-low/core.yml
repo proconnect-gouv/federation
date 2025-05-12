@@ -24,6 +24,7 @@ services:
     tty: true
     networks:
       - fc
+      - public
       - data
     init: true
     command: 'pm2 logs'
