@@ -28,6 +28,8 @@ ARG INSTANCE
 ENV NODE_ENV=production
 ENV INSTANCE=${INSTANCE}
 
+RUN apk add --no-cache ca-certificates
+RUN apk add curl
 
 WORKDIR /app
 

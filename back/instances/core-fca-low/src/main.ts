@@ -28,7 +28,7 @@ async function bootstrap() {
     viewsPaths,
     assetsDsfrPaths,
     assetsCacheTtl,
-    httpsOptions: { key, cert },
+    httpsOptions: { key, cert, agent },
     contentSecurityPolicy: {
       defaultSrc,
       styleSrc,
@@ -41,7 +41,7 @@ async function bootstrap() {
 
   const appModule = AppModule.forRoot(configService);
 
-  const httpsOptions = key && cert ? { key, cert } : null;
+  const httpsOptions = key && cert ? { key, cert, agent } : { agent };
 
   const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**

@@ -1,16 +1,18 @@
 import { Type } from 'class-transformer';
+import { Agent } from 'https';
 import {
   IsArray,
   IsEnum,
   IsIn,
   IsNumber,
+  IsObject,
   IsOptional,
   IsPositive,
   IsString,
   MinLength,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
-
 import { Environment } from '../enums';
 
 class HttpsOptions {
@@ -23,6 +25,12 @@ class HttpsOptions {
   @MinLength(1)
   @IsOptional()
   readonly cert?: string;
+
+  @IsObject()
+  @Type(() => Agent)
+  @IsOptional()
+  @ValidateIf(o => false)
+  readonly agent?: Agent;
 }
 
 class DsfrAssets {

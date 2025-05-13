@@ -1,5 +1,6 @@
 import { AppConfig } from '@fc/bridge-http-proxy';
 import { ConfigParser } from '@fc/config';
+import { ProxyAgent } from 'proxy-agent';
 
 const env = new ConfigParser(process.env, 'App');
 
@@ -9,6 +10,7 @@ export default {
   httpsOptions: {
     key: env.file('HTTPS_SERVER_KEY', { optional: true }),
     cert: env.file('HTTPS_SERVER_CERT', { optional: true }),
+    agent: new ProxyAgent(),
   },
   environment: env.string('ENVIRONMENT'),
 } as AppConfig;
