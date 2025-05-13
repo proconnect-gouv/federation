@@ -1,5 +1,6 @@
 import { ConfigParser } from '@fc/config';
 import { OidcClientConfig, OidcClientRoutes } from '@fc/oidc-client';
+import { ProxyAgent } from 'proxy-agent';
 
 import app from './app';
 
@@ -9,6 +10,7 @@ export default {
   httpOptions: {
     // Global request timeout used for any outgoing app requests.
     timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
+    agent: new ProxyAgent(),
   },
   jwks: {
     keys: env.json('CRYPTO_ENC_LOCALE_PRIV_KEYS'),

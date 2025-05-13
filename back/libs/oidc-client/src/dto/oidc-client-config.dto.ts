@@ -1,4 +1,5 @@
 import { Type } from 'class-transformer';
+import { Agent } from 'https';
 import {
   IsArray,
   IsBoolean,
@@ -9,6 +10,7 @@ import {
   IsUrl,
   Min,
   MinLength,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 /**
@@ -33,6 +35,12 @@ class HttpOptions {
 
   @IsNumber()
   readonly timeout: number;
+
+  @IsObject()
+  @Type(() => Agent)
+  @IsOptional()
+  @ValidateIf(o => false)
+  readonly agent?: Agent;
 }
 
 export class OidcClientConfig {

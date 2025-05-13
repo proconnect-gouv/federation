@@ -73,7 +73,6 @@
     "ejs": "^3.1.10",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
-    "global-agent": "^3.0.0",
     "helmet": "^7.0.0",
     "ioredis": "^5.4.1",
     "jose": "^4.14.4",
@@ -89,6 +88,7 @@
     "otplib": "^12.0.1",
     "pg": "^8.11.3",
     "pino": "^8.15.0",
+    "proxy-agent": "^6.5.0",
     "quick-lru": "^7.0.0",
     "recursive-readdir": "^2.2.3",
     "reflect-metadata": "^0.2.1",
@@ -96,6 +96,7 @@
     "rxjs": "^7.8.1",
     "type-fest": "^4.3.1",
     "typeorm": "^0.3.20",
+    "undici": "^7.8.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

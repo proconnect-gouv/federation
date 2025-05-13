@@ -6,6 +6,7 @@ import {
   Provider,
 } from 'oidc-provider';
 import { HttpOptions } from 'openid-client';
+import { ProxyAgent } from 'proxy-agent';
 
 import { Global, Inject, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
@@ -126,6 +127,8 @@ export class OidcProviderService {
    */
   private getHttpOptions(options: HttpOptions): HttpOptions {
     options.timeout = this.configuration.timeout;
+    options.agent = new ProxyAgent();
+
     return options;
   }
 

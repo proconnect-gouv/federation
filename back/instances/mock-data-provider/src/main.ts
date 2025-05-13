@@ -18,13 +18,13 @@ async function bootstrap() {
     schema: MockDataProviderConfig,
   });
   const {
-    httpsOptions: { cert, key },
+    httpsOptions: { cert, key, agent },
     urlPrefix,
   } = configService.get<AppConfig>('App');
 
   const appModule = AppModule.forRoot(configService);
 
-  const httpsOptions = key && cert ? { cert, key } : null;
+  const httpsOptions = key && cert ? { cert, key, agent } : { agent };
 
   const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**

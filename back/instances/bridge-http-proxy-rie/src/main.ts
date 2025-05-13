@@ -20,12 +20,12 @@ async function bootstrap() {
   });
   const {
     urlPrefix,
-    httpsOptions: { key, cert },
+    httpsOptions: { key, cert, agent },
   } = configService.get<AppConfig>('App');
 
   const appModule = AppModule.forRoot(configService);
 
-  const httpsOptions = key && cert ? { key, cert } : null;
+  let httpsOptions = key && cert ? { key, cert, agent } : { agent };
 
   const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**
