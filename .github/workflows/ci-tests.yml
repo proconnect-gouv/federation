@@ -178,7 +178,7 @@ jobs:
       - name: Upload Cypress Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-artifacts
+          name: cypress-snapshots-artifacts
           path: |
             quality/fca/cypress/reports/cucumber/html-report
             quality/fca/cypress/snapshots/diff
@@ -251,13 +251,13 @@ jobs:
       - name: Execute e2e tests
         working-directory: ./quality/fca
         run: |
-          yarn test:low:chrome-desktop -c video=false --env TAGS="$BDD_TAGS"
+          yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
           yarn report
 
       - name: Upload Cypress Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-artifacts
+          name: cypress-e2e-artifacts
           path: |
             quality/fca/cypress/reports/cucumber/html-report
             quality/fca/cypress/snapshots/diff
