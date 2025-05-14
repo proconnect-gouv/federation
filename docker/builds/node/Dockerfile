@@ -1,0 +1,3 @@
+ARG NODE_IMAGE_VERSION=node:lts-alpine
+
+FROM ${NODE_IMAGE_VERSION}

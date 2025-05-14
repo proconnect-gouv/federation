@@ -37,8 +37,7 @@
     "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env",
     "doc": "yarn doc:exceptions && yarn doc:env",
     "generate-insee:country": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-country",
-    "generate-insee:city": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-city",
-    "generate-oidc-provider-exceptions": "./libs/oidc-provider/src/cli/scaffold-exceptions/run.sh"
+    "generate-insee:city": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-city"
   },
   "resolutions": {
     "cookie-signature": "1.2.0",
@@ -136,6 +135,9 @@
     "hooks": {
       "pre-commit": "echo \"[Husky] pre-commit\" && yarn lint"
     }
+  },
+  "engines": {
+    "node": "22.13.0"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

@@ -117,7 +117,7 @@ services:
 services:
   <my_application>-<back>:
     hostname: <my_application>-<back>
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:

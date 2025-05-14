@@ -3,7 +3,6 @@ name: 💚 CI Tests
 on:
   pull_request:
     branches:
-      - '*'
 
 jobs:
   test_static_back:
@@ -18,11 +17,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.13.0
+          node-version-file: ./back/package.json
 
       - name: Cache Node.js dependencies
         id: federation-yarn-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: back/node_modules
           key: ${{ runner.os }}-node-modules-back-${{ hashFiles('back/yarn.lock') }}
@@ -60,18 +59,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.13.0
+          node-version-file: ./back/package.json
 
-      - name: Cache Node.js dependencies
+      - name: Cache quality Node.js dependencies
         id: quality-yarn-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: quality/node_modules
+          path: |
+            quality/node_modules
+            ../.cache/Cypress
           key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-quality-
 
-      - name: Install dependencies
+      - name: Install quality dependencies
         if: steps.quality-yarn-cache.outputs.cache-hit != 'true'
         run: |
           yarn install --ignore-engines --frozen-lockfile --no-progress
@@ -96,11 +97,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.13.0
+          node-version-file: ./back/package.json
 
       - name: Cache Node.js dependencies
         id: federation-yarn-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: back/node_modules
           key: ${{ runner.os }}-node-modules-back-${{ hashFiles('back/yarn.lock') }}
@@ -115,3 +116,154 @@ jobs:
       - name: Test code coverage
         run: |
           yarn test --coverage
+
+  test_snapshot:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./quality/fca
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up dockerx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Docker BuildKit
+        run: |
+          export DOCKER_BUILDKIT=1
+          export COMPOSE_BAKE=true
+
+      - name: Set FEDERATION_ROOT environment variable
+        working-directory: ./
+        run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
+
+      - name: Connect to docker registry
+        working-directory: ./docker
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Create symlink to federation root
+        working-directory: ./docker/volumes/src
+        run: |
+          set -x
+          ln -s $FEDERATION_ROOT
+
+      - name: Start docker stack
+        working-directory: ./docker
+        run: |
+          set -x
+          docker network create --driver bridge pc_public
+          ./docker-stack prune-ci
+          ./docker-stack up small
+          ./docker-stack start-all-ci
+
+      - name: Cache quality Node.js dependencies
+        id: quality-yarn-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            quality/node_modules
+            ../.cache/Cypress
+          key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-quality-
+
+      - name: Install quality dependencies
+        if: steps.quality-yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          yarn install --ignore-engines --frozen-lockfile --no-progress
+
+      - name: Test snapshots
+        working-directory: ./quality/fca
+        run: |
+          yarn test:low:snapshot -c video=false
+          yarn report
+
+      - name: Upload Cypress Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-snapshots-artifacts
+          path: |
+            quality/fca/cypress/reports/cucumber/html-report
+            quality/fca/cypress/snapshots/diff
+            artifacts-logs
+
+  test_e2e:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./quality/fca
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up dockerx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Docker BuildKit
+        run: |
+          export DOCKER_BUILDKIT=1
+          export COMPOSE_BAKE=true
+
+      - name: Set FEDERATION_ROOT environment variable
+        working-directory: ./
+        run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
+
+      - name: Connect to docker registry
+        working-directory: ./docker
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Create symlink to federation root
+        working-directory: ./docker/volumes/src
+        run: |
+          set -x
+          ln -s $FEDERATION_ROOT
+
+      - name: Clone federation-admin repository
+        uses: actions/checkout@v4
+        with:
+          repository: proconnect-gouv/federation-admin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./docker/volumes/src/federation-admin
+
+      - name: Start docker stack
+        working-directory: ./docker
+        run: |
+          set -x
+          docker network create --driver bridge pc_public
+          ./docker-stack prune-ci
+          ./docker-stack up medium
+          ./docker-stack start-all-ci
+
+      - name: Cache quality Node.js dependencies
+        id: quality-yarn-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            quality/node_modules
+            ../.cache/Cypress
+          key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-quality-
+
+      - name: Install quality dependencies
+        if: steps.quality-yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          yarn install --ignore-engines --frozen-lockfile --no-progress
+
+      - name: Execute e2e tests
+        working-directory: ./quality/fca
+        run: |
+          yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
+          yarn report
+
+      - name: Upload Cypress Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-e2e-artifacts
+          path: |
+            quality/fca/cypress/reports/cucumber/html-report
+            quality/fca/cypress/snapshots/diff
+            artifacts-logs

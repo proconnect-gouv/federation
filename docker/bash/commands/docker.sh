@@ -2,7 +2,7 @@
 
 # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
 _get_running_containers() {
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
+  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
   local raw_all_containers=$(docker ps --format '{{.Names}}')
 
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
@@ -10,7 +10,7 @@ _get_running_containers() {
 }
 
 _reload_rp() {
-  docker exec fc-rp-all service nginx reload
+  docker exec pc-rp-all service nginx reload
 }
 
 _container_to_compose_name() {
@@ -18,7 +18,7 @@ _container_to_compose_name() {
   local output=""
 
   for container in ${input}; do
-    local name=$(echo ${container} | sed -E 's/^fc_(.*)_1$/\1/')
+    local name=$(echo ${container} | sed -E 's/^pc-(.*)-1$/\1/')
     output=$(echo -e "${output}\n${name}")
   done
 
@@ -52,30 +52,6 @@ _exec() {
   esac
 }
 
-_list_services() {
-  local search=$1
-
-  DOCKER_COMPOSE_SERVICES_CMD="${DOCKER_COMPOSE} ps"
-
-  if $DOCKER_COMPOSE version | grep -iq 'docker compose version v\?2'; then
-    DOCKER_COMPOSE_SERVICES_CMD="${DOCKER_COMPOSE} config"
-  fi
-
-  if [ -z ${search} ]; then
-    $DOCKER_COMPOSE_SERVICES_CMD --services | sort
-  else
-    $DOCKER_COMPOSE_SERVICES_CMD --services | grep "${search}" | sort
-  fi
-}
-
-_pull_node_image() {
-  if [ -z ${OFFLINE} ]; then
-    _do_pull
-  else
-    _task_result "$(format_warning "skipped")" "newline"
-  fi
-}
-
 _do_pull() {
   timeout 5 docker login ${FC_DOCKER_REGISTRY} || _pull_failure
   docker pull ${DOCKER_REGISTRY_URI} || _pull_failure
@@ -96,7 +72,7 @@ _prune() {
 }
 
 _prune_all() {
-  cat "${INCLUDE_DIR}/txt/atomic.art.txt"
+  cat "${DOCKER_BASH_DIR}/txt/atomic.art.txt"
   _halt
   docker system prune -af
   docker image prune -af
@@ -117,7 +93,7 @@ _prune_ci() {
 _get_env() {
   local app=${1}
   local varName=${2}
-  local containerName="${COMPOSE_PROJECT_NAME}_${app}_1"
+  local containerName="${COMPOSE_PROJECT_NAME}-${app}-1"
   local expression='${'${varName}'}'
 
   docker exec ${containerName} bash -c "echo ${expression}"

@@ -5,9 +5,13 @@ _logs() {
 
   case ${option} in
   --bg)
-    task " * Start log-hub" "_do_up" "log-hub"
+    cd ${WORKING_DIR}
+    # do we really need rp-all here?
+    $DOCKER_COMPOSE up --build -d rp-all log-hub
     echo "   Log are now available through chrome developer-tools at localhost:6666"
+
     ;;
+
   --restart)
     $DOCKER_COMPOSE restart log-hub
     ;;

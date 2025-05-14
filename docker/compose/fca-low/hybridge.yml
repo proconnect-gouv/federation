@@ -20,11 +20,9 @@ services:
 
   bridge-proxy-rie:
     hostname: bridge-proxy-rie
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
-    depends_on:
-      - 'squid'
     volumes:
       - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
@@ -46,20 +44,13 @@ services:
   ##   RIE network
   ##
   ####################
-
-  squid-rie:
-    image: ${FC_DOCKER_REGISTRY}/squid:4.6
-    networks:
-      - rie
-
   csmr-rie:
     hostname: csmr-rie
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
       - broker
-      - squid-rie
     volumes:
       - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
@@ -89,7 +80,7 @@ services:
 
   fia-rie-low:
     hostname: fia-rie-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:

@@ -3,7 +3,7 @@
 `docker-stack` is the tool to manage ProConnect stacks for the development environment.
 It provides tools and conventions for getting a stack up and running.
 
-The main entrypoint is located at the root of the [`$PC_ROOT/docker`](../docker-stack) folder for historical reasons.
+The main entrypoint is located at the root of the [`$PC_ROOT/federation/docker`](../docker-stack) folder for historical reasons.
 The real content is in this folder, in [index.sh](./index.sh).
 
 ## Quick start
@@ -12,7 +12,7 @@ We advise to create a shortcut alias as `dks` for everyday use.
 
 ```bash
 # ~/.bashrc
-alias dks=$PC_ROOT/fc/docker/docker-stack
+alias dks=$PC_ROOT/federation/docker/docker-stack
 ```
 
 List available commands by running `help` command:

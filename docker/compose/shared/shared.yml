@@ -13,7 +13,7 @@ services:
 
   rp-all:
     image: nginx:1.14.2
-    container_name: fc-rp-all
+    container_name: pc-rp-all
     environment:
       DHPARAM_GENERATION: 'false'
     depends_on:
@@ -52,16 +52,10 @@ services:
           - exploitation-fca-low.docker.dev-franceconnect.fr
           - exploitation-high.docker.dev-franceconnect.fr
           # Mock Data Provider
-          - dpp1-high.docker.dev-franceconnect.fr
-          - dpp2-high.docker.dev-franceconnect.fr
-          - dpp1-low.docker.dev-franceconnect.fr
-          - dpp2-low.docker.dev-franceconnect.fr
           - dpa1-low.docker.dev-franceconnect.fr
           - dpa2-low.docker.dev-franceconnect.fr
           # Generic
           - docker.dev-franceconnect.fr
-          # Stack Documentation 11TY
-          - doc-example.docker.dev-franceconnect.fr
       fc:
       rie:
         aliases:
@@ -85,30 +79,9 @@ services:
       - rie
     command: -config /etc/docker-gen/config
 
-  squid:
-    image: ${FC_DOCKER_REGISTRY}/squid:4.6
-    ulimits:
-      nofile:
-        soft: 1048576
-        hard: 1048576
-    extra_hosts:
-      - auth.llng.docker.dev-franceconnect.fr:172.16.1.254
-      - fia-rie-low.docker.dev-franceconnect.fr:172.16.1.254
-    networks:
-      - public
-      - fc
-      - exploitation
-      - rie
-    healthcheck:
-      test: ['CMD', 'bash', '-c', 'echo >/dev/tcp/localhost/3128 || exit 1']
-      interval: 1s
-      timeout: 1s
-      retries: 1
-      start_period: 1s
-
   log-hub:
     hostname: log-hub
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -132,8 +105,6 @@ services:
       dockerfile: '${WORKING_DIR}/builds/broker/Dockerfile'
     # Specify hostname to fix cluster name
     hostname: broker
-    depends_on:
-      - 'squid'
     networks:
       - data
     ports:
@@ -249,7 +220,7 @@ services:
   ####################
 
   openldap:
-    image: ${FC_DOCKER_REGISTRY}/openldap:0.2
+    image: ${PC_DOCKER_REGISTRY}/openldap:0.2
     networks:
       - rie
 

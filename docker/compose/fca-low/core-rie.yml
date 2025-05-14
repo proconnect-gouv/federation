@@ -3,15 +3,13 @@
 services:
   core-fca-rie:
     hostname: core-fca-rie
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
         condition: service_healthy
       redis-pwd:
-        condition: service_healthy
-      squid:
         condition: service_healthy
     volumes:
       - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
@@ -26,5 +24,6 @@ services:
     networks:
       - fc
       - data
+      - public
     init: true
     command: 'pm2 logs'

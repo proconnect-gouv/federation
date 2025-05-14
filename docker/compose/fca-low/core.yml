@@ -3,15 +3,14 @@
 services:
   core-fca-low:
     hostname: core-fca-low
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    # image: node:lts-alpine
+    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
         condition: service_healthy
       redis-pwd:
-        condition: service_healthy
-      squid:
         condition: service_healthy
     volumes:
       - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
@@ -25,6 +24,7 @@ services:
     tty: true
     networks:
       - fc
+      - public
       - data
     init: true
     command: 'pm2 logs'

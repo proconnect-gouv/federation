@@ -9,5 +9,5 @@ done
 
 mkdir -p $CI_PROJECT_DIR/artifacts-logs/nginx
 
-docker cp fc-rp-all:/var/log/nginx/nginx_error.log $CI_PROJECT_DIR/artifacts-logs/nginx/nginx_error.log || echo "[fc-rp-all] No NginX error logs found";
-docker cp fc-rp-all:/var/log/nginx/nginx_access.log $CI_PROJECT_DIR/artifacts-logs/nginx/nginx_access.log || echo "[fc-rp-all] No NginX access logs found";
+docker cp pc-rp-all:/var/log/nginx/nginx_error.log $CI_PROJECT_DIR/artifacts-logs/nginx/nginx_error.log || echo "[pc-rp-all] No NginX error logs found";
+docker cp pc-rp-all:/var/log/nginx/nginx_access.log $CI_PROJECT_DIR/artifacts-logs/nginx/nginx_access.log || echo "[pc-rp-all] No NginX access logs found";

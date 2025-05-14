@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-if [ -z "${PC_ROOT}" ]; then
-  read -p "Missing PC_ROOT path. Please fill in: " PC_ROOT
-  exit 1
-fi
+# Define the path directories relative to this script's location
+DOCKER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export FEDERATION_DIR="$(dirname "${DOCKER_DIR}")"
+DOCKER_BASH_DIR="${DOCKER_DIR}/bash"
+export PC_DOCKER_REGISTRY="ghcr.io/proconnect-gouv/federation"
+export PC_ROOT="$(dirname "${FEDERATION_DIR}")"
 
-INCLUDE_DIR="${PC_ROOT}/federation/docker/bash"
-
-source "${INCLUDE_DIR}/utils/index.sh"
-source "${INCLUDE_DIR}/config/index.sh"
-source "${INCLUDE_DIR}/commands/index.sh"
-source "${INCLUDE_DIR}/hooks/index.sh"
+source "${DOCKER_BASH_DIR}/utils/index.sh"
+source "${DOCKER_BASH_DIR}/config.sh"
+source "${DOCKER_BASH_DIR}/commands/index.sh"
 
 ## Data initialisation
 _command_register "fixtures" "_hook_fc_apps" "Init postgres Exploitation : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"
@@ -43,12 +42,6 @@ _command_register "reload-all" "_start_all" "Alias for start-all"
 _command_register "log" "_log" "log [<app>] => exec pm2 logs for given instance"
 _command_register "logs" "_logs" "[--bg] - Show and expose logs for chrome dev-tools. If --bg option is passed, logs are only exposed to dev-tools with a background process"
 
-_command_register "dependencies" "_install_dependencies" "dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (fc-core|fc-exploitation|fc-support|fc-workers|fdp1|fip1|aidants-connect-mock|fsp1|fsp2|fsp3|rnipp|partenaires|usagers - default: fc-core)"
-_command_register "dependencies-all" "_install_dependencies_all" "dependencies-all | dep-all => install dependencies (using npm or yarn) on all nodejs applications"
-
-_command_register "dep" "_install_dependencies" "Alias de dependencies"
-_command_register "dep-all" "_install_dependencies_all" "Alias de dependencies-all"
-
 _command_register "test" "_test" "Launch tests?"
 _command_register "test-all" "_test_all" "" # Description to be defined
 _command_register "e2e" "_e2e" ""           # Description to be defined
@@ -62,9 +55,7 @@ _command_register "up" "_up" "up <stack name> => Launch a stack"
 _command_register "exec" "_exec" "exec <container_name> <command> => exec a command inside a container"
 _command_register "halt" "_halt" "alt => stop docker-compose and delete containers"
 _command_register "switch" "_switch" "Switch to another stack: performs a prune, an up and a start-all"
-
 _command_register "run-prod" "_run_prod" "" # Description to be defined
-_command_register "list" "_list_services" "List available services / stacks: list <search term>"
 
 ## General / utils
 _command_register "help" "_command_list" "Display this help: help <search term>"
@@ -79,5 +70,4 @@ _command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo
 _command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "
 _command_register "mongo-script" "_mongo_script" "Execute MongoDB <script> on given <container>: docker-stack mongo-script <container> <script>"
 
-_command_register "add" "_add_node_app" "Start a node application."
 _command_run "$1" "${@:2}"
