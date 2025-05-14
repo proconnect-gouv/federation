@@ -129,6 +129,11 @@ jobs:
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v2
 
+      - name: Set up Docker BuildKit
+        run: |
+          export DOCKER_BUILDKIT=1
+          export COMPOSE_BAKE=true
+
       - name: Set FEDERATION_ROOT environment variable
         working-directory: ./
         run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
