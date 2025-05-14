@@ -40,12 +40,8 @@ export CURRENT_UID="$(id -u):$(grep docker /etc/group | cut -d: -f3)"
 
 export LOGS_PATH="${WORKING_DIR}/volumes/log"
 
-#!/usr/bin/env bash
-
 MONGO_DEFAULT_USER="rootAdmin"
 MONGO_DEFAULT_PASS="pass"
-
-#!/usr/bin/env bash
 
 #### Formating helpers
 STYLE_SUCCESS="\e[1;36m"
