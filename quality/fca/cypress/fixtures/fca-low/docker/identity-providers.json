@@ -23,13 +23,5 @@
     "signature": "RS256",
     "fqdn": "fia2.fr",
     "siret": ""
-  },
-  {
-    "id": "405d3839-9182-415f-9926-597489d11509",
-    "descriptions": ["fia3"],
-    "title": "Identity Provider 3 (désactivé)- eIDAS faible",
-    "url": "https://fia3-low.docker.dev-franceconnect.fr",
-    "signature": "ES256",
-    "fqdn": "fia3.fr"
   }
 ]
