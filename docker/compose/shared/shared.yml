@@ -43,9 +43,6 @@ services:
           - fsa4-low.docker.dev-franceconnect.fr
           - fia1-low.docker.dev-franceconnect.fr
           - fia2-low.docker.dev-franceconnect.fr
-          - fia4-low.docker.dev-franceconnect.fr
-          - fia5-low.docker.dev-franceconnect.fr
-          - fia8-low.docker.dev-franceconnect.fr
           - moncomptepro.docker.dev-franceconnect.fr
           # Aliases to access exploitation from test runner
           # TODO: Move those aliases to exploitation network once runner workaround found
