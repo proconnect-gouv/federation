@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Header,
-  Inject,
   Next,
   Post,
   Query,
@@ -19,16 +18,10 @@ import { LoggerService } from '@fc/logger';
 import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
 import { OidcProviderRenderedJsonExceptionFilter } from './filters';
-import { IOidcProviderConfigAppService } from './interfaces';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
 
 @Controller()
 export class OidcProviderController {
-  constructor(
-    @Inject(OIDC_PROVIDER_CONFIG_APP_TOKEN)
-    private readonly oidcProviderConfigApp: IOidcProviderConfigAppService,
-    private readonly logger: LoggerService,
-  ) {}
+  constructor(private readonly logger: LoggerService) {}
 
   @Post(OidcProviderRoutes.TOKEN)
   @Header('Content-Type', ApiContentType.JSON)

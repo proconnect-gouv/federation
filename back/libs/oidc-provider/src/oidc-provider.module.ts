@@ -14,7 +14,6 @@ import { OidcProviderService } from './oidc-provider.service';
 import {
   OidcProviderConfigService,
   OidcProviderErrorService,
-  OidcProviderGrantService,
 } from './services';
 import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
 import { IsValidPromptConstraint } from './validators';
@@ -57,7 +56,6 @@ export class OidcProviderModule {
         IsValidPromptConstraint,
         OidcProviderErrorService,
         OidcProviderConfigService,
-        OidcProviderGrantService,
         IsUrlRequiredTldFromConfigConstraint,
       ],
       exports: [
@@ -66,7 +64,6 @@ export class OidcProviderModule {
         oidcProviderConfigApp,
         serviceProviderProvider,
         OidcProviderErrorService,
-        OidcProviderGrantService,
       ],
       controllers: [OidcProviderController],
     };

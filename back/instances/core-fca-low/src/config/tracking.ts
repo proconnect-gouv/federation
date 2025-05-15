@@ -1,8 +1,4 @@
-import { RequestMethod } from '@nestjs/common';
-
-import { CoreRoutes } from '@fc/core';
 import { EventsCategories } from '@fc/core-fca';
-import { OidcClientRoutes } from '@fc/oidc-client';
 import { TrackingConfig } from '@fc/tracking';
 
 export default {
@@ -47,18 +43,12 @@ export default {
       step: '3.0.0',
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'IDP_CHOSEN',
-      interceptRoutes: [
-        { method: RequestMethod.POST, path: OidcClientRoutes.REDIRECT_TO_IDP },
-      ],
     },
 
     IDP_REQUESTED_FC_JWKS: {
       step: '3.1.0',
       category: EventsCategories.DISCOVERY,
       event: 'IDP_REQUESTED_FC_JWKS',
-      interceptRoutes: [
-        { method: RequestMethod.GET, path: OidcClientRoutes.WELL_KNOWN_KEYS },
-      ],
     },
 
     IDP_CALLEDBACK: {
@@ -101,28 +91,15 @@ export default {
       step: '7.0.0',
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FC_REDIRECTED_TO_SP',
-      interceptRoutes: [
-        { method: RequestMethod.GET, path: CoreRoutes.INTERACTION_LOGIN },
-      ],
-    },
-
-    // Discovery
-    SP_REQUESTED_FC_JWKS: {
-      step: '7.1.0',
-      category: EventsCategories.DISCOVERY,
-      event: 'SP_REQUESTED_FC_JWKS',
-      interceptRoutes: [
-        { method: RequestMethod.GET, path: CoreRoutes.JWKS_URI },
-      ],
     },
 
     SP_REQUESTED_FC_TOKEN: {
-      step: '7.2.0',
+      step: '7.1.0',
       category: EventsCategories.BACK_CINEMATIC,
       event: 'SP_REQUESTED_FC_TOKEN',
     },
     SP_REQUESTED_FC_USERINFO: {
-      step: '7.3.0',
+      step: '7.2.0',
       category: EventsCategories.BACK_CINEMATIC,
       event: 'SP_REQUESTED_FC_USERINFO',
     },
@@ -137,12 +114,6 @@ export default {
       step: '8.1.0',
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FC_REQUESTED_LOGOUT_FROM_IDP',
-      interceptRoutes: [
-        {
-          method: RequestMethod.ALL,
-          path: OidcClientRoutes.DISCONNECT_FROM_IDP,
-        },
-      ],
     },
 
     FC_SESSION_TERMINATED: {

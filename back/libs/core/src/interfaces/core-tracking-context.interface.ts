@@ -17,7 +17,7 @@ export interface ICoreTrackingContext {
   readonly dpClientId?: string;
 
   readonly spId?: string;
-  readonly spAcr?: string;
+  readonly spEssentialAcr?: string;
   readonly spName?: string;
 
   readonly idpId?: string;

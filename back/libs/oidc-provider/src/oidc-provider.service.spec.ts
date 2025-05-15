@@ -4,7 +4,6 @@ import * as OidcProvider from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { UserSession } from '@fc/core-fca';
 import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
 
@@ -641,23 +640,23 @@ describe('OidcProviderService', () => {
   });
 
   describe('finishInteraction()', () => {
-    it('should call call finishInteraction with param', () => {
+    it('should call call finishInteraction with param', async () => {
       // Given
       const reqMock = Symbol('req');
       const resMock = Symbol('res');
-      const sessionDataMock: UserSession = {
-        spAcr: 'spAcrValue',
-        spIdentity: {},
+      const resultMock = {
+        acr: 'spAcrValue',
+        amr: ['spAmrValue'],
       };
       // When
-      service.finishInteraction(reqMock, resMock, sessionDataMock);
+      await service.finishInteraction(reqMock, resMock, resultMock);
       // Then
       expect(oidcProviderConfigAppMock.finishInteraction).toHaveBeenCalledTimes(
         1,
       );
       expect(
         oidcProviderConfigAppMock.finishInteraction,
-      ).toHaveBeenLastCalledWith(reqMock, resMock, sessionDataMock);
+      ).toHaveBeenLastCalledWith(reqMock, resMock, resultMock);
     });
   });
 

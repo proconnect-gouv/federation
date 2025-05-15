@@ -29,8 +29,6 @@ export class SetStepInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    this.setStep(context);
-
     // setStep will be called after controller execution
     return next.handle().pipe(
       tap({

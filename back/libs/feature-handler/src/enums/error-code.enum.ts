@@ -1,4 +1,0 @@
-export const enum ErrorCode {
-  EMPTY_FEATURE_HANDLER = 1,
-  UNREGISTERED_FEATURE_HANDLER = 2,
-}

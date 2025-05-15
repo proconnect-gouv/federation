@@ -43,9 +43,6 @@ services:
           - fsa4-low.docker.dev-franceconnect.fr
           - fia1-low.docker.dev-franceconnect.fr
           - fia2-low.docker.dev-franceconnect.fr
-          - fia4-low.docker.dev-franceconnect.fr
-          - fia5-low.docker.dev-franceconnect.fr
-          - fia8-low.docker.dev-franceconnect.fr
           - moncomptepro.docker.dev-franceconnect.fr
           # Aliases to access exploitation from test runner
           # TODO: Move those aliases to exploitation network once runner workaround found
@@ -81,7 +78,8 @@ services:
 
   log-hub:
     hostname: log-hub
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:

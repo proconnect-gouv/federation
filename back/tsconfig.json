@@ -109,8 +109,6 @@
       "@fc/notifications/*": ["libs/notifications/src/*"],
       "@fc/scopes": ["libs/scopes/src"],
       "@fc/scopes/*": ["libs/scopes/src/*"],
-      "@fc/feature-handler": ["libs/feature-handler/src"],
-      "@fc/feature-handler/*": ["libs/feature-handler/src/*"],
       "@fc/elasticsearch": ["libs/elasticsearch/src"],
       "@fc/elasticsearch/*": ["libs/elasticsearch/src/*"],
       "@fc/csv": ["libs/csv/src"],

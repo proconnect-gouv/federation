@@ -10,7 +10,6 @@ import { HttpOptions } from 'openid-client';
 import { Global, Inject, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
-import { UserSession } from '@fc/core-fca';
 import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
 
@@ -25,7 +24,7 @@ import {
   OidcProviderInteractionNotFoundException,
   OidcProviderRuntimeException,
 } from './exceptions';
-import { IOidcProviderConfigAppService } from './interfaces';
+import type { IOidcProviderConfigAppService } from './interfaces';
 import {
   OidcProviderConfigService,
   OidcProviderErrorService,
@@ -241,8 +240,12 @@ export class OidcProviderService {
     });
   }
 
-  finishInteraction(req: any, res: any, session: UserSession) {
-    this.oidcProviderConfigApp.finishInteraction(req, res, session);
+  async finishInteraction(
+    req: any,
+    res: any,
+    result: { amr: string[]; acr: string },
+  ) {
+    await this.oidcProviderConfigApp.finishInteraction(req, res, result);
   }
 
   clearCookies(res: Response) {

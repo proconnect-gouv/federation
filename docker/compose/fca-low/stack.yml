@@ -26,9 +26,6 @@ services:
       # -- IdP
       - 'fia1-low'
       - 'fia2-low'
-      - 'fia4-low'
-      - 'fia5-low'
-      - 'fia8-low'
       - 'moncomptepro'
       # -- DP
       - 'dpa1-low'
@@ -44,9 +41,6 @@ services:
       - 'fsa4-low'
       - 'fia1-low'
       - 'fia2-low'
-      - 'fia4-low'
-      - 'fia5-low'
-      - 'fia8-low'
       - 'moncomptepro'
       - 'exploitation-fca-low'
       ### Hybridge

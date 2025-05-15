@@ -7,7 +7,8 @@ services:
 
   fsa1-low:
     hostname: fsa1-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -31,7 +32,8 @@ services:
 
   fsa2-low:
     hostname: fsa2-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -55,7 +57,8 @@ services:
 
   fsa3-low:
     hostname: fsa3-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -79,8 +82,8 @@ services:
 
   fsa4-low:
     hostname: fsa4-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     working_dir: /var/www/app
     depends_on:
       redis-pwd:
@@ -107,7 +110,8 @@ services:
 
   fia1-low:
     hostname: fia1-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -132,7 +136,8 @@ services:
 
   fia2-low:
     hostname: fia2-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -155,84 +160,10 @@ services:
     init: true
     command: 'pm2 logs'
 
-  fia4-low:
-    hostname: fia4-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      redis-pwd:
-        condition: service_healthy
-    volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-    env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fia4-low.env'
-    tty: true
-    networks:
-      - public
-      - data
-    init: true
-    command: 'pm2 logs'
-
-  fia5-low:
-    hostname: fia5-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      redis-pwd:
-        condition: service_healthy
-    volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-    env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fia5-low.env'
-    tty: true
-    networks:
-      - public
-      - data
-    init: true
-    command: 'pm2 logs'
-
-  fia8-low:
-    hostname: fia8-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      redis-pwd:
-        condition: service_healthy
-    volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-    env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fia8-low.env'
-    tty: true
-    networks:
-      - public
-      - data
-    init: true
-    command: 'pm2 logs'
-
   moncomptepro:
     hostname: moncomptepro
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -261,7 +192,8 @@ services:
 
   dpa1-low:
     hostname: dpa1-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -280,7 +212,8 @@ services:
 
   dpa2-low:
     hostname: dpa2-low
-    image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:

@@ -5,17 +5,17 @@ export  NODE_VERSION
 DOCKER_COMPOSE="docker compose"
 
 function _hook_fc_apps() {
-  local apps=${@:-fc-exploitation}
+  local apps=${@:-pc-exploitation-fca-low}
 
   for app in ${apps}; do
-    local db_container=$(echo "$app" | sed 's/^fc-*//')
+    local db_container=$(echo "$app" | sed 's/^pc-*//')
     echo "  Fixture for ${app} app..."
     cd ${WORKING_DIR}
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
 
-    cd ${PC_ROOT}/federation-admin/shared/cypress/support/ && ./db.sh ${db_container} create
+    cd ${FEDERATION_DIR}/docker/volumes/src/federation-admin/shared/cypress/support/ && ./db.sh ${db_container} create
   done
 }
 
@@ -57,7 +57,7 @@ _up() {
 
   # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
   echo " * Populate global variables"
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
+  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
 
   echo " * Found nodejs containers: ${raw_nodejs_containers}"
 
@@ -85,7 +85,7 @@ _up() {
 
   echo " * Automatically run init scripts for started containers"
   for app in ${FC_CONTAINERS}; do
-    # Container initialisation hooks
+    # Container initialization hooks
     #
     # This runs arbitrary code if a container is started
     # matching on the container name

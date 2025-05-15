@@ -82,6 +82,7 @@ const sessionDataMock = {
     spIdentity: spIdentityMock,
     idpIdentity: idpIdentityMock,
     idpId: idpIdMock,
+    interactionAcr: 'acr_value',
   },
 };
 
@@ -280,7 +281,6 @@ describe('DataProviderService', () => {
   });
 
   describe('generateValidResponse', () => {
-    const acrMock = ['acr', 'values'];
     const iatMock = 33;
     const expMock = 42;
     const jtiMock = 'jtiValue';
@@ -288,16 +288,7 @@ describe('DataProviderService', () => {
     const scopeMock = 'some space separated values';
     const dpSubMock = 'dpSubMock value';
 
-    const sessionMock = {
-      spIdentity: {},
-    };
-
     const interactionMock = {
-      claims: {
-        id_token: {
-          acr: { values: acrMock },
-        },
-      },
       iat: iatMock,
       exp: expMock,
       jti: jtiMock,
@@ -306,7 +297,6 @@ describe('DataProviderService', () => {
     };
 
     beforeEach(() => {
-      sessionServiceMock.get.mockReturnValueOnce(sessionMock);
       service['generateDataProviderSub'] = jest.fn().mockReturnValue(dpSubMock);
       service['filterScopes'] = jest.fn().mockReturnValue(['space']);
     });
@@ -322,7 +312,7 @@ describe('DataProviderService', () => {
       // Then
       expect(result).toEqual({
         active: true,
-        acr: 'acr values',
+        acr: 'acr_value',
         aud: 'clientIdValue',
         exp: 42,
         iat: 33,

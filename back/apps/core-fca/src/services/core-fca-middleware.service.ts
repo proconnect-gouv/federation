@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { CORE_SERVICE, CoreOidcProviderMiddlewareService } from '@fc/core';
+import { CoreOidcProviderMiddlewareService } from '@fc/core';
 import { ActiveUserSessionDto, UserSession } from '@fc/core-fca/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -21,8 +21,6 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { CoreFcaService } from './core-fca.service';
-
 @Injectable()
 export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService {
   // Dependency injection can require more than 4 parameters
@@ -36,8 +34,6 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     protected readonly tracking: TrackingService,
     protected readonly oidcErrorService: OidcProviderErrorService,
     protected readonly oidcAcr: OidcAcrService,
-    @Inject(CORE_SERVICE)
-    protected readonly core: CoreFcaService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {
@@ -50,7 +46,6 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
       tracking,
       oidcErrorService,
       oidcAcr,
-      core,
       identityProvider,
     );
   }

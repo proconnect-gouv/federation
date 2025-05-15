@@ -46,8 +46,7 @@ _start_dev() {
 _start_ci() {
   local apps="${@:-no-container}"
   for app in ${apps}; do
-    task "   * Starting app (CI mode) \e[3m${app}\e[0m" \
-      "_do_start_ci" "${app}"
+      _do_start_ci "${app}"
   done
 
   # Reload RP in case the app took to long and was considered down by Nginx

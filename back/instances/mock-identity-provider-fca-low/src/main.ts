@@ -92,6 +92,8 @@ app.post(
           // the user is considered to have logged with a password
           amr: ['pwd'],
         },
+        // skip the consent
+        consent: {},
       };
 
       await provider.interactionFinished(req, res, result);

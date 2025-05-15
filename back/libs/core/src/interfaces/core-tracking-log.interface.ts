@@ -6,7 +6,7 @@ export class ICoreTrackingLog extends TrackingLogInterface {
   readonly step: string;
   /** Service provider informations */
   readonly spId: string;
-  readonly spAcr?: string;
+  readonly spEssentialAcr?: string;
   readonly spName: string;
 
   /** Identity provider informations */
