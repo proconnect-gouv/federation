@@ -2,7 +2,7 @@
 
 # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
 _get_running_containers() {
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
+  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
   local raw_all_containers=$(docker ps --format '{{.Names}}')
 
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
