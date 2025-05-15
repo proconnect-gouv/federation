@@ -2,8 +2,9 @@ name: 💚 CI Tests
 
 on:
   pull_request:
+  push:
     branches:
-
+      - main
 jobs:
   test_static_back:
     runs-on: ubuntu-24.04
