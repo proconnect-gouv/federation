@@ -267,3 +267,9 @@ jobs:
             quality/fca/cypress/reports/cucumber/html-report
             quality/fca/cypress/snapshots/diff
             artifacts-logs
+
+  rebecca:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: rebibix test
+        run: echo "hello queer world"
