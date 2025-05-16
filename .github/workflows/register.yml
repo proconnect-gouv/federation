@@ -2,6 +2,8 @@ name: 🐳 Register
 
 on:
   push:
+    branches:
+      - main
     tags:
       - '*'
 
