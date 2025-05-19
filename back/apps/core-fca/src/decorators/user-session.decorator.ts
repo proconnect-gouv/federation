@@ -42,6 +42,7 @@ export const UserSessionDecoratorFactory = async (
     const mandatoryPropertiesErrors = await validate(object as object);
 
     if (mandatoryPropertiesErrors.length) {
+      console.debug({ sessionValidationErrors: mandatoryPropertiesErrors });
       throw new SessionInvalidSessionException(
         'UserSessionDecorator: Session data is invalid.',
       );
@@ -52,6 +53,7 @@ export const UserSessionDecoratorFactory = async (
   const typeErrors = await validate(object as object);
 
   if (typeErrors.length) {
+    console.debug({ sessionValidationErrors: typeErrors });
     throw new SessionInvalidSessionException(
       'UserSessionDecorator: Session data is invalid.',
     );
