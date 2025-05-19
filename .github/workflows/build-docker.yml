@@ -37,7 +37,7 @@ jobs:
             type=ref,event=tag
             type=raw,value=${{ github.ref_name }}
           flavor: |
-            latest=${{ github.ref == 'refs/heads/master' }}
+            latest=${{ github.ref == 'refs/heads/main' }}
 
       - name: Checkout
         uses: actions/checkout@v4
