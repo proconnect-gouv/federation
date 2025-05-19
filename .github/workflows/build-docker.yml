@@ -37,7 +37,13 @@ jobs:
             type=ref,event=tag
             type=raw,value=${{ github.ref_name }}
           flavor: |
-            latest=${{ github.ref == 'refs/heads/master' }}
+            latest=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Debug GitHub ref
+        run: echo "GitHub ref ${{ github.ref_name }}"
+
+      - name: Debug Docker tags
+        run: echo "Generated tags ${{ steps.meta.outputs.tags }}"
 
       - name: Checkout
         uses: actions/checkout@v4
