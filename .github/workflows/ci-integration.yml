@@ -13,9 +13,6 @@ jobs:
       CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
 
     steps:
-      - name: Init new manual workflow
-        run: echo "initiate new manual workflow for stating cypress e2e tests on the integration environment"
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -27,6 +24,12 @@ jobs:
       - name: Install dependencies
         working-directory: ./quality/fca
         run: yarn install --frozen-lockfile
+
+      - name: Cypress install
+        working-directory: ./quality/fca
+        run: |
+          yarn cypress install
+          yarn cypress verify
 
       - name: Start cypress e2e tests
         working-directory: ./quality/fca
