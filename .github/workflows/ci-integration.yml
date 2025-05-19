@@ -25,6 +25,9 @@ jobs:
         working-directory: ./quality/fca
         run: yarn install --frozen-lockfile
 
+      - name: Display environment variables
+        run: env | grep CYPRESS
+
       - name: Cypress install
         working-directory: ./quality/fca
         run: |
