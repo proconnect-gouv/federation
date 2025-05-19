@@ -1,4 +1,4 @@
-name: ✅ Integration
+name: ✅ Integration environment tests
 
 on:
   workflow_dispatch:
@@ -6,6 +6,31 @@ on:
 jobs:
   test_integration_env:
     runs-on: ubuntu-24.04
+
+    env:
+      CYPRESS_PLATFORM: 'fca-low'
+      CYPRESS_TEST_ENV: 'integ01'
+      CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
+
     steps:
       - name: Init new manual workflow
         run: echo "initiate new manual workflow for stating cypress e2e tests on the integration environment"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ./back/package.json
+
+      - name: Install dependencies
+        working-directory: ./quality/fca
+        run: yarn install --frozen-lockfile
+
+      - name: Start cypress e2e tests
+        working-directory: ./quality/fca
+        run: yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
+
+      - name: Create a cypress report
+        run: yarn report
