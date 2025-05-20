@@ -26,7 +26,7 @@ main {
 
 .onboarding-container > *:last-child {
   grid-area: illu;
-  background-color: var(--background-default-grey-hover);
+  background-color: #f9f9fe;
 }
 
 @media (max-width: 62em) {
