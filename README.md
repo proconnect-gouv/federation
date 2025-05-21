@@ -75,17 +75,6 @@ ln -s $PC_ROOT/federation
 ln -s $PC_ROOT/federation-admin
 ```
 
-- pull FC docker images, you will need to authenticate against the FC docker registry:
-
-```bash
-docker login $PC_DOCKER_REGISTRY
-```
-
-You will be prompted for:
-
-- a username: use your github.com/proconnect-gouv/federation username
-- a password: as two-factor authentication is mandatory, you'll need to create an access token with only "read_registry" permission from your account settings: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html. If you are not from the internal team, please ask an FC for one through support.
-
 ## Run the application
 
 ### Running ProConnect Fédération
