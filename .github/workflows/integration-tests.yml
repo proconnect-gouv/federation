@@ -1,4 +1,4 @@
-name: ✅ Integration environment tests
+name: ✅ Integration env Tests
 
 on:
   workflow_dispatch:
