@@ -10,13 +10,13 @@ When(
   /je me déconnecte du fournisseur de service et j'enregistre la réponse de ProConnect et du FI "([^"]*)"/,
   function (description: string) {
     const { url: idpUrl } = getIdentityProviderByDescription(description);
-    const { fcaRootUrl } = this.env;
+    const { federationRootUrl } = this.env;
 
     cy.intercept(`${idpUrl}/session/end*`).as('idp:sessionEnd');
-    cy.intercept(`${fcaRootUrl}/api/v2/client/logout-callback*`).as(
+    cy.intercept(`${federationRootUrl}/api/v2/client/logout-callback*`).as(
       'idp:logoutCallback',
     );
-    cy.intercept(`${fcaRootUrl}/api/v2/session/end/confirm*`).as(
+    cy.intercept(`${federationRootUrl}/api/v2/session/end/confirm*`).as(
       'fca:sessionEndConfirm',
     );
 
