@@ -4,7 +4,6 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
   chromeWebSecurity: false,
   video: false,
   e2e: {
-    baseUrl: 'https://docker.dev-franceconnect.fr',
     specPattern: 'cypress/integration/**/*.feature',
     supportFile: 'cypress/support/index.ts',
     experimentalRunAllSpecs: true,
