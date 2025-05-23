@@ -13,11 +13,11 @@ export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseExcept
   static ERROR_DESCRIPTION = 'authentication aborted due to invalid identity';
 
   public illustration = 'access-restricted-error';
-  public title = 'Accès impossible';
+  public title = 'Email non autorisé';
   public description =
-    'Seuls les agents et agentes de la fonction publique de l’État et de ses opérateurs sont autorisées à se connecter via ProConnect.';
+    "L'accès à ce site est limité aux agentes et agents possédant une adresse email d'une administration publique.";
 
   public displayContact = true;
   public contactMessage =
-    'Si cette situation vous parait inhabituelle, vous pouvez nous signaler l’erreur.';
+    'Si cette situation vous paraît inhabituelle, vous pouvez nous signaler l’erreur.';
 }
