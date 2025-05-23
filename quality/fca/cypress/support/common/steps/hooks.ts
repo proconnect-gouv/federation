@@ -74,7 +74,7 @@ Before({ tags: '@validationVisuelle' }, function () {
   // Clear the localstorage before each visual test
   // @link: https://github.com/cypress-io/cypress/issues/2573
   cy.get<Environment>('@env').then((env) => {
-    cy.visit(env.fcaRootUrl, { failOnStatusCode: false }).then((win) => {
+    cy.visit(env.federationRootUrl, { failOnStatusCode: false }).then((win) => {
       win.localStorage.clear();
     });
   });

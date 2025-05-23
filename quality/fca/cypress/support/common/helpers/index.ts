@@ -3,7 +3,6 @@ export * from './basic-authorization-helper';
 export * from './cookie-helper';
 export * from './idp-provider-helper';
 export * from './log-helper';
-export * from './navigation-helper';
 export * from './sp-claims-helper';
 export * from './sp-custom-params-helper';
 export * from './sp-provider-helper';
