@@ -35,8 +35,6 @@ export default {
     OidcClientRoutes.REDIRECT_TO_IDP,
     OidcClientRoutes.OIDC_CALLBACK,
     CoreRoutes.INTERACTION_VERIFY,
-    CoreRoutes.INTERACTION_CONSENT,
-    CoreRoutes.INTERACTION_LOGIN,
     OidcProviderRoutes.REDIRECT_TO_SP,
     CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
 

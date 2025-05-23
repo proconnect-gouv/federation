@@ -77,7 +77,7 @@ describe('CoreTrackingService', () => {
     browsingSessionId: undefined,
     reusesActiveSession: undefined,
     spId: undefined,
-    spAcr: undefined,
+    spEssentialAcr: undefined,
     spName: undefined,
     idpId: undefined,
     idpAcr: undefined,
@@ -100,7 +100,7 @@ describe('CoreTrackingService', () => {
     },
     spId: 'clientId',
     spName: 'some spName',
-    spAcr: 'some spAcr',
+    spEssentialAcr: 'some spAcr',
     spIdentity: {},
 
     idpId: 'some idpId',
@@ -336,7 +336,7 @@ describe('CoreTrackingService', () => {
         reusesActiveSession: null,
 
         spId: null,
-        spAcr: null,
+        spEssentialAcr: null,
         spName: null,
         spSub: null,
 
@@ -369,7 +369,7 @@ describe('CoreTrackingService', () => {
 
         spId: 'clientId',
         spName: 'some spName',
-        spAcr: 'some spAcr',
+        spEssentialAcr: 'some spAcr',
         spSub: 'sub client id',
 
         idpId: 'some idpId',
@@ -396,7 +396,7 @@ describe('CoreTrackingService', () => {
 
         spId: 'spIdMock',
         spName: 'spNameMock',
-        spAcr: 'spAcrMock',
+        spEssentialAcr: 'spAcrMock',
         spSub: 'sub for spIdMock',
 
         idpId: null,
@@ -408,7 +408,7 @@ describe('CoreTrackingService', () => {
       const sessionMock: UserSession = {
         spId: 'spIdMock',
         spName: 'spNameMock',
-        spAcr: 'spAcrMock',
+        spEssentialAcr: 'spAcrMock',
         subs: { spIdMock: 'sub for spIdMock' },
         browsingSessionId: browsingSessionIdMock,
       };
@@ -433,7 +433,7 @@ describe('CoreTrackingService', () => {
 
         spId: 'spIdMock',
         spName: 'spNameMock',
-        spAcr: 'spAcrMock',
+        spEssentialAcr: 'spAcrMock',
         spSub: 'sub for spIdMock',
 
         idpId: null,
@@ -445,7 +445,7 @@ describe('CoreTrackingService', () => {
       const sessionMock: UserSession = {
         spId: 'spIdMock',
         spName: 'spNameMock',
-        spAcr: 'spAcrMock',
+        spEssentialAcr: 'spAcrMock',
         subs: { spIdMock: 'sub for spIdMock' },
         spIdentity: {},
         browsingSessionId: browsingSessionIdMock,
@@ -471,7 +471,7 @@ describe('CoreTrackingService', () => {
 
         spId: null,
         spName: null,
-        spAcr: null,
+        spEssentialAcr: null,
         spSub: null,
 
         idpId: null,

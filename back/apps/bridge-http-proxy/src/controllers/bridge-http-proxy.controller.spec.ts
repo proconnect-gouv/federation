@@ -61,6 +61,13 @@ describe('BrokerProxyController', () => {
     expect(controller).toBeDefined();
   });
 
+  describe('healthcheck()', () => {
+    it("should return 'ok'", () => {
+      const result = controller.healthcheck();
+      expect(result).toBe('ok');
+    });
+  });
+
   describe('get()', () => {
     it('should log URL idp called and call allRequest private method', async () => {
       // Given
@@ -158,14 +165,14 @@ describe('BrokerProxyController', () => {
       });
 
       // When
-      await controller['allRequest'](reqMock, headersMock, resMock);
+      await controller['allRequest'](reqMock, { host: 'url.com' }, resMock);
 
       // Then
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledTimes(1);
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledWith(
         '/fizz',
         'GET',
-        { host: 'url.com', 'x-forwarded-proto': 'https' },
+        { host: 'url.com' },
         undefined,
       );
 

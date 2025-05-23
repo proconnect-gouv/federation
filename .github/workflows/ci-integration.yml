@@ -1,0 +1,11 @@
+name: ✅ Integration
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test_integration_env:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Init new manual workflow
+        run: echo "initiate new manual workflow for stating cypress e2e tests on the integration environment"

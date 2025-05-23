@@ -1,12 +1,7 @@
 [
   {
     "id": "moncomptepro",
-    "descriptions": [
-      "moncomptepro",
-      "whitelisté",
-      "non blacklisté",
-      "rattaché à un ministère avec plusieurs FI"
-    ],
+    "descriptions": ["moncomptepro"],
     "title": "MonComptePro Identity Provider",
     "url": "https://identite-sandbox.proconnect.gouv.fr",
     "signature": "HS256",
@@ -14,14 +9,7 @@
   },
   {
     "id": "fia1v2",
-    "descriptions": [
-      "par défaut",
-      "actif",
-      "FI eidas1 avec signature ES256",
-      "whitelisté",
-      "non blacklisté",
-      "rattaché à un ministère avec plusieurs FI"
-    ],
+    "descriptions": ["par défaut", "actif"],
     "title": "Identity Provider 1 - HS256",
     "url": "https://fia1v2.integ01.dev-agentconnect.fr",
     "signature": "HS256",
@@ -29,47 +17,11 @@
   },
   {
     "id": "fia2v2",
-    "descriptions": ["FI eidas1 avec signature ES256", "différent"],
+    "descriptions": ["différent"],
     "title": "Identity Provider 2 - ES256",
     "url": "https://fia2v2.integ01.dev-agentconnect.fr",
     "signature": "ES256",
     "fqdn": "fia2.fr"
-  },
-  {
-    "id": "fia3v2",
-    "descriptions": [
-      "FI eidas1 avec signature RS256",
-      "non whitelisté",
-      "blacklisté"
-    ],
-    "title": "Identity Provider 3 - RS256",
-    "url": "https://fia3v2.integ01.dev-agentconnect.fr",
-    "signature": "RS256",
-    "fqdn": "fia3.fr"
-  },
-  {
-    "id": "fia4-desactive-visible",
-    "descriptions": ["désactivé et visible"],
-    "title": "Identity Provider 4 - désactivé et visible",
-    "url": "https://fia4-desactive-visible.integ01.dev-agentconnect.fr",
-    "signature": "ES256",
-    "fqdn": "fia4.fr"
-  },
-  {
-    "id": "fia5-active-invisible",
-    "descriptions": ["actif et non visible"],
-    "title": "Identity Provider 5 - activé et invisible",
-    "url": "https://fia5-active-invisible.integ01.dev-agentconnect.fr",
-    "signature": "ES256",
-    "fqdn": "fia5.fr"
-  },
-  {
-    "id": "fia6-desactive-invisible",
-    "descriptions": ["désactivé et non visible"],
-    "title": "Identity Provider 6 - désactivé et invisible",
-    "url": "https://fia6-desactive-invisible.integ01.dev-agentconnect.fr",
-    "signature": "ES256",
-    "fqdn": "fia6.fr"
   },
   {
     "id": "cerbere",

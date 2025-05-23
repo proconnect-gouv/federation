@@ -108,9 +108,3 @@ La librairie `@fc/tracking` doit être configurée avec un mapping des évèneme
 Ce mapping est typé par le type [`TrackedEventMapType`](src/interfaces/tracked-event-map.interface.ts) exposée par `@fc/tracking`, voir la définition de ce dernier pour le formalisme.
 
 Le mapping des évènements est exposé via la propriété `TrackingService.TrackedEventMap`.
-
-### Interceptor
-
-La librairie contient et active un [`Interceptor`](src/interceptors/tracking.interceptor.ts) NestJS qui va automatiquement journaliser les événements configurés dans le mapping avec la propriété ̀`interceptRoutes`.
-
-> NB: Les évènements journalisés de cette manière reçoivent un contexte générique.

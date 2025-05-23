@@ -9,11 +9,7 @@
   },
   {
     "id": "9c716f61-b8a1-435c-a407-ef4d677ec270",
-    "descriptions": [
-      "par défaut",
-      "FI eidas1 avec signature RS256",
-      "actif"
-    ],
+    "descriptions": ["par défaut", "actif"],
     "title": "Identity Provider 1 - eIDAS faible - ES256",
     "url": "https://fia1-low.docker.dev-franceconnect.fr",
     "signature": "ES256",
@@ -21,67 +17,11 @@
   },
   {
     "id": "0e7c099f-fe86-49a0-b7d1-19df45397212",
-    "descriptions": [
-      "FI eidas1 avec signature RS256",
-      "différent",
-      "sans siret par défaut"
-    ],
+    "descriptions": ["différent", "sans siret par défaut"],
     "title": "Identity Provider 2 - eIDAS faible - RS256",
     "url": "https://fia2-low.docker.dev-franceconnect.fr",
     "signature": "RS256",
     "fqdn": "fia2.fr",
     "siret": ""
-  },
-  {
-    "id": "405d3839-9182-415f-9926-597489d11509",
-    "descriptions": ["fia3", "désactivé et visible"],
-    "title": "Identity Provider 3 (désactivé)- eIDAS faible",
-    "url": "https://fia3-low.docker.dev-franceconnect.fr",
-    "signature": "ES256",
-    "fqdn": "fia3.fr"
-  },
-  {
-    "id": "87762a76-7da0-442d-8243-5785f859b88b",
-    "descriptions": [
-      "FI eidas1 avec signature HS256",
-      "non whitelisté",
-      "non blacklisté"
-    ],
-    "title": "Identity Provider 4 - eIDAS faible - HS256",
-    "url": "https://fia4-low.docker.dev-franceconnect.fr",
-    "signature": "HS256",
-    "fqdn": "fia4.fr"
-  },
-  {
-    "id": "46f5d9f9-881d-46b1-bdcc-0548913ea443",
-    "descriptions": ["whitelisté", "blacklisté"],
-    "title": "Identity Provider 5 - eIDAS faible - RS256",
-    "url": "https://fia5-low.docker.dev-franceconnect.fr",
-    "signature": "RS256",
-    "fqdn": "fia5.fr"
-  },
-  {
-    "id": "ccae1186-3695-4ae2-8b38-d3a9926d92c4",
-    "descriptions": ["actif et non visible"],
-    "title": "Identity Provider 6 (non visible)- eIDAS faible",
-    "url": "https://fia6-low.docker.dev-franceconnect.fr",
-    "signature": "ES256",
-    "fqdn": "fia6.fr"
-  },
-  {
-    "id": "b61f31b8-c131-40d0-9eca-109219249db6",
-    "descriptions": ["désactivé et non visible"],
-    "title": "Identity Provider 7 (désactivé et non visible)- eIDAS faible",
-    "url": "https://fia7-low.docker.dev-franceconnect.fr",
-    "signature": "ES256",
-    "fqdn": "fia7.fr"
-  },
-  {
-    "id": "56c5831b-7749-4206-b961-11f840bc566b",
-    "descriptions": ["disponible que pour un FS"],
-    "title": "Identity Provider 8 (fsa5 seulement)- eIDAS faible",
-    "url": "https://fia8-low.docker.dev-franceconnect.fr",
-    "signature": "ES256",
-    "fqdn": "fia8.fr"
   }
 ]

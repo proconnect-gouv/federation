@@ -66,6 +66,16 @@ export const removePrompt = (): void => {
   });
 };
 
+export const setAsVoluntaryClaims = (claim: string): void => {
+  updateCustomParams((customParams) => {
+    customParams['claims']['id_token'] = {
+      [claim]: null,
+    };
+
+    return customParams;
+  });
+};
+
 export const setAsRequestedClaims = (
   claim: string,
   value?: string | string[],

@@ -1,8 +1,6 @@
 import { IsDefined } from 'class-validator';
 
-import { PartialExcept } from '@fc/common';
-
-import { IAgentIdentityWithPublicness } from '../interfaces';
+import { IOidcIdentity } from '@fc/oidc';
 
 export class GetVerifySessionDto {
   @IsDefined()
@@ -15,7 +13,5 @@ export class GetVerifySessionDto {
   readonly idpLabel: string;
 
   @IsDefined()
-  readonly idpIdentity:
-    | PartialExcept<IAgentIdentityWithPublicness, 'sub'>
-    | IAgentIdentityWithPublicness;
+  readonly idpIdentity: Partial<IOidcIdentity>;
 }

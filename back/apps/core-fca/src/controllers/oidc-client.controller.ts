@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { cloneDeep } from 'lodash';
 
 import {
@@ -25,15 +25,17 @@ import { EmailValidatorService } from '@fc/email-validator/services';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientConfigService,
   OidcClientRoutes,
   OidcClientService,
 } from '@fc/oidc-client';
-import { OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, SessionService } from '@fc/session';
-import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
+import {
+  Track,
+  TrackedEventContextInterface,
+  TrackingService,
+} from '@fc/tracking';
 
 import {
   AppConfig,
@@ -62,8 +64,6 @@ export class OidcClientController {
     private readonly oidcClient: OidcClientService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFca: CoreFcaService,
-    private readonly oidcAcr: OidcAcrService,
-    private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
@@ -125,8 +125,8 @@ export class OidcClientController {
     CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
   ])
   @SetStep()
+  @Track('IDP_CHOSEN')
   @UseGuards(CsrfTokenGuard)
-  // eslint-disable-next-line complexity
   async redirectToIdp(
     @Req() req: Request,
     @Res() res: Response,
@@ -143,20 +143,6 @@ export class OidcClientController {
     await this.emailValidatorService.validate(email);
 
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
-
-    const {
-      params: { acr_values: requestedAcrValues },
-    } = await this.oidcProvider.getInteraction(req, res);
-
-    const authorizeParams = {
-      login_hint: email,
-    };
-
-    const filteredAcrValues =
-      this.oidcAcr.getFilteredAcrValues(requestedAcrValues);
-    if (filteredAcrValues) {
-      authorizeParams['acr_values'] = filteredAcrValues;
-    }
 
     userSession.set('login_hint', email);
 
@@ -209,8 +195,8 @@ export class OidcClientController {
     };
     const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
     await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);
-    // we need to keep idpId as 2nd parameter for the idp_hint
-    return this.coreFca.redirectToIdp(res, idpId, authorizeParams);
+
+    return this.coreFca.redirectToIdp(req, res, idpId);
   }
 
   /**
@@ -221,12 +207,14 @@ export class OidcClientController {
    */
   @Get(OidcClientRoutes.WELL_KNOWN_KEYS)
   @Header('cache-control', 'public, max-age=600')
+  @Track('IDP_REQUESTED_FC_JWKS')
   async getWellKnownKeys() {
     return await this.oidcClient.utils.wellKnownKeys();
   }
 
   @Post(OidcClientRoutes.DISCONNECT_FROM_IDP)
   @Header('cache-control', 'no-store')
+  @Track('FC_REQUESTED_LOGOUT_FROM_IDP')
   async logoutFromIdp(
     @Res() res,
     @UserSessionDecorator()
@@ -388,7 +376,6 @@ export class OidcClientController {
     });
     userSession.set(identityExchange);
 
-    // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 

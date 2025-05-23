@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { PartialExcept, validateDto } from '@fc/common';
+import { validateDto } from '@fc/common';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
@@ -73,7 +73,7 @@ describe('OidcClientService', () => {
     foo: 'bar',
   };
 
-  const identityMock: PartialExcept<IOidcIdentity, 'sub'> = {
+  const identityMock: Partial<IOidcIdentity> = {
     sub: 'xxxxxxyyyyy1122334455667788',
     given_name: 'jean-paul',
     family_name: 'rive',

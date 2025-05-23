@@ -14,7 +14,7 @@ Fonctionnalité: Connexion à un FI
   Scénario: J'utilise un fournisseur d'identité désactivé
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@fia7.fr"
+    Et que j'entre l'email "test@fia3.fr"
     Quand je clique sur le bouton de connexion
     Alors je suis redirigé vers la page erreur technique
     Et le titre de la page d'erreur est "Accès indisponible"

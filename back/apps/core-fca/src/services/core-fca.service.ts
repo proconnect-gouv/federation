@@ -1,91 +1,106 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { isEmpty } from 'lodash';
+import { AuthorizationParameters } from 'openid-client';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { CORE_AUTH_SERVICE, CoreAuthorizationService } from '@fc/core';
-import { UserSession } from '@fc/core-fca/dto';
+import { CoreServiceInterface } from '@fc/core';
+import { AppConfig, UserSession } from '@fc/core-fca/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientConfig,
   OidcClientIdpDisabledException,
   OidcClientService,
 } from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
-import { CoreFcaAgentIdpDisabledException } from '../exceptions';
-import { CoreFcaUnauthorizedEmailException } from '../exceptions/core-fca-unauthorized-email-exception';
 import {
-  CoreFcaAuthorizationParametersInterface,
-  CoreFcaServiceInterface,
-} from '../interfaces';
+  CoreFcaAgentIdpDisabledException,
+  CoreFcaUnauthorizedEmailException,
+} from '../exceptions';
 import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 
 @Injectable()
-export class CoreFcaService implements CoreFcaServiceInterface {
+export class CoreFcaService implements CoreServiceInterface {
   // Dependency injection can require more than 4 parameters
   /* eslint-disable-next-line max-params */
   constructor(
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
+    private readonly oidcProvider: OidcProviderService,
+    private readonly oidcAcr: OidcAcrService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
-    @Inject(CORE_AUTH_SERVICE)
-    private readonly coreAuthorization: CoreAuthorizationService,
     private readonly session: SessionService,
     private readonly fqdnService: CoreFcaFqdnService,
     private readonly logger: LoggerService,
   ) {}
+  // eslint-disable-next-line complexity
   async redirectToIdp(
+    req: Request,
     res: Response,
     idpId: string,
-    {
-      acr_values,
-      login_hint,
-      claims = {
-        id_token: {
-          amr: {
-            essential: true,
-          },
-          acr: {
-            essential: true,
-          },
-        },
-      },
-    }: Partial<
-      Pick<
-        CoreFcaAuthorizationParametersInterface,
-        'acr_values' | 'login_hint' | 'claims'
-      >
-    >,
   ): Promise<void> {
-    const { spId } = this.session.get<UserSession>('User');
-
+    const { spId, login_hint } = this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
     await this.validateEmailForSp(spId, login_hint);
+
+    const selectedIdp = await this.identityProvider.getById(idpId);
+
+    if (isEmpty(selectedIdp)) {
+      throw new Error(`Idp ${idpId} not found`);
+    }
+
     await this.checkIdpDisabled(idpId);
 
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizeParams: CoreFcaAuthorizationParametersInterface = {
+    const authorizeParams: AuthorizationParameters = {
       state,
-      scope,
-      acr_values,
       nonce,
-      sp_id: spId,
+      scope,
+      acr_values: null,
+      claims: {
+        id_token: {
+          amr: null,
+          acr: null,
+        },
+      },
       login_hint,
-      claims,
+      sp_id: spId,
     };
 
-    const authorizationUrl = await this.coreAuthorization.getAuthorizeUrl(
+    const interaction = await this.oidcProvider.getInteraction(req, res);
+    const { acrValues, acrClaims } =
+      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
+
+    if (acrClaims) {
+      authorizeParams['claims']['id_token']['acr'] = acrClaims;
+    } else if (acrValues) {
+      authorizeParams['acr_values'] = acrValues;
+    }
+
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+
+    // these specific behaviors are legacy implementations and should be homogenized in the future
+    if (idpId === defaultIdpId) {
+      authorizeParams['scope'] += ' is_service_public';
+    } else if (!acrValues && !acrClaims) {
+      authorizeParams['acr_values'] = 'eidas1';
+    }
+
+    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
       idpId,
       authorizeParams,
     );
 
-    const { name: idpName, title: idpLabel } =
-      await this.identityProvider.getById(idpId);
+    const { name: idpName, title: idpLabel } = selectedIdp;
+
     const sessionPayload: UserSession = {
       idpId,
       idpName,

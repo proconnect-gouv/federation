@@ -1,20 +1,29 @@
-import { ExecutionContext, RequestMethod } from '@nestjs/common';
+import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
+import { APP_TRACKING_SERVICE } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { TrackedEventMapType } from '../interfaces';
+import { Track } from '../decorators';
 import { TrackingService } from '../services';
 import { TrackingInterceptor } from './tracking.interceptor';
 
 describe('TrackingInterceptor', () => {
   let interceptor: TrackingInterceptor;
+  const TrackMock = jest.mocked(Track);
 
   const trackingMock = {
     track: jest.fn(),
+    TrackedEventsMap: {},
+  };
+
+  const appTrackingMock = {
+    buildLog: jest.fn(),
+    TrackedEventsMap: {},
   };
 
   const httpContextMock = {
@@ -33,13 +42,6 @@ describe('TrackingInterceptor', () => {
       path: '/mock/path',
     },
   };
-
-  const eventsMock = {
-    foo: { interceptRoutes: [{ path: '/foo', method: RequestMethod.ALL }] },
-    bar: { interceptRoutes: [{ path: '/bar', method: RequestMethod.GET }] },
-    wizz: { interceptRoutes: [{ path: '/wizz', method: RequestMethod.GET }] },
-    bazz: {},
-  } as unknown as TrackedEventMapType;
 
   const nextMock = {
     handle: jest.fn(),
@@ -64,6 +66,11 @@ describe('TrackingInterceptor', () => {
         TrackingService,
         ConfigService,
         LoggerService,
+        LoggerLegacyService,
+        {
+          provide: APP_TRACKING_SERVICE,
+          useValue: appTrackingMock,
+        },
       ],
     })
       .overrideProvider(TrackingService)
@@ -89,75 +96,27 @@ describe('TrackingInterceptor', () => {
   describe('intercept', () => {
     it('should not call log until next', () => {
       // Given
-      interceptor['log'] = jest.fn();
+      TrackMock.get = jest.fn().mockReturnValueOnce('');
       // When
       interceptor.intercept(contextMock, nextMock);
-      // Then
-      expect(interceptor['log']).toHaveBeenCalledTimes(0);
-    });
-
-    it('should log a debug when intercepting', () => {
-      // When
-      interceptor.intercept(contextMock, nextMock);
-      // Then
-      expect(loggerMock.debug).toHaveBeenCalledTimes(1);
-      expect(loggerMock.debug).toHaveBeenCalledWith({
-        handler: contextMock.getHandler(),
-      });
-    });
-  });
-
-  describe('log', () => {
-    it('should call TrackingService.log', async () => {
-      // Given
-      const eventMock = {};
-      interceptor['getEvent'] = jest.fn().mockReturnValue(eventMock);
-      // When
-      await interceptor['log'](reqMock, urlPrefixMock);
-      // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(1);
-      expect(trackingMock.track).toHaveBeenCalledWith(eventMock, {
-        req: reqMock,
-      });
-    });
-
-    it('should not call TrackingService.log if event not found', async () => {
-      // Given
-      const eventMock = undefined;
-      interceptor['getEvent'] = jest.fn().mockReturnValue(eventMock);
-      // When
-      await interceptor['log'](reqMock, urlPrefixMock);
       // Then
       expect(trackingMock.track).toHaveBeenCalledTimes(0);
     });
-  });
 
-  describe('getEvent', () => {
-    it('should deduce event from route', () => {
+    it('should add a tap operator to the observable pipeline', () => {
       // Given
-      const req = { method: 'GET', route: { path: `${urlPrefixMock}/bar` } };
+      const eventName = 'TestEvent';
+      const event = { name: eventName };
+      TrackMock.get = jest.fn().mockReturnValueOnce(eventName);
+      trackingMock.TrackedEventsMap = { [eventName]: event };
+      const observableMock = {
+        pipe: jest.fn(),
+      };
+      nextMock.handle.mockReturnValue(observableMock);
       // When
-      const result = interceptor['getEvent'](req, eventsMock, urlPrefixMock);
+      interceptor.intercept(contextMock, nextMock);
       // Then
-      expect(result).toBe(eventsMock.bar);
-    });
-
-    it('should not return event with wrong method intercept', () => {
-      // Given
-      const req = { method: 'POST', route: { path: `${urlPrefixMock}/wizz` } };
-      // When
-      const result = interceptor['getEvent'](req, eventsMock, urlPrefixMock);
-      // Then
-      expect(result).toBeUndefined();
-    });
-
-    it('should not return event when there is not route match', () => {
-      // Given
-      const req = { method: 'POST', route: { path: `/nowhere` } };
-      // When
-      const result = interceptor['getEvent'](req, eventsMock, urlPrefixMock);
-      // Then
-      expect(result).toBeUndefined();
+      expect(observableMock.pipe).toHaveBeenCalledTimes(1);
     });
   });
 });

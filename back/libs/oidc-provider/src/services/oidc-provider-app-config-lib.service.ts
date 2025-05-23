@@ -17,26 +17,18 @@ import {
   OidcProviderRuntimeException,
   OidcProviderSpIdNotFoundException,
 } from '../exceptions';
-import {
-  IOidcProviderConfigAppService,
-  LogoutFormParamsInterface,
-} from '../interfaces';
+import { LogoutFormParamsInterface } from '../interfaces';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
-import { OidcProviderGrantService } from './oidc-provider-grant.service';
 
 @Injectable()
-export abstract class OidcProviderAppConfigLibService
-  implements IOidcProviderConfigAppService
-{
+export abstract class OidcProviderAppConfigLibService {
   protected provider: Provider;
 
   // Dependency injection can require more than 4 parameters
-  // eslint-disable-next-line max-params
   constructor(
     protected readonly _logger: LoggerService,
     protected readonly sessionService: SessionService,
     protected readonly errorService: OidcProviderErrorService,
-    protected readonly grantService: OidcProviderGrantService,
     protected readonly config: ConfigService,
   ) {}
 
@@ -116,40 +108,24 @@ export abstract class OidcProviderAppConfigLibService
     }
   }
 
-  /**
-   * @todo #1023 je type les entrées et sortie correctement et non pas avec any
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1023
-   * @ticket #FC-1023
-   */
-  /**
-   * Wrap `oidc-provider` method to
-   *  - lower coupling in other modules
-   *  - handle exceptions
-   *
-   * @param {any} req
-   * @param {any} res
-   * @param {UserSession} session Object that contains the session info
-   */
-  async finishInteraction(req: any, res: any, session: UserSession) {
-    const { amr, interactionAcr: acr } = session;
+  async finishInteraction(
+    req: any,
+    res: any,
+    {
+      amr,
+      acr,
+    }: {
+      amr: InteractionResults['login']['amr'];
+      acr: InteractionResults['login']['acr'];
+    },
+  ) {
     const sessionId = this.sessionService.getId();
 
     /**
      * Build Interaction results
      * For all available options, refer to `oidc-provider` documentation:
      * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#user-flows
-     */
-
-    const grant = await this.grantService.generateGrant(
-      this.provider,
-      req,
-      res,
-      sessionId,
-    );
-
-    const grantId = await this.grantService.saveGrant(grant);
-
-    /**
+     *
      * We use `sessionId` as `accountId` in order to to easily retrieve the session for back channel requests
      * @see OidcProviderConfigService.findAccount()
      */
@@ -161,14 +137,8 @@ export abstract class OidcProviderAppConfigLibService
         ts: Math.floor(Date.now() / 1000),
         remember: false,
       },
-      /**
-       * We need to return this information, it will always be empty arrays
-       * since franceConnect does not allow for partial authorizations yet,
-       * it's an "all or nothing" consent.
-       */
-      consent: {
-        grantId,
-      },
+      // skip the consent
+      consent: {},
     } as InteractionResults;
 
     try {

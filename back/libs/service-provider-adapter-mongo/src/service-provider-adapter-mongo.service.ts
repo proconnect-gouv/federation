@@ -14,7 +14,6 @@ import {
   ServiceProviderAdapterMongoConfig,
   ServiceProviderAdapterMongoDTO,
 } from './dto';
-import { Types } from './enums';
 import { MongoRequestFilterArgument } from './interfaces';
 import { ServiceProvider } from './schemas';
 
@@ -171,9 +170,5 @@ export class ServiceProviderAdapterMongoService
       clientSecretEncryptKey,
       Buffer.from(clientSecret, 'base64'),
     );
-  }
-
-  consentRequired(type, identityConsent) {
-    return type === Types.PRIVATE && identityConsent;
   }
 }

@@ -10,9 +10,7 @@ import { CsrfService } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
-import { OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
@@ -39,8 +37,6 @@ describe('OidcClientController', () => {
   let oidcClient: any;
   let oidcClientConfig: any;
   let coreFca: any;
-  let oidcAcr: any;
-  let oidcProvider: any;
   let identityProvider: any;
   let sessionService: any;
   let tracking: any;
@@ -64,8 +60,6 @@ describe('OidcClientController', () => {
       getIdentityProvidersByIds: jest.fn(),
       redirectToIdp: jest.fn(),
     };
-    oidcAcr = { getFilteredAcrValues: jest.fn() };
-    oidcProvider = { getInteraction: jest.fn() };
     identityProvider = { getById: jest.fn() };
     sessionService = {
       set: jest.fn(),
@@ -102,8 +96,6 @@ describe('OidcClientController', () => {
         OidcClientService,
         OidcClientConfigService,
         CoreFcaService,
-        OidcAcrService,
-        OidcProviderService,
         IdentityProviderAdapterMongoService,
         SessionService,
         TrackingService,
@@ -124,10 +116,6 @@ describe('OidcClientController', () => {
       .useValue(oidcClientConfig)
       .overrideProvider(CoreFcaService)
       .useValue(coreFca)
-      .overrideProvider(OidcAcrService)
-      .useValue(oidcAcr)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProvider)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProvider)
       .overrideProvider(SessionService)
@@ -198,7 +186,6 @@ describe('OidcClientController', () => {
     let res: Partial<Response>;
     let userSession: any;
     const email = 'user@example.com';
-    const interaction = { params: { acr_values: 'acr1' } };
 
     beforeEach(() => {
       req = {};
@@ -206,8 +193,6 @@ describe('OidcClientController', () => {
       userSession = {
         set: jest.fn(),
       } as unknown as ISessionService<UserSession>;
-      oidcProvider.getInteraction.mockResolvedValue(interaction);
-      oidcAcr.getFilteredAcrValues.mockReturnValue('filtered-acr');
     });
 
     it('should process redirection when identityProviderUid is provided', async () => {
@@ -223,8 +208,6 @@ describe('OidcClientController', () => {
 
       expect(emailValidatorService.validate).toHaveBeenCalledWith(email);
       expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(email);
-      expect(oidcProvider.getInteraction).toHaveBeenCalledWith(req, res);
-      expect(oidcAcr.getFilteredAcrValues).toHaveBeenCalledWith('acr1');
       expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
       expect(identityProvider.getById).toHaveBeenCalledWith('idp123');
       expect(logger.debug).toHaveBeenCalledWith(
@@ -237,10 +220,7 @@ describe('OidcClientController', () => {
         idpLabel: 'Idp Title',
         idpName: 'Idp Name',
       });
-      expect(coreFca.redirectToIdp).toHaveBeenCalledWith(res, 'idp123', {
-        login_hint: email,
-        acr_values: 'filtered-acr',
-      });
+      expect(coreFca.redirectToIdp).toHaveBeenCalledWith(req, res, 'idp123');
     });
 
     it('should throw an exception when no identity providers are available', async () => {
@@ -300,10 +280,11 @@ describe('OidcClientController', () => {
         idpLabel: 'Single Title',
         idpName: 'Single IdP',
       });
-      expect(coreFca.redirectToIdp).toHaveBeenCalledWith(res, 'idp-single', {
-        login_hint: email,
-        acr_values: 'filtered-acr',
-      });
+      expect(coreFca.redirectToIdp).toHaveBeenCalledWith(
+        req,
+        res,
+        'idp-single',
+      );
     });
   });
 

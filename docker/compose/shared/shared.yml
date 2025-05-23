@@ -5,7 +5,7 @@ services:
     image: alpine
     depends_on:
       - 'rp-all'
-      - 'all-fca-low'
+      - 'large'
 
   ####################
   # Shared Services
@@ -13,7 +13,7 @@ services:
 
   rp-all:
     image: nginx:1.14.2
-    container_name: fc-rp-all
+    container_name: pc-rp-all
     environment:
       DHPARAM_GENERATION: 'false'
     depends_on:
@@ -43,25 +43,16 @@ services:
           - fsa4-low.docker.dev-franceconnect.fr
           - fia1-low.docker.dev-franceconnect.fr
           - fia2-low.docker.dev-franceconnect.fr
-          - fia4-low.docker.dev-franceconnect.fr
-          - fia5-low.docker.dev-franceconnect.fr
-          - fia8-low.docker.dev-franceconnect.fr
           - moncomptepro.docker.dev-franceconnect.fr
           # Aliases to access exploitation from test runner
           # TODO: Move those aliases to exploitation network once runner workaround found
           - exploitation-fca-low.docker.dev-franceconnect.fr
           - exploitation-high.docker.dev-franceconnect.fr
           # Mock Data Provider
-          - dpp1-high.docker.dev-franceconnect.fr
-          - dpp2-high.docker.dev-franceconnect.fr
-          - dpp1-low.docker.dev-franceconnect.fr
-          - dpp2-low.docker.dev-franceconnect.fr
           - dpa1-low.docker.dev-franceconnect.fr
           - dpa2-low.docker.dev-franceconnect.fr
           # Generic
           - docker.dev-franceconnect.fr
-          # Stack Documentation 11TY
-          - doc-example.docker.dev-franceconnect.fr
       fc:
       rie:
         aliases:
@@ -85,34 +76,14 @@ services:
       - rie
     command: -config /etc/docker-gen/config
 
-  squid:
-    image: ${FC_DOCKER_REGISTRY}/squid:4.6
-    ulimits:
-      nofile:
-        soft: 1048576
-        hard: 1048576
-    extra_hosts:
-      - auth.llng.docker.dev-franceconnect.fr:172.16.1.254
-      - fia-rie-low.docker.dev-franceconnect.fr:172.16.1.254
-    networks:
-      - public
-      - fc
-      - exploitation
-      - rie
-    healthcheck:
-      test: ['CMD', 'bash', '-c', 'echo >/dev/tcp/localhost/3128 || exit 1']
-      interval: 1s
-      timeout: 1s
-      retries: 1
-      start_period: 1s
-
   log-hub:
     hostname: log-hub
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    image: pc-nodejs
+    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${FC_ROOT}/proconnect-federation/docker/log-hub:/var/www/app'
+      - '${PC_ROOT}/federation/docker/log-hub:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -132,8 +103,6 @@ services:
       dockerfile: '${WORKING_DIR}/builds/broker/Dockerfile'
     # Specify hostname to fix cluster name
     hostname: broker
-    depends_on:
-      - 'squid'
     networks:
       - data
     ports:
@@ -145,7 +114,7 @@ services:
   ####################
 
   redis-pwd:
-    image: 'bitnami/redis:6.0.15'
+    image: 'bitnami/redis:6.2.16'
     env_file:
       - ${COMPOSE_DIR}/shared/.env/redis.env
     environment:
@@ -163,7 +132,7 @@ services:
         ipv4_address: 172.16.4.105
 
   redis-cluster-master:
-    image: 'bitnami/redis:6.0.15'
+    image: 'bitnami/redis:6.2.16'
     env_file:
       - ${COMPOSE_DIR}/shared/.env/redis.env
     environment:
@@ -179,7 +148,7 @@ services:
         ipv4_address: 172.16.4.100
 
   redis-cluster-replica:
-    image: 'bitnami/redis:6.0.15'
+    image: 'bitnami/redis:6.2.16'
     env_file:
       - ${COMPOSE_DIR}/shared/.env/redis.env
     environment:
@@ -199,7 +168,7 @@ services:
         ipv4_address: 172.16.4.101
 
   redis-sentinel:
-    image: 'bitnami/redis-sentinel:6.0.15'
+    image: 'bitnami/redis-sentinel:6.2.16'
     scale: 3
     env_file:
       - ${COMPOSE_DIR}/shared/.env/redis.env
@@ -249,7 +218,7 @@ services:
   ####################
 
   openldap:
-    image: ${FC_DOCKER_REGISTRY}/openldap:0.2
+    image: ${PC_DOCKER_REGISTRY}/openldap:0.2
     networks:
       - rie
 
@@ -262,31 +231,6 @@ services:
     networks:
       - data
       - public
-
-  ####################
-  # Tracks related services
-  ####################
-
-  elasticsearch:
-    image: elasticsearch:7.17.9
-    volumes:
-      - '${VOLUMES_DIR}/elasticsearch/data:/usr/share/elasticsearch/data'
-      - '${VOLUMES_DIR}/elasticsearch/config/users:/usr/share/elasticsearch/config/users:ro'
-      - '${VOLUMES_DIR}/elasticsearch/config/users_roles:/usr/share/elasticsearch/config/users_roles:ro'
-      - '${VOLUMES_DIR}/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
-      - '${VOLUMES_DIR}/elasticsearch/config/elasticsearch.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro'
-      - '${VOLUMES_DIR}/elasticsearch/config/elasticsearch.key:/usr/share/elasticsearch/config/elasticsearch.key:ro'
-      - '${VOLUMES_DIR}/elasticsearch/index/:/index'
-      - '${VOLUMES_DIR}/elasticsearch/ingest_pipelines:/ingest_pipelines'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-    networks:
-      - data
-      - public
-    ports:
-      - '9200:9200'
-    environment:
-      - 'discovery.type=single-node'
-      - 'ES_JAVA_OPTS=-Xms64m -Xmx256m'
 
 ####################
 # Networks

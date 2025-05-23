@@ -84,7 +84,7 @@ export class BridgeHttpProxyService {
     data?: string,
   ): BridgePayload {
     const { host, 'x-forwarded-proto': xForwardedProto } = headers;
-    const url = `${xForwardedProto}://${host}${originalUrl}`;
+    const url = `${xForwardedProto || 'https'}://${host}${originalUrl}`;
 
     return {
       headers,

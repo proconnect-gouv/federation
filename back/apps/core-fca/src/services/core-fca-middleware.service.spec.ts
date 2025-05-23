@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { CORE_SERVICE } from '@fc/core';
 import { ActiveUserSessionDto } from '@fc/core-fca/dto';
 import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
@@ -55,11 +54,7 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
     throwError: jest.fn(),
   };
 
-  const oidcAcrServiceMock = {
-    getKnownAcrValues: jest.fn(),
-  };
-
-  const coreFcaServiceMock = {};
+  const oidcAcrServiceMock = {};
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -78,10 +73,6 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
         ServiceProviderAdapterMongoService,
         OidcAcrService,
         OidcProviderErrorService,
-        {
-          provide: CORE_SERVICE,
-          useValue: coreFcaServiceMock,
-        },
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useValue: {},

@@ -10,7 +10,6 @@ import IdentityProviderAdapterMongo from './identity-provider-adapter-mongo';
 import Logger from './logger';
 import LoggerLegacy from './logger-legacy';
 import Mongoose from './mongoose';
-import OidcAcr from './oidc-acr';
 import OidcClient from './oidc-client';
 import OidcProvider from './oidc-provider';
 import Redis from './redis';
@@ -27,7 +26,6 @@ export default {
   Core,
   Logger,
   LoggerLegacy,
-  OidcAcr,
   OidcProvider,
   OidcClient,
   Mongoose,

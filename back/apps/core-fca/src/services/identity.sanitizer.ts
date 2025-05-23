@@ -9,8 +9,10 @@ import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 
 import { IdentityForSpDto, IdentityFromIdpDto } from '../dto';
-import { CoreFcaInvalidIdentityException } from '../exceptions';
-import { NoDefaultSiretException } from '../exceptions/no-default-idp-siret.exception';
+import {
+  CoreFcaInvalidIdentityException,
+  NoDefaultSiretException,
+} from '../exceptions';
 
 @Injectable()
 export class IdentitySanitizer {

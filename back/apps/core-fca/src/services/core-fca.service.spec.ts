@@ -1,16 +1,17 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CORE_AUTH_SERVICE, CoreAuthorizationService } from '@fc/core';
 import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientIdpDisabledException,
   OidcClientService,
 } from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
@@ -32,13 +33,26 @@ describe('CoreFcaService', () => {
 
   const oidcMock = {
     utils: {
-      checkIdpDisabled: jest.fn(),
       buildAuthorizeParameters: jest.fn(),
+      checkIdpDisabled: jest.fn(),
+      getAuthorizeUrl: jest.fn(),
     },
+  };
+  const oidcProviderServiceMock = {
+    getInteraction: jest.fn(),
+    finishInteraction: jest.fn(),
+  };
+
+  const oidcAcrMock = {
+    getFilteredAcrParamsFromInteraction: jest.fn(),
   };
 
   const idpIdMock = 'idpIdMockValue';
   const spIdMock = 'spIdMockValue';
+  const reqMock = {
+    redirect: jest.fn(),
+    render: jest.fn(),
+  } as unknown as Request;
   const resMock = {
     redirect: jest.fn(),
     render: jest.fn(),
@@ -47,23 +61,6 @@ describe('CoreFcaService', () => {
   const identityProviderMock = {
     getById: jest.fn(),
     getList: jest.fn(),
-  };
-
-  const acrMock = 'acrMockValue';
-  const claimsMock = {
-    id_token: {
-      acr: {
-        essential: true,
-      },
-      amr: {
-        essential: true,
-      },
-    },
-  };
-
-  const configMock = {
-    scope: Symbol('scopeMockValue'),
-    spAuthorizedFqdnsConfigs: [],
   };
 
   const identityProviderMockResponse = {
@@ -97,14 +94,12 @@ describe('CoreFcaService', () => {
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         CoreFcaService,
+        OidcProviderService,
+        OidcAcrService,
         ConfigService,
         OidcClientService,
         IdentityProviderAdapterMongoService,
         FqdnToIdpAdapterMongoService,
-        {
-          provide: CORE_AUTH_SERVICE,
-          useClass: CoreAuthorizationService,
-        },
         SessionService,
         CoreFcaFqdnService,
         LoggerService,
@@ -118,20 +113,28 @@ describe('CoreFcaService', () => {
       .useValue(identityProviderMock)
       .overrideProvider(FqdnToIdpAdapterMongoService)
       .useValue(fqdnToIdpAdapterMongoMock)
-      .overrideProvider(CORE_AUTH_SERVICE)
-      .useValue(coreAuthorizationServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CoreFcaFqdnService)
       .useValue(coreFcaFqdnServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(OidcProviderService)
+      .useValue(oidcProviderServiceMock)
+      .overrideProvider(OidcAcrService)
+      .useValue(oidcAcrMock)
       .compile();
 
     service = app.get<CoreFcaService>(CoreFcaService);
 
-    configServiceMock.get.mockReturnValue(configMock);
+    oidcProviderServiceMock.getInteraction.mockResolvedValueOnce({
+      prompt: {},
+    });
     oidcMock.utils.buildAuthorizeParameters.mockResolvedValue({
+      nonce: nonceMock,
+      state: stateMock,
+    });
+    oidcMock.utils.getAuthorizeUrl.mockResolvedValue({
       nonce: nonceMock,
       state: stateMock,
     });
@@ -152,152 +155,132 @@ describe('CoreFcaService', () => {
   });
 
   describe('redirectToIdp', () => {
-    const authorizationParametersMock = {
-      acr_values: acrMock,
-      login_hint: 'example@email.com',
-    };
-
     beforeEach(() => {
       sessionServiceMock.get.mockReturnValue({
-        spId: spIdMock,
+        spId: 'mockSpId',
+        login_hint: 'user@example.com',
+      });
+      configServiceMock.get.mockReturnValue({
+        scope: 'scopeMockValue',
+        defaultIdpId: 'idpIdMockValue',
       });
     });
 
-    it('should call config.get to retrieve configured parameters', async () => {
-      // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
+    it('should redirect to the IdP with correct authorization URL', async () => {
+      // Given
+      oidcMock.utils.buildAuthorizeParameters.mockResolvedValueOnce({
+        nonce: 'mockNonce',
+        state: 'mockState',
+      });
+      oidcMock.utils.getAuthorizeUrl.mockResolvedValueOnce(
+        'http://mock-authorize-url',
       );
+      identityProviderMock.getById.mockResolvedValueOnce({
+        name: 'mockName',
+        title: 'mockTitle',
+      });
+      oidcAcrMock.getFilteredAcrParamsFromInteraction.mockReturnValueOnce({
+        acrClaims: {},
+      });
+
+      // When
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
 
       // Then
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('OidcClient');
-    });
-
-    it('should call oidcClient.utils.checkIdpDisabled()', async () => {
-      // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
+      expect(resMock.redirect).toHaveBeenCalledWith(
+        'http://mock-authorize-url',
       );
-      // Then
-      expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledTimes(1);
-      expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledWith(idpIdMock);
-    });
-
-    it('should call oidcClient.utils.buildAuthorizeParameters()', async () => {
-      // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
-      // Then
-      expect(oidcMock.utils.buildAuthorizeParameters).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call identityProvider.getById()', async () => {
-      // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
-      // Then
-      expect(identityProviderMock.getById).toHaveBeenCalledTimes(1);
-      expect(identityProviderMock.getById).toHaveBeenCalledWith(idpIdMock);
-    });
-
-    it('should call coreAuthorization.getAuthorizeUrl()', async () => {
-      // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
-      // Then
-      expect(
-        coreAuthorizationServiceMock.getAuthorizeUrl,
-      ).toHaveBeenCalledTimes(1);
-      expect(coreAuthorizationServiceMock.getAuthorizeUrl).toHaveBeenCalledWith(
-        idpIdMock,
-        {
-          state: stateMock,
-          scope: configMock.scope,
-          acr_values: acrMock,
-          claims: claimsMock,
-          nonce: nonceMock,
-          sp_id: spIdMock,
-          login_hint: 'example@email.com',
-        },
-      );
-    });
-
-    it('should call sessionService.set()', async () => {
-      // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
-      // Then
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith('User', {
-        idpId: idpIdMock,
-        idpName: identityProviderMockResponse.name,
-        idpLabel: identityProviderMockResponse.title,
-        idpNonce: nonceMock,
-        idpState: stateMock,
+        idpId: 'idpIdMockValue',
+        idpName: 'mockName',
+        idpLabel: 'mockTitle',
+        idpNonce: 'mockNonce',
+        idpState: 'mockState',
         idpIdentity: undefined,
         spIdentity: undefined,
         accountId: undefined,
       });
     });
 
-    it('should call res.redirect()', async () => {
-      // When
-      await service.redirectToIdp(
-        resMock,
-        idpIdMock,
-        authorizationParametersMock,
-      );
-      // Then
-      expect(resMock.redirect).toHaveBeenCalledTimes(1);
-      expect(resMock.redirect).toHaveBeenCalledWith(authorizeUrlMock);
-    });
-  });
-
-  describe('checkIdpDisabled', () => {
-    it('should call oidcClient.utils.checkIdpDisabled', async () => {
-      // When
-      await service['checkIdpDisabled'](idpIdMock);
-
-      // Then
-      expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledTimes(1);
-      expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledWith(idpIdMock);
-    });
-
-    it('should throw a CoreFcaAgentIdpDisabledException if utils returns a OidcClientIdpDisabledException', async () => {
+    it('should redirect to the IdP with correct authorization URL', async () => {
       // Given
-      oidcMock.utils.checkIdpDisabled.mockRejectedValue(
+      oidcAcrMock.getFilteredAcrParamsFromInteraction.mockReturnValueOnce({
+        acrValues: 'mockAcrValue',
+      });
+      oidcMock.utils.getAuthorizeUrl.mockResolvedValueOnce(
+        'http://mock-authorize-url',
+      );
+
+      // When
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
+
+      // Then
+      expect(resMock.redirect).toHaveBeenCalledWith(
+        'http://mock-authorize-url',
+      );
+    });
+
+    it('should redirect to the IdP with correct authorization URL', async () => {
+      // Given
+      oidcMock.utils.getAuthorizeUrl.mockResolvedValueOnce(
+        'http://mock-authorize-url',
+      );
+      configServiceMock.get.mockReturnValue({
+        scope: 'scopeMockValue',
+        defaultIdpId: 'anotherIdp',
+      });
+      oidcAcrMock.getFilteredAcrParamsFromInteraction.mockReturnValueOnce({});
+
+      // When
+      await service.redirectToIdp(reqMock, resMock, idpIdMock);
+
+      // Then
+      expect(resMock.redirect).toHaveBeenCalledWith(
+        'http://mock-authorize-url',
+      );
+    });
+
+    it('should throw an error if IdP is not found', async () => {
+      // Given
+      const idpId = 'invalidIdp';
+      identityProviderMock.getById.mockResolvedValueOnce(null);
+
+      // When / Then
+      await expect(
+        service.redirectToIdp(reqMock, resMock, idpId),
+      ).rejects.toThrow(`Idp ${idpId} not found`);
+    });
+
+    it('should throw an error when IdP is disabled', async () => {
+      // Given
+      const idpId = 'disabledIdp';
+      identityProviderMock.getById.mockResolvedValueOnce({
+        name: 'mockName',
+        title: 'mockTitle',
+      });
+      oidcMock.utils.checkIdpDisabled.mockRejectedValueOnce(
         new OidcClientIdpDisabledException(),
       );
-      // When
-      await expect(service['checkIdpDisabled'](idpIdMock)).rejects.toThrow(
-        CoreFcaAgentIdpDisabledException,
-      );
+
+      // When / Then
+      await expect(
+        service.redirectToIdp(reqMock, resMock, idpId),
+      ).rejects.toThrow(CoreFcaAgentIdpDisabledException);
     });
 
-    it('should throw an error if utils return an error', async () => {
+    it('should throw an error when checkIdpDisabled throw random error', async () => {
       // Given
-      oidcMock.utils.checkIdpDisabled.mockRejectedValue(new Error('wrong'));
-      // When
-      await expect(service['checkIdpDisabled'](idpIdMock)).rejects.toThrow(
-        Error,
-      );
+      const idpId = 'disabledIdp';
+      identityProviderMock.getById.mockResolvedValueOnce({
+        name: 'mockName',
+        title: 'mockTitle',
+      });
+      oidcMock.utils.checkIdpDisabled.mockRejectedValueOnce(new Error());
+
+      // When / Then
+      await expect(
+        service.redirectToIdp(reqMock, resMock, idpId),
+      ).rejects.toThrow(Error);
     });
   });
 

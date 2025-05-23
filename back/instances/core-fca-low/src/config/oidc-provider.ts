@@ -8,7 +8,7 @@ import {
 const env = new ConfigParser(process.env, 'OidcProvider');
 
 export default {
-  forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
+  forcedPrompt: [OidcProviderPrompt.LOGIN],
   allowedPrompt: [
     OidcProviderPrompt.LOGIN,
     OidcProviderPrompt.CONSENT,

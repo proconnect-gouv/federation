@@ -6,32 +6,19 @@ import {
   Next,
   Post,
   Query,
-  Req,
-  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
-import { CoreMissingIdentityException, CoreRoutes } from '@fc/core';
-import { UserSessionDecorator } from '@fc/core-fca/decorators';
-import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
-import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
-import { ISessionService } from '@fc/session';
+import { SetStep } from '@fc/flow-steps';
+import { OidcProviderRoutes } from '@fc/oidc-provider';
 
-import { AuthorizeParamsDto, GetLoginSessionDto, UserSession } from '../dto';
+import { AuthorizeParamsDto } from '../dto';
 
 @Controller()
 export class OidcProviderController {
-  constructor(private readonly oidcProvider: OidcProviderService) {}
+  constructor() {}
 
-  /**
-   * Authorize route via HTTP GET
-   * Authorization endpoint MUST support GET method
-   * @see https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint
-   *
-   * @TODO #144 do a more shallow validation and let oidc-provider handle redirections
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
-   */
   @Get(OidcProviderRoutes.AUTHORIZATION)
   @Header('cache-control', 'no-store')
   @UsePipes(
@@ -47,14 +34,6 @@ export class OidcProviderController {
     return next();
   }
 
-  /**
-   * Authorize route via HTTP POST
-   * Authorization endpoint MUST support POST method
-   * @see https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint
-   *
-   * @TODO #144 do a more shallow validation and let oidc-provider handle redirections
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
-   */
   @Post(OidcProviderRoutes.AUTHORIZATION)
   @Header('cache-control', 'no-store')
   @UsePipes(
@@ -68,33 +47,5 @@ export class OidcProviderController {
   postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
     // Pass the query to oidc-provider
     return next();
-  }
-
-  /**
-   * @TODO #185 Remove this controller once it is globaly available in `@fc/oidc-provider`
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/185
-   */
-  @Get(CoreRoutes.INTERACTION_LOGIN)
-  @Header('cache-control', 'no-store')
-  @AuthorizeStepFrom([CoreRoutes.INTERACTION_VERIFY])
-  @SetStep()
-  getLogin(
-    @Req() req,
-    @Res() res,
-    /**
-     * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
-     * @ticket FC-1020
-     */
-    @UserSessionDecorator(GetLoginSessionDto)
-    userSession: ISessionService<UserSession>,
-  ) {
-    const { spIdentity } = userSession.get();
-    if (!spIdentity) {
-      throw new CoreMissingIdentityException();
-    }
-
-    const session = userSession.get();
-    return this.oidcProvider.finishInteraction(req, res, session);
   }
 }
