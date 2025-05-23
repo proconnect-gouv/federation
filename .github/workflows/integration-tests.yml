@@ -36,7 +36,7 @@ jobs:
 
       - name: Start cypress e2e tests
         working-directory: ./quality/fca
-        run: yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
+        run: CYPRESS_TEST_ENV=integ01 yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
 
       - name: Create a cypress report
         run: yarn report
