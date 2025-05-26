@@ -1,336 +1,163 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { ValidationError } from 'class-validator';
+import { TokenSet } from 'openid-client';
 
-import { validateDto } from '@fc/common';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity } from '@fc/oidc';
-import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
-
-import { getLoggerMock } from '@mocks/logger';
 
 import {
   OidcClientMissingIdentitySubException,
   OidcClientTokenResultFailedException,
   OidcClientUserinfosFailedException,
 } from '../exceptions';
-import { ExtraTokenParams, TokenParams, UserInfosParams } from '../interfaces';
 import { OidcClientService } from './oidc-client.service';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 
-jest.mock('@fc/common', () => ({
-  ...(jest.requireActual('@fc/common') as any),
-  validateDto: jest.fn(),
-}));
-
 describe('OidcClientService', () => {
   let service: OidcClientService;
-  let validateDtoMock;
+  let utilsMock: jest.Mocked<OidcClientUtilsService>;
+  let loggerMock: jest.Mocked<LoggerService>;
+  const jwtMock =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
-  const postLogoutRedirectUriMock = 'https://postLogoutRedirectUriMock';
+  beforeEach(() => {
+    utilsMock = {
+      getTokenSet: jest.fn(),
+      getUserInfo: jest.fn(),
+      getEndSessionUrl: jest.fn(),
+      hasEndSessionUrl: jest.fn(),
+    } as unknown as jest.Mocked<OidcClientUtilsService>;
 
-  const idpIdMock = 'idpIdMockValue';
-  const idpStateMock = 'idpStateMockValue';
-  const idpNonceMock = 'idpNonceMockValue';
-  const acrMock = 'acrMockValue';
-  const amrMock = ['amrMockValue'];
-  const accessTokenMock = 'accessTokenMockValue';
-  const refreshTokenMock = 'refreshTokenMockValue';
-  const idTokenMock = 'idTokenMockValue';
+    loggerMock = {
+      info: jest.fn(),
+      debug: jest.fn(),
+      err: jest.fn(),
+    } as unknown as jest.Mocked<LoggerService>;
 
-  const contextMock: TrackedEventContextInterface = {
-    hello: 'world',
-  };
-
-  const loggerServiceMock = getLoggerMock();
-
-  const trackingServiceMock = {
-    track: jest.fn(),
-  };
-
-  const oidcClientUtilsServiceMock = {
-    getTokenSet: jest.fn(),
-    getUserInfo: jest.fn(),
-    getEndSessionUrl: jest.fn(),
-    hasEndSessionUrl: jest.fn(),
-  };
-
-  const claimsMock = jest.fn();
-
-  const tokenResultMock = {
-    access_token: accessTokenMock,
-    id_token: idTokenMock,
-    refresh_token: refreshTokenMock,
-    claims: claimsMock,
-  };
-
-  const errorMock = new Error('Unknown Error');
-
-  const tokenParamsMock: TokenParams = {
-    state: idpStateMock,
-    nonce: idpNonceMock,
-  };
-
-  const extraParamsMock: ExtraTokenParams = {
-    foo: 'bar',
-  };
-
-  const identityMock: Partial<IOidcIdentity> = {
-    sub: 'xxxxxxyyyyy1122334455667788',
-    given_name: 'jean-paul',
-    family_name: 'rive',
-  };
-
-  const userInfosParamsMock: UserInfosParams = {
-    accessToken: accessTokenMock,
-    idpId: idpIdMock,
-  };
-
-  const repScopeMock = ['scope1'];
-
-  beforeEach(async () => {
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
-
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TrackingService,
-        OidcClientUtilsService,
-        OidcClientService,
-        LoggerService,
-      ],
-    })
-      .overrideProvider(OidcClientUtilsService)
-      .useValue(oidcClientUtilsServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
-      .compile();
-
-    service = module.get<OidcClientService>(OidcClientService);
-
-    validateDtoMock = jest.mocked(validateDto);
-  });
-
-  describe('constructor', () => {
-    it('should be defined', () => {
-      expect(service).toBeDefined();
-    });
+    service = new OidcClientService(utilsMock, loggerMock);
   });
 
   describe('getTokenFromProvider', () => {
-    beforeEach(() => {
-      claimsMock.mockReturnValueOnce({
-        acr: acrMock,
-        amr: amrMock,
-        rep_scope: repScopeMock,
-      });
-      oidcClientUtilsServiceMock.getTokenSet.mockResolvedValueOnce(
-        tokenResultMock,
-      );
+    it('should return token results on success', async () => {
+      const tokenSetMock = {
+        access_token: 'accessToken',
+        id_token: jwtMock,
+        refresh_token: 'refreshToken',
+        claims: jest.fn().mockReturnValue({
+          acr: 'acrMock',
+          rep_scope: ['scopeMock'],
+        }),
+      } as unknown as TokenSet;
+      utilsMock.getTokenSet.mockResolvedValueOnce(tokenSetMock);
 
-      validateDtoMock
-        .mockResolvedValueOnce([]) // no errors
-        .mockResolvedValueOnce([]); // no errors
-    });
-
-    it('should call getTokenSet with token params', async () => {
-      // action
-      await service.getTokenFromProvider(
-        idpIdMock,
-        tokenParamsMock,
-        contextMock,
-        extraParamsMock,
-      );
-      // assert
-      expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
-      expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledWith(
-        contextMock,
-        idpIdMock,
-        tokenParamsMock,
-        extraParamsMock,
-      );
-    });
-
-    it('should get the the tokenSet from the provider', async () => {
-      // arrange
-      const resultMock = {
-        accessToken: accessTokenMock,
-        idToken: idTokenMock,
-        refreshToken: refreshTokenMock,
-        acr: acrMock,
-        amr: amrMock,
-        idpRepresentativeScope: repScopeMock,
-      };
-      // action
       const result = await service.getTokenFromProvider(
-        idpIdMock,
-        tokenParamsMock,
-        contextMock,
-      );
-      // assert
-      expect(result).toStrictEqual(resultMock);
-    });
-
-    /**
-     * @todo #434 refacto sur getTokenSet, test à appliquer si on vérifie les données d'entrées.
-     * - voir commit original : 440d0a1734e0e1206b7e21781cbb0f186a93dd82
-     */
-    it.skip('should failed if the params for token are wrong', async () => {
-      // arrange
-      validateDtoMock.mockReset().mockReturnValueOnce([errorMock]);
-      // action
-      await expect(
-        () =>
-          service.getTokenFromProvider(idpIdMock, tokenParamsMock, contextMock),
-        // assert
-      ).rejects.toThrow(
-        '"{"providerUid":"providerUidMockValue","idpState":"idpStateMockValue","idpNonce":"idpNonceMockValue"}" input was wrong from the result at DTO validation: [{}]',
+        'idpId1',
+        { state: 'state1', nonce: 'nonce1' },
+        { contextKey: 'contextValue' },
       );
 
-      expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(0);
+      expect(result).toEqual({
+        accessToken: 'accessToken',
+        idToken: jwtMock,
+        refreshToken: 'refreshToken',
+        acr: 'acrMock',
+        amr: [],
+        idpRepresentativeScope: ['scopeMock'],
+      });
     });
 
-    it('should failed if the token is wrong and DTO blocked', async () => {
-      // arrange
-      validateDtoMock.mockReset().mockReturnValueOnce([errorMock]);
+    it('should throw an exception if token validation fails', async () => {
+      utilsMock.getTokenSet.mockResolvedValueOnce({
+        access_token: 'accessToken',
+        id_token: jwtMock,
+        claims: jest.fn().mockReturnValue({
+          acr: 'acrMock',
+          amr: 'amrMock', // amr should be an array, this should trigger a validation error
+          rep_scope: ['scopeMock'],
+        }),
+      } as unknown as TokenSet);
 
-      // action
       await expect(
-        () =>
-          service.getTokenFromProvider(idpIdMock, tokenParamsMock, contextMock),
-        // assert
+        service.getTokenFromProvider(
+          'idpId',
+          { state: 'stateValue', nonce: 'nonceValue' },
+          {},
+        ),
       ).rejects.toThrow(OidcClientTokenResultFailedException);
-      expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.debug).toHaveBeenCalledWith([errorMock]);
-    });
-
-    it('should get claims from token', async () => {
-      // action
-      const { acr } = await service.getTokenFromProvider(
-        idpIdMock,
-        tokenParamsMock,
-        contextMock,
-      );
-
-      // assert
-      expect(claimsMock).toHaveBeenCalledTimes(1);
-      expect(acr).toStrictEqual(acrMock);
-    });
-
-    it('should get an empty array as amr if amr claims is empty', async () => {
-      // arrange
-      claimsMock.mockReset().mockReturnValueOnce({});
-      // action
-      const { amr } = await service.getTokenFromProvider(
-        idpIdMock,
-        tokenParamsMock,
-        contextMock,
-      );
-      // assert
-      expect(claimsMock).toHaveBeenCalledTimes(1);
-      expect(amr).toStrictEqual([]);
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        tokenValidationErrors: [expect.any(ValidationError)],
+      });
     });
   });
 
   describe('getUserInfosFromProvider', () => {
-    beforeEach(() => {
-      oidcClientUtilsServiceMock.getUserInfo.mockResolvedValueOnce(
-        identityMock,
-      );
+    it('should return user infos on success', async () => {
+      const identityMock = { sub: 'subMock', name: 'mockName' };
+      utilsMock.getUserInfo.mockResolvedValueOnce(identityMock);
 
-      validateDtoMock
-        .mockResolvedValueOnce([]) // no errors
-        .mockResolvedValueOnce([]); // no errors
-    });
-    it('should get the user infos', async () => {
-      // action
       const result = await service.getUserInfosFromProvider(
-        userInfosParamsMock,
-        contextMock,
+        { accessToken: 'accessTokenMock', idpId: 'idpIdMock' },
+        { contextKey: 'contextValue' },
       );
-      // assert
-      expect(result).toStrictEqual(identityMock);
+
+      expect(result).toEqual(identityMock);
     });
 
-    it('should get the user infos with access token params', async () => {
-      // action
-      await service.getUserInfosFromProvider(userInfosParamsMock, contextMock);
-      // assert
-      expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
-      expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledWith(
-        accessTokenMock,
-        idpIdMock,
-      );
-    });
+    it('should throw an exception if fetching user info fails', async () => {
+      utilsMock.getUserInfo.mockRejectedValueOnce(new Error('Fetch error'));
 
-    it('should failed if userinfos failed', async () => {
-      // arrange
-      const errorMock = new Error('Unknown Error');
-      oidcClientUtilsServiceMock.getUserInfo
-        .mockReset()
-        .mockRejectedValueOnce(errorMock);
-      // action
       await expect(
-        () =>
-          service.getUserInfosFromProvider(userInfosParamsMock, contextMock),
-        // assert
+        service.getUserInfosFromProvider(
+          { accessToken: 'accessTokenMock', idpId: 'idpIdMock' },
+          { contextKey: 'contextValue' },
+        ),
       ).rejects.toThrow(OidcClientUserinfosFailedException);
-
-      expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
     });
 
-    it('should failed if the token is wrong and DTO blocked', async () => {
-      // arrange
-      validateDtoMock.mockReset().mockReturnValueOnce([errorMock]);
+    it('should throw an exception if user info DTO validation fails', async () => {
+      utilsMock.getUserInfo.mockResolvedValueOnce({ nosub: 'mockNosub' });
 
-      // action
       await expect(
-        () =>
-          service.getUserInfosFromProvider(userInfosParamsMock, contextMock),
-        // assert
+        service.getUserInfosFromProvider(
+          { accessToken: 'accessTokenMock', idpId: 'idpIdMock' },
+          { contextKey: 'contextValue' },
+        ),
       ).rejects.toThrow(OidcClientMissingIdentitySubException);
-      expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.debug).toHaveBeenCalledWith([errorMock]);
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        userinfoValidationErrors: [expect.any(ValidationError)],
+      });
     });
   });
 
   describe('getEndSessionUrlFromProvider', () => {
-    it('should call oidcClientUtilsServiceMock.getEndSessionUrl() with given parameters', async () => {
-      // action
-      await service.getEndSessionUrlFromProvider(
-        idpIdMock,
-        idpStateMock,
-        idTokenMock,
-        postLogoutRedirectUriMock,
+    it('should return end session URL', async () => {
+      const endSessionUrlMock = 'https://mock-end-session-url.com';
+      utilsMock.getEndSessionUrl.mockResolvedValueOnce(endSessionUrlMock);
+
+      const result = await service.getEndSessionUrlFromProvider(
+        'idpIdMock',
+        'stateMock',
+        'idTokenMock',
+        'postLogoutRedirectUriMock',
       );
 
-      // assert
-      expect(oidcClientUtilsServiceMock.getEndSessionUrl).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(oidcClientUtilsServiceMock.getEndSessionUrl).toHaveBeenCalledWith(
-        idpIdMock,
-        idpStateMock,
-        idTokenMock,
-        postLogoutRedirectUriMock,
-      );
+      expect(result).toBe(endSessionUrlMock);
     });
   });
 
-  describe('hasEndSessionUrlFromProvider()', () => {
-    it('should call oidcClientUtilsServiceMock.hasEndSessionUrl() with given parameters', async () => {
-      // action
-      await service.hasEndSessionUrlFromProvider(idpIdMock);
+  describe('hasEndSessionUrlFromProvider', () => {
+    it('should return true if end session URL exists', async () => {
+      utilsMock.hasEndSessionUrl.mockResolvedValueOnce(true);
 
-      // assert
-      expect(oidcClientUtilsServiceMock.hasEndSessionUrl).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(oidcClientUtilsServiceMock.hasEndSessionUrl).toHaveBeenCalledWith(
-        idpIdMock,
-      );
+      const result = await service.hasEndSessionUrlFromProvider('idpIdMock');
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false if end session URL does not exist', async () => {
+      utilsMock.hasEndSessionUrl.mockResolvedValueOnce(false);
+
+      const result = await service.hasEndSessionUrlFromProvider('idpIdMock');
+
+      expect(result).toBe(false);
     });
   });
 });

@@ -1,9 +1,9 @@
-import { ValidatorOptions } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import { TokenSet } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';
 
-import { validateDto } from '@fc/common';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { TrackedEventContextInterface } from '@fc/tracking';
@@ -22,11 +22,6 @@ import {
   UserInfosParams,
 } from '../interfaces';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
-
-const DTO_OPTIONS: ValidatorOptions = {
-  whitelist: true,
-  forbidNonWhitelisted: true,
-};
 
 @Injectable()
 export class OidcClientService {
@@ -76,14 +71,14 @@ export class OidcClientService {
       idpRepresentativeScope,
     };
 
-    const errorsOutputs = await validateDto(
-      tokenResult,
-      TokenResultDto,
-      DTO_OPTIONS,
-    );
+    const object = plainToInstance(TokenResultDto, tokenResult);
+    const tokenValidationErrors = await validate(object as object, {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    });
 
-    if (errorsOutputs.length) {
-      this.logger.debug(errorsOutputs);
+    if (tokenValidationErrors.length) {
+      this.logger.info({ tokenValidationErrors });
       throw new OidcClientTokenResultFailedException();
     }
 
@@ -100,30 +95,18 @@ export class OidcClientService {
       identity = await this.utils.getUserInfo<T>(accessToken, idpId);
     } catch (error) {
       this.logger.debug(error.stack);
-
-      /**
-       * @todo #587 Add the error to the exception, then add "@Loggable()" decorator
-       * to the exception.
-       *
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/494#note_102947
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/587
-       */
       throw new OidcClientUserinfosFailedException();
     }
 
-    const errors = await validateDto(
-      identity as object,
-      MinIdentityDto,
-      {
-        whitelist: true,
-      },
-      {
-        excludeExtraneousValues: true,
-      },
-    );
+    const object = plainToInstance(MinIdentityDto, identity, {
+      excludeExtraneousValues: true,
+    });
+    const userinfoValidationErrors = await validate(object as object, {
+      whitelist: true,
+    });
 
-    if (errors.length) {
-      this.logger.debug(errors);
+    if (userinfoValidationErrors.length) {
+      this.logger.info({ userinfoValidationErrors });
       throw new OidcClientMissingIdentitySubException();
     }
 
