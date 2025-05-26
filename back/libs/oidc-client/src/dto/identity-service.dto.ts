@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsAscii,
   IsJWT,
   IsOptional,
@@ -30,6 +31,7 @@ export class TokenResultDto implements TokenResults {
   readonly acr?: string;
 
   @IsString({ each: true })
+  @IsArray()
   @IsOptional()
   readonly amr?: string[];
 
