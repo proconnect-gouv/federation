@@ -100,14 +100,6 @@ export class OidcClientService {
       identity = await this.utils.getUserInfo<T>(accessToken, idpId);
     } catch (error) {
       this.logger.debug(error.stack);
-
-      /**
-       * @todo #587 Add the error to the exception, then add "@Loggable()" decorator
-       * to the exception.
-       *
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/494#note_102947
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/587
-       */
       throw new OidcClientUserinfosFailedException();
     }
 
