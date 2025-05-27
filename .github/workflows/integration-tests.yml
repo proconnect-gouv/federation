@@ -1,0 +1,40 @@
+name: ✅ Integration env Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test_integration_env:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ./back/package.json
+
+      - name: Install dependencies
+        working-directory: ./quality/fca
+        run: yarn install --frozen-lockfile
+
+      - name: Cypress install
+        working-directory: ./quality/fca
+        run: |
+          yarn cypress install
+          yarn cypress verify
+
+      - name: Start cypress e2e tests
+        working-directory: ./quality/fca
+        env:
+          CYPRESS_PLATFORM: 'fca-low'
+          CYPRESS_TEST_ENV: 'integ01'
+          CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
+          CYPRESS_EXPLOIT_USER_NAME: ${{ secrets.CYPRESS_EXPLOIT_USER_NAME }}
+          CYPRESS_EXPLOIT_USER_PASS: ${{ secrets.CYPRESS_EXPLOIT_USER_PASS }}
+          CYPRESS_EXPLOIT_USER_TOTP: ${{ secrets.CYPRESS_EXPLOIT_USER_TOTP }}
+        run: |
+          yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
+          yarn report
