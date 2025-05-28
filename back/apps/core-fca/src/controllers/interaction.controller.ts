@@ -9,6 +9,7 @@ import {
   Param,
   Req,
   Res,
+  UseFilters,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -57,6 +58,7 @@ import {
   CoreFcaAgentNotFromPublicServiceException,
   CoreLoginRequiredException,
 } from '../exceptions';
+import { ContactIpdExceptionFilter } from '../filters';
 import { IAgentIdentity } from '../interfaces';
 import { CoreFcaFqdnService, CoreFcaService } from '../services';
 
@@ -228,6 +230,7 @@ export class InteractionController {
   // Note: The FC_REDIRECTED_TO_SP event is logged regardless of whether Panva's oidc-provider
   // successfully redirects to the service provider or encounters an error
   @Track('FC_REDIRECTED_TO_SP')
+  @UseFilters(ContactIpdExceptionFilter)
   // eslint-disable-next-line complexity
   async getVerify(
     @Req() req: Request,
