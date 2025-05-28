@@ -1,59 +1,39 @@
 ARG NODE_VERSION=22.13.0
-
-ARG BUILDER_NODE_IMAGE_VERSION=node:${NODE_VERSION}-alpine
-ARG NODE_IMAGE_VERSION=node:${NODE_VERSION}-alpine
+ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
 
-FROM ${BUILDER_NODE_IMAGE_VERSION} AS builder
+FROM ${NODE_IMAGE} AS builder
 
 ARG INSTANCE
 
-WORKDIR /build
+COPY . /build/back
 
-COPY ./package.json ./yarn.lock ./
+WORKDIR /build/back
 
-RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
-    yarn --immutable --ignore-engines
-
-COPY ./global.d.ts ./tsconfig.json ./nest-cli.json ./
-COPY ./libs ./libs
-COPY ./apps ./apps
-COPY ./instances/${INSTANCE} ./instances/${INSTANCE}
+RUN yarn install --ignore-engines
 
 RUN yarn run build:${INSTANCE}
 
+RUN rm -rf node_modules && yarn install --production --ignore-engines
 
-FROM ${NODE_IMAGE_VERSION} AS production
+
+FROM ${NODE_IMAGE} AS production
 
 ARG INSTANCE
 
+RUN npm install -g pm2
+
 ENV NODE_ENV=production
-ENV INSTANCE=${INSTANCE}
+ENV PM2_HOME=/tmp/.pm2
 
 
-WORKDIR /app
+COPY deploy/pm2/app.json /etc/pm2/
 
-RUN mkdir -p /app/dist/instances
+VOLUME ["/data/log", "/etc/ssl/client_certs"]
 
-COPY --from=builder --chown=node:node /build/node_modules /app/node_modules
-COPY --from=builder --chown=node:node /build/dist/instances/${INSTANCE} /app/dist/instances/app
+COPY --from=builder /build/back/node_modules /var/www/app/node_modules
+COPY --from=builder /build/back/dist/instances/${INSTANCE} /var/www/app/dist/instances/app
 
-USER node
+WORKDIR /var/www/app
 
-CMD ["node", "/app/dist/instances/app/main.js"]
-
-
-# Emulation du fonctionnement de PM2 concernant les logs
-
-USER root
-
-ENV EMULATE_PM2=0
-
-RUN mkdir -p /data/log/app && chown node:node /data/log/app
-
-COPY --chown=node:node ./entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-USER node
-
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["pm2-runtime", "/etc/pm2/app.json"]

@@ -1,0 +1,12 @@
+{
+  "name": "app",
+  "script": "main.js",
+  "error_file": "/data/log/app/error.log",
+  "out_file": "/data/log/app/out.log",
+  "watch": false,
+  "autorestart": false,
+  "cwd": "/var/www/app/dist/instances/app",
+  "exec_mode": "fork_mode",
+  "instances": "1",
+  "time": false
+}
