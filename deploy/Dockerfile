@@ -33,12 +33,14 @@ ENV NODE_ENV=production
 ENV INSTANCE=${INSTANCE}
 
 
-WORKDIR /app
+WORKDIR /var/www/app
 
 RUN mkdir -p /app/dist/instances
 
-COPY --from=builder --chown=node:node /build/node_modules /app/node_modules
-COPY --from=builder --chown=node:node /build/dist/instances/${INSTANCE} /app/dist/instances/app
+COPY --from=builder --chown=node:node /build/node_modules /var/www/app/node_modules
+COPY --from=builder --chown=node:node /build/dist/instances/${INSTANCE} /var/www/app/dist/instances/app
+
+RUN mkdir -p /data/log/app && chown node:node /data/log/app
 
 RUN mkdir /etc/pm2
 COPY ./deploy/pm2/app.json /etc/pm2/
