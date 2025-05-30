@@ -7,10 +7,9 @@ import {
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core-fca';
+import { IdentityForSpDto, UserSession } from '@fc/core-fca';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity } from '@fc/oidc';
 import { SessionService, SessionSubNotFoundException } from '@fc/session';
 
 import {
@@ -199,7 +198,7 @@ export abstract class OidcProviderAppConfigLibService {
   // eslint-disable-next-line require-await
   protected async formatAccount(
     sessionId: string,
-    spIdentity: Partial<Omit<IOidcIdentity, 'sub'>>,
+    spIdentity: IdentityForSpDto,
     subSp: string,
   ): Promise<{ accountId: string; claims: Function }> {
     return {

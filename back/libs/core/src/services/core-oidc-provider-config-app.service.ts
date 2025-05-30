@@ -134,6 +134,6 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
       return false;
     }
 
-    return await this.oidcClient.hasEndSessionUrlFromProvider(idpId);
+    return await this.oidcClient.hasEndSessionUrl(idpId);
   }
 }

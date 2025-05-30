@@ -1,6 +1,6 @@
 import { IsDefined } from 'class-validator';
 
-import { IOidcIdentity } from '@fc/oidc';
+import { IdentityFromIdpDto } from './identity-from-idp.dto';
 
 export class GetVerifySessionDto {
   @IsDefined()
@@ -13,5 +13,5 @@ export class GetVerifySessionDto {
   readonly idpLabel: string;
 
   @IsDefined()
-  readonly idpIdentity: Partial<IOidcIdentity>;
+  readonly idpIdentity: Partial<IdentityFromIdpDto>;
 }

@@ -45,7 +45,6 @@ import {
   IdentitySanitizer,
   OidcProviderConfigAppService,
 } from './services';
-import { IsPhoneNumberFCAConstraint } from './validators';
 
 @Global()
 @Module({
@@ -111,7 +110,6 @@ import { IsPhoneNumberFCAConstraint } from './validators';
     CoreFcaMiddlewareService,
     CoreFcaFqdnService,
     DataProviderService,
-    IsPhoneNumberFCAConstraint,
     IdentitySanitizer,
   ],
   exports: [OidcProviderConfigAppService, CqrsModule, CoreFcaService],

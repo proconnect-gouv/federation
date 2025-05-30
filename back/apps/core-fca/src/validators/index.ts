@@ -1,1 +1,1 @@
-export * from './is-phone-number-fca.validator';
+export * from './is-phone-number-simple-validator.validator';

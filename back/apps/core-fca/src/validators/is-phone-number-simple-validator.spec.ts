@@ -2,12 +2,12 @@ import { ConfigService } from '@fc/config';
 
 import { getConfigMock } from '@mocks/config';
 
-import { IsPhoneNumberFCAConstraint } from './is-phone-number-fca.validator';
+import { IsPhoneNumberSimpleValidatorConstraint } from './is-phone-number-simple-validator.validator';
 
 const configMock = getConfigMock() as unknown as ConfigService;
 
-const constraint = new IsPhoneNumberFCAConstraint(configMock);
-describe('IsPhoneNumberFca', () => {
+const constraint = new IsPhoneNumberSimpleValidatorConstraint(configMock);
+describe('IsPhoneNumberSimpleValidator', () => {
   describe('validate', () => {
     it('should return true when phone_number is valid', () => {
       const phoneNumberIdentity = {

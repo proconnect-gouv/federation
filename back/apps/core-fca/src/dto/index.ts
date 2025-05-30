@@ -4,7 +4,6 @@ export * from './authorize-params.dto';
 export * from './core-fca-config.dto';
 export * from './core-fca-session.dto';
 export * from './get-identity-provider-selection-session-dto';
-export * from './get-login-session-dto';
 export * from './get-oidc-callback-session-dto';
 export * from './get-verify-session-dto';
 export * from './identity-for-sp.dto';
