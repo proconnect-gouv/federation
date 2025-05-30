@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 import { overrideWithSourceIfNotNull } from '@fc/common';
 import { UserSession } from '@fc/core-fca';
-import { DeviceSession } from '@fc/device';
 import { SessionService } from '@fc/session';
 import {
   TrackedEventContextInterface,
@@ -83,15 +82,6 @@ export class CoreTrackingService {
       idpName,
       idpLabel,
       idpIdentity,
-
-      isTrusted,
-      isSuspicious,
-
-      accountCount,
-      knownDevice,
-      newIdentity,
-      becameTrusted,
-      becameShared,
     } = ctx;
     const source = extractNetworkInfoFromHeaders(ctx);
 
@@ -115,26 +105,11 @@ export class CoreTrackingService {
       idpName,
       idpLabel,
       idpIdentity,
-
-      deviceTrusted: isTrusted,
-      deviceIsSuspicious: isSuspicious,
-      deviceAccountCount: accountCount,
-      deviceKnown: knownDevice,
-      deviceNewIdentity: newIdentity,
-      deviceBecameTrusted: becameTrusted,
-      deviceBecameShared: becameShared,
     };
   }
 
-  // eslint-disable-next-line complexity
   protected getDataFromSession(sessionId: string): ICoreTrackingProviders {
     const session = this.sessionService.get<UserSession>('User') || {};
-
-    // Defaults to undefined rather than null to not pollute AC logs
-    const deviceSession = this.sessionService.get<DeviceSession>('Device') || {
-      isTrusted: undefined,
-      isSuspicious: undefined,
-    };
 
     const {
       browsingSessionId = null,
@@ -155,8 +130,6 @@ export class CoreTrackingService {
       idpIdentity = null,
     } = session;
 
-    const { isTrusted, isSuspicious } = deviceSession;
-
     return {
       browsingSessionId,
       accountId,
@@ -175,9 +148,6 @@ export class CoreTrackingService {
       idpName,
       idpLabel,
       idpSub: idpIdentity?.sub || null,
-
-      deviceTrusted: isTrusted,
-      deviceIsSuspicious: isSuspicious,
     };
   }
 }

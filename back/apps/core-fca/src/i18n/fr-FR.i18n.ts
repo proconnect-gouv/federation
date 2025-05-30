@@ -110,10 +110,6 @@ export const frFR: I18nTranslationsMapType = {
     'Client authentication failed.',
   'DataProviderAdapterMongo.exceptions.dataProviderNotFound': 'Unknown client.',
 
-  // device
-  'Device.exceptions.deviceCookieInvalidData': 'undefined',
-  'Device.exceptions.deviceCookieInvalidJson': 'undefined',
-
   // dto2form
   'Dto2form.exceptions.dto2formInvalidForm':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
