@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { IsObject, IsString } from 'class-validator';
 
-import { IsPhoneNumberFca } from '../validators/is-phone-number-fca.validator';
+import { IsPhoneNumberSimpleValidator } from '../validators/is-phone-number-simple-validator.validator';
 import { IsSiret } from '../validators/is-siret-validator';
 import { IdentityFromIdpDto } from './identity-from-idp.dto';
 
@@ -12,7 +12,7 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
   // Instead, siret is enforced as required via the sanitizer.
   siret: string;
 
-  @IsPhoneNumberFca({ groups: ['phone_number'] })
+  @IsPhoneNumberSimpleValidator({ groups: ['phone_number'] })
   phone_number?: string;
 
   @IsObject()
