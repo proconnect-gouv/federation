@@ -30,7 +30,9 @@ export class IsPhoneNumberSimpleValidatorConstraint
   }
 }
 
-export function IsPhoneNumberSimpleValidator(validationOptions?: ValidationOptions) {
+export function IsPhoneNumberSimpleValidator(
+  validationOptions?: ValidationOptions,
+) {
   return function (object, propertyName: string) {
     registerDecorator({
       target: object.constructor,

@@ -11,7 +11,10 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerService } from '@fc/logger';
 
 import { IdentityForSpDto, IdentityFromIdpDto } from '../dto';
-import { CoreFcaInvalidIdentityException, NoDefaultSiretException } from '../exceptions';
+import {
+  CoreFcaInvalidIdentityException,
+  NoDefaultSiretException,
+} from '../exceptions';
 
 @Injectable()
 export class IdentitySanitizer {
@@ -54,6 +57,7 @@ export class IdentitySanitizer {
     return identityFromIdp;
   }
 
+  // eslint-disable-next-line complexity
   async transformIdentity(
     identityFromIdp: IdentityFromIdpDto,
     idpId: string,

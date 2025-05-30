@@ -44,9 +44,7 @@ import {
   UserSession,
 } from '../dto';
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
-import {
-  CoreFcaAgentNoIdpException,
-} from '../exceptions';
+import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaFqdnService,
   CoreFcaService,
@@ -350,7 +348,10 @@ export class OidcClientController {
       });
     }
 
-    const account = await this.accountService.getOrCreateAccount(idpId, idpIdentity.sub);
+    const account = await this.accountService.getOrCreateAccount(
+      idpId,
+      idpIdentity.sub,
+    );
 
     const spIdentity = await this.sanitizer.transformIdentity(
       idpIdentity,
@@ -372,5 +373,4 @@ export class OidcClientController {
 
     res.redirect(url);
   }
-
 }
