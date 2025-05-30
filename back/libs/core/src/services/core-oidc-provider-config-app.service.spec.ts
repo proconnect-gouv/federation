@@ -23,7 +23,7 @@ describe('CoreOidcProviderConfigAppService', () => {
   };
 
   const oidcClientServiceMock = {
-    hasEndSessionUrlFromProvider: jest.fn(),
+    hasEndSessionUrl: jest.fn(),
   };
 
   const configServiceMock = {
@@ -125,23 +125,19 @@ describe('CoreOidcProviderConfigAppService', () => {
       service['getSessionId'] = jest.fn().mockResolvedValue(sessionId);
     });
 
-    it('should call hasEndSessionUrlFromProvider if session & idpId is defined', async () => {
+    it('should call hasEndSessionUrl if session & idpId is defined', async () => {
       // Given
       sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionOidcMock);
       // When
       await service.logoutSource(ctxMock, form);
       // Then
-      expect(
-        oidcClientServiceMock.hasEndSessionUrlFromProvider,
-      ).toHaveBeenCalledTimes(1);
+      expect(oidcClientServiceMock.hasEndSessionUrl).toHaveBeenCalledTimes(1);
     });
 
-    it('should call logoutFormSessionDestroy with given parameters if session & idpId is defined and hasEndSessionUrlFromProvider return true', async () => {
+    it('should call logoutFormSessionDestroy with given parameters if session & idpId is defined and hasEndSessionUrl return true', async () => {
       // Given
       sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionOidcMock);
-      oidcClientServiceMock.hasEndSessionUrlFromProvider.mockResolvedValue(
-        true,
-      );
+      oidcClientServiceMock.hasEndSessionUrl.mockResolvedValue(true);
       const expectedParamsMock = {
         method: 'POST',
         title: 'Déconnexion du FI',
@@ -158,12 +154,10 @@ describe('CoreOidcProviderConfigAppService', () => {
       );
     });
 
-    it('should call logoutFormSessionDestroy with given parameters if hasEndSessionUrlFromProvider is false', async () => {
+    it('should call logoutFormSessionDestroy with given parameters if hasEndSessionUrl is false', async () => {
       // Given
       sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionOidcMock);
-      oidcClientServiceMock.hasEndSessionUrlFromProvider.mockResolvedValue(
-        false,
-      );
+      oidcClientServiceMock.hasEndSessionUrl.mockResolvedValue(false);
       const expectedParamsMock = {
         method: 'GET',
         title: 'Déconnexion FC',
@@ -246,31 +240,27 @@ describe('CoreOidcProviderConfigAppService', () => {
       expect(result).toBe(false);
     });
 
-    it('should call hasEndSessionUrlFromProvider with idpId if idpId is defined', async () => {
+    it('should call hasEndSessionUrl with idpId if idpId is defined', async () => {
       // Given
       // When
       await service['hasIdpLogoutUrl'](idpIdMock);
       // Then
-      expect(
-        oidcClientServiceMock.hasEndSessionUrlFromProvider,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        oidcClientServiceMock.hasEndSessionUrlFromProvider,
-      ).toHaveBeenCalledWith(sessionOidcMock.User.idpId);
+      expect(oidcClientServiceMock.hasEndSessionUrl).toHaveBeenCalledTimes(1);
+      expect(oidcClientServiceMock.hasEndSessionUrl).toHaveBeenCalledWith(
+        sessionOidcMock.User.idpId,
+      );
     });
 
-    it('should return result from call to hasEndSessionUrlFromProvider', async () => {
+    it('should return result from call to hasEndSessionUrl', async () => {
       // Given
-      const hasEndSessionUrlFromProviderResult = Symbol(
-        'hasEndSessionUrlFromProviderResult',
-      );
-      oidcClientServiceMock.hasEndSessionUrlFromProvider.mockResolvedValue(
-        hasEndSessionUrlFromProviderResult,
+      const hasEndSessionUrlResult = Symbol('hasEndSessionUrlResult');
+      oidcClientServiceMock.hasEndSessionUrl.mockResolvedValue(
+        hasEndSessionUrlResult,
       );
       // When
       const result = await service['hasIdpLogoutUrl'](idpIdMock);
       // Then
-      expect(result).toBe(hasEndSessionUrlFromProviderResult);
+      expect(result).toBe(hasEndSessionUrlResult);
     });
   });
 });

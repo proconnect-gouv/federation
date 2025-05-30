@@ -16,12 +16,8 @@ describe('IsSiretValidator', () => {
       expect(constraint.validate('5521005540026')).toBeFalse();
     });
 
-    it('should validate a string number of 14 figures with spaces', () => {
-      expect(constraint.validate('5521 0055 400 260')).toBeTrue();
-    });
-
     it('should not validate a string with more than 14 figures', () => {
-      expect(constraint.validate('5521 0055 400 260 0')).toBeFalse();
+      expect(constraint.validate('552100554002600')).toBeFalse();
     });
 
     it('should not validate a string number of more than 14 figures without empty spaces', () => {
