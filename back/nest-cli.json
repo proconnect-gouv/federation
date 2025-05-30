@@ -282,15 +282,6 @@
         "tsConfigPath": "libs/override-oidc-provider/tsconfig.lib.json"
       }
     },
-    "mailer": {
-      "type": "library",
-      "root": "libs/mailer",
-      "entryFile": "index",
-      "sourceRoot": "libs/mailer/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/mailer/tsconfig.lib.json"
-      }
-    },
     "identity-provider-adapter-env": {
       "type": "library",
       "root": "libs/identity-provider-adapter-env",
@@ -523,15 +514,6 @@
       "sourceRoot": "libs/account-fca/src",
       "compilerOptions": {
         "tsConfigPath": "libs/account-fca/tsconfig.lib.json"
-      }
-    },
-    "device": {
-      "type": "library",
-      "root": "libs/device",
-      "entryFile": "index",
-      "sourceRoot": "libs/device/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/device/tsconfig.lib.json"
       }
     },
     "dto2form": {

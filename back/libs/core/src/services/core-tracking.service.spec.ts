@@ -320,9 +320,8 @@ describe('CoreTrackingService', () => {
       // When
       service['getDataFromSession'](sessionIdMock);
       // Then
-      expect(sessionServiceMock.get).toHaveBeenCalledTimes(2);
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.get).toHaveBeenNthCalledWith(1, 'User');
-      expect(sessionServiceMock.get).toHaveBeenNthCalledWith(2, 'Device');
     });
 
     it('should return a default object with only sessionId, if session is not found', () => {
