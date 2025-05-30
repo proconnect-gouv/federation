@@ -155,14 +155,6 @@ export const frFR: I18nTranslationsMapType = {
   'Jwt.exceptions.multipleRelevantKeys': 'Multiple relevant keys found',
   'Jwt.exceptions.noRelevantKey': 'undefined',
 
-  // mailer
-  'Mailer.exceptions.mailerNotificationConnect':
-    'Une erreur technique est survenue, veuillez contacter le support.',
-  'Mailer.exceptions.noEmail':
-    'Les informations sur votre identité sont incomplètes et ne permettent pas de vous connecter à votre service. Veuillez contacter le support.',
-  'Mailer.exceptions.templateNotFound':
-    'Une erreur technique est survenue, veuillez contacter le support.',
-
   // oidc-acr
   'OidcAcr.exceptions.oidcAcrNoSsoAllowedAcrFound': 'No SSO allowed ACR found',
 
