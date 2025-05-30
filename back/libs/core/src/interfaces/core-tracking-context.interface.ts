@@ -1,4 +1,4 @@
-import { IdentityForSpDto } from '@fc/oidc';
+import { IdentityFromIdpDto } from '@fc/core-fca';
 import { NetworkContextInterface } from '@fc/tracking-context';
 
 export interface ICoreTrackingContext {
@@ -24,15 +24,5 @@ export interface ICoreTrackingContext {
   readonly idpAcr?: string;
   readonly idpName?: string;
   readonly idpLabel?: string;
-  readonly idpIdentity?: IdentityForSpDto;
-
-  readonly deviceTrusted?: boolean;
-  readonly deviceIsSuspicious?: boolean;
-
-  readonly deviceAccountCount?: number;
-
-  readonly deviceKnown?: boolean;
-  readonly deviceNewIdentity?: boolean;
-  readonly deviceBecameTrusted?: boolean;
-  readonly deviceBecameShared?: boolean;
+  readonly idpIdentity?: IdentityFromIdpDto;
 }

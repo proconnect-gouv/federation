@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { cloneDeep } from 'lodash';
 
 import {
   Body,
@@ -15,7 +14,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { validateDto } from '@fc/common';
+import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { CoreRoutes } from '@fc/core';
 import { UserSessionDecorator } from '@fc/core-fca/decorators';
@@ -41,13 +40,13 @@ import {
   AppConfig,
   GetIdentityProviderSelectionSessionDto,
   GetOidcCallbackSessionDto,
-  IdentityForSpDto,
-  IdentityFromIdpDto,
   RedirectToIdp,
   UserSession,
 } from '../dto';
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
-import { CoreFcaAgentNoIdpException } from '../exceptions';
+import {
+  CoreFcaAgentNoIdpException,
+} from '../exceptions';
 import {
   CoreFcaFqdnService,
   CoreFcaService,
@@ -59,6 +58,7 @@ export class OidcClientController {
   // Dependency injection can require more than 4 parameters
   /* eslint-disable-next-line max-params */
   constructor(
+    private readonly accountService: AccountFcaService,
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
@@ -225,12 +225,11 @@ export class OidcClientController {
     const { stateLength } = await this.oidcClientConfig.get();
     const idpState: string = this.crypto.genRandomString(stateLength);
 
-    const endSessionUrl: string =
-      await this.oidcClient.getEndSessionUrlFromProvider(
-        idpId,
-        idpState,
-        idpIdToken,
-      );
+    const endSessionUrl: string = await this.oidcClient.getEndSessionUrl(
+      idpId,
+      idpState,
+      idpIdToken,
+    );
 
     return res.redirect(endSessionUrl);
   }
@@ -299,13 +298,12 @@ export class OidcClientController {
       sp_id: spId,
     };
 
-    const { accessToken, idToken, acr, amr } =
-      await this.oidcClient.getTokenFromProvider(
-        idpId,
-        tokenParams,
-        req,
-        extraParams,
-      );
+    const { accessToken, idToken, acr, amr } = await this.oidcClient.getToken(
+      idpId,
+      tokenParams,
+      req,
+      extraParams,
+    );
 
     const { FC_REQUESTED_IDP_TOKEN } = this.tracking.TrackedEventsMap;
     await this.tracking.track(FC_REQUESTED_IDP_TOKEN, {
@@ -319,42 +317,26 @@ export class OidcClientController {
       idpId,
     };
 
-    const identity =
-      await this.oidcClient.getUserInfosFromProvider<IdentityFromIdpDto>(
-        userInfoParams,
-        req,
-      );
+    const plainIdpIdentity = await this.oidcClient.getUserinfo(userInfoParams);
+
+    const idpIdentity = await this.sanitizer.getValidatedIdentityFromIdp(
+      plainIdpIdentity,
+      idpId,
+    );
 
     const { FC_REQUESTED_IDP_USERINFO } = this.tracking.TrackedEventsMap;
-    const identityFqdn = this.fqdnService.getFqdnFromEmail(identity.email);
+    const identityFqdn = this.fqdnService.getFqdnFromEmail(idpIdentity.email);
 
     await this.tracking.track(FC_REQUESTED_IDP_USERINFO, {
       req,
       fqdn: identityFqdn,
-      email: identity.email,
-      idpSub: identity.sub,
+      email: idpIdentity.email,
+      idpSub: idpIdentity.sub,
     });
-
-    const errors = await validateDto(
-      identity,
-      IdentityForSpDto,
-      { forbidUnknownValues: true },
-      { excludeExtraneousValues: true },
-    );
-
-    let transformedIdentity = identity;
-
-    if (errors.length > 0) {
-      transformedIdentity = await this.sanitizer.sanitize(
-        identity,
-        idpId,
-        errors,
-      );
-    }
 
     const isAllowedIdpForEmail = await this.fqdnService.isAllowedIdpForEmail(
       idpId,
-      transformedIdentity.email,
+      idpIdentity.email,
     );
 
     if (!isAllowedIdpForEmail) {
@@ -368,17 +350,27 @@ export class OidcClientController {
       });
     }
 
-    const identityExchange: UserSession = cloneDeep({
+    const account = await this.accountService.getOrCreateAccount(idpId, idpIdentity.sub);
+
+    const spIdentity = await this.sanitizer.transformIdentity(
+      idpIdentity,
+      idpId,
+      account.id,
+      acr,
+    );
+
+    userSession.set({
       amr,
       idpIdToken: idToken,
       idpAcr: acr,
-      idpIdentity: transformedIdentity,
+      idpIdentity,
+      spIdentity,
     });
-    userSession.set(identityExchange);
 
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 
     res.redirect(url);
   }
+
 }

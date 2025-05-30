@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import {
   IsAscii,
   IsBoolean,
@@ -8,44 +8,51 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-
-import { IsSiret } from '../validators/is-siret-validator';
+import { isString } from 'lodash';
 
 export class IdentityFromIdpDto {
   @MinLength(1)
+  @MaxLength(256)
   @IsAscii()
   @Expose()
-  readonly sub!: string;
+  sub: string;
 
   @IsString()
   @MinLength(1)
   @MaxLength(256)
   @Expose()
-  readonly given_name: string;
+  given_name: string;
 
   @IsString()
   @MinLength(1)
   @MaxLength(256)
   @Expose()
-  readonly usual_name: string;
+  usual_name: string;
 
   @IsEmail()
   @Expose()
-  readonly email: string;
+  email: string;
 
   @MinLength(1)
+  @MaxLength(256)
   @IsAscii()
   @Expose()
-  readonly uid: string;
+  uid: string;
 
   @IsString()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
   @Expose()
-  readonly siren?: string;
+  siren?: string;
 
-  @IsSiret()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(256)
+  @IsOptional()
+  @Transform(({ value }) =>
+    isString(value) ? value.replace(/\s/g, '') : value,
+  )
   @Expose()
   siret?: string;
 
@@ -54,16 +61,18 @@ export class IdentityFromIdpDto {
   @MaxLength(256)
   @IsOptional()
   @Expose()
-  readonly organizational_unit?: string;
+  organizational_unit?: string;
 
   @IsString()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
   @Expose()
-  readonly belonging_population?: string;
+  belonging_population?: string;
 
   @IsString()
+  @MinLength(1)
+  @MaxLength(256)
   @IsOptional()
   @Expose()
   phone_number?: string;
@@ -73,10 +82,17 @@ export class IdentityFromIdpDto {
   @MaxLength(256)
   @IsOptional()
   @Expose()
-  readonly 'chorusdt'?: string;
+  'chorusdt:societe'?: string;
+
+  @IsString()
+  @MinLength(1)
+  @MaxLength(256)
+  @IsOptional()
+  @Expose()
+  'chorusdt:matricule'?: string;
 
   @IsBoolean()
   @IsOptional()
   @Expose()
-  readonly is_service_public?: boolean;
+  is_service_public?: boolean;
 }

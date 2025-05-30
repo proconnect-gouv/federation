@@ -5,12 +5,9 @@ import { TokenSet } from 'openid-client';
 import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity } from '@fc/oidc';
-import { TrackedEventContextInterface } from '@fc/tracking';
 
-import { MinIdentityDto, TokenResultDto } from '../dto';
+import { TokenResultDto } from '../dto';
 import {
-  OidcClientMissingIdentitySubException,
   OidcClientTokenResultFailedException,
   OidcClientUserinfosFailedException,
 } from '../exceptions';
@@ -30,10 +27,10 @@ export class OidcClientService {
     private readonly logger: LoggerService,
   ) {}
 
-  async getTokenFromProvider(
+  async getToken(
     idpId: string,
     params: TokenParams,
-    context: TrackedEventContextInterface,
+    req: Request,
     extraParams?: ExtraTokenParams,
   ): Promise<TokenResults> {
     /**
@@ -45,7 +42,7 @@ export class OidcClientService {
      */
     // OIDC: call idp's /token endpoint
     const tokenSet: TokenSet = await this.utils.getTokenSet(
-      context,
+      req,
       idpId,
       params,
       extraParams,
@@ -62,20 +59,15 @@ export class OidcClientService {
       rep_scope: idpRepresentativeScope,
     }: IdTokenClaimsWithRepScope = tokenSet.claims();
 
-    const tokenResult = {
+    const tokenResult = plainToInstance(TokenResultDto, {
       acr,
       amr,
       accessToken,
       idToken,
       refreshToken,
       idpRepresentativeScope,
-    };
-
-    const object = plainToInstance(TokenResultDto, tokenResult);
-    const tokenValidationErrors = await validate(object as object, {
-      whitelist: true,
-      forbidNonWhitelisted: true,
     });
+    const tokenValidationErrors = await validate(tokenResult as object);
 
     if (tokenValidationErrors.length) {
       this.logger.info({ tokenValidationErrors });
@@ -85,35 +77,17 @@ export class OidcClientService {
     return tokenResult;
   }
 
-  async getUserInfosFromProvider<T = IOidcIdentity>(
-    { accessToken, idpId }: UserInfosParams,
-    _context: TrackedEventContextInterface,
-  ): Promise<T> {
+  async getUserinfo({ accessToken, idpId }: UserInfosParams): Promise<any> {
     // OIDC: call idp's /userinfo endpoint
-    let identity: T;
     try {
-      identity = await this.utils.getUserInfo<T>(accessToken, idpId);
+      return await this.utils.getUserInfo(accessToken, idpId);
     } catch (error) {
       this.logger.debug(error.stack);
       throw new OidcClientUserinfosFailedException();
     }
-
-    const object = plainToInstance(MinIdentityDto, identity, {
-      excludeExtraneousValues: true,
-    });
-    const userinfoValidationErrors = await validate(object as object, {
-      whitelist: true,
-    });
-
-    if (userinfoValidationErrors.length) {
-      this.logger.info({ userinfoValidationErrors });
-      throw new OidcClientMissingIdentitySubException();
-    }
-
-    return identity;
   }
 
-  async getEndSessionUrlFromProvider(
+  async getEndSessionUrl(
     ipdId: string,
     stateFromSession: string,
     idTokenHint?: TokenSet | string,
@@ -127,7 +101,7 @@ export class OidcClientService {
     );
   }
 
-  async hasEndSessionUrlFromProvider(ipdId: string): Promise<boolean> {
+  async hasEndSessionUrl(ipdId: string): Promise<boolean> {
     return await this.utils.hasEndSessionUrl(ipdId);
   }
 }

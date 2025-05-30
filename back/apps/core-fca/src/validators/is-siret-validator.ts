@@ -16,18 +16,16 @@ export class IsSiretConstraint implements ValidatorConstraintInterface {
       return false;
     }
 
-    const siretNoSpaces = (siret as string).replace(/\s/g, '');
-
-    if (!/^\d{14}$/.test(siretNoSpaces)) {
+    if (!/^\d{14}$/.test(siret)) {
       return false;
     }
 
     // Special case for La Poste SIREN/SIRET which bypasses Luhn's formula
-    if (siretNoSpaces.startsWith('356000000')) {
+    if (siret.startsWith('356000000')) {
       return true;
     }
 
-    return this.luhnChecksum(siretNoSpaces) % 10 === 0;
+    return this.luhnChecksum(siret) % 10 === 0;
   }
 
   defaultMessage(): string {
