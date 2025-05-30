@@ -4,7 +4,6 @@ import { TokenSet } from 'openid-client';
 import { LoggerService } from '@fc/logger';
 
 import {
-  OidcClientMissingIdentitySubException,
   OidcClientTokenResultFailedException,
   OidcClientUserinfosFailedException,
 } from '../exceptions';
@@ -35,7 +34,7 @@ describe('OidcClientService', () => {
     service = new OidcClientService(utilsMock, loggerMock);
   });
 
-  describe('getTokenFromProvider', () => {
+  describe('getToken', () => {
     it('should return token results on success', async () => {
       const tokenSetMock = {
         access_token: 'accessToken',
@@ -48,10 +47,10 @@ describe('OidcClientService', () => {
       } as unknown as TokenSet;
       utilsMock.getTokenSet.mockResolvedValueOnce(tokenSetMock);
 
-      const result = await service.getTokenFromProvider(
+      const result = await service.getToken(
         'idpId1',
         { state: 'state1', nonce: 'nonce1' },
-        { contextKey: 'contextValue' },
+        {} as any,
       );
 
       expect(result).toEqual({
@@ -76,10 +75,10 @@ describe('OidcClientService', () => {
       } as unknown as TokenSet);
 
       await expect(
-        service.getTokenFromProvider(
+        service.getToken(
           'idpId',
           { state: 'stateValue', nonce: 'nonceValue' },
-          {},
+          {} as any,
         ),
       ).rejects.toThrow(OidcClientTokenResultFailedException);
       expect(loggerMock.info).toHaveBeenCalledWith({
@@ -88,15 +87,21 @@ describe('OidcClientService', () => {
     });
   });
 
-  describe('getUserInfosFromProvider', () => {
+  describe('getUserinfo', () => {
     it('should return user infos on success', async () => {
-      const identityMock = { sub: 'subMock', name: 'mockName' };
+      const identityMock = {
+        sub: 'subMock',
+        given_name: 'nameMock',
+        usual_name: 'nameMock',
+        email: 'emailMock',
+        uid: 'uidMock',
+      };
       utilsMock.getUserInfo.mockResolvedValueOnce(identityMock);
 
-      const result = await service.getUserInfosFromProvider(
-        { accessToken: 'accessTokenMock', idpId: 'idpIdMock' },
-        { contextKey: 'contextValue' },
-      );
+      const result = await service.getUserinfo({
+        accessToken: 'accessTokenMock',
+        idpId: 'idpIdMock',
+      });
 
       expect(result).toEqual(identityMock);
     });
@@ -105,34 +110,20 @@ describe('OidcClientService', () => {
       utilsMock.getUserInfo.mockRejectedValueOnce(new Error('Fetch error'));
 
       await expect(
-        service.getUserInfosFromProvider(
-          { accessToken: 'accessTokenMock', idpId: 'idpIdMock' },
-          { contextKey: 'contextValue' },
-        ),
+        service.getUserinfo({
+          accessToken: 'accessTokenMock',
+          idpId: 'idpIdMock',
+        }),
       ).rejects.toThrow(OidcClientUserinfosFailedException);
-    });
-
-    it('should throw an exception if user info DTO validation fails', async () => {
-      utilsMock.getUserInfo.mockResolvedValueOnce({ nosub: 'mockNosub' });
-
-      await expect(
-        service.getUserInfosFromProvider(
-          { accessToken: 'accessTokenMock', idpId: 'idpIdMock' },
-          { contextKey: 'contextValue' },
-        ),
-      ).rejects.toThrow(OidcClientMissingIdentitySubException);
-      expect(loggerMock.info).toHaveBeenCalledWith({
-        userinfoValidationErrors: [expect.any(ValidationError)],
-      });
     });
   });
 
-  describe('getEndSessionUrlFromProvider', () => {
+  describe('getEndSessionUrl', () => {
     it('should return end session URL', async () => {
       const endSessionUrlMock = 'https://mock-end-session-url.com';
       utilsMock.getEndSessionUrl.mockResolvedValueOnce(endSessionUrlMock);
 
-      const result = await service.getEndSessionUrlFromProvider(
+      const result = await service.getEndSessionUrl(
         'idpIdMock',
         'stateMock',
         'idTokenMock',
@@ -143,11 +134,11 @@ describe('OidcClientService', () => {
     });
   });
 
-  describe('hasEndSessionUrlFromProvider', () => {
+  describe('hasEndSessionUrl', () => {
     it('should return true if end session URL exists', async () => {
       utilsMock.hasEndSessionUrl.mockResolvedValueOnce(true);
 
-      const result = await service.hasEndSessionUrlFromProvider('idpIdMock');
+      const result = await service.hasEndSessionUrl('idpIdMock');
 
       expect(result).toBe(true);
     });
@@ -155,7 +146,7 @@ describe('OidcClientService', () => {
     it('should return false if end session URL does not exist', async () => {
       utilsMock.hasEndSessionUrl.mockResolvedValueOnce(false);
 
-      const result = await service.hasEndSessionUrlFromProvider('idpIdMock');
+      const result = await service.hasEndSessionUrl('idpIdMock');
 
       expect(result).toBe(false);
     });

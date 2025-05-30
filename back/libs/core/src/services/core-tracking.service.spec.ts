@@ -101,13 +101,13 @@ describe('CoreTrackingService', () => {
     spId: 'clientId',
     spName: 'some spName',
     spEssentialAcr: 'some spAcr',
-    spIdentity: {},
+    spIdentity: {} as any,
 
     idpId: 'some idpId',
     idpName: 'some idpName',
     idpLabel: 'some idpLabel',
     idpAcr: 'some idpAcr',
-    idpIdentity: { sub: 'some idpSub' },
+    idpIdentity: { sub: 'some idpSub' } as any,
   };
 
   beforeEach(async () => {
@@ -446,7 +446,7 @@ describe('CoreTrackingService', () => {
         spName: 'spNameMock',
         spEssentialAcr: 'spAcrMock',
         subs: { spIdMock: 'sub for spIdMock' },
-        spIdentity: {},
+        spIdentity: {} as any,
         browsingSessionId: browsingSessionIdMock,
       };
       sessionServiceMock.get.mockReturnValueOnce(sessionMock);
@@ -481,7 +481,7 @@ describe('CoreTrackingService', () => {
       };
       const sessionMock: UserSession = {
         subs: {},
-        spIdentity: {},
+        spIdentity: {} as any,
         browsingSessionId: browsingSessionIdMock,
       };
       sessionServiceMock.get.mockReturnValueOnce(sessionMock);

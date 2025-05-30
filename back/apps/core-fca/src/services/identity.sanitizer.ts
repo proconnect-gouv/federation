@@ -116,9 +116,13 @@ export class IdentitySanitizer {
 
     // Now the identity should be valid
     const identityValidationErrors = await validate(identityForSp);
+    // Defensive programming: this should never happen
+    /* istanbul ignore next */
     if (identityValidationErrors.length > 0) {
+      this.logger.err({ identityValidationErrors });
       throw new UnknownException();
     }
+
     if (!isDefined(identityForSp.siret)) {
       // We enforce siret to be set as we cannot do it with class-validator
       throw new NoDefaultSiretException();
