@@ -1,4 +1,3 @@
-import { Expose } from 'class-transformer';
 import { IsObject, IsString } from 'class-validator';
 
 import { IsPhoneNumberSimpleValidator } from '../validators/is-phone-number-simple-validator.validator';
@@ -16,7 +15,6 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
   phone_number?: string;
 
   @IsObject()
-  @Expose()
   custom: {
     [key: string]: unknown;
   };
