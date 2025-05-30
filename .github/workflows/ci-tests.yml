@@ -20,19 +20,8 @@ jobs:
         with:
           node-version-file: ./back/package.json
 
-      - name: Cache Node.js dependencies
-        id: federation-yarn-cache
-        uses: actions/cache@v4
-        with:
-          path: back/node_modules
-          key: ${{ runner.os }}-node-modules-back-${{ hashFiles('back/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-back-
-
       - name: Install dependencies
-        if: steps.federation-yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Check doc
         run: |
@@ -45,8 +34,7 @@ jobs:
           yarn prettier
 
       - name: Check transpilation
-        run: |
-          yarn tsc --noEmit
+        run: yarn tsc --noEmit
 
   test_static_quality:
     runs-on: ubuntu-24.04
@@ -62,29 +50,15 @@ jobs:
         with:
           node-version-file: ./back/package.json
 
-      - name: Cache quality Node.js dependencies
-        id: quality-yarn-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            quality/node_modules
-            ../.cache/Cypress
-          key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-quality-
-
       - name: Install quality dependencies
-        if: steps.quality-yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Check code style
         run: |
           yarn lint
           yarn prettier
       - name: Check transpilation
-        run: |
-          yarn tsc --noEmit
+        run: yarn tsc --noEmit
 
   test_unit_back:
     runs-on: ubuntu-24.04
@@ -100,23 +74,11 @@ jobs:
         with:
           node-version-file: ./back/package.json
 
-      - name: Cache Node.js dependencies
-        id: federation-yarn-cache
-        uses: actions/cache@v4
-        with:
-          path: back/node_modules
-          key: ${{ runner.os }}-node-modules-back-${{ hashFiles('back/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-back-
-
       - name: Install dependencies
-        if: steps.federation-yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Test code coverage
-        run: |
-          yarn test --coverage
+        run: yarn test --coverage
 
   test_snapshot:
     runs-on: ubuntu-24.04
@@ -141,8 +103,7 @@ jobs:
 
       - name: Connect to docker registry
         working-directory: ./docker
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Create symlink to federation root
         working-directory: ./docker/volumes/src
@@ -159,21 +120,8 @@ jobs:
           ./docker-stack up small
           ./docker-stack start-all-ci
 
-      - name: Cache quality Node.js dependencies
-        id: quality-yarn-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            quality/node_modules
-            ../.cache/Cypress
-          key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-quality-
-
       - name: Install quality dependencies
-        if: steps.quality-yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Test snapshots
         working-directory: ./quality/fca
@@ -238,21 +186,8 @@ jobs:
           ./docker-stack up medium
           ./docker-stack start-all-ci
 
-      - name: Cache quality Node.js dependencies
-        id: quality-yarn-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            quality/node_modules
-            ../.cache/Cypress
-          key: ${{ runner.os }}-node-modules-quality-${{ hashFiles('quality/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-quality-
-
       - name: Install quality dependencies
-        if: steps.quality-yarn-cache.outputs.cache-hit != 'true'
-        run: |
-          yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Execute e2e tests
         working-directory: ./quality/fca
