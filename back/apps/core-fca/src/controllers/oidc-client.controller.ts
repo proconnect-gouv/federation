@@ -356,7 +356,7 @@ export class OidcClientController {
     const spIdentity = await this.sanitizer.transformIdentity(
       idpIdentity,
       idpId,
-      account.id,
+      account.sub,
       acr,
     );
 
