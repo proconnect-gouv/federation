@@ -56,11 +56,7 @@ export class IdentitySanitizer {
     if (filteredErrors.length > 0) {
       this.logger.err(filteredErrors, `Identity from "${idpId}" is invalid`);
       const contact = this.getSupportEmail(identityProvider);
-      throw new CoreFcaInvalidIdentityException(
-        contact,
-        JSON.stringify(filteredErrors.map((error) => error?.constraints)),
-        JSON.stringify(filteredErrors[0]?.target), // same target for all validation errors
-      );
+      throw new CoreFcaInvalidIdentityException(filteredErrors);
     }
 
     return sanitizedIdentity as IdentityForSpDto;

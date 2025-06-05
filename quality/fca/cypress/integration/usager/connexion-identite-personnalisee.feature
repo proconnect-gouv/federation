@@ -11,6 +11,7 @@ Fonctionnalité: Connexion Usager personnalisé
     Et que je m'authentifie
     Alors le fournisseur de service a accès aux informations du scope "tous les scopes sauf phone" en provenance du FI "par défaut"
 
+  @only
   Scénario: Connexion d'un usager - mauvais format d'email et vérification de l'erreur
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
