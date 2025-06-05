@@ -361,7 +361,6 @@ describe('InteractionController', () => {
           spId: 'sp123',
           idpId: 'idp123',
           idpIdentity: { sub: 'user1', extraClaims: 'extra' },
-          subs: {},
         }),
         set: jest.fn(),
       } as unknown as ISessionService<UserSession>;
@@ -398,7 +397,6 @@ describe('InteractionController', () => {
       expect(userSessionService.set).toHaveBeenCalledWith({
         interactionAcr,
         accountId: 'account123',
-        subs: { sp123: 'sub123' },
       });
       expect(oidcProviderMock.finishInteraction).toHaveBeenCalledWith(
         req,

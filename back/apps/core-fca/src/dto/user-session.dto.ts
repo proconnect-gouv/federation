@@ -142,10 +142,6 @@ export class UserSession {
   readonly idpIdentity?: IdentityFromIdpDto;
 
   @IsOptional()
-  @IsObject()
-  readonly subs?: Record<string, string>;
-
-  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   readonly idpRepresentativeScope?: string[];

@@ -94,10 +94,6 @@ describe('CoreTrackingService', () => {
     interactionId: interactionIdMock,
     interactionAcr: interactionAcrMock,
 
-    subs: {
-      clientId: 'sub client id',
-      otherClientId: 'sub for other client id',
-    },
     spId: 'clientId',
     spName: 'some spName',
     spEssentialAcr: 'some spAcr',
@@ -369,7 +365,7 @@ describe('CoreTrackingService', () => {
         spId: 'clientId',
         spName: 'some spName',
         spEssentialAcr: 'some spAcr',
-        spSub: 'sub client id',
+        spSub: null,
 
         idpId: 'some idpId',
         idpName: 'some idpName',
@@ -396,7 +392,7 @@ describe('CoreTrackingService', () => {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spEssentialAcr: 'spAcrMock',
-        spSub: 'sub for spIdMock',
+        spSub: null,
 
         idpId: null,
         idpName: null,
@@ -408,7 +404,6 @@ describe('CoreTrackingService', () => {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spEssentialAcr: 'spAcrMock',
-        subs: { spIdMock: 'sub for spIdMock' },
         browsingSessionId: browsingSessionIdMock,
       };
       sessionServiceMock.get.mockReturnValueOnce(sessionMock);
@@ -433,7 +428,7 @@ describe('CoreTrackingService', () => {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spEssentialAcr: 'spAcrMock',
-        spSub: 'sub for spIdMock',
+        spSub: null,
 
         idpId: null,
         idpName: null,
@@ -445,7 +440,6 @@ describe('CoreTrackingService', () => {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spEssentialAcr: 'spAcrMock',
-        subs: { spIdMock: 'sub for spIdMock' },
         spIdentity: {} as any,
         browsingSessionId: browsingSessionIdMock,
       };
@@ -480,7 +474,6 @@ describe('CoreTrackingService', () => {
         idpLabel: null,
       };
       const sessionMock: UserSession = {
-        subs: {},
         spIdentity: {} as any,
         browsingSessionId: browsingSessionIdMock,
       };

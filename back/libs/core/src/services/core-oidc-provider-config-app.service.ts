@@ -64,7 +64,6 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
       spEssentialAcr,
       spId,
       spName,
-      subs,
     } = session.User;
 
     this.sessionService.set('User', {
@@ -81,7 +80,6 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
       spEssentialAcr,
       spId,
       spName,
-      subs,
     });
 
     const params = await this.getLogoutParams(idpId);

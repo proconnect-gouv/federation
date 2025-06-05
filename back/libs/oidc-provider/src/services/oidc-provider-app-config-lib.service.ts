@@ -7,15 +7,12 @@ import {
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { IdentityForSpDto, UserSession } from '@fc/core-fca';
+import { UserSession } from '@fc/core-fca';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { SessionService, SessionSubNotFoundException } from '@fc/session';
+import { SessionService } from '@fc/session';
 
-import {
-  OidcProviderRuntimeException,
-  OidcProviderSpIdNotFoundException,
-} from '../exceptions';
+import { OidcProviderRuntimeException } from '../exceptions';
 import { LogoutFormParamsInterface } from '../interfaces';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
 
@@ -81,26 +78,26 @@ export abstract class OidcProviderAppConfigLibService {
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#accounts
    */
   async findAccount(
-    ctx: KoaContextWithOIDC,
+    _ctx: KoaContextWithOIDC,
     sessionId: string,
   ): Promise<{ accountId: string; claims: Function }> {
     try {
       // Use the user session from the service provider request
       await this.sessionService.initCache(sessionId);
 
-      // Retrieve spId from panva context
-      const spId = this.getServiceProviderIdFromCtx(ctx);
+      const { spIdentity } = this.sessionService.get<UserSession>('User');
 
-      await this.checkSpId(spId);
-
-      const { spIdentity, subs } = this.sessionService.get<UserSession>('User');
-
-      const subSp = spId && subs[spId];
-      await this.checkSub(subSp);
-
-      const account = await this.formatAccount(sessionId, spIdentity, subSp);
-
-      return account;
+      return {
+        /**
+         * We used the `sessionId` as `accountId` identifier when building the grant
+         * @see OidcProviderService.finishInteraction()
+         */
+        accountId: sessionId,
+        // eslint-disable-next-line require-await
+        async claims() {
+          return { ...spIdentity };
+        },
+      };
     } catch (error) {
       // Hacky throw from oidc-provider
       await throwException(error);
@@ -180,38 +177,5 @@ export abstract class OidcProviderAppConfigLibService {
 
   getServiceProviderIdFromCtx(ctx: KoaContextWithOIDC): string | undefined {
     return ctx.oidc?.entities?.Client?.clientId;
-  }
-
-  protected async checkSpId(spId: string): Promise<void> {
-    if (!spId) {
-      await throwException(new OidcProviderSpIdNotFoundException());
-    }
-  }
-
-  protected async checkSub(sub: string): Promise<void> {
-    if (!sub) {
-      await throwException(new SessionSubNotFoundException());
-    }
-  }
-
-  // Needed for consistent typing
-  // eslint-disable-next-line require-await
-  protected async formatAccount(
-    sessionId: string,
-    spIdentity: IdentityForSpDto,
-    subSp: string,
-  ): Promise<{ accountId: string; claims: Function }> {
-    return {
-      /**
-       * We used the `sessionId` as `accountId` identifier when building the grant
-       * @see OidcProviderService.finishInteraction()
-       */
-      accountId: sessionId,
-      // Needed to match panva interface
-      // eslint-disable-next-line require-await
-      async claims() {
-        return { ...spIdentity, sub: subSp };
-      },
-    };
   }
 }

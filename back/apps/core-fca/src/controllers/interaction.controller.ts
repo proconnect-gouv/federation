@@ -237,7 +237,6 @@ export class InteractionController {
       isSilentAuthentication,
       spEssentialAcr,
       spId,
-      subs,
     } = userSessionService.get();
 
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
@@ -284,7 +283,6 @@ export class InteractionController {
     const session: UserSession = {
       accountId: account.id,
       interactionAcr,
-      subs: { ...subs, [spId]: account.sub },
     };
     userSessionService.set(session);
 
