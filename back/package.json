@@ -57,15 +57,12 @@
     "@types/ejs": "^3.1.2",
     "@types/glob": "^8.1.0",
     "@types/retry": "^0.12.2",
-    "amqp-connection-manager": "^4.1.14",
-    "amqplib": "^0.10.4",
     "apache-ignite-client": "^1.0.0",
     "axios": "^1.5.0",
     "body-parser": "^1.20.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
-    "csv-parser": "^3.2.0",
     "deep-freeze": "^0.0.1",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
@@ -76,9 +73,7 @@
     "jose": "^4.14.4",
     "jose-openid-client": "npm:jose@^2.0.5",
     "lodash": "^4.17.21",
-    "luxon": "^3.4.2",
     "mongoose": "^8.9.5",
-    "nodemailer": "^6.9.8",
     "oidc-provider": "7.14.3",
     "oidc-provider-v8": "npm:oidc-provider@^8.8.0",
     "openid-client": "5.7.0",
@@ -87,7 +82,6 @@
     "pg": "^8.11.3",
     "pino": "^8.15.0",
     "quick-lru": "^7.0.0",
-    "recursive-readdir": "^2.2.3",
     "reflect-metadata": "^0.2.1",
     "retry": "^0.13.1",
     "rxjs": "^7.8.1",
@@ -108,8 +102,6 @@
     "@types/oidc-provider": "7.8.2",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
-    "cypress": "13.6.0",
-    "cypress-plugin-tab": "^1.0.5",
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.31.0",
@@ -119,19 +111,12 @@
     "jest-extended": "^4.0.1",
     "jest-mock": "^29.6.3",
     "prettier": "^3.0.2",
-    "supertest": "^7.0.0",
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "4.2.0",
-    "typedoc": "^0.26.7",
     "typescript": "^5.7.3",
     "webpack-stats-plugin": "^1.1.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "echo \"[Husky] pre-commit\" && yarn lint"
-    }
   },
   "engines": {
     "node": "22.13.0"

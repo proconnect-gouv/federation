@@ -64,7 +64,6 @@ _prune_all() {
   docker image prune -af
   docker system prune -af --volumes
   docker system df
-  (cypress cache prune || echo "skipped cypress cache prune")
   npm cache clean --force
   yarn cache clean
   sudo du -sh /var/cache/apt/archives
