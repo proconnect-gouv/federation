@@ -17,7 +17,6 @@
 - [cypress-axe](https://yarnpkg.com/package?q=cypress-axe&name=cypress-axe)
 - [cypress-image-snapshot](https://yarnpkg.com/package?q=cypress-image-snapshot&name=@simonsmith/cypress-image-snapshot)
 - [cypress-plugin-api](https://yarnpkg.com/package?q=cypress-plugin-api&name=cypress-plugin-api)
-- [cypress-maildev](https://yarnpkg.com/package?q=cypress-maildev&name=cypress-maildev)
 
 #### Autres
 
@@ -39,5 +38,3 @@
 
 1. `cypress`:
    From v13.6.1, there are more logs in the command line when executing tests. As Cypress has solved the issue with linux logs.
-2. `cypress-maildev`:
-   The v1.3.2 changed the navigation to the mail content. `maildevVisitMessageById` uses a `cy.origin` call which prevents its usage on our local stack. (see https://github.com/Clebiez/cypress-maildev/pull/12/files)
