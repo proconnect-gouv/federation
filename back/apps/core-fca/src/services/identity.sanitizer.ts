@@ -80,15 +80,6 @@ export class IdentitySanitizer {
       identityForSp.siret = identityProvider.siret || null;
     }
 
-    // Delete the phone_number property if validation fails
-    const phoneNumberValidationErrors = await validate(identityForSp, {
-      groups: ['phone_number'],
-    });
-
-    if (phoneNumberValidationErrors.length > 0) {
-      delete identityForSp.phone_number;
-    }
-
     // The sub returned to the sp will be set by 'oidc-provider' lib and be set to the 'accountId' value
     identityForSp.sub = sub;
 
