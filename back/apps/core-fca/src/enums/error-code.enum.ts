@@ -7,5 +7,4 @@ export enum ErrorCode {
   LOGIN_REQUIRED = 21,
   BLOCKED_ACCOUNT = 24,
   UNAUTHORIZED_EMAIL = 25,
-  NO_IDP_SIRET = 26,
 }

@@ -1,12 +1,10 @@
 import { ConfigService } from '@fc/config';
+import { UnknownException } from '@fc/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
 import { IdentityFromIdpDto } from '../dto/identity-from-idp.dto';
-import {
-  CoreFcaInvalidIdentityException,
-  NoDefaultSiretException,
-} from '../exceptions';
+import { CoreFcaInvalidIdentityException } from '../exceptions';
 import { IdentitySanitizer } from './identity.sanitizer';
 
 jest.mock('@fc/logger');
@@ -139,7 +137,7 @@ describe('IdentitySanitizer', () => {
           sub,
           acr,
         ),
-      ).rejects.toThrow(NoDefaultSiretException);
+      ).rejects.toThrow(UnknownException);
     });
   });
 });

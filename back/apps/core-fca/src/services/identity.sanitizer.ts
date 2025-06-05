@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { isDefined, validate } from 'class-validator';
+import { validate } from 'class-validator';
 import { cloneDeep } from 'lodash';
 
 import { Injectable } from '@nestjs/common';
@@ -11,10 +11,7 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerService } from '@fc/logger';
 
 import { IdentityForSpDto, IdentityFromIdpDto } from '../dto';
-import {
-  CoreFcaInvalidIdentityException,
-  NoDefaultSiretException,
-} from '../exceptions';
+import { CoreFcaInvalidIdentityException } from '../exceptions';
 
 @Injectable()
 export class IdentitySanitizer {
@@ -121,11 +118,6 @@ export class IdentitySanitizer {
     if (identityValidationErrors.length > 0) {
       this.logger.err({ identityValidationErrors });
       throw new UnknownException();
-    }
-
-    if (!isDefined(identityForSp.siret)) {
-      // We enforce siret to be set as we cannot do it with class-validator
-      throw new NoDefaultSiretException();
     }
 
     return identityForSp;

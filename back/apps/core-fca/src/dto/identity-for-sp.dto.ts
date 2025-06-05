@@ -1,14 +1,12 @@
 import { IsObject, IsString } from 'class-validator';
 
+import { BaseIdentityDto } from '@fc/core-fca/dto/base-identity.dto';
+
 import { IsPhoneNumberSimpleValidator } from '../validators/is-phone-number-simple-validator.validator';
 import { IsSiret } from '../validators/is-siret-validator';
-import { IdentityFromIdpDto } from './identity-from-idp.dto';
 
-export class IdentityForSpDto extends IdentityFromIdpDto {
+export class IdentityForSpDto extends BaseIdentityDto {
   @IsSiret({ groups: ['siret'] })
-  // By inheritance from IdentityFromIdpDto, siret is optional.
-  // We cannot override this optional behavior through class-transformer.
-  // Instead, siret is enforced as required via the sanitizer.
   siret: string;
 
   @IsPhoneNumberSimpleValidator({ groups: ['phone_number'] })
