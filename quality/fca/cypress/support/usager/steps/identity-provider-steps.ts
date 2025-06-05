@@ -37,7 +37,7 @@ When(
   },
 );
 
-When("j'utilise le compte usager avec le sub {string}", function (sub: string) {
+When("j'utilise l'identité avec le sub {string}", function (sub: string) {
   cy.get('input[name="sub"]').type(`{selectAll}${sub}`, {
     force: true,
   });

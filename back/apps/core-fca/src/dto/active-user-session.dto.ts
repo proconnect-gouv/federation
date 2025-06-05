@@ -1,6 +1,7 @@
 import { IsDefined } from 'class-validator';
 
-import { IdentityForSpDto, IOidcIdentity } from '@fc/oidc';
+import { IdentityForSpDto } from './identity-for-sp.dto';
+import { IdentityFromIdpDto } from './identity-from-idp.dto';
 
 export class ActiveUserSessionDto {
   @IsDefined()
@@ -22,5 +23,5 @@ export class ActiveUserSessionDto {
   readonly idpIdToken: string;
 
   @IsDefined()
-  readonly idpIdentity: Partial<IOidcIdentity>;
+  readonly idpIdentity: IdentityFromIdpDto;
 }

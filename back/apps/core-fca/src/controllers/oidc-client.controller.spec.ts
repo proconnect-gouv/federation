@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core-fca';
@@ -32,6 +33,7 @@ describe('OidcClientController', () => {
   let controller: OidcClientController;
 
   // Mocks for injected services
+  let accountService: any;
   let configService: any;
   let logger: any;
   let oidcClient: any;
@@ -47,13 +49,16 @@ describe('OidcClientController', () => {
   let csrfService: any;
 
   beforeEach(async () => {
+    accountService = {
+      getOrCreateAccount: jest.fn(),
+    };
     configService = { get: jest.fn() };
     logger = { debug: jest.fn(), warning: jest.fn() };
     oidcClient = {
       utils: { wellKnownKeys: jest.fn() },
-      getTokenFromProvider: jest.fn(),
-      getUserInfosFromProvider: jest.fn(),
-      getEndSessionUrlFromProvider: jest.fn(),
+      getToken: jest.fn(),
+      getUserinfo: jest.fn(),
+      getEndSessionUrl: jest.fn(),
     };
     oidcClientConfig = { get: jest.fn() };
     coreFca = {
@@ -85,12 +90,16 @@ describe('OidcClientController', () => {
       getFqdnFromEmail: jest.fn(),
       isAllowedIdpForEmail: jest.fn(),
     };
-    sanitizer = { sanitize: jest.fn() };
+    sanitizer = {
+      getValidatedIdentityFromIdp: jest.fn(),
+      transformIdentity: jest.fn(),
+    };
     csrfService = { renew: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OidcClientController],
       providers: [
+        AccountFcaService,
         ConfigService,
         LoggerService,
         OidcClientService,
@@ -106,6 +115,8 @@ describe('OidcClientController', () => {
         CsrfService,
       ],
     })
+      .overrideProvider(AccountFcaService)
+      .useValue(accountService)
       .overrideProvider(ConfigService)
       .useValue(configService)
       .overrideProvider(LoggerService)
@@ -307,15 +318,13 @@ describe('OidcClientController', () => {
       } as unknown as ISessionService<UserSession>;
       oidcClientConfig.get.mockResolvedValue({ stateLength: 10 });
       crypto.genRandomString.mockReturnValue('random-state');
-      oidcClient.getEndSessionUrlFromProvider.mockResolvedValue(
-        'end-session-url',
-      );
+      oidcClient.getEndSessionUrl.mockResolvedValue('end-session-url');
 
       await controller.logoutFromIdp(res as Response, userSession);
 
       expect(oidcClientConfig.get).toHaveBeenCalled();
       expect(crypto.genRandomString).toHaveBeenCalledWith(10);
-      expect(oidcClient.getEndSessionUrlFromProvider).toHaveBeenCalledWith(
+      expect(oidcClient.getEndSessionUrl).toHaveBeenCalledWith(
         'idp123',
         'random-state',
         'token',
@@ -362,6 +371,7 @@ describe('OidcClientController', () => {
     beforeEach(() => {
       req = {} as Request;
       res = { redirect: jest.fn() } as Partial<Response>;
+      accountService.getOrCreateAccount.mockResolvedValue({ id: '123' });
       userSession = {
         duplicate: jest.fn().mockResolvedValue(undefined),
         get: jest.fn().mockReturnValue(sessionData),
@@ -369,19 +379,22 @@ describe('OidcClientController', () => {
       };
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       tracking.track.mockResolvedValue(undefined);
-      oidcClient.getTokenFromProvider.mockResolvedValue({
+      oidcClient.getToken.mockResolvedValue({
         accessToken: 'access-token',
         idToken: 'id-token',
         acr: 'acr-value',
         amr: 'amr-value',
       });
-      oidcClient.getUserInfosFromProvider.mockResolvedValue({
+      oidcClient.getUserinfo.mockResolvedValue({
         email: 'user@example.com',
         sub: 'sub123',
       });
       (validateDto as jest.Mock).mockResolvedValue([]);
       fqdnService.isAllowedIdpForEmail.mockResolvedValue(true);
       configService.get.mockReturnValue({ urlPrefix: '/app' });
+      sanitizer.getValidatedIdentityFromIdp.mockReturnValue({
+        email: 'user@example.com',
+      });
     });
 
     it('should process OIDC callback when identity is valid (no validation errors)', async () => {
@@ -406,7 +419,7 @@ describe('OidcClientController', () => {
         fqdn: 'fqdn.com',
         email: 'user@example.com',
       });
-      expect(oidcClient.getTokenFromProvider).toHaveBeenCalledWith(
+      expect(oidcClient.getToken).toHaveBeenCalledWith(
         'idp123',
         { state: 'state123', nonce: 'nonce123' },
         req,
@@ -417,30 +430,52 @@ describe('OidcClientController', () => {
         fqdn: 'fqdn.com',
         email: 'user@example.com',
       });
-      expect(oidcClient.getUserInfosFromProvider).toHaveBeenCalledWith(
-        { accessToken: 'access-token', idpId: 'idp123' },
-        req,
-      );
+      expect(oidcClient.getUserinfo).toHaveBeenCalledWith({
+        accessToken: 'access-token',
+        idpId: 'idp123',
+      });
       // Called twice: once for login_hint and once for identity email
       expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(
         'user@example.com',
       );
-      expect(tracking.track).toHaveBeenCalledWith('FC_REQUESTED_IDP_USERINFO', {
+      expect(tracking.track).toHaveBeenNthCalledWith(1, 'IDP_CALLEDBACK', {
         req,
         fqdn: 'fqdn.com',
         email: 'user@example.com',
-        idpSub: 'sub123',
       });
-      expect(validateDto).toHaveBeenCalled();
+      expect(tracking.track).toHaveBeenNthCalledWith(
+        2,
+        'FC_REQUESTED_IDP_TOKEN',
+        {
+          req,
+          fqdn: 'fqdn.com',
+          email: 'user@example.com',
+        },
+      );
+      expect(tracking.track).toHaveBeenNthCalledWith(
+        3,
+        'FC_REQUESTED_IDP_USERINFO',
+        {
+          req,
+          fqdn: 'fqdn.com',
+          email: 'user@example.com',
+          idpSub: undefined,
+        },
+      );
       expect(fqdnService.isAllowedIdpForEmail).toHaveBeenCalledWith(
         'idp123',
         'user@example.com',
       );
-      expect(userSession.set).toHaveBeenCalledWith({
+      expect(userSession.set).toHaveBeenNthCalledWith(1, {
+        idpNonce: null,
+        idpState: null,
+      });
+      expect(userSession.set).toHaveBeenNthCalledWith(2, {
         amr: 'amr-value',
         idpIdToken: 'id-token',
         idpAcr: 'acr-value',
-        idpIdentity: { email: 'user@example.com', sub: 'sub123' },
+        idpIdentity: { email: 'user@example.com' },
+        spIdentity: undefined,
       });
       expect(configService.get).toHaveBeenCalledWith('App');
       expect(res.redirect).toHaveBeenCalledWith(
@@ -455,7 +490,9 @@ describe('OidcClientController', () => {
         email: 'sanitized@example.com',
         sub: 'sub-sanitized',
       };
-      sanitizer.sanitize.mockResolvedValue(sanitizedIdentity);
+      sanitizer.getValidatedIdentityFromIdp.mockResolvedValue(
+        sanitizedIdentity,
+      );
       fqdnService.isAllowedIdpForEmail.mockResolvedValue(false);
 
       await controller.getOidcCallback(
@@ -464,10 +501,9 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      expect(sanitizer.sanitize).toHaveBeenCalledWith(
+      expect(sanitizer.getValidatedIdentityFromIdp).toHaveBeenCalledWith(
         { email: 'user@example.com', sub: 'sub123' },
         'idp123',
-        ['error'],
       );
       expect(logger.warning).toHaveBeenCalledWith(
         'Identity from "idp123" using "***@fqdn.com" is not allowed',

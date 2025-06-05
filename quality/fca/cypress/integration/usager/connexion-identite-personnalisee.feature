@@ -65,5 +65,5 @@ Fonctionnalité: Connexion Usager personnalisé
     Quand j'utilise un compte usager avec siret incorrect
     Et que je m'authentifie
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y500026"
+    Et le code d'erreur est "Y000000"
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { chain, cloneDeep, flatMap, isEmpty, some, uniq } from 'lodash';
+import { isEmpty } from 'lodash';
 import { v4 as uuid } from 'uuid';
 
 import {
@@ -13,7 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AccountFca, AccountFcaService } from '@fc/account-fca';
+import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import {
@@ -25,16 +25,10 @@ import {
 import { CsrfService } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { standardJwtClaims } from '@fc/jwt';
 import { NotificationsService } from '@fc/notifications';
-import { IOidcIdentity } from '@fc/oidc';
 import { OidcAcrService, SimplifiedInteraction } from '@fc/oidc-acr';
 import { OidcClientRoutes } from '@fc/oidc-client';
-import {
-  OidcProviderConfig,
-  OidcProviderRoutes,
-  OidcProviderService,
-} from '@fc/oidc-provider';
+import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
 import {
@@ -53,11 +47,9 @@ import {
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 import {
   CoreAcrNotSatisfiedException,
-  CoreFcaAgentAccountBlockedException,
   CoreFcaAgentNotFromPublicServiceException,
   CoreLoginRequiredException,
 } from '../exceptions';
-import { IAgentIdentity } from '../interfaces';
 import { CoreFcaFqdnService, CoreFcaService } from '../services';
 
 @Controller()
@@ -245,7 +237,6 @@ export class InteractionController {
       isSilentAuthentication,
       spEssentialAcr,
       spId,
-      subs,
     } = userSessionService.get();
 
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
@@ -284,21 +275,14 @@ export class InteractionController {
       throw new CoreAcrNotSatisfiedException();
     }
 
-    const account = await this.getOrCreateAccount(idpId, idpIdentity.sub);
+    const account = await this.accountService.getAccountByIdpAgentKeys({
+      idpUid: idpId,
+      idpSub: idpIdentity.sub,
+    });
 
-    const newIdentity = cloneDeep(idpIdentity);
-    const newIdentityWithCustomProperty =
-      this.moveUnknownClaimsToCustomProperty(newIdentity);
-    const spIdentity = chain(newIdentityWithCustomProperty)
-      .omit('sub')
-      .set('idp_id', idpId)
-      .set('idp_acr', idpAcr)
-      .value() as IAgentIdentity;
     const session: UserSession = {
-      spIdentity,
       accountId: account.id,
       interactionAcr,
-      subs: { ...subs, [spId]: account.sub },
     };
     userSessionService.set(session);
 
@@ -313,75 +297,5 @@ export class InteractionController {
     const { FC_IDP_DISABLED } = this.tracking.TrackedEventsMap;
 
     await this.tracking.track(FC_IDP_DISABLED, eventContext);
-  }
-
-  async getOrCreateAccount(
-    idpUid: string,
-    idpSub: string,
-  ): Promise<AccountFca> {
-    const idpAgentKeys = { idpUid, idpSub };
-    let account =
-      await this.accountService.getAccountByIdpAgentKeys(idpAgentKeys);
-    if (!account) {
-      account = this.accountService.createAccount();
-    }
-    if (!account.active) {
-      throw new CoreFcaAgentAccountBlockedException();
-    }
-
-    if (!some(account.idpIdentityKeys, idpAgentKeys)) {
-      account.idpIdentityKeys.push(idpAgentKeys);
-    }
-
-    account.lastConnection = new Date();
-
-    await this.accountService.upsertWithSub(account);
-
-    return account;
-  }
-
-  // All unknown properties from idp identity are moved to "custom" property
-  moveUnknownClaimsToCustomProperty(
-    identity: Partial<IOidcIdentity>,
-  ): IAgentIdentity {
-    /*
-     * Some IdPs may return a "custom" field in the userinfo response.
-     *
-     * In FCA, we use the "custom" field as a catch-all to store any unexpected values,
-     * which leads FCA to assume that the "custom" property is part of the FCA identity by default.
-     *
-     * However, this is not the case, and we need to include the IdP's "custom" content
-     * within the FCA's "custom" field for user info.
-     *
-     * Therefore, when an IdP provides a "custom" property, we will store its content
-     * within a sub-property under FCA's "custom" field.
-     * Example: { custom: { custom: "some content" } }
-     */
-    const { configuration } =
-      this.config.get<OidcProviderConfig>('OidcProvider');
-    const expectedClaims = uniq(
-      flatMap(configuration.claims, (claims) => claims),
-    );
-    const knownClaims = expectedClaims
-      .concat(standardJwtClaims)
-      .filter((claim) => {
-        return claim !== 'custom';
-      });
-
-    const [customizedIdentity, custom] = Object.entries(identity).reduce<
-      [IAgentIdentity, Record<string, unknown>]
-    >(
-      ([accCustomized, accCustom], [key, value]) => {
-        return knownClaims.includes(key)
-          ? [{ ...accCustomized, [key]: value }, accCustom] // Add to customizedIdentity
-          : [accCustomized, { ...accCustom, [key]: value }]; // Add to custom
-      },
-      [{} as IAgentIdentity, {}],
-    );
-
-    return {
-      ...customizedIdentity,
-      custom,
-    };
   }
 }

@@ -18,7 +18,6 @@ import { TrackingService } from '@fc/tracking';
 import { UserSession } from '../dto';
 import {
   CoreAcrNotSatisfiedException,
-  CoreFcaAgentAccountBlockedException,
   CoreFcaAgentNotFromPublicServiceException,
   CoreLoginRequiredException,
 } from '../exceptions';
@@ -362,7 +361,6 @@ describe('InteractionController', () => {
           spId: 'sp123',
           idpId: 'idp123',
           idpIdentity: { sub: 'user1', extraClaims: 'extra' },
-          subs: {},
         }),
         set: jest.fn(),
       } as unknown as ISessionService<UserSession>;
@@ -397,14 +395,8 @@ describe('InteractionController', () => {
         accountFcaServiceMock.getAccountByIdpAgentKeys,
       ).toHaveBeenCalledWith({ idpUid: 'idp123', idpSub: 'user1' });
       expect(userSessionService.set).toHaveBeenCalledWith({
-        spIdentity: {
-          custom: { extraClaims: 'extra' },
-          idp_acr: 'high',
-          idp_id: 'idp123',
-        },
         interactionAcr,
         accountId: 'account123',
-        subs: { sp123: 'sub123' },
       });
       expect(oidcProviderMock.finishInteraction).toHaveBeenCalledWith(
         req,
@@ -489,91 +481,6 @@ describe('InteractionController', () => {
       await expect(
         controller.getVerify(req, res, {} as any, userSessionService),
       ).rejects.toThrow(CoreAcrNotSatisfiedException);
-    });
-  });
-
-  describe('getOrCreateAccount', () => {
-    const idpUid = 'mock-idp-uid';
-    const idpSub = 'mock-idp-sub';
-    const idpAgentKeys = { idpUid, idpSub };
-
-    it('should create a new account if no existing account is found', async () => {
-      const mockAccount = {
-        id: 'mock-account-id',
-        active: true,
-        idpIdentityKeys: [],
-        lastConnection: new Date(),
-      };
-      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue(null);
-      accountFcaServiceMock.createAccount.mockReturnValue(mockAccount);
-      accountFcaServiceMock.upsertWithSub.mockResolvedValue(undefined);
-
-      const result = await controller['getOrCreateAccount'](idpUid, idpSub);
-
-      expect(accountFcaServiceMock.createAccount).toHaveBeenCalled();
-      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledWith(
-        mockAccount,
-      );
-      expect(result).toEqual(mockAccount);
-    });
-
-    it('should throw CoreFcaAgentAccountBlockedException if the account is inactive', async () => {
-      const mockAccount = {
-        id: 'mock-account-id',
-        active: false,
-        idpIdentityKeys: [],
-      };
-      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue(
-        mockAccount,
-      );
-
-      await expect(
-        controller['getOrCreateAccount'](idpUid, idpSub),
-      ).rejects.toThrow(CoreFcaAgentAccountBlockedException);
-    });
-
-    it('should update lastConnection and upsert the account if it is active', async () => {
-      const mockAccount = {
-        id: 'mock-account-id',
-        active: true,
-        idpIdentityKeys: [],
-        lastConnection: new Date(),
-      };
-      const currentTime = new Date();
-      jest.useFakeTimers().setSystemTime(currentTime);
-      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue(
-        mockAccount,
-      );
-      accountFcaServiceMock.upsertWithSub.mockResolvedValue(undefined);
-
-      const result = await controller['getOrCreateAccount'](idpUid, idpSub);
-
-      expect(mockAccount.lastConnection).toEqual(currentTime);
-      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledWith(
-        mockAccount,
-      );
-      expect(result).toEqual(mockAccount);
-    });
-
-    it('should append idpAgentKeys if they are not found and upsert the account', async () => {
-      const mockAccount = {
-        id: 'mock-account-id',
-        active: true,
-        idpIdentityKeys: [],
-        lastConnection: new Date(),
-      };
-      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue(
-        mockAccount,
-      );
-      accountFcaServiceMock.upsertWithSub.mockResolvedValue(undefined);
-
-      const result = await controller['getOrCreateAccount'](idpUid, idpSub);
-
-      expect(mockAccount.idpIdentityKeys).toContainEqual(idpAgentKeys);
-      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledWith(
-        mockAccount,
-      );
-      expect(result).toEqual(mockAccount);
     });
   });
 });

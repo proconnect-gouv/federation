@@ -5,16 +5,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { SessionService, SessionSubNotFoundException } from '@fc/session';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import {
-  OidcProviderRuntimeException,
-  OidcProviderSpIdNotFoundException,
-} from '../exceptions';
+import { OidcProviderRuntimeException } from '../exceptions';
 import { LogoutFormParamsInterface } from '../interfaces';
 import { OidcProviderAppConfigLibService } from './oidc-provider-app-config-lib.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
@@ -150,127 +147,40 @@ describe('OidcProviderAppConfigLibService', () => {
   });
 
   describe('findAccount()', () => {
-    // Given
-    const contextMock = {
-      not: 'altered',
-    } as unknown as KoaContextWithOIDC;
-    const interactionIdMock = '123ABC';
-    const identityMock = { foo: 'bar' };
-
-    beforeEach(() => {
-      service['getServiceProviderIdFromCtx'] = jest
-        .fn()
-        .mockReturnValue('clientId');
-
-      sessionServiceMock.initCache.mockResolvedValue(true);
-    });
-
-    it('should return an object with accountID', async () => {
+    it('should return account details with accountId and claims when session is valid', async () => {
       // Given
+      const sessionId = 'test-session-id';
+      const spIdentityMock = { given_name: 'John', family_name: 'Doe' };
+      sessionServiceMock.initCache.mockResolvedValueOnce(true);
       sessionServiceMock.get.mockReturnValueOnce({
-        spIdentity: identityMock,
-        subs: { clientId: 'sub client id' },
+        spIdentity: spIdentityMock,
       });
+
       // When
-      const result = await service['findAccount'](
-        contextMock,
-        interactionIdMock,
-      );
+      const result = await service.findAccount(ctx, sessionId);
+
       // Then
-      expect(result).toHaveProperty('accountId');
-      expect(result.accountId).toBe(interactionIdMock);
+      expect(result).toEqual({
+        accountId: sessionId,
+        claims: expect.any(Function),
+      });
+
+      // Claims function test
+      const claims = await result.claims();
+      expect(claims).toEqual(spIdentityMock);
     });
 
-    it('should not alter the context', async () => {
-      // When
-      await service['findAccount'](contextMock, interactionIdMock);
-      // Then
-      expect(contextMock).toEqual({
-        not: 'altered',
-      });
-    });
-
-    it('should return an object with a claims function that returns identity', async () => {
+    it('should throw an error when session initialization fails', async () => {
       // Given
-      sessionServiceMock.get.mockReturnValueOnce({
-        spIdentity: identityMock,
-        subs: { clientId: 'sub client id' },
-      });
-      const result = await service['findAccount'](
-        contextMock,
-        interactionIdMock,
-      );
-      // When
-      const claimsResult = await result.claims();
-      // Then
-      expect(claimsResult).toStrictEqual({ foo: 'bar', sub: 'sub client id' });
-      expect(contextMock).toEqual({
-        not: 'altered',
-      });
-    });
+      const sessionId = 'invalid-session-id';
+      const error = new Error('Session initialization failed');
+      sessionServiceMock.initCache.mockRejectedValueOnce(error);
 
-    it('should return an object with a claims function that returns identity (even with several subs)', async () => {
-      // Given
-      sessionServiceMock.get.mockReturnValueOnce({
-        spIdentity: identityMock,
-        subs: {
-          clientId: 'sub client id',
-          OtherClientId: 'sub other client id',
-        },
-      });
-      const result = await service['findAccount'](
-        contextMock,
-        interactionIdMock,
-      );
       // When
-      const claimsResult = await result.claims();
-      // Then
-      expect(claimsResult).toStrictEqual({ foo: 'bar', sub: 'sub client id' });
-      expect(contextMock).toEqual({
-        not: 'altered',
-      });
-    });
+      await service.findAccount(ctx, sessionId);
 
-    it('should call throwError if an exception is caught', async () => {
-      // Given
-      const errorMock = new Error('error');
-      sessionServiceMock.initCache.mockRejectedValueOnce(errorMock);
-      service['throwError'] = jest.fn();
-      // When
-      await service['findAccount'](contextMock, interactionIdMock);
       // Then
-      expect(throwExceptionMock).toHaveBeenCalledWith(errorMock);
-      expect(contextMock).toEqual({
-        not: 'altered',
-      });
-    });
-
-    it('should call checkSpId with ctx and spId found', async () => {
-      // Given
-      sessionServiceMock.get.mockReturnValueOnce({
-        spIdentity: identityMock,
-        subs: { clientId: 'sub client id' },
-      });
-      service['checkSpId'] = jest.fn();
-      // When
-      await service['findAccount'](contextMock, interactionIdMock);
-      // Then
-      expect(service['checkSpId']).toHaveBeenCalledTimes(1);
-      expect(service['checkSpId']).toHaveBeenCalledWith('clientId');
-    });
-
-    it('should call checkSub with ctx and sub found', async () => {
-      // Given
-      sessionServiceMock.get.mockReturnValueOnce({
-        spIdentity: identityMock,
-        subs: { clientId: 'sub client id' },
-      });
-      service['checkSub'] = jest.fn();
-      // When
-      await service['findAccount'](contextMock, interactionIdMock);
-      // Then
-      expect(service['checkSub']).toHaveBeenCalledTimes(1);
-      expect(service['checkSub']).toHaveBeenCalledWith('sub client id');
+      expect(throwExceptionMock).toHaveBeenCalledWith(error);
     });
   });
 
@@ -350,36 +260,6 @@ describe('OidcProviderAppConfigLibService', () => {
       service.setProvider(providerMock);
       // Then
       expect(service['provider']).toEqual('providerMock');
-    });
-  });
-
-  describe('checkSpId()', () => {
-    it('should throw OidcProviderSpIdNotFoundException if sp id not defined on panva context', async () => {
-      // Given
-      const spIdMock = undefined;
-
-      // When
-      await service['checkSpId'](spIdMock);
-
-      // Then
-      expect(throwExceptionMock).toHaveBeenCalledWith(
-        expect.any(OidcProviderSpIdNotFoundException),
-      );
-    });
-  });
-
-  describe('checkSub()', () => {
-    it('should throw SessionSubNotFoundException if sub not found in session', async () => {
-      // Given
-      const subMock = undefined;
-
-      // When
-      await service['checkSub'](subMock);
-
-      // Then
-      expect(throwExceptionMock).toHaveBeenCalledWith(
-        expect.any(SessionSubNotFoundException),
-      );
     });
   });
 

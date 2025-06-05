@@ -173,8 +173,6 @@ export const frFR: I18nTranslationsMapType = {
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'OidcClient.exceptions.oidcClientMissingCode':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-  'OidcClient.exceptions.oidcClientMissingIdentitySub':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'OidcClient.exceptions.oidcClientMissingState':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'OidcClient.exceptions.oidcClientTokenFailed':
@@ -196,8 +194,6 @@ export const frFR: I18nTranslationsMapType = {
   'OidcProvider.exceptions.oidcProviderParseJsonClaims':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'OidcProvider.exceptions.oidcProviderParseRedisResponse':
-    'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
-  'OidcProvider.exceptions.oidcProviderSpidNotFound':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'OidcProvider.exceptions.oidcProviderStringifyPayloadForRedis':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
@@ -234,8 +230,6 @@ export const frFR: I18nTranslationsMapType = {
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Session.exceptions.sessionStorage':
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous. Si le problème persiste, contacter le support',
-  'Session.exceptions.sessionSubNotFound':
-    'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
 
   // tracking-context
   'TrackingContext.exceptions.trackingMissingNetworkContext':

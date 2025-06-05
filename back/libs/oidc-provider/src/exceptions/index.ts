@@ -9,6 +9,5 @@ export * from './oidc-provider-no-wrapper.exception';
 export * from './oidc-provider-parse-json-claims.exception';
 export * from './oidc-provider-parse-redis-response.exception';
 export * from './oidc-provider-runtime-exception';
-export * from './oidc-provider-spid-not-found.exception';
 export * from './oidc-provider-stringify-payload-for-redis.exception';
 export * from './oidc-provider-user-aborted.exception';

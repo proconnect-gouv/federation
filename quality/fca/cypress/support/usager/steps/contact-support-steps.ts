@@ -1,6 +1,5 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
-import { getDefaultUser } from '../../common/helpers/user-helper';
 import { ChainableElement } from '../../common/types';
 
 function getContactSupportLink(): ChainableElement {
@@ -12,30 +11,6 @@ function filterErrorId(message: string): string {
     /L’id de l’erreur est : [a-f0-9-]{36}/i,
     'L’id de l’erreur est : <errorId>',
   );
-}
-
-function filterIdentity(rawIdentity: string): string {
-  return rawIdentity.replace(
-    /(\{[^}]*"sub"\s*:\s*)"([^"]*)"/g,
-    '$1"<removed>"',
-  );
-}
-
-function filterEncodedIdentity(rawIdentity: string): string {
-  const urlParts = rawIdentity.split('&body=');
-
-  if (urlParts.length < 2) {
-    return rawIdentity;
-  }
-
-  const baseUrl = urlParts[0];
-  const encodedBody = urlParts[1];
-
-  let decodedBody = decodeURIComponent(encodedBody);
-  decodedBody = decodedBody.replace(/("sub"\s*:\s*)"(.*?)"/, '$1"<removed>"');
-  const newEncodedBody = encodeURIComponent(decodedBody);
-
-  return `${baseUrl}&body=${newEncodedBody}`;
 }
 
 Then(
@@ -69,18 +44,45 @@ Then(
     getContactSupportLink()
       .invoke('attr', 'href')
       .then((hrefValue) => {
-        const user = getDefaultUser();
+        const matches = hrefValue.match(/subject=([^&]+)&body=([^&]+)/);
+        expect(matches).to.have.length(3);
+        const httpEncodedBody = matches.pop();
 
-        const validationConstraints = '[{"isEmail":"email must be an email"}]';
-        const validationTarget = filterIdentity(
-          `{"sub":"","given_name":"${user.given_name}","usual_name":"${user.usual_name}","email":"${email}","uid":"${user.uid}","siren":"${user.siren}","siret":"${user.siret}","organizational_unit":"${user.organizational_unit}","belonging_population":"${user.belonging_population}","phone_number":"${user.phone_number}"}`,
+        const body = decodeURIComponent(httpEncodedBody);
+        const validationConstraintsMatch = body.match(/\[\s*\{[\s\S]*?\}\s*\]/);
+        expect(validationConstraintsMatch).to.have.length(1);
+        const validationConstraints = JSON.parse(validationConstraintsMatch[0]);
+        const expectedValidationConstraints = [
+          { isEmail: 'email must be an email' },
+        ];
+        expect(validationConstraints).to.deep.equal(
+          expectedValidationConstraints,
         );
 
-        const expectedHref = `mailto:support+federation@proconnect.gouv.fr?subject=Mise à jour de mon profil pour compatibilité ProConnect&body=${encodeURIComponent(
-          `Bonjour,\nVoici une erreur remontée par ProConnect suite à une tentative de connexion infructueuse.\n${validationConstraints}\nVoici l’identité telle que reçue par ProConnect :\n${validationTarget}\nProConnect a vérifié que l’erreur ne venait pas de leur côté.\nMerci de corriger mes informations d'identité afin que ProConnect reconnaisse mon identité et que je puisse me connecter.\nCordialement,`,
-        )}`;
+        const validationTargetMatch = body.match(/\{\s*"sub"[\s\S]*?\}/);
+        expect(validationTargetMatch).to.have.length(1);
+        const validationTarget = JSON.parse(validationTargetMatch[0]);
+        delete validationTarget.exp;
+        delete validationTarget.iat;
+        delete validationTarget.iss;
+        delete validationTarget.aud;
 
-        expect(expectedHref).to.equal(filterEncodedIdentity(hrefValue));
+        expect(validationTarget).to.deep.equal({
+          belonging_population: 'agent',
+          'chorusdt:matricule': 'USER_AGC',
+          'chorusdt:societe': 'CHT',
+          email: email,
+          email_verified: false,
+          given_name: 'John',
+          organizational_unit: 'comptabilite',
+          phone_number: '+49 000 000000',
+          phone_number_verified: false,
+          siren: '130025265',
+          siret: '13002526500013',
+          sub: '1',
+          uid: '1',
+          usual_name: 'Doe',
+        });
       });
   },
 );
