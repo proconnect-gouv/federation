@@ -1,4 +1,5 @@
-import { IsDefined } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDefined, ValidateNested } from 'class-validator';
 
 import { IdentityForSpDto } from './identity-for-sp.dto';
 import { IdentityFromIdpDto } from './identity-from-idp.dto';
@@ -8,6 +9,8 @@ export class ActiveUserSessionDto {
   readonly accountId: string;
 
   @IsDefined()
+  @ValidateNested()
+  @Type(() => IdentityForSpDto)
   readonly spIdentity: IdentityForSpDto;
 
   @IsDefined()

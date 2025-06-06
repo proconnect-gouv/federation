@@ -1,3 +1,5 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import { Request, Response } from 'express';
 import { isEmpty } from 'lodash';
 import { v4 as uuid } from 'uuid';
@@ -14,7 +16,6 @@ import {
 } from '@nestjs/common';
 
 import { AccountFcaService } from '@fc/account-fca';
-import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import {
   CoreConfig,
@@ -111,11 +112,11 @@ export class InteractionController {
       },
     } = interaction;
 
-    const activeSessionValidationErrors = await validateDto(
-      userSession.get(),
+    const activeUserSession = plainToInstance(
       ActiveUserSessionDto,
-      {},
+      userSession.get(),
     );
+    const activeSessionValidationErrors = await validate(activeUserSession);
 
     const isUserConnectedAlready = isEmpty(activeSessionValidationErrors);
 

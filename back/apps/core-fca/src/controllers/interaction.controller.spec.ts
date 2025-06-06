@@ -1,9 +1,9 @@
+import { validate } from 'class-validator';
 import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccountFcaService } from '@fc/account-fca';
-import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CoreIdpHintException } from '@fc/core';
 import { CsrfService } from '@fc/csrf';
@@ -29,9 +29,9 @@ jest.mock('uuid', () => ({
   v4: jest.fn(() => 'uuid-mock'),
 }));
 
-jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
-  validateDto: jest.fn(),
+jest.mock('class-validator', () => ({
+  ...jest.requireActual('class-validator'),
+  validate: jest.fn(),
 }));
 
 describe('InteractionController', () => {
@@ -147,7 +147,7 @@ describe('InteractionController', () => {
 
     controller = module.get<InteractionController>(InteractionController);
     jest.clearAllMocks();
-    (validateDto as jest.Mock).mockReset();
+    (validate as jest.Mock).mockReset();
   });
 
   describe('getDefault()', () => {
@@ -188,7 +188,7 @@ describe('InteractionController', () => {
         params: { client_id: 'sp123', login_hint: 'hint@example.com' },
       };
       oidcProviderMock.getInteraction.mockResolvedValue(interaction);
-      (validateDto as jest.Mock).mockReturnValue([
+      (validate as jest.Mock).mockReturnValue([
         new Error('not a valid session'),
       ]);
 
@@ -328,7 +328,7 @@ describe('InteractionController', () => {
         params: { client_id: 'sp123', login_hint: 'user@example.com' },
       });
       csrfServiceMock.renew.mockReturnValue('csrfToken');
-      (validateDto as jest.Mock).mockReturnValue([
+      (validate as jest.Mock).mockReturnValue([
         new Error('not a valid session'),
       ]);
 

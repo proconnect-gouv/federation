@@ -1,6 +1,8 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+
 import { Inject, Injectable } from '@nestjs/common';
 
-import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CoreOidcProviderMiddlewareService } from '@fc/core';
 import { ActiveUserSessionDto, UserSession } from '@fc/core-fca/dto';
@@ -97,11 +99,11 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
     await this.sessionService.commit();
 
-    const activeSessionValidationErrors = await validateDto(
-      this.sessionService.get<UserSession>('User') as object,
+    const activeUserSession = plainToInstance(
       ActiveUserSessionDto,
-      {},
+      this.sessionService.get<UserSession>('User'),
     );
+    const activeSessionValidationErrors = await validate(activeUserSession);
 
     const isUserConnectedAlready = activeSessionValidationErrors.length <= 0;
 

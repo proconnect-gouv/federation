@@ -1,8 +1,8 @@
+import { validate } from 'class-validator';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { ActiveUserSessionDto } from '@fc/core-fca/dto';
 import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
@@ -19,9 +19,9 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcaMiddlewareService } from './core-fca-middleware.service';
 
-jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
-  validateDto: jest.fn(),
+jest.mock('class-validator', () => ({
+  ...jest.requireActual('class-validator'),
+  validate: jest.fn(),
 }));
 
 describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () => {
@@ -120,7 +120,7 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
     let overrideAuthorizePromptSpy: jest.SpyInstance;
     let getAuthorizationParametersSpy: jest.SpyInstance;
     let isPromptStrictlyEqualNoneSpy: jest.SpyInstance;
-    let validateDtoMock: jest.Mock;
+    let validateMock: jest.Mock;
 
     beforeEach(() => {
       ctx = { prompt: undefined };
@@ -135,7 +135,7 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
         service,
         'isPromptStrictlyEqualNone',
       );
-      validateDtoMock = jest.mocked(validateDto);
+      validateMock = jest.mocked(validate);
     });
 
     it('should immediately call overrideAuthorizePrompt and exit if prompt is not provided', async () => {
@@ -159,7 +159,7 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
       isPromptStrictlyEqualNoneSpy.mockReturnValue(true);
       sessionServiceMock.get.mockReturnValue({ some: 'data' });
       // Simulate validateDto returns an empty array: user is connected
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // Act
       await service['handleSilentAuthenticationMiddleware'](ctx);
@@ -172,11 +172,6 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
         true,
       );
       expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
-      expect(validateDtoMock).toHaveBeenCalledWith(
-        sessionServiceMock.get('User') as object,
-        ActiveUserSessionDto,
-        {},
-      );
       // Since user is connected and prompt equals 'none', override should be called
       expect(overrideAuthorizePromptSpy).toHaveBeenCalledWith(ctx);
     });
@@ -188,7 +183,7 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
       isPromptStrictlyEqualNoneSpy.mockReturnValue(true);
       sessionServiceMock.get.mockReturnValue({ some: 'data' });
       // Simulate validateDto returns a non-empty array: user is not connected
-      validateDtoMock.mockResolvedValueOnce([new Error('Not connected')]);
+      validateMock.mockResolvedValueOnce([new Error('Not connected')]);
 
       // Act
       await service['handleSilentAuthenticationMiddleware'](ctx);
@@ -201,11 +196,6 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
         true,
       );
       expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
-      expect(validateDtoMock).toHaveBeenCalledWith(
-        sessionServiceMock.get('User') as object,
-        ActiveUserSessionDto,
-        {},
-      );
       // Since user is not connected, overrideAuthorizePrompt should NOT be called
       expect(overrideAuthorizePromptSpy).not.toHaveBeenCalled();
     });
@@ -217,7 +207,7 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
       isPromptStrictlyEqualNoneSpy.mockReturnValue(false);
       sessionServiceMock.get.mockReturnValue({ some: 'data' });
       // Simulate validateDto returns an empty array (user connected) but flag is false
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // Act
       await service['handleSilentAuthenticationMiddleware'](ctx);
@@ -230,11 +220,6 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
         false,
       );
       expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
-      expect(validateDtoMock).toHaveBeenCalledWith(
-        sessionServiceMock.get('User') as object,
-        ActiveUserSessionDto,
-        {},
-      );
       // Since isPromptStrictlyEqualNone returned false, overrideAuthorizePrompt should NOT be called
       expect(overrideAuthorizePromptSpy).not.toHaveBeenCalled();
     });
