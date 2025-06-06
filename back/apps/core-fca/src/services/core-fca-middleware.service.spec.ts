@@ -105,13 +105,13 @@ describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () =
   });
 
   describe('onModuleInit()', () => {
-    it('should register 5 middlewares', () => {
+    it('should register 4 middlewares', () => {
       // Given
       service['registerMiddleware'] = jest.fn();
       // When
       service.onModuleInit();
       // Then
-      expect(service['registerMiddleware']).toHaveBeenCalledTimes(5);
+      expect(service['registerMiddleware']).toHaveBeenCalledTimes(4);
     });
   });
 

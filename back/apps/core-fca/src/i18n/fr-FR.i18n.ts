@@ -54,8 +54,6 @@ export const frFR: I18nTranslationsMapType = {
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
 
   // core
-  'Core.exceptions.coreClaimAmr':
-    'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous',
   'Core.exceptions.coreIdentityProviderNotFound':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'Core.exceptions.coreIdpBlockedForAccount':

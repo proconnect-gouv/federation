@@ -67,12 +67,6 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
 
     this.registerMiddleware(
       OidcProviderMiddlewareStep.AFTER,
-      OidcProviderRoutes.AUTHORIZATION,
-      this.koaErrorCatcherMiddlewareFactory(this.overrideClaimAmrMiddleware),
-    );
-
-    this.registerMiddleware(
-      OidcProviderMiddlewareStep.AFTER,
       OidcProviderRoutes.TOKEN,
       this.koaErrorCatcherMiddlewareFactory(this.tokenMiddleware),
     );

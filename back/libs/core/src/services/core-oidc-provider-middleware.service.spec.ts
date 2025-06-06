@@ -21,7 +21,6 @@ import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { CoreClaimAmrException } from '../exceptions';
 import { CORE_SERVICE } from '../tokens';
 import { CoreOidcProviderMiddlewareService } from './core-oidc-provider-middleware.service';
 
@@ -82,23 +81,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
 
   const atHashMock = 'atHashMock value';
   const sessionIdMock = 'session-id-mock';
-  const spAcrMock = 'eidas3';
-  const spIdMock = 'spIdValue';
-  const ipMock = '123.123.123.123';
-  const sourcePortMock = '443';
-  const xForwardedForOriginalMock = '123.123.123.123,124.124.124.124';
-  const reqMock = {
-    headers: {
-      'x-forwarded-for': ipMock,
-      'x-forwarded-source-port': sourcePortMock,
-      'x-forwarded-for-original': xForwardedForOriginalMock,
-    },
-    sessionId: sessionIdMock,
-    query: { acr_values: spAcrMock, client_id: spIdMock },
-  };
-  const resMock = {
-    redirect: jest.fn(),
-  };
 
   const coreServiceMock = {
     redirectToIdp: jest.fn(),
@@ -374,101 +356,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       expect(ctxMock).toEqual({
         req: { headers: { cookie: '' } },
       });
-    });
-  });
-
-  describe('overrideClaimAmrMiddleware()', () => {
-    it('should throw an error if service provider not authorized to request amr claim', async () => {
-      // Given
-      const ctxMock = {
-        oidc: {
-          params: { acr_values: spAcrMock, client_id: spIdMock },
-          claims: { id_token: { amr: { essential: true } } },
-        },
-        req: reqMock,
-        res: resMock,
-      };
-
-      serviceProviderServiceMock.getById.mockResolvedValueOnce({
-        claims: [],
-      });
-
-      // When
-      await expect(
-        service['overrideClaimAmrMiddleware'](ctxMock),
-      ).rejects.toThrow(CoreClaimAmrException);
-
-      // Then
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(1);
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledWith(spIdMock);
-    });
-
-    it('should not throw if amr claim not requested and not authorized for sp', async () => {
-      // Given
-      const ctxMock = {
-        oidc: {
-          params: { acr_values: spAcrMock, client_id: spIdMock },
-          claims: {},
-        },
-        req: reqMock,
-        res: resMock,
-      };
-      serviceProviderServiceMock.getById.mockResolvedValueOnce({
-        claims: [],
-      });
-
-      // When
-      await service['overrideClaimAmrMiddleware'](ctxMock);
-
-      // Then
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(0);
-      expect(oidcProviderErrorServiceMock.throwError).toHaveBeenCalledTimes(0);
-    });
-
-    it('should not throw if amr claim not requested by service provider but authorized for sp', async () => {
-      // Given
-      const ctxMock = {
-        oidc: {
-          params: { acr_values: spAcrMock, client_id: spIdMock },
-          claims: {},
-        },
-        req: reqMock,
-        res: resMock,
-      };
-      serviceProviderServiceMock.getById.mockResolvedValueOnce({
-        claims: ['amr'],
-      });
-
-      // When
-      await service['overrideClaimAmrMiddleware'](ctxMock);
-
-      // Then
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(0);
-      expect(oidcProviderErrorServiceMock.throwError).toHaveBeenCalledTimes(0);
-    });
-
-    it('should not throw if amr claim is authorized to request by the service provider', async () => {
-      // Given
-      const ctxMock = {
-        oidc: {
-          params: { acr_values: spAcrMock, client_id: spIdMock },
-          claims: { id_token: { amr: { essential: true } } },
-        },
-        req: reqMock,
-        res: resMock,
-      };
-      serviceProviderServiceMock.getById.mockResolvedValueOnce({
-        claims: ['amr'],
-      });
-
-      // When
-      await service['overrideClaimAmrMiddleware'](ctxMock);
-
-      // Then
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(1);
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledWith(spIdMock);
-
-      expect(oidcProviderErrorServiceMock.throwError).toHaveBeenCalledTimes(0);
     });
   });
 

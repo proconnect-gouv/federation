@@ -6,7 +6,7 @@ import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { atHashFromAccessToken, IOidcClaims } from '@fc/oidc';
+import { atHashFromAccessToken } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import {
@@ -21,8 +21,6 @@ import {
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionNoSessionIdException, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
-
-import { CoreClaimAmrException } from '../exceptions';
 
 @Injectable()
 export class CoreOidcProviderMiddlewareService {
@@ -133,28 +131,6 @@ export class CoreOidcProviderMiddlewareService {
     };
 
     return eventContext;
-  }
-
-  protected async overrideClaimAmrMiddleware(ctx) {
-    const { claims }: { claims: IOidcClaims } = ctx.oidc;
-
-    const amrIsRequested = Object.values(claims)
-      .map((claimRequested) => Object.keys(claimRequested))
-      .flat()
-      .includes('amr');
-
-    if (!amrIsRequested) {
-      return;
-    }
-
-    const sp = await this.serviceProvider.getById(ctx.oidc.params.client_id);
-    const spClaimsAuthorized = sp.claims as Array<string>;
-    const spAmrIsAuthorized = spClaimsAuthorized.includes('amr');
-
-    if (!spAmrIsAuthorized) {
-      ctx.oidc['isError'] = true;
-      throw new CoreClaimAmrException();
-    }
   }
 
   protected async tokenMiddleware(ctx: OidcCtx) {
