@@ -26,12 +26,3 @@ Fonctionnalité: Connexion avec Claims
     Et que je clique sur le bouton de connexion
     Quand je m'authentifie
     Alors la cinématique a renvoyé le claim "given_name"
-
-  @ignoreInteg01
-  Scénario: erreur FS non habilité pour amr
-    Etant donné que je navigue sur la page fournisseur de service "non habilité à demander le claim amr"
-    Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires"
-    Et que le fournisseur de service requiert le claim "amr"
-    Et que je clique sur le bouton ProConnect
-    Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y030009"

@@ -45,10 +45,6 @@ export class ServiceProviderAdapterMongoDTO {
   @IsString({ each: true })
   readonly scopes: string[];
 
-  @IsArray()
-  @IsString({ each: true })
-  readonly claims: string[];
-
   @IsString()
   @IsIn(['ES256', 'RS256', 'HS256'])
   readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';

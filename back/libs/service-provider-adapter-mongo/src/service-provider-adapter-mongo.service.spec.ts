@@ -31,7 +31,6 @@ describe('ServiceProviderAdapterMongoService', () => {
     title: 'title',
     client_secret: "This is an encrypted string, don't ask !",
     scopes: ['openid', 'profile'],
-    claims: [],
     redirect_uris: ['https://sp-site.fr/redirect_uris'],
     post_logout_redirect_uris: ['https://sp-site.fr/post_logout_redirect_uris'],
     id_token_signed_response_alg: 'ES256',
@@ -194,7 +193,6 @@ describe('ServiceProviderAdapterMongoService', () => {
     const expectedRetreivedFields = {
       _id: false,
       active: true,
-      claims: true,
       client_secret: true,
       entityId: true,
       id_token_encrypted_response_alg: true,

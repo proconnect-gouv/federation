@@ -7,7 +7,6 @@ export enum ErrorCode {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/992
    */
   FAILED_PERSISTENCE = 8,
-  CLAIM_AMR = 9,
   IDENTITY_PROVIDER_NOT_FOUND = 10,
   CORE_IDP_BLOCKED_FOR_ACCOUNT = 11,
   IDENTITY_CHECK_TOKEN = 13,
