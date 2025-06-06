@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { get } from 'lodash';
 import {
   InteractionResults,
   KoaContextWithOIDC,
@@ -21,7 +20,6 @@ import {
 import {
   OidcProviderBindingException,
   OidcProviderInitialisationException,
-  OidcProviderInteractionNotFoundException,
   OidcProviderRuntimeException,
 } from './exceptions';
 import type { IOidcProviderConfigAppService } from './interfaces';
@@ -30,12 +28,6 @@ import {
   OidcProviderErrorService,
 } from './services';
 import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
-
-const PATHS = {
-  [OidcProviderRoutes.TOKEN]: 'oidc.entities.Grant.accountId',
-  [OidcProviderRoutes.USERINFO]: 'oidc.entities.Account.accountId',
-};
-const DEFAULT_PATH = 'oidc.entities.Interaction.uid';
 
 export const COOKIES = ['_session', '_interaction', '_interaction_resume'];
 
@@ -95,18 +87,6 @@ export class OidcProviderService {
     }
 
     this.errorService.catchErrorEvents(this.provider);
-  }
-
-  // Reverse engineering of PANVA library
-  getInteractionIdFromCtx(ctx) {
-    const path = PATHS[ctx.req._parsedUrl.pathname] || DEFAULT_PATH;
-    const interactionId = get(ctx, path);
-
-    if (!interactionId) {
-      throw new OidcProviderInteractionNotFoundException();
-    }
-
-    return interactionId;
   }
 
   /**

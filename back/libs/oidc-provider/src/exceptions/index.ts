@@ -4,7 +4,6 @@ export * from './oidc-provider-base-redirect.exception';
 export * from './oidc-provider-base-rendered.exception';
 export * from './oidc-provider-binding.exception';
 export * from './oidc-provider-initialisation.exception';
-export * from './oidc-provider-interaction-no-found.exception';
 export * from './oidc-provider-no-wrapper.exception';
 export * from './oidc-provider-parse-json-claims.exception';
 export * from './oidc-provider-parse-redis-response.exception';

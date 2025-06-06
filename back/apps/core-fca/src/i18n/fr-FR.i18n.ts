@@ -183,8 +183,6 @@ export const frFR: I18nTranslationsMapType = {
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'OidcProvider.exceptions.oidcProviderInitialisation':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-  'OidcProvider.exceptions.oidcProviderInteractionNoFound':
-    'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'OidcProvider.exceptions.oidcProviderParseJsonClaims':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'OidcProvider.exceptions.oidcProviderParseRedisResponse':

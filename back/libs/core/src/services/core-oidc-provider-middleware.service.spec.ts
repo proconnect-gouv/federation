@@ -42,7 +42,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
   const atHashFromAccessTokenMock = jest.mocked(atHashFromAccessToken);
 
   const oidcProviderServiceMock = {
-    getInteractionIdFromCtx: jest.fn(),
     registerMiddleware: jest.fn(),
     clearCookies: jest.fn(),
   };
@@ -172,16 +171,12 @@ describe('CoreOidcProviderMiddlewareService', () => {
   });
 
   describe('getEventContext', () => {
-    const interactionIdMock = 'interactionIdMockValue';
     const netWorkInfoMock = {
       ip: 'ip',
       originalAddresses: 'originalAddresses',
       port: 'port',
     };
     beforeEach(() => {
-      oidcProviderServiceMock.getInteractionIdFromCtx.mockReturnValueOnce(
-        interactionIdMock,
-      );
       service['getNetworkInfoFromHeaders'] = jest
         .fn()
         .mockReturnValueOnce(netWorkInfoMock);
@@ -198,9 +193,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       const result = service['getEventContext'](ctxMock);
       // Then
       expect(result).toEqual({
-        fc: {
-          interactionId: interactionIdMock,
-        },
         req: ctxMock.req,
         sessionId: ctxMock.req.sessionId,
       });
@@ -224,9 +216,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       const result = service['getEventContext'](ctxMock);
       // Then
       expect(result).toEqual({
-        fc: {
-          interactionId: interactionIdMock,
-        },
         req: ctxMock.req,
         sessionId: ctxMock.oidc.entities.Account.accountId,
       });
@@ -246,9 +235,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       const result = service['getEventContext'](ctxMock);
       // Then
       expect(result).toEqual({
-        fc: {
-          interactionId: interactionIdMock,
-        },
         req: ctxMock.req,
         sessionId: ctxMock.req.sessionId,
       });
