@@ -1,11 +1,7 @@
 import { I18nTranslationsMapType } from '@fc/i18n';
 import { frFR as frFROidcProvider } from '@fc/oidc-provider/exceptions/runtime/fr-FR.i18n';
-import { frFR as frFRClaims } from '@fc/scopes';
 
 export const frFR: I18nTranslationsMapType = {
-  // claims
-  ...frFRClaims,
-
   // OidcProvider
   ...frFROidcProvider,
 
