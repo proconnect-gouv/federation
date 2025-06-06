@@ -18,7 +18,6 @@ FCA end-to-end tests are implemented using a testing framework based on Cypress 
 
 | Environment Variable | Description                       | Comment                                      |
 | -------------------- | --------------------------------- | -------------------------------------------- |
-| PLATFORM             | Platform under test               | `fca-low`                                    |
 | TEST_ENV             | Test environment                  | `docker` or `integ01`, etc.                  |
 | TAGS                 | Tags expression                   | `not @ignore`                                |
 | EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/preprod              |
