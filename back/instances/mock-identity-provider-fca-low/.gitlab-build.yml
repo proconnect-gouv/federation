@@ -1,7 +1,0 @@
-fca/fia1v2-build-image:
-  extends: .base-build
-  environment:
-    name: build-fca
-  variables:
-    APP: mock-identity-provider-fca-low
-    MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\nenvironments/nubo12-fca-integ/group_vars/all/versions.yml\nfca_idp_version:"

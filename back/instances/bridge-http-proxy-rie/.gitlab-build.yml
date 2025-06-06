@@ -1,9 +1,0 @@
-include: '/back/.gitlab-build-template.yml'
-
-fca/bridge-http-proxy-rie-build-image:
-  extends: .base-build
-  environment:
-    name: build-fca
-  variables:
-    APP: bridge-http-proxy-rie
-    MSG: "environments/nubo12-fca-integ/group_vars/all/versions.yml\nbridge_http_proxy_rie_version:"
