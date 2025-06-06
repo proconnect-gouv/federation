@@ -102,9 +102,4 @@ export class ServiceProviderAdapterMongoDTO {
   )
   @IsString()
   readonly platform?: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  readonly rep_scope?: string[];
 }

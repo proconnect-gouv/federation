@@ -1,5 +1,3 @@
-import { IdTokenClaims } from 'openid-client';
-
 export type TokenParams = {
   state: string;
   nonce: string;
@@ -15,16 +13,9 @@ export type TokenResults = {
   refreshToken?: string;
   acr?: string;
   amr?: string[];
-  idpRepresentativeScope?: string[];
 };
 
 export type UserInfosParams = {
   accessToken: string;
   idpId: string;
 };
-
-type RepScope = {
-  rep_scope?: string[];
-};
-
-export type IdTokenClaimsWithRepScope = IdTokenClaims & RepScope;

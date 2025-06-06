@@ -84,7 +84,6 @@ export class ServiceProviderAdapterMongoService
         type: true,
         identityConsent: true,
         platform: true,
-        rep_scope: true,
       })
       .lean();
 

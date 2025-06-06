@@ -52,7 +52,6 @@ const allowedSnakeCaseParameters = [
   'redirect_uri',
   'redirect_uris',
   'refresh_token',
-  'rep_scope',
   'response_mode',
   'response_type',
   'response_types',

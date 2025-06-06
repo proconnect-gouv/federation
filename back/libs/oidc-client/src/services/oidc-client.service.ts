@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { TokenSet } from 'openid-client';
+import { IdTokenClaims, TokenSet } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';
 
@@ -13,7 +13,6 @@ import {
 } from '../exceptions';
 import {
   ExtraTokenParams,
-  IdTokenClaimsWithRepScope,
   TokenParams,
   TokenResults,
   UserInfosParams,
@@ -53,11 +52,7 @@ export class OidcClientService {
       id_token: idToken,
       refresh_token: refreshToken,
     } = tokenSet;
-    const {
-      acr,
-      amr = [],
-      rep_scope: idpRepresentativeScope,
-    }: IdTokenClaimsWithRepScope = tokenSet.claims();
+    const { acr, amr = [] }: IdTokenClaims = tokenSet.claims();
 
     const tokenResult = plainToInstance(TokenResultDto, {
       acr,
@@ -65,7 +60,6 @@ export class OidcClientService {
       accessToken,
       idToken,
       refreshToken,
-      idpRepresentativeScope,
     });
     const tokenValidationErrors = await validate(tokenResult as object);
 
