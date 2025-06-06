@@ -34,8 +34,4 @@ export class TokenResultDto implements TokenResults {
   @IsArray()
   @IsOptional()
   readonly amr?: string[];
-
-  @IsString({ each: true })
-  @IsOptional()
-  readonly idpRepresentativeScope?: string[];
 }

@@ -63,9 +63,6 @@ export class ServiceProvider extends Document {
 
   @Prop({ type: String })
   platform: string;
-
-  @Prop({ type: [String] })
-  rep_scope: string[];
 }
 
 export const ServiceProviderSchema =

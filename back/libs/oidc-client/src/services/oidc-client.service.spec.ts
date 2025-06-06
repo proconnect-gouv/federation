@@ -42,7 +42,6 @@ describe('OidcClientService', () => {
         refresh_token: 'refreshToken',
         claims: jest.fn().mockReturnValue({
           acr: 'acrMock',
-          rep_scope: ['scopeMock'],
         }),
       } as unknown as TokenSet;
       utilsMock.getTokenSet.mockResolvedValueOnce(tokenSetMock);
@@ -59,7 +58,6 @@ describe('OidcClientService', () => {
         refreshToken: 'refreshToken',
         acr: 'acrMock',
         amr: [],
-        idpRepresentativeScope: ['scopeMock'],
       });
     });
 
@@ -70,7 +68,6 @@ describe('OidcClientService', () => {
         claims: jest.fn().mockReturnValue({
           acr: 'acrMock',
           amr: 'amrMock', // amr should be an array, this should trigger a validation error
-          rep_scope: ['scopeMock'],
         }),
       } as unknown as TokenSet);
 

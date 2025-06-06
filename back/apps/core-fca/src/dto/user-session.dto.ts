@@ -142,11 +142,6 @@ export class UserSession {
   readonly idpIdentity?: IdentityFromIdpDto;
 
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  readonly idpRepresentativeScope?: string[];
-
-  @IsOptional()
   @IsString()
   readonly oidcProviderLogoutForm?: string;
 
