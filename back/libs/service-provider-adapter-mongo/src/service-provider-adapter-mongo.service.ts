@@ -70,7 +70,6 @@ export class ServiceProviderAdapterMongoService
         entityId: true,
         client_secret: true,
         scopes: true,
-        claims: true,
         redirect_uris: true,
         post_logout_redirect_uris: true,
         id_token_signed_response_alg: true,
