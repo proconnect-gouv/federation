@@ -17,7 +17,6 @@ import {
 import {
   OidcProviderBindingException,
   OidcProviderInitialisationException,
-  OidcProviderInteractionNotFoundException,
   OidcProviderRuntimeException,
 } from './exceptions';
 import { COOKIES, OidcProviderService } from './oidc-provider.service';
@@ -237,55 +236,6 @@ describe('OidcProviderService', () => {
       const result = service.getProvider();
       // Then
       expect(result).toBe(service['provider']);
-    });
-  });
-
-  describe('getInteractionIdFromCtx', () => {
-    it('should call getInteractionIdFromCtxSymbol', () => {
-      // Given
-      const ctxMock = {
-        req: { _parsedUrl: { pathname: '/token' } },
-        oidc: {
-          entities: {
-            Grant: {
-              accountId: 'accountIdValue',
-            },
-          },
-        },
-      };
-      // When
-      const result = service['getInteractionIdFromCtx'](ctxMock);
-      // Then
-
-      expect(result).toEqual('accountIdValue');
-    });
-
-    it('should get id from context with /userinfo', () => {
-      // Given
-      const ctxMock = {
-        req: { _parsedUrl: { pathname: '/userinfo' } },
-        oidc: {
-          entities: {
-            Account: {
-              accountId: 'accountIdValue',
-            },
-          },
-        },
-      };
-      // When
-      const result = service['getInteractionIdFromCtx'](ctxMock);
-      // Then
-
-      expect(result).toEqual('accountIdValue');
-    });
-
-    it('should throw', () => {
-      // Given
-      const ctxMock = { req: { _parsedUrl: { pathname: '/somewhere' } } };
-      // When
-      expect(() => service['getInteractionIdFromCtx'](ctxMock)).toThrow(
-        OidcProviderInteractionNotFoundException,
-      );
     });
   });
 

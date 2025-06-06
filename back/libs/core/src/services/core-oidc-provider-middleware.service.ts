@@ -117,15 +117,11 @@ export class CoreOidcProviderMiddlewareService {
   }
 
   protected getEventContext(ctx): TrackedEventContextInterface {
-    const interactionId: string =
-      this.oidcProvider.getInteractionIdFromCtx(ctx);
-
     // Retrieve the sessionId from the oidc context (stored in accountId) or from the request
     const sessionId =
       ctx.oidc?.entities?.Account?.accountId || ctx.req.sessionId;
 
     const eventContext: TrackedEventContextInterface = {
-      fc: { interactionId },
       req: ctx.req,
       sessionId,
     };
