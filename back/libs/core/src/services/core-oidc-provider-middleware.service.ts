@@ -6,7 +6,7 @@ import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { atHashFromAccessToken } from '@fc/oidc';
+// import { atHashFromAccessToken } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import {
@@ -133,10 +133,10 @@ export class CoreOidcProviderMiddlewareService {
     const sessionId = this.getSessionId(ctx);
     await this.sessionService.initCache(sessionId);
 
-    const { AccessToken } = ctx.oidc.entities;
-    const atHash = atHashFromAccessToken(AccessToken);
+    // const { AccessToken } = ctx.oidc.entities;
+    // const atHash = atHashFromAccessToken(AccessToken);
 
-    await this.sessionService.setAlias(atHash, sessionId);
+    // await this.sessionService.setAlias(atHash, sessionId);
 
     const eventContext = this.getEventContext(ctx);
 
