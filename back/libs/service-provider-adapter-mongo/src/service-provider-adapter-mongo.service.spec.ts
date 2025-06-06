@@ -34,16 +34,9 @@ describe('ServiceProviderAdapterMongoService', () => {
     redirect_uris: ['https://sp-site.fr/redirect_uris'],
     post_logout_redirect_uris: ['https://sp-site.fr/post_logout_redirect_uris'],
     id_token_signed_response_alg: 'ES256',
-    id_token_encrypted_response_alg: 'RS256',
-    id_token_encrypted_response_enc: 'AES256GCM',
-    userinfo_encrypted_response_alg: 'RS256',
-    userinfo_encrypted_response_enc: 'AES256GCM',
     userinfo_signed_response_alg: 'ES256',
     jwks_uri: 'https://sp-site.fr/jwks-uri',
-    idpFilterExclude: true,
-    idpFilterList: [],
     type: 'public',
-    identityConsent: false,
   };
 
   const invalidServiceProviderMock = {
@@ -189,29 +182,20 @@ describe('ServiceProviderAdapterMongoService', () => {
   });
 
   describe('findAllServiceProvider', () => {
-    const platformMock = 'CORE_FCP';
     const expectedRetreivedFields = {
       _id: false,
       active: true,
       client_secret: true,
       entityId: true,
-      id_token_encrypted_response_alg: true,
-      id_token_encrypted_response_enc: true,
       id_token_signed_response_alg: true,
-      identityConsent: true,
-      idpFilterExclude: true,
-      idpFilterList: true,
       jwks_uri: true,
       key: true,
       name: true,
-      platform: true,
       post_logout_redirect_uris: true,
       redirect_uris: true,
       scopes: true,
       title: true,
       type: true,
-      userinfo_encrypted_response_alg: true,
-      userinfo_encrypted_response_enc: true,
       userinfo_signed_response_alg: true,
     };
 
@@ -219,22 +203,10 @@ describe('ServiceProviderAdapterMongoService', () => {
 
     beforeEach(() => {
       configMock.get.mockReturnValue({
-        platform: platformMock,
         isLocalhostAllowed: false,
       });
 
       validateDtoMock.mockResolvedValueOnce([]);
-    });
-
-    it('should retrieve platform from config', async () => {
-      // action
-      await service['findAllServiceProvider']();
-
-      // expect
-      expect(configMock.get).toHaveBeenCalledTimes(1);
-      expect(configMock.get).toHaveBeenCalledWith(
-        'ServiceProviderAdapterMongo',
-      );
     });
 
     it('should have called find once', async () => {
@@ -245,11 +217,10 @@ describe('ServiceProviderAdapterMongoService', () => {
       expect(repositoryMock.find).toHaveBeenCalledTimes(1);
     });
 
-    it('should have called find with a filter argument containing active true and platform being CORE_FCP', async () => {
+    it('should have called find with a filter argument containing active true', async () => {
       // setup
       const expectedRequestFilter = {
         active: true,
-        platform: platformMock,
       };
       // action
       await service['findAllServiceProvider']();
@@ -261,9 +232,8 @@ describe('ServiceProviderAdapterMongoService', () => {
       );
     });
 
-    it('should have called find with a filter argument containing active true and without platform argument', async () => {
+    it('should have called find with a filter argument containing active true', async () => {
       // setup
-      configMock.get.mockReset().mockReturnValue({ platform: undefined });
       const expectedRequestFilter = {
         active: true,
       };

@@ -25,11 +25,7 @@ describe('ServiceProviderService', () => {
     updatedBy: 'admin',
     scope: 'openid profile',
     id_token_signed_response_alg: 'ES256',
-    id_token_encrypted_response_alg: 'RSA-OAEP',
-    id_token_encrypted_response_enc: 'A256GCM',
     userinfo_signed_response_alg: 'ES256',
-    userinfo_encrypted_response_alg: 'RSA-OAEP',
-    userinfo_encrypted_response_enc: 'A256GCM',
     jwks_uri:
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/.well-known/keys',
   };

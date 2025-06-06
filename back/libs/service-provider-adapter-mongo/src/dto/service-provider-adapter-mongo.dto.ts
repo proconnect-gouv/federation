@@ -8,9 +8,7 @@ import {
 } from 'class-validator';
 
 // Creates a cyclic dependency
-import { IsEqualToConfig, IsUrlRequiredTldFromConfig } from '@fc/common';
-
-import { ServiceProviderAdapterMongoConfig } from './service-provider-adapter-mongo-config.dto';
+import { IsUrlRequiredTldFromConfig } from '@fc/common';
 
 export class ServiceProviderAdapterMongoDTO {
   @IsBoolean()
@@ -53,53 +51,12 @@ export class ServiceProviderAdapterMongoDTO {
   readonly userinfo_signed_response_alg: string;
 
   @IsOptional()
-  @IsString()
-  readonly id_token_encrypted_response_alg: string;
-
-  @IsOptional()
-  @IsString()
-  readonly id_token_encrypted_response_enc: string;
-
-  @IsOptional()
-  @IsString()
-  readonly userinfo_encrypted_response_alg: string;
-
-  @IsOptional()
-  @IsString()
-  readonly userinfo_encrypted_response_enc: string;
-
-  @IsOptional()
   @IsUrlRequiredTldFromConfig()
   readonly jwks_uri?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  idpFilterExclude?: boolean;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  idpFilterList?: string[];
 
   // 'public' = sp that accepts public servants only
   // 'private' = sp that also accepts private sector employees
   @IsString()
   @IsIn(['private', 'public'])
   readonly type: 'private' | 'public';
-
-  @IsOptional()
-  @IsBoolean()
-  readonly identityConsent: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  readonly ssoDisabled?: boolean;
-
-  @IsOptional()
-  @IsEqualToConfig<ServiceProviderAdapterMongoConfig>(
-    'ServiceProviderAdapterMongo',
-    'platform',
-  )
-  @IsString()
-  readonly platform?: string;
 }

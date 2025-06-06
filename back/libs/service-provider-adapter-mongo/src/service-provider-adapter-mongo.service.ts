@@ -48,17 +48,9 @@ export class ServiceProviderAdapterMongoService
   }
 
   private async findAllServiceProvider(): Promise<ServiceProviderMetadata[]> {
-    const { platform } = this.config.get<ServiceProviderAdapterMongoConfig>(
-      'ServiceProviderAdapterMongo',
-    );
-
     const requestFilterArgument: MongoRequestFilterArgument = {
       active: true,
     };
-
-    if (platform) {
-      requestFilterArgument.platform = platform;
-    }
 
     const rawResult = await this.serviceProviderModel
       .find(requestFilterArgument, {
@@ -73,17 +65,9 @@ export class ServiceProviderAdapterMongoService
         redirect_uris: true,
         post_logout_redirect_uris: true,
         id_token_signed_response_alg: true,
-        id_token_encrypted_response_alg: true,
-        id_token_encrypted_response_enc: true,
         userinfo_signed_response_alg: true,
-        userinfo_encrypted_response_alg: true,
-        userinfo_encrypted_response_enc: true,
         jwks_uri: true,
-        idpFilterExclude: true,
-        idpFilterList: true,
         type: true,
-        identityConsent: true,
-        platform: true,
       })
       .lean();
 

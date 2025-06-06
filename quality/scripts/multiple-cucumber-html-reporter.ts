@@ -18,16 +18,6 @@ const [
 ] = process.argv;
 
 // Fetch Test Run Context
-
-const platformName = {
-  'fca-low': 'AgentConnect',
-  'fcp-high': 'FranceConnect+',
-  'fcp-legacy': 'User-Dashboard FC Legacy',
-  'fcp-low': 'FranceConnect',
-  partners: 'Espace Partenaires',
-};
-
-const platform = platformName[process.env.CYPRESS_PLATFORM] || 'N/A';
 const testEnv = process.env.CYPRESS_TEST_ENV || 'docker';
 const gitBranch = process.env.CI_COMMIT_REF_NAME || '';
 const gitCommit = process.env.CI_COMMIT_SHORT_SHA || '';
@@ -37,7 +27,7 @@ const device = gitBuild === 'local' ? 'Docker Local' : 'Docker GitLab';
 
 // Add metadata
 
-const reportName = `${platform} ${gitBranch} (${testEnv})`;
+const reportName = `fca-low ${gitBranch} (${testEnv})`;
 
 const gitMergeRequestId = gitMergeRequest.split('!').pop();
 const gitMergeRequestLink =
@@ -50,7 +40,7 @@ const gitBuildLink =
     : `<a href="${gitLabJobUrl}${gitBuild}">${gitBuild}</a>`;
 const customData = {
   data: [
-    { label: 'Project', value: platform },
+    { label: 'Project', value: 'fca-low' },
     { label: 'Environment', value: testEnv },
     { label: 'Branch', value: gitBranch },
     { label: 'Commit', value: gitCommit },
