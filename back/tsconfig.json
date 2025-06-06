@@ -105,8 +105,6 @@
       "@fc/apache-ignite/*": ["libs/apache-ignite/src/*"],
       "@fc/notifications": ["libs/notifications/src"],
       "@fc/notifications/*": ["libs/notifications/src/*"],
-      "@fc/scopes": ["libs/scopes/src"],
-      "@fc/scopes/*": ["libs/scopes/src/*"],
       "@fc/elasticsearch": ["libs/elasticsearch/src"],
       "@fc/elasticsearch/*": ["libs/elasticsearch/src/*"],
       "@fc/csv": ["libs/csv/src"],

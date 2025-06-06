@@ -14,7 +14,6 @@ import { OidcClientConfig } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { RedisConfig } from '@fc/redis';
-import { ScopesConfig } from '@fc/scopes';
 import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
 import { SessionConfig } from '@fc/session';
 import { TrackingConfig } from '@fc/tracking';
@@ -106,9 +105,4 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => DataProviderAdapterMongoConfig)
   readonly DataProviderAdapterMongo: DataProviderAdapterMongoConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => ScopesConfig)
-  readonly Scopes: ScopesConfig;
 }
