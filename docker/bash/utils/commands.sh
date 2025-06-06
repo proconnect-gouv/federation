@@ -17,8 +17,8 @@ function _command_run() {
 
   if [ -z "${key}" ]; then
     echo "No command found"
-    echo "Use help to see all available commands:"
-    echo " > ./docker-stack help"
+    echo "Start dks switch medium"
+    _command_run switch medium
     exit 1
   fi
 
