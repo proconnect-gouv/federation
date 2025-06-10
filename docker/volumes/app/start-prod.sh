@@ -10,7 +10,7 @@ main() {
     echo "Building ${app}"
     yarn build ${app}
   else
-    echo "Exising build Found for ${app}"
+    echo "Existing build Found for ${app}"
   fi
 
   pm2 delete all
