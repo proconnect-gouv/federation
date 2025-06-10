@@ -8,6 +8,7 @@ const config: Config = {
   setupFilesAfterEnv: ['jest-extended/all'],
   collectCoverageFrom: ['libs/**/*.ts', 'apps/**/*.ts'],
   coveragePathIgnorePatterns: [
+    'migrations/.+.ts',
     'apps/.*/src/config/.*\\.ts',
     'apps/.*/src/main.ts',
     'apps/mock-service-provider-fca-low/.+.ts',
