@@ -69,7 +69,6 @@ services:
     image: alpine
     depends_on:
       - 'small'
-      - 'rp-bridge-proxy'
       - 'bridge-proxy-rie'
       ### RIE
       - 'lemon-ldap'
