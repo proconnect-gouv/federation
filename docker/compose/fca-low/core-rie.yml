@@ -12,6 +12,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      init-core-fca-low:
+        condition: service_completed_successfully
       mongo-fca-low:
         condition: service_healthy
       redis-pwd:
