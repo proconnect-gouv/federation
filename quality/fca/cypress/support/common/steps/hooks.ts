@@ -23,9 +23,8 @@ const setFixtureContext = (
 
 Before(function () {
   // Load environment config and test data
-  const platform: string = Cypress.env('PLATFORM');
   const testEnv: string = Cypress.env('TEST_ENV');
-  const pathArray = [platform, testEnv];
+  const pathArray = ['fca-low', testEnv];
   setFixtureContext('environment.json', pathArray, 'env');
   setFixtureContext('api-common.json', pathArray, 'apiRequests');
   setFixtureContext('service-provider-configs.json', pathArray, 'spConfigs');

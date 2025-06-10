@@ -15,19 +15,7 @@ export class ClientMetadata {
   readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';
 
   @IsString()
-  readonly id_token_encrypted_response_alg: string;
-
-  @IsString()
-  readonly id_token_encrypted_response_enc: string;
-
-  @IsString()
   readonly userinfo_signed_response_alg: string;
-
-  @IsString()
-  readonly userinfo_encrypted_response_alg: string;
-
-  @IsString()
-  readonly userinfo_encrypted_response_enc: string;
 
   @IsArray()
   readonly redirect_uris: string[];

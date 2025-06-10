@@ -10,7 +10,6 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
   },
   env: {
     // Base Configuration
-    PLATFORM: 'fca-low',
     TEST_ENV: 'docker',
     TAGS: 'not @ignore',
     // Test environment access
