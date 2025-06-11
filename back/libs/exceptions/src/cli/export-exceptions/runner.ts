@@ -107,6 +107,11 @@ export default class Runner {
 
     const errorCode = getCode(SCOPE, CODE);
 
+    const oidcMessage =
+      'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.';
+    const defaultMessage =
+      SCOPE === OIDC_PROVIDER_RUNTIME_SCOPE ? oidcMessage : undefined;
+
     const data = {
       SCOPE,
       CODE,
@@ -114,7 +119,7 @@ export default class Runner {
       exception: Exception.name,
       HTTP_STATUS_CODE,
       UI,
-      translated: frFR[UI],
+      translated: frFR[UI] || defaultMessage,
       DOCUMENTATION,
       LOG_LEVEL,
       path,

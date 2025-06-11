@@ -326,17 +326,18 @@ describe('Runner', () => {
         },
         {
           DOCUMENTATION: 'documentation',
-          SCOPE: 2,
+          SCOPE: 4,
           CODE: 2,
           HTTP_STATUS_CODE: 500,
           LOG_LEVEL: 20,
           UI: 'ui',
-          errorCode: '020002',
+          errorCode: '040002',
           exception: 'ImportFixture2',
           path: paths[1],
           ERROR: 'error',
           ERROR_DESCRIPTION: 'error description',
-          translated: undefined,
+          translated:
+            'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
         },
       ]);
     });
