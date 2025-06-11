@@ -30,7 +30,6 @@ import { CoreServiceInterface } from './interfaces';
 import {
   CoreAccountService,
   CoreOidcProviderConfigAppService,
-  CoreOidcProviderMiddlewareService,
 } from './services';
 import { CORE_SERVICE } from './tokens';
 
@@ -83,7 +82,6 @@ export class CoreModule {
           provide: IDENTITY_PROVIDER_SERVICE,
           useExisting: IdentityProviderAdapterMongoService,
         },
-        CoreOidcProviderMiddlewareService,
         ExceptionOccurredHandler,
         UnknownHtmlExceptionFilter,
         OidcProviderRenderedHtmlExceptionFilter,
@@ -114,7 +112,6 @@ export class CoreModule {
       ],
       exports: [
         CoreAccountService,
-        CoreOidcProviderMiddlewareService,
         CoreOidcProviderConfigAppService,
         trackingModule,
       ],
