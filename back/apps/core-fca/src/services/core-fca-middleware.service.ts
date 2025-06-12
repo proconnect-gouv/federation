@@ -159,10 +159,10 @@ export class CoreFcaMiddlewareService {
     const sessionId = this.getSessionId(ctx);
     await this.sessionService.initCache(sessionId);
 
-    const { AccessToken } = ctx.oidc.entities;
-    const atHash = atHashFromAccessToken(AccessToken);
-
-    await this.sessionService.setAlias(atHash, sessionId);
+    // const { AccessToken } = ctx.oidc.entities;
+    // const atHash = atHashFromAccessToken(AccessToken);
+    //
+    // await this.sessionService.setAlias(atHash, sessionId);
 
     const eventContext = this.getEventContext(ctx);
 
