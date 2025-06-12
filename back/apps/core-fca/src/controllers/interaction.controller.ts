@@ -204,7 +204,7 @@ export class InteractionController {
     res.render('interaction', {
       csrfToken,
       defaultEmailRenater,
-      notification,
+      notificationMessage: notification?.message,
       spName,
       loginHint,
     });

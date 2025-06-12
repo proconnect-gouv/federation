@@ -319,9 +319,9 @@ describe('InteractionController', () => {
         reset: jest.fn(),
         commit: jest.fn(),
       } as unknown as ISessionService<UserSession>;
-      notificationsMock.getNotificationToDisplay.mockResolvedValue(
-        'notification',
-      );
+      notificationsMock.getNotificationToDisplay.mockResolvedValue({
+        message: 'notification',
+      });
       configServiceMock.get.mockReturnValue({ defaultEmailRenater: 'email' });
       oidcProviderMock.getInteraction.mockResolvedValue({
         uid: 'interaction123',
@@ -342,7 +342,7 @@ describe('InteractionController', () => {
       expect(res.render).toHaveBeenCalledWith('interaction', {
         csrfToken: 'csrfToken',
         defaultEmailRenater: 'email',
-        notification: 'notification',
+        notificationMessage: 'notification',
         spName: 'spName',
         loginHint: 'user@example.com',
       });
