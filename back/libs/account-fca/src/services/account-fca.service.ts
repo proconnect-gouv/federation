@@ -17,8 +17,12 @@ export class AccountFcaService {
     idpIdentityKeys: IIdpAgentKeys,
   ): Promise<AccountFca> {
     return await this.model.findOne({
-      'idpIdentityKeys.idpSub': idpIdentityKeys.idpSub,
-      'idpIdentityKeys.idpUid': idpIdentityKeys.idpUid,
+      idpIdentityKeys: {
+        $elemMatch: {
+          idpSub: idpIdentityKeys.idpSub,
+          idpUid: idpIdentityKeys.idpUid,
+        },
+      },
     });
   }
 
