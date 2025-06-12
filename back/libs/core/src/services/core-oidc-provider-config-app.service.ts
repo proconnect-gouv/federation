@@ -36,13 +36,12 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
    * @TODO #109 Check the behaving of the page when javascript is disabled
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
    */
-  async logoutSource(ctx: OidcCtx, form: any): Promise<void> {
-    this.sessionService.init(ctx.res);
-
-    const sessionId = await this.getSessionId(ctx);
+  async logoutSource(ctx: any, form: any): Promise<void> {
+    const sessionId = ctx.oidc?.session?.accountId;
 
     let session: CoreFcaSession;
     try {
+      await this.sessionService.initCache(sessionId);
       session =
         await this.sessionService.getDataFromBackend<CoreFcaSession>(sessionId);
     } catch (error) {
