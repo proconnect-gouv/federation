@@ -6,9 +6,6 @@ import { IdentityFromIdpDto } from './identity-from-idp.dto';
 
 export class ActiveUserSessionDto {
   @IsDefined()
-  readonly accountId: string;
-
-  @IsDefined()
   @ValidateNested()
   @Type(() => IdentityForSpDto)
   readonly spIdentity: IdentityForSpDto;

@@ -198,7 +198,6 @@ describe('CoreFcaService', () => {
         idpState: 'mockState',
         idpIdentity: undefined,
         spIdentity: undefined,
-        accountId: undefined,
       });
     });
 

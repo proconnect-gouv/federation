@@ -73,7 +73,6 @@ describe('CoreTrackingService', () => {
     dpId: 'dp_uid',
     dpClientId: 'dp_client_id',
     dpTitle: 'dp_title',
-    accountId: undefined,
     browsingSessionId: undefined,
     reusesActiveSession: undefined,
     spId: undefined,
@@ -89,7 +88,6 @@ describe('CoreTrackingService', () => {
   const interactionAcrMock = 'interactionAcrMock';
 
   const sessionDataMock: UserSession = {
-    accountId: 'accountId Mock Value',
     browsingSessionId: 'browsingSessionId Mock Value',
     interactionId: interactionIdMock,
     interactionAcr: interactionAcrMock,
@@ -323,7 +321,6 @@ describe('CoreTrackingService', () => {
     it('should return a default object with only sessionId, if session is not found', () => {
       // Given
       const expectedResult = {
-        accountId: null,
         browsingSessionId: null,
         interactionId: null,
         interactionAcr: null,
@@ -355,7 +352,6 @@ describe('CoreTrackingService', () => {
     it('should return partial data from session.get', () => {
       // Given
       const expectedResult = {
-        accountId: 'accountId Mock Value',
         browsingSessionId: 'browsingSessionId Mock Value',
         sessionId: sessionIdMock,
         interactionId: interactionIdMock,
@@ -382,7 +378,6 @@ describe('CoreTrackingService', () => {
     it('should return null values for idp info and spSub if not set in session', () => {
       // Given
       const expectedResult = {
-        accountId: null,
         browsingSessionId: browsingSessionIdMock,
         sessionId: sessionIdMock,
         interactionId: null,
@@ -418,7 +413,6 @@ describe('CoreTrackingService', () => {
     it('should return null values for `idp` info if not set in session', () => {
       // Given
       const expectedResult = {
-        accountId: null,
         sessionId: sessionIdMock,
         browsingSessionId: browsingSessionIdMock,
         interactionId: null,
@@ -455,7 +449,6 @@ describe('CoreTrackingService', () => {
     it('should return null values for `sp` info if not set in session', () => {
       // Given
       const expectedResult = {
-        accountId: null,
         sessionId: sessionIdMock,
         browsingSessionId: browsingSessionIdMock,
         interactionId: null,

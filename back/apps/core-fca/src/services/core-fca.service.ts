@@ -109,7 +109,6 @@ export class CoreFcaService implements CoreServiceInterface {
       idpState: state,
       idpIdentity: undefined,
       spIdentity: undefined,
-      accountId: undefined,
     };
 
     this.session.set('User', sessionPayload);

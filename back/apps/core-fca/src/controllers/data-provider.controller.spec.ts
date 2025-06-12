@@ -65,7 +65,6 @@ describe('DataProviderController', () => {
 
   const sessionDataMock = {
     OidcClient: {
-      accountId: 'accountId',
       browsingSessionId: 'browsingSessionId',
       idpId: 'idpId',
       idpName: 'idpName',

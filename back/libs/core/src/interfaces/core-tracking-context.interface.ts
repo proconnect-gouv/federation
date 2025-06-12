@@ -3,7 +3,6 @@ import { NetworkContextInterface } from '@fc/tracking-context';
 
 export interface ICoreTrackingContext {
   readonly source: NetworkContextInterface;
-  readonly accountId?: string;
   readonly browsingSessionId?: string;
   readonly sessionId: string;
 
