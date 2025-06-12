@@ -15,7 +15,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import {
   CoreConfig,
@@ -58,7 +57,6 @@ export class InteractionController {
   // More than 4 parameters authorized for a controller
   /* eslint-disable-next-line max-params */
   constructor(
-    private readonly accountService: AccountFcaService,
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcAcr: OidcAcrService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
@@ -276,13 +274,7 @@ export class InteractionController {
       throw new CoreAcrNotSatisfiedException();
     }
 
-    const account = await this.accountService.getAccountByIdpAgentKeys({
-      idpUid: idpId,
-      idpSub: idpIdentity.sub,
-    });
-
     const session: UserSession = {
-      accountId: account.id,
       interactionAcr,
     };
     userSessionService.set(session);

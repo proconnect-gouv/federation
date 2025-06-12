@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { CoreIdpHintException } from '@fc/core';
 import { CsrfService } from '@fc/csrf';
@@ -49,12 +48,6 @@ describe('InteractionController', () => {
   let sessionServiceMock: any; // for Csrf only
   let coreFcaMock: any;
   let csrfServiceMock: any;
-
-  const accountFcaServiceMock = {
-    upsertWithSub: jest.fn(),
-    getAccountByIdpAgentKeys: jest.fn(),
-    createAccount: jest.fn(),
-  };
 
   beforeEach(async () => {
     oidcProviderMock = {
@@ -105,7 +98,6 @@ describe('InteractionController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [InteractionController],
       providers: [
-        AccountFcaService,
         OidcProviderService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
@@ -119,8 +111,6 @@ describe('InteractionController', () => {
         NotificationsService,
       ],
     })
-      .overrideProvider(AccountFcaService)
-      .useValue(accountFcaServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderMock)
       .overrideProvider(OidcAcrService)
@@ -369,12 +359,6 @@ describe('InteractionController', () => {
       identityProviderMock.isActiveById.mockResolvedValue(true);
       serviceProviderMock.getById.mockResolvedValue({ type: 'private' });
       oidcAcrMock.getInteractionAcr.mockReturnValue(interactionAcr);
-      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValue({
-        id: 'account123',
-        sub: 'sub123',
-        active: true,
-        idpIdentityKeys: [],
-      });
       oidcProviderMock.finishInteraction.mockResolvedValue(undefined);
       configServiceMock.get.mockReturnValueOnce({
         configuration: { claims: ['sub'] },
@@ -391,12 +375,8 @@ describe('InteractionController', () => {
         idpAcr: 'high',
         spEssentialAcr: 'high',
       });
-      expect(
-        accountFcaServiceMock.getAccountByIdpAgentKeys,
-      ).toHaveBeenCalledWith({ idpUid: 'idp123', idpSub: 'user1' });
       expect(userSessionService.set).toHaveBeenCalledWith({
         interactionAcr,
-        accountId: 'account123',
       });
       expect(oidcProviderMock.finishInteraction).toHaveBeenCalledWith(
         req,
