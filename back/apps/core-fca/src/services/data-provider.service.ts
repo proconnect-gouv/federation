@@ -1,7 +1,7 @@
 import { ValidatorOptions } from 'class-validator';
 import { JSONWebKeySet } from 'jose';
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
@@ -9,7 +9,6 @@ import { ConfigService } from '@fc/config';
 import {
   ChecktokenRequestDto,
   DpJwtPayloadInterface,
-  ErrorParamsDto,
   InvalidChecktokenRequestException,
   TokenIntrospectionInterface,
 } from '@fc/core';
@@ -109,25 +108,6 @@ export class DataProviderService {
 
   generateExpiredResponse(): TokenIntrospectionInterface {
     return { active: false };
-  }
-
-  generateErrorMessage(
-    httpStatusCode: number,
-    message: string,
-    error: string,
-  ): ErrorParamsDto {
-    if (httpStatusCode === HttpStatus.INTERNAL_SERVER_ERROR) {
-      return {
-        error: 'server_error',
-        error_description:
-          'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
-      };
-    }
-
-    return {
-      error,
-      error_description: message,
-    };
   }
 
   private async generateValidResponse(

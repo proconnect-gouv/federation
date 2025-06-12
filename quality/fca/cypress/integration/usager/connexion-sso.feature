@@ -57,7 +57,6 @@ Fonctionnalité: Connexion Usager - SSO
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "troisième fs"
     Et que le fournisseur de service requiert l'accès aux informations du scope "obligatoires"
-    Et que le fournisseur de service ne requiert pas le claim "amr"
     Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page fournisseur de service "troisième fs"
     Et que je suis connecté au fournisseur de service
