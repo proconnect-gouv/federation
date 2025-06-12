@@ -135,7 +135,7 @@ export class CoreFcaMiddlewareService {
     const { prompt: dataPrompt } = data as { prompt: string };
     data.prompt = overrideValue;
 
-    this.logger.info(`Overriding "prompt" with "${data.prompt}"`);
+    this.logger.debug(`Overriding "prompt" with "${data.prompt}"`);
     this.logger.debug({
       originalPrompt: dataPrompt,
       overriddenPrompt: data.prompt,
