@@ -191,9 +191,9 @@ Then(
 );
 
 Then(
-  /^le sub transmis au fournisseur de service n'est pas le suivant {string}$/,
+  "le sub transmis au fournisseur de service n'est pas le suivant {string}",
   function (sub: string) {
-    getUserInfoProperty('sub').should.not('be.equal', sub);
+    getUserInfoProperty('sub').should('not.be.equal', sub);
   },
 );
 
