@@ -38,6 +38,17 @@ Fonctionnalité: Connexion Usager - Sub
     Et que je suis connecté au fournisseur de service
     Alors le sub transmis au fournisseur de service est identique au sub mémorisé
 
+  Scénario: vérifie qu'un account n'est pas retrouvé si un FI utilise un sub existant dans un autre FI
+    Etant donné que je navigue sur la page fournisseur de service "premier FS"
+    Et que je clique sur le bouton ProConnect
+    Et que je suis redirigé vers la page interaction
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    # Le sub "s7Ht2K9pL5mN8vX3cR4wQ" correspond au fia2 dans un accountFca existant
+    Quand j'utilise l'identité avec le sub "s7Ht2K9pL5mN8vX3cR4wQ"
+    Et que je m'authentifie
+    Alors le sub transmis au fournisseur de service n'est pas le suivant "d68cec59-ed65-48ab-bfbf-1ca65dd807f8"
+
   @ignoreInteg01
   Scénario: retourne le sub déjà enregistré pour deux identités connues qui sont rattachées à un même sub dans ProConnect
     Etant donné que je navigue sur la page fournisseur de service "premier FS"

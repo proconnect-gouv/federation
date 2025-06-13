@@ -191,6 +191,13 @@ Then(
 );
 
 Then(
+  "le sub transmis au fournisseur de service n'est pas le suivant {string}",
+  function (sub: string) {
+    getUserInfoProperty('sub').should('not.be.equal', sub);
+  },
+);
+
+Then(
   'le siret transmis au fournisseur de service est le suivant {string}',
   function (siret: string) {
     getUserInfoProperty('siret').should('be.equal', siret);
