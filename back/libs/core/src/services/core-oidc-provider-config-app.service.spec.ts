@@ -121,7 +121,6 @@ describe('CoreOidcProviderConfigAppService', () => {
 
   describe('logoutSource', () => {
     beforeEach(() => {
-      sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionOidcMock);
       service['getSessionId'] = jest.fn().mockResolvedValue(sessionId);
     });
 
@@ -172,6 +171,18 @@ describe('CoreOidcProviderConfigAppService', () => {
         form,
         expectedParamsMock,
       );
+    });
+
+    it('should render logout page when session is not defined', async () => {
+      // Given
+      sessionServiceMock.getDataFromBackend.mockImplementationOnce(() => {
+        throw new Error('Session not found');
+      });
+
+      // When
+      await service.logoutSource(ctxMock, form);
+      // Then
+      expect(ctxMock.body).toBeDefined();
     });
   });
 

@@ -41,8 +41,16 @@ export class CoreOidcProviderConfigAppService extends OidcProviderAppConfigLibSe
 
     const sessionId = await this.getSessionId(ctx);
 
-    const session =
-      await this.sessionService.getDataFromBackend<CoreFcaSession>(sessionId);
+    let session: CoreFcaSession;
+    try {
+      session =
+        await this.sessionService.getDataFromBackend<CoreFcaSession>(sessionId);
+    } catch (error) {
+      // Session may have been destroyed or expired
+      // Render the logout page to let oidc-provider complete the logout flow
+      return super.logoutSource(ctx, form);
+    }
+
     const { req } = ctx;
 
     /**
