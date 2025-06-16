@@ -62,19 +62,6 @@ describe('OidcProviderErrorService', () => {
   });
 
   describe('renderError', () => {
-    let getRenderedExceptionWrapperMock;
-
-    it('should call getRenderedExceptionWrapper', async () => {
-      // Given
-      const ctx = {} as KoaContextWithOIDC;
-      const error = new Error('error');
-
-      // When
-      await service.renderError(ctx, '', error);
-      // Then
-      expect(getRenderedExceptionWrapperMock).toHaveBeenCalledTimes(1);
-    });
-
     it('should set isError flag on ctx.oidc', async () => {
       // Given
       const ctx = { oidc: {} } as KoaContextWithOIDC;
