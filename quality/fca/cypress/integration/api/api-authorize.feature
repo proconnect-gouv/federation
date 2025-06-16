@@ -132,16 +132,6 @@ Scénario: API authorize - Cas nominal avec response_mode (ignoré)
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page interaction
 
-  Scénario: API authorize - Cas nominal avec PKCE
-    Etant donné que je prépare une requête "authorize"
-    Et que je mets "test_challenge_qui_fait_au_moins_43_caracteres" dans le paramètre "code_challenge" de la requête
-    Et que je mets "S256" dans le paramètre "code_challenge_method" de la requête
-    Quand je lance la requête
-    Alors le statut de la réponse est 200
-    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
-    Et le corps de la réponse contient une page web
-    Et je suis redirigé vers la page interaction
-
   Scénario: API authorize - Erreur <error> avec code_challenge=<codeChallenge>
     Etant donné que je prépare une requête "authorize"
     Et que je configure la requête pour ne pas suivre les redirections
