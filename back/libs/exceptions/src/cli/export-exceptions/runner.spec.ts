@@ -421,11 +421,6 @@ describe('Runner', () => {
         projectRootPath,
         title: 'Code erreurs généraux',
       });
-      expect(Runner.renderFile).toHaveBeenNthCalledWith(2, expect.any(String), {
-        markdown: markdownGenerateResult,
-        projectRootPath,
-        title: 'Code erreurs spécifiques OIDC Provider',
-      });
     });
 
     it('should call fs.writeFileSync with renderFile result', async () => {

@@ -1,10 +1,6 @@
 import { I18nTranslationsMapType } from '@fc/i18n';
-import { frFR as frFROidcProvider } from '@fc/oidc-provider/exceptions/runtime/fr-FR.i18n';
 
 export const frFR: I18nTranslationsMapType = {
-  // OidcProvider
-  ...frFROidcProvider,
-
   // Meta
   'meta.lang': 'fr',
 
