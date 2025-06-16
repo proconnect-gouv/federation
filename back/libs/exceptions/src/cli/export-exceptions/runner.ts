@@ -166,12 +166,8 @@ export default class Runner {
     const mainList = loaded.filter(
       (item) => item.SCOPE !== OIDC_PROVIDER_RUNTIME_SCOPE,
     );
-    const oidcProviderRunTimeList = loaded.filter(
-      (item) => item.SCOPE === OIDC_PROVIDER_RUNTIME_SCOPE,
-    );
 
     const mainMarkdown = MarkdownGenerator.generate(mainList);
-    const oprtMarkdown = MarkdownGenerator.generate(oidcProviderRunTimeList);
 
     const inputFile = `${__dirname}/view/erreurs.ejs`;
     const projectRootPath = '../';
@@ -182,13 +178,6 @@ export default class Runner {
       title: 'Code erreurs généraux',
     });
 
-    const oprtPage = await Runner.renderFile(inputFile, {
-      markdown: oprtMarkdown,
-      projectRootPath,
-      title: 'Code erreurs spécifiques OIDC Provider',
-    });
-
     fs.writeFileSync('_doc/erreurs.md', mainPage);
-    fs.writeFileSync('_doc/erreurs-oidc-provider.md', oprtPage);
   }
 }
