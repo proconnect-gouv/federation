@@ -66,7 +66,6 @@ _prune_all() {
   docker system df
   npm cache clean --force
   yarn cache clean
-  sudo du -sh /var/cache/apt/archives
   cd $PC_ROOT
   find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
 }
