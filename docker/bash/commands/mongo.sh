@@ -6,12 +6,6 @@ _reset_mongodb() {
   $DOCKER_COMPOSE exec ${NO_TTY} ${db_container_name} /opt/scripts/manage.sh --reset-db
 }
 
-_reset_mongodb_as_prod() {
-  local db_container_name=$1
-  echo "Reseting database ${db_container_name} to some production states"
-  cd ${WORKING_DIR} && $DOCKER_COMPOSE exec ${NO_TTY} ${db_container_name} /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
-}
-
 _mongo_core_shell() {
   local app_name=$1
   _mongo_shell "mongo-$app_name" "core-$app_name"
