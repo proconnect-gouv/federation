@@ -132,6 +132,41 @@ Scénario: API authorize - Cas nominal avec response_mode (ignoré)
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page interaction
 
+  Scénario: API authorize - Erreur <error> avec code_challenge=<codeChallenge>
+    Etant donné que je prépare une requête "authorize"
+    Et que je configure la requête pour ne pas suivre les redirections
+    Et que je mets "<codeChallenge>" dans le paramètre "code_challenge" de la requête
+    Et que je mets "S256" dans le paramètre "code_challenge_method" de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 303
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et l'entête de la réponse a une propriété "location" contenant l'url de callback du FS avec l'erreur
+    Et l'url de callback du FS a un paramètre "error" égal à "<error>"
+    Et l'url de callback du FS a un paramètre "error_description" égal à "<errorDescription>"
+
+    Exemples:
+      | codeChallenge                                    | error            | errorDescription                                                       |
+      |                                                  | invalid_request  | code_challenge must be provided with code_challenge_method             |
+      | Petit code challenge                             | invalid_request  | code_challenge must be a string with a minimum length of 43 characters |
+      | Code challenge accentué d'au moins 43 caractères | invalid_request  | code_challenge contains invalid characters                             |
+
+  Scénario: API authorize - Erreur <error> avec code_challenge_method=<codeChallengeMethod>
+    Etant donné que je prépare une requête "authorize"
+    Et que je configure la requête pour ne pas suivre les redirections
+    Et que je mets "test_challenge_qui_fait_au_moins_43_caracteres" dans le paramètre "code_challenge" de la requête
+    Et que je mets "<codeChallengeMethod>" dans le paramètre "code_challenge_method" de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 303
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et l'entête de la réponse a une propriété "location" contenant l'url de callback du FS avec l'erreur
+    Et l'url de callback du FS a un paramètre "error" égal à "<error>"
+    Et l'url de callback du FS a un paramètre "error_description" égal à "<errorDescription>"
+
+    Exemples:
+      | codeChallengeMethod | error            | errorDescription                                                                      |
+      |                     | invalid_request  | plain code_challenge_method fallback disabled, code_challenge_method must be provided |
+      | plain               | invalid_request  | not supported value of code_challenge_method                                          |
+
   Plan du Scénario: API authorize - Erreur <error> avec response_type=<responseType>
     Etant donné que je prépare une requête "authorize"
     Et que je mets "<responseType>" dans le paramètre "response_type" de la requête

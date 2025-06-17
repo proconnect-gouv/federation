@@ -70,6 +70,10 @@
             <pre><code id="userdata"><%= locals.userdata %></code></pre>
         <% } %>
         <h2>Interactions</h2>
+        <form action="/login-pkce" method="post">
+            <button id="login-pkce">Se connecter avec PKCE</button>
+        </form>
+        <br>
         <form action="/logout" method="post">
             <button id="logout">Se déconnecter</button>
         </form>

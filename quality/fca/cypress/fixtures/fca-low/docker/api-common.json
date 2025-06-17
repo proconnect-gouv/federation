@@ -49,6 +49,19 @@
     "method": "POST",
     "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/token"
   },
+  "token-pkce": {
+    "body": {
+      "grant_type": "authorization_code",
+      "client_id": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+      "client_secret": "a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5",
+      "redirect_uri": "https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback",
+      "code": "dYSb8bx5a7O3qJcwonhwAhNbHwHEBGKG-Gf8kr8xaVv",
+      "code_verifier": "code_verifier_1234567890123456789012345678901234567890"
+    },
+    "form": true,
+    "method": "POST",
+    "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/token"
+  },
   "revoke": {
     "body": {
       "client_id": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",

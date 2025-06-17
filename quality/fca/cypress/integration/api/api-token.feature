@@ -73,6 +73,42 @@ Scénario: API token - id_token
   Et le payload du JWT a une propriété "amr"
   Et le payload du JWT a une propriété "iss" égale à "https://core-fca-low.docker.dev-franceconnect.fr/api/v2"
 
+Scénario: API token - PKCE sans client_secret
+  Etant donné que je navigue sur la page fournisseur de service
+  Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
+  Et que je clique sur le bouton ProConnect PKCE
+  Et que j'entre l'email "test@fia1.fr"
+  Et que je clique sur le bouton de connexion
+  Et que je m'authentifie
+  Et que je prépare une requête "token-pkce"
+  Et que je mets le code renvoyé par PC au FS dans la propriété "code" du corps de la requête
+  Et que je retire "client_secret" du corps de la requête
+  Quand je lance la requête
+  Alors le statut de la réponse est 401
+  Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
+  Et l'entête de la réponse n'a pas de propriété "set-cookie"
+  Et le corps de la réponse contient une erreur
+  Et le corps de la réponse a une propriété "error" égale à "invalid_client"
+  Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed (the registered client token_endpoint_auth_method does not match the provided auth mechanism)"
+
+Scénario: API token - code_verifier invalide
+  Etant donné que je navigue sur la page fournisseur de service
+  Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
+  Et que je clique sur le bouton ProConnect PKCE
+  Et que j'entre l'email "test@fia1.fr"
+  Et que je clique sur le bouton de connexion
+  Et que je m'authentifie
+  Et que je prépare une requête "token-pkce"
+  Et que je mets le code renvoyé par PC au FS dans la propriété "code" du corps de la requête
+  Et que je mets "invalid-code_verifier-123456789012345678901234567890" dans la propriété "code_verifier" du corps de la requête
+  Quand je lance la requête
+  Alors le statut de la réponse est 400
+  Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
+  Et l'entête de la réponse n'a pas de propriété "set-cookie"
+  Et le corps de la réponse contient une erreur
+  Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
+  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (PKCE verification failed)"
+
 Scénario: API token - refresh token
   Etant donné que je navigue sur la page fournisseur de service
   Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
