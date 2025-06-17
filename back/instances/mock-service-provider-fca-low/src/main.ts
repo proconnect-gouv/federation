@@ -106,11 +106,9 @@ app.get('/', (req, res, next) => {
   }
 });
 
-const getAuthorizationControllerFactory = (extraParams = {}) => {
+const getAuthorizationControllerFactory = (extraParams: any = {}) => {
   return async (req, res, next) => {
     try {
-      const params = { ...extraParams };
-
       const config = await getProviderConfig();
       const nonce = client.randomNonce();
       const state = client.randomState();
@@ -118,27 +116,13 @@ const getAuthorizationControllerFactory = (extraParams = {}) => {
       req.session.state = state;
       req.session.nonce = nonce;
 
-      let pkceParams = {};
-      if ('usePkce' in params && params.usePkce) {
-        const code_verifier = client.randomPKCECodeVerifier();
-        const code_challenge =
-          await client.calculatePKCECodeChallenge(code_verifier);
-        req.session.code_verifier = code_verifier;
-        pkceParams = {
-          code_challenge,
-          code_challenge_method: 'S256',
-        };
-        delete params.usePkce;
-      }
-
       const redirectUrl = client.buildAuthorizationUrl(
         config,
         objToUrlParams({
           nonce,
           state,
           ...AUTHORIZATION_DEFAULT_PARAMS,
-          ...pkceParams,
-          ...params,
+          ...extraParams,
         }),
       );
 
@@ -150,7 +134,17 @@ const getAuthorizationControllerFactory = (extraParams = {}) => {
 };
 
 app.post('/login', getAuthorizationControllerFactory());
-app.post('/login-pkce', getAuthorizationControllerFactory({ usePkce: true }));
+app.post('/login-pkce', async (req, res, next) => {
+  const extraParams: any = {};
+
+  const code_verifier = client.randomPKCECodeVerifier();
+  const code_challenge = await client.calculatePKCECodeChallenge(code_verifier);
+  req.session.code_verifier = code_verifier;
+  extraParams.code_challenge = code_challenge;
+  extraParams.code_challenge_method = 'S256';
+
+  return getAuthorizationControllerFactory(extraParams)(req, res, next);
+});
 
 app.post(
   '/custom-connection',
