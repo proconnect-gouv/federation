@@ -12,4 +12,12 @@ export class OidcProviderNoWrapperException extends OidcProviderBaseRenderedExce
     'authentication aborted due to a technical error on the authorization server';
   static UI = 'OidcProvider.exceptions.OidcProviderNoWrapperException';
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
+
+  public getMessage() : string {
+    return this.originalError.constructor.name;
+  }
+
+  public getErrorCode() : string {
+    return this.getMessage();
+  }
 }

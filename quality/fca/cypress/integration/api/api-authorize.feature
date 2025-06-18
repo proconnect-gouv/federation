@@ -1,6 +1,6 @@
 #language: fr
 Fonctionnalité: API - authorize
-  Plan du Scénario: API authorize - erreur Y04A586 client_id=<clientId>
+  Plan du Scénario: API authorize - erreur InvalidClient client_id=<clientId>
     Etant donné que je prépare une requête "authorize"
     Et que je mets "<clientId>" dans le paramètre "client_id" de la requête
     Quand je lance la requête
@@ -8,7 +8,7 @@ Fonctionnalité: API - authorize
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y04A586"
+    Et le code d'erreur est "InvalidClient"
     Et le message d'erreur est "Client non trouvé (client_id invalide)"
     Et le lien retour vers le FS n'est pas affiché dans la page erreur technique
 
@@ -53,7 +53,7 @@ Fonctionnalité: API - authorize
     Exemples:
       | redirectUri                          | httpCode | error   |
       |                                      | 400      | Y000400 |
-      | https://my-malicious-url.fr/callback | 400      | Y046350 |
+      | https://my-malicious-url.fr/callback | 400      | InvalidRedirectUri |
       | example.com                          | 400      | Y000400 |
 
   Plan du Scénario: API authorize - Cas nominal prompt=<prompt>
@@ -221,4 +221,4 @@ Scénario: API authorize - Cas nominal avec response_mode (ignoré)
     Exemples:
       | redirectUri                          | httpCode | error   | errorDescription                                             |
       |                                      | 400      | Y000400 | Une erreur s'est produite, veuillez réessayer ultérieurement |
-      | https://my-malicious-url.fr/callback | 400      | Y046350 | L’URL de callback n’est pas valide                           |
+      | https://my-malicious-url.fr/callback | 400      | InvalidRedirectUri | L’URL de callback n’est pas valide                           |
