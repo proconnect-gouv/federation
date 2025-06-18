@@ -92,10 +92,11 @@ jobs:
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v2
 
-      - name: Set up Docker BuildKit
-        run: |
-          export DOCKER_BUILDKIT=1
-          export COMPOSE_BAKE=true
+      # Workaround for https://github.com/docker/compose/issues/12892 
+      - name: Upgrade Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: latest
 
       - name: Set FEDERATION_ROOT environment variable
         working-directory: ./
@@ -150,10 +151,11 @@ jobs:
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v2
 
-      - name: Set up Docker BuildKit
-        run: |
-          export DOCKER_BUILDKIT=1
-          export COMPOSE_BAKE=true
+      # Workaround for https://github.com/docker/compose/issues/12892 
+      - name: Upgrade Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: latest
 
       - name: Set FEDERATION_ROOT environment variable
         working-directory: ./
