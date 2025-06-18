@@ -188,10 +188,9 @@ export const frFR: I18nTranslationsMapType = {
   'OidcProvider.exceptions.RuntimeException':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
 
-  'OidcProvider.exceptions.InvalidClient.A586':
+  'InvalidClient':
     'Client non trouvé (client_id invalide)',
-  'OidcProvider.exceptions.InvalidRedirectUri.6350':
-    'L’URL de callback n’est pas valide',
+  'InvalidRedirectUri':'L’URL de callback n’est pas valide',
 
   // override-oidc-provider
   'OverrideOidcProvider.exceptions.cryptographyGateway':

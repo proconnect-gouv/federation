@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { getCode } from '../helpers/code.helper';
 
 export class BaseException extends Error {
   static DOCUMENTATION: string;
@@ -15,6 +16,23 @@ export class BaseException extends Error {
   public log: unknown;
   public statusCode?: number;
   public status?: number;
+
+  public getMessage() : string {
+    return this.getClass().UI;
+  }
+
+  public getClass() : typeof BaseException {
+    return this.constructor as typeof BaseException;
+  }
+
+  public getErrorCode(prefix: string) : string {
+    const exceptionClass = this.getClass();
+
+    const scope = exceptionClass.SCOPE;
+    const code = exceptionClass.CODE;
+
+    return getCode(scope,code,prefix);
+  }
 
   constructor(input?: Error | string) {
     let arg: unknown = input;

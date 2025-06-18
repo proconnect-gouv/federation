@@ -14,7 +14,7 @@ import { ViewTemplateService } from '@fc/view-templates';
 import { ExceptionCaughtEvent } from '../events';
 import { FcException } from '../exceptions';
 import { BaseException } from '../exceptions/base.exception';
-import { generateErrorId, getClass } from '../helpers';
+import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
 @Catch(FcException)
@@ -36,11 +36,10 @@ export class FcWebHtmlExceptionFilter
     const ctx = host.switchToHttp();
     const res = ctx.getResponse();
     const req = ctx.getRequest();
-    const exceptionConstructor = getClass(exception);
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
-    const message = exceptionConstructor.UI;
+    const message = exception.getMessage();
 
     // @todo: weird Naming / structure
     const errorMessage: ApiErrorMessage = { code, id, message };
