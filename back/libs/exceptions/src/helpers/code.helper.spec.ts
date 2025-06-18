@@ -11,7 +11,7 @@ describe('getCode', () => {
     const code = 2;
 
     // When
-    const result = getCode(scope, code);
+    const result = getCode(scope, code, '');
 
     // Then
     expect(typeof result).toBe('string');
@@ -25,7 +25,7 @@ describe('getCode', () => {
     const result = getCode(scope, code);
 
     // Then
-    expect(result).toBe('010002');
+    expect(result).toBe('Y010002');
   });
   it('should return the correct value for 2 digits code and 2 digits scope', () => {
     // Given
@@ -33,7 +33,7 @@ describe('getCode', () => {
     const code = 12;
 
     // When
-    const result = getCode(scope, code);
+    const result = getCode(scope, code, '');
 
     // Then
     expect(result).toBe('230012');
@@ -44,7 +44,7 @@ describe('getCode', () => {
     const code = 421;
 
     // When
-    const result = getCode(scope, code);
+    const result = getCode(scope, code, '');
 
     // Then
     expect(result).toBe('030421');
