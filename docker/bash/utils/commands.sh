@@ -16,10 +16,8 @@ function _command_run() {
   local key=$1
 
   if [ -z "${key}" ]; then
-    echo "No command found"
-    echo "Start dks switch medium"
-    _command_run switch medium
-    exit 1
+    _command_list
+    exit 0
   fi
 
   local cmd=${__CMD_COMMANDS[${key}]}
@@ -27,7 +25,7 @@ function _command_run() {
   if [ -z "${cmd}" ]; then
     echo "Command not found: <${key}>"
     echo "Use help to see all available commands:"
-    echo " > ./docker-stack help"
+    echo " > docker-stack help"
     exit 1
   fi
 
