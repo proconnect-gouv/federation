@@ -13,11 +13,17 @@ export class OidcProviderNoWrapperException extends OidcProviderBaseRenderedExce
   static UI = 'OidcProvider.exceptions.OidcProviderNoWrapperException';
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
 
-  public getMessage() : string {
+  public getMessage(): string {
     return this.originalError.constructor.name;
   }
 
-  public getErrorCode() : string {
+  public getErrorCode(_prefix: string): string {
     return this.getMessage();
+  }
+
+  public getHttpStatus(defaultStatus: HttpStatus): HttpStatus {
+    if (this.originalError.statusCode) {
+      return this.originalError.statusCode;
+    } else return defaultStatus;
   }
 }

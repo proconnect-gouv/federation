@@ -103,27 +103,28 @@ describe('FcBaseExceptionFilter', () => {
   describe('getHttpStatus', () => {
     it('should return the status code from status property', () => {
       // Given
-      const exceptionStatusMock = {
-        status: Symbol('status') as unknown as number,
-      } as BaseException;
+      const statusException = new BaseException();
+      statusException.status = Symbol('statusCode') as unknown as number;
+
       // When
-      const result = filter['getHttpStatus'](exceptionStatusMock);
+      const result = filter['getHttpStatus'](statusException);
 
       // Then
-      expect(result).toBe(exceptionStatusMock.status);
+      expect(result).toBe(statusException.status);
     });
 
     it('should return the status code from statusCode property', () => {
       // Given
-      const exceptionStatusMock = {
-        statusCode: Symbol('statusCode') as unknown as number,
-      } as BaseException;
+      const statusCodeException = new BaseException();
+      statusCodeException.statusCode = Symbol(
+        'statusCode',
+      ) as unknown as number;
 
       // When
-      const result = filter['getHttpStatus'](exceptionStatusMock);
+      const result = filter['getHttpStatus'](statusCodeException);
 
       // Then
-      expect(result).toBe(exceptionStatusMock.statusCode);
+      expect(result).toBe(statusCodeException.statusCode);
     });
 
     it('should return the status code from class HTTP_STATUS_CODE static property', () => {
@@ -134,12 +135,25 @@ describe('FcBaseExceptionFilter', () => {
       expect(result).toBe(ExceptionMock.HTTP_STATUS_CODE);
     });
 
-    it('should return the default status given as argument', () => {
+    it('should ignore the default status given as argument if the class has a status', () => {
       // Given
       const defaultValue = Symbol('defaultValue') as unknown as number;
-      const exceptionStatusMock = {} as BaseException;
+      const defaultException = new BaseException();
+
       // When
-      const result = filter['getHttpStatus'](exceptionStatusMock, defaultValue);
+      const result = filter['getHttpStatus'](defaultException, defaultValue);
+
+      // Then
+      expect(result).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should return the default status given as argument as a last resort', () => {
+      // Given
+      const defaultValue = Symbol('defaultValue') as unknown as number;
+      const defaultException = {} as unknown as BaseException;
+
+      // When
+      const result = filter['getHttpStatus'](defaultException, defaultValue);
 
       // Then
       expect(result).toBe(defaultValue);
@@ -147,10 +161,10 @@ describe('FcBaseExceptionFilter', () => {
 
     it('should return HttpStatus.INTERNAL_SERVER_ERROR if nothing is found not passed as argument', () => {
       // Given
-      const exceptionStatusMock = {} as BaseException;
+      const defaultException = new BaseException();
 
       // When
-      const result = filter['getHttpStatus'](exceptionStatusMock);
+      const result = filter['getHttpStatus'](defaultException);
 
       // Then
       expect(result).toBe(HttpStatus.INTERNAL_SERVER_ERROR);

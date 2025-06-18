@@ -1,4 +1,4 @@
-import { ArgumentsHost } from '@nestjs/common';
+import { ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -14,6 +14,7 @@ import { getLoggerMock } from '@mocks/logger';
 
 import {
   OidcProviderBaseRenderedException,
+  OidcProviderNoWrapperException,
   OriginalError,
 } from '../exceptions';
 import { OidcProviderRenderedHtmlExceptionFilter } from './oidc-provider-rendered-html-exception.filter';
@@ -99,6 +100,30 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
 
   it('should be defined', () => {
     expect(filter).toBeDefined();
+  });
+
+  it('should exercise getMessage, getCode', () => {
+    const exception = new OidcProviderNoWrapperException(new Error());
+    expect(exception.getMessage()).toBe('Error');
+    expect(exception.getErrorCode('Y')).toBe('Error');
+  });
+
+  describe('OidcProviderNoWrapperException', () => {
+    it('should return status of wrapped OriginalError', () => {
+      const wrapped = new OriginalError(HttpStatus.BAD_REQUEST, '');
+      const exception = new OidcProviderNoWrapperException(wrapped);
+      expect(exception.getHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR)).toBe(
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('should return defaultStatus if not even really a OriginalError', () => {
+      const wrapped = new Error() as unknown as OriginalError;
+      const exception = new OidcProviderNoWrapperException(wrapped);
+      expect(exception.getHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR)).toBe(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    });
   });
 
   describe('catch', () => {

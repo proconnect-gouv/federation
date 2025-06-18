@@ -42,14 +42,10 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     exception: BaseException,
     defaultStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): HttpStatus {
-    const exceptionConstructor = getClass(exception);
-
-    return (
-      exception.status ||
-      exception.statusCode ||
-      exceptionConstructor.HTTP_STATUS_CODE ||
-      defaultStatus
-    );
+    // Yes this checks seems redundant, it's a belt and suspenders situation
+    if (exception instanceof BaseException) {
+      return exception.getHttpStatus(defaultStatus);
+    } else return defaultStatus;
   }
 
   protected logException(
@@ -82,7 +78,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     if (exception instanceof BaseException) {
       errorCode = exception.getErrorCode(prefix);
     }
-    
+
     if (exception instanceof HttpException) {
       errorCode = getCode(0, exception.getStatus(), prefix);
     } else if (exception instanceof RpcException) {

@@ -105,7 +105,7 @@ export default class Runner {
       DOCUMENTATION,
     } = Exception;
 
-    const errorCode = getCode(SCOPE, CODE);
+    const errorCode = getCode(SCOPE, CODE, '');
 
     const data = {
       SCOPE,

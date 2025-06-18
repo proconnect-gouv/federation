@@ -116,14 +116,17 @@ Then('le corps de la réponse contient un JWT', function () {
     });
 });
 
-Then('le corps de la réponse contient une erreur avec les champs error et error_description', function () {
-  cy.get('@apiResponse')
-    .its('body')
-    .then(async (body) => {
-      const errors = await validateDto(body, ApiErrorDto, {
-        forbidNonWhitelisted: true,
-        whitelist: true,
+Then(
+  'le corps de la réponse contient une erreur avec les champs error et error_description',
+  function () {
+    cy.get('@apiResponse')
+      .its('body')
+      .then(async (body) => {
+        const errors = await validateDto(body, ApiErrorDto, {
+          forbidNonWhitelisted: true,
+          whitelist: true,
+        });
+        expect(errors, JSON.stringify(errors)).to.have.length(0);
       });
-      expect(errors, JSON.stringify(errors)).to.have.length(0);
-    });
-});
+  },
+);

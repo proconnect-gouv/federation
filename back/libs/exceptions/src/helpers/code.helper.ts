@@ -1,6 +1,10 @@
 import { v4 as uuid } from 'uuid';
 
-export function getCode(scope: number, code: string | number, prefix: string = 'Y'): string {
+export function getCode(
+  scope: number,
+  code: string | number,
+  prefix: string = 'Y',
+): string {
   const scopeString = addLeadingZeros(scope, 2);
   const codeString = addLeadingZeros(code, 4);
 
