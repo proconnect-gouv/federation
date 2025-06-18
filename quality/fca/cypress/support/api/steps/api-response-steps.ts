@@ -116,7 +116,7 @@ Then('le corps de la réponse contient un JWT', function () {
     });
 });
 
-Then('le corps de la réponse contient une erreur', function () {
+Then('le corps de la réponse contient une erreur avec les champs error et error_description', function () {
   cy.get('@apiResponse')
     .its('body')
     .then(async (body) => {
