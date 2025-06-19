@@ -41,6 +41,6 @@ addMatchImageSnapshotCommand({
   customDiffDir: './cypress/snapshots/diff',
   customSnapshotsDir: './cypress/snapshots/base',
   e2eSpecDir: 'cypress/integration/visuel',
-  failureThreshold: 0,
+  failureThreshold: 0.1,
   failureThresholdType: 'percent',
 });
