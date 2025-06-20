@@ -390,10 +390,10 @@
     lodash.isundefined "^3.0.1"
     lodash.uniq "^4.5.0"
 
-"@gouvfr-lasuite/proconnect.debounce@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@gouvfr-lasuite/proconnect.debounce/-/proconnect.debounce-0.4.1.tgz#6d535a78038979dd9bc60729f1250480e590cfe6"
-  integrity sha512-awcU9HCGxzxZ0BYW/FhFRMasnwaWzJ5oviGHuqz657GkRGlnRuQRNEuKXWKq63q2EGfVNEyHt+YBphAiJgrLbQ==
+"@gouvfr-lasuite/proconnect.debounce@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@gouvfr-lasuite/proconnect.debounce/-/proconnect.debounce-0.4.3.tgz#a201ef80169f0504ba2675e6fa0d4e03d72c8093"
+  integrity sha512-9MU58EMfUjzv4n88VT/BVoE+2K25bBCQoOMe7klynncXweggHbSMa3htH/V9cyWTBozT/q3reFTh+tOuh5G0Lw==
   dependencies:
     axios "^1.7.7"
     zod "^3.24.1"
