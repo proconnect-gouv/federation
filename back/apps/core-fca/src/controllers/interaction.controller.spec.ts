@@ -219,6 +219,42 @@ describe('InteractionController', () => {
       expect(userSessionService.duplicate).toHaveBeenCalled();
     });
 
+    it('should reset user session if login_hint is different from the email in the current session', async () => {
+      const req = {} as Request;
+      const res = { render: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockImplementation((key) => {
+          if (key) {
+            if (key === 'idpIdentity') {
+              return { email: 'current@example.com' };
+            }
+            return undefined;
+          }
+          return {
+            interactionId: 'interaction123',
+            idpIdentity: { email: 'current@example.com' },
+          };
+        }),
+        reset: jest.fn(),
+        set: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: 'interaction123',
+        params: { client_id: 'sp123', login_hint: 'different@example.com' },
+      });
+      (validate as jest.Mock).mockReturnValue([]);
+
+      await controller.getInteraction(
+        req,
+        res as Response,
+        {} as any,
+        userSessionService,
+      );
+
+      expect(userSessionService.reset).toHaveBeenCalled();
+    });
+
     it('should redirect to INTERACTION_VERIFY when session is reused', async () => {
       const req = {} as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
