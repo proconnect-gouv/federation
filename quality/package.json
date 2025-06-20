@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "22.0.0",
-    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.3",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
     "@simonsmith/cypress-image-snapshot": "^9.1.0",
     "@types/ejs": "^3.1.5",
