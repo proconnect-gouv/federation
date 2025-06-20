@@ -189,3 +189,10 @@ yarn lint --fix
 yarn prettier --write
 yarn tsc --noEmit
 ```
+
+## Run test againts integ01 env
+
+```bash
+cd $PC_ROOT/federation/quality/fca
+CYPRESS_TEST_ENV=integ01 yarn start:low
+```
