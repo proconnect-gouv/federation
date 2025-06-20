@@ -42,14 +42,10 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     exception: BaseException,
     defaultStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): HttpStatus {
-    const exceptionConstructor = getClass(exception);
-
-    return (
-      exception.status ||
-      exception.statusCode ||
-      exceptionConstructor.HTTP_STATUS_CODE ||
-      defaultStatus
-    );
+    // Yes this checks seems redundant, it's a belt and suspenders situation
+    if (exception instanceof BaseException) {
+      return exception.getHttpStatus(defaultStatus);
+    } else return defaultStatus;
   }
 
   protected logException(
@@ -77,22 +73,18 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     exception?: T,
   ): string {
     const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
-    let scope = 0;
-    let code: string | number = 0;
+    let errorCode = '';
 
     if (exception instanceof BaseException) {
-      const exceptionClass = getClass(exception);
-
-      scope = exceptionClass.SCOPE;
-      code = exceptionClass.CODE;
-    } else if (exception instanceof HttpException) {
-      code = exception.getStatus();
-    } else if (exception instanceof RpcException) {
-      code = 0;
+      errorCode = exception.getErrorCode(prefix);
     }
 
-    const errorCode = getCode(scope, code);
+    if (exception instanceof HttpException) {
+      errorCode = getCode(0, exception.getStatus(), prefix);
+    } else if (exception instanceof RpcException) {
+      errorCode = getCode(0, 0, prefix);
+    }
 
-    return `${prefix}${errorCode}`;
+    return errorCode;
   }
 }

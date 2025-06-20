@@ -39,7 +39,7 @@ Scénario: API token - code invalide
   Alors le statut de la réponse est 400
   Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
-  Et le corps de la réponse contient une erreur
+  Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
   Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (authorization code not found)"
 
@@ -87,7 +87,7 @@ Scénario: API token - PKCE sans client_secret
   Alors le statut de la réponse est 401
   Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
-  Et le corps de la réponse contient une erreur
+  Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_client"
   Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed (the registered client token_endpoint_auth_method does not match the provided auth mechanism)"
 
@@ -105,7 +105,7 @@ Scénario: API token - code_verifier invalide
   Alors le statut de la réponse est 400
   Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
-  Et le corps de la réponse contient une erreur
+  Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
   Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (PKCE verification failed)"
 
@@ -150,7 +150,7 @@ Scénario: API token - refresh token invalide
   Alors le statut de la réponse est 400
   Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
-  Et le corps de la réponse contient une erreur
+  Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
   Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (refresh token not found)"
 
@@ -175,6 +175,6 @@ Scénario: API token - refresh token révoqué
   Alors le statut de la réponse est 400
   Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
-  Et le corps de la réponse contient une erreur
+  Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
   Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (refresh token not found)"

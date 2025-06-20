@@ -122,9 +122,11 @@ describe('OidcProviderRenderedJsonExceptionFilter', () => {
         error: { code: 'code', id: 'id' },
         res: { status: jest.fn(), json: jest.fn() },
         exception: {
-          error: 'ERROR',
-          error_description: 'ERROR_DESCRIPTION',
-          error_detail: 'ERROR_DETAIL',
+          originalError: {
+            error: 'ERROR',
+            error_description: 'ERROR_DESCRIPTION',
+            error_detail: 'ERROR_DETAIL',
+          },
         },
       };
 
