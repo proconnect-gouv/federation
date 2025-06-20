@@ -49,6 +49,7 @@ export class DataProviderController {
         body.client_secret,
       );
 
+    // TODO continue here: find a way to get session by session ID.
     const session = await this.dataProviderService.getSessionByAccessToken(
       body.token,
     );
