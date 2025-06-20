@@ -118,7 +118,10 @@ export class InteractionController {
 
     const isUserConnectedAlready = isEmpty(activeSessionValidationErrors);
 
-    if (isUserConnectedAlready) {
+    const isSessionOpenedWithHintedLogin =
+      !loginHint || userSession.get('idpIdentity')?.email === loginHint;
+
+    if (isUserConnectedAlready && isSessionOpenedWithHintedLogin) {
       // The session is duplicated here to mitigate cookie-theft-based attacks.
       // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
       await userSession.duplicate();
@@ -141,7 +144,8 @@ export class InteractionController {
     const canReuseActiveSession =
       isUserConnectedAlready &&
       isSessionOpenedWithHintedIdp &&
-      isEssentialAcrSatisfied;
+      isEssentialAcrSatisfied &&
+      isSessionOpenedWithHintedLogin;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
 
