@@ -50,7 +50,7 @@ jobs:
             usr-local-share-cache-yarn
           key: instance-mount-cache-${{ hashFiles('back/Dockerfile') }}
       - name: Inject cache into docker
-        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+        uses: reproducible-containers/buildkit-cache-dance@v3.3.0
         with:
           cache-map: |
             {
