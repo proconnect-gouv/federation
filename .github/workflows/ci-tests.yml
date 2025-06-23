@@ -12,7 +12,7 @@ jobs:
         working-directory: ./back
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -42,7 +42,7 @@ jobs:
         working-directory: ./quality
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -66,7 +66,7 @@ jobs:
         working-directory: ./back
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -86,7 +86,7 @@ jobs:
         working-directory: ./quality/fca
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v3
@@ -145,7 +145,7 @@ jobs:
         working-directory: ./quality/fca
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v3
