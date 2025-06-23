@@ -31,7 +31,7 @@
     "class-validator": "^0.14.1",
     "cypress": "14.5.0",
     "cypress-axe": "^1.6.0",
-    "cypress-on-fix": "^1.0.3",
+    "cypress-on-fix": "^1.1.0",
     "cypress-plugin-api": "^2.11.2",
     "ejs": "^3.1.10",
     "eslint": "^8.57.0",
