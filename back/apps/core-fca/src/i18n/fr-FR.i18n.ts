@@ -1,6 +1,4 @@
-import { I18nTranslationsMapType } from '@fc/i18n';
-
-export const frFR: I18nTranslationsMapType = {
+export const frFR: Record<string, string> = {
   // Meta
   'meta.lang': 'fr',
 

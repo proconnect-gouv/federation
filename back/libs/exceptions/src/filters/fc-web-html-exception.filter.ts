@@ -14,8 +14,10 @@ import { ViewTemplateService } from '@fc/view-templates';
 import { ExceptionCaughtEvent } from '../events';
 import { FcException } from '../exceptions';
 import { BaseException } from '../exceptions/base.exception';
-import { generateErrorId } from '../helpers';
+import { generateErrorId, getClass } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
+
+import { frFR } from '../../../../apps/core-fca/src/i18n/fr-FR.i18n';
 
 @Catch(FcException)
 @Injectable()
@@ -54,6 +56,8 @@ export class FcWebHtmlExceptionFilter
 
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
+    const key = errorParam.error.message;
+    errorParam.error.message = frFR[key] || frFR['default.message'];
 
     /**
      * Interceptors are not run in case of route not handled by our app (404)
