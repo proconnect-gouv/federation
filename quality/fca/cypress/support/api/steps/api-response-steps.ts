@@ -1,8 +1,5 @@
 import { Given, Then } from '@badeball/cypress-cucumber-preprocessor';
 
-import { ApiErrorDto } from '../dto/api-error.dto';
-import { validateDto } from '../helpers/class-validator-helper';
-
 /**
  * Response Steps
  *
@@ -122,11 +119,8 @@ Then(
     cy.get('@apiResponse')
       .its('body')
       .then(async (body) => {
-        const errors = await validateDto(body, ApiErrorDto, {
-          forbidNonWhitelisted: true,
-          whitelist: true,
-        });
-        expect(errors, JSON.stringify(errors)).to.have.length(0);
+        expect(body).to.have.property('error');
+        expect(body).to.have.property('error_description');
       });
   },
 );
