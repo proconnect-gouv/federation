@@ -1,5 +1,3 @@
-import { I18nTermType } from '@fc/i18n';
-
 export interface ExceptionDocumentationInterface {
   CODE: string | number;
   SCOPE: number;
@@ -10,7 +8,7 @@ export interface ExceptionDocumentationInterface {
   DOCUMENTATION: string;
   exception: string;
   HTTP_STATUS_CODE: number;
-  translated?: I18nTermType;
+  translated?: string;
   LOG_LEVEL: number;
   path: string;
 }

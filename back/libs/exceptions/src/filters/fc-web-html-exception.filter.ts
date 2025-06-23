@@ -57,7 +57,7 @@ export class FcWebHtmlExceptionFilter
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
     const key = errorParam.error.message;
-    errorParam.error.message = frFR[key] || frFR['default.message'];
+    errorParam.error.message = frFR[key] || frFR['exceptions.default_message'];
 
     /**
      * Interceptors are not run in case of route not handled by our app (404)

@@ -1,16 +1,6 @@
 export const frFR: Record<string, string> = {
-  // Meta
-  'meta.lang': 'fr',
-
-  // Errors
-  'error.page_title': 'Connexion - Erreur - {platform}',
-  'error.support.title': 'Que faire ?',
-  'error.support.button_label': 'Contactez-nous',
-  'error.error_title': 'Une erreur s’est produite',
-  'error.error_code': 'Erreur {code}',
-  'error.faq.title': "Besoin d'aide ?",
-  'error.faq.button_label': 'Consulter la page d’aide',
-  'error.faq.body': 'Merci de consulter notre page d’aide FranceConnect.',
+  // Réservé aux agents
+  'undefined': 'non renseigné',
 
   // Exceptions
   'exceptions.default_message':

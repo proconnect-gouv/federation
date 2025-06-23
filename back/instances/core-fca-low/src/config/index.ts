@@ -5,7 +5,6 @@ import Core from './core';
 import DataProviderAdapterMongo from './data-provider-adapter-mongo';
 import EmailValidator from './email-validator';
 import Exceptions from './exceptions';
-import I18n from './i18n';
 import IdentityProviderAdapterMongo from './identity-provider-adapter-mongo';
 import Logger from './logger';
 import LoggerLegacy from './logger-legacy';
@@ -20,7 +19,6 @@ import Tracking from './tracking';
 
 export default {
   App,
-  I18n,
   EmailValidator,
   Exceptions,
   Core,
