@@ -59,7 +59,7 @@ export default {
       post_logout_redirect_uris: JSON.parse(stringifiedPostLogoutRedirectUris),
       scope,
       id_token_signed_response_alg,
-      userinfo_signed_response_alg: userinfo_signed_response_alg || undefined,
+      userinfo_signed_response_alg,
       token_endpoint_auth_method: 'client_secret_basic',
       grant_types: ['authorization_code', 'refresh_token'],
       response_types: ['code'],
