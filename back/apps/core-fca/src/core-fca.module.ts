@@ -11,7 +11,6 @@ import { EmailValidatorModule } from '@fc/email-validator/email-validator.module
 import { FlowStepsModule } from '@fc/flow-steps';
 import { FqdnToIdpAdapterMongoModule } from '@fc/fqdn-to-idp-adapter-mongo';
 import { HttpProxyModule } from '@fc/http-proxy';
-import { I18nModule } from '@fc/i18n';
 import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
@@ -78,7 +77,6 @@ import {
     CsrfModule,
     AccountFcaModule,
     ViewTemplatesModule,
-    I18nModule,
     CoreModule.register(
       CoreFcaService,
       OidcProviderConfigAppService,

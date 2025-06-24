@@ -401,12 +401,11 @@ describe('Runner', () => {
       // When
       await Runner.run();
       // Then
-      expect(generatorSpy).toHaveBeenCalledTimes(2);
+      expect(generatorSpy).toHaveBeenCalledTimes(1);
       expect(generatorSpy).toHaveBeenNthCalledWith(1, [
         { SCOPE: 2 },
         { SCOPE: 6 },
       ]);
-      expect(generatorSpy).toHaveBeenNthCalledWith(2, [{ SCOPE: 4 }]);
     });
 
     it('should call renderFile with generate result', async () => {
@@ -415,16 +414,11 @@ describe('Runner', () => {
       // When
       await Runner.run();
       // Then
-      expect(Runner.renderFile).toHaveBeenCalledTimes(2);
+      expect(Runner.renderFile).toHaveBeenCalledTimes(1);
       expect(Runner.renderFile).toHaveBeenNthCalledWith(1, expect.any(String), {
         markdown: markdownGenerateResult,
         projectRootPath,
         title: 'Code erreurs généraux',
-      });
-      expect(Runner.renderFile).toHaveBeenNthCalledWith(2, expect.any(String), {
-        markdown: markdownGenerateResult,
-        projectRootPath,
-        title: 'Code erreurs spécifiques OIDC Provider',
       });
     });
 
@@ -432,7 +426,7 @@ describe('Runner', () => {
       // When
       await Runner.run();
       // Then
-      expect(fs.writeFileSync).toHaveBeenCalledTimes(2);
+      expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         '_doc/erreurs.md',
         renderFileResult,

@@ -1,31 +1,9 @@
-import { I18nTranslationsMapType } from '@fc/i18n';
-import { frFR as frFROidcProvider } from '@fc/oidc-provider/exceptions/runtime/fr-FR.i18n';
-
-export const frFR: I18nTranslationsMapType = {
-  // OidcProvider
-  ...frFROidcProvider,
-
-  // Meta
-  'meta.lang': 'fr',
-
-  // Errors
-  'error.page_title': 'Connexion - Erreur - {platform}',
-  'error.support.title': 'Que faire ?',
-  'error.support.button_label': 'Contactez-nous',
-  'error.error_title': 'Une erreur s’est produite',
-  'error.error_code': 'Erreur {code}',
-  'error.faq.title': "Besoin d'aide ?",
-  'error.faq.button_label': 'Consulter la page d’aide',
-  'error.faq.body': 'Merci de consulter notre page d’aide FranceConnect.',
-
+export const messageDictionary: Record<string, string> = {
   // Exceptions
   'exceptions.default_message':
     "Une erreur s'est produite, veuillez réessayer ultérieurement",
   // 404 NetsJS
   'exceptions.http.404': 'Page non trouvée',
-
-  // 404 oidc-provider
-  'OidcProvider.exceptions.InvalidRequest.9D62': 'Page non trouvée',
 
   // bridge-http-proxy
   'BridgeHttpProxy.exceptions.bridgeHttpProxyCsmr':
@@ -124,18 +102,6 @@ export const frFR: I18nTranslationsMapType = {
   'FlowSteps.exceptions.unexpectedNavigation':
     'Nous vous invitons à fermer tous les onglets de votre navigateur et à vous authentifier de nouveau en suivant les étapes de connexion.',
 
-  // geoip-maxmind
-  'GeoipMaxmind.exceptions.geoipMaxmindNotFound':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-
-  // i18n
-  'I18n.exceptions.i18nInvalidOrMissingCountVariable':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-  'I18n.exceptions.i18nKeyNotFound':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-  'I18n.exceptions.i18nMissingVariable':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-
   // jwt
   'Jwt.exceptions.canNotDecodePlaintext': 'Can not decode plaintext',
   'Jwt.exceptions.canNotDecodeProtectedHeader':
@@ -192,10 +158,8 @@ export const frFR: I18nTranslationsMapType = {
   'OidcProvider.exceptions.RuntimeException':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
 
-  'OidcProvider.exceptions.InvalidClient.A586':
-    'Client non trouvé (client_id invalide)',
-  'OidcProvider.exceptions.InvalidRedirectUri.6350':
-    'L’URL de callback n’est pas valide',
+  InvalidClient: 'Client non trouvé (client_id invalide)',
+  InvalidRedirectUri: 'L’URL de callback n’est pas valide',
 
   // override-oidc-provider
   'OverrideOidcProvider.exceptions.cryptographyGateway':

@@ -35,6 +35,7 @@ export class HttpExceptionFilter
       res,
       error: errorMessage,
       httpResponseCode: status,
+      dictionary: {},
     };
 
     return this.errorOutput(exceptionParam);

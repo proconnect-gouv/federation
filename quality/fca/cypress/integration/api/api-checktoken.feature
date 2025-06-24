@@ -25,7 +25,7 @@ Fonctionnalité: API - checktoken
     Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
-    Et le corps de la réponse contient une erreur
+    Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_request"
     Et le corps de la réponse a une propriété "error_description" égale à "Required parameter missing or invalid."
 
@@ -37,7 +37,7 @@ Fonctionnalité: API - checktoken
     Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
-    Et le corps de la réponse contient une erreur
+    Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_request"
     Et le corps de la réponse a une propriété "error_description" égale à "Required parameter missing or invalid."
 
@@ -49,7 +49,7 @@ Fonctionnalité: API - checktoken
     Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
-    Et le corps de la réponse contient une erreur
+    Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_request"
     Et le corps de la réponse a une propriété "error_description" égale à "Required parameter missing or invalid."
 
@@ -61,7 +61,7 @@ Fonctionnalité: API - checktoken
     Alors le statut de la réponse est 401
     Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
-    Et le corps de la réponse contient une erreur
+    Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_client"
     Et le corps de la réponse a une propriété "error_description" égale à "Client authentication failed."
 
@@ -74,6 +74,6 @@ Fonctionnalité: API - checktoken
     Alors le statut de la réponse est 401
     Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
-    Et le corps de la réponse contient une erreur
+    Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_client"
     Et le corps de la réponse a une propriété "error_description" égale à "Client authentication failed."
