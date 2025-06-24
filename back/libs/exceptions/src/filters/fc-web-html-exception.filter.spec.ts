@@ -62,6 +62,7 @@ describe('FcWebHtmlExceptionFilter', () => {
     res: resMock,
     httpResponseCode: 500,
     error: {},
+    dictionary: {},
   };
 
   beforeEach(async () => {

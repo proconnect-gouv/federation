@@ -1,6 +1,6 @@
 export const frFR: Record<string, string> = {
   // Réservé aux agents
-  'undefined': 'non renseigné',
+  'not.provided': '',
 
   // Exceptions
   'exceptions.default_message':

@@ -97,6 +97,7 @@ describe('FcBaseExceptionFilter', () => {
         res: resMock,
         error: messageMock,
         httpResponseCode: 500,
+        dictionary: {},
       });
     });
   });

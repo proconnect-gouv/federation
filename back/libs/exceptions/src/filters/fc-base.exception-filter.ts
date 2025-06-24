@@ -34,6 +34,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
       res,
       error: message,
       httpResponseCode: this.getHttpStatus(exception),
+      dictionary: {},
     };
 
     return exceptionParam;

@@ -57,6 +57,7 @@ describe('HttpExceptionFilter', () => {
       id: idMock,
       message: 'exceptions.http.500',
     },
+    dictionary: {},
   };
 
   beforeEach(async () => {

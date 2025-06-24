@@ -11,4 +11,5 @@ export interface ApiErrorParams {
   error: ApiErrorMessage;
   httpResponseCode: HttpStatus;
   res: Response;
+  dictionary: Record<string, string>;
 }
