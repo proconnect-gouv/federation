@@ -9,15 +9,15 @@ import { EventBus } from '@nestjs/cqrs';
 import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 import { ViewTemplateService } from '@fc/view-templates';
 
+import { frFR } from '../../../../apps/core-fca/src/i18n/fr-FR.i18n';
 import { ExceptionCaughtEvent } from '../events';
 import { FcException } from '../exceptions';
 import { BaseException } from '../exceptions/base.exception';
-import { generateErrorId, getClass } from '../helpers';
+import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
-
-import { frFR } from '../../../../apps/core-fca/src/i18n/fr-FR.i18n';
 
 @Catch(FcException)
 @Injectable()
@@ -41,7 +41,13 @@ export class FcWebHtmlExceptionFilter
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
-    const message = exception.getMessage();
+
+    let message = 'exceptions.default_message';
+    if (exception instanceof OidcProviderNoWrapperException) {
+      message = exception.originalError.constructor.name;
+    } else {
+      message = (exception.constructor as typeof BaseException).UI;
+    }
 
     // @todo: weird Naming / structure
     const errorMessage: ApiErrorMessage = { code, id, message };

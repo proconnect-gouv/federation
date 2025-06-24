@@ -8,6 +8,7 @@ import { RpcException } from '@nestjs/microservices';
 import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 
 import { ExceptionsConfig } from '../dto';
 import { BaseException } from '../exceptions/base.exception';
@@ -38,13 +39,27 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     return exceptionParam;
   }
 
+  // eslint-disable-next-line complexity
   protected getHttpStatus(
     exception: BaseException,
     defaultStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): HttpStatus {
+    if (exception instanceof OidcProviderNoWrapperException) {
+      return (
+        exception.originalError?.status ||
+        exception.originalError?.statusCode ||
+        defaultStatus
+      );
+    }
     // Yes this checks seems redundant, it's a belt and suspenders situation
     if (exception instanceof BaseException) {
-      return exception.getHttpStatus(defaultStatus);
+      const exceptionConstructor =
+        exception.constructor as typeof BaseException;
+      return (
+        exception.status ||
+        exception.statusCode ||
+        exceptionConstructor.HTTP_STATUS_CODE
+      );
     } else return defaultStatus;
   }
 
@@ -69,14 +84,23 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     this.logger.err(exceptionObject);
   }
 
+  // eslint-disable-next-line complexity
   protected getExceptionCodeFor<T extends BaseException | Error>(
     exception?: T,
   ): string {
     const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
     let errorCode = '';
 
+    if (exception instanceof OidcProviderNoWrapperException) {
+      return exception.originalError.constructor.name;
+    }
+
     if (exception instanceof BaseException) {
-      errorCode = exception.getErrorCode(prefix);
+      const exceptionClass = exception.constructor as typeof BaseException;
+      const scope = exceptionClass.SCOPE;
+      const code = exceptionClass.CODE;
+
+      return getCode(scope, code, prefix);
     }
 
     if (exception instanceof HttpException) {
