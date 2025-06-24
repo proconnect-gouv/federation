@@ -95,7 +95,7 @@ const fia = {
     revocation_endpoint_auth_method: 'client_secret_post',
     id_token_encrypted_response_alg: '',
     id_token_encrypted_response_enc: '',
-    userinfo_signed_response_alg: 'RS256',
+    userinfo_signed_response_alg: '',
     userinfo_encrypted_response_alg: '',
     userinfo_encrypted_response_enc: '',
     redirect_uris: [
