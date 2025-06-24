@@ -12,7 +12,7 @@ import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 import { ViewTemplateService } from '@fc/view-templates';
 
-import { frFR } from '../../../../apps/core-fca/src/i18n/fr-FR.i18n';
+import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { ExceptionCaughtEvent } from '../events';
 import { FcException } from '../exceptions';
 import { BaseException } from '../exceptions/base.exception';
@@ -62,7 +62,7 @@ export class FcWebHtmlExceptionFilter
 
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
-    errorParam.dictionary = frFR;
+    errorParam.dictionary = messageDictionary;
 
     /**
      * Interceptors are not run in case of route not handled by our app (404)

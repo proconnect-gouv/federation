@@ -1,8 +1,7 @@
 <%
 const notProvided = "non renseigné"
 const key = locals.error.message;
-const frFR = locals.dictionary;
-const errorMessage = key ? (frFR[key] || frFR['exceptions.default_message']) : notProvided;
+const errorMessage = key ? (locals.dictionary[key] || locals.dictionary['exceptions.default_message']) : notProvided;
 
 const errorCode = locals.error.code ?? notProvided;
 const FI = $session('User.idpName') ?? notProvided;

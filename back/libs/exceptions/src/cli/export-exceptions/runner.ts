@@ -5,7 +5,7 @@ import * as glob from 'glob';
 
 import { HttpStatus } from '@nestjs/common';
 
-import { frFR } from '../../../../../apps/core-fca/src/i18n/fr-FR.i18n';
+import { messageDictionary } from '../../../../../apps/core-fca/src/exceptions/error-messages';
 import { BaseException } from '../../exceptions';
 import { getCode } from '../../helpers';
 import {
@@ -114,7 +114,7 @@ export default class Runner {
       exception: Exception.name,
       HTTP_STATUS_CODE,
       UI,
-      translated: frFR[UI],
+      translated: messageDictionary[UI],
       DOCUMENTATION,
       LOG_LEVEL,
       path,
