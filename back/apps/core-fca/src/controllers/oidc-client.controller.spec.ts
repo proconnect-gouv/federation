@@ -199,7 +199,7 @@ describe('OidcClientController', () => {
     const email = 'user@example.com';
 
     beforeEach(() => {
-      req = {};
+      req = { query: {} };
       res = { redirect: jest.fn() } as Partial<Response>;
       userSession = {
         set: jest.fn(),
@@ -369,8 +369,12 @@ describe('OidcClientController', () => {
     };
 
     beforeEach(() => {
-      req = {} as Request;
-      res = { redirect: jest.fn() } as Partial<Response>;
+      req = { query: {} };
+      res = {
+        redirect: jest.fn(),
+        status: jest.fn(),
+        render: jest.fn(),
+      } as Partial<Response>;
       accountService.getOrCreateAccount.mockResolvedValue({ id: '123' });
       userSession = {
         duplicate: jest.fn().mockResolvedValue(undefined),
@@ -395,6 +399,20 @@ describe('OidcClientController', () => {
       sanitizer.getValidatedIdentityFromIdp.mockReturnValue({
         email: 'user@example.com',
       });
+    });
+
+    it('should exit early with render if error param is present', async () => {
+      req.query = {
+        error: 'invalid_scope',
+        error_description: 'scopes are invalid',
+      };
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+      expect(res.render).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(400);
     });
 
     it('should process OIDC callback when identity is valid (no validation errors)', async () => {

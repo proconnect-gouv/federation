@@ -83,20 +83,27 @@ app.post(
       const { acr, ...userAttributes } = req.body;
       const userId = createUser(userAttributes);
 
-      const result = {
-        login: {
-          accountId: userId,
-          acr,
-          // the user is considered to have just logged in
-          ts: Date.now(),
-          // the user is considered to have logged with a password
-          amr: ['pwd'],
-        },
-        // skip the consent
-        consent: {},
-      };
+      if (userAttributes.email.startsWith('invalid_scope@')) {
+        await provider.interactionFinished(req, res, {
+          error: 'invalid_scope',
+          error_description: 'your scopes are invalid, my dear',
+        });
+      } else {
+        const result = {
+          login: {
+            accountId: userId,
+            acr,
+            // the user is considered to have just logged in
+            ts: Date.now(),
+            // the user is considered to have logged with a password
+            amr: ['pwd'],
+          },
+          // skip the consent
+          consent: {},
+        };
 
-      await provider.interactionFinished(req, res, result);
+        await provider.interactionFinished(req, res, result);
+      }
     } catch (err) {
       next(err);
     }
