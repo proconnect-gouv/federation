@@ -60,6 +60,10 @@ main {
   text-align: center;
 }
 
+.background-alt-blue-france {
+  background-color: #f5f5fe;
+}
+
 /* For links accessibility */
 /* https://www.ffoodd.fr/masquage-accessible-de-pointe/index.html */
 
