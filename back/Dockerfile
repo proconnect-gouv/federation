@@ -31,6 +31,9 @@ COPY deploy/pm2/app.json /etc/pm2/
 
 VOLUME ["/data/log", "/etc/ssl/client_certs"]
 
+COPY package.json /var/www/app/package.json
+COPY migrate-mongo-config.js /var/www/app/migrate-mongo-config.js
+COPY migrations /var/www/app/migrations
 COPY --from=builder /build/back/node_modules /var/www/app/node_modules
 COPY --from=builder /build/back/dist/instances/${INSTANCE} /var/www/app/dist/instances/app
 
