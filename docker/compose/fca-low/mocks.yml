@@ -7,12 +7,11 @@ services:
 
   fsa1-low:
     hostname: fsa1-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-service-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -32,7 +31,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'node dist/instances/mock-service-provider-fca-low/main.js'
 
   fsa2-low:
     hostname: fsa2-low
