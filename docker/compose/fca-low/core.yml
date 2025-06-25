@@ -40,7 +40,7 @@ services:
       args:
         INSTANCE: core-fca-low
       context: '${FEDERATION_DIR}/back'
-    working_dir: /build/back
+    working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
         condition: service_healthy
