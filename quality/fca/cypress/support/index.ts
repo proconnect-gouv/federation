@@ -13,6 +13,7 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+import 'reflect-metadata';
 import 'cypress-axe';
 import 'cypress-plugin-api';
 
