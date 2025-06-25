@@ -71,6 +71,16 @@ Fonctionnalité: API - oidc-callback
     Et je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y020025"
 
+  Scénario: API oidc-callback - affichage de l'erreur remontée via le paramètre error
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "invalid_scope@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et je m'authentifie
+    Alors je suis redirigé vers la page erreur technique
+    Et le code d'erreur est "invalid_scope"
+    Et le message d'erreur est "your scopes are invalid"
+
   # On utilise une erreur 502 pour le rôle de gateway
   # lors de la récupération du token auprès du FI
   Scénario: API oidc-callback - bon state mais mauvais code
