@@ -41,7 +41,6 @@ services:
       args:
         INSTANCE: core-fca-low
       context: '${FEDERATION_DIR}/back'
-      target: builder
     working_dir: /build/back
     depends_on:
       mongo-fca-low:
@@ -59,4 +58,4 @@ services:
     tty: true
     networks:
       - data
-    command: 'npx --yes migrate-mongo up'
+    command: 'npm run migrate up'
