@@ -29,6 +29,7 @@ _up() {
   # docker compose up services
   echo " * Docker compose up services: ${services}"
   cd ${WORKING_DIR}
+  # $DOCKER_COMPOSE watch $services
   $DOCKER_COMPOSE up --build -d $services
 
   # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS

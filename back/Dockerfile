@@ -1,6 +1,19 @@
 ARG NODE_VERSION=22.13.0
 ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
+FROM ${NODE_IMAGE} AS dev
+
+WORKDIR /var/www/app
+
+COPY package*.json ./
+RUN yarn install --ignore-engines 
+
+COPY tsconfig*.json global.d.ts nest-cli.json webpack.config.js ./
+COPY ./apps ./apps
+COPY ./libs ./libs
+
+ARG INSTANCE
+COPY ./instances/${INSTANCE} ./instances/${INSTANCE}
 
 FROM ${NODE_IMAGE} AS builder
 
