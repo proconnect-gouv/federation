@@ -50,6 +50,7 @@ import {
   CoreFcaService,
   IdentitySanitizer,
 } from '../services';
+import { v4 as uuid } from 'uuid';
 
 @Controller()
 export class OidcClientController {
@@ -278,6 +279,22 @@ export class OidcClientController {
     // The session is duplicated here to mitigate cookie-theft-based attacks.
     // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
     await userSession.duplicate();
+
+    if (req.param('error')) {
+      let dict = {}
+      dict[req.param('error')] = req.param('error_description')
+      res.status(400);
+      res.render('error', {
+        exception: {},
+        error: {
+          code: req.param('error'),
+          id: uuid(),
+          message: req.param('error'),
+        },
+        dictionary: dict,
+      })
+      return;
+    }
 
     const { idpId, idpNonce, idpState, interactionId, spId, login_hint } =
       userSession.get();
