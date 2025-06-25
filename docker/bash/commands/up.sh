@@ -32,33 +32,9 @@ _up() {
   # $DOCKER_COMPOSE watch $services
   $DOCKER_COMPOSE up --build -d $services
 
-  # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
-  echo " * Populate global variables"
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
-
-  echo " * Found nodejs containers: ${raw_nodejs_containers}"
-
-  local raw_all_containers=$(docker ps --format '{{.Names}}')
-  NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
-  
   # Find all containers and store it into $FC_CONTAINERS
+  local raw_all_containers=$(docker ps --format '{{.Names}}') 
   FC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
-
-  # Execute starting scripts in build containers
-  echo " * Automatically install dependencies for started containers"
-  
-  if [ "${NODEJS_CONTAINERS:-xxx}" != "xxx" ]; then
-    echo "Installing node modules..."
-    echo " * Installing dependencies for $(format_emphasis "${NODEJS_CONTAINERS}")"
-
-    apps=${@:-no-container}
-
-    for app in ${NODEJS_CONTAINERS}; do
-      echo "Installing dependencies for ${app}:"
-      cd ${WORKING_DIR}
-      $DOCKER_COMPOSE exec ${NO_TTY} "${app}" sh -c "cd /var/www/app && yarn install --frozen-lockfile --ignore-engines"
-    done
-  fi
 
   echo " * Automatically run init scripts for started containers"
   for app in ${FC_CONTAINERS}; do
