@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { v4 as uuid } from 'uuid';
 
 import {
   Body,
@@ -275,6 +276,21 @@ export class OidcClientController {
     @UserSessionDecorator(GetOidcCallbackSessionDto)
     userSession: ISessionService<UserSession>,
   ) {
+    if (req.query['error']) {
+      const dict = {};
+      dict[req.query['error']] = req.query['error_description'];
+      res.status(400);
+      return res.render('error', {
+        exception: {},
+        error: {
+          code: req.query['error'],
+          id: uuid(),
+          message: req.query['error'],
+        },
+        dictionary: dict,
+      });
+    }
+
     // The session is duplicated here to mitigate cookie-theft-based attacks.
     // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
     await userSession.duplicate();
