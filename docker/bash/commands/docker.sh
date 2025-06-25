@@ -88,5 +88,4 @@ _switch() {
   _prune
   _logs "--bg"
   _up "${@}"
-  _start_all
 }
