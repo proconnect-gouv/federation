@@ -3,13 +3,22 @@
 services:
   core-fca-low:
     hostname: core-fca-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
-    user: ${CURRENT_UID}
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: core-fca-low
+    #command: '/opt/scripts/start.sh'
+    #command: yarn start:dev core-fca-low
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: '${FEDERATION_DIR}/back'
+    #       target: /var/www/app
+    #       ignore:
+    #         - node_modules/
+    #     - action: rebuild
+    #       path: /var/www/app/yarn.lock
     working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
@@ -31,4 +40,3 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
