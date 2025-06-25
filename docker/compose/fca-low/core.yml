@@ -54,7 +54,6 @@ services:
       - '${COMPOSE_DIR}/fca-low/.env/core-fca-low.env'
     environment:
       - NODE_OPTIONS="--experimental-strip-types"
-    tty: true
     networks:
       - data
     command: 'npm run migrate up'
