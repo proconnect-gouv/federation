@@ -36,7 +36,6 @@ services:
     command: 'pm2 logs'
 
   init-core-fca-low:
-    image: pc-builder
     build:
       args:
         INSTANCE: core-fca-low
