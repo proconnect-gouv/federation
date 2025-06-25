@@ -266,8 +266,6 @@ We use [migrate-mongo](https://www.npmjs.com/package/migrate-mongo) to manage th
 $ yarn run migrate create "blacklist the beatles"
 Created: migrations/20250203153126-blacklist_the_beatles.ts
 Done in 0.25s.
-# or if you didn't install the node_modules
-$ npx --yes migrate-mongo create "blacklist the beatles"
 ```
 
 > [!NOTE]  
