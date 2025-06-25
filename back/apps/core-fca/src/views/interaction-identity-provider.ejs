@@ -18,8 +18,52 @@
         retour
       </a>
       <h2 class="fr-my-4w">Choisir votre accès</h2>
-      <%- include('pages/interaction-identity-provider/interaction.loop.ejs')
-        %>
+      <form action="/api/v2/redirect-to-idp" method="POST" name="fs-request">
+        <fieldset
+                aria-labelledby="radio-hint-legend radio-hint-messages"
+                class="fr-fieldset"
+                id="radio-hint"
+        >
+          <legend
+                  class="fr-fieldset__legend--regular fr-fieldset__legend"
+                  id="radio-hint-legend"
+          >
+            Quel accès voulez-vous utiliser aujourd’hui ?
+            <% if (locals.acceptsDefaultIdp) { %>
+              <span class="fr-hint-text">
+          Si votre administration n'est pas répertoriée, sélectionnez
+          "Autre".
+        </span>
+            <% } %>
+          </legend>
+          <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
+          <input type="hidden" name="email" value="<%= locals.email %>" />
+
+          <% locals.providers.forEach((provider) => { %>
+            <div class="fr-fieldset__element">
+              <div class="fr-radio-group">
+                <input
+                        type="radio"
+                        id="idp-<%= provider.uid %>"
+                        name="identityProviderUid"
+                        value="<%= provider.uid %>"
+                />
+                <label class="fr-label" for="idp-<%= provider.uid %>">
+                  <%= provider.title %>
+                </label>
+              </div>
+            </div>
+          <% }); %>
+
+        </fieldset>
+
+        <button
+                class="fr-btn fr-btn--tertiary fc-btn--provider"
+                type="submit"
+        >
+          Continuer
+        </button>
+      </form>
       <hr class="fr-mt-6w" />
       <p class="fr-my-2w">
         Si vous ne faites partie d’aucune de ces administrations, faites-le
@@ -32,7 +76,9 @@
         </a>
       </p>
     </div>
-    <%- include('pages/interaction-identity-provider/interaction.media.ejs')%>
+    <div class="centered-container">
+      <img src="/img/provider.svg" alt="" />
+    </div>
   </main>
   <%- include('includes/footer.ejs') %> <%- include('includes/scripts.ejs') %>
 </body>

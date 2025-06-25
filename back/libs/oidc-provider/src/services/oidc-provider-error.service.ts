@@ -1,13 +1,11 @@
 import { KoaContextWithOIDC, Provider } from 'oidc-provider';
 
-import { Injectable, Type } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { throwException } from '@fc/exceptions/helpers';
 
 import { OidcProviderEvents } from '../enums';
 import { OidcProviderNoWrapperException } from '../exceptions';
-import { OidcProviderBaseRuntimeException } from '../exceptions/oidc-provider-base-runtime.exception';
-import { exceptionSourceMap } from '../exceptions/runtime';
 
 @Injectable()
 export class OidcProviderErrorService {
@@ -41,7 +39,7 @@ export class OidcProviderErrorService {
     });
   }
 
-  async listenError(eventName: string, ctx: KoaContextWithOIDC, error: Error) {
+  async listenError(_eventName: string, ctx: KoaContextWithOIDC, error: Error) {
     await this.renderError(ctx, '', error);
   }
 
@@ -54,10 +52,7 @@ export class OidcProviderErrorService {
    * @see https://github.com/panva/node-oidc-provider/tree/master/docs#rendererror
    */
   async renderError(ctx: KoaContextWithOIDC, _out: string, error: any) {
-    const exceptionClass =
-      OidcProviderErrorService.getRenderedExceptionWrapper(error);
-
-    const wrappedError = new exceptionClass(error);
+    const wrappedError = new OidcProviderNoWrapperException(error);
 
     /**
      * Flag the request as invalid
@@ -68,18 +63,5 @@ export class OidcProviderErrorService {
     }
 
     await throwException(wrappedError);
-  }
-
-  static getRenderedExceptionWrapper(
-    exception: Error,
-  ): Type<OidcProviderBaseRuntimeException> {
-    const source = exception.stack
-      .split('\n')?.[1]
-      .match(/node_modules\/oidc-provider\/lib\/(.*):[0-9]/)?.[1];
-
-    const wrapper =
-      exceptionSourceMap[source] || OidcProviderNoWrapperException;
-
-    return wrapper;
   }
 }

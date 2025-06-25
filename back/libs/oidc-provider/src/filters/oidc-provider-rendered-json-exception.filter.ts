@@ -36,7 +36,8 @@ export class OidcProviderRenderedJsonExceptionFilter
       res,
       exception,
     } = errorParam;
-    const { error, error_description, error_detail } = exception as any;
+    const { originalError } = exception as any;
+    const { error, error_description, error_detail } = originalError as any;
 
     const { errorUriBase } =
       this.config.get<OidcProviderConfig>('OidcProvider');

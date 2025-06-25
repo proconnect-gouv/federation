@@ -66,6 +66,7 @@ describe('FcWebJsonExceptionFilter', () => {
       id: idMock,
       message: ExceptionMock.UI,
     },
+    dictionary: {},
   };
 
   beforeEach(async () => {

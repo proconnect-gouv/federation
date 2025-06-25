@@ -5,7 +5,7 @@ import * as glob from 'glob';
 
 import { HttpStatus } from '@nestjs/common';
 
-import { frFR } from '../../../../../apps/core-fca/src/i18n/fr-FR.i18n';
+import { messageDictionary } from '../../../../../apps/core-fca/src/exceptions/error-messages';
 import { BaseException } from '../../exceptions';
 import { getCode } from '../../helpers';
 import {
@@ -105,7 +105,7 @@ export default class Runner {
       DOCUMENTATION,
     } = Exception;
 
-    const errorCode = getCode(SCOPE, CODE);
+    const errorCode = getCode(SCOPE, CODE, '');
 
     const data = {
       SCOPE,
@@ -114,7 +114,7 @@ export default class Runner {
       exception: Exception.name,
       HTTP_STATUS_CODE,
       UI,
-      translated: frFR[UI],
+      translated: messageDictionary[UI],
       DOCUMENTATION,
       LOG_LEVEL,
       path,
@@ -166,12 +166,8 @@ export default class Runner {
     const mainList = loaded.filter(
       (item) => item.SCOPE !== OIDC_PROVIDER_RUNTIME_SCOPE,
     );
-    const oidcProviderRunTimeList = loaded.filter(
-      (item) => item.SCOPE === OIDC_PROVIDER_RUNTIME_SCOPE,
-    );
 
     const mainMarkdown = MarkdownGenerator.generate(mainList);
-    const oprtMarkdown = MarkdownGenerator.generate(oidcProviderRunTimeList);
 
     const inputFile = `${__dirname}/view/erreurs.ejs`;
     const projectRootPath = '../';
@@ -182,13 +178,6 @@ export default class Runner {
       title: 'Code erreurs généraux',
     });
 
-    const oprtPage = await Runner.renderFile(inputFile, {
-      markdown: oprtMarkdown,
-      projectRootPath,
-      title: 'Code erreurs spécifiques OIDC Provider',
-    });
-
     fs.writeFileSync('_doc/erreurs.md', mainPage);
-    fs.writeFileSync('_doc/erreurs-oidc-provider.md', oprtPage);
   }
 }

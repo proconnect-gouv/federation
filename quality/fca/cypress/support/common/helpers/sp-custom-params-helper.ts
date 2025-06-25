@@ -102,3 +102,34 @@ export const removeFromRequestedClaims = (claim: string): void => {
     return customParams;
   });
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const interceptAuthorizeParam = (updater: (customParams: any) => any): void => {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /\/authorize(\?.*)?$/,
+    },
+    (req) => {
+      const newCustomParams = updater(req.query);
+      req.query = newCustomParams;
+      req.continue();
+    },
+  ).as(`interceptAuthorizeParam`);
+};
+
+export const removeCodeChallengeMethod = (): void => {
+  interceptAuthorizeParam((customParams) => {
+    delete customParams['code_challenge_method'];
+
+    return customParams;
+  });
+};
+
+export const setCodeChallengeMethod = (codeChallengeMethod: string): void => {
+  interceptAuthorizeParam((customParams) => {
+    customParams['code_challenge_method'] = codeChallengeMethod;
+
+    return customParams;
+  });
+};

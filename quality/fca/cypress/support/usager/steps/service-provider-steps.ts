@@ -10,11 +10,13 @@ import {
   getServiceProviderByDescription,
   getUserInfoProperty,
   isUsingFCBasicAuthorization,
+  removeCodeChallengeMethod,
   removeFromRequestedClaims,
   removePrompt,
   setAcrValues,
   setAsRequestedClaims,
   setAsVoluntaryClaims,
+  setCodeChallengeMethod,
   setIdpHint,
   setLoginHint,
   setPrompt,
@@ -85,6 +87,14 @@ Given(
 
 When('je clique sur le bouton ProConnect', function () {
   cy.get('button#custom-connection').click({ force: true });
+
+  if (isUsingFCBasicAuthorization()) {
+    checkFCBasicAuthorization();
+  }
+});
+
+When('je clique sur le bouton ProConnect PKCE', function () {
+  cy.get('button#login-pkce').click({ force: true });
 
   if (isUsingFCBasicAuthorization()) {
     checkFCBasicAuthorization();
@@ -191,6 +201,13 @@ Then(
 );
 
 Then(
+  "le sub transmis au fournisseur de service n'est pas le suivant {string}",
+  function (sub: string) {
+    getUserInfoProperty('sub').should('not.be.equal', sub);
+  },
+);
+
+Then(
   'le siret transmis au fournisseur de service est le suivant {string}',
   function (siret: string) {
     getUserInfoProperty('siret').should('be.equal', siret);
@@ -279,5 +296,19 @@ Given(
       .then((value: string) => {
         this.apiRequest.body['code'] = value;
       });
+  },
+);
+
+Given(
+  'le fournisseur de service ne fournit pas le paramètre code_challenge_method',
+  function () {
+    removeCodeChallengeMethod();
+  },
+);
+
+Given(
+  'le fournisseur de service utilise le paramètre code_challenge_method {string}',
+  function (codeChallengeMethod: string) {
+    setCodeChallengeMethod(codeChallengeMethod);
   },
 );

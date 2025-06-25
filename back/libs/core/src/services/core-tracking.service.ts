@@ -71,7 +71,6 @@ export class CoreTrackingService {
       dpId,
       dpClientId,
       dpTitle,
-      accountId,
       browsingSessionId,
       reusesActiveSession,
       spId,
@@ -94,7 +93,6 @@ export class CoreTrackingService {
       dpId,
       dpClientId,
       dpTitle,
-      accountId,
       browsingSessionId,
       reusesActiveSession,
       spId,
@@ -113,7 +111,6 @@ export class CoreTrackingService {
 
     const {
       browsingSessionId = null,
-      accountId = null,
       interactionId = null,
       interactionAcr = null,
       reusesActiveSession = null,
@@ -132,7 +129,6 @@ export class CoreTrackingService {
 
     return {
       browsingSessionId,
-      accountId,
       interactionId,
       interactionAcr,
       reusesActiveSession,

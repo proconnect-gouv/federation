@@ -3,13 +3,10 @@ import { validate } from 'class-validator';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcAcrService } from '@fc/oidc-acr';
-import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
-import {
-  OidcProviderErrorService,
-  OidcProviderService,
-} from '@fc/oidc-provider';
+import { atHashFromAccessToken } from '@fc/oidc';
+import { OidcCtx, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
@@ -19,227 +16,191 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcaMiddlewareService } from './core-fca-middleware.service';
 
+jest.mock('@fc/oidc', () => ({
+  ...jest.requireActual('@fc/oidc'),
+  atHashFromAccessToken: jest.fn(),
+}));
 jest.mock('class-validator', () => ({
   ...jest.requireActual('class-validator'),
   validate: jest.fn(),
 }));
+jest.mock('@fc/exceptions/helpers', () => ({
+  ...jest.requireActual('@fc/exceptions/helpers'),
+  throwException: jest.fn(),
+}));
 
-describe('CoreFcaMiddlewareService - handleSilentAuthenticationMiddleware', () => {
+describe('CoreFcaMiddlewareService', () => {
   let service: CoreFcaMiddlewareService;
-  let sessionServiceMock: ReturnType<typeof getSessionServiceMock>;
-
-  const loggerServiceMock = getLoggerMock();
-
-  const oidcProviderServiceMock = {
-    registerMiddleware: jest.fn(),
-  };
-
-  const configServiceMock = {};
-
-  const trackingMock = {
-    track: jest.fn(),
-    TrackedEventsMap: {
-      FC_AUTHORIZE_INITIATED: {},
-      SP_REQUESTED_FC_TOKEN: {},
-      SP_REQUESTED_FC_USERINFO: {},
-      FC_SSO_INITIATED: {},
-    },
-  };
-
-  const serviceProviderServiceMock = {
-    getById: jest.fn(),
-  };
-
-  const oidcProviderErrorServiceMock = {
-    throwError: jest.fn(),
-  };
-
-  const oidcAcrServiceMock = {};
+  let mockConfigService: jest.Mocked<ConfigService>;
+  let mockOidcProviderService: jest.Mocked<OidcProviderService>;
+  let mockSessionService: jest.Mocked<SessionService>;
+  let mockTrackingService: jest.Mocked<TrackingService>;
+  let validateMock: jest.Mock;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-
-    sessionServiceMock = getSessionServiceMock();
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoreFcaMiddlewareService,
-        LoggerService,
-        OidcProviderService,
-        ConfigService,
-        SessionService,
-        TrackingService,
-        ServiceProviderAdapterMongoService,
-        OidcAcrService,
-        OidcProviderErrorService,
+        { provide: LoggerService, useValue: getLoggerMock() },
+        { provide: ConfigService, useValue: { get: jest.fn() } },
         {
-          provide: IDENTITY_PROVIDER_SERVICE,
-          useValue: {},
+          provide: OidcProviderService,
+          useValue: { registerMiddleware: jest.fn(), clearCookies: jest.fn() },
         },
+        { provide: SessionService, useValue: getSessionServiceMock() },
+        { provide: ServiceProviderAdapterMongoService, useValue: jest.fn() },
+        {
+          provide: TrackingService,
+          useValue: {
+            track: jest.fn(),
+            TrackedEventsMap: {
+              SP_REQUESTED_FC_USERINFO: {},
+            },
+          },
+        },
+        { provide: IdentityProviderAdapterMongoService, useValue: jest.fn() },
       ],
-    })
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProviderServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingMock)
-      .overrideProvider(ServiceProviderAdapterMongoService)
-      .useValue(serviceProviderServiceMock)
-      .overrideProvider(OidcProviderErrorService)
-      .useValue(oidcProviderErrorServiceMock)
-      .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
-      .overrideProvider(OidcAcrService)
-      .useValue(oidcAcrServiceMock)
-      .compile();
+    }).compile();
 
     service = module.get<CoreFcaMiddlewareService>(CoreFcaMiddlewareService);
+    mockConfigService = module.get<ConfigService>(
+      ConfigService,
+    ) as jest.Mocked<ConfigService>;
+    mockOidcProviderService = module.get<OidcProviderService>(
+      OidcProviderService,
+    ) as jest.Mocked<OidcProviderService>;
+    mockSessionService = module.get<SessionService>(
+      SessionService,
+    ) as jest.Mocked<SessionService>;
+    mockTrackingService = module.get<TrackingService>(
+      TrackingService,
+    ) as jest.Mocked<TrackingService>;
+    validateMock = jest.mocked(validate);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should register all middleware in onModuleInit', () => {
+    const spy = jest.spyOn((service as any).oidcProvider, 'registerMiddleware');
+    service.onModuleInit();
+    expect(spy).toHaveBeenCalledTimes(4);
   });
 
-  describe('onModuleInit()', () => {
-    it('should register 4 middlewares', () => {
-      // Given
-      service['registerMiddleware'] = jest.fn();
-      // When
-      service.onModuleInit();
-      // Then
-      expect(service['registerMiddleware']).toHaveBeenCalledTimes(4);
-    });
-  });
-
-  describe('handleSilentAuthenticationMiddleware()', () => {
-    let ctx: any;
-    let overrideAuthorizePromptSpy: jest.SpyInstance;
-    let getAuthorizationParametersSpy: jest.SpyInstance;
-    let isPromptStrictlyEqualNoneSpy: jest.SpyInstance;
-    let validateMock: jest.Mock;
-
-    beforeEach(() => {
-      ctx = { prompt: undefined };
-      overrideAuthorizePromptSpy = jest
-        .spyOn<any, any>(service, 'overrideAuthorizePrompt')
-        .mockImplementation(() => {});
-      getAuthorizationParametersSpy = jest.spyOn<any, any>(
-        service,
-        'getAuthorizationParameters',
-      );
-      isPromptStrictlyEqualNoneSpy = jest.spyOn<any, any>(
-        service,
-        'isPromptStrictlyEqualNone',
-      );
-      validateMock = jest.mocked(validate);
-    });
-
-    it('should immediately call overrideAuthorizePrompt and exit if prompt is not provided', async () => {
-      // Arrange: getAuthorizationParameters returns an object without prompt
-      getAuthorizationParametersSpy.mockReturnValue({ prompt: undefined });
-
-      // Act
-      await service['handleSilentAuthenticationMiddleware'](ctx);
-
-      // Assert
-      expect(overrideAuthorizePromptSpy).toHaveBeenCalledTimes(1);
-      expect(overrideAuthorizePromptSpy).toHaveBeenCalledWith(ctx);
-      expect(sessionServiceMock.set).not.toHaveBeenCalled();
-      expect(sessionServiceMock.commit).not.toHaveBeenCalled();
-    });
-
-    it('should set silent authentication flag to true, commit session, validate session and call overrideAuthorizePrompt when user is connected (for prompt "none")', async () => {
-      // Arrange: simulate prompt 'none' which makes isPromptStrictlyEqualNone return true
-      ctx.prompt = 'none';
-      getAuthorizationParametersSpy.mockReturnValue({ prompt: 'none' });
-      isPromptStrictlyEqualNoneSpy.mockReturnValue(true);
-      sessionServiceMock.get.mockReturnValue({ some: 'data' });
-      // Simulate validateDto returns an empty array: user is connected
-      validateMock.mockResolvedValueOnce([]);
-
-      // Act
-      await service['handleSilentAuthenticationMiddleware'](ctx);
-
-      // Assert
-      expect(isPromptStrictlyEqualNoneSpy).toHaveBeenCalledWith('none');
-      expect(sessionServiceMock.set).toHaveBeenCalledWith(
-        'User',
-        'isSilentAuthentication',
-        true,
-      );
-      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
-      // Since user is connected and prompt equals 'none', override should be called
-      expect(overrideAuthorizePromptSpy).toHaveBeenCalledWith(ctx);
-    });
-
-    it('should set silent authentication flag to true, commit session, validate session and NOT call overrideAuthorizePrompt when user is not connected (for prompt "none")', async () => {
-      // Arrange: prompt 'none' with isPromptStrictlyEqualNone true
-      ctx.prompt = 'none';
-      getAuthorizationParametersSpy.mockReturnValue({ prompt: 'none' });
-      isPromptStrictlyEqualNoneSpy.mockReturnValue(true);
-      sessionServiceMock.get.mockReturnValue({ some: 'data' });
-      // Simulate validateDto returns a non-empty array: user is not connected
-      validateMock.mockResolvedValueOnce([new Error('Not connected')]);
-
-      // Act
-      await service['handleSilentAuthenticationMiddleware'](ctx);
-
-      // Assert
-      expect(isPromptStrictlyEqualNoneSpy).toHaveBeenCalledWith('none');
-      expect(sessionServiceMock.set).toHaveBeenCalledWith(
-        'User',
-        'isSilentAuthentication',
-        true,
-      );
-      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
-      // Since user is not connected, overrideAuthorizePrompt should NOT be called
-      expect(overrideAuthorizePromptSpy).not.toHaveBeenCalled();
-    });
-
-    it('should set silent authentication flag to false, commit session, validate session and not call overrideAuthorizePrompt when prompt is not "none"', async () => {
-      // Arrange: simulate a prompt value other than 'none' (e.g. 'login')
-      ctx.prompt = 'login';
-      getAuthorizationParametersSpy.mockReturnValue({ prompt: 'login' });
-      isPromptStrictlyEqualNoneSpy.mockReturnValue(false);
-      sessionServiceMock.get.mockReturnValue({ some: 'data' });
-      // Simulate validateDto returns an empty array (user connected) but flag is false
-      validateMock.mockResolvedValueOnce([]);
-
-      // Act
-      await service['handleSilentAuthenticationMiddleware'](ctx);
-
-      // Assert
-      expect(isPromptStrictlyEqualNoneSpy).toHaveBeenCalledWith('login');
-      expect(sessionServiceMock.set).toHaveBeenCalledWith(
-        'User',
-        'isSilentAuthentication',
-        false,
-      );
-      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
-      // Since isPromptStrictlyEqualNone returned false, overrideAuthorizePrompt should NOT be called
-      expect(overrideAuthorizePromptSpy).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('isPromptStrictlyEqualNone()', () => {
-    const values = [
-      { expected: true, value: 'none' },
-      { expected: false, value: 'none consent' },
-      { expected: false, value: 'consent login none' },
-      { expected: false, value: 'consent login' },
-      { expected: false, value: undefined },
-      { expected: false, value: '' },
-      { expected: false, value: null },
-    ];
-    it.each(values)(
-      'should returns %s for input "%s"',
-      ({ value, expected }) => {
-        expect(service['isPromptStrictlyEqualNone'](value)).toBe(expected);
-      },
+  it('should handle errors in koaErrorCatcherMiddlewareFactory correctly', async () => {
+    const mockCtx = { oidc: { isError: undefined }, req: {}, res: {} };
+    const middleware = jest.fn().mockRejectedValue(new Error('Test Error'));
+    const catcher = (service as any).koaErrorCatcherMiddlewareFactory(
+      middleware,
     );
+    await catcher(mockCtx);
+    expect(mockCtx.oidc.isError).toBe(true);
+  });
+
+  it('should extract authorization parameters based on HTTP method', () => {
+    const postCtx = { method: 'POST', req: { body: { param: 'value' } } };
+    const getCtx = { method: 'GET', req: { query: { param: 'value' } } };
+
+    expect((service as any).getAuthorizationParameters(postCtx)).toEqual(
+      postCtx.req.body,
+    );
+    expect((service as any).getAuthorizationParameters(getCtx)).toEqual(
+      getCtx.req.query,
+    );
+  });
+
+  it('should reset cookies and clear headers in beforeAuthorizeMiddleware', () => {
+    const mockCtx = { req: { headers: {} }, res: {} } as any as OidcCtx;
+    const spy = jest.spyOn(mockOidcProviderService, 'clearCookies');
+
+    (service as any).beforeAuthorizeMiddleware(mockCtx);
+    expect(spy).toHaveBeenCalledWith(mockCtx.res);
+    expect(mockCtx.req.headers.cookie).toBe('');
+  });
+
+  it('should log warning for unsupported methods and override prompt in overrideAuthorizePrompt', () => {
+    mockConfigService.get.mockReturnValue({
+      forcedPrompt: ['login', 'consent'],
+    });
+
+    const postCtx = {
+      method: 'POST',
+      req: { body: { prompt: 'login' } },
+    } as any as OidcCtx;
+    (service as any).overrideAuthorizePrompt(postCtx);
+    expect(postCtx.req.body.prompt).toBe('login consent');
+
+    const getCtx = {
+      method: 'GET',
+      query: { prompt: 'login' },
+    } as any as OidcCtx;
+    (service as any).overrideAuthorizePrompt(getCtx);
+    expect(getCtx.query.prompt).toBe('login consent');
+
+    const unsupportedCtx = {
+      method: 'PUT',
+      req: { body: {} },
+      query: {},
+    } as any as OidcCtx;
+    (service as any).overrideAuthorizePrompt(unsupportedCtx);
+    expect(unsupportedCtx.req.body.prompt).toBeUndefined();
+    expect(unsupportedCtx.query.prompt).toBeUndefined();
+  });
+
+  it('should return the event context with session IDs in getEventContext', () => {
+    const mockCtx = {
+      oidc: { entities: { Account: { accountId: '123' } } },
+      req: {},
+    };
+    const eventContext = (service as any).getEventContext(mockCtx);
+    expect(eventContext.sessionId).toBe('123');
+  });
+
+  it('should initialize session, set alias, and track event in tokenMiddleware', async () => {
+    const mockCtx = {
+      oidc: { entities: { AccessToken: {}, Account: { accountId: '123' } } },
+    };
+    const atHashFromAccessTokenMock = jest.mocked(atHashFromAccessToken);
+    atHashFromAccessTokenMock.mockReturnValueOnce('atHash');
+    const spyInitCache = jest.spyOn(mockSessionService, 'initCache');
+    const spyTrack = jest.spyOn(mockTrackingService, 'track');
+    await (service as any).tokenMiddleware(mockCtx);
+    expect(spyInitCache).toHaveBeenCalled();
+    expect(spyTrack).toHaveBeenCalled();
+  });
+
+  it('should initialize session and track event in userinfoMiddleware', async () => {
+    const mockCtx = {
+      oidc: { entities: { Account: { accountId: '123' } } },
+    };
+    const spyInitCache = jest.spyOn(mockSessionService, 'initCache');
+    const spyTrack = jest.spyOn(mockTrackingService, 'track');
+    await (service as any).userinfoMiddleware(mockCtx);
+    expect(spyInitCache).toHaveBeenCalled();
+    expect(spyTrack).toHaveBeenCalled();
+  });
+
+  it('should handle silent authentication prompts in handleSilentAuthenticationMiddleware', async () => {
+    const mockCtx = { method: 'POST', req: { body: { prompt: 'none' } } };
+    const spyOverride = jest.spyOn(service as any, 'overrideAuthorizePrompt');
+    mockSessionService.get.mockReturnValueOnce({});
+    validateMock.mockResolvedValueOnce([]);
+    mockConfigService.get.mockReturnValueOnce({
+      forcedPrompt: ['login', 'consent'],
+    });
+    await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
+    expect(spyOverride).toHaveBeenCalled();
+  });
+
+  it('should handle silent authentication prompts in handleSilentAuthenticationMiddleware', async () => {
+    const mockCtx = { method: 'POST', req: { body: {} } };
+    const spyOverride = jest.spyOn(service as any, 'overrideAuthorizePrompt');
+    mockConfigService.get.mockReturnValueOnce({
+      forcedPrompt: ['login', 'consent'],
+    });
+    await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
+    expect(spyOverride).toHaveBeenCalled();
+  });
+
+  it('should throw an error if session ID is not set in getSessionId', () => {
+    const mockCtx = { oidc: {}, req: {} };
+    expect(() => (service as any).getSessionId(mockCtx)).toThrow();
   });
 });

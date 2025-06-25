@@ -15,7 +15,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import {
   CoreConfig,
@@ -58,7 +57,6 @@ export class InteractionController {
   // More than 4 parameters authorized for a controller
   /* eslint-disable-next-line max-params */
   constructor(
-    private readonly accountService: AccountFcaService,
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcAcr: OidcAcrService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
@@ -120,7 +118,10 @@ export class InteractionController {
 
     const isUserConnectedAlready = isEmpty(activeSessionValidationErrors);
 
-    if (isUserConnectedAlready) {
+    const isSessionOpenedWithHintedLogin =
+      !loginHint || userSession.get('idpIdentity')?.email === loginHint;
+
+    if (isUserConnectedAlready && isSessionOpenedWithHintedLogin) {
       // The session is duplicated here to mitigate cookie-theft-based attacks.
       // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
       await userSession.duplicate();
@@ -143,7 +144,8 @@ export class InteractionController {
     const canReuseActiveSession =
       isUserConnectedAlready &&
       isSessionOpenedWithHintedIdp &&
-      isEssentialAcrSatisfied;
+      isEssentialAcrSatisfied &&
+      isSessionOpenedWithHintedLogin;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
 
@@ -204,7 +206,7 @@ export class InteractionController {
     res.render('interaction', {
       csrfToken,
       defaultEmailRenater,
-      notification,
+      notificationMessage: notification?.message,
       spName,
       loginHint,
     });
@@ -276,13 +278,7 @@ export class InteractionController {
       throw new CoreAcrNotSatisfiedException();
     }
 
-    const account = await this.accountService.getAccountByIdpAgentKeys({
-      idpUid: idpId,
-      idpSub: idpIdentity.sub,
-    });
-
     const session: UserSession = {
-      accountId: account.id,
       interactionAcr,
     };
     userSessionService.set(session);

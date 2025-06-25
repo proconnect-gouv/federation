@@ -8,6 +8,7 @@ import { RpcException } from '@nestjs/microservices';
 import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 
 import { ExceptionsConfig } from '../dto';
 import { BaseException } from '../exceptions/base.exception';
@@ -33,23 +34,34 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
       res,
       error: message,
       httpResponseCode: this.getHttpStatus(exception),
+      dictionary: {},
     };
 
     return exceptionParam;
   }
 
+  // eslint-disable-next-line complexity
   protected getHttpStatus(
     exception: BaseException,
     defaultStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): HttpStatus {
-    const exceptionConstructor = getClass(exception);
-
-    return (
-      exception.status ||
-      exception.statusCode ||
-      exceptionConstructor.HTTP_STATUS_CODE ||
-      defaultStatus
-    );
+    if (exception instanceof OidcProviderNoWrapperException) {
+      return (
+        exception.originalError?.status ||
+        exception.originalError?.statusCode ||
+        defaultStatus
+      );
+    }
+    // Yes this checks seems redundant, it's a belt and suspenders situation
+    if (exception instanceof BaseException) {
+      const exceptionConstructor =
+        exception.constructor as typeof BaseException;
+      return (
+        exception.status ||
+        exception.statusCode ||
+        exceptionConstructor.HTTP_STATUS_CODE
+      );
+    } else return defaultStatus;
   }
 
   protected logException(
@@ -73,26 +85,31 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     this.logger.err(exceptionObject);
   }
 
+  // eslint-disable-next-line complexity
   protected getExceptionCodeFor<T extends BaseException | Error>(
     exception?: T,
   ): string {
     const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
-    let scope = 0;
-    let code: string | number = 0;
+    let errorCode = '';
 
-    if (exception instanceof BaseException) {
-      const exceptionClass = getClass(exception);
-
-      scope = exceptionClass.SCOPE;
-      code = exceptionClass.CODE;
-    } else if (exception instanceof HttpException) {
-      code = exception.getStatus();
-    } else if (exception instanceof RpcException) {
-      code = 0;
+    if (exception instanceof OidcProviderNoWrapperException) {
+      return exception.originalError.constructor.name;
     }
 
-    const errorCode = getCode(scope, code);
+    if (exception instanceof BaseException) {
+      const exceptionClass = exception.constructor as typeof BaseException;
+      const scope = exceptionClass.SCOPE;
+      const code = exceptionClass.CODE;
 
-    return `${prefix}${errorCode}`;
+      return getCode(scope, code, prefix);
+    }
+
+    if (exception instanceof HttpException) {
+      errorCode = getCode(0, exception.getStatus(), prefix);
+    } else if (exception instanceof RpcException) {
+      errorCode = getCode(0, 0, prefix);
+    }
+
+    return errorCode;
   }
 }

@@ -1,8 +1,5 @@
 import { Given, Then } from '@badeball/cypress-cucumber-preprocessor';
 
-import { ApiErrorDto } from '../dto/api-error.dto';
-import { validateDto } from '../helpers/class-validator-helper';
-
 /**
  * Response Steps
  *
@@ -116,14 +113,14 @@ Then('le corps de la réponse contient un JWT', function () {
     });
 });
 
-Then('le corps de la réponse contient une erreur', function () {
-  cy.get('@apiResponse')
-    .its('body')
-    .then(async (body) => {
-      const errors = await validateDto(body, ApiErrorDto, {
-        forbidNonWhitelisted: true,
-        whitelist: true,
+Then(
+  'le corps de la réponse contient une erreur avec les champs error et error_description',
+  function () {
+    cy.get('@apiResponse')
+      .its('body')
+      .then(async (body) => {
+        expect(body).to.have.property('error');
+        expect(body).to.have.property('error_description');
       });
-      expect(errors, JSON.stringify(errors)).to.have.length(0);
-    });
-});
+  },
+);

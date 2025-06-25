@@ -72,4 +72,12 @@ export class AuthorizeParamsDto {
   @IsOptional()
   @IsString()
   readonly idp_hint?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly code_challenge?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly code_challenge_method?: string;
 }

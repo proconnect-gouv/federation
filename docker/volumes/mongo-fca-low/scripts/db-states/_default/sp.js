@@ -44,19 +44,9 @@ const fsa = {
     ],
     claims: ['amr'],
     id_token_signed_response_alg: 'HS256',
-    id_token_encrypted_response_alg: '',
-    id_token_encrypted_response_enc: '',
     userinfo_signed_response_alg: 'HS256',
-    userinfo_encrypted_response_alg: '',
-    userinfo_encrypted_response_enc: '',
     jwks_uri:
       'https://fsa1-low.docker.dev-franceconnect.fr/client/.well-known/keys',
-    identityConsent: false,
-    trustedIdentity: false,
-    // todo: the following fields are deprecated and should be removed once SP clean-up is complete
-    ssoDisabled: false,
-    idpFilterExclude: false,
-    idpFilterList: [],
   },
 
   // -- FSA - FSA2-LOW - Activated - ES256 - encrypted response - No post-logout-redirect-uri - Accept private
@@ -102,15 +92,9 @@ const fsa = {
     ],
     claims: ['amr'],
     id_token_signed_response_alg: 'ES256',
-    id_token_encrypted_response_alg: '',
-    id_token_encrypted_response_enc: '',
     userinfo_signed_response_alg: 'ES256',
-    userinfo_encrypted_response_alg: '',
-    userinfo_encrypted_response_enc: '',
     jwks_uri:
       'https://fsa2-low.docker.dev-franceconnect.fr/client/.well-known/keys',
-    identityConsent: false,
-    trustedIdentity: false,
   },
 
   // -- FSA - FSA3-LOW - Deactivated
@@ -155,15 +139,9 @@ const fsa = {
     ],
     claims: [],
     id_token_signed_response_alg: 'ES256',
-    id_token_encrypted_response_alg: 'RSA-OAEP',
-    id_token_encrypted_response_enc: 'A256GCM',
     userinfo_signed_response_alg: 'ES256',
-    userinfo_encrypted_response_alg: 'RSA-OAEP',
-    userinfo_encrypted_response_enc: 'A256GCM',
     jwks_uri:
       'https://fsa3-low.docker.dev-franceconnect.fr/client/.well-known/keys',
-    identityConsent: false,
-    trustedIdentity: false,
   },
 
   // -- FSA - FSA4-LOW - Activated - RS256 - encrypted response - not autorized to request amr claim
@@ -209,15 +187,9 @@ const fsa = {
     ],
     claims: [],
     id_token_signed_response_alg: 'RS256',
-    id_token_encrypted_response_alg: '',
-    id_token_encrypted_response_enc: '',
     userinfo_signed_response_alg: 'RS256',
-    userinfo_encrypted_response_alg: '',
-    userinfo_encrypted_response_enc: '',
     jwks_uri:
       'https://fsa4-low.docker.dev-franceconnect.fr/client/.well-known/keys',
-    identityConsent: false,
-    trustedIdentity: false,
   },
 };
 

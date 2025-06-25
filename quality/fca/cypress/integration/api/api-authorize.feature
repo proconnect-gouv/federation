@@ -1,6 +1,6 @@
 #language: fr
 Fonctionnalité: API - authorize
-  Plan du Scénario: API authorize - erreur Y04A586 client_id=<clientId>
+  Plan du Scénario: API authorize - erreur InvalidClient client_id=<clientId>
     Etant donné que je prépare une requête "authorize"
     Et que je mets "<clientId>" dans le paramètre "client_id" de la requête
     Quand je lance la requête
@@ -8,7 +8,7 @@ Fonctionnalité: API - authorize
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y04A586"
+    Et le code d'erreur est "InvalidClient"
     Et le message d'erreur est "Client non trouvé (client_id invalide)"
     Et le lien retour vers le FS n'est pas affiché dans la page erreur technique
 
@@ -53,7 +53,7 @@ Fonctionnalité: API - authorize
     Exemples:
       | redirectUri                          | httpCode | error   |
       |                                      | 400      | Y000400 |
-      | https://my-malicious-url.fr/callback | 400      | Y046350 |
+      | https://my-malicious-url.fr/callback | 400      | InvalidRedirectUri |
       | example.com                          | 400      | Y000400 |
 
   Plan du Scénario: API authorize - Cas nominal prompt=<prompt>
@@ -132,6 +132,41 @@ Scénario: API authorize - Cas nominal avec response_mode (ignoré)
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page interaction
 
+  Scénario: API authorize - Erreur <error> avec code_challenge=<codeChallenge>
+    Etant donné que je prépare une requête "authorize"
+    Et que je configure la requête pour ne pas suivre les redirections
+    Et que je mets "<codeChallenge>" dans le paramètre "code_challenge" de la requête
+    Et que je mets "S256" dans le paramètre "code_challenge_method" de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 303
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et l'entête de la réponse a une propriété "location" contenant l'url de callback du FS avec l'erreur
+    Et l'url de callback du FS a un paramètre "error" égal à "<error>"
+    Et l'url de callback du FS a un paramètre "error_description" égal à "<errorDescription>"
+
+    Exemples:
+      | codeChallenge                                    | error            | errorDescription                                                       |
+      |                                                  | invalid_request  | code_challenge must be provided with code_challenge_method             |
+      | Petit code challenge                             | invalid_request  | code_challenge must be a string with a minimum length of 43 characters |
+      | Code challenge accentué d'au moins 43 caractères | invalid_request  | code_challenge contains invalid characters                             |
+
+  Scénario: API authorize - Erreur <error> avec code_challenge_method=<codeChallengeMethod>
+    Etant donné que je prépare une requête "authorize"
+    Et que je configure la requête pour ne pas suivre les redirections
+    Et que je mets "test_challenge_qui_fait_au_moins_43_caracteres" dans le paramètre "code_challenge" de la requête
+    Et que je mets "<codeChallengeMethod>" dans le paramètre "code_challenge_method" de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 303
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et l'entête de la réponse a une propriété "location" contenant l'url de callback du FS avec l'erreur
+    Et l'url de callback du FS a un paramètre "error" égal à "<error>"
+    Et l'url de callback du FS a un paramètre "error_description" égal à "<errorDescription>"
+
+    Exemples:
+      | codeChallengeMethod | error            | errorDescription                                                                      |
+      |                     | invalid_request  | plain code_challenge_method fallback disabled, code_challenge_method must be provided |
+      | plain               | invalid_request  | not supported value of code_challenge_method                                          |
+
   Plan du Scénario: API authorize - Erreur <error> avec response_type=<responseType>
     Etant donné que je prépare une requête "authorize"
     Et que je mets "<responseType>" dans le paramètre "response_type" de la requête
@@ -186,4 +221,4 @@ Scénario: API authorize - Cas nominal avec response_mode (ignoré)
     Exemples:
       | redirectUri                          | httpCode | error   | errorDescription                                             |
       |                                      | 400      | Y000400 | Une erreur s'est produite, veuillez réessayer ultérieurement |
-      | https://my-malicious-url.fr/callback | 400      | Y046350 | L’URL de callback n’est pas valide                           |
+      | https://my-malicious-url.fr/callback | 400      | InvalidRedirectUri | L’URL de callback n’est pas valide                           |

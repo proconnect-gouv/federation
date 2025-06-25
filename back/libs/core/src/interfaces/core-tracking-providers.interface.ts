@@ -1,6 +1,5 @@
 export interface ICoreTrackingProviders {
   readonly browsingSessionId: string | null;
-  readonly accountId: string | null;
   readonly sessionId: string | null;
   readonly interactionId: string | null;
   readonly interactionAcr: string | null;

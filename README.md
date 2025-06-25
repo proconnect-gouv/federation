@@ -219,3 +219,10 @@ $ dks add init-core-fca-low
 > This `init-core-fca-low` container is a dependency of the `core-fca-low` container.  
 > It will run the migration script every time the `core-fca-low` container is started.  
 > No need to do it manually when using the `dks switch`
+
+## Run test againts integ01 env
+
+```bash
+cd $PC_ROOT/federation/quality/fca
+CYPRESS_TEST_ENV=integ01 yarn start:low
+```

@@ -54,8 +54,12 @@ describe('AccountFcaService', () => {
       });
 
       expect(modelMock.findOne).toHaveBeenCalledWith({
-        'idpIdentityKeys.idpSub': 'sub',
-        'idpIdentityKeys.idpUid': 'uid',
+        idpIdentityKeys: {
+          $elemMatch: {
+            idpSub: 'sub',
+            idpUid: 'uid',
+          },
+        },
       });
       expect(result).toEqual(mockAccount);
     });

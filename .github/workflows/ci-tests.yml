@@ -1,10 +1,9 @@
 name: 💚 CI Tests
 
 on:
-  pull_request:
   push:
     branches:
-      - main
+      - "**"
 jobs:
   test_static_back:
     runs-on: ubuntu-24.04
@@ -13,10 +12,10 @@ jobs:
         working-directory: ./back
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ./back/package.json
 
@@ -43,10 +42,10 @@ jobs:
         working-directory: ./quality
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ./back/package.json
 
@@ -67,10 +66,10 @@ jobs:
         working-directory: ./back
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ./back/package.json
 
@@ -87,15 +86,16 @@ jobs:
         working-directory: ./quality/fca
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up dockerx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
-      - name: Set up Docker BuildKit
-        run: |
-          export DOCKER_BUILDKIT=1
-          export COMPOSE_BAKE=true
+      # Workaround for https://github.com/docker/compose/issues/12892 
+      - name: Upgrade Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: latest
 
       - name: Set FEDERATION_ROOT environment variable
         working-directory: ./
@@ -145,15 +145,16 @@ jobs:
         working-directory: ./quality/fca
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up dockerx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
-      - name: Set up Docker BuildKit
-        run: |
-          export DOCKER_BUILDKIT=1
-          export COMPOSE_BAKE=true
+      # Workaround for https://github.com/docker/compose/issues/12892 
+      - name: Upgrade Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: latest
 
       - name: Set FEDERATION_ROOT environment variable
         working-directory: ./

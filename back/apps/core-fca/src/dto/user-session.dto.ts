@@ -22,12 +22,6 @@ export class UserSession {
   readonly browsingSessionId?: string;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  @Expose()
-  readonly accountId?: string;
-
-  @IsOptional()
   @IsAscii()
   @IsNotEmpty()
   @Expose()

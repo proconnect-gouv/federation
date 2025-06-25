@@ -64,21 +64,9 @@ export class ServiceProvider {
   @IsIn(SUPPORTED_SIG_ALG)
   readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';
 
-  @IsString()
-  readonly id_token_encrypted_response_alg: string;
-
-  @IsString()
-  readonly id_token_encrypted_response_enc: string;
-
   @IsOptional()
   @IsString()
   readonly userinfo_signed_response_alg?: string;
-
-  @IsString()
-  readonly userinfo_encrypted_response_alg: string;
-
-  @IsString()
-  readonly userinfo_encrypted_response_enc: string;
 
   @IsOptional()
   @IsUrl()

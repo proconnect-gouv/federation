@@ -1,0 +1,35 @@
+---
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/back"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+    versioning-strategy: increase
+  - package-ecosystem: "npm"
+    directory: "/quality"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+    versioning-strategy: increase
+  - package-ecosystem: "docker"
+    directory: "/"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"

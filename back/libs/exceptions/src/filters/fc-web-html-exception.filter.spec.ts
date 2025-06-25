@@ -7,6 +7,7 @@ import { ConfigService } from '@fc/config';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
+import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
 import { ViewTemplateService } from '@fc/view-templates';
 
 import { getConfigMock } from '@mocks/config';
@@ -60,6 +61,8 @@ describe('FcWebHtmlExceptionFilter', () => {
   const paramsMock = {
     res: resMock,
     httpResponseCode: 500,
+    error: {},
+    dictionary: {},
   };
 
   beforeEach(async () => {
@@ -135,6 +138,17 @@ describe('FcWebHtmlExceptionFilter', () => {
     it('should output the error', () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
+
+      // Then
+      expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(paramsMock);
+    });
+
+    it('should output an OidcProviderNoWrapperException too', () => {
+      // When
+      filter.catch(
+        new OidcProviderNoWrapperException(new Error()),
+        hostMock as unknown as ArgumentsHost,
+      );
 
       // Then
       expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(paramsMock);
