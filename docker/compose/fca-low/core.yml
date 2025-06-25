@@ -3,11 +3,17 @@
 services:
   core-fca-low:
     hostname: core-fca-low
+    # build:
+    #   context: '${FEDERATION_DIR}/back'
+    #   target: dev
+    #   args:
+    #     INSTANCE: core-fca-low
+    image: pc-nodejs
     build:
-      context: '${FEDERATION_DIR}/back'
-      target: dev
-      args:
-        INSTANCE: core-fca-low
+      {
+        context: '${COMPOSE_DIR}/../builds/node',
+        args: { NODE_VERSION: '${NODE_VERSION}' },
+      }
     #command: '/opt/scripts/start.sh'
     #command: yarn start:dev core-fca-low
     # develop:
