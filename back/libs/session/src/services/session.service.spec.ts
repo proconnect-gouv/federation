@@ -8,6 +8,8 @@ import { SessionCookiesService } from './session-cookies.service';
 import { SessionLifecycleService } from './session-lifecycle.service';
 import { SessionLocalStorageService } from './session-local-storage.service';
 
+import { MockRequest } from '../../../../libs/test/mock-request';
+
 describe('SessionService', () => {
   let service: SessionService;
 
@@ -46,7 +48,7 @@ describe('SessionService', () => {
     cookiesMock,
   ];
 
-  const req = {} as Request;
+  const req = new MockRequest() as unknown as Request;
   const res = {} as Response;
   const sessionId = 'sessionId';
 

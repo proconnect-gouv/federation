@@ -24,6 +24,8 @@ import {
 } from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
+import { MockRequest } from '../../../../libs/test/mock-request';
+
 jest.mock('@fc/common', () => ({
   ...jest.requireActual('@fc/common'),
   validateDto: jest.fn(),
@@ -335,7 +337,7 @@ describe('OidcClientController', () => {
 
   describe('redirectAfterIdpLogout', () => {
     it('should track session termination, destroy the session and render the logout form', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res: Partial<Response> = {};
       const userSession = {
         get: jest.fn().mockReturnValue({ oidcProviderLogoutForm: 'form-data' }),
@@ -369,7 +371,7 @@ describe('OidcClientController', () => {
     };
 
     beforeEach(() => {
-      req = {} as Request;
+      req = new MockRequest() as unknown as Request;
       res = { redirect: jest.fn() } as Partial<Response>;
       accountService.getOrCreateAccount.mockResolvedValue({ id: '123' });
       userSession = {

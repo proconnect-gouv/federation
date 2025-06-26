@@ -8,13 +8,14 @@ import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
-import { ViewTemplateService } from '@fc/view-templates';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
 import { FcException } from '../exceptions';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
+
+import { MockRequest } from '../../../../libs/test/mock-request';
 
 jest.mock('@fc/exceptions/helpers', () => ({
   ...jest.requireActual('@fc/exceptions/helpers'),
@@ -34,12 +35,10 @@ describe('FcWebHtmlExceptionFilter', () => {
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
-    getRequest: jest.fn(),
+    getRequest: function () {
+      return new MockRequest();
+    },
     getResponse: jest.fn(),
-  };
-
-  const viewTemplateServiceMock = {
-    bindMethodsToResponse: jest.fn(),
   };
 
   class ExceptionMock extends FcException {
@@ -75,7 +74,6 @@ describe('FcWebHtmlExceptionFilter', () => {
         ConfigService,
         LoggerService,
         EventBus,
-        ViewTemplateService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -84,8 +82,6 @@ describe('FcWebHtmlExceptionFilter', () => {
       .useValue(configMock)
       .overrideProvider(EventBus)
       .useValue(eventBusMock)
-      .overrideProvider(ViewTemplateService)
-      .useValue(viewTemplateServiceMock)
       .compile();
 
     filter = module.get<FcWebHtmlExceptionFilter>(FcWebHtmlExceptionFilter);
@@ -156,16 +152,6 @@ describe('FcWebHtmlExceptionFilter', () => {
   });
 
   describe('errorOutput', () => {
-    it('should bind the view template methods to the response', () => {
-      // When
-      filter['errorOutput'](paramsMock as unknown as ApiErrorParams);
-
-      // Then
-      expect(
-        viewTemplateServiceMock.bindMethodsToResponse,
-      ).toHaveBeenCalledExactlyOnceWith(resMock);
-    });
-
     it('should set the status to 500', () => {
       // When
       filter['errorOutput'](paramsMock as unknown as ApiErrorParams);

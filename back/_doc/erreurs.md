@@ -132,12 +132,6 @@
 |---|---|---|---|
 | [<b>450001</b>](../libs/async-local-storage/src/exceptions/async-local-storage-not-found.exception.ts) | Le store n&#39;a pas pu être récupéré dans le présent contexte. Vérifiez que l&#39;appel actuel se situe bien dans le contexte du callback de l&#39;appel à &#34;run&#34;. Voir également la documentation NodeJS de AsyncLocalStorage pour plus de détail. | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [AsyncLocalStorageNotFoundException](../libs/async-local-storage/src/exceptions/async-local-storage-not-found.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
-## @fc/view-templates
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>460001</b>](../libs/view-templates/src/exceptions/view-template-conflicting-alias.exception.ts) | ViewTemplates.exceptions.viewTemplateConflictingAlias | Un alias d&#39;opérateur de template avec ce nom est déjà enregistré. Erreur au démarrage de l&#39;application. | <b>Classe :</b> [ViewTemplateConflictingAliasException](../libs/view-templates/src/exceptions/view-template-conflicting-alias.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>460002</b>](../libs/view-templates/src/exceptions/view-template-service-not-found.exception.ts) | ViewTemplates.exceptions.viewTemplateServiceNotFound | Un alias sur une méthode d&#39;instance n&#39;a pas pu être exposé aux templates, probablement car le service n&#39;est pas enregistré comme provider. | <b>Classe :</b> [ViewTemplateServiceNotFoundException](../libs/view-templates/src/exceptions/view-template-service-not-found.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
 ## @fc/csrf
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|

@@ -11,6 +11,8 @@ import { SessionConfig } from '../dto';
 import { SessionService } from '../services';
 import { SessionMiddleware } from './session.middleware';
 
+import { MockRequest } from '../../../../libs/test/mock-request';
+
 describe('SessionMiddleware', () => {
   let middleware: SessionMiddleware;
 
@@ -21,7 +23,7 @@ describe('SessionMiddleware', () => {
     slidingExpiration: true,
   };
 
-  const reqMock = {} as Request;
+  const reqMock = new MockRequest() as unknown as Request;
 
   const resMock = {} as Response;
 

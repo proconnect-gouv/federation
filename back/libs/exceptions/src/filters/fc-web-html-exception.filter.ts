@@ -10,7 +10,6 @@ import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
-import { ViewTemplateService } from '@fc/view-templates';
 
 import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { ExceptionCaughtEvent } from '../events';
@@ -29,7 +28,6 @@ export class FcWebHtmlExceptionFilter
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
     protected readonly eventBus: EventBus,
-    protected readonly viewTemplate: ViewTemplateService,
   ) {
     super(config, logger, eventBus);
   }
@@ -53,6 +51,10 @@ export class FcWebHtmlExceptionFilter
     const errorMessage: ApiErrorMessage = { code, id, message };
     const exceptionParam = this.getParams(exception, errorMessage, res);
 
+    exceptionParam.dictionary = messageDictionary;
+    exceptionParam.idpName = req.session('User.idpName');
+    exceptionParam.spName = req.session('User.spName');
+
     this.logException(code, id, exception);
 
     this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
@@ -62,14 +64,11 @@ export class FcWebHtmlExceptionFilter
 
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
-    errorParam.dictionary = messageDictionary;
 
     /**
      * Interceptors are not run in case of route not handled by our app (404)
      * So we need to manually bind template helpers.
      */
-    this.viewTemplate.bindMethodsToResponse(res);
-
     res.status(httpResponseCode);
     res.render('error', errorParam);
   }

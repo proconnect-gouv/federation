@@ -22,7 +22,9 @@ import {
 } from '../exceptions';
 import { CoreFcaFqdnService, CoreFcaService } from '../services';
 import { InteractionController } from './interaction.controller';
+
 // --- Mocks for external dependencies ---
+import { MockRequest } from '../../../../libs/test/mock-request';
 
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'uuid-mock'),
@@ -165,7 +167,7 @@ describe('InteractionController', () => {
     });
 
     it('should reset user session if there is no active session', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({}),
@@ -196,7 +198,7 @@ describe('InteractionController', () => {
     });
 
     it('should duplicate user session if session is active and valid', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({ interactionId: 'interaction123' }),
@@ -220,7 +222,7 @@ describe('InteractionController', () => {
     });
 
     it('should reset user session if login_hint is different from the email in the current session', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockImplementation((key) => {
@@ -256,7 +258,7 @@ describe('InteractionController', () => {
     });
 
     it('should redirect to INTERACTION_VERIFY when session is reused', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({ interactionId: 'interaction123' }),
@@ -282,7 +284,7 @@ describe('InteractionController', () => {
     });
 
     it('should call redirectToIdp when a valid IdP hint exists', async () => {
-      const req = { sessionId: 'session1' } as unknown as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({}),
@@ -312,7 +314,7 @@ describe('InteractionController', () => {
     });
 
     it('should throw CoreIdpHintException for invalid IdP hints', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn(),
@@ -337,7 +339,7 @@ describe('InteractionController', () => {
     });
 
     it('should render the interaction page if no IdP hint is provided', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({}),
@@ -377,7 +379,7 @@ describe('InteractionController', () => {
 
   describe('getVerify()', () => {
     it('should successfully complete the interaction when the IdP is active and conditions are satisfied', async () => {
-      const req = { sessionId: 'session1' } as unknown as Request;
+      const req = new MockRequest() as unknown as Request;
       const res: Partial<Response> = { redirect: jest.fn() };
       const userSessionService = {
         get: jest.fn().mockReturnValue({
@@ -424,7 +426,7 @@ describe('InteractionController', () => {
     });
 
     it('should throw CoreLoginRequiredException when IdP is inactive and in silent authentication mode', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
@@ -441,7 +443,7 @@ describe('InteractionController', () => {
     });
 
     it('should redirect to INTERACTION route when IdP is inactive and not in silent authentication mode', async () => {
-      const req = { sessionId: 'session1' } as unknown as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
@@ -462,7 +464,7 @@ describe('InteractionController', () => {
     });
 
     it('should throw CoreFcaAgentNotFromPublicServiceException for private sector identity not allowed by SP', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
@@ -481,7 +483,7 @@ describe('InteractionController', () => {
     });
 
     it('should throw CoreAcrNotSatisfiedException when interactionAcr is not satisfied', async () => {
-      const req = {} as Request;
+      const req = new MockRequest() as unknown as Request;
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({

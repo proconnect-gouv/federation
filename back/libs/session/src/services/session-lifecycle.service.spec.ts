@@ -13,6 +13,8 @@ import { SessionCookiesService } from './session-cookies.service';
 import { SessionLifecycleService } from './session-lifecycle.service';
 import { SessionLocalStorageService } from './session-local-storage.service';
 
+import { MockRequest } from '../../../../libs/test/mock-request';
+
 jest.mock('@fc/common');
 
 describe('SessionLifecycleService', () => {
@@ -32,7 +34,7 @@ describe('SessionLifecycleService', () => {
     cookie: jest.fn(),
   } as unknown as Response;
 
-  const req = {} as Request;
+  const req = new MockRequest() as unknown as Request;
 
   const localStorageMock = {
     get: jest.fn(),
