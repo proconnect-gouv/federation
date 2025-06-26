@@ -3,13 +3,11 @@
 services:
   core-fca-rie:
     hostname: core-fca-rie
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
-    user: ${CURRENT_UID}
+      args:
+        INSTANCE: core-fca-low
+      context: '${FEDERATION_DIR}/back'
+      target: dev
     working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
@@ -31,4 +29,4 @@ services:
       - data
       - public
     init: true
-    command: 'pm2 logs'
+    command: 'node dist/instances/core-fca-low/main.js'
