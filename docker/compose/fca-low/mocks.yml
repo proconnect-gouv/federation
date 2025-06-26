@@ -35,7 +35,6 @@ services:
 
   fsa2-low:
     hostname: fsa2-low
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
@@ -64,7 +63,6 @@ services:
 
   fsa3-low:
     hostname: fsa3-low
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
@@ -93,7 +91,6 @@ services:
 
   fsa4-low:
     hostname: fsa4-low
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
@@ -125,7 +122,6 @@ services:
 
   fia1-low:
     hostname: fia1-low
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
@@ -155,7 +151,6 @@ services:
 
   fia2-low:
     hostname: fia2-low
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
@@ -185,7 +180,6 @@ services:
 
   moncomptepro:
     hostname: moncomptepro
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
@@ -219,12 +213,11 @@ services:
 
   dpa1-low:
     hostname: dpa1-low
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
       args:
-        INSTANCE: mock-data-provider-fca-low
+        INSTANCE: mock-data-provider
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -239,16 +232,15 @@ services:
     networks:
       - public
     init: true
-    command: 'node dist/instances/mock-data-provider-fca-low/main.js'
+    command: 'node dist/instances/mock-data-provider/main.js'
 
   dpa2-low:
     hostname: dpa2-low
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
       args:
-        INSTANCE: mock-data-provider-fca-low
+        INSTANCE: mock-data-provider
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -263,4 +255,4 @@ services:
     networks:
       - public
     init: true
-    command: 'node dist/instances/mock-data-provider-fca-low/main.js'
+    command: 'node dist/instances/mock-data-provider/main.js'
