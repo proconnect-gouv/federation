@@ -9,7 +9,7 @@ import { RedisModule } from '@fc/redis';
 import { SessionConfig } from './dto';
 import { SessionCommitInterceptor } from './interceptors';
 import { SessionMiddleware } from './middlewares';
-import { SessionService, SessionTemplateService } from './services';
+import { SessionService } from './services';
 import { SessionBackendStorageService } from './services/session-backend-storage.service';
 import { SessionCookiesService } from './services/session-cookies.service';
 import { SessionLifecycleService } from './services/session-lifecycle.service';
@@ -24,7 +24,6 @@ import { SessionLocalStorageService } from './services/session-local-storage.ser
       useClass: SessionCommitInterceptor,
     },
     SessionService,
-    SessionTemplateService,
     SessionBackendStorageService,
     SessionLocalStorageService,
     SessionCookiesService,
@@ -32,7 +31,6 @@ import { SessionLocalStorageService } from './services/session-local-storage.ser
   ],
   exports: [
     SessionService,
-    SessionTemplateService,
     SessionLocalStorageService,
     SessionBackendStorageService,
     SessionCookiesService,

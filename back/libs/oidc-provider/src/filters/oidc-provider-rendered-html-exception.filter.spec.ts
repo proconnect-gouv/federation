@@ -7,7 +7,6 @@ import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions/filters';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { ViewTemplateService } from '@fc/view-templates';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
@@ -39,7 +38,6 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
     getRequest: jest.fn(),
     getResponse: jest.fn(),
   };
-  const viewTemplateServiceMock = {};
 
   class ExceptionMock extends OidcProviderBaseRenderedException {
     ERROR = 'ERROR';
@@ -68,7 +66,6 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
         ConfigService,
         LoggerService,
         EventBus,
-        ViewTemplateService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -77,8 +74,6 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
       .useValue(configMock)
       .overrideProvider(EventBus)
       .useValue(eventBusMock)
-      .overrideProvider(ViewTemplateService)
-      .useValue(viewTemplateServiceMock)
       .compile();
 
     filter = module.get<OidcProviderRenderedHtmlExceptionFilter>(

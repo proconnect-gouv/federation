@@ -8,7 +8,6 @@ import { BaseException } from '@fc/exceptions';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { ViewTemplateService } from '@fc/view-templates';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
@@ -65,13 +64,7 @@ describe('FcRmqExceptionFilter', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        FcRmqExceptionFilter,
-        ConfigService,
-        LoggerService,
-        EventBus,
-        ViewTemplateService,
-      ],
+      providers: [FcRmqExceptionFilter, ConfigService, LoggerService, EventBus],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)

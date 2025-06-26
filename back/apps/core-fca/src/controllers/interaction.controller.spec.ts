@@ -14,6 +14,7 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+// --- Mocks for external dependencies ---
 import { UserSession } from '../dto';
 import {
   CoreAcrNotSatisfiedException,
@@ -22,7 +23,6 @@ import {
 } from '../exceptions';
 import { CoreFcaFqdnService, CoreFcaService } from '../services';
 import { InteractionController } from './interaction.controller';
-// --- Mocks for external dependencies ---
 
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'uuid-mock'),

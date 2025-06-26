@@ -9,7 +9,6 @@ import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
-import { ViewTemplateService } from '@fc/view-templates';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
@@ -63,8 +62,6 @@ describe('OidcProviderRedirectExceptionFilter', () => {
     getList: jest.fn(),
   };
 
-  const viewTemplateServiceMock = {};
-
   const oidcProviderServiceMock = { abortInteraction: jest.fn() };
 
   let originalErrorMock: Error;
@@ -81,7 +78,6 @@ describe('OidcProviderRedirectExceptionFilter', () => {
         LoggerService,
         EventBus,
         OidcProviderService,
-        ViewTemplateService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderMock,
@@ -94,8 +90,6 @@ describe('OidcProviderRedirectExceptionFilter', () => {
       .useValue(loggerMock)
       .overrideProvider(EventBus)
       .useValue(eventBusMock)
-      .overrideProvider(ViewTemplateService)
-      .useValue(viewTemplateServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
 

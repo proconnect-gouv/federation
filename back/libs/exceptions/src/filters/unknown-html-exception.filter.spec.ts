@@ -4,7 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { ViewTemplateService } from '@fc/view-templates';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
@@ -28,10 +27,6 @@ describe('UnknownHtmlExceptionFilter', () => {
     getResponse: jest.fn(),
   };
 
-  const viewTemplateServiceMock = {
-    bindMethodsToResponse: jest.fn(),
-  };
-
   let spyParent: jest.SpyInstance;
 
   beforeEach(async () => {
@@ -44,7 +39,6 @@ describe('UnknownHtmlExceptionFilter', () => {
         ConfigService,
         LoggerService,
         EventBus,
-        ViewTemplateService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -53,8 +47,6 @@ describe('UnknownHtmlExceptionFilter', () => {
       .useValue(configMock)
       .overrideProvider(EventBus)
       .useValue(eventBusMock)
-      .overrideProvider(ViewTemplateService)
-      .useValue(viewTemplateServiceMock)
       .compile();
     filter = module.get<UnknownHtmlExceptionFilter>(UnknownHtmlExceptionFilter);
 
