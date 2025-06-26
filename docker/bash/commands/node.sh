@@ -12,7 +12,7 @@ _start() {
 
   for app in ${apps}; do
     if [[ "${app}" == "no-container" ]]; then
-        continue
+      continue
     fi
     echo "   * Starting app ${app}"
       _do_start "${app}"
@@ -27,6 +27,9 @@ _start_prod() {
   _clean_pc_dist "${apps}"
 
   for app in ${apps}; do
+    if [[ "${app}" == "no-container" ]]; then
+      continue
+    fi
     task "   * Starting app \e[3m${app}\e[0m" \
       "_do_start_prod" "${app}"
   done
@@ -38,6 +41,9 @@ _start_prod() {
 _start_dev() {
   local apps="${@:-no-container}"
   for app in ${apps}; do
+    if [[ "${app}" == "no-container" ]]; then
+      continue
+    fi
     task "   * Starting app \e[3m${app}\e[0m" \
       "_do_start_dev" "${app}"
   done
@@ -49,7 +55,10 @@ _start_dev() {
 _start_ci() {
   local apps="${@:-no-container}"
   for app in ${apps}; do
-      _do_start_ci "${app}"
+    if [[ "${app}" == "no-container" ]]; then
+      continue
+    fi
+    _do_start_ci "${app}"
   done
 
   # Reload RP in case the app took to long and was considered down by Nginx
@@ -60,6 +69,9 @@ _detect_instances() {
   local apps="${@:-no-container}"
   local instances=$(
     for app in ${apps}; do
+      if [[ "${app}" == "no-container" ]]; then
+        continue
+      fi
       _get_env "${app}" "NESTJS_INSTANCE"
     done
   )
