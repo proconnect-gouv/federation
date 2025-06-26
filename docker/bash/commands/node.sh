@@ -11,6 +11,9 @@ _start() {
   _clean_pc_dist "${apps}"
 
   for app in ${apps}; do
+    if [[ "${app}" == "no-container" ]]; then
+        continue
+    fi
     echo "   * Starting app ${app}"
       _do_start "${app}"
   done
