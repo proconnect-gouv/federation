@@ -51,6 +51,18 @@ export class ServiceProviderAdapterMongoDTO {
   readonly userinfo_signed_response_alg: string;
 
   @IsOptional()
+  @IsString()
+  readonly introspection_signed_response_alg?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly introspection_encrypted_response_alg?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly introspection_encrypted_response_enc?: string;
+
+  @IsOptional()
   @IsUrlRequiredTldFromConfig()
   readonly jwks_uri?: string;
 
@@ -59,4 +71,14 @@ export class ServiceProviderAdapterMongoDTO {
   @IsString()
   @IsIn(['private', 'public'])
   readonly type: 'private' | 'public';
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  readonly response_types: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  readonly grant_types: string[];
 }
