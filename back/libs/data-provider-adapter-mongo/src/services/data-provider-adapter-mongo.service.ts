@@ -1,3 +1,5 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
 import { cloneDeep } from 'lodash';
 import { Model } from 'mongoose';
@@ -5,8 +7,8 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter, validateDto } from '@fc/common';
-import { ConfigService, validationOptions } from '@fc/config';
+import { asyncFilter } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
@@ -91,17 +93,23 @@ export class DataProviderAdapterMongoService implements IDataProviderAdapter {
 
     const dataProviders = await asyncFilter<DataProviderMetadata[]>(
       rawResult,
-      async (doc: DataProviderMetadata) => {
-        const dto = DataProviderAdapterMongoDTO;
-        const errors = await validateDto(doc, dto, validationOptions);
-        const { uid } = doc;
+      async (dataProviderRaw: any) => {
+        const dataProvider = plainToInstance(
+          DataProviderAdapterMongoDTO,
+          dataProviderRaw,
+        );
+        const errors = await validate(dataProvider, {
+          forbidNonWhitelisted: true,
+          skipMissingProperties: false,
+          whitelist: true,
+        });
+        const { uid } = dataProviderRaw;
 
         if (errors.length > 0) {
-          this.logger.alert(
-            `Data provider "${uid}" was excluded at DTO validation`,
-          );
-
-          this.logger.debug({ errors });
+          this.logger.alert({
+            msg: `Data provider "${uid}" was excluded at DTO validation`,
+            validationErrors: errors,
+          });
         }
 
         return errors.length === 0;

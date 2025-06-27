@@ -1,8 +1,10 @@
+import { plainToInstance } from 'class-transformer';
+import { validate, ValidationError } from 'class-validator';
+
 import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -18,9 +20,14 @@ import {
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
 import { IdentityProvider } from './schemas';
 
-jest.mock('@fc/common', () => ({
-  ...(jest.requireActual('@fc/common') as any),
-  validateDto: jest.fn(),
+jest.mock('class-validator', () => ({
+  ...jest.requireActual('class-validator'),
+  validate: jest.fn(),
+}));
+
+jest.mock('class-transformer', () => ({
+  ...jest.requireActual('class-transformer'),
+  plainToInstance: jest.fn(),
 }));
 
 describe('IdentityProviderAdapterMongoService', () => {
@@ -178,6 +185,9 @@ describe('IdentityProviderAdapterMongoService', () => {
 
   const identityProviderModel = getModelToken('IdentityProvider');
 
+  const validateMock = jest.mocked(validate);
+  const plainToInstanceMock = jest.mocked(plainToInstance);
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -216,6 +226,7 @@ describe('IdentityProviderAdapterMongoService', () => {
     repositoryMock.lean.mockResolvedValueOnce(identityProviderListMock);
     repositoryMock.find.mockReturnValueOnce(repositoryMock);
     repositoryMock.sort.mockReturnValueOnce(repositoryMock);
+    plainToInstanceMock.mockImplementation((_dto, obj) => obj);
   });
 
   it('should be defined', () => {
@@ -296,9 +307,7 @@ describe('IdentityProviderAdapterMongoService', () => {
   });
 
   describe('findAllIdentityProvider', () => {
-    let validateDtoMock;
     beforeEach(() => {
-      validateDtoMock = jest.mocked(validateDto);
       configMock.get.mockReturnValueOnce({
         disableIdpValidationOnLegacy: false,
       });
@@ -306,7 +315,7 @@ describe('IdentityProviderAdapterMongoService', () => {
 
     it('should resolve', async () => {
       // arrange
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // action
       const result = service['findAllIdentityProvider']();
@@ -319,7 +328,7 @@ describe('IdentityProviderAdapterMongoService', () => {
 
     it('should have called find once', async () => {
       // arrange
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // action
       await service['findAllIdentityProvider']();
@@ -330,7 +339,7 @@ describe('IdentityProviderAdapterMongoService', () => {
 
     it('should get the configuration', async () => {
       // setup
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // action
       await service['findAllIdentityProvider']();
@@ -344,7 +353,7 @@ describe('IdentityProviderAdapterMongoService', () => {
 
     it('should return result of type list', async () => {
       // setup
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // action
       const result = await service['findAllIdentityProvider']();
@@ -355,7 +364,7 @@ describe('IdentityProviderAdapterMongoService', () => {
 
     it('should not call validateDto if the config "disableIdpValidationOnLegacy" is set to "true"', async () => {
       // setup
-      validateDtoMock.mockResolvedValueOnce(['there is an error']);
+      validateMock.mockResolvedValueOnce([new ValidationError()]);
       configMock.get
         .mockReset()
         .mockReturnValueOnce({ disableIdpValidationOnLegacy: true });
@@ -364,7 +373,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       await service['findAllIdentityProvider']();
 
       // expect
-      expect(validateDtoMock).toHaveBeenCalledTimes(0);
+      expect(validateMock).toHaveBeenCalledTimes(0);
     });
 
     it('should log an alert if an entry is excluded by the DTO', async () => {
@@ -373,9 +382,9 @@ describe('IdentityProviderAdapterMongoService', () => {
         legacyIdentityProviderMock,
         invalidIdentityProviderMock,
       ];
-      validateDtoMock
+      validateMock
         .mockResolvedValueOnce([])
-        .mockResolvedValueOnce(['there is an error']);
+        .mockResolvedValueOnce([new ValidationError()]);
 
       repositoryMock.lean = jest
         .fn()
@@ -386,9 +395,10 @@ describe('IdentityProviderAdapterMongoService', () => {
 
       // expect
       expect(loggerMock.alert).toHaveBeenCalledTimes(1);
-      expect(loggerMock.alert).toHaveBeenCalledWith(
-        `Identity provider "${invalidIdentityProviderMock.name}" (${invalidIdentityProviderMock.uid}) was excluded at DTO validation`,
-      );
+      expect(loggerMock.alert).toHaveBeenCalledWith({
+        msg: `Identity provider "${invalidIdentityProviderMock.name}" (${invalidIdentityProviderMock.uid}) was excluded at DTO validation`,
+        validationErrors: [{}],
+      });
     });
 
     it('should filter out any entry exluded by the DTO', async () => {
@@ -397,9 +407,9 @@ describe('IdentityProviderAdapterMongoService', () => {
         legacyIdentityProviderMock,
         invalidIdentityProviderMock,
       ];
-      validateDtoMock
+      validateMock
         .mockResolvedValueOnce([])
-        .mockResolvedValueOnce(['there is an error']);
+        .mockResolvedValueOnce([new ValidationError()]);
 
       repositoryMock.lean = jest
         .fn()
