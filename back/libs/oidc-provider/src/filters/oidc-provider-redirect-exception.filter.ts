@@ -75,10 +75,10 @@ export class OidcProviderRedirectExceptionFilter
     const id = generateErrorId();
 
     const params = {
-      error: exception.originalError?.error || exceptionConstructor.ERROR,
+      error: exception.originalError?.error || exception.error,
       error_description:
         exception.originalError?.error_description ||
-        exceptionConstructor.ERROR_DESCRIPTION,
+        exception.error_description,
       state: exception.originalError?.state,
       code,
       id,

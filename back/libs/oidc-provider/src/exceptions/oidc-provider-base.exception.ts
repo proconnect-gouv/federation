@@ -8,8 +8,8 @@ export class OriginalError extends errors.OIDCProviderError {
 }
 export class OidcProviderBaseException extends BaseException {
   public scope = 3;
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION = 'something bad happened';
+  public error = 'server_error';
+  public error_description = 'something bad happened';
 
   public originalError?: OriginalError;
 }

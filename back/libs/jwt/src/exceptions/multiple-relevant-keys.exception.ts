@@ -7,8 +7,8 @@ export class MultipleRelevantKeysException extends JwtBaseException {
   public code = ErrorCode.MULTIPLE_RELEVANT_KEYS;
   public documentation =
     "Plusieurs clés pertinentes ont été trouvées alors qu'un kid était fourni";
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public ui = 'Jwt.exceptions.multipleRelevantKeys';
 

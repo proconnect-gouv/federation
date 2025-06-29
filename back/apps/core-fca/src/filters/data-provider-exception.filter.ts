@@ -39,8 +39,8 @@ export class DataProviderExceptionFilter
     res.status(httpResponseCode);
 
     res.json({
-      error: exceptionConstructor.ERROR,
-      error_description: exceptionConstructor.ERROR_DESCRIPTION,
+      error: exception.error,
+      error_description: exception.error_description,
     });
   }
 }

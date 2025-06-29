@@ -38,8 +38,8 @@ describe('FcBaseExceptionFilter', () => {
   class ExceptionMock extends BaseException {
     public scope = scopeMock;
     public code = codeMock;
-    static ERROR = 'ERROR';
-    static ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
+    public error = 'ERROR';
+    public error_description = 'ERROR_DESCRIPTION';
   }
 
   let originalErrorMock: Error;

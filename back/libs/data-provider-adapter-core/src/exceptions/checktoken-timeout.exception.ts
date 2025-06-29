@@ -7,8 +7,8 @@ export class ChecktokenTimeoutException extends ChecktokenBaseException {
   public code = ErrorCode.CHECKTOKEN_TIMEOUT_EXCEPTION;
   public documentation =
     "Un problème est survenu lors de l'appel au checktoken, le core est injoignable";
-  static ERROR = 'temporarily_unavailable';
-  static ERROR_DESCRIPTION =
+  public error = 'temporarily_unavailable';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public http_status_code = HttpStatus.REQUEST_TIMEOUT;
   public ui = 'DataProviderAdapterCore.exceptions.checktokenTimeout';

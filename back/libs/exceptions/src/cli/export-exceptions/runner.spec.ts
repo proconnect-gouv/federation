@@ -209,8 +209,8 @@ describe('Runner', () => {
       class MockException extends FcException {
         public code = 1;
         public scope = 1;
-        static ERROR = 'error';
-        static ERROR_DESCRIPTION = 'error description';
+        public error = 'error';
+        public error_description = 'error description';
         public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
       }
       const result = Runner.inflateException({
@@ -229,8 +229,8 @@ describe('Runner', () => {
       class MockException extends FcException {
         public code = 0;
         public scope = 0;
-        static ERROR = 'error';
-        static ERROR_DESCRIPTION = 'error description';
+        public error = 'error';
+        public error_description = 'error description';
         public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
       }
       const result = Runner.inflateException({
@@ -303,8 +303,8 @@ describe('Runner', () => {
           errorCode: '010002',
           exception: 'ImportFixture',
           path: paths[0],
-          ERROR: 'error',
-          ERROR_DESCRIPTION: 'error description',
+          error: 'error',
+          error_description: 'error description',
           translated: undefined,
         },
         {
@@ -316,8 +316,8 @@ describe('Runner', () => {
           errorCode: '020002',
           exception: 'ImportFixture2',
           path: paths[1],
-          ERROR: 'error',
-          ERROR_DESCRIPTION: 'error description',
+          error: 'error',
+          error_description: 'error description',
           translated: undefined,
         },
       ]);

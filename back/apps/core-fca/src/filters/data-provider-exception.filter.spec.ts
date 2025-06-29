@@ -37,8 +37,8 @@ describe('DataProviderExceptionFilter', () => {
   };
 
   class ExceptionMock extends FcException {
-    ERROR = 'ERROR';
-    ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
+    error = 'ERROR';
+    error_description = 'ERROR_DESCRIPTION';
   }
 
   const exceptionMock = new ExceptionMock();
@@ -141,8 +141,8 @@ describe('DataProviderExceptionFilter', () => {
 
       // Then
       expect(resMock.json).toHaveBeenCalledExactlyOnceWith({
-        error: ExceptionMock.ERROR,
-        error_description: ExceptionMock.ERROR_DESCRIPTION,
+        error: exceptionMock.error,
+        error_description: exceptionMock.error_description,
       });
     });
   });

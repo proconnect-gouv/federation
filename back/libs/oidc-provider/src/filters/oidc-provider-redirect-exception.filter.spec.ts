@@ -43,8 +43,8 @@ describe('OidcProviderRedirectExceptionFilter', () => {
   };
 
   class ExceptionMock extends OidcProviderBaseRedirectException {
-    static ERROR = 'ERROR';
-    static ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
+    public error = 'ERROR';
+    public error_description = 'ERROR_DESCRIPTION';
   }
 
   const resMock = {
