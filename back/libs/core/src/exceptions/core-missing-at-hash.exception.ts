@@ -9,6 +9,6 @@ export class CoreMissingAtHashException extends CoreBaseException {
     "Le claim at_hash n'a pas été trouvé dans l'id_token_hint lors du logout";
   static ERROR = 'invalid_request';
   static ERROR_DESCRIPTION = 'Core.exceptions.coreMissingAtHash';
-  static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
+  public http_status_code = HttpStatus.BAD_REQUEST;
   static UI = 'Core.exceptions.coreMissingAtHash';
 }

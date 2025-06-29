@@ -9,6 +9,6 @@ export class SessionNoSessionIdException extends SessionBaseException {
     'Cette erreur technique est émise lorsque le session id est introuvable dans l\'objet "req". L\'interceptor de la session a-t-il pu récupérer le cookie de session ?';
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
-  static HTTP_STATUS_CODE = HttpStatus.UNAUTHORIZED;
+  public http_status_code = HttpStatus.UNAUTHORIZED;
   static UI = 'Session.exceptions.sessionNoSessionId';
 }

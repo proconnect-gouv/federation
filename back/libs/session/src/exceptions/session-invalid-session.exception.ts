@@ -9,6 +9,6 @@ export class SessionInvalidSessionException extends SessionBaseException {
     "La Session n'est pas valide'. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
-  static HTTP_STATUS_CODE = HttpStatus.CONFLICT;
+  public http_status_code = HttpStatus.CONFLICT;
   static UI = 'Session.exceptions.sessionInvalidSession';
 }

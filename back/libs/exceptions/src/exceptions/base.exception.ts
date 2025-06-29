@@ -3,7 +3,6 @@ import { HttpStatus } from '@nestjs/common';
 export class BaseException extends Error {
   static UI: string;
   static LOG_LEVEL: number;
-  static HTTP_STATUS_CODE: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
   static ERROR?: string;
   static ERROR_DESCRIPTION?: string;
@@ -12,6 +11,7 @@ export class BaseException extends Error {
   public documentation: string;
   public code: number | string;
   public scope: number;
+  public http_status_code: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
   public originalError?: Error;
   public log: unknown;

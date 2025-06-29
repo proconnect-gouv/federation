@@ -153,14 +153,6 @@ describe('FcBaseExceptionFilter', () => {
       expect(result).toBe(wrapped.status);
     });
 
-    it('should return the status code from class HTTP_STATUS_CODE static property', () => {
-      // When
-      const result = filter['getHttpStatus'](exceptionMock);
-
-      // Then
-      expect(result).toBe(ExceptionMock.HTTP_STATUS_CODE);
-    });
-
     it('should ignore the default status given as argument if the class has a status', () => {
       // Given
       const defaultValue = Symbol('defaultValue') as unknown as number;

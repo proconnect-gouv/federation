@@ -54,13 +54,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     }
     // Yes this checks seems redundant, it's a belt and suspenders situation
     if (exception instanceof BaseException) {
-      const exceptionConstructor =
-        exception.constructor as typeof BaseException;
-      return (
-        exception.status ||
-        exception.statusCode ||
-        exceptionConstructor.HTTP_STATUS_CODE
-      );
+      return exception.status || exception.statusCode;
     } else return defaultStatus;
   }
 

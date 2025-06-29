@@ -211,7 +211,7 @@ describe('Runner', () => {
         public scope = 1;
         static ERROR = 'error';
         static ERROR_DESCRIPTION = 'error description';
-        static HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
+        public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
       }
       const result = Runner.inflateException({
         path,
@@ -231,7 +231,7 @@ describe('Runner', () => {
         public scope = 0;
         static ERROR = 'error';
         static ERROR_DESCRIPTION = 'error description';
-        static HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
+        public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
       }
       const result = Runner.inflateException({
         path,
@@ -298,7 +298,7 @@ describe('Runner', () => {
           documentation: 'documentation',
           scope: 1,
           code: 2,
-          HTTP_STATUS_CODE: 500,
+          http_status_code: 500,
           LOG_LEVEL: 20,
           UI: 'ui',
           errorCode: '010002',
@@ -312,7 +312,7 @@ describe('Runner', () => {
           documentation: 'documentation',
           scope: 2,
           code: 2,
-          HTTP_STATUS_CODE: 500,
+          http_status_code: 500,
           LOG_LEVEL: 20,
           UI: 'ui',
           errorCode: '020002',

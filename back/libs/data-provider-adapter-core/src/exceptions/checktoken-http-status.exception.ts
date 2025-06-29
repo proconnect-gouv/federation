@@ -13,7 +13,7 @@ export class ChecktokenHttpStatusException extends ChecktokenBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static HTTP_STATUS_CODE: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+  public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
   public readonly error: string = 'server_error';
   static UI: string = 'DataProviderAdapterCore.exceptions.checktokenHttpStatus';
 

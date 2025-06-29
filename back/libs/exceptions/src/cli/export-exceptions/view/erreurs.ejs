@@ -5,6 +5,6 @@
 ## @fc/<%= library[0].path.split('/')[1] %>
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|<% 
-library.forEach((error) => { const { errorCode, path, documentation, exception, translated, HTTP_STATUS_CODE, ERROR, ERROR_DESCRIPTION } = error; %>
-| [<b><%= errorCode %></b>](<%=projectRootPath%><%=path%>) | <%= documentation?.replaceAll('||', 'OR') %> | <%= translated %> | <b>Classe :</b> [<%= exception %>](<%=projectRootPath%><%=path%>) <br /><b>Code HTTP :</b> <%= HTTP_STATUS_CODE %> <br /><b>error :</b> <%= ERROR %> <br /> <b>error_description :</b> <%= ERROR_DESCRIPTION %> |<%
+library.forEach((error) => { const { errorCode, path, documentation, exception, translated, http_status_code, ERROR, ERROR_DESCRIPTION } = error; %>
+| [<b><%= errorCode %></b>](<%=projectRootPath%><%=path%>) | <%= documentation?.replaceAll('||', 'OR') %> | <%= translated %> | <b>Classe :</b> [<%= exception %>](<%=projectRootPath%><%=path%>) <br /><b>Code HTTP :</b> <%= http_status_code %> <br /><b>error :</b> <%= ERROR %> <br /> <b>error_description :</b> <%= ERROR_DESCRIPTION %> |<%
 })}) %>

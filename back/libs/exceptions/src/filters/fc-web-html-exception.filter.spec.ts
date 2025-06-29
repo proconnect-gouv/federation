@@ -43,7 +43,6 @@ describe('FcWebHtmlExceptionFilter', () => {
   class ExceptionMock extends FcException {
     ERROR = 'ERROR';
     ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
-    HTTP_STATUS_CODE = Symbol('HTTP_STATUS_CODE');
   }
 
   let exceptionMock: ExceptionMock;

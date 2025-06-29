@@ -68,14 +68,13 @@ export default class Runner {
     path,
     Exception,
   }: PathAndException): PathAndInstantiatedException | null {
-    const { HTTP_STATUS_CODE } = Exception;
-    const { scope, code } = new Exception();
+    const { http_status_code, scope, code } = new Exception();
 
     // Retrieve static error and error description props
     const hasValidScope = Runner.hasValidNumber(scope);
     const hasValidCode = typeof code === 'number' || typeof code === 'string';
     const hasValidHttpStatusCode =
-      Runner.hasValidHttpStatusCode(HTTP_STATUS_CODE);
+      Runner.hasValidHttpStatusCode(http_status_code);
 
     const isException = Runner.hasValidException({
       hasValidScope,
@@ -95,10 +94,9 @@ export default class Runner {
     path,
     Exception,
   }: PathAndInstantiatedException): ExceptionDocumentationInterface {
-    const { HTTP_STATUS_CODE, ERROR, ERROR_DESCRIPTION, UI, LOG_LEVEL } =
-      Exception;
+    const { ERROR, ERROR_DESCRIPTION, UI, LOG_LEVEL } = Exception;
 
-    const { scope, code, documentation } = new Exception();
+    const { http_status_code, scope, code, documentation } = new Exception();
 
     const errorCode = getCode(scope, code, '');
 
@@ -107,7 +105,7 @@ export default class Runner {
       code,
       errorCode,
       exception: Exception.name,
-      HTTP_STATUS_CODE,
+      http_status_code,
       UI,
       translated: messageDictionary[UI],
       documentation,

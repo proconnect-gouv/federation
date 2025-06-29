@@ -7,7 +7,7 @@ export class CoreFcaAgentIdpDisabledException extends CoreFcaBaseException {
   public code = ErrorCode.DISABLED_PROVIDER;
   public documentation =
     'Le FI est désactivé, si le problème persiste, contacter le support ProConnect';
-  static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
+  public http_status_code = HttpStatus.BAD_REQUEST;
 
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =

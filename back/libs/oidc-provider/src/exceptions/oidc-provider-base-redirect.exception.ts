@@ -5,5 +5,5 @@ import { OidcProviderBaseException } from './oidc-provider-base.exception';
 export class OidcProviderBaseRedirectException extends OidcProviderBaseException {
   static ERROR: string;
   static ERROR_DESCRIPTION: string;
-  static HTTP_STATUS_CODE = HttpStatus.SEE_OTHER;
+  public http_status_code = HttpStatus.SEE_OTHER;
 }

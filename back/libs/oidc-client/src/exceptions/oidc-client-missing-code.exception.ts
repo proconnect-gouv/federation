@@ -10,6 +10,6 @@ export class OidcClientMissingCodeException extends OidcClientBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
+  public http_status_code = HttpStatus.BAD_REQUEST;
   static UI = 'OidcClient.exceptions.oidcClientMissingCode';
 }

@@ -7,7 +7,7 @@ export interface ExceptionDocumentationInterface {
   UI: string;
   documentation: string;
   exception: string;
-  HTTP_STATUS_CODE: number;
+  http_status_code: number;
   translated?: string;
   LOG_LEVEL: number;
   path: string;

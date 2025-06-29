@@ -10,6 +10,6 @@ export class ChecktokenTimeoutException extends ChecktokenBaseException {
   static ERROR = 'temporarily_unavailable';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static HTTP_STATUS_CODE = HttpStatus.REQUEST_TIMEOUT;
+  public http_status_code = HttpStatus.REQUEST_TIMEOUT;
   static UI = 'DataProviderAdapterCore.exceptions.checktokenTimeout';
 }

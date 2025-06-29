@@ -9,6 +9,6 @@ export class SessionNotFoundException extends SessionBaseException {
     "Erreur émise lorsque l'usager n'a plus de session, probablement une fenêtre restée ouverte au delà des 10 minutes. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
-  static HTTP_STATUS_CODE = HttpStatus.UNAUTHORIZED;
+  public http_status_code = HttpStatus.UNAUTHORIZED;
   static UI = 'Session.exceptions.sessionNotFound';
 }

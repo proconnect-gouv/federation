@@ -7,7 +7,7 @@ export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseExcept
   public documentation =
     "L'utilisateur renseigné n'est pas reconnu comme dépendant du service public";
   public code = ErrorCode.AGENT_NOT_FOUND;
-  static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
+  public http_status_code = HttpStatus.BAD_REQUEST;
 
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'authentication aborted due to invalid identity';

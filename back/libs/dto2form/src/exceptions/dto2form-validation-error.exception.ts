@@ -11,7 +11,7 @@ export class Dto2FormValidationErrorException extends Dto2FormBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static HTTP_STATUS_CODE = HttpStatus.UNPROCESSABLE_ENTITY;
+  public http_status_code = HttpStatus.UNPROCESSABLE_ENTITY;
   static UI = 'Dto2form.exceptions.dto2formValidationError';
 
   constructor(validationErrors: FieldErrorsInterface[]) {

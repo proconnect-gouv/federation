@@ -9,6 +9,6 @@ export class SessionBadCookieException extends SessionBaseException {
     "Cette erreur technique est émise lorsque le cookie de session contient une valeur anormale. Ne devrait pas se produire en dehors d'une connexion malveillante.";
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
-  static HTTP_STATUS_CODE = HttpStatus.UNAUTHORIZED;
+  public http_status_code = HttpStatus.UNAUTHORIZED;
   static UI = 'Session.exceptions.sessionBadCookie';
 }

@@ -10,6 +10,6 @@ export class OidcClientIdpDisabledException extends OidcClientBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
+  public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
   static UI = 'OidcClient.exceptions.oidcClientIdpDisabled';
 }
