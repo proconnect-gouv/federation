@@ -10,5 +10,4 @@ export class ImportFixture2 extends FcException {
   static ERROR_DESCRIPTION = 'error description';
   static UI = 'ui';
   readonly message = 'message';
-  static LOG_LEVEL = 20;
 }

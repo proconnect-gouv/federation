@@ -54,7 +54,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     }
     // Yes this checks seems redundant, it's a belt and suspenders situation
     if (exception instanceof BaseException) {
-      return exception.status || exception.statusCode;
+      return exception.status || exception.statusCode || exception.http_status_code;
     } else return defaultStatus;
   }
 

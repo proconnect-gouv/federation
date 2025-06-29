@@ -9,6 +9,5 @@ export interface ExceptionDocumentationInterface {
   exception: string;
   http_status_code: number;
   translated?: string;
-  LOG_LEVEL: number;
   path: string;
 }

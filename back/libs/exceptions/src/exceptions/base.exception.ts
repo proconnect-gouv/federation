@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 
 export class BaseException extends Error {
   static UI: string;
-  static LOG_LEVEL: number;
 
   static ERROR?: string;
   static ERROR_DESCRIPTION?: string;

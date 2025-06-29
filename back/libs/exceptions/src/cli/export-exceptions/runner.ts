@@ -94,7 +94,7 @@ export default class Runner {
     path,
     Exception,
   }: PathAndInstantiatedException): ExceptionDocumentationInterface {
-    const { ERROR, ERROR_DESCRIPTION, UI, LOG_LEVEL } = Exception;
+    const { ERROR, ERROR_DESCRIPTION, UI } = Exception;
 
     const { http_status_code, scope, code, documentation } = new Exception();
 
@@ -109,7 +109,6 @@ export default class Runner {
       UI,
       translated: messageDictionary[UI],
       documentation,
-      LOG_LEVEL,
       path,
       ERROR,
       ERROR_DESCRIPTION,
