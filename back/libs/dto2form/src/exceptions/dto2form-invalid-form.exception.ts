@@ -2,7 +2,7 @@ import { ErrorCode } from '../enums';
 import { Dto2FormBaseException } from './dto2form-base.exception';
 
 export class Dto2FormInvalidFormException extends Dto2FormBaseException {
-  static CODE = ErrorCode.INVALID_FORM;
+  public code = ErrorCode.INVALID_FORM;
   public documentation = 'La classe cible n\'est pas de type "FormDtoBase".';
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =

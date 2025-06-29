@@ -12,7 +12,7 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
     super();
   }
 
-  static CODE = ErrorCode.UNAUTHORIZED_EMAIL;
+  public code = ErrorCode.UNAUTHORIZED_EMAIL;
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
   public documentation = '';
 

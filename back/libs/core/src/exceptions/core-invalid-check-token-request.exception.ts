@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { CoreBaseException } from './core-base.exception';
 
 export class InvalidChecktokenRequestException extends CoreBaseException {
-  static CODE = ErrorCode.IDENTITY_CHECK_TOKEN;
+  public code = ErrorCode.IDENTITY_CHECK_TOKEN;
   public documentation =
     "La requête reçue pour vérifier le token n'est pas valide. Des paramètres obligatoires sont manquants ou au mauvais format.";
 

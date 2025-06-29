@@ -4,7 +4,7 @@ import { ErrorCode } from '../enum';
 import { JwtBaseException } from './jwt-base.exception';
 
 export class MultipleRelevantKeysException extends JwtBaseException {
-  static CODE = ErrorCode.MULTIPLE_RELEVANT_KEYS;
+  public code = ErrorCode.MULTIPLE_RELEVANT_KEYS;
   public documentation =
     "Plusieurs clés pertinentes ont été trouvées alors qu'un kid était fourni";
   static ERROR = 'server_error';

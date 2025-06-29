@@ -5,7 +5,7 @@ export const anyFunction = () => false;
 export class ImportFixture2 extends FcException {
   public documentation = 'documentation';
   static SCOPE = 2;
-  static CODE = 2;
+  public code = 2;
   static ERROR = 'error';
   static ERROR_DESCRIPTION = 'error description';
   static UI = 'ui';

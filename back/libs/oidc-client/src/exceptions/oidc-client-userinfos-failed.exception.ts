@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 
 export class OidcClientUserinfosFailedException extends OidcClientBaseException {
-  static CODE = ErrorCode.USERINFOS_FAILED;
+  public code = ErrorCode.USERINFOS_FAILED;
   public documentation =
     "Une erreur est survenue lors de la récupération des données d'identité aurès du FI. Recommencer la cinématique depuis le FS. Si le problème persiste, contacter le support N3";
   static ERROR = 'server_error';

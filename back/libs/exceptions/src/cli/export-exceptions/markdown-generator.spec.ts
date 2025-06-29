@@ -6,12 +6,12 @@ describe('MarkdownGenerator', () => {
   describe('MarkdownGenerator.removeExceptionsWithoutCode', () => {
     it('should remove any error without a code property', () => {
       const errs = [
-        { CODE: 3 },
+        { code: 3 },
         {},
-        { CODE: 2 },
+        { code: 2 },
       ] as ExceptionDocumentationInterface[];
       const result = errs.filter(MarkdownGenerator.removeExceptionsWithoutCode);
-      const expected = [{ CODE: 3 }, { CODE: 2 }];
+      const expected = [{ code: 3 }, { code: 2 }];
       expect(result).toStrictEqual(expected);
     });
   });
@@ -19,15 +19,15 @@ describe('MarkdownGenerator', () => {
   describe('MarkdownGenerator.sortByCode', () => {
     it('should order errors by scope then by code properties', () => {
       const errs = [
-        { CODE: 3, SCOPE: 2 },
-        { CODE: 2, SCOPE: 1 },
-        { CODE: 1, SCOPE: 1 },
+        { code: 3, SCOPE: 2 },
+        { code: 2, SCOPE: 1 },
+        { code: 1, SCOPE: 1 },
       ] as ExceptionDocumentationInterface[];
       const result = errs.sort(MarkdownGenerator.sortByCode);
       const expected = [
-        { CODE: 1, SCOPE: 1 },
-        { CODE: 2, SCOPE: 1 },
-        { CODE: 3, SCOPE: 2 },
+        { code: 1, SCOPE: 1 },
+        { code: 2, SCOPE: 1 },
+        { code: 3, SCOPE: 2 },
       ];
       expect(result).toStrictEqual(expected);
     });
@@ -58,7 +58,7 @@ describe('MarkdownGenerator', () => {
         {
           errorCode: 'Y0101',
           SCOPE: 1,
-          CODE: 1,
+          code: 1,
           UI: 'any',
           description: 'any',
           trackable: false,
@@ -69,7 +69,7 @@ describe('MarkdownGenerator', () => {
         {
           errorCode: 'Y0201',
           SCOPE: 2,
-          CODE: 1,
+          code: 1,
           UI: 'any',
           description: 'any',
           trackable: false,
@@ -86,7 +86,7 @@ describe('MarkdownGenerator', () => {
           {
             errorCode: 'Y0101',
             SCOPE: 1,
-            CODE: 1,
+            code: 1,
             UI: 'any',
             description: 'any',
             trackable: false,
@@ -99,7 +99,7 @@ describe('MarkdownGenerator', () => {
           {
             errorCode: 'Y0201',
             SCOPE: 2,
-            CODE: 1,
+            code: 1,
             UI: 'any',
             description: 'any',
             trackable: false,

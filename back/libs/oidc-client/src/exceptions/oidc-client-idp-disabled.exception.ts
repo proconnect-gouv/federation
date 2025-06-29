@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 
 export class OidcClientIdpDisabledException extends OidcClientBaseException {
-  static CODE = ErrorCode.DISABLED_PROVIDER;
+  public code = ErrorCode.DISABLED_PROVIDER;
   public documentation =
     'Le FI est désactivé, si le problème persiste, contacter le support N3';
   static ERROR = 'server_error';

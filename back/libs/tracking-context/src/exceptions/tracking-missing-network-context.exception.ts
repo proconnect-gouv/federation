@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { TrackingBaseException } from './tracking-base.exception';
 
 export class TrackingMissingNetworkContextException extends TrackingBaseException {
-  static CODE = ErrorCode.MISSING_HEADERS;
+  public code = ErrorCode.MISSING_HEADERS;
   public documentation =
     "L'application n'a pas trouvé de headers dans l'objet request, c'est probablement un bug, Contacter le support N3";
   static ERROR = 'server_error';

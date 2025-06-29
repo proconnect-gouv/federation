@@ -5,7 +5,7 @@ import { CoreFcaBaseException } from '@fc/core-fca/exceptions/core-fca-base.exce
 
 export class CoreFcaAgentAccountBlockedException extends CoreFcaBaseException {
   public documentation = "Le compte de l’agent.e n'est plus actif.";
-  static CODE = ErrorCode.BLOCKED_ACCOUNT;
+  public code = ErrorCode.BLOCKED_ACCOUNT;
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
 
   static ERROR = 'access_denied';

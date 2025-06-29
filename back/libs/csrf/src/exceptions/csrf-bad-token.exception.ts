@@ -2,7 +2,7 @@ import { ErrorCode } from '../enums';
 import { CsrfBaseException } from './csrf-base.exception';
 
 export class CsrfBadTokenException extends CsrfBaseException {
-  static CODE = ErrorCode.BAD_CSRF_TOKEN;
+  public code = ErrorCode.BAD_CSRF_TOKEN;
   public documentation =
     'le jeton CSRF est invalide. Si le problème persiste, contacter le support N3';
   static ERROR = 'server_error';

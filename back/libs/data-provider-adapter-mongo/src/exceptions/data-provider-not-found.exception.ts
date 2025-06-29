@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { DataProviderAdapterMongoBaseException } from './data-provider-adapter-mongo-base.exception';
 
 export class DataProviderNotFoundException extends DataProviderAdapterMongoBaseException {
-  static CODE = ErrorCode.DATA_PROVIDER_NOT_FOUND;
+  public code = ErrorCode.DATA_PROVIDER_NOT_FOUND;
   public documentation =
     'Aucun fournisseur de données trouvé avec ce client_id.';
   static ERROR = 'invalid_client';

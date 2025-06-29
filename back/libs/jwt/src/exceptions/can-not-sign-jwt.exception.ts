@@ -2,7 +2,7 @@ import { ErrorCode } from '../enum';
 import { JwtBaseException } from './jwt-base.exception';
 
 export class CanNotSignJwtException extends JwtBaseException {
-  static CODE = ErrorCode.CAN_NOT_SIGN_JWT;
+  public code = ErrorCode.CAN_NOT_SIGN_JWT;
   public documentation = 'Impossible de signer le JWT';
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =

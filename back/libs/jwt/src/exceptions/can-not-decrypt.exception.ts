@@ -3,7 +3,7 @@ import { JwtBaseException } from './jwt-base.exception';
 
 export class CanNotDecryptException extends JwtBaseException {
   public documentation = 'Impossible de déchiffrer le JWT';
-  static CODE = ErrorCode.CAN_NOT_DECRYPT;
+  public code = ErrorCode.CAN_NOT_DECRYPT;
   static UI = 'Jwt.exceptions.canNotDecrypt';
 
   static ERROR = 'server_error';

@@ -2,7 +2,7 @@ import { ErrorCode } from '../enums';
 import { SessionBaseException } from './session-base.exception';
 
 export class SessionBadStringifyException extends SessionBaseException {
-  static CODE = ErrorCode.BAD_STRINGIFY;
+  public code = ErrorCode.BAD_STRINGIFY;
   public documentation =
     "Les données pour la session se sont mal formatées avant d'être chiffrées. Si le problème persiste, contacter le support N3";
   static ERROR = 'server_error';

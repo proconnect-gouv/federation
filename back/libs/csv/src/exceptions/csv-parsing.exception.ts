@@ -2,7 +2,7 @@ import { ErrorCode } from '../enums';
 import { CsvBaseException } from './csv-base.exception';
 
 export class CsvParsingException extends CsvBaseException {
-  static CODE = ErrorCode.PARSING_CSV;
+  public code = ErrorCode.PARSING_CSV;
   public documentation = "Problème d'extraction des données CSV";
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =

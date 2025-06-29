@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { CryptographyBaseException } from './cryptography-base.exception';
 
 export class CryptographyGatewayException extends CryptographyBaseException {
-  static CODE = ErrorCode.GATEWAY;
+  public code = ErrorCode.GATEWAY;
   public documentation =
     "Il y a un problème de communication avec le HSM. L'application est inutilisable pour tous les usagers. Contacter le support N3 en urgence.";
   static ERROR = 'temporarily_unavailable';

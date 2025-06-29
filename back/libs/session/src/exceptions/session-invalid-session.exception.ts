@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { SessionBaseException } from './session-base.exception';
 
 export class SessionInvalidSessionException extends SessionBaseException {
-  static CODE = ErrorCode.INVALID_SESSION;
+  public code = ErrorCode.INVALID_SESSION;
   public documentation =
     "La Session n'est pas valide'. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";
   static ERROR = 'access_denied';

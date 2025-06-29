@@ -2,7 +2,7 @@ import { ErrorCode } from '../enum';
 import { JwtBaseException } from './jwt-base.exception';
 
 export class CanNotDecodePlaintextException extends JwtBaseException {
-  static CODE = ErrorCode.CAN_NOT_DECODE_PLAINTEXT;
+  public code = ErrorCode.CAN_NOT_DECODE_PLAINTEXT;
   public documentation = 'Impossible de décoder le JWT une fois déchiffré';
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =

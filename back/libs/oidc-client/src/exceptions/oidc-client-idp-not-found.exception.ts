@@ -2,7 +2,7 @@ import { ErrorCode } from '../enums';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 
 export class OidcClientIdpNotFoundException extends OidcClientBaseException {
-  static CODE = ErrorCode.MISSING_PROVIDER;
+  public code = ErrorCode.MISSING_PROVIDER;
   public documentation =
     "Le FI n'existe pas, si le problème persiste, contacter le support N3";
   static ERROR = 'server_error';

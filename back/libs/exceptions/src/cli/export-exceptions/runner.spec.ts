@@ -223,7 +223,7 @@ describe('Runner', () => {
     it('should return the path of the error, the class of Error if Exception has valid SCOPE and CODE', () => {
       // When
       class MockException extends FcException {
-        static CODE = 1;
+        public code = 1;
         static SCOPE = 1;
         static ERROR = 'error';
         static ERROR_DESCRIPTION = 'error description';
@@ -243,7 +243,7 @@ describe('Runner', () => {
     it('should return the path and class even if SCOPE = 0 and CODE = 0', () => {
       // When
       class MockException extends FcException {
-        static CODE = 0;
+        public code = 0;
         static SCOPE = 0;
         static ERROR = 'error';
         static ERROR_DESCRIPTION = 'error description';
@@ -313,7 +313,7 @@ describe('Runner', () => {
         {
           documentation: 'documentation',
           SCOPE: 1,
-          CODE: 2,
+          code: 2,
           HTTP_STATUS_CODE: 500,
           LOG_LEVEL: 20,
           UI: 'ui',
@@ -327,7 +327,7 @@ describe('Runner', () => {
         {
           documentation: 'documentation',
           SCOPE: 2,
-          CODE: 2,
+          code: 2,
           HTTP_STATUS_CODE: 500,
           LOG_LEVEL: 20,
           UI: 'ui',

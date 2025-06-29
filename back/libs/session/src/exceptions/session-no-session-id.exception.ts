@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { SessionBaseException } from './session-base.exception';
 
 export class SessionNoSessionIdException extends SessionBaseException {
-  static CODE = ErrorCode.NO_SESSION_ID;
+  public code = ErrorCode.NO_SESSION_ID;
   public documentation =
     'Cette erreur technique est émise lorsque le session id est introuvable dans l\'objet "req". L\'interceptor de la session a-t-il pu récupérer le cookie de session ?';
   static ERROR = 'access_denied';

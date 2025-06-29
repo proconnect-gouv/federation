@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 
 export class OidcClientMissingCodeException extends OidcClientBaseException {
-  static CODE = ErrorCode.MISSING_CODE;
+  public code = ErrorCode.MISSING_CODE;
   public documentation =
     "La requête reçue au retour du FI n'est pas valide (pas de code d'autorisation), recommencer la cinématique depuis le FS. Si le problème persiste, contacter le support N3";
   static ERROR = 'server_error';

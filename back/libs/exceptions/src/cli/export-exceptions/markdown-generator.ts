@@ -4,7 +4,7 @@ export default class MarkdownGenerator {
   static removeExceptionsWithoutCode(
     exception: ExceptionDocumentationInterface,
   ): boolean {
-    return exception.CODE !== undefined;
+    return exception.code !== undefined;
   }
 
   static sortByCode(

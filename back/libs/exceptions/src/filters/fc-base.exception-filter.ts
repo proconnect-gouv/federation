@@ -99,9 +99,8 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     if (exception instanceof BaseException) {
       const exceptionClass = exception.constructor as typeof BaseException;
       const scope = exceptionClass.SCOPE;
-      const code = exceptionClass.CODE;
 
-      return getCode(scope, code, prefix);
+      return getCode(scope, exception.code, prefix);
     }
 
     if (exception instanceof HttpException) {

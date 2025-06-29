@@ -4,7 +4,7 @@ import { ErrorCode } from '../enums';
 import { Dto2FormBaseException } from './dto2form-base.exception';
 
 export class Dto2FormInvalidMetadataException extends Dto2FormBaseException {
-  static CODE = ErrorCode.INVALID_METADATA;
+  public code = ErrorCode.INVALID_METADATA;
   static HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
   static message =
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.';
