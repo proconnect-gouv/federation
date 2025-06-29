@@ -6,7 +6,7 @@ export class CanNotDecryptException extends JwtBaseException {
   public code = ErrorCode.CAN_NOT_DECRYPT;
   public ui = 'Jwt.exceptions.canNotDecrypt';
 
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
 }

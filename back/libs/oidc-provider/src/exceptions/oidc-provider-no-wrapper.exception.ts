@@ -7,8 +7,8 @@ export class OidcProviderNoWrapperException extends OidcProviderBaseRenderedExce
   public code = ErrorCode.NO_WRAPPER;
   public documentation =
     'Une erreur émise par la librairie OIDC Provider de manière dynamique, il est nécessaire de consulter les logs pour en savoir plus.';
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public ui = 'OidcProvider.exceptions.OidcProviderNoWrapperException';
   public http_status_code = HttpStatus.BAD_REQUEST;

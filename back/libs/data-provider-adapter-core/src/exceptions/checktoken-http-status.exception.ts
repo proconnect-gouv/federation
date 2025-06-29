@@ -10,11 +10,10 @@ export class ChecktokenHttpStatusException extends ChecktokenBaseException {
   public documentation =
     "Impossible de joindre le core. L'utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3";
 
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
-  public readonly error: string = 'server_error';
   public ui = 'DataProviderAdapterCore.exceptions.checktokenHttpStatus';
 
   constructor(error: AxiosError<{ error: string; error_description: string }>) {

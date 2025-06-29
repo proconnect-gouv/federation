@@ -13,7 +13,7 @@ import { EventBus } from '@nestjs/cqrs';
 import { ConfigService } from '@fc/config';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
-import { generateErrorId, getClass } from '@fc/exceptions/helpers';
+import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
@@ -70,15 +70,14 @@ export class OidcProviderRedirectExceptionFilter
   }
 
   private getOidcParams(exception: OidcProviderBaseRedirectException) {
-    const exceptionConstructor = getClass(exception);
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
 
     const params = {
-      error: exception.originalError?.error || exceptionConstructor.ERROR,
+      error: exception.originalError?.error || exception.error,
       error_description:
         exception.originalError?.error_description ||
-        exceptionConstructor.ERROR_DESCRIPTION,
+        exception.error_description,
       state: exception.originalError?.state,
       code,
       id,

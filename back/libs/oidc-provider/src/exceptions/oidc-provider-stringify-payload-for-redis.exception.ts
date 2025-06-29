@@ -5,8 +5,8 @@ export class OidcProviderStringifyPayloadForRedisException extends OidcProviderB
   public code = ErrorCode.STRINGIFY_FOR_REDIS;
   public documentation =
     "Une erreur est survenue lors de l'enregistrement de données dans la session de l'utilisateur. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public ui = 'OidcProvider.exceptions.oidcProviderStringifyPayloadForRedis';
 }

@@ -8,8 +8,8 @@ export class CoreFcaAgentAccountBlockedException extends CoreFcaBaseException {
   public code = ErrorCode.BLOCKED_ACCOUNT;
   public http_status_code = HttpStatus.BAD_REQUEST;
 
-  static ERROR = 'access_denied';
-  static ERROR_DESCRIPTION = 'authentication aborted due to invalid identity';
+  public error = 'access_denied';
+  public error_description = 'authentication aborted due to invalid identity';
 
   public illustration = 'access-restricted-error';
   public title = 'Accès impossible';

@@ -9,8 +9,8 @@ export class Dto2FormInvalidMetadataException extends Dto2FormBaseException {
   static message =
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.';
   public documentation = 'Impossible de récupérer les métadonnées lié au dto.';
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public ui = 'Dto2form.exceptions.dto2FormInvalidMetadata';
 }

@@ -9,8 +9,8 @@ export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseExcept
   public code = ErrorCode.AGENT_NOT_FOUND;
   public http_status_code = HttpStatus.BAD_REQUEST;
 
-  static ERROR = 'access_denied';
-  static ERROR_DESCRIPTION = 'authentication aborted due to invalid identity';
+  public error = 'access_denied';
+  public error_description = 'authentication aborted due to invalid identity';
 
   public illustration = 'access-restricted-error';
   public title = 'Email non autorisé';

@@ -16,8 +16,8 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
     'Nous ne pouvons pas vérifier votre identité auprès de la source officielle : certains éléments ont un format invalide. Nous vous conseillons de contacter le service informatique de votre organisation ou ministère.';
   public code = ErrorCode.INVALID_IDENTITY;
   public http_status_code = HttpStatus.BAD_REQUEST;
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
 
   public description = this.documentation;

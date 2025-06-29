@@ -10,9 +10,9 @@ import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
-import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { getSessionServiceMock } from '@mocks/session';
 
+import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { HttpExceptionFilter } from './http-exception.filter';
 
 jest.mock('@fc/exceptions/helpers', () => ({

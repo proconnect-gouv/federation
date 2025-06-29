@@ -5,8 +5,8 @@ import { ErrorCode } from '../enums';
 export class CoreAcrNotSatisfiedException extends OidcProviderBaseRedirectException {
   public code = ErrorCode.ACR_NOT_SATISFIED;
   public documentation = `Le niveau ACR demandé par le fournisseur de service ne peut pas être satisfait.`;
-  static ERROR = 'access_denied';
-  static ERROR_DESCRIPTION = 'requested ACRs could not be satisfied';
+  public error = 'access_denied';
+  public error_description = 'requested ACRs could not be satisfied';
   public scope = 3;
   public ui = 'Core.exceptions.coreAcrNotSatisfied';
 }

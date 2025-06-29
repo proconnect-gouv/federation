@@ -5,8 +5,8 @@ export class BridgeHttpProxyMissingVariableException extends BridgeHttpProxyBase
   public code = ErrorCode.MISSING_VARIABLE;
   public documentation =
     'Il manque des variables dans la réponse renvoyée par le broker rabbitmq';
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public ui = 'BridgeHttpProxy.exceptions.bridgeHttpProxyVariableMissing';
 }

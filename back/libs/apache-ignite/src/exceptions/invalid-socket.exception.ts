@@ -5,8 +5,8 @@ export class ApacheIgniteInvalidSocketException extends ApacheIgniteBaseExceptio
   public code = ErrorCode.INVALID_SOCKET;
   public documentation =
     "Le socket entre le bridge et le cache apache ignite n'existe pas. Problème de connexion entre le bridge et le noeud. Impossible de mettre en place le keep alive.";
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public ui = 'ApacheIgnite.exceptions.invalidSocket';
 }

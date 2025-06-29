@@ -8,8 +8,8 @@ export class Dto2FormValidationErrorException extends Dto2FormBaseException {
   public documentation =
     'Les données soumises dans le formulaire ne satisfont pas les règles de validation.';
   public code = ErrorCode.VALIDATION_ERROR;
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
   public http_status_code = HttpStatus.UNPROCESSABLE_ENTITY;
   public ui = 'Dto2form.exceptions.dto2formValidationError';

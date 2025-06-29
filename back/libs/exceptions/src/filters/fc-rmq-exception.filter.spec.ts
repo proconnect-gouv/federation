@@ -44,8 +44,8 @@ describe('FcRmqExceptionFilter', () => {
   };
 
   class ExceptionMock extends BaseException {
-    ERROR = 'ERROR';
-    ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
+    error = 'ERROR';
+    error_description = 'ERROR_DESCRIPTION';
   }
 
   let exceptionMock: ExceptionMock;

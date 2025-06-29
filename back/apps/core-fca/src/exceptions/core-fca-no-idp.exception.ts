@@ -8,8 +8,8 @@ export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
     'Nous n’arrivons pas à vous identifier. Nous vous conseillons de créer un compte sur le site sans passer par le bouton ProConnect.';
   public code = ErrorCode.NO_IDP;
   public http_status_code = HttpStatus.BAD_REQUEST;
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
 
   public description = this.documentation;
