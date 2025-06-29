@@ -5,7 +5,7 @@ import { FieldErrorsInterface } from '../interfaces';
 import { Dto2FormBaseException } from './dto2form-base.exception';
 
 export class Dto2FormValidationErrorException extends Dto2FormBaseException {
-  static DOCUMENTATION =
+  public documentation =
     'Les données soumises dans le formulaire ne satisfont pas les règles de validation.';
   static CODE = ErrorCode.VALIDATION_ERROR;
   static ERROR = 'server_error';

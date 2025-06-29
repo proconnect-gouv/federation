@@ -5,7 +5,7 @@ import { DataProviderAdapterMongoBaseException } from './data-provider-adapter-m
 
 export class DataProviderNotFoundException extends DataProviderAdapterMongoBaseException {
   static CODE = ErrorCode.DATA_PROVIDER_NOT_FOUND;
-  static DOCUMENTATION =
+  public documentation =
     'Aucun fournisseur de données trouvé avec ce client_id.';
   static ERROR = 'invalid_client';
   static ERROR_DESCRIPTION = 'Client authentication failed.';

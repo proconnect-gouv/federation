@@ -3,7 +3,7 @@ import { FcException } from '../../../exceptions';
 export const anyFunction = () => false;
 
 export class ImportFixture2 extends FcException {
-  static DOCUMENTATION = 'documentation';
+  public documentation = 'documentation';
   static SCOPE = 2;
   static CODE = 2;
   static ERROR = 'error';

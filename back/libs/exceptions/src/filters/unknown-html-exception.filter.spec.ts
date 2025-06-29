@@ -4,9 +4,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { BaseException } from '../exceptions';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
@@ -17,6 +19,7 @@ describe('UnknownHtmlExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
+  const sessionMock = getSessionServiceMock();
   const eventBusMock = {
     publish: jest.fn(),
   };
@@ -37,12 +40,15 @@ describe('UnknownHtmlExceptionFilter', () => {
       providers: [
         UnknownHtmlExceptionFilter,
         ConfigService,
+        SessionService,
         LoggerService,
         EventBus,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(EventBus)

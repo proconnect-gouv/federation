@@ -3,7 +3,7 @@ import { JwtBaseException } from './jwt-base.exception';
 
 export class FetchJwksFailedException extends JwtBaseException {
   static CODE = ErrorCode.FETCH_JWKS_FAILED;
-  static DOCUMENTATION =
+  public documentation =
     'Impossible pour le jwt service de joindre le JWKS endpoint';
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION = 'failed to fetch JWKS';

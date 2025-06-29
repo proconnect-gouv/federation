@@ -3,7 +3,7 @@ import { OidcClientBaseException } from './oidc-client-base.exception';
 
 export class OidcClientIdpNotFoundException extends OidcClientBaseException {
   static CODE = ErrorCode.MISSING_PROVIDER;
-  static DOCUMENTATION =
+  public documentation =
     "Le FI n'existe pas, si le problème persiste, contacter le support N3";
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =

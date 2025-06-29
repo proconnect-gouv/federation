@@ -17,6 +17,7 @@ import { generateErrorId, getClass } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
+import { SessionService } from '@fc/session';
 
 import { OidcProviderBaseRedirectException } from '../exceptions';
 import { OidcProviderService } from '../oidc-provider.service';
@@ -32,12 +33,13 @@ export class OidcProviderRedirectExceptionFilter
   constructor(
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
+    protected readonly session: SessionService,
     protected readonly eventBus: EventBus,
     private readonly oidcProvider: OidcProviderService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: IServiceProviderAdapter,
   ) {
-    super(config, logger, eventBus);
+    super(config, session, logger, eventBus);
   }
 
   async catch(

@@ -5,7 +5,7 @@ import { CoreBaseException } from './core-base.exception';
 
 export class CoreMissingContextException extends CoreBaseException {
   static CODE = ErrorCode.MISSING_CONTEXT;
-  static DOCUMENTATION =
+  public documentation =
     "La requête HTTP n'est pas valide, FranceConnect+ n'a pas pu la traiter car il manque des élements obligatoires ( headers, ... ). Cette erreur ne devrait pas se produire, contacter le service technique";
   static ERROR = 'invalid_request';
   static ERROR_DESCRIPTION = 'mandatory parameter missing';

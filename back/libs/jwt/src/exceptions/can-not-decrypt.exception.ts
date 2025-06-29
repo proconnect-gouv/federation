@@ -2,7 +2,7 @@ import { ErrorCode } from '../enum';
 import { JwtBaseException } from './jwt-base.exception';
 
 export class CanNotDecryptException extends JwtBaseException {
-  static DOCUMENTATION = 'Impossible de déchiffrer le JWT';
+  public documentation = 'Impossible de déchiffrer le JWT';
   static CODE = ErrorCode.CAN_NOT_DECRYPT;
   static UI = 'Jwt.exceptions.canNotDecrypt';
 

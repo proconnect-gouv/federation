@@ -5,7 +5,7 @@ import { CoreBaseException } from './core-base.exception';
 
 export class CoreIdpBlockedForAccountException extends CoreBaseException {
   static CODE = ErrorCode.CORE_IDP_BLOCKED_FOR_ACCOUNT;
-  static DOCUMENTATION =
+  public documentation =
     "Le fournisseur d'identité a été bloqué par l'utilisateur.";
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';

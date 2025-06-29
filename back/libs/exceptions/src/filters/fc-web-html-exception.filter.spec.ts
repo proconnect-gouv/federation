@@ -8,9 +8,11 @@ import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { FcException } from '../exceptions';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
@@ -26,6 +28,7 @@ describe('FcWebHtmlExceptionFilter', () => {
   const generateErrorIdMock = jest.mocked(generateErrorId);
 
   const configMock = getConfigMock();
+  const sessionMock = getSessionServiceMock();
   const loggerMock = getLoggerMock();
   const eventBusMock = {
     publish: jest.fn(),
@@ -68,12 +71,15 @@ describe('FcWebHtmlExceptionFilter', () => {
       providers: [
         FcWebHtmlExceptionFilter,
         ConfigService,
+        SessionService,
         LoggerService,
         EventBus,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(EventBus)

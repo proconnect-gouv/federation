@@ -14,7 +14,7 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
 
   static CODE = ErrorCode.UNAUTHORIZED_EMAIL;
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
-  static DOCUMENTATION = '';
+  public documentation = '';
 
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION =

@@ -102,8 +102,9 @@ export default class Runner {
       ERROR_DESCRIPTION,
       UI,
       LOG_LEVEL,
-      DOCUMENTATION,
     } = Exception;
+
+    const { documentation } = new Exception();
 
     const errorCode = getCode(SCOPE, CODE, '');
 
@@ -115,7 +116,7 @@ export default class Runner {
       HTTP_STATUS_CODE,
       UI,
       translated: messageDictionary[UI],
-      DOCUMENTATION,
+      documentation,
       LOG_LEVEL,
       path,
       ERROR,

@@ -311,7 +311,7 @@ describe('Runner', () => {
       // Then
       expect(result).toStrictEqual([
         {
-          DOCUMENTATION: 'documentation',
+          documentation: 'documentation',
           SCOPE: 1,
           CODE: 2,
           HTTP_STATUS_CODE: 500,
@@ -325,7 +325,7 @@ describe('Runner', () => {
           translated: undefined,
         },
         {
-          DOCUMENTATION: 'documentation',
+          documentation: 'documentation',
           SCOPE: 2,
           CODE: 2,
           HTTP_STATUS_CODE: 500,

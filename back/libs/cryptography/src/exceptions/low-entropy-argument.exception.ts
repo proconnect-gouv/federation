@@ -3,7 +3,7 @@ import { CryptographyBaseException } from './cryptography-base.exception';
 
 export class LowEntropyArgumentException extends CryptographyBaseException {
   static CODE = ErrorCode.LOW_ENTROPY;
-  static DOCUMENTATION =
+  public documentation =
     "Problème de configuration dans la librairie de cryptographie (Une fonction de génération d'aléa requiert une longueur minimale pour éviter des collisions)";
   static UI = 'Cryptography.exceptions.lowEntropyArgument';
 

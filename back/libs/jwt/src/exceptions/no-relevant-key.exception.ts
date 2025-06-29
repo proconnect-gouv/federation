@@ -5,7 +5,7 @@ import { JwtBaseException } from './jwt-base.exception';
 
 export class NoRelevantKeyException extends JwtBaseException {
   static CODE = ErrorCode.NO_RELEVANT_KEY;
-  static DOCUMENTATION = 'Aucune clé pertinente trouvée';
+  public documentation = 'Aucune clé pertinente trouvée';
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';

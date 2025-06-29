@@ -3,7 +3,7 @@ import { ChecktokenBaseException } from './checktoken-base.exception';
 
 export class JwksFetchFailedException extends ChecktokenBaseException {
   static CODE = ErrorCode.JWKS_FETCH_FAILED_EXCEPTION;
-  static DOCUMENTATION =
+  public documentation =
     'Impossible pour le fournisseur de données de joindre le JWKS du core';
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =

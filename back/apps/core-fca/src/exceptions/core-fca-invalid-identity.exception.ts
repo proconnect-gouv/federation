@@ -12,7 +12,7 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
     super();
   }
 
-  static DOCUMENTATION =
+  public documentation =
     'Nous ne pouvons pas vérifier votre identité auprès de la source officielle : certains éléments ont un format invalide. Nous vous conseillons de contacter le service informatique de votre organisation ou ministère.';
   static CODE = ErrorCode.INVALID_IDENTITY;
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
@@ -20,7 +20,7 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
 
-  public description = CoreFcaInvalidIdentityException.DOCUMENTATION;
+  public description = this.documentation;
   public displayContact = true;
   public contactMessage = 'Signaler l’erreur au service informatique concerné.';
   public contactHref = `mailto:${this.contact}?subject=Mise à jour de mon profil pour compatibilité ProConnect&body=${encodeURIComponent(

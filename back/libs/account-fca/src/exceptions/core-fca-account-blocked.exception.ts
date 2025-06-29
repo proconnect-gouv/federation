@@ -4,7 +4,7 @@ import { ErrorCode } from '@fc/core-fca/enums';
 import { CoreFcaBaseException } from '@fc/core-fca/exceptions/core-fca-base.exception';
 
 export class CoreFcaAgentAccountBlockedException extends CoreFcaBaseException {
-  static DOCUMENTATION = "Le compte de l’agent.e n'est plus actif.";
+  public documentation = "Le compte de l’agent.e n'est plus actif.";
   static CODE = ErrorCode.BLOCKED_ACCOUNT;
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
 

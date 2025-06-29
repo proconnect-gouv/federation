@@ -5,7 +5,7 @@ import { BridgeHttpProxyBaseException } from './bridge-http-proxy-base.exception
 
 export class BridgeHttpProxyCsmrException extends BridgeHttpProxyBaseException {
   static CODE = ErrorCode.CSMR_ERROR;
-  static DOCUMENTATION =
+  public documentation =
     'Une erreur technique est survenue dans le consumer au moment de la récupération des informations à travers le broker rabbitmq';
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
@@ -16,11 +16,11 @@ export class BridgeHttpProxyCsmrException extends BridgeHttpProxyBaseException {
   public name: string;
   public reason: string;
 
-  constructor(error: BridgeError) {
-    super();
+  from(error: BridgeError) {
     const { code: reference, name, reason } = error;
     this.reference = reference;
     this.name = name;
     this.reason = reason;
+    return this;
   }
 }

@@ -9,9 +9,11 @@ import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { OidcProviderBaseRedirectException } from '../exceptions';
 import { OidcProviderService } from '../oidc-provider.service';
@@ -29,6 +31,7 @@ describe('OidcProviderRedirectExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
+  const sessionMock = getSessionServiceMock();
   const eventBusMock = {
     publish: jest.fn(),
   };
@@ -75,6 +78,7 @@ describe('OidcProviderRedirectExceptionFilter', () => {
       providers: [
         OidcProviderRedirectExceptionFilter,
         ConfigService,
+        SessionService,
         LoggerService,
         EventBus,
         OidcProviderService,
@@ -86,6 +90,8 @@ describe('OidcProviderRedirectExceptionFilter', () => {
     })
       .overrideProvider(ConfigService)
       .useValue(configMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(EventBus)

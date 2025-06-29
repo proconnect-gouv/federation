@@ -6,10 +6,12 @@ import { ConfigService } from '@fc/config';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { HttpExceptionFilter } from './http-exception.filter';
 
@@ -25,6 +27,7 @@ describe('HttpExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
+  const sessionMock = getSessionServiceMock();
   const eventBusMock = {
     publish: jest.fn(),
   };
@@ -61,10 +64,18 @@ describe('HttpExceptionFilter', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [HttpExceptionFilter, ConfigService, LoggerService, EventBus],
+      providers: [
+        HttpExceptionFilter,
+        ConfigService,
+        SessionService,
+        LoggerService,
+        EventBus,
+      ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(EventBus)
