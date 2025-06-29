@@ -36,7 +36,7 @@ describe('FcBaseExceptionFilter', () => {
   const codeMock = 1337;
 
   class ExceptionMock extends BaseException {
-    static SCOPE = scopeMock;
+    public scope = scopeMock;
     public code = codeMock;
     static ERROR = 'ERROR';
     static ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';

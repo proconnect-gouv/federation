@@ -7,6 +7,6 @@ export class CoreAcrNotSatisfiedException extends OidcProviderBaseRedirectExcept
   public documentation = `Le niveau ACR demandé par le fournisseur de service ne peut pas être satisfait.`;
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'requested ACRs could not be satisfied';
-  static SCOPE = 3;
+  public scope = 3;
   static UI = 'Core.exceptions.coreAcrNotSatisfied';
 }

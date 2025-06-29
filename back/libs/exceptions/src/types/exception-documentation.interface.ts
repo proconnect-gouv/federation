@@ -1,6 +1,6 @@
 export interface ExceptionDocumentationInterface {
   code: string | number;
-  SCOPE: number;
+  scope: number;
   errorCode: string;
   ERROR: string;
   ERROR_DESCRIPTION: string;

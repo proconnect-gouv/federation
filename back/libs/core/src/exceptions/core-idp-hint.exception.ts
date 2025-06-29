@@ -7,6 +7,6 @@ export class CoreIdpHintException extends OidcProviderBaseRedirectException {
   public documentation = `Une valeur (id de FI) invalide a été passée dans idp_hint. L'identifiant doit impérativement être l'identifiant d'un FI existant, contacter support N3`;
   static ERROR = 'idp_hint_not_found';
   static ERROR_DESCRIPTION = 'provided idp_hint could not be found';
-  static SCOPE = 3;
+  public scope = 3;
   static UI = 'Core.exceptions.coreIdpHint';
 }

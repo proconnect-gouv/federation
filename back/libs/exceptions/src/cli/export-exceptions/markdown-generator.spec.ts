@@ -19,15 +19,15 @@ describe('MarkdownGenerator', () => {
   describe('MarkdownGenerator.sortByCode', () => {
     it('should order errors by scope then by code properties', () => {
       const errs = [
-        { code: 3, SCOPE: 2 },
-        { code: 2, SCOPE: 1 },
-        { code: 1, SCOPE: 1 },
+        { code: 3, scope: 2 },
+        { code: 2, scope: 1 },
+        { code: 1, scope: 1 },
       ] as ExceptionDocumentationInterface[];
       const result = errs.sort(MarkdownGenerator.sortByCode);
       const expected = [
-        { code: 1, SCOPE: 1 },
-        { code: 2, SCOPE: 1 },
-        { code: 3, SCOPE: 2 },
+        { code: 1, scope: 1 },
+        { code: 2, scope: 1 },
+        { code: 3, scope: 2 },
       ];
       expect(result).toStrictEqual(expected);
     });
@@ -36,17 +36,17 @@ describe('MarkdownGenerator', () => {
   describe('MarkdownGenerator.groupExceptionsByScope', () => {
     it('should group exceptions with the same scope property', () => {
       const errs = [
-        { SCOPE: 3, UI: '3.1' },
-        { SCOPE: 3, UI: '3.2' },
-        { SCOPE: 2, UI: '2.1' },
+        { scope: 3, UI: '3.1' },
+        { scope: 3, UI: '3.2' },
+        { scope: 2, UI: '2.1' },
       ];
       const result = errs.reduce(MarkdownGenerator.groupExceptionsByScope, {});
       const expected = {
         3: [
-          { SCOPE: 3, UI: '3.1' },
-          { SCOPE: 3, UI: '3.2' },
+          { scope: 3, UI: '3.1' },
+          { scope: 3, UI: '3.2' },
         ],
-        2: [{ SCOPE: 2, UI: '2.1' }],
+        2: [{ scope: 2, UI: '2.1' }],
       };
       expect(result).toStrictEqual(expected);
     });
@@ -57,7 +57,7 @@ describe('MarkdownGenerator', () => {
       const errors = [
         {
           errorCode: 'Y0101',
-          SCOPE: 1,
+          scope: 1,
           code: 1,
           UI: 'any',
           description: 'any',
@@ -68,7 +68,7 @@ describe('MarkdownGenerator', () => {
         },
         {
           errorCode: 'Y0201',
-          SCOPE: 2,
+          scope: 2,
           code: 1,
           UI: 'any',
           description: 'any',
@@ -85,7 +85,7 @@ describe('MarkdownGenerator', () => {
         [
           {
             errorCode: 'Y0101',
-            SCOPE: 1,
+            scope: 1,
             code: 1,
             UI: 'any',
             description: 'any',
@@ -98,7 +98,7 @@ describe('MarkdownGenerator', () => {
         [
           {
             errorCode: 'Y0201',
-            SCOPE: 2,
+            scope: 2,
             code: 1,
             UI: 'any',
             description: 'any',

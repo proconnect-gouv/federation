@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 
 export class BaseException extends Error {
   static UI: string;
-  static SCOPE: number;
   static LOG_LEVEL: number;
   static HTTP_STATUS_CODE: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -12,6 +11,7 @@ export class BaseException extends Error {
   // Formerly static fields
   public documentation: string;
   public code: number | string;
+  public scope: number;
 
   public originalError?: Error;
   public log: unknown;

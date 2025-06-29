@@ -204,27 +204,11 @@ describe('Runner', () => {
       expect(result).toStrictEqual(expected);
     });
 
-    it('should return null if Exception has invalid error and/or error_description', () => {
-      // Given
-      class MockException extends FcException {
-        public code = 1;
-        public scope = 1;
-      }
-      const expected = null;
-      // When
-      const result = Runner.inflateException({
-        path,
-        Exception: MockException,
-      });
-      // Then
-      expect(result).toStrictEqual(expected);
-    });
-
     it('should return the path of the error, the class of Error if Exception has valid SCOPE and CODE', () => {
       // When
       class MockException extends FcException {
         public code = 1;
-        static SCOPE = 1;
+        public scope = 1;
         static ERROR = 'error';
         static ERROR_DESCRIPTION = 'error description';
         static HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -244,7 +228,7 @@ describe('Runner', () => {
       // When
       class MockException extends FcException {
         public code = 0;
-        static SCOPE = 0;
+        public scope = 0;
         static ERROR = 'error';
         static ERROR_DESCRIPTION = 'error description';
         static HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -312,7 +296,7 @@ describe('Runner', () => {
       expect(result).toStrictEqual([
         {
           documentation: 'documentation',
-          SCOPE: 1,
+          scope: 1,
           code: 2,
           HTTP_STATUS_CODE: 500,
           LOG_LEVEL: 20,
@@ -326,7 +310,7 @@ describe('Runner', () => {
         },
         {
           documentation: 'documentation',
-          SCOPE: 2,
+          scope: 2,
           code: 2,
           HTTP_STATUS_CODE: 500,
           LOG_LEVEL: 20,
@@ -370,7 +354,7 @@ describe('Runner', () => {
   describe('run', () => {
     // Given
     const getExceptionsFilesPathResult = [];
-    const loadExceptionsResult = [{ SCOPE: 2 }, { SCOPE: 4 }, { SCOPE: 6 }];
+    const loadExceptionsResult = [{ scope: 2 }, { scope: 4 }, { scope: 6 }];
     const markdownGenerateResult = [];
     const renderFileResult = '';
     const generatorSpy = jest.spyOn(MarkdownGenerator, 'generate');
@@ -403,8 +387,8 @@ describe('Runner', () => {
       // Then
       expect(generatorSpy).toHaveBeenCalledTimes(1);
       expect(generatorSpy).toHaveBeenNthCalledWith(1, [
-        { SCOPE: 2 },
-        { SCOPE: 6 },
+        { scope: 2 },
+        { scope: 6 },
       ]);
     });
 

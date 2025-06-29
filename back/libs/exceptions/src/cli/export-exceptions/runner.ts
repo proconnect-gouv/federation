@@ -68,11 +68,11 @@ export default class Runner {
     path,
     Exception,
   }: PathAndException): PathAndInstantiatedException | null {
-    const { SCOPE, HTTP_STATUS_CODE } = Exception;
-    const { code } = new Exception();
+    const { HTTP_STATUS_CODE } = Exception;
+    const { scope, code } = new Exception();
 
     // Retrieve static error and error description props
-    const hasValidScope = Runner.hasValidNumber(SCOPE);
+    const hasValidScope = Runner.hasValidNumber(scope);
     const hasValidCode = typeof code === 'number' || typeof code === 'string';
     const hasValidHttpStatusCode =
       Runner.hasValidHttpStatusCode(HTTP_STATUS_CODE);
@@ -95,15 +95,15 @@ export default class Runner {
     path,
     Exception,
   }: PathAndInstantiatedException): ExceptionDocumentationInterface {
-    const { SCOPE, HTTP_STATUS_CODE, ERROR, ERROR_DESCRIPTION, UI, LOG_LEVEL } =
+    const { HTTP_STATUS_CODE, ERROR, ERROR_DESCRIPTION, UI, LOG_LEVEL } =
       Exception;
 
-    const { code, documentation } = new Exception();
+    const { scope, code, documentation } = new Exception();
 
-    const errorCode = getCode(SCOPE, code, '');
+    const errorCode = getCode(scope, code, '');
 
     const data = {
-      SCOPE,
+      scope,
       code,
       errorCode,
       exception: Exception.name,
@@ -159,7 +159,7 @@ export default class Runner {
     const loaded = await Runner.loadExceptions(paths);
 
     const mainList = loaded.filter(
-      (item) => item.SCOPE !== OIDC_PROVIDER_RUNTIME_SCOPE,
+      (item) => item.scope !== OIDC_PROVIDER_RUNTIME_SCOPE,
     );
 
     const mainMarkdown = MarkdownGenerator.generate(mainList);
