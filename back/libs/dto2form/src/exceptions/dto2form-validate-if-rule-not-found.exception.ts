@@ -8,5 +8,5 @@ export class Dto2FormValidateIfRuleNotFoundException extends Dto2FormBaseExcepti
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Dto2form.exceptions.dto2formValidateIfRuleNotFound';
+  public ui = 'Dto2form.exceptions.dto2formValidateIfRuleNotFound';
 }

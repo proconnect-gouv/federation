@@ -4,7 +4,7 @@ export interface ExceptionDocumentationInterface {
   errorCode: string;
   ERROR: string;
   ERROR_DESCRIPTION: string;
-  UI: string;
+  ui: string;
   documentation: string;
   exception: string;
   http_status_code: number;

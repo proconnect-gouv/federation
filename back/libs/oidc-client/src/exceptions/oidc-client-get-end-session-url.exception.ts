@@ -8,5 +8,5 @@ export class OidcClientGetEndSessionUrlException extends OidcClientBaseException
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'OidcClient.exceptions.oidcClientGetEndSessionUrl';
+  public ui = 'OidcClient.exceptions.oidcClientGetEndSessionUrl';
 }

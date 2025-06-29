@@ -8,5 +8,5 @@ export class ChecktokenInvalidAlgorithmException extends ChecktokenBaseException
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'DataProviderAdapterCore.exceptions.checktokenInvalidAlgorithm';
+  public ui = 'DataProviderAdapterCore.exceptions.checktokenInvalidAlgorithm';
 }

@@ -8,6 +8,6 @@ export class ImportFixture extends FcException {
   public code = 2;
   static ERROR = 'error';
   static ERROR_DESCRIPTION = 'error description';
-  static UI = 'ui';
+  public ui = 'ui';
   readonly message = 'message';
 }

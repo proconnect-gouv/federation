@@ -12,7 +12,7 @@ import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oid
 
 import { ExceptionsConfig } from '../dto';
 import { BaseException } from '../exceptions/base.exception';
-import { getClass, getCode, getStackTraceArray } from '../helpers';
+import { getCode, getStackTraceArray } from '../helpers';
 
 @Catch()
 export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
@@ -54,7 +54,9 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     }
     // Yes this checks seems redundant, it's a belt and suspenders situation
     if (exception instanceof BaseException) {
-      return exception.status || exception.statusCode || exception.http_status_code;
+      return (
+        exception.status || exception.statusCode || exception.http_status_code
+      );
     } else return defaultStatus;
   }
 
@@ -63,12 +65,10 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     id: string,
     exception: BaseException,
   ): void {
-    const exceptionConstructor = getClass(exception);
-
     const exceptionObject = {
       code,
       id,
-      msg: exceptionConstructor.UI,
+      msg: exception.ui,
       originalError: exception.originalError,
       reason: exception.log,
       stackTrace: getStackTraceArray(exception),

@@ -7,10 +7,10 @@ import {
 
 import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 
+import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { ExceptionCaughtEvent } from '../events';
 import { generateErrorId } from '../helpers';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
-import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 
 @Catch(HttpException)
 export class HttpExceptionFilter

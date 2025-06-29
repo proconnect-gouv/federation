@@ -7,5 +7,5 @@ export class CanNotEncryptException extends JwtBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Jwt.exceptions.canNotEncrypt';
+  public ui = 'Jwt.exceptions.canNotEncrypt';
 }

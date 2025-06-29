@@ -10,7 +10,7 @@ export class CoreMissingContextException extends CoreBaseException {
   static ERROR = 'invalid_request';
   static ERROR_DESCRIPTION = 'mandatory parameter missing';
   public http_status_code = HttpStatus.BAD_REQUEST;
-  static UI = 'Core.exceptions.coreMissingContext';
+  public ui = 'Core.exceptions.coreMissingContext';
 
   constructor(param: string) {
     super();

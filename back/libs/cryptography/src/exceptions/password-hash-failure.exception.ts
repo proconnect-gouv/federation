@@ -8,5 +8,5 @@ export class PasswordHashFailure extends CryptographyBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Cryptography.exceptions.passwordHashFailure';
+  public ui = 'Cryptography.exceptions.passwordHashFailure';
 }

@@ -6,5 +6,5 @@ export class InvalidSignatureException extends JwtBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Jwt.exceptions.invalidSignature';
+  public ui = 'Jwt.exceptions.invalidSignature';
 }

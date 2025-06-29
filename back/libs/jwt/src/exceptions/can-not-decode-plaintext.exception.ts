@@ -7,5 +7,5 @@ export class CanNotDecodePlaintextException extends JwtBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Jwt.exceptions.canNotDecodePlaintext';
+  public ui = 'Jwt.exceptions.canNotDecodePlaintext';
 }

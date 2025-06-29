@@ -10,5 +10,5 @@ export class AccountBlockedException extends AccountBaseException {
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
   public http_status_code = HttpStatus.FORBIDDEN;
-  static UI = 'Account.exceptions.accountBlocked';
+  public ui = 'Account.exceptions.accountBlocked';
 }

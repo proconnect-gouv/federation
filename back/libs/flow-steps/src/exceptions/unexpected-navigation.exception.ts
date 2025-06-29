@@ -10,5 +10,5 @@ export class UnexpectedNavigationException extends FlowStepsBaseException {
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
   public http_status_code = HttpStatus.BAD_REQUEST;
-  static UI = 'FlowSteps.exceptions.unexpectedNavigation';
+  public ui = 'FlowSteps.exceptions.unexpectedNavigation';
 }

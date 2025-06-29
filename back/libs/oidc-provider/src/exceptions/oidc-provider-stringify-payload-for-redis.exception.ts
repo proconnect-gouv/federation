@@ -8,5 +8,5 @@ export class OidcProviderStringifyPayloadForRedisException extends OidcProviderB
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'OidcProvider.exceptions.oidcProviderStringifyPayloadForRedis';
+  public ui = 'OidcProvider.exceptions.oidcProviderStringifyPayloadForRedis';
 }

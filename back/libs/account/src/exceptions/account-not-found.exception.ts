@@ -7,5 +7,5 @@ export class AccountNotFoundException extends AccountBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Account.exceptions.accountNotFound';
+  public ui = 'Account.exceptions.accountNotFound';
 }

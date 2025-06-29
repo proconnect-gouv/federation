@@ -12,5 +12,5 @@ export class Dto2FormInvalidMetadataException extends Dto2FormBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Dto2form.exceptions.dto2FormInvalidMetadata';
+  public ui = 'Dto2form.exceptions.dto2FormInvalidMetadata';
 }

@@ -8,5 +8,5 @@ export class AsyncLocalStorageNotFoundException extends AsyncLocalStorageBaseExc
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'AsyncLocalStorage.exceptions.asyncLocalStorageNotFound';
+  public ui = 'AsyncLocalStorage.exceptions.asyncLocalStorageNotFound';
 }

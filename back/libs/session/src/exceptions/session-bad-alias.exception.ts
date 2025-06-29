@@ -7,5 +7,5 @@ export class SessionBadAliasException extends SessionBaseException {
     "L'identifiant de session n'est pas valide, il n'est pas possible de trouver une session correspondante. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
-  static UI = 'Session.exceptions.sessionBadAlias';
+  public ui = 'Session.exceptions.sessionBadAlias';
 }

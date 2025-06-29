@@ -8,5 +8,5 @@ export class ApacheIgniteInvalidSocketException extends ApacheIgniteBaseExceptio
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'ApacheIgnite.exceptions.invalidSocket';
+  public ui = 'ApacheIgnite.exceptions.invalidSocket';
 }

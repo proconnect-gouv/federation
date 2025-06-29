@@ -8,5 +8,5 @@ export class CoreLoginRequiredException extends OidcProviderBaseRedirectExceptio
   static ERROR = 'login_required';
   static ERROR_DESCRIPTION = 'end-user authentication is required';
   public scope = 3;
-  static UI = 'Core.exceptions.coreLoginRequired';
+  public ui = 'Core.exceptions.coreLoginRequired';
 }

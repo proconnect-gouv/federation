@@ -26,7 +26,7 @@ export class DataProviderExceptionFilter
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
-    const message = exceptionConstructor.UI;
+    const message = exception.ui;
 
     this.logException(code, id, exception);
     this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));

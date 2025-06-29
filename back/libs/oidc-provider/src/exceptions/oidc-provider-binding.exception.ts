@@ -8,5 +8,5 @@ export class OidcProviderBindingException extends OidcProviderBaseRenderedExcept
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'OidcProvider.exceptions.oidcProviderBinding';
+  public ui = 'OidcProvider.exceptions.oidcProviderBinding';
 }

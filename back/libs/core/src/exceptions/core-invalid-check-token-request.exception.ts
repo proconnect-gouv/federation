@@ -11,5 +11,5 @@ export class InvalidChecktokenRequestException extends CoreBaseException {
   static ERROR = 'invalid_request';
   static ERROR_DESCRIPTION = 'Required parameter missing or invalid.';
   public http_status_code = HttpStatus.BAD_REQUEST;
-  static UI = 'Core.exceptions.coreInvalidCheckTokenRequest';
+  public ui = 'Core.exceptions.coreInvalidCheckTokenRequest';
 }

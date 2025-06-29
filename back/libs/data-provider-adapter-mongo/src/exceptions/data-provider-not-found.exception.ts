@@ -10,5 +10,5 @@ export class DataProviderNotFoundException extends DataProviderAdapterMongoBaseE
   static ERROR = 'invalid_client';
   static ERROR_DESCRIPTION = 'Client authentication failed.';
   public http_status_code = HttpStatus.UNAUTHORIZED;
-  static UI = 'DataProviderAdapterMongo.exceptions.dataProviderNotFound';
+  public ui = 'DataProviderAdapterMongo.exceptions.dataProviderNotFound';
 }

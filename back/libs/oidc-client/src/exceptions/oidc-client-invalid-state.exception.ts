@@ -10,5 +10,5 @@ export class OidcClientInvalidStateException extends OidcClientBaseException {
   static ERROR = 'invalid_request';
   static ERROR_DESCRIPTION = 'invalid state parameter';
   public http_status_code = HttpStatus.FORBIDDEN;
-  static UI = 'OidcClient.exceptions.oidcClientInvalidState';
+  public ui = 'OidcClient.exceptions.oidcClientInvalidState';
 }

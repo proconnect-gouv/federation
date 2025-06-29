@@ -11,6 +11,6 @@ export class CryptographyInvalidPayloadFormatException extends CryptographyBaseE
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
   public http_status_code = HttpStatus.BAD_REQUEST;
-  static UI =
+  public ui =
     'OverrideOidcProvider.exceptions.cryptographyInvalidPayloadFormat';
 }

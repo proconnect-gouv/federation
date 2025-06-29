@@ -11,5 +11,5 @@ export class TrackingMissingNetworkContextException extends TrackingBaseExceptio
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
   public http_status_code = HttpStatus.BAD_REQUEST;
-  static UI = 'TrackingContext.exceptions.trackingMissingNetworkContext';
+  public ui = 'TrackingContext.exceptions.trackingMissingNetworkContext';
 }

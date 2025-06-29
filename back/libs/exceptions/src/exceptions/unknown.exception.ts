@@ -5,5 +5,5 @@ export class UnknownException extends BaseException {
     'Erreur inconnue du système, ne devrait pas se produire, prévenir SN3.';
   public scope = 0;
   public code = 0;
-  static UI = 'exceptions.default_message';
+  public ui = 'exceptions.default_message';
 }

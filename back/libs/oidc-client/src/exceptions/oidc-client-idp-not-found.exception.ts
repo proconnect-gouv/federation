@@ -8,5 +8,5 @@ export class OidcClientIdpNotFoundException extends OidcClientBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'OidcClient.exceptions.oidcClientIdpNotFound';
+  public ui = 'OidcClient.exceptions.oidcClientIdpNotFound';
 }

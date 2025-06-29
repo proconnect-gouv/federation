@@ -10,5 +10,5 @@ export class CoreMissingAtHashException extends CoreBaseException {
   static ERROR = 'invalid_request';
   static ERROR_DESCRIPTION = 'Core.exceptions.coreMissingAtHash';
   public http_status_code = HttpStatus.BAD_REQUEST;
-  static UI = 'Core.exceptions.coreMissingAtHash';
+  public ui = 'Core.exceptions.coreMissingAtHash';
 }

@@ -8,5 +8,5 @@ export class SessionBadStringifyException extends SessionBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Session.exceptions.sessionBadStringify';
+  public ui = 'Session.exceptions.sessionBadStringify';
 }

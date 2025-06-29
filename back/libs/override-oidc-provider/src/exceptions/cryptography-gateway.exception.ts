@@ -11,5 +11,5 @@ export class CryptographyGatewayException extends CryptographyBaseException {
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
   public http_status_code = HttpStatus.BAD_GATEWAY;
-  static UI = 'OverrideOidcProvider.exceptions.cryptographyGateway';
+  public ui = 'OverrideOidcProvider.exceptions.cryptographyGateway';
 }

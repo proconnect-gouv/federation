@@ -11,5 +11,5 @@ export class OidcClientTokenResultFailedException extends OidcClientBaseExceptio
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
   public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
-  static UI = 'OidcClient.exceptions.oidcClientTokenResultFailed';
+  public ui = 'OidcClient.exceptions.oidcClientTokenResultFailed';
 }

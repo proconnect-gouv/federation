@@ -7,5 +7,5 @@ export class SessionBadFormatException extends SessionBaseException {
     "Les éléments présents dans la session de l'utilisateur ne sont pas valides. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
-  static UI = 'Session.exceptions.sessionBadFormat';
+  public ui = 'Session.exceptions.sessionBadFormat';
 }

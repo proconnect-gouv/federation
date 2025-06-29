@@ -13,7 +13,7 @@ import { LoggerService } from '@fc/logger';
 import { ExceptionCaughtEvent } from '../events';
 import { FcException } from '../exceptions';
 import { BaseException } from '../exceptions/base.exception';
-import { generateErrorId, getClass } from '../helpers';
+import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
 @Catch(FcException)
@@ -34,11 +34,10 @@ export class FcWebJsonExceptionFilter
     const ctx = host.switchToHttp();
     const res = ctx.getResponse();
     const req = ctx.getRequest();
-    const exceptionConstructor = getClass(exception);
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
-    const message = exceptionConstructor.UI;
+    const message = exception.ui;
 
     // @todo: weird Naming / structure
     const errorMessage: ApiErrorMessage = { code, id, message };

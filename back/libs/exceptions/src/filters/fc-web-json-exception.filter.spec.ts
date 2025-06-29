@@ -39,7 +39,6 @@ describe('FcWebJsonExceptionFilter', () => {
   class ExceptionMock extends FcException {
     ERROR = 'ERROR';
     ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
-    UI: 'some error message';
   }
 
   let exceptionMock: ExceptionMock;
@@ -58,7 +57,7 @@ describe('FcWebJsonExceptionFilter', () => {
     error: {
       code: codeMock,
       id: idMock,
-      message: ExceptionMock.UI,
+      message: 'some error message',
     },
     dictionary: {},
   };

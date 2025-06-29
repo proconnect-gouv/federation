@@ -8,5 +8,5 @@ export class BridgeHttpProxyRabbitmqException extends BridgeHttpProxyBaseExcepti
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'BridgeHttpProxy.exceptions.bridgeHttpProxyRabbitmq';
+  public ui = 'BridgeHttpProxy.exceptions.bridgeHttpProxyRabbitmq';
 }

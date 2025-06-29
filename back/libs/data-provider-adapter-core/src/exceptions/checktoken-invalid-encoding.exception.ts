@@ -8,5 +8,5 @@ export class ChecktokenInvalidEncodingException extends ChecktokenBaseException 
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'DataProviderAdapterCore.exceptions.checktokenInvalidEncoding';
+  public ui = 'DataProviderAdapterCore.exceptions.checktokenInvalidEncoding';
 }

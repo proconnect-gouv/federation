@@ -10,7 +10,7 @@ export class MultipleRelevantKeysException extends JwtBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Jwt.exceptions.multipleRelevantKeys';
+  public ui = 'Jwt.exceptions.multipleRelevantKeys';
 
   constructor(alg: KekAlg, use: Use, kid: string) {
     super();

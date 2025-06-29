@@ -8,5 +8,5 @@ export class CsrfBadTokenException extends CsrfBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Csrf.exceptions.csrfBadToken';
+  public ui = 'Csrf.exceptions.csrfBadToken';
 }

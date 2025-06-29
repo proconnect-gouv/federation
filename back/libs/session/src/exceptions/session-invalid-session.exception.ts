@@ -10,5 +10,5 @@ export class SessionInvalidSessionException extends SessionBaseException {
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
   public http_status_code = HttpStatus.CONFLICT;
-  static UI = 'Session.exceptions.sessionInvalidSession';
+  public ui = 'Session.exceptions.sessionInvalidSession';
 }

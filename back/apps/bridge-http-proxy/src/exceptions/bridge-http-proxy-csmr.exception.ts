@@ -10,7 +10,7 @@ export class BridgeHttpProxyCsmrException extends BridgeHttpProxyBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'BridgeHttpProxy.exceptions.bridgeHttpProxyCsmr';
+  public ui = 'BridgeHttpProxy.exceptions.bridgeHttpProxyCsmr';
 
   public reference: number;
   public name: string;

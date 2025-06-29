@@ -10,6 +10,6 @@ export class DataProviderInvalidCredentialsException extends DataProviderAdapter
   static ERROR = 'invalid_client';
   static ERROR_DESCRIPTION = 'Client authentication failed.';
   public http_status_code = HttpStatus.UNAUTHORIZED;
-  static UI =
+  public ui =
     'DataProviderAdapterMongo.exceptions.dataProviderInvalidCredentials';
 }

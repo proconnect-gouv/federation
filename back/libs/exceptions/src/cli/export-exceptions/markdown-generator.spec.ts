@@ -36,17 +36,17 @@ describe('MarkdownGenerator', () => {
   describe('MarkdownGenerator.groupExceptionsByScope', () => {
     it('should group exceptions with the same scope property', () => {
       const errs = [
-        { scope: 3, UI: '3.1' },
-        { scope: 3, UI: '3.2' },
-        { scope: 2, UI: '2.1' },
+        { scope: 3, ui: '3.1' },
+        { scope: 3, ui: '3.2' },
+        { scope: 2, ui: '2.1' },
       ];
       const result = errs.reduce(MarkdownGenerator.groupExceptionsByScope, {});
       const expected = {
         3: [
-          { scope: 3, UI: '3.1' },
-          { scope: 3, UI: '3.2' },
+          { scope: 3, ui: '3.1' },
+          { scope: 3, ui: '3.2' },
         ],
-        2: [{ scope: 2, UI: '2.1' }],
+        2: [{ scope: 2, ui: '2.1' }],
       };
       expect(result).toStrictEqual(expected);
     });
@@ -59,7 +59,7 @@ describe('MarkdownGenerator', () => {
           errorCode: 'Y0101',
           scope: 1,
           code: 1,
-          UI: 'any',
+          ui: 'any',
           description: 'any',
           trackable: false,
           loggable: false,
@@ -70,7 +70,7 @@ describe('MarkdownGenerator', () => {
           errorCode: 'Y0201',
           scope: 2,
           code: 1,
-          UI: 'any',
+          ui: 'any',
           description: 'any',
           trackable: false,
           loggable: false,
@@ -87,7 +87,7 @@ describe('MarkdownGenerator', () => {
             errorCode: 'Y0101',
             scope: 1,
             code: 1,
-            UI: 'any',
+            ui: 'any',
             description: 'any',
             trackable: false,
             loggable: false,
@@ -100,7 +100,7 @@ describe('MarkdownGenerator', () => {
             errorCode: 'Y0201',
             scope: 2,
             code: 1,
-            UI: 'any',
+            ui: 'any',
             description: 'any',
             trackable: false,
             loggable: false,

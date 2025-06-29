@@ -8,5 +8,5 @@ export class SessionStorageException extends SessionBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Session.exceptions.sessionStorage';
+  public ui = 'Session.exceptions.sessionStorage';
 }

@@ -8,5 +8,5 @@ export class CoreIdpHintException extends OidcProviderBaseRedirectException {
   static ERROR = 'idp_hint_not_found';
   static ERROR_DESCRIPTION = 'provided idp_hint could not be found';
   public scope = 3;
-  static UI = 'Core.exceptions.coreIdpHint';
+  public ui = 'Core.exceptions.coreIdpHint';
 }

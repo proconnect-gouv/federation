@@ -10,5 +10,5 @@ export class SessionBadCookieException extends SessionBaseException {
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
   public http_status_code = HttpStatus.UNAUTHORIZED;
-  static UI = 'Session.exceptions.sessionBadCookie';
+  public ui = 'Session.exceptions.sessionBadCookie';
 }

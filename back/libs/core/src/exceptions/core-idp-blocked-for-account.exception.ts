@@ -10,5 +10,5 @@ export class CoreIdpBlockedForAccountException extends CoreBaseException {
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION = 'user authentication aborted';
   public http_status_code = HttpStatus.FORBIDDEN;
-  static UI = 'Core.exceptions.coreIdpBlockedForAccount';
+  public ui = 'Core.exceptions.coreIdpBlockedForAccount';
 }

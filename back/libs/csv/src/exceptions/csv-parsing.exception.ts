@@ -7,5 +7,5 @@ export class CsvParsingException extends CsvBaseException {
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Csv.exceptions.csvParsing';
+  public ui = 'Csv.exceptions.csvParsing';
 }

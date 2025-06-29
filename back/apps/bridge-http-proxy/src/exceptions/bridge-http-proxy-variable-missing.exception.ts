@@ -8,5 +8,5 @@ export class BridgeHttpProxyMissingVariableException extends BridgeHttpProxyBase
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'BridgeHttpProxy.exceptions.bridgeHttpProxyVariableMissing';
+  public ui = 'BridgeHttpProxy.exceptions.bridgeHttpProxyVariableMissing';
 }

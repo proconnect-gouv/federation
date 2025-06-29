@@ -46,7 +46,7 @@ export class FcWebHtmlExceptionFilter
     if (exception instanceof OidcProviderNoWrapperException) {
       message = exception.originalError.constructor.name;
     } else {
-      message = (exception.constructor as typeof BaseException).UI;
+      message = exception.ui;
     }
 
     // @todo: weird Naming / structure
