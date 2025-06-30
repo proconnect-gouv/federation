@@ -1,9 +1,10 @@
-import { ValidationError } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { validate, ValidationError } from 'class-validator';
+
 import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -15,9 +16,14 @@ import { getLoggerMock } from '@mocks/logger';
 import { ServiceProvider } from './schemas';
 import { ServiceProviderAdapterMongoService } from './service-provider-adapter-mongo.service';
 
-jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
-  validateDto: jest.fn(),
+jest.mock('class-validator', () => ({
+  ...jest.requireActual('class-validator'),
+  validate: jest.fn(),
+}));
+
+jest.mock('class-transformer', () => ({
+  ...jest.requireActual('class-transformer'),
+  plainToInstance: jest.fn(),
 }));
 
 describe('ServiceProviderAdapterMongoService', () => {
@@ -73,6 +79,9 @@ describe('ServiceProviderAdapterMongoService', () => {
     get: jest.fn(),
   };
 
+  const validateMock = jest.mocked(validate);
+  const plainToInstanceMock = jest.mocked(plainToInstance);
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -110,6 +119,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
     repositoryMock.find.mockReturnValueOnce(repositoryMock);
     repositoryMock.lean.mockResolvedValueOnce(serviceProviderListMock);
+    plainToInstanceMock.mockImplementation((_dto, obj) => obj);
   });
 
   it('should be defined', () => {
@@ -199,14 +209,11 @@ describe('ServiceProviderAdapterMongoService', () => {
       userinfo_signed_response_alg: true,
     };
 
-    const validateDtoMock = jest.mocked(validateDto);
-
     beforeEach(() => {
       configMock.get.mockReturnValue({
         isLocalhostAllowed: false,
       });
-
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
     });
 
     it('should have called find once', async () => {
@@ -257,9 +264,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
     it('should log a warning if an entry is excluded by the DTO', async () => {
       // setup
-      validateDtoMock.mockResolvedValueOnce([
-        new Error('Unknown Error') as unknown as ValidationError,
-      ]);
+      validateMock.mockResolvedValueOnce([new ValidationError()]);
 
       const invalidServiceProviderListMock = [
         validServiceProviderMock,
@@ -279,9 +284,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
     it('should filter out any entry excluded by the DTO', async () => {
       // setup
-      validateDtoMock.mockResolvedValueOnce([
-        new Error('Unknown Error') as unknown as ValidationError,
-      ]);
+      validateMock.mockResolvedValueOnce([new ValidationError()]);
 
       const invalidServiceProviderListMock = [
         validServiceProviderMock,

@@ -1,8 +1,10 @@
+import { plainToInstance } from 'class-transformer';
+import { validate, ValidationError } from 'class-validator';
+
 import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -17,9 +19,14 @@ import {
 import { DataProviderMetadata } from '../interfaces';
 import { DataProviderAdapterMongoService } from './data-provider-adapter-mongo.service';
 
-jest.mock('@fc/common', () => ({
-  ...(jest.requireActual('@fc/common') as any),
-  validateDto: jest.fn(),
+jest.mock('class-validator', () => ({
+  ...jest.requireActual('class-validator'),
+  validate: jest.fn(),
+}));
+
+jest.mock('class-transformer', () => ({
+  ...jest.requireActual('class-transformer'),
+  plainToInstance: jest.fn(),
 }));
 
 describe('DataProviderAdapterMongoService', () => {
@@ -75,6 +82,10 @@ describe('DataProviderAdapterMongoService', () => {
 
   const dataProviderModel = getModelToken('DataProvider');
 
+  const validateMock = jest.mocked(validate);
+
+  const plainToInstanceMock = jest.mocked(plainToInstance);
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -113,6 +124,7 @@ describe('DataProviderAdapterMongoService', () => {
     configMock.get.mockReturnValue(appConfigMock);
     repositoryMock.lean.mockResolvedValueOnce(dataProviderListMock);
     repositoryMock.find.mockReturnValueOnce(repositoryMock);
+    plainToInstanceMock.mockImplementation((_dto, obj) => obj);
   });
 
   it('should be defined', () => {
@@ -156,14 +168,9 @@ describe('DataProviderAdapterMongoService', () => {
   });
 
   describe('findAllDataProvider', () => {
-    let validateDtoMock;
-    beforeEach(() => {
-      validateDtoMock = jest.mocked(validateDto);
-    });
-
     it('should have called find once', async () => {
       // Given
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // When
       await service['findAllDataProvider']();
@@ -174,7 +181,7 @@ describe('DataProviderAdapterMongoService', () => {
 
     it('should return result of type list', async () => {
       // Given
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // When
       const result = await service['findAllDataProvider']();
@@ -189,9 +196,9 @@ describe('DataProviderAdapterMongoService', () => {
         dataProviderMock,
         invalidDataProviderMock,
       ];
-      validateDtoMock
+      validateMock
         .mockResolvedValueOnce([])
-        .mockResolvedValueOnce(['there is an error']);
+        .mockResolvedValueOnce([new ValidationError()]);
 
       repositoryMock.lean = jest
         .fn()
@@ -210,9 +217,9 @@ describe('DataProviderAdapterMongoService', () => {
         dataProviderMock,
         invalidDataProviderMock,
       ];
-      validateDtoMock
+      validateMock
         .mockResolvedValueOnce([])
-        .mockResolvedValueOnce(['there is an error']);
+        .mockResolvedValueOnce([new ValidationError()]);
 
       repositoryMock.lean = jest
         .fn()
@@ -227,17 +234,15 @@ describe('DataProviderAdapterMongoService', () => {
   });
 
   describe('getList', () => {
-    let validateDtoMock;
     beforeEach(() => {
-      validateDtoMock = jest.mocked(validateDto);
+      validateMock.mockResolvedValueOnce([]);
       service['findAllIdentityProvider'] = jest
         .fn()
         .mockResolvedValueOnce(dataProviderListMock);
     });
 
-    it('should return a list of valides data providers', async () => {
+    it('should return a list of valid data providers', async () => {
       // Given
-      validateDtoMock.mockResolvedValueOnce(dataProviderMock);
       service['decryptClientSecret'] = jest
         .fn()
         .mockReturnValueOnce(dataProviderMock.client_secret);
@@ -263,7 +268,6 @@ describe('DataProviderAdapterMongoService', () => {
           client_id: 'bar',
         },
       ];
-      validateDtoMock.mockResolvedValueOnce(dataProviderMock);
       service['decryptClientSecret'] = jest
         .fn()
         .mockReturnValueOnce(dataProviderMock.client_secret);
