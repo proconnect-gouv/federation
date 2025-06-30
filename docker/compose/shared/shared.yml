@@ -284,3 +284,10 @@ networks:
     ipam:
       config:
         - subnet: 172.16.6.0/24
+
+####################
+# Volumes
+####################
+
+volumes:
+  node-modules:
