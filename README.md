@@ -113,7 +113,7 @@ You will then find a list of accessible URLs here: https://hello.docker.dev-fran
 
 Most URLs follow the same pattern <app-name>.docker.dev-franceconnect.fr
 
-On any URL, if you got a 502, it might still be booting, wait one minute then reload.
+On any URL, if you got a 502, it might still be booting, wait one minute, then reload.
 
 ## Get the logs
 
