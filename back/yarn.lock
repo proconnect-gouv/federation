@@ -6105,10 +6105,10 @@ quick-lru@^5.1.1:
   resolved "https://registry.npmjs.org/quick-lru/-/quick-lru-5.1.1.tgz"
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
-quick-lru@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-7.0.0.tgz#447f6925b33ae4d2d637e211967d74bae4b99c3f"
-  integrity sha512-MX8gB7cVYTrYcFfAnfLlhRd0+Toyl8yX8uBx1MrX7K0jegiz9TumwOK27ldXrgDlHRdVi+MqU9Ssw6dr4BNreg==
+quick-lru@^7.0.0, quick-lru@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-7.0.1.tgz#6df758a00721b9d619769b1b34689e65bea28c7e"
+  integrity sha512-kLjThirJMkWKutUKbZ8ViqFc09tDQhlbQo2MNuVeLWbRauqYP96Sm6nzlQ24F0HFjUNZ4i9+AgldJ9H6DZXi7g==
 
 random-bytes@~1.0.0:
   version "1.0.0"
