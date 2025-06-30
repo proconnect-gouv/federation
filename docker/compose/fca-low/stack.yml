@@ -3,6 +3,7 @@ services:
     image: alpine
     depends_on:
       - 'core-fca-low'
+      - 'node-modules-installer'
       - 'fsa1-low'
       - 'fia1-low'
 
