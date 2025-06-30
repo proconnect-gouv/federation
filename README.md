@@ -117,14 +117,17 @@ On any URL, if you got a 502, it might still be booting, wait one minute, then r
 
 ## Get the logs
 
-The logger outputs JSON that can be read in Chrome DevTools.
+Logs are stored here:
 
-- in Chrome, go to chrome://inspect/#devices
-- "Discover network target": click on "Configure"
-- enters "localhost:6666" (or the corresponding url logged when you started the stack)
-- click on inspect
+```
+federation/docker/volumes/log
+```
 
-Alternatively, you can use `dks log core-fca-low`.
+You can output them with:
+
+```
+tail -F * | npx pino-pretty
+```
 
 ### Restart a single container
 
