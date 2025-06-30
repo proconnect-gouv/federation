@@ -94,7 +94,7 @@ ProConnect Federation Admin was formerly named fc-exploitation.
 Start it with:
 
 ```bash
-dks switch exploitation-fca-low
+dks switch medium
 ```
 
 Then go to https://exploitation-fca-low.docker.dev-franceconnect.fr/login.
@@ -185,7 +185,7 @@ yarn start:low
 ### Run tests for PCF Admin from the Cypress UI
 
 ```bash
-dks switch exploitation-fca-low
+dks switch medium
 cd $PC_ROOT/federation-admin/fc-exploitation
 yarn test:e2e:open
 ```
@@ -212,7 +212,6 @@ yarn tsc --noEmit
 ```
 
 ```bash
-dks switch exploitation-fca-low
 cd $PC_ROOT/federation-admin
 yarn test
 yarn lint --fix
