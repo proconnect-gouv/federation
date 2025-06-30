@@ -138,6 +138,12 @@ To apply changes to either the idp, sp or data provider, execute the following c
 dks start fia1-low
 ```
 
+You might also need to restart the reverse proxy:
+
+```
+dks compose restart rp-all
+```
+
 ### Halt the stack
 
 ```bash
