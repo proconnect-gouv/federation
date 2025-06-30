@@ -87,10 +87,14 @@ On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion wit
 
 You are now connected to fsa1!
 
-### Running FC exploitation for ProConnect
+### Running PCF Admin
+
+ProConnect Federation Admin was formerly named fc-exploitation.
+
+Start it with:
 
 ```bash
-dks switch medium
+dks switch exploitation-fca-low
 ```
 
 Then go to https://exploitation-fca-low.docker.dev-franceconnect.fr/login.
@@ -169,6 +173,14 @@ cd $PC_ROOT/federation/quality/fca
 yarn start:low
 ```
 
+### Run tests for PCF Admin from the Cypress UI
+
+```bash
+dks switch exploitation-fca-low
+cd $PC_ROOT/federation-admin/fc-exploitation
+yarn test:e2e:open
+```
+
 ## Visualization Tests
 
 ```bash
@@ -177,7 +189,7 @@ cd $PC_ROOT/federation/quality/fca
 yarn test:low:snapshot
 ```
 
-## Run static tests
+## Run other tests
 
 ```bash
 cd $PC_ROOT/federation/quality/fca
@@ -190,7 +202,14 @@ yarn prettier --write
 yarn tsc --noEmit
 ```
 
-## Run test againts integ01 env
+```bash
+dks switch exploitation-fca-low
+cd $PC_ROOT/federation-admin
+yarn test
+yarn lint --fix
+```
+
+## Run test against integ01 env
 
 ```bash
 cd $PC_ROOT/federation/quality/fca
