@@ -5,10 +5,6 @@ FROM ${NODE_IMAGE} AS dev
 
 WORKDIR /var/www/app
 
-COPY package*.json ./
-RUN yarn install --ignore-engines 
-COPY node_modules ./node_modules
-
 COPY tsconfig*.json global.d.ts nest-cli.json webpack.config.js ./
 COPY ./apps ./apps
 COPY ./libs ./libs
