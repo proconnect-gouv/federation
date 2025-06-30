@@ -31,9 +31,31 @@ export class GetDiscoveryDto {
 
   @IsString({ each: true })
   @IsArray()
-  // oidc defined variable name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly id_token_signing_alg_values_supported: string[];
+
+  @IsString()
+  @MinLength(1)
+  readonly introspection_endpoint: string;
+
+  @IsString({ each: true })
+  @IsArray()
+  readonly introspection_endpoint_auth_methods_supported: string[];
+
+  @IsString({ each: true })
+  @IsArray()
+  readonly introspection_endpoint_auth_signing_alg_values_supported: string[];
+
+  @IsString({ each: true })
+  @IsArray()
+  readonly introspection_signing_alg_values_supported: string[];
+
+  @IsString({ each: true })
+  @IsArray()
+  readonly introspection_encryption_alg_values_supported: string[];
+
+  @IsString({ each: true })
+  @IsArray()
+  readonly introspection_encryption_enc_values_supported: string[];
 
   @IsString()
   @MinLength(1)
