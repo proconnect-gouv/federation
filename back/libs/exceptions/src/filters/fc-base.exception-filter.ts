@@ -40,24 +40,20 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     return exceptionParam;
   }
 
-  // eslint-disable-next-line complexity
   protected getHttpStatus(
     exception: BaseException,
     defaultStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): HttpStatus {
     if (exception instanceof OidcProviderNoWrapperException) {
-      return (
-        exception.originalError?.status ||
-        exception.originalError?.statusCode ||
-        defaultStatus
-      );
+      return exception.originalError?.statusCode || defaultStatus;
     }
+
     // Yes this checks seems redundant, it's a belt and suspenders situation
     if (exception instanceof BaseException) {
-      return (
-        exception.status || exception.statusCode || exception.http_status_code
-      );
-    } else return defaultStatus;
+      return exception.http_status_code;
+    }
+
+    return defaultStatus;
   }
 
   protected logException(
@@ -73,7 +69,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
       reason: exception.log,
       stackTrace: getStackTraceArray(exception),
       type: exception.constructor.name,
-      statusCode: exception.statusCode,
+      statusCode: exception.http_status_code,
     };
 
     this.logger.err(exceptionObject);

@@ -11,8 +11,6 @@ export class BaseException extends Error {
 
   public originalError?: Error;
   public log: unknown;
-  public statusCode?: number;
-  public status?: number;
 
   constructor(input?: Error | string) {
     let arg: unknown = input;
