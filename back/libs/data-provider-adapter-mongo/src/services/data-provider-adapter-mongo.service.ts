@@ -1,13 +1,12 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, filter } from 'lodash';
 import { Model } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -82,7 +81,7 @@ export class DataProviderAdapterMongoService implements IDataProviderAdapter {
   }
 
   private async findAllDataProvider(): Promise<DataProviderMetadata[]> {
-    const rawResult = await this.dataProviderModel
+    const rawDataProviders = await this.dataProviderModel
       .find(
         {},
         {
@@ -91,32 +90,31 @@ export class DataProviderAdapterMongoService implements IDataProviderAdapter {
       )
       .lean();
 
-    const dataProviders = await asyncFilter<DataProviderMetadata[]>(
-      rawResult,
-      async (dataProviderRaw: any) => {
+    const dataProviders = await Promise.all(
+      rawDataProviders.map(async (rawDataProvider: any) => {
         const dataProvider = plainToInstance(
           DataProviderAdapterMongoDTO,
-          dataProviderRaw,
+          rawDataProvider,
         );
         const errors = await validate(dataProvider, {
           forbidNonWhitelisted: true,
           skipMissingProperties: false,
           whitelist: true,
         });
-        const { uid } = dataProviderRaw;
+        const { uid } = rawDataProvider;
 
-        if (errors.length > 0) {
+        if (errors.length) {
           this.logger.alert({
             msg: `Data provider "${uid}" was excluded at DTO validation`,
             validationErrors: errors,
           });
         }
 
-        return errors.length === 0;
-      },
+        return !errors.length ? dataProvider : undefined;
+      }),
     );
 
-    return dataProviders;
+    return filter(dataProviders);
   }
 
   async getById(

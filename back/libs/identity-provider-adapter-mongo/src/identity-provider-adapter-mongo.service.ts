@@ -1,13 +1,12 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, filter } from 'lodash';
 import { Model } from 'mongoose';
 
 import { Injectable, Type } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -80,8 +79,8 @@ export class IdentityProviderAdapterMongoService
     await this.getList(true);
   }
 
-  private async findAllIdentityProvider(): Promise<IdentityProviderMetadata[]> {
-    const rawResult = await this.identityProviderModel
+  private async findAllIdentityProvider() {
+    const rawIdentityProviders = await this.identityProviderModel
       .find(
         {},
         {
@@ -129,37 +128,36 @@ export class IdentityProviderAdapterMongoService
         'IdentityProviderAdapterMongo',
       );
 
-    const identityProviders = await asyncFilter<IdentityProviderMetadata[]>(
-      rawResult,
-      async (identityProviderRaw: any) => {
+    const identityProviders = await Promise.all(
+      rawIdentityProviders.map(async (rawIdentityProvider: any) => {
         if (disableIdpValidationOnLegacy) {
           this.logger.warning(
-            `"${identityProviderRaw.uid}": Skipping DTO validation due to legacy IdP mode.`,
+            `"${rawIdentityProvider.uid}": Skipping DTO validation due to legacy IdP mode.`,
           );
           return true;
         }
 
-        const dto = this.getIdentityProviderDTO(identityProviderRaw.discovery);
-        const identityProvider = plainToInstance(dto, identityProviderRaw);
+        const dto = this.getIdentityProviderDTO(rawIdentityProvider.discovery);
+        const identityProvider = plainToInstance(dto, rawIdentityProvider);
         const errors = await validate(identityProvider, {
           forbidNonWhitelisted: true,
           skipMissingProperties: false,
           whitelist: true,
         });
-        const { name, uid } = identityProviderRaw;
+        const { name, uid } = rawIdentityProvider;
 
-        if (errors.length > 0) {
+        if (errors.length) {
           this.logger.alert({
             msg: `Identity provider "${name}" (${uid}) was excluded at DTO validation`,
             validationErrors: errors,
           });
         }
 
-        return errors.length === 0;
-      },
+        return !errors.length ? identityProvider : null;
+      }),
     );
 
-    return identityProviders;
+    return filter(identityProviders);
   }
 
   /**

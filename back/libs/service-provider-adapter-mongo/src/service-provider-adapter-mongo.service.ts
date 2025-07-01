@@ -1,11 +1,11 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { filter } from 'lodash';
 import { Model } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -16,7 +16,6 @@ import {
   ServiceProviderAdapterMongoConfig,
   ServiceProviderAdapterMongoDTO,
 } from './dto';
-import { MongoRequestFilterArgument } from './interfaces';
 import { ServiceProvider } from './schemas';
 
 @Injectable()
@@ -49,38 +48,38 @@ export class ServiceProviderAdapterMongoService
     await this.getList(true);
   }
 
-  private async findAllServiceProvider(): Promise<ServiceProviderMetadata[]> {
-    const requestFilterArgument: MongoRequestFilterArgument = {
-      active: true,
-    };
-
-    const rawResult = await this.serviceProviderModel
-      .find(requestFilterArgument, {
-        _id: false,
-        active: true,
-        name: true,
-        title: true,
-        key: true,
-        entityId: true,
-        client_secret: true,
-        scopes: true,
-        redirect_uris: true,
-        post_logout_redirect_uris: true,
-        id_token_signed_response_alg: true,
-        userinfo_signed_response_alg: true,
-        jwks_uri: true,
-        type: true,
-      })
+  private async findAllServiceProvider() {
+    const rawServiceProviders = await this.serviceProviderModel
+      .find(
+        {
+          active: true,
+        },
+        {
+          _id: false,
+          active: true,
+          name: true,
+          title: true,
+          key: true,
+          entityId: true,
+          client_secret: true,
+          scopes: true,
+          redirect_uris: true,
+          post_logout_redirect_uris: true,
+          id_token_signed_response_alg: true,
+          userinfo_signed_response_alg: true,
+          jwks_uri: true,
+          type: true,
+        },
+      )
       .lean();
 
-    const serviceProviders = await asyncFilter<ServiceProviderMetadata[]>(
-      rawResult,
-      async (serviceProviderRaw: any) => {
-        const { name, uid } = serviceProviderRaw;
+    const serviceProviders = await Promise.all(
+      rawServiceProviders.map(async (rawServiceProvider: any) => {
+        const { name, uid } = rawServiceProvider;
 
         const serviceProvider = plainToInstance(
           ServiceProviderAdapterMongoDTO,
-          serviceProviderRaw,
+          rawServiceProvider,
         );
         const errors = await validate(serviceProvider, {
           forbidNonWhitelisted: true,
@@ -88,18 +87,18 @@ export class ServiceProviderAdapterMongoService
           whitelist: true,
         });
 
-        if (errors.length > 0) {
+        if (errors.length) {
           this.logger.alert({
             msg: `Service provider "${name}" (${uid}) was excluded at DTO validation`,
             validationErrors: errors,
           });
         }
 
-        return errors.length === 0;
-      },
+        return !errors.length ? serviceProvider : null;
+      }),
     );
 
-    return serviceProviders;
+    return filter(serviceProviders);
   }
 
   /**
