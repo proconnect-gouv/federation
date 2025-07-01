@@ -14,8 +14,11 @@ services:
         condition: service_healthy
       redis-pwd:
         condition: service_healthy
+      node-modules-installer:
+        condition: service_completed_successfully
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -29,4 +32,4 @@ services:
       - data
       - public
     init: true
-    command: 'node dist/instances/core-fca-low/main.js'
+    command: 'yarn start:dev core-fca-low'
