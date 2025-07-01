@@ -421,10 +421,10 @@
     axios "^1.7.7"
     zod "^3.24.1"
 
-"@gouvfr/dsfr@^1.12.1":
-  version "1.12.1"
-  resolved "https://registry.npmjs.org/@gouvfr/dsfr/-/dsfr-1.12.1.tgz"
-  integrity sha512-2zXBHSDjjlaNcxGtqbPQN/vyjJQKIRUP3CKOYoodj2/45pAWM1AXo3kCwXFLUo5kQOltShZUquQ7hSeVg4RRtA==
+"@gouvfr/dsfr@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.14.0.tgz#cf753fae982f5b6a746bc9d31a471eb0c66ce428"
+  integrity sha512-lF02JujHsr4J39gnC7y+qe0LLnh01cb6JwbMIKK2YcNjzvmfb26C0uW0+gyugD41wjFQQcIFWz07g6ynqxjNzA==
 
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
