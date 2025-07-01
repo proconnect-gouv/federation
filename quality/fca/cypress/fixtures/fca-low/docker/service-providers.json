@@ -16,7 +16,8 @@
     "descriptions": [
       "troisième fs",
       "non habilité à demander le scope belonging_population",
-      "avec une restriction de fqdn"
+      "avec une restriction de fqdn",
+      "sans signature de la réponse userinfo"
     ],
     "clientId": "6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77",
     "url": "https://fsa4-low.docker.dev-franceconnect.fr"

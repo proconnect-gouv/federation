@@ -7,6 +7,7 @@ const fsa = {
     site: 'https://site.com',
     redirect_uris: [
       'https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback',
+      "http://localhost:3000/login-callback"
     ],
     post_logout_redirect_uris: [
       'https://fsa1-low.docker.dev-franceconnect.fr/',
@@ -44,7 +45,7 @@ const fsa = {
     ],
     claims: ['amr'],
     id_token_signed_response_alg: 'HS256',
-    userinfo_signed_response_alg: 'HS256',
+    userinfo_signed_response_alg: "HS256",
     jwks_uri:
       'https://fsa1-low.docker.dev-franceconnect.fr/client/.well-known/keys',
   },
@@ -187,7 +188,6 @@ const fsa = {
     ],
     claims: [],
     id_token_signed_response_alg: 'RS256',
-    userinfo_signed_response_alg: 'RS256',
     jwks_uri:
       'https://fsa4-low.docker.dev-franceconnect.fr/client/.well-known/keys',
   },
