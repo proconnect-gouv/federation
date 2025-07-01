@@ -32,6 +32,7 @@ services:
       - public
       - data
     init: true
+<<<<<<< HEAD
     command: 'pm2 logs'
 
   core-fca-low-squid:
@@ -49,3 +50,6 @@ services:
       GLOBAL_AGENT_HTTP_PROXY: http://squid:3128
       GLOBAL_AGENT_HTTPS_PROXY: http://squid:3128
     command: 'node dist/instances/core-fca-low/main.js'
+=======
+    command: 'yarn start:dev core-fca-low'
+>>>>>>> a717120122 ([PCF-710]🔨 Start core in dev mode)
