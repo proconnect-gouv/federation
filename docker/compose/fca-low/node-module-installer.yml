@@ -2,7 +2,6 @@ services:
   node-modules-installer:
     image: node:22.13.0-alpine
     working_dir: /var/www/app
-    user: ${CURRENT_UID}
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - 'node-modules:/var/www/app/node_modules'
