@@ -32,4 +32,4 @@ services:
       - public
       - data
     init: true
-    command: 'node dist/instances/core-fca-low/main.js'
+    command: 'yarn start:dev core-fca-low'
