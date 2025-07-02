@@ -1,3 +1,5 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
 import { cloneDeep } from 'lodash';
 import { Model } from 'mongoose';
@@ -5,8 +7,8 @@ import { Model } from 'mongoose';
 import { Injectable, Type } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter, validateDto } from '@fc/common';
-import { ConfigService, validationOptions } from '@fc/config';
+import { asyncFilter } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
@@ -129,29 +131,28 @@ export class IdentityProviderAdapterMongoService
 
     const identityProviders = await asyncFilter<IdentityProviderMetadata[]>(
       rawResult,
-      async (doc: IdentityProviderMetadata) => {
-        /**
-         * @todo #902 see issue
-         * A DTO should validate the IdPs even with legacy format
-         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/902
-         */
+      async (identityProviderRaw: any) => {
         if (disableIdpValidationOnLegacy) {
           this.logger.warning(
-            `"${doc.uid}": Skipping DTO validation due to legacy IdP mode.`,
+            `"${identityProviderRaw.uid}": Skipping DTO validation due to legacy IdP mode.`,
           );
           return true;
         }
 
-        const dto = this.getIdentityProviderDTO(doc.discovery);
-        const errors = await validateDto(doc, dto, validationOptions);
-        const { name, uid } = doc;
+        const dto = this.getIdentityProviderDTO(identityProviderRaw.discovery);
+        const identityProvider = plainToInstance(dto, identityProviderRaw);
+        const errors = await validate(identityProvider, {
+          forbidNonWhitelisted: true,
+          skipMissingProperties: false,
+          whitelist: true,
+        });
+        const { name, uid } = identityProviderRaw;
 
         if (errors.length > 0) {
-          this.logger.alert(
-            `Identity provider "${name}" (${uid}) was excluded at DTO validation`,
-          );
-
-          this.logger.debug({ errors });
+          this.logger.alert({
+            msg: `Identity provider "${name}" (${uid}) was excluded at DTO validation`,
+            validationErrors: errors,
+          });
         }
 
         return errors.length === 0;

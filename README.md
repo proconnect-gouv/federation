@@ -87,7 +87,11 @@ On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion wit
 
 You are now connected to fsa1!
 
-### Running FC exploitation for ProConnect
+### Running PCF Admin
+
+ProConnect Federation Admin was formerly named fc-exploitation.
+
+Start it with:
 
 ```bash
 dks switch medium
@@ -109,18 +113,21 @@ You will then find a list of accessible URLs here: https://hello.docker.dev-fran
 
 Most URLs follow the same pattern <app-name>.docker.dev-franceconnect.fr
 
-On any URL, if you got a 502, it might still be booting, wait one minute then reload.
+On any URL, if you got a 502, it might still be booting, wait one minute, then reload.
 
 ## Get the logs
 
-The logger outputs JSON that can be read in Chrome DevTools.
+Logs are stored here:
 
-- in Chrome, go to chrome://inspect/#devices
-- "Discover network target": click on "Configure"
-- enters "localhost:6666" (or the corresponding url logged when you started the stack)
-- click on inspect
+```
+federation/docker/volumes/log
+```
 
-Alternatively, you can use `dks log core-fca-low`.
+You can output them with:
+
+```
+tail -F * | npx pino-pretty
+```
 
 ### Restart a single container
 
@@ -129,6 +136,12 @@ To apply changes to either the idp, sp or data provider, execute the following c
 
 ```bash
 dks start fia1-low
+```
+
+You might also need to restart the reverse proxy:
+
+```
+dks compose restart rp-all
 ```
 
 ### Halt the stack
@@ -169,6 +182,14 @@ cd $PC_ROOT/federation/quality/fca
 yarn start:low
 ```
 
+### Run tests for PCF Admin from the Cypress UI
+
+```bash
+dks switch medium
+cd $PC_ROOT/federation-admin/fc-exploitation
+yarn test:e2e:open
+```
+
 ## Visualization Tests
 
 ```bash
@@ -177,7 +198,7 @@ cd $PC_ROOT/federation/quality/fca
 yarn test:low:snapshot
 ```
 
-## Run static tests
+## Run other tests
 
 ```bash
 cd $PC_ROOT/federation/quality/fca
@@ -220,7 +241,7 @@ $ dks add init-core-fca-low
 > It will run the migration script every time the `core-fca-low` container is started.  
 > No need to do it manually when using the `dks switch`
 
-## Run test againts integ01 env
+## Run test against integ01 env
 
 ```bash
 cd $PC_ROOT/federation/quality/fca

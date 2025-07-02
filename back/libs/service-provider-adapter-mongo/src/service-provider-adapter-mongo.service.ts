@@ -1,10 +1,12 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import { Model } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter, validateDto } from '@fc/common';
-import { ConfigService, validationOptions } from '@fc/config';
+import { asyncFilter } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
@@ -73,21 +75,24 @@ export class ServiceProviderAdapterMongoService
 
     const serviceProviders = await asyncFilter<ServiceProviderMetadata[]>(
       rawResult,
-      async (doc: ServiceProviderMetadata) => {
-        const { name, uid } = doc;
+      async (serviceProviderRaw: any) => {
+        const { name, uid } = serviceProviderRaw;
 
-        const errors = await validateDto(
-          doc,
+        const serviceProvider = plainToInstance(
           ServiceProviderAdapterMongoDTO,
-          validationOptions,
+          serviceProviderRaw,
         );
+        const errors = await validate(serviceProvider, {
+          forbidNonWhitelisted: true,
+          skipMissingProperties: false,
+          whitelist: true,
+        });
 
         if (errors.length > 0) {
-          this.logger.alert(
-            `Service provider "${name}" (${uid}) was excluded at DTO validation`,
-          );
-
-          this.logger.debug({ errors });
+          this.logger.alert({
+            msg: `Service provider "${name}" (${uid}) was excluded at DTO validation`,
+            validationErrors: errors,
+          });
         }
 
         return errors.length === 0;
