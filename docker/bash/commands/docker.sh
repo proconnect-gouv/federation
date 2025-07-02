@@ -64,11 +64,6 @@ _prune_all() {
   docker image prune -af
   docker system prune -af --volumes
   docker system df
-  npm cache clean --force
-  yarn cache clean
-  sudo du -sh /var/cache/apt/archives
-  cd $PC_ROOT
-  find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
 }
 
 _prune_ci() {
