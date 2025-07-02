@@ -3,8 +3,7 @@ services:
     image: node:22.13.0-alpine
     working_dir: /var/www/app
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app:ro'
       - 'node-modules:/var/www/app/node_modules'
-    networks:
-      - public
     command: 'yarn install --ignore-engines --frozen-lockfile'
+    # todo: create a volume for the yarn cache too
