@@ -3,12 +3,15 @@ ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
 FROM ${NODE_IMAGE} AS builder
 
-COPY . /tmp/src
 
 RUN apk add python3 make g++ lscpu
 
 WORKDIR /tmp/src
+COPY ./package.json yarn.lock ./
 RUN yarn install
+
+COPY ./shared ./shared
+COPY ./fc-exploitation ./fc-exploitation
 
 ## build shared
 WORKDIR /tmp/src/shared

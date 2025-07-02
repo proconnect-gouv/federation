@@ -49,6 +49,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
+          context: ./admin
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           push: true

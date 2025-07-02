@@ -1,4 +1,4 @@
-name: 💚 CI Tests
+name: 💚 Admin CI Tests
 
 on:
   pull_request:
@@ -6,14 +6,11 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-
 jobs:
   global:
     defaults:
       run:
-        working-directory: ./admin
+        working-directory: admin
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
@@ -42,7 +39,7 @@ jobs:
     runs-on: ubuntu-24.04
     defaults:
       run:
-        working-directory: ./admin/shared
+        working-directory: admin/shared
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -62,7 +59,7 @@ jobs:
     runs-on: ubuntu-24.04
     defaults:
       run:
-        working-directory: ./admin/fc-exploitation
+        working-directory: admin/fc-exploitation
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -80,9 +77,6 @@ jobs:
 
   e2e-exploitation:
     runs-on: ubuntu-24.04
-    defaults:
-      run:
-        working-directory: ./admin
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -102,43 +96,37 @@ jobs:
           node-version-file: ./admin/package.json
 
       - name: Install dependencies
+        working-directory: admin
         run: yarn install
 
-      - name: Clone federation repository
-        uses: actions/checkout@v4
-        with:
-          repository: proconnect-gouv/federation
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./federation
-
       - name: Set FEDERATION_ROOT environment variable
-        working-directory: ./admin/federation
+        working-directory: ./
         run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
 
       - name: Set ADMIN_ROOT environment variable
-        working-directory: ./admin/
+        working-directory: admin
         run: |
           echo "ADMIN_ROOT=$(pwd)" >> $GITHUB_ENV
           echo "PC_ROOT=$(pwd)" >> $GITHUB_ENV
 
       - name: Create symlinks in federation
-        working-directory: ./admin/federation/docker/volumes/src
+        working-directory: docker/volumes/src
         run: |
+          set -x
           ln -s "$FEDERATION_ROOT" federation
           ln -s "$ADMIN_ROOT" federation-admin
 
       - name: Start docker stack
-        working-directory: federation/docker
+        working-directory: docker
         run: |
           set -x
-          docker network create --driver bridge pc_public
           ./docker-stack prune-ci
           ./docker-stack up exploitation-fca-low
           ./docker-stack start-all
           ./docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests
-        working-directory: ./admin/
+        working-directory: admin
         run: |
           yarn test:e2e:exploitation -c video=false
 
