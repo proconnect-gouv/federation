@@ -48,10 +48,13 @@ services:
     depends_on:
       redis-pwd:
         condition: service_healthy
+      node-modules-installer:
+        condition: service_completed_successfully
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log/:/var/log/app'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
@@ -76,9 +79,12 @@ services:
     depends_on:
       redis-pwd:
         condition: service_healthy
+      node-modules-installer:
+        condition: service_completed_successfully
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
@@ -103,9 +109,12 @@ services:
     depends_on:
       redis-pwd:
         condition: service_healthy
+      node-modules-installer:
+        condition: service_completed_successfully
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
@@ -167,10 +176,13 @@ services:
     depends_on:
       redis-pwd:
         condition: service_healthy
+      node-modules-installer:
+        condition: service_completed_successfully
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
@@ -196,10 +208,13 @@ services:
     depends_on:
       redis-pwd:
         condition: service_healthy
+      node-modules-installer:
+        condition: service_completed_successfully
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
@@ -224,12 +239,16 @@ services:
       target: dev
       args:
         INSTANCE: mock-data-provider
+    depends_on:
+      node-modules-installer:
+        condition: service_completed_successfully
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
@@ -247,12 +266,16 @@ services:
       target: dev
       args:
         INSTANCE: mock-data-provider
+    depends_on:
+      node-modules-installer:
+        condition: service_completed_successfully
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
