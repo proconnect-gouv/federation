@@ -2,7 +2,10 @@ name: 💚 CI Tests
 
 on:
   push:
-
+    branches:
+      - main
+permissions:
+  contents: read
 jobs:
   test_static_back:
     runs-on: ubuntu-24.04
