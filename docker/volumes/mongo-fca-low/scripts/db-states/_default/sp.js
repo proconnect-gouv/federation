@@ -188,6 +188,7 @@ const fsa = {
     ],
     claims: [],
     id_token_signed_response_alg: 'RS256',
+    userinfo_signed_response_alg: null,
     jwks_uri:
       'https://fsa4-low.docker.dev-franceconnect.fr/client/.well-known/keys',
   },

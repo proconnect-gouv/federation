@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -49,6 +50,7 @@ export class ServiceProviderAdapterMongoDTO {
 
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => (value === null ? undefined : value))
   readonly userinfo_signed_response_alg?: string;
 
   @IsOptional()
