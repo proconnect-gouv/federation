@@ -3,7 +3,7 @@ name: 💚 CI Tests
 on:
   push:
     branches:
-      - "**"
+      - '**'
 jobs:
   test_static_back:
     runs-on: ubuntu-24.04
@@ -91,7 +91,7 @@ jobs:
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v3
 
-      # Workaround for https://github.com/docker/compose/issues/12892 
+      # Workaround for https://github.com/docker/compose/issues/12892
       - name: Upgrade Docker Compose
         uses: docker/setup-compose-action@v1
         with:
@@ -115,7 +115,6 @@ jobs:
         working-directory: ./docker
         run: |
           set -x
-          docker network create --driver bridge pc_public
           ./docker-stack prune-ci
           ./docker-stack up small
           ./docker-stack start-all-ci
@@ -150,7 +149,7 @@ jobs:
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v3
 
-      # Workaround for https://github.com/docker/compose/issues/12892 
+      # Workaround for https://github.com/docker/compose/issues/12892
       - name: Upgrade Docker Compose
         uses: docker/setup-compose-action@v1
         with:
@@ -182,7 +181,6 @@ jobs:
         working-directory: ./docker
         run: |
           set -x
-          docker network create --driver bridge pc_public
           ./docker-stack prune-ci
           ./docker-stack up medium
           ./docker-stack start-all-ci
