@@ -1,6 +1,5 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { filter } from 'lodash';
 import { Model } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
@@ -49,56 +48,51 @@ export class ServiceProviderAdapterMongoService
   }
 
   private async findAllServiceProvider() {
+    const filter = {
+      active: true,
+    };
     const rawServiceProviders = await this.serviceProviderModel
-      .find(
-        {
-          active: true,
-        },
-        {
-          _id: false,
-          active: true,
-          name: true,
-          title: true,
-          key: true,
-          entityId: true,
-          client_secret: true,
-          scopes: true,
-          redirect_uris: true,
-          post_logout_redirect_uris: true,
-          id_token_signed_response_alg: true,
-          userinfo_signed_response_alg: true,
-          jwks_uri: true,
-          type: true,
-        },
-      )
+      .find(filter, {
+        _id: false,
+        active: true,
+        name: true,
+        title: true,
+        key: true,
+        entityId: true,
+        client_secret: true,
+        scopes: true,
+        redirect_uris: true,
+        post_logout_redirect_uris: true,
+        id_token_signed_response_alg: true,
+        userinfo_signed_response_alg: true,
+        jwks_uri: true,
+        type: true,
+      })
       .lean();
 
-    const serviceProviders = await Promise.all(
-      rawServiceProviders.map(async (rawServiceProvider: any) => {
-        const { name, uid } = rawServiceProvider;
+    const serviceProviders = [];
 
-        const serviceProvider = plainToInstance(
-          ServiceProviderAdapterMongoDTO,
-          rawServiceProvider,
-        );
-        const errors = await validate(serviceProvider, {
-          forbidNonWhitelisted: true,
-          skipMissingProperties: false,
-          whitelist: true,
+    for (const rawServiceProvider of rawServiceProviders) {
+      const serviceProvider = plainToInstance(
+        ServiceProviderAdapterMongoDTO,
+        rawServiceProvider,
+      );
+      const errors = await validate(serviceProvider, {
+        forbidNonWhitelisted: true,
+        whitelist: true,
+      });
+
+      if (errors.length > 0) {
+        this.logger.alert({
+          msg: `Service provider "${rawServiceProvider?.name}" (${rawServiceProvider?.key}) was excluded at DTO validation`,
+          validationErrors: errors,
         });
+      } else {
+        serviceProviders.push(serviceProvider);
+      }
+    }
 
-        if (errors.length) {
-          this.logger.alert({
-            msg: `Service provider "${name}" (${uid}) was excluded at DTO validation`,
-            validationErrors: errors,
-          });
-        }
-
-        return !errors.length ? serviceProvider : null;
-      }),
-    );
-
-    return filter(serviceProviders);
+    return serviceProviders;
   }
 
   /**

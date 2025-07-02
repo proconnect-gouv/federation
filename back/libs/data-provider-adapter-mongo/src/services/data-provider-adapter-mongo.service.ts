@@ -1,7 +1,7 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
-import { cloneDeep, filter } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { Model } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
@@ -90,31 +90,29 @@ export class DataProviderAdapterMongoService implements IDataProviderAdapter {
       )
       .lean();
 
-    const dataProviders = await Promise.all(
-      rawDataProviders.map(async (rawDataProvider: any) => {
-        const dataProvider = plainToInstance(
-          DataProviderAdapterMongoDTO,
-          rawDataProvider,
-        );
-        const errors = await validate(dataProvider, {
-          forbidNonWhitelisted: true,
-          skipMissingProperties: false,
-          whitelist: true,
+    const dataProviders = [];
+
+    for (const rawDataProvider of rawDataProviders) {
+      const dataProvider = plainToInstance(
+        DataProviderAdapterMongoDTO,
+        rawDataProvider,
+      );
+      const errors = await validate(dataProvider, {
+        forbidNonWhitelisted: true,
+        whitelist: true,
+      });
+
+      if (errors.length > 0) {
+        this.logger.alert({
+          msg: `Data provider "${rawDataProvider?.uid}" was excluded at DTO validation`,
+          validationErrors: errors,
         });
-        const { uid } = rawDataProvider;
+      } else {
+        dataProviders.push(dataProvider);
+      }
+    }
 
-        if (errors.length) {
-          this.logger.alert({
-            msg: `Data provider "${uid}" was excluded at DTO validation`,
-            validationErrors: errors,
-          });
-        }
-
-        return !errors.length ? dataProvider : undefined;
-      }),
-    );
-
-    return filter(dataProviders);
+    return dataProviders;
   }
 
   async getById(

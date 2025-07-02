@@ -1,7 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
-import { filter } from 'lodash';
 import { Model } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
@@ -95,32 +94,29 @@ export class FqdnToIdpAdapterMongoService
         .sort({ fqdn: 1, identityProvider: 1 })
         .lean();
 
-    const fqdnToIdentityProviders = await Promise.all(
-      rawFqdnToIdentityProviders.map(async (rawFqdnToIdentityProvider) => {
-        const fqdnToIdentityProvider = plainToInstance(
-          GetFqdnToIdentityProviderMongoDto,
-          rawFqdnToIdentityProvider,
-        );
-        const errors = await validate(fqdnToIdentityProvider, {
-          forbidNonWhitelisted: true,
-          skipMissingProperties: false,
-          whitelist: true,
+    const fqdnToIdentityProviders = [];
+
+    for (const rawFqdnToIdentityProvider of rawFqdnToIdentityProviders) {
+      const fqdnToIdentityProvider = plainToInstance(
+        GetFqdnToIdentityProviderMongoDto,
+        rawFqdnToIdentityProvider,
+      );
+      const errors = await validate(fqdnToIdentityProvider, {
+        forbidNonWhitelisted: true,
+        whitelist: true,
+      });
+
+      if (errors.length > 0) {
+        this.logger.alert({
+          msg: `fqdnToProvider with domain "${rawFqdnToIdentityProvider?.fqdn}" and provider uuid "${rawFqdnToIdentityProvider?.identityProvider}" was excluded from the result at DTO validation.`,
+          validationErrors: errors,
         });
+      } else {
+        fqdnToIdentityProviders.push(fqdnToIdentityProvider);
+      }
+    }
 
-        const { fqdn, identityProvider } = rawFqdnToIdentityProvider;
-
-        if (errors.length) {
-          this.logger.alert({
-            msg: `fqdnToProvider with domain "${fqdn}" and provider uuid "${identityProvider}" was excluded from the result at DTO validation.`,
-            validationErrors: errors,
-          });
-        }
-
-        return !errors.length ? fqdnToIdentityProvider : undefined;
-      }),
-    );
-
-    return filter(fqdnToIdentityProviders);
+    return fqdnToIdentityProviders;
   }
 
   fetchFqdnToIdpByEmail(email: string): Promise<FqdnToIdentityProvider[]> {
