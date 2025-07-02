@@ -12,7 +12,7 @@ import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oid
 
 import { ExceptionsConfig } from '../dto';
 import { BaseException } from '../exceptions/base.exception';
-import { getClass, getCode, getStackTraceArray } from '../helpers';
+import { getCode, getStackTraceArray } from '../helpers';
 
 @Catch()
 export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
@@ -40,28 +40,20 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     return exceptionParam;
   }
 
-  // eslint-disable-next-line complexity
   protected getHttpStatus(
     exception: BaseException,
     defaultStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): HttpStatus {
     if (exception instanceof OidcProviderNoWrapperException) {
-      return (
-        exception.originalError?.status ||
-        exception.originalError?.statusCode ||
-        defaultStatus
-      );
+      return exception.originalError?.statusCode || defaultStatus;
     }
+
     // Yes this checks seems redundant, it's a belt and suspenders situation
     if (exception instanceof BaseException) {
-      const exceptionConstructor =
-        exception.constructor as typeof BaseException;
-      return (
-        exception.status ||
-        exception.statusCode ||
-        exceptionConstructor.HTTP_STATUS_CODE
-      );
-    } else return defaultStatus;
+      return exception.http_status_code;
+    }
+
+    return defaultStatus;
   }
 
   protected logException(
@@ -69,17 +61,15 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     id: string,
     exception: BaseException,
   ): void {
-    const exceptionConstructor = getClass(exception);
-
     const exceptionObject = {
       code,
       id,
-      msg: exceptionConstructor.UI,
+      msg: exception.ui,
       originalError: exception.originalError,
       reason: exception.log,
       stackTrace: getStackTraceArray(exception),
       type: exception.constructor.name,
-      statusCode: exception.statusCode,
+      statusCode: exception.http_status_code,
     };
 
     this.logger.err(exceptionObject);
@@ -97,11 +87,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     }
 
     if (exception instanceof BaseException) {
-      const exceptionClass = exception.constructor as typeof BaseException;
-      const scope = exceptionClass.SCOPE;
-      const code = exceptionClass.CODE;
-
-      return getCode(scope, code, prefix);
+      return getCode(exception.scope, exception.code, prefix);
     }
 
     if (exception instanceof HttpException) {

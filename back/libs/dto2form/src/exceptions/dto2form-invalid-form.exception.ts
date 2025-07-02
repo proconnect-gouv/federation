@@ -2,10 +2,10 @@ import { ErrorCode } from '../enums';
 import { Dto2FormBaseException } from './dto2form-base.exception';
 
 export class Dto2FormInvalidFormException extends Dto2FormBaseException {
-  static CODE = ErrorCode.INVALID_FORM;
-  static DOCUMENTATION = 'La classe cible n\'est pas de type "FormDtoBase".';
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public code = ErrorCode.INVALID_FORM;
+  public documentation = 'La classe cible n\'est pas de type "FormDtoBase".';
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Dto2form.exceptions.dto2formInvalidForm';
+  public ui = 'Dto2form.exceptions.dto2formInvalidForm';
 }

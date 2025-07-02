@@ -77,6 +77,7 @@ const allowedSnakeCaseParameters = [
   'userinfo_endpoint',
   'userinfo_signed_response_alg',
   'usual_name',
+  'http_status_code'
 ];
 
 const allowedSnakeCaseParametersRegexPattern = `^(${allowedSnakeCaseParameters.join('|')})$`;

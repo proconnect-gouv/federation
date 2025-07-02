@@ -4,13 +4,13 @@ import { ErrorCode } from '../enums';
 import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseException {
-  static DOCUMENTATION =
+  public documentation =
     "L'utilisateur renseigné n'est pas reconnu comme dépendant du service public";
-  static CODE = ErrorCode.AGENT_NOT_FOUND;
-  static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
+  public code = ErrorCode.AGENT_NOT_FOUND;
+  public http_status_code = HttpStatus.BAD_REQUEST;
 
-  static ERROR = 'access_denied';
-  static ERROR_DESCRIPTION = 'authentication aborted due to invalid identity';
+  public error = 'access_denied';
+  public error_description = 'authentication aborted due to invalid identity';
 
   public illustration = 'access-restricted-error';
   public title = 'Email non autorisé';

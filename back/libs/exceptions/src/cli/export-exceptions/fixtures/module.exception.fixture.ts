@@ -3,12 +3,11 @@ import { FcException } from '../../../exceptions';
 export const anyFunction = () => false;
 
 export class ImportFixture extends FcException {
-  static DOCUMENTATION = 'documentation';
-  static SCOPE = 1;
-  static CODE = 2;
-  static ERROR = 'error';
-  static ERROR_DESCRIPTION = 'error description';
-  static UI = 'ui';
+  public documentation = 'documentation';
+  public scope = 1;
+  public code = 2;
+  public error = 'error';
+  public error_description = 'error description';
+  public ui = 'ui';
   readonly message = 'message';
-  static LOG_LEVEL = 20;
 }

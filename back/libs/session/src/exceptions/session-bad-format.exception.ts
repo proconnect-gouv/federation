@@ -2,10 +2,10 @@ import { ErrorCode } from '../enums';
 import { SessionBaseException } from './session-base.exception';
 
 export class SessionBadFormatException extends SessionBaseException {
-  static CODE = ErrorCode.BAD_SESSION_FORMAT;
-  static DOCUMENTATION =
+  public code = ErrorCode.BAD_SESSION_FORMAT;
+  public documentation =
     "Les éléments présents dans la session de l'utilisateur ne sont pas valides. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";
-  static ERROR = 'access_denied';
-  static ERROR_DESCRIPTION = 'user authentication aborted';
-  static UI = 'Session.exceptions.sessionBadFormat';
+  public error = 'access_denied';
+  public error_description = 'user authentication aborted';
+  public ui = 'Session.exceptions.sessionBadFormat';
 }

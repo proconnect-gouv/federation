@@ -13,11 +13,11 @@ import { EventBus } from '@nestjs/cqrs';
 import { ConfigService } from '@fc/config';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
-import { generateErrorId, getClass } from '@fc/exceptions/helpers';
+import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
-import { ViewTemplateService } from '@fc/view-templates';
+import { SessionService } from '@fc/session';
 
 import { OidcProviderBaseRedirectException } from '../exceptions';
 import { OidcProviderService } from '../oidc-provider.service';
@@ -33,13 +33,13 @@ export class OidcProviderRedirectExceptionFilter
   constructor(
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
+    protected readonly session: SessionService,
     protected readonly eventBus: EventBus,
     private readonly oidcProvider: OidcProviderService,
-    protected readonly viewTemplate: ViewTemplateService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: IServiceProviderAdapter,
   ) {
-    super(config, logger, eventBus, viewTemplate);
+    super(config, session, logger, eventBus);
   }
 
   async catch(
@@ -70,15 +70,14 @@ export class OidcProviderRedirectExceptionFilter
   }
 
   private getOidcParams(exception: OidcProviderBaseRedirectException) {
-    const exceptionConstructor = getClass(exception);
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
 
     const params = {
-      error: exception.originalError?.error || exceptionConstructor.ERROR,
+      error: exception.originalError?.error || exception.error,
       error_description:
         exception.originalError?.error_description ||
-        exceptionConstructor.ERROR_DESCRIPTION,
+        exception.error_description,
       state: exception.originalError?.state,
       code,
       id,

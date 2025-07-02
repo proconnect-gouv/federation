@@ -68,13 +68,13 @@ export default class Runner {
     path,
     Exception,
   }: PathAndException): PathAndInstantiatedException | null {
-    const { SCOPE, CODE, HTTP_STATUS_CODE } = Exception;
+    const { http_status_code, scope, code } = new Exception();
 
     // Retrieve static error and error description props
-    const hasValidScope = Runner.hasValidNumber(SCOPE);
-    const hasValidCode = typeof CODE === 'number' || typeof CODE === 'string';
+    const hasValidScope = Runner.hasValidNumber(scope);
+    const hasValidCode = typeof code === 'number' || typeof code === 'string';
     const hasValidHttpStatusCode =
-      Runner.hasValidHttpStatusCode(HTTP_STATUS_CODE);
+      Runner.hasValidHttpStatusCode(http_status_code);
 
     const isException = Runner.hasValidException({
       hasValidScope,
@@ -95,31 +95,29 @@ export default class Runner {
     Exception,
   }: PathAndInstantiatedException): ExceptionDocumentationInterface {
     const {
-      SCOPE,
-      CODE,
-      HTTP_STATUS_CODE,
-      ERROR,
-      ERROR_DESCRIPTION,
-      UI,
-      LOG_LEVEL,
-      DOCUMENTATION,
-    } = Exception;
+      error,
+      error_description,
+      ui,
+      http_status_code,
+      scope,
+      code,
+      documentation,
+    } = new Exception();
 
-    const errorCode = getCode(SCOPE, CODE, '');
+    const errorCode = getCode(scope, code, '');
 
     const data = {
-      SCOPE,
-      CODE,
+      scope,
+      code,
       errorCode,
       exception: Exception.name,
-      HTTP_STATUS_CODE,
-      UI,
-      translated: messageDictionary[UI],
-      DOCUMENTATION,
-      LOG_LEVEL,
+      http_status_code,
+      ui,
+      translated: messageDictionary[ui],
+      documentation,
       path,
-      ERROR,
-      ERROR_DESCRIPTION,
+      error,
+      error_description,
     };
 
     return data;
@@ -164,7 +162,7 @@ export default class Runner {
     const loaded = await Runner.loadExceptions(paths);
 
     const mainList = loaded.filter(
-      (item) => item.SCOPE !== OIDC_PROVIDER_RUNTIME_SCOPE,
+      (item) => item.scope !== OIDC_PROVIDER_RUNTIME_SCOPE,
     );
 
     const mainMarkdown = MarkdownGenerator.generate(mainList);

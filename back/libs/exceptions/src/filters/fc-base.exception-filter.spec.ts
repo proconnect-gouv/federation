@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { errors } from 'oidc-provider';
 
 import { HttpStatus } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
@@ -36,10 +37,10 @@ describe('FcBaseExceptionFilter', () => {
   const codeMock = 1337;
 
   class ExceptionMock extends BaseException {
-    static SCOPE = scopeMock;
-    static CODE = codeMock;
-    static ERROR = 'ERROR';
-    static ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
+    public scope = scopeMock;
+    public code = codeMock;
+    public error = 'ERROR';
+    public error_description = 'ERROR_DESCRIPTION';
   }
 
   let originalErrorMock: Error;
@@ -103,62 +104,16 @@ describe('FcBaseExceptionFilter', () => {
   });
 
   describe('getHttpStatus', () => {
-    it('should return the status code from status property', () => {
-      // Given
-      const statusException = new BaseException();
-      statusException.status = Symbol('statusCode') as unknown as number;
-
-      // When
-      const result = filter['getHttpStatus'](statusException);
-
-      // Then
-      expect(result).toBe(statusException.status);
-    });
-
-    it('should return the status code from status property', () => {
-      // Given
-      const statusException = new BaseException();
-      statusException.status = Symbol('statusCode') as unknown as number;
-
-      // When
-      const result = filter['getHttpStatus'](statusException);
-
-      // Then
-      expect(result).toBe(statusException.status);
-    });
-
     it('should return the status code from _inner_ statusCode property of OidcProviderNoWrapperException', () => {
       // Given
-      const wrapped = new BaseException();
-      wrapped.statusCode = Symbol('statusCode') as unknown as number;
+      const wrapped = new errors.OIDCProviderError(418, 'teapot');
       const statusCodeException = new OidcProviderNoWrapperException(wrapped);
 
       // When
       const result = filter['getHttpStatus'](statusCodeException);
 
       // Then
-      expect(result).toBe(wrapped.statusCode);
-    });
-
-    it('should return the status code from _inner_ status property of OidcProviderNoWrapperException', () => {
-      // Given
-      const wrapped = new BaseException();
-      wrapped.status = Symbol('statusCode') as unknown as number;
-      const statusCodeException = new OidcProviderNoWrapperException(wrapped);
-
-      // When
-      const result = filter['getHttpStatus'](statusCodeException);
-
-      // Then
-      expect(result).toBe(wrapped.status);
-    });
-
-    it('should return the status code from class HTTP_STATUS_CODE static property', () => {
-      // When
-      const result = filter['getHttpStatus'](exceptionMock);
-
-      // Then
-      expect(result).toBe(ExceptionMock.HTTP_STATUS_CODE);
+      expect(result).toBe(HttpStatus.I_AM_A_TEAPOT);
     });
 
     it('should ignore the default status given as argument if the class has a status', () => {

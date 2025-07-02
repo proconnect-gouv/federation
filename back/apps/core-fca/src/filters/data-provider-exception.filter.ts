@@ -9,7 +9,7 @@ import { ApiContentType, ApiErrorMessage } from '@fc/app';
 import { FcException } from '@fc/exceptions';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { FcWebJsonExceptionFilter } from '@fc/exceptions/filters';
-import { generateErrorId, getClass } from '@fc/exceptions/helpers';
+import { generateErrorId } from '@fc/exceptions/helpers';
 
 @Catch(FcException)
 @Injectable()
@@ -22,11 +22,9 @@ export class DataProviderExceptionFilter
     const req = ctx.getRequest();
     const res = ctx.getResponse();
 
-    const exceptionConstructor = getClass(exception);
-
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
-    const message = exceptionConstructor.UI;
+    const message = exception.ui;
 
     this.logException(code, id, exception);
     this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
@@ -39,8 +37,8 @@ export class DataProviderExceptionFilter
     res.status(httpResponseCode);
 
     res.json({
-      error: exceptionConstructor.ERROR,
-      error_description: exceptionConstructor.ERROR_DESCRIPTION,
+      error: exception.error,
+      error_description: exception.error_description,
     });
   }
 }

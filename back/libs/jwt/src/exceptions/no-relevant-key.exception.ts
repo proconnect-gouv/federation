@@ -4,10 +4,10 @@ import { ErrorCode } from '../enum';
 import { JwtBaseException } from './jwt-base.exception';
 
 export class NoRelevantKeyException extends JwtBaseException {
-  static CODE = ErrorCode.NO_RELEVANT_KEY;
-  static DOCUMENTATION = 'Aucune clé pertinente trouvée';
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public code = ErrorCode.NO_RELEVANT_KEY;
+  public documentation = 'Aucune clé pertinente trouvée';
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
 
   constructor(alg: KekAlg, use: Use) {

@@ -12,4 +12,6 @@ export interface ApiErrorParams {
   httpResponseCode: HttpStatus;
   res: Response;
   dictionary: Record<string, string>;
+  idpName?: string;
+  spName?: string;
 }

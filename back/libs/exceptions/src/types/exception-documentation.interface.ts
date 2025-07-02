@@ -1,14 +1,13 @@
 export interface ExceptionDocumentationInterface {
-  CODE: string | number;
-  SCOPE: number;
+  code: string | number;
+  scope: number;
   errorCode: string;
-  ERROR: string;
-  ERROR_DESCRIPTION: string;
-  UI: string;
-  DOCUMENTATION: string;
+  error: string;
+  error_description: string;
+  ui: string;
+  documentation: string;
   exception: string;
-  HTTP_STATUS_CODE: number;
+  http_status_code: number;
   translated?: string;
-  LOG_LEVEL: number;
   path: string;
 }

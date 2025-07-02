@@ -10,7 +10,7 @@ import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
-import { ViewTemplateService } from '@fc/view-templates';
+import { SessionService } from '@fc/session';
 
 import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { ExceptionCaughtEvent } from '../events';
@@ -27,9 +27,9 @@ export class FcWebHtmlExceptionFilter
 {
   constructor(
     protected readonly config: ConfigService,
+    protected readonly session: SessionService,
     protected readonly logger: LoggerService,
     protected readonly eventBus: EventBus,
-    protected readonly viewTemplate: ViewTemplateService,
   ) {
     super(config, logger, eventBus);
   }
@@ -46,12 +46,16 @@ export class FcWebHtmlExceptionFilter
     if (exception instanceof OidcProviderNoWrapperException) {
       message = exception.originalError.constructor.name;
     } else {
-      message = (exception.constructor as typeof BaseException).UI;
+      message = exception.ui;
     }
 
     // @todo: weird Naming / structure
     const errorMessage: ApiErrorMessage = { code, id, message };
     const exceptionParam = this.getParams(exception, errorMessage, res);
+
+    exceptionParam.dictionary = messageDictionary;
+    exceptionParam.idpName = this.session.get('User', 'idpName');
+    exceptionParam.spName = this.session.get('User', 'spName');
 
     this.logException(code, id, exception);
 
@@ -62,14 +66,11 @@ export class FcWebHtmlExceptionFilter
 
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
-    errorParam.dictionary = messageDictionary;
 
     /**
      * Interceptors are not run in case of route not handled by our app (404)
      * So we need to manually bind template helpers.
      */
-    this.viewTemplate.bindMethodsToResponse(res);
-
     res.status(httpResponseCode);
     res.render('error', errorParam);
   }

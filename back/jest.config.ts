@@ -15,7 +15,6 @@ const config: Config = {
     '.mocks/',
     '.+/index.ts',
     '.+.(config|descriptor|dto|enum|fixture|interface|module|plugin|schema|type|token).ts',
-    'oidc-provider-base-runtime.exception.ts',
   ],
   moduleFileExtensions: ['js', 'json', 'ts'],
   modulePaths: [compilerOptions.baseUrl],

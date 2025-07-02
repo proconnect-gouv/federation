@@ -2,11 +2,11 @@ import { ErrorCode } from '../enums';
 import { SessionBaseException } from './session-base.exception';
 
 export class SessionStorageException extends SessionBaseException {
-  static CODE = ErrorCode.STORAGE_ISSUE;
-  static DOCUMENTATION =
+  public code = ErrorCode.STORAGE_ISSUE;
+  public documentation =
     'Un problème est survenant lors de la récupération des données de session dans la base Redis. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3';
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'Session.exceptions.sessionStorage';
+  public ui = 'Session.exceptions.sessionStorage';
 }

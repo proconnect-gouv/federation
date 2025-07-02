@@ -204,30 +204,14 @@ describe('Runner', () => {
       expect(result).toStrictEqual(expected);
     });
 
-    it('should return null if Exception has invalid error and/or error_description', () => {
-      // Given
-      class MockException extends FcException {
-        public code = 1;
-        public scope = 1;
-      }
-      const expected = null;
-      // When
-      const result = Runner.inflateException({
-        path,
-        Exception: MockException,
-      });
-      // Then
-      expect(result).toStrictEqual(expected);
-    });
-
     it('should return the path of the error, the class of Error if Exception has valid SCOPE and CODE', () => {
       // When
       class MockException extends FcException {
-        static CODE = 1;
-        static SCOPE = 1;
-        static ERROR = 'error';
-        static ERROR_DESCRIPTION = 'error description';
-        static HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
+        public code = 1;
+        public scope = 1;
+        public error = 'error';
+        public error_description = 'error description';
+        public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
       }
       const result = Runner.inflateException({
         path,
@@ -243,11 +227,11 @@ describe('Runner', () => {
     it('should return the path and class even if SCOPE = 0 and CODE = 0', () => {
       // When
       class MockException extends FcException {
-        static CODE = 0;
-        static SCOPE = 0;
-        static ERROR = 'error';
-        static ERROR_DESCRIPTION = 'error description';
-        static HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
+        public code = 0;
+        public scope = 0;
+        public error = 'error';
+        public error_description = 'error description';
+        public http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
       }
       const result = Runner.inflateException({
         path,
@@ -311,31 +295,29 @@ describe('Runner', () => {
       // Then
       expect(result).toStrictEqual([
         {
-          DOCUMENTATION: 'documentation',
-          SCOPE: 1,
-          CODE: 2,
-          HTTP_STATUS_CODE: 500,
-          LOG_LEVEL: 20,
-          UI: 'ui',
+          documentation: 'documentation',
+          scope: 1,
+          code: 2,
+          http_status_code: 500,
+          ui: 'ui',
           errorCode: '010002',
           exception: 'ImportFixture',
           path: paths[0],
-          ERROR: 'error',
-          ERROR_DESCRIPTION: 'error description',
+          error: 'error',
+          error_description: 'error description',
           translated: undefined,
         },
         {
-          DOCUMENTATION: 'documentation',
-          SCOPE: 2,
-          CODE: 2,
-          HTTP_STATUS_CODE: 500,
-          LOG_LEVEL: 20,
-          UI: 'ui',
+          documentation: 'documentation',
+          scope: 2,
+          code: 2,
+          http_status_code: 500,
+          ui: 'ui',
           errorCode: '020002',
           exception: 'ImportFixture2',
           path: paths[1],
-          ERROR: 'error',
-          ERROR_DESCRIPTION: 'error description',
+          error: 'error',
+          error_description: 'error description',
           translated: undefined,
         },
       ]);
@@ -370,7 +352,7 @@ describe('Runner', () => {
   describe('run', () => {
     // Given
     const getExceptionsFilesPathResult = [];
-    const loadExceptionsResult = [{ SCOPE: 2 }, { SCOPE: 4 }, { SCOPE: 6 }];
+    const loadExceptionsResult = [{ scope: 2 }, { scope: 4 }, { scope: 6 }];
     const markdownGenerateResult = [];
     const renderFileResult = '';
     const generatorSpy = jest.spyOn(MarkdownGenerator, 'generate');
@@ -403,8 +385,8 @@ describe('Runner', () => {
       // Then
       expect(generatorSpy).toHaveBeenCalledTimes(1);
       expect(generatorSpy).toHaveBeenNthCalledWith(1, [
-        { SCOPE: 2 },
-        { SCOPE: 6 },
+        { scope: 2 },
+        { scope: 6 },
       ]);
     });
 

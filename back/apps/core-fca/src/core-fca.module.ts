@@ -27,7 +27,6 @@ import {
   ServiceProviderAdapterMongoService,
 } from '@fc/service-provider-adapter-mongo';
 import { SessionModule } from '@fc/session';
-import { ViewTemplatesModule } from '@fc/view-templates';
 
 import {
   DataProviderController,
@@ -76,7 +75,6 @@ import {
     NotificationsModule,
     CsrfModule,
     AccountFcaModule,
-    ViewTemplatesModule,
     CoreModule.register(
       CoreFcaService,
       OidcProviderConfigAppService,

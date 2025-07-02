@@ -2,11 +2,11 @@ import { ErrorCode } from '../enums';
 import { ChecktokenBaseException } from './checktoken-base.exception';
 
 export class ChecktokenInvalidAlgorithmException extends ChecktokenBaseException {
-  static CODE = ErrorCode.CHECKTOKEN_INVALID_ALGORYTHM;
-  static DOCUMENTATION =
+  public code = ErrorCode.CHECKTOKEN_INVALID_ALGORYTHM;
+  public documentation =
     "Un problème est survenu lors de l'appel au checktoken";
-  static ERROR = 'server_error';
-  static ERROR_DESCRIPTION =
+  public error = 'server_error';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
-  static UI = 'DataProviderAdapterCore.exceptions.checktokenInvalidAlgorithm';
+  public ui = 'DataProviderAdapterCore.exceptions.checktokenInvalidAlgorithm';
 }

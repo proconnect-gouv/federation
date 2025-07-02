@@ -9,10 +9,11 @@ import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
-import { ViewTemplateService } from '@fc/view-templates';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { OidcProviderBaseRedirectException } from '../exceptions';
 import { OidcProviderService } from '../oidc-provider.service';
@@ -30,6 +31,7 @@ describe('OidcProviderRedirectExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
+  const sessionMock = getSessionServiceMock();
   const eventBusMock = {
     publish: jest.fn(),
   };
@@ -41,8 +43,8 @@ describe('OidcProviderRedirectExceptionFilter', () => {
   };
 
   class ExceptionMock extends OidcProviderBaseRedirectException {
-    static ERROR = 'ERROR';
-    static ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
+    public error = 'ERROR';
+    public error_description = 'ERROR_DESCRIPTION';
   }
 
   const resMock = {
@@ -63,8 +65,6 @@ describe('OidcProviderRedirectExceptionFilter', () => {
     getList: jest.fn(),
   };
 
-  const viewTemplateServiceMock = {};
-
   const oidcProviderServiceMock = { abortInteraction: jest.fn() };
 
   let originalErrorMock: Error;
@@ -78,10 +78,10 @@ describe('OidcProviderRedirectExceptionFilter', () => {
       providers: [
         OidcProviderRedirectExceptionFilter,
         ConfigService,
+        SessionService,
         LoggerService,
         EventBus,
         OidcProviderService,
-        ViewTemplateService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderMock,
@@ -90,12 +90,12 @@ describe('OidcProviderRedirectExceptionFilter', () => {
     })
       .overrideProvider(ConfigService)
       .useValue(configMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(EventBus)
       .useValue(eventBusMock)
-      .overrideProvider(ViewTemplateService)
-      .useValue(viewTemplateServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
 

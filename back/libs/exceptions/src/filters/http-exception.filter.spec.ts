@@ -6,11 +6,13 @@ import { ConfigService } from '@fc/config';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { ViewTemplateService } from '@fc/view-templates';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
+import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { HttpExceptionFilter } from './http-exception.filter';
 
 jest.mock('@fc/exceptions/helpers', () => ({
@@ -25,6 +27,7 @@ describe('HttpExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
+  const sessionMock = getSessionServiceMock();
   const eventBusMock = {
     publish: jest.fn(),
   };
@@ -33,10 +36,6 @@ describe('HttpExceptionFilter', () => {
     switchToHttp: jest.fn().mockReturnThis(),
     getRequest: jest.fn(),
     getResponse: jest.fn(),
-  };
-
-  const viewTemplateServiceMock = {
-    bindMethodsToResponse: jest.fn(),
   };
 
   let exceptionMock: HttpException;
@@ -57,7 +56,7 @@ describe('HttpExceptionFilter', () => {
       id: idMock,
       message: 'exceptions.http.500',
     },
-    dictionary: {},
+    dictionary: messageDictionary,
   };
 
   beforeEach(async () => {
@@ -68,19 +67,19 @@ describe('HttpExceptionFilter', () => {
       providers: [
         HttpExceptionFilter,
         ConfigService,
+        SessionService,
         LoggerService,
         EventBus,
-        ViewTemplateService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(EventBus)
       .useValue(eventBusMock)
-      .overrideProvider(ViewTemplateService)
-      .useValue(viewTemplateServiceMock)
       .compile();
 
     filter = module.get<HttpExceptionFilter>(HttpExceptionFilter);

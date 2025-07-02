@@ -4,12 +4,12 @@ import { ErrorCode } from '../enums';
 import { CryptographyBaseException } from './cryptography-base.exception';
 
 export class CryptographyGatewayException extends CryptographyBaseException {
-  static CODE = ErrorCode.GATEWAY;
-  static DOCUMENTATION =
+  public code = ErrorCode.GATEWAY;
+  public documentation =
     "Il y a un problème de communication avec le HSM. L'application est inutilisable pour tous les usagers. Contacter le support N3 en urgence.";
-  static ERROR = 'temporarily_unavailable';
-  static ERROR_DESCRIPTION =
+  public error = 'temporarily_unavailable';
+  public error_description =
     'authentication aborted due to a technical error on the authorization server';
-  static HTTP_STATUS_CODE = HttpStatus.BAD_GATEWAY;
-  static UI = 'OverrideOidcProvider.exceptions.cryptographyGateway';
+  public http_status_code = HttpStatus.BAD_GATEWAY;
+  public ui = 'OverrideOidcProvider.exceptions.cryptographyGateway';
 }

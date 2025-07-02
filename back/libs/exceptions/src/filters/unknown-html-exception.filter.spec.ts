@@ -4,10 +4,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { ViewTemplateService } from '@fc/view-templates';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { BaseException } from '../exceptions';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
@@ -18,6 +19,7 @@ describe('UnknownHtmlExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
+  const sessionMock = getSessionServiceMock();
   const eventBusMock = {
     publish: jest.fn(),
   };
@@ -26,10 +28,6 @@ describe('UnknownHtmlExceptionFilter', () => {
     switchToHttp: jest.fn().mockReturnThis(),
     getRequest: jest.fn(),
     getResponse: jest.fn(),
-  };
-
-  const viewTemplateServiceMock = {
-    bindMethodsToResponse: jest.fn(),
   };
 
   let spyParent: jest.SpyInstance;
@@ -42,19 +40,19 @@ describe('UnknownHtmlExceptionFilter', () => {
       providers: [
         UnknownHtmlExceptionFilter,
         ConfigService,
+        SessionService,
         LoggerService,
         EventBus,
-        ViewTemplateService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(EventBus)
       .useValue(eventBusMock)
-      .overrideProvider(ViewTemplateService)
-      .useValue(viewTemplateServiceMock)
       .compile();
     filter = module.get<UnknownHtmlExceptionFilter>(UnknownHtmlExceptionFilter);
 

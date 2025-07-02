@@ -7,6 +7,7 @@ import {
 
 import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 
+import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { ExceptionCaughtEvent } from '../events';
 import { generateErrorId } from '../helpers';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
@@ -35,7 +36,7 @@ export class HttpExceptionFilter
       res,
       error: errorMessage,
       httpResponseCode: status,
-      dictionary: {},
+      dictionary: messageDictionary,
     };
 
     return this.errorOutput(exceptionParam);

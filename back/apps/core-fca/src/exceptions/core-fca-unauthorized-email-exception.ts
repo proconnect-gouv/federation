@@ -12,12 +12,12 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
     super();
   }
 
-  static CODE = ErrorCode.UNAUTHORIZED_EMAIL;
-  static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
-  static DOCUMENTATION = '';
+  public code = ErrorCode.UNAUTHORIZED_EMAIL;
+  public http_status_code = HttpStatus.BAD_REQUEST;
+  public documentation = '';
 
-  static ERROR = 'access_denied';
-  static ERROR_DESCRIPTION =
+  public error = 'access_denied';
+  public error_description =
     'authentication aborted due to a configuration limitation';
 
   public illustration = 'unauthorized-email-error';

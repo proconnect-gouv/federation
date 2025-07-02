@@ -4,7 +4,7 @@ export default class MarkdownGenerator {
   static removeExceptionsWithoutCode(
     exception: ExceptionDocumentationInterface,
   ): boolean {
-    return exception.CODE !== undefined;
+    return exception.code !== undefined;
   }
 
   static sortByCode(
@@ -18,10 +18,10 @@ export default class MarkdownGenerator {
     acc: Record<number, ExceptionDocumentationInterface[]>,
     info: ExceptionDocumentationInterface,
   ): { [key: number]: ExceptionDocumentationInterface[] } {
-    const { SCOPE } = info;
-    const previousInfos = acc[SCOPE] || [];
+    const { scope } = info;
+    const previousInfos = acc[scope] || [];
     const nextInfos = [...previousInfos, info];
-    const accumulated = { ...acc, [SCOPE]: nextInfos };
+    const accumulated = { ...acc, [scope]: nextInfos };
     return accumulated;
   }
 

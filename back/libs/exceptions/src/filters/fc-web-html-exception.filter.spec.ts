@@ -8,10 +8,11 @@ import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
-import { ViewTemplateService } from '@fc/view-templates';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { FcException } from '../exceptions';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
@@ -27,6 +28,7 @@ describe('FcWebHtmlExceptionFilter', () => {
   const generateErrorIdMock = jest.mocked(generateErrorId);
 
   const configMock = getConfigMock();
+  const sessionMock = getSessionServiceMock();
   const loggerMock = getLoggerMock();
   const eventBusMock = {
     publish: jest.fn(),
@@ -38,14 +40,9 @@ describe('FcWebHtmlExceptionFilter', () => {
     getResponse: jest.fn(),
   };
 
-  const viewTemplateServiceMock = {
-    bindMethodsToResponse: jest.fn(),
-  };
-
   class ExceptionMock extends FcException {
-    ERROR = 'ERROR';
-    ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
-    HTTP_STATUS_CODE = Symbol('HTTP_STATUS_CODE');
+    error = 'ERROR';
+    error_description = 'ERROR_DESCRIPTION';
   }
 
   let exceptionMock: ExceptionMock;
@@ -73,19 +70,19 @@ describe('FcWebHtmlExceptionFilter', () => {
       providers: [
         FcWebHtmlExceptionFilter,
         ConfigService,
+        SessionService,
         LoggerService,
         EventBus,
-        ViewTemplateService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(EventBus)
       .useValue(eventBusMock)
-      .overrideProvider(ViewTemplateService)
-      .useValue(viewTemplateServiceMock)
       .compile();
 
     filter = module.get<FcWebHtmlExceptionFilter>(FcWebHtmlExceptionFilter);
@@ -156,16 +153,6 @@ describe('FcWebHtmlExceptionFilter', () => {
   });
 
   describe('errorOutput', () => {
-    it('should bind the view template methods to the response', () => {
-      // When
-      filter['errorOutput'](paramsMock as unknown as ApiErrorParams);
-
-      // Then
-      expect(
-        viewTemplateServiceMock.bindMethodsToResponse,
-      ).toHaveBeenCalledExactlyOnceWith(resMock);
-    });
-
     it('should set the status to 500', () => {
       // When
       filter['errorOutput'](paramsMock as unknown as ApiErrorParams);

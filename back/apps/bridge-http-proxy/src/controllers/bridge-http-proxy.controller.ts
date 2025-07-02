@@ -117,6 +117,6 @@ export class BridgeHttpProxyController {
       throw new BridgeHttpProxyMissingVariableException();
     }
 
-    throw new BridgeHttpProxyCsmrException(error as BridgeError);
+    throw new BridgeHttpProxyCsmrException().from(error as BridgeError);
   }
 }

@@ -1,20 +1,16 @@
 import { HttpStatus } from '@nestjs/common';
 
 export class BaseException extends Error {
-  static DOCUMENTATION: string;
-  static UI: string;
-  static SCOPE: number;
-  static CODE: number | string;
-  static LOG_LEVEL: number;
-  static HTTP_STATUS_CODE: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-
-  static ERROR?: string;
-  static ERROR_DESCRIPTION?: string;
+  public documentation: string;
+  public code: number | string;
+  public scope: number;
+  public http_status_code: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+  public ui: string;
+  public error?: string;
+  public error_description?: string;
 
   public originalError?: Error;
   public log: unknown;
-  public statusCode?: number;
-  public status?: number;
 
   constructor(input?: Error | string) {
     let arg: unknown = input;
