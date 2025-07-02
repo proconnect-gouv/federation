@@ -6,22 +6,11 @@
 #### Global Variables:
 COMPOSE_PROJECT_NAME=pc
 COMPOSE_DIR="${DOCKER_DIR}/compose"
-COMPOSE_FILES=$(find ${COMPOSE_DIR} -not -path "${COMPOSE_DIR}/OS/*" -not -path "${COMPOSE_DIR}/CI/*" -name "*.yml")
-
-COMPOSE_DIR_OS_SPECIFIC="${COMPOSE_DIR}/OS/$(uname -s)"
-COMPOSE_FILES_OS_SPECIFIC=
-
-if [ -d ${COMPOSE_DIR_OS_SPECIFIC} ]; then
-  COMPOSE_FILES_OS_SPECIFIC=$(find ${COMPOSE_DIR_OS_SPECIFIC} -name "*.yml")
-fi
+COMPOSE_FILE="${COMPOSE_DIR}/fca-low/stack.yml"
 
 VOLUMES_DIR="${DOCKER_DIR}/volumes"
 WORKING_DIR="${DOCKER_DIR}"
 
-# https://docs.docker.com/compose/reference/envvars/#compose_file
-COMPOSE_PATH_SEPARATOR=":"
-COMPOSE_FILE=$(join_by ${COMPOSE_PATH_SEPARATOR} ${COMPOSE_FILES} ${COMPOSE_FILES_OS_SPECIFIC})
-export COMPOSE_PATH_SEPARATOR
 export COMPOSE_FILE
 export COMPOSE_DIR
 export VOLUMES_DIR
