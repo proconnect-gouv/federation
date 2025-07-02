@@ -175,6 +175,7 @@ jobs:
           repository: proconnect-gouv/federation-admin
           token: ${{ secrets.GITHUB_TOKEN }}
           path: ./docker/volumes/src/federation-admin
+          ref: pc-359
 
       - name: Start docker stack
         working-directory: ./docker
