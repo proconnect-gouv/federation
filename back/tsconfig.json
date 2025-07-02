@@ -89,18 +89,6 @@
       "@fc/tracking-context/*": ["libs/tracking-context/src/*"],
       "@fc/app": ["libs/app/src"],
       "@fc/app/*": ["libs/app/src/*"],
-      "@fc/identity-provider-adapter-env": [
-        "libs/identity-provider-adapter-env/src"
-      ],
-      "@fc/identity-provider-adapter-env/*": [
-        "libs/identity-provider-adapter-env/src/*"
-      ],
-      "@fc/service-provider-adapter-env": [
-        "libs/service-provider-adapter-env/src"
-      ],
-      "@fc/service-provider-adapter-env/*": [
-        "libs/service-provider-adapter-env/src/*"
-      ],
       "@fc/apache-ignite": ["libs/apache-ignite/src"],
       "@fc/apache-ignite/*": ["libs/apache-ignite/src/*"],
       "@fc/notifications": ["libs/notifications/src"],

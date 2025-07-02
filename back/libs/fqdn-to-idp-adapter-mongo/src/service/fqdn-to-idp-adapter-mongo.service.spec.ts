@@ -1,7 +1,9 @@
+import { plainToInstance } from 'class-transformer';
+import { validate, ValidationError } from 'class-validator';
+
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { validateDto } from '@fc/common';
 import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
 
@@ -10,9 +12,14 @@ import { getLoggerMock } from '@mocks/logger';
 import { FqdnToIdentityProvider } from '../schemas';
 import { FqdnToIdpAdapterMongoService } from './fqdn-to-idp-adapter-mongo.service';
 
-jest.mock('@fc/common', () => ({
-  ...(jest.requireActual('@fc/common') as any),
-  validateDto: jest.fn(),
+jest.mock('class-validator', () => ({
+  ...jest.requireActual('class-validator'),
+  validate: jest.fn(),
+}));
+
+jest.mock('class-transformer', () => ({
+  ...jest.requireActual('class-transformer'),
+  plainToInstance: jest.fn(),
 }));
 
 const fqdnToIdps = [
@@ -43,6 +50,10 @@ describe('FqdnToIdpAdapterMongoService', () => {
 
   const fqdnToProviderModel = getModelToken('FqdnToIdentityProvider');
 
+  const validateMock = jest.mocked(validate);
+
+  const plainToInstanceMock = jest.mocked(plainToInstance);
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -72,6 +83,7 @@ describe('FqdnToIdpAdapterMongoService', () => {
     repositoryMock.lean.mockResolvedValueOnce(repositoryMock);
     repositoryMock.find.mockReturnValueOnce(repositoryMock);
     repositoryMock.sort.mockReturnValueOnce(repositoryMock);
+    plainToInstanceMock.mockImplementation((_dto, obj) => obj);
   });
 
   it('should be defined', () => {
@@ -139,15 +151,16 @@ describe('FqdnToIdpAdapterMongoService', () => {
       // Given
       const findAllFqdnToIdentityProviderMock = jest.fn();
       findAllFqdnToIdentityProviderMock.mockReturnValueOnce(fqdnToIdps);
-      service['fetchFqdnToIdps'] = findAllFqdnToIdentityProviderMock;
+      service['findAllFqdnToIdentityProvider'] =
+        findAllFqdnToIdentityProviderMock;
     });
 
-    it('should call fetchFqdnToIdps when cache is refreshed', async () => {
+    it('should call findAllFqdnToIdentityProvider when cache is refreshed', async () => {
       // When
       await service.getList(true);
 
       // Then
-      expect(service['fetchFqdnToIdps']).toHaveBeenCalledTimes(1);
+      expect(service['findAllFqdnToIdentityProvider']).toHaveBeenCalledTimes(1);
     });
 
     it('should call findAllFqdnToIdentityProvider when cache is not refreshed but fqdnToIdpCache is null', async () => {
@@ -156,7 +169,7 @@ describe('FqdnToIdpAdapterMongoService', () => {
       await service.getList(false);
 
       // Then
-      expect(service['fetchFqdnToIdps']).toHaveBeenCalledTimes(1);
+      expect(service['findAllFqdnToIdentityProvider']).toHaveBeenCalledTimes(1);
     });
 
     it('should not call findAllFqdnToIdentityProvider when cache is not refreshed', async () => {
@@ -165,7 +178,7 @@ describe('FqdnToIdpAdapterMongoService', () => {
       await service.getList(false);
 
       // Then
-      expect(service['fetchFqdnToIdps']).toHaveBeenCalledTimes(0);
+      expect(service['findAllFqdnToIdentityProvider']).toHaveBeenCalledTimes(0);
     });
 
     it('should return the list of idps by fqdn when cache is refreshed', async () => {
@@ -185,36 +198,32 @@ describe('FqdnToIdpAdapterMongoService', () => {
       expect(response).toStrictEqual(fqdnToIdps);
     });
 
-    it('should not call fetchFqdnToIdps method if refreshCache is not set and cache exists', async () => {
+    it('should not call findAllFqdnToIdentityProvider method if refreshCache is not set and cache exists', async () => {
       // Given
       service['fqdnToIdpCache'] = fqdnToIdps as FqdnToIdentityProvider[];
-      service['fetchFqdnToIdps'] = jest.fn();
+      service['findAllFqdnToIdentityProvider'] = jest.fn();
 
       // When
       const result = await service.getList();
 
       // Then
       expect(result).toBe(service['fqdnToIdpCache']);
-      expect(service['fetchFqdnToIdps']).toHaveBeenCalledTimes(0);
+      expect(service['findAllFqdnToIdentityProvider']).toHaveBeenCalledTimes(0);
     });
   });
 
-  describe('fetchFqdnToIdps', () => {
-    let validateDtoMock;
-
+  describe('findAllFqdnToIdentityProvider', () => {
     beforeEach(() => {
       // Given
       repositoryMock.lean = jest.fn().mockResolvedValueOnce(fqdnToIdps);
-
-      validateDtoMock = jest.mocked(validateDto);
     });
 
     it('should call FqdnToIdentityProviderModel.find().lean()', async () => {
       // Given
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // When
-      await service['fetchFqdnToIdps']();
+      await service['findAllFqdnToIdentityProvider']();
 
       // Then
       expect(repositoryMock.lean).toHaveBeenCalledTimes(1);
@@ -222,24 +231,24 @@ describe('FqdnToIdpAdapterMongoService', () => {
 
     it('should return the list of idps', async () => {
       // Given
-      validateDtoMock.mockResolvedValueOnce([]);
+      validateMock.mockResolvedValueOnce([]);
 
       // When
-      const response = await service['fetchFqdnToIdps']();
+      const response = await service['findAllFqdnToIdentityProvider']();
 
       // Then
       expect(response).toEqual(fqdnToIdps);
     });
 
-    it('should log a warning if an entry is excluded by the DTO', async () => {
+    it('should log an alert if an entry is excluded by the DTO', async () => {
       // Given
-      validateDtoMock.mockResolvedValueOnce(['this is an error']);
+      validateMock.mockResolvedValueOnce([new ValidationError()]);
 
       // When
-      await service['fetchFqdnToIdps']();
+      await service['findAllFqdnToIdentityProvider']();
 
       // Then
-      expect(loggerMock.warning).toHaveBeenCalledTimes(1);
+      expect(loggerMock.alert).toHaveBeenCalledTimes(1);
     });
 
     it('should filter out any entry excluded by the DTO', async () => {
@@ -254,16 +263,16 @@ describe('FqdnToIdpAdapterMongoService', () => {
         invalidFqdnToIdp,
       ];
 
-      validateDtoMock
+      validateMock
         .mockResolvedValueOnce([])
-        .mockResolvedValueOnce(['there is an error']);
+        .mockResolvedValueOnce([new ValidationError()]);
 
       repositoryMock.lean = jest
         .fn()
         .mockResolvedValueOnce(fqdnToIdpProviderWithInvalidListMock);
 
       // When
-      const response = await service['fetchFqdnToIdps']();
+      const response = await service['findAllFqdnToIdentityProvider']();
 
       // Then
       expect(response).toEqual([validFqdnToIdp]);

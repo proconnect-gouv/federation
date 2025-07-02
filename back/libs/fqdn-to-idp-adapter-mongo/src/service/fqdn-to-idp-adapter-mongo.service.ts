@@ -1,11 +1,11 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
 import { Model } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter, validateDto } from '@fc/common';
-import { validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
 
@@ -63,7 +63,7 @@ export class FqdnToIdpAdapterMongoService
       this.logger.debug('Refresh FqdnToIdentityProvider cache from DB');
 
       this.fqdnToIdpCache = deepFreeze(
-        await this.fetchFqdnToIdps(),
+        await this.findAllFqdnToIdentityProvider(),
       ) as FqdnToIdentityProvider[];
 
       this.logger.debug({
@@ -80,48 +80,43 @@ export class FqdnToIdpAdapterMongoService
     return this.fqdnToIdpCache;
   }
 
-  /**
-   * Fetches in Mongo all Idps for all domains
-   * in mongo corresponding collection.
-   * Then it checks all returned rows with dto validation
-   * and eventually returns only validated rows
-   */
-  private async fetchFqdnToIdps(): Promise<FqdnToIdentityProvider[]> {
-    const fqdnToProviderRaw = await this.FqdnToIdentityProviderModel.find(
-      {},
-      {
-        _id: false,
-        fqdn: true,
-        identityProvider: true,
-        acceptsDefaultIdp: true,
-      },
-    )
-      .sort({ fqdn: 1, identityProvider: 1 })
-      .lean();
+  private async findAllFqdnToIdentityProvider() {
+    const rawFqdnToIdentityProviders =
+      await this.FqdnToIdentityProviderModel.find(
+        {},
+        {
+          _id: false,
+          fqdn: true,
+          identityProvider: true,
+          acceptsDefaultIdp: true,
+        },
+      )
+        .sort({ fqdn: 1, identityProvider: 1 })
+        .lean();
 
-    const fqdnToProvider = await asyncFilter<FqdnToIdentityProvider[]>(
-      // because fqdnToProvidr entity == fqdnToProvider dto
-      // we don't need to transform fqdnToProviderRow into a dto
-      fqdnToProviderRaw,
-      async (doc: FqdnToIdentityProvider) => {
-        const errors = await validateDto(
-          doc,
-          GetFqdnToIdentityProviderMongoDto,
-          validationOptions,
-        );
+    const fqdnToIdentityProviders = [];
 
-        if (errors.length > 0) {
-          this.logger.warning(
-            `fqdnToProvider with domain "${doc.fqdn}" and provider uuid "${doc.identityProvider}" was excluded from the result at DTO validation.`,
-          );
-          this.logger.err({ errors });
-        }
+    for (const rawFqdnToIdentityProvider of rawFqdnToIdentityProviders) {
+      const fqdnToIdentityProvider = plainToInstance(
+        GetFqdnToIdentityProviderMongoDto,
+        rawFqdnToIdentityProvider,
+      );
+      const errors = await validate(fqdnToIdentityProvider, {
+        forbidNonWhitelisted: true,
+        whitelist: true,
+      });
 
-        return errors.length === 0;
-      },
-    );
+      if (errors.length > 0) {
+        this.logger.alert({
+          msg: `fqdnToProvider with domain "${rawFqdnToIdentityProvider?.fqdn}" and provider uuid "${rawFqdnToIdentityProvider?.identityProvider}" was excluded from the result at DTO validation.`,
+          validationErrors: errors,
+        });
+      } else {
+        fqdnToIdentityProviders.push(fqdnToIdentityProvider);
+      }
+    }
 
-    return fqdnToProvider;
+    return fqdnToIdentityProviders;
   }
 
   fetchFqdnToIdpByEmail(email: string): Promise<FqdnToIdentityProvider[]> {

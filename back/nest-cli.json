@@ -282,24 +282,6 @@
         "tsConfigPath": "libs/override-oidc-provider/tsconfig.lib.json"
       }
     },
-    "identity-provider-adapter-env": {
-      "type": "library",
-      "root": "libs/identity-provider-adapter-env",
-      "entryFile": "index",
-      "sourceRoot": "libs/identity-provider-adapter-env/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/identity-provider-adapter-env/tsconfig.lib.json"
-      }
-    },
-    "service-provider-adapter-env": {
-      "type": "library",
-      "root": "libs/service-provider-adapter-env",
-      "entryFile": "index",
-      "sourceRoot": "libs/service-provider-adapter-env/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/service-provider-adapter-env/tsconfig.lib.json"
-      }
-    },
     "tracking": {
       "type": "library",
       "root": "libs/tracking",

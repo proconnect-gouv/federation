@@ -17,6 +17,9 @@ export class IdentityProvider extends Document {
   client_secret: string;
 
   @Prop({ type: String })
+  discovery: boolean;
+
+  @Prop({ type: String })
   discoveryUrl: string;
 
   @Prop({ type: [String] })
@@ -33,6 +36,9 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: String })
   id_token_encrypted_response_enc: string;
+
+  @Prop({ type: String })
+  uid: string;
 
   @Prop({ type: String })
   userinfo_signed_response_alg: string;

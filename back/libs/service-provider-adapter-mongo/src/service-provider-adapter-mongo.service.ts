@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -16,7 +15,6 @@ import {
   ServiceProviderAdapterMongoConfig,
   ServiceProviderAdapterMongoDTO,
 } from './dto';
-import { MongoRequestFilterArgument } from './interfaces';
 import { ServiceProvider } from './schemas';
 
 @Injectable()
@@ -49,13 +47,12 @@ export class ServiceProviderAdapterMongoService
     await this.getList(true);
   }
 
-  private async findAllServiceProvider(): Promise<ServiceProviderMetadata[]> {
-    const requestFilterArgument: MongoRequestFilterArgument = {
+  private async findAllServiceProvider() {
+    const filter = {
       active: true,
     };
-
-    const rawResult = await this.serviceProviderModel
-      .find(requestFilterArgument, {
+    const rawServiceProviders = await this.serviceProviderModel
+      .find(filter, {
         _id: false,
         active: true,
         name: true,
@@ -73,31 +70,27 @@ export class ServiceProviderAdapterMongoService
       })
       .lean();
 
-    const serviceProviders = await asyncFilter<ServiceProviderMetadata[]>(
-      rawResult,
-      async (serviceProviderRaw: any) => {
-        const { name, uid } = serviceProviderRaw;
+    const serviceProviders = [];
 
-        const serviceProvider = plainToInstance(
-          ServiceProviderAdapterMongoDTO,
-          serviceProviderRaw,
-        );
-        const errors = await validate(serviceProvider, {
-          forbidNonWhitelisted: true,
-          skipMissingProperties: false,
-          whitelist: true,
+    for (const rawServiceProvider of rawServiceProviders) {
+      const serviceProvider = plainToInstance(
+        ServiceProviderAdapterMongoDTO,
+        rawServiceProvider,
+      );
+      const errors = await validate(serviceProvider, {
+        forbidNonWhitelisted: true,
+        whitelist: true,
+      });
+
+      if (errors.length > 0) {
+        this.logger.alert({
+          msg: `Service provider "${rawServiceProvider?.name}" (${rawServiceProvider?.key}) was excluded at DTO validation`,
+          validationErrors: errors,
         });
-
-        if (errors.length > 0) {
-          this.logger.alert({
-            msg: `Service provider "${name}" (${uid}) was excluded at DTO validation`,
-            validationErrors: errors,
-          });
-        }
-
-        return errors.length === 0;
-      },
-    );
+      } else {
+        serviceProviders.push(serviceProvider);
+      }
+    }
 
     return serviceProviders;
   }
