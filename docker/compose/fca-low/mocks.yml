@@ -257,7 +257,7 @@ services:
     networks:
       - public
     init: true
-    command: 'yarn start:dev mock-data-provider-fca-low'
+    command: 'yarn start:dev mock-data-provider'
 
   dpa2-low:
     hostname: dpa2-low
@@ -284,4 +284,4 @@ services:
     networks:
       - public
     init: true
-    command: 'yarn start:dev mock-data-provider-fca-low'
+    command: 'yarn start:dev mock-data-provider'
