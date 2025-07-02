@@ -205,5 +205,6 @@ jobs:
             quality/fca/cypress/snapshots/diff
             artifacts-logs
 
-      - if: failure()
+      - name: Post failing tests
+        if: failure()
         run: ./docker/docker-stack compose logs init-core-fca-low
