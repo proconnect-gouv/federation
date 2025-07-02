@@ -4,10 +4,10 @@ services:
   core-fca-rie:
     hostname: core-fca-rie
     build:
-      args:
-        INSTANCE: core-fca-low
       context: '${FEDERATION_DIR}/back'
       target: dev
+      args:
+        INSTANCE: core-fca-low
     working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
