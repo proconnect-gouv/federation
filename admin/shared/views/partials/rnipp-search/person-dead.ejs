@@ -1,0 +1,13 @@
+<!-- @TODO implement interface with dead property -->
+<% if (locals.person && locals.person.dead) { %>
+<div class="mb-2">
+  <% if (locals.person && locals.person.dead) { %>
+  <div id="dead" class="alert alert-dark" role="alert">
+    <% if (locals.person.rectifiedIdentity.gender === 'female') { %>
+    <p>L'utilisatrice est déclarée décédée. Aucune autre information n'est disponible.</p>
+    <% } else { %>
+      <p>L'utilisateur est déclaré décédé. Aucune autre information n'est disponible.</p>
+    <% } %>
+  </div>
+</div>
+<% } %>
