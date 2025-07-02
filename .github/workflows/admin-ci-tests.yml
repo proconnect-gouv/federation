@@ -8,6 +8,9 @@ on:
 
 jobs:
   global:
+    defaults:
+      run:
+        working-directory: ./admin
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
@@ -16,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version-file: ./package.json
+          node-version-file: ./admin/package.json
 
       - name: Install dependencies
         run: yarn install
@@ -36,7 +39,7 @@ jobs:
     runs-on: ubuntu-24.04
     defaults:
       run:
-        working-directory: ./shared
+        working-directory: ./admin/shared
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -44,7 +47,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version-file: ./package.json
+          node-version-file: ./admin/package.json
 
       - name: Install dependencies
         run: yarn install
@@ -56,7 +59,7 @@ jobs:
     runs-on: ubuntu-24.04
     defaults:
       run:
-        working-directory: ./fc-exploitation
+        working-directory: ./admin/fc-exploitation
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -64,7 +67,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version-file: ./package.json
+          node-version-file: ./admin/package.json
 
       - name: Install dependencies
         run: yarn install
@@ -74,6 +77,9 @@ jobs:
 
   e2e-exploitation:
     runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./admin
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -90,7 +96,7 @@ jobs:
       - name: Set up Node.js for federation-admin
         uses: actions/setup-node@v3
         with:
-          node-version-file: ./package.json
+          node-version-file: ./admin/package.json
 
       - name: Install dependencies
         run: yarn install
@@ -103,17 +109,17 @@ jobs:
           path: ./federation
 
       - name: Set FEDERATION_ROOT environment variable
-        working-directory: ./federation
+        working-directory: ./admin/federation
         run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
 
       - name: Set ADMIN_ROOT environment variable
-        working-directory: ./
+        working-directory: ./admin/
         run: |
           echo "ADMIN_ROOT=$(pwd)" >> $GITHUB_ENV
           echo "PC_ROOT=$(pwd)" >> $GITHUB_ENV
 
       - name: Create symlinks in federation
-        working-directory: ./federation/docker/volumes/src
+        working-directory: ./admin/federation/docker/volumes/src
         run: |
           ln -s "$FEDERATION_ROOT" federation
           ln -s "$ADMIN_ROOT" federation-admin
@@ -129,7 +135,7 @@ jobs:
           ./docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests
-        working-directory: ./
+        working-directory: ./admin/
         run: |
           yarn test:e2e:exploitation -c video=false
 
