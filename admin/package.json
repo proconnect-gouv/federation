@@ -1,0 +1,53 @@
+{
+  "name": "federation-admin",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "lint": "tslint 'fc-exploitation/src/**/*.ts' 'shared/**/*.ts' --exclude '**/node_modules/**/*'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:e2e:exploitation": "cypress run -P fc-exploitation --browser chrome"
+  },
+  "resolutions": {
+    "cookie-signature": "1.1.0",
+    "deasync": "0.1.28"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/proconnect/proconnect-exploitation.git"
+  },
+  "devDependencies": {
+    "cypress": "13.15.0",
+    "prettier": "^1.18.2",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.6.3"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/fc-exploitation/",
+      "<rootDir>/shared/"
+    ]
+  },
+  "engines": {
+    "node": "22.13.0"
+  },
+  "workspaces": [
+    "fc-exploitation",
+    "shared"
+  ]
+}

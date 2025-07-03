@@ -1,0 +1,547 @@
+{
+  "settings" : {
+    "index.number_of_replicas" : "1",
+    "index.number_of_shards" : "6"
+  },
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "message_field": {
+          "mapping": {
+            "index": "analyzed",
+            "omit_norms": true,
+            "type": "string"
+          },
+          "match": "message",
+          "match_mapping_type": "string"
+        }
+      },
+      {
+        "keyword_fields": {
+          "mapping": {
+            "index": "analyzed",
+            "omit_norms": true,
+            "type": "string",
+            "fields": {
+              "raw": {
+                "ignore_above": 256,
+                "type": "keyword"
+              }
+            }
+          },
+          "match": "*",
+          "match_mapping_type": "string"
+        }
+      }
+    ],
+    "properties": {
+      "@timestamp": {
+        "type": "date",
+        "format": "dateOptionalTime"
+      },
+      "@version": {
+        "type": "keyword"
+      },
+      "accountId": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "action": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "age": {
+        "type": "long"
+      },
+      "agent" : {
+        "properties" : {
+          "ephemeral_id" : {
+            "type" : "keyword"
+          },
+          "hostname" : {
+            "type" : "keyword"
+          },
+          "id" : {
+            "type" : "keyword"
+          },
+          "type" : {
+            "type" : "keyword"
+          },
+          "version" : {
+            "type" : "keyword"
+          }
+        }
+      },
+      "beat": {
+        "properties": {
+          "hostname": {
+            "type": "keyword",
+            "norms": false,
+            "fields": {
+              "raw": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "name": {
+            "type": "keyword",
+            "norms": false,
+            "fields": {
+              "raw": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      },
+      "clientId": {
+        "type": "keyword"
+      },
+      "comment": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "count": {
+        "type": "long"
+      },
+      "ecs" : {
+        "properties" : {
+          "version" : {
+            "type" : "keyword"
+          }
+        }
+      },
+      "eidas": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "error_code": {
+        "type": "keyword"
+      },
+      "exitFeedbackComment": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "exitFeedbackReturnValue": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "fc_eidas": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "fi": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "fi_eidas": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "fi_label": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "fs": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "fs_label": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "gender": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "geoip": {
+        "dynamic": "true",
+        "properties": {
+          "location": {
+            "type": "geo_point"
+          }
+        }
+      },
+      "geoloc_city_name": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "geoloc_country_iso_code": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "host": {
+        "properties": {
+          "os": {
+            "properties": {
+              "family": {
+                "type": "keyword"
+              },
+              "codename": {
+                "type": "keyword"
+              },
+              "kernel": {
+                "type": "keyword"
+              },
+              "name": {
+                "type": "keyword"
+              },
+              "platform": {
+                "type": "keyword"
+              },
+              "version": {
+                "type": "keyword"
+              }
+            }
+          },
+          "name": {
+            "type": "keyword"
+          },
+          "id": {
+            "type": "keyword"
+          },
+          "architecture": {
+            "type": "keyword"
+          },
+          "hostname": {
+            "type": "keyword"
+          },
+          "containerized": {
+            "type": "keyword"
+          }
+        }
+      },
+      "hostname": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "id_satisfaction": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "input": {
+        "properties": {
+          "type": {
+            "type": "keyword"
+          }
+        }
+      },
+      "level": {
+        "type": "long"
+      },
+      "log": {
+        "properties" : {
+          "file" : {
+            "properties" : {
+              "path" : {
+                "type" : "keyword"
+              }
+            }
+          },
+          "flags" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "offset" : {
+            "type" : "long"
+          }
+        }
+      },
+      "message": {
+        "type": "keyword",
+        "norms": false
+      },
+      "msg": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "name": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "offset": {
+        "type": "long"
+      },
+      "pid": {
+        "type": "long"
+      },
+      "postLogoutRedirectUri": {
+        "type": "keyword",
+        "norms": false
+      },
+      "provider": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "providerName": {
+        "type": "keyword"
+      },
+      "rawmessage": {
+        "type": "text",
+        "norms": false
+      },
+      "redirectUri": {
+        "type": "keyword",
+        "norms": false
+      },
+      "referer": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "rnippReturnValue": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "satisfaction": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "satisfaction_comment": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "scopes": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "service": {
+        "type": "keyword",
+        "norms": false
+      },
+      "source": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "tags": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "tech_id": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "time": {
+        "type": "date",
+        "format": "dateOptionalTime"
+      },
+      "type": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "typeAction": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "type_action": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "userIp": {
+        "type": "keyword",
+        "norms": false,
+        "fields": {
+          "raw": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "v": {
+        "type": "long"
+      }
+    }
+  }
+}
