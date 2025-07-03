@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_docker:
-    name: 🐳 Build and register docker image
+    name: 🐳 Build and register federation-admin docker image
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
@@ -30,7 +30,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/proconnect-gouv/federation/fc-exploitation-v2
+          images: ghcr.io/{{ github.repository }}/fc-exploitation-v2
           tags: |
             type=sha,format=long,prefix=
             type=ref,event=branch
@@ -46,6 +46,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
+          context: ./admin
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           push: true
@@ -55,6 +56,6 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ghcr.io/proconnect-gouv/federation/fc-exploitation-v2
+          subject-name: ghcr.io/{{ github.repository }}/fc-exploitation-v2
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
