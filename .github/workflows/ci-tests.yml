@@ -128,6 +128,7 @@ jobs:
           yarn report
 
       - name: Upload Cypress Artifacts
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: cypress-snapshots-artifacts
@@ -194,6 +195,7 @@ jobs:
           yarn report
 
       - name: Upload Cypress Artifacts
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: cypress-e2e-artifacts
