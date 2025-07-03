@@ -113,11 +113,6 @@ jobs:
           echo "ADMIN_ROOT=$(pwd)" >> $GITHUB_ENV
           echo "PC_ROOT=$(pwd)" >> $GITHUB_ENV
 
-      - name: Create symlinks in federation
-        working-directory: ./docker/volumes/src
-        run: |
-          ln -s "$FEDERATION_ROOT" federation
-          ln -s "$ADMIN_ROOT" federation-admin
 
       - name: Start docker stack
         working-directory: ./docker

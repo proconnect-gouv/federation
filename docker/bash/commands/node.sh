@@ -72,7 +72,7 @@ _clean_pc_dist() {
 
   for instance in ${instances}; do
     echo "    * Purging build dir for ${instance}"
-    rm -rf "src/fc/back/dist/instances/${instance}"
+    rm -rf "${FEDERATION_DIR}/back/dist/instances/${instance}"
   done
 }
 

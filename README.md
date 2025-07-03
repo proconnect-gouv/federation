@@ -63,17 +63,8 @@ mkdir -p $PC_ROOT && cd $PC_ROOT
 # The main repository
 git clone git@github.com:proconnect-gouv/federation.git
 
-# Back office app
-git clone git@github.com:proconnect-gouv/federation-admin.git
 ```
 
-- Link the cloned repository in the docker volumes
-
-```bash
-cd $PC_ROOT/federation/docker/volumes/src
-ln -s $PC_ROOT/federation
-ln -s $PC_ROOT/federation-admin
-```
 
 ## Run the application
 
@@ -105,7 +96,7 @@ Login with:
 - Password: `georgesmoustaki`
 - TOTP: enter this secret in your totp app `KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD`
 
-More credentials can be found here : `federation-admin/shared/fixtures/User.yml`.
+More credentials can be found here : `admin/shared/fixtures/User.yml`.
 
 ### Testing the installation
 
@@ -194,7 +185,7 @@ yarn start:low
 
 ```bash
 dks switch medium
-cd $PC_ROOT/federation-admin/fc-exploitation
+cd $PC_ROOT/federation/admin/fc-exploitation
 yarn test:e2e:open
 ```
 
@@ -220,7 +211,7 @@ yarn tsc --noEmit
 ```
 
 ```bash
-cd $PC_ROOT/federation-admin
+cd $PC_ROOT/federation/admin
 yarn test
 yarn lint --fix
 ```
