@@ -56,6 +56,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --no-progress
 
+      - name: Run Build
+        run: yarn build
+
       - name: Run tests
         run: yarn test
 
@@ -75,6 +78,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile --no-progress
+
+      - name: Run build
+        run: yarn build
 
       - name: Run tests
         run: yarn test
@@ -111,8 +117,7 @@ jobs:
         working-directory: ./admin
         run: |
           echo "ADMIN_ROOT=$(pwd)" >> $GITHUB_ENV
-          echo "PC_ROOT=$(pwd)" >> $GITHUB_ENV
-
+          echo "PC_ROOT=$GITHUB_WORKSPACE" >> $GITHUB_ENV
 
       - name: Start docker stack
         working-directory: ./docker
