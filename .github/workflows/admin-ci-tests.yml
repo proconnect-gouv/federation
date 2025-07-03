@@ -1,25 +1,32 @@
-name: 💚 CI Tests
+name: 💚 CI Tests - Federation Admin
 
 on:
   pull_request:
+    paths:
+      - 'admin/**'
   push:
     branches:
       - main
+    paths:
+      - 'admin/**'
 
 jobs:
   global:
     runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./admin
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: ./package.json
+          node-version-file: ./admin/package.json
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile --no-progress
 
       - name: Run lint
         run: yarn lint
@@ -36,18 +43,18 @@ jobs:
     runs-on: ubuntu-24.04
     defaults:
       run:
-        working-directory: ./shared
+        working-directory: ./admin/shared
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: ./package.json
+          node-version-file: ./admin/package.json
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile --no-progress
 
       - name: Run tests
         run: yarn test
@@ -56,18 +63,18 @@ jobs:
     runs-on: ubuntu-24.04
     defaults:
       run:
-        working-directory: ./fc-exploitation
+        working-directory: ./admin/fc-exploitation
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: ./package.json
+          node-version-file: ./admin/package.json
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile --no-progress
 
       - name: Run tests
         run: yarn test
@@ -76,10 +83,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up dockerx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       # Workaround for https://github.com/docker/compose/issues/12892
       - name: Upgrade Docker Compose
@@ -88,38 +95,32 @@ jobs:
           version: latest
 
       - name: Set up Node.js for federation-admin
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: ./package.json
+          node-version-file: ./admin/package.json
 
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Clone federation repository
-        uses: actions/checkout@v4
-        with:
-          repository: proconnect-gouv/federation
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./federation
+      - name: Install admin dependencies
+        working-directory: ./admin
+        run: yarn install --frozen-lockfile --no-progress
 
       - name: Set FEDERATION_ROOT environment variable
-        working-directory: ./federation
+        working-directory: ./
         run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
 
       - name: Set ADMIN_ROOT environment variable
-        working-directory: ./
+        working-directory: ./admin
         run: |
           echo "ADMIN_ROOT=$(pwd)" >> $GITHUB_ENV
           echo "PC_ROOT=$(pwd)" >> $GITHUB_ENV
 
       - name: Create symlinks in federation
-        working-directory: ./federation/docker/volumes/src
+        working-directory: ./docker/volumes/src
         run: |
           ln -s "$FEDERATION_ROOT" federation
           ln -s "$ADMIN_ROOT" federation-admin
 
       - name: Start docker stack
-        working-directory: federation/docker
+        working-directory: ./docker
         run: |
           ./docker-stack prune-ci
           ./docker-stack up exploitation-fca-low
@@ -127,23 +128,23 @@ jobs:
           ./docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests
-        working-directory: ./
+        working-directory: ./admin
         run: |
           yarn test:e2e:exploitation -c video=false
 
       - name: Post failing tests
         if: failure()
         run: |
-          mkdir -p federation-admin/cypress/logs
-          docker cp pc-exploitation-1:/tmp/.pm2/logs federation-admin/cypress/logs/fc-exploitation || true
-          docker cp pc-rp-all:/var/log/nginx fc-exploitation/cypress/logs || true
+          mkdir -p admin/cypress/logs
+          docker cp pc-exploitation-1:/tmp/.pm2/logs admin/cypress/logs/fc-exploitation || true
+          docker cp pc-rp-all:/var/log/nginx admin/fc-exploitation/cypress/logs || true
 
       - name: Publish artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-outputs
+          name: cypress-outputs-admin
           path: |
-            fc-exploitation/cypress/screenshots
-            fc-exploitation/cypress/videos
-            fc-exploitation/cypress/logs
+            admin/fc-exploitation/cypress/screenshots
+            admin/fc-exploitation/cypress/videos
+            admin/fc-exploitation/cypress/logs
