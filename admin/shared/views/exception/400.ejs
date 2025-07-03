@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('partials/head.ejs', { title: "400 - Mauvaise requête" }) %>
+  </head>
+  <body id="generic-exception">
+    <% if (locals.CURRENT_USER !== undefined) { %>
+    <%- include('partials/header.ejs') -%>
+    <% } %>
+    <section class="container-fluid error_section">
+      <div class="card">
+        <div class="card-body">
+          <p class="error_section_subtitle">
+              Une erreur s'est produite
+          </p>
+          <h1 class="error_title">
+            400
+          </h1>
+          <a href="<%= APP_ROOT %>/" title="Retourner sur la page d'accueil" class="btn">Page d'accueil</a>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

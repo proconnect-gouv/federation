@@ -1,0 +1,42 @@
+{
+  "settings" : {
+    "index.number_of_replicas" : "1",
+    "index.number_of_shards" : "3"
+  },
+  "mappings": {
+    "properties": {
+      "date": {
+        "type": "date"
+      },
+      "fs": {
+        "type": "keyword"
+      },
+      "fi": {
+        "type": "keyword"
+      },
+      "typeAction": {
+        "type": "keyword"
+      },
+      "action": {
+        "type": "keyword"
+      },
+      "count": {
+        "type": "long",
+        "null_value": 0
+      },
+      "key": {
+        "type": "keyword"
+      },
+      "value": {
+        "type": "long",
+        "null_value": 0
+      },
+      "fsCount": {
+        "type": "keyword"
+      },
+      "range": {
+        "type": "keyword"
+      }
+    }
+  }
+}

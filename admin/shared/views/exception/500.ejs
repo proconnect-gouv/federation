@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('partials/head.ejs', { title: "500 - Erreur interne" }) %>
+  </head>
+  <body id="internal-server-exception">
+    <% if (locals.CURRENT_USER !== undefined) { %>
+    <%- include('partials/header.ejs') -%>
+    <% } %>
+    <div class="bsod container">
+      <h1 class="neg title"><span class="bg">Error - 500</span></h1>
+      <p class="old-font">Une erreur est survenue, pour continuer:</p>
+      <p class="old-font">
+        * Réessayer dans quelques instants.<br />
+        * Retourner sur la page d'accueil.
+      </p>
+      <div class="link">
+        <a class="old-font" href="<%= APP_ROOT %>/" title="Retourner sur la page d'accueil">page d'accueil</a>
+      </div>
+    </div>
+  </body>
+</html>
