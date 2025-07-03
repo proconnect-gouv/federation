@@ -2,8 +2,8 @@ name: 🐳 Build federation-admin docker image
 
 on:
   push:
-    tags:
-      - '*'
+    # tags:
+    #   - '*'
 
 jobs:
   build_docker:
