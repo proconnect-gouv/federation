@@ -125,7 +125,6 @@ jobs:
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Test snapshots
-        working-directory: ./quality/fca
         run: |
           yarn test:low:snapshot -c video=false
           yarn report
@@ -192,7 +191,6 @@ jobs:
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Execute e2e tests
-        working-directory: ./quality/fca
         run: |
           yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
           yarn report
@@ -214,15 +212,16 @@ jobs:
         working-directory: ./quality/fca
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v2
 
-      - name: Set up Docker BuildKit
-        run: |
-          export DOCKER_BUILDKIT=1
-          export COMPOSE_BAKE=true
+      # Workaround for https://github.com/docker/compose/issues/12892
+      - name: Upgrade Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: latest
 
       - name: Set FEDERATION_ROOT environment variable
         working-directory: ./
@@ -239,13 +238,6 @@ jobs:
           set -x
           ln -s $FEDERATION_ROOT
 
-      - name: Clone federation-admin repository
-        uses: actions/checkout@v4
-        with:
-          repository: proconnect-gouv/federation-admin
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./docker/volumes/src/federation-admin
-
       - name: Start docker stack
         working-directory: ./docker
         run: |
@@ -256,3 +248,24 @@ jobs:
 
       - name: Install quality dependencies
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
+
+      - name: Create artifacts-logs directory
+        if: failure()
+        run: mkdir -p artifacts-logs
+
+      - name: Collect Docker logs
+        if: failure()
+        working-directory: ./docker
+        run: |
+          ./docker-stack compose logs --no-color > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
+          docker ps -a > ../quality/fca/artifacts-logs/docker-ps.log 2>&1
+
+      - name: Upload Cypress Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-hybridge-artifacts
+          path: |
+            quality/fca/cypress/reports/cucumber/html-report
+            quality/fca/cypress/snapshots/diff
+            quality/fca/artifacts-logs
