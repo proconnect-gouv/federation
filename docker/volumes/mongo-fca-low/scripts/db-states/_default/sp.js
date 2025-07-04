@@ -6,7 +6,7 @@ const fsa = {
     title: 'FSA - FSA1-LOW Title',
     site: 'https://site.com',
     redirect_uris: [
-      'https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback',
+      'https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback'
     ],
     post_logout_redirect_uris: [
       'https://fsa1-low.docker.dev-franceconnect.fr/',
@@ -44,7 +44,7 @@ const fsa = {
     ],
     claims: ['amr'],
     id_token_signed_response_alg: 'HS256',
-    userinfo_signed_response_alg: 'HS256',
+    userinfo_signed_response_alg: null,
     jwks_uri:
       'https://fsa1-low.docker.dev-franceconnect.fr/client/.well-known/keys',
   },

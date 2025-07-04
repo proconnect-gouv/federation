@@ -1,5 +1,6 @@
 import { ChainableElement } from '../types';
 import scopes from './../../../fixtures/fca-low/scopes.json';
+import { getServiceProviderByDescription } from './sp-provider-helper';
 import { getDefaultUser } from './user-helper';
 
 const defaultUserClaims = getDefaultUser();
@@ -13,7 +14,18 @@ export const getUserInfoProperty = (property: string): ChainableElement =>
 export const getScopeByDescription = (description: string): string =>
   scopes.find((scope) => scope.description === description).scopes.join(' ');
 
-const mandatoryData = {
+export const getUserInfoSignatureAlgorithmByDescription = (
+  description: string,
+): string | null => {
+  const serviceProvider = getServiceProviderByDescription(description);
+  return serviceProvider.userinfo_signed_response_alg;
+};
+
+const nonSignedUserInfoMandatoryData = {
+  sub: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+}!;
+
+const signedUserInfoMandatoryData = {
   aud: /^\w+$/,
   exp: /^\d+/,
   iat: /^\d+/,
@@ -21,7 +33,10 @@ const mandatoryData = {
   sub: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
 };
 
-export const checkMandatoryData = (): void => {
+export const checkMandatoryData = (isUserinfoSigned: boolean): void => {
+  const mandatoryData = isUserinfoSigned
+    ? signedUserInfoMandatoryData
+    : nonSignedUserInfoMandatoryData;
   getUserInfo().then((userInfo) => {
     Object.keys(mandatoryData).forEach((key) =>
       expect(userInfo[key]).to.match(
@@ -71,7 +86,14 @@ export const checkExpectedUserClaims = (
   });
 };
 
-export const checkNoExtraClaims = (expectedScopeDescription: string): void => {
+export const checkNoExtraClaims = (
+  expectedScopeDescription: string,
+  isUserinfoSigned: boolean,
+): void => {
+  const mandatoryData = isUserinfoSigned
+    ? nonSignedUserInfoMandatoryData
+    : signedUserInfoMandatoryData;
+
   const expectedScope = getScopeByDescription(expectedScopeDescription);
   const expectedClaims = getClaims(expectedScope);
 

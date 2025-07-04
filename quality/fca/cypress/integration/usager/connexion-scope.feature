@@ -7,7 +7,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
     Quand je m'authentifie
-    Alors le fournisseur de service a accès aux informations des scopes "<scopeType>" en provenance du FI "par défaut"
+    Alors le fournisseur de service "par défaut" a accès aux informations des scopes "<scopeType>" en provenance du FI "par défaut"
 
     Exemples:
       | scopeType                                 |
@@ -33,7 +33,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
     Quand je m'authentifie
-    Alors le fournisseur de service a accès aux informations du scope "anonyme" en provenance du FI "par défaut"
+    Alors le fournisseur de service "par défaut" a accès aux informations du scope "anonyme" en provenance du FI "par défaut"
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - attribut scope inconnu ignoré
@@ -43,7 +43,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
     Quand je m'authentifie
-    Alors le fournisseur de service a accès aux informations des scopes "email" en provenance du FI "par défaut"
+    Alors le fournisseur de service "par défaut" a accès aux informations des scopes "email" en provenance du FI "par défaut"
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope vide
