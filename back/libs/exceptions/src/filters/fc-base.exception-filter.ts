@@ -87,7 +87,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     }
 
     if (exception instanceof BaseException) {
-      return getCode(exception.scope, exception.code, prefix);
+      return exception.full_code || getCode(exception.scope, exception.code, prefix);
     }
 
     if (exception instanceof HttpException) {
