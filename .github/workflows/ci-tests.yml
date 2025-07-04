@@ -250,7 +250,6 @@ jobs:
         working-directory: ./docker
         run: |
           set -x
-          docker network create --driver bridge pc_public
           ./docker-stack prune-ci
           ./docker-stack up hybridge
           ./docker-stack start-all-ci
