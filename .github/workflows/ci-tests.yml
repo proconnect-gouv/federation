@@ -260,6 +260,13 @@ jobs:
           set -x
           ln -s $FEDERATION_ROOT
 
+      - name: Clone federation-admin repository
+        uses: actions/checkout@v4
+        with:
+          repository: proconnect-gouv/federation-admin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./docker/volumes/src/federation-admin
+
       - name: Start docker stack
         working-directory: ./docker
         run: |
@@ -270,6 +277,11 @@ jobs:
 
       - name: Install quality dependencies
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
+
+      - name: Execute hybridge tests
+        run: |
+          yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
+          yarn report
 
       - name: Create artifacts-logs directory
         if: failure()

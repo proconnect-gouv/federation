@@ -68,7 +68,7 @@ services:
   hybridge:
     image: alpine
     depends_on:
-      - 'small'
+      - 'medium'
       - 'bridge-proxy-rie'
       ### RIE
       - 'lemon-ldap'
