@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 export class BaseException extends Error {
   public documentation: string;
+  public full_code: string;
   public code: number | string;
   public scope: number;
   public http_status_code: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
