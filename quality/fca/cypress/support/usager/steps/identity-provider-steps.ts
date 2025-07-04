@@ -63,6 +63,16 @@ When("j'utilise un compte usager avec siret incorrect", function () {
   });
 });
 
+When(
+  "le fournisseur d'identité renvoie l'erreur {string} avec {string}",
+  function (error: string, error_description: string) {
+    cy.get('input[name="error"]').type(error, { force: true });
+    cy.get('input[name="error_description"]').type(error_description, {
+      force: true,
+    });
+  },
+);
+
 Then(
   /la page du FI affiche l'id du FS "([^"]*)"/,
   function (spDescription: string) {

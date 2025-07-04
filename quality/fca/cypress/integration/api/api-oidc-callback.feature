@@ -74,8 +74,9 @@ Fonctionnalité: API - oidc-callback
   Scénario: API oidc-callback - affichage de l'erreur remontée via le paramètre error
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "invalid_scope@fia1.fr"
+    Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
+    Et que le fournisseur d'identité renvoie l'erreur "invalid_scope" avec "your scopes are invalid"
     Et je m'authentifie
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "invalid_scope"
