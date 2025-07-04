@@ -150,6 +150,14 @@ dks compose restart rp-all
 dks halt
 ```
 
+### Cleanup installation
+
+```bash
+docker-stack compose down --volumes --remove-orphans --rmi all
+git clean -e docker/volumes/src -nxd # check the file list, if ok, launch the next command
+git clean -e docker/volumes/src -fxd
+```
+
 ### See Usages
 
 ```bash
