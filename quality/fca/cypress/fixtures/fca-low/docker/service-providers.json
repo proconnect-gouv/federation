@@ -1,7 +1,7 @@
 [
   {
     "name": "fsa1-low",
-    "descriptions": ["par défaut", "premier FS", "éligible au scope groups"],
+    "descriptions": ["par défaut", "premier FS", "éligible au scope groups","sans signature de la réponse userinfo"],
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     "url": "https://fsa1-low.docker.dev-franceconnect.fr"
   },
@@ -16,8 +16,7 @@
     "descriptions": [
       "troisième fs",
       "non habilité à demander le scope belonging_population",
-      "avec une restriction de fqdn",
-      "sans signature de la réponse userinfo"
+      "avec une restriction de fqdn"
     ],
     "clientId": "6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77",
     "url": "https://fsa4-low.docker.dev-franceconnect.fr"
