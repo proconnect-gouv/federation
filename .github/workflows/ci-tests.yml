@@ -129,6 +129,17 @@ jobs:
           yarn test:low:snapshot -c video=false
           yarn report
 
+      - name: Create artifacts-logs directory
+        if: failure()
+        run: mkdir -p artifacts-logs
+
+      - name: Collect Docker logs
+        if: failure()
+        working-directory: ./docker
+        run: |
+          ./docker-stack compose logs --no-color > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
+          docker ps -a > ../quality/fca/artifacts-logs/docker-ps.log 2>&1
+
       - name: Upload Cypress Artifacts
         if: failure()
         uses: actions/upload-artifact@v4
@@ -137,7 +148,7 @@ jobs:
           path: |
             quality/fca/cypress/reports/cucumber/html-report
             quality/fca/cypress/snapshots/diff
-            artifacts-logs
+            quality/fca/artifacts-logs
 
   test_e2e:
     runs-on: ubuntu-24.04
@@ -195,6 +206,17 @@ jobs:
           yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
           yarn report
 
+      - name: Create artifacts-logs directory
+        if: failure()
+        run: mkdir -p artifacts-logs
+
+      - name: Collect Docker logs
+        if: failure()
+        working-directory: ./docker
+        run: |
+          ./docker-stack compose logs --no-color > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
+          docker ps -a > ../quality/fca/artifacts-logs/docker-ps.log 2>&1
+
       - name: Upload Cypress Artifacts
         if: failure()
         uses: actions/upload-artifact@v4
@@ -203,7 +225,7 @@ jobs:
           path: |
             quality/fca/cypress/reports/cucumber/html-report
             quality/fca/cypress/snapshots/diff
-            artifacts-logs
+            quality/fca/artifacts-logs
 
   test_hybridge:
     runs-on: ubuntu-24.04
