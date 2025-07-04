@@ -49,8 +49,10 @@ export default {
     grant_types_supported: ['authorization_code'],
     features: {
       devInteractions: { enabled: false },
-      encryption: { enabled: false },
+      encryption: { enabled: true },
+      introspection: { enabled: true },
       jwtUserinfo: { enabled: true },
+      jwtIntrospection: { enabled: true, ack: 'draft-10' },
       backchannelLogout: { enabled: false },
       revocation: { enabled: true },
       rpInitiatedLogout: { enabled: true },

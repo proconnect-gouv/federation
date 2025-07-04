@@ -1,29 +1,19 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
-import {
-  GetDiscoveryDto,
-  GetDiscoveryWithEncryptionDto,
-} from '../dto/get-discovery.dto';
+import { GetDiscoveryDto } from '../dto/get-discovery.dto';
 import { validateDto } from '../helpers/class-validator-helper';
 
-Then(
-  'le corps de la réponse contient une configuration openid {string}',
-  function (withEncryption: string) {
-    const ExpectedGetDiscoveryDto =
-      withEncryption === 'avec chiffrement'
-        ? GetDiscoveryWithEncryptionDto
-        : GetDiscoveryDto;
-    cy.get('@apiResponse')
-      .its('body')
-      .then(async (body) => {
-        const errors = await validateDto(body, ExpectedGetDiscoveryDto, {
-          forbidNonWhitelisted: true,
-          whitelist: true,
-        });
-        expect(errors, JSON.stringify(errors)).to.have.length(0);
+Then('le corps de la réponse contient une configuration openid', function () {
+  cy.get('@apiResponse')
+    .its('body')
+    .then(async (body) => {
+      const errors = await validateDto(body, GetDiscoveryDto, {
+        forbidNonWhitelisted: true,
+        whitelist: true,
       });
-  },
-);
+      expect(errors, JSON.stringify(errors)).to.have.length(0);
+    });
+});
 
 Then(
   '{string} est présent dans la configuration openid',

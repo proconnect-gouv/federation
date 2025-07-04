@@ -62,6 +62,7 @@ export class DataProviderAdapterCoreService {
       this.http.post(checktokenEndpoint, stringify(checktokenRequest), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          Accept: 'application/token-introspection+jwt',
         },
         proxy: false,
       }),
