@@ -1,3 +1,13 @@
+include:
+  - ../shared/shared.yml
+  - postgres.yml
+  - mongo.yml
+  - core.yml
+  - mocks.yml
+  - exploitation-fca-low.yml
+  - hybridge.yml
+  - core-rie.yml
+
 services:
   small:
     image: alpine
