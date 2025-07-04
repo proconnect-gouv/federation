@@ -47,10 +47,20 @@
                     <input type="text" id="phone_number" name="phone_number" value="<%= locals.defaultUser.phone_number %>">
                 </div>
             </details>
+            <details>
+                <summary id="open-custom-configuration">Erreur</summary>
+                <div>
+                    <label for="error">error</label>
+                    <input type="text" id="error" name="error" value="">
+                </div>
+                <div>
+                    <label for="error_description">error_description</label>
+                    <input type="text" id="error_description" name="error_description" value="">
+                </div>
+            </details>
             <br>
             <button type="submit">Se connecter</button>
         </form>
-        <br>
         <details>
             <summary id="open-debug-info">Informations de débogage</summary>
             <pre><code><%= locals.debugInfo %></code></pre>
