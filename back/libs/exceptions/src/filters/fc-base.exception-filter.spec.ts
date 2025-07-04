@@ -176,7 +176,17 @@ describe('FcBaseExceptionFilter', () => {
   });
 
   describe('getExceptionCodeFor', () => {
-    it('should return the exception code', () => {
+    it('should return the dynamic exception code if present', () => {
+      const idpException = new BaseException();
+      idpException.full_code = "invalid_scope";
+
+      const result = filter['getExceptionCodeFor'](idpException);
+
+      // Then
+      expect(result).toEqual("invalid_scope");
+    });
+
+    it('should return the Y/scope/code nomenclature otherwise', () => {
       // When
       const result = filter['getExceptionCodeFor'](exceptionMock);
 
