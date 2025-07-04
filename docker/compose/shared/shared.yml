@@ -79,11 +79,15 @@ services:
   log-hub:
     hostname: log-hub
     image: pc-nodejs
-    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
+    build:
+      {
+        context: '${COMPOSE_DIR}/../builds/node',
+        args: { NODE_VERSION: '${NODE_VERSION}' },
+      }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${PC_ROOT}/federation/docker/log-hub:/var/www/app'
+      - '${FEDERATION_DIR}/docker/log-hub:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'

@@ -48,7 +48,7 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -77,7 +77,7 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -105,7 +105,7 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -138,7 +138,7 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
       - '${VOLUMES_DIR}/log/:/var/log/app'
@@ -168,7 +168,7 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
       - '${VOLUMES_DIR}/log/:/var/log/app'
@@ -198,7 +198,7 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
       - '${VOLUMES_DIR}/log/:/var/log/app'
@@ -229,7 +229,7 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -253,7 +253,7 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${VOLUMES_DIR}/src/federation/back:/var/www/app'
+      - '${FEDERATION_DIR}/back:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
