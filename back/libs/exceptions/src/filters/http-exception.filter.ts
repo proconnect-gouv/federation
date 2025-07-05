@@ -5,7 +5,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 
-import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
+import { ApiErrorParams } from '@fc/app';
 
 import { ExceptionCaughtEvent } from '../events';
 import { generateErrorId } from '../helpers';
@@ -29,11 +29,10 @@ export class HttpExceptionFilter
     this.logException(code, id, exception);
     this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
 
-    const errorMessage: ApiErrorMessage = { code, id, message };
     const exceptionParam: ApiErrorParams = {
       exception,
       res,
-      error: errorMessage,
+      error: { code, id, message },
       httpResponseCode: status,
       errorDetail: '',
     };

@@ -47,26 +47,26 @@ describe('FcWebHtmlExceptionFilter', () => {
   class ExceptionMock extends FcException {
     error = 'ERROR';
     error_description = 'ERROR_DESCRIPTION';
+    ui = 'some.message.code';
   }
-
-  let exceptionMock: ExceptionMock;
 
   const resMock = {
     status: jest.fn(),
     render: jest.fn(),
   };
 
-  const codeMock = Symbol('code');
-  const idMock = Symbol('id');
+  const exceptionMock = new ExceptionMock();
+  const codeMock = 'code';
+  const idMock = 'id';
 
   const paramsMock: ApiErrorParams = {
-    exception: {} as BaseException,
-    error: { id: undefined, code: undefined, message: undefined },
+    exception: exceptionMock,
+    error: { id: idMock, code: codeMock, message: 'some.message.code' },
     res: resMock as unknown as Response,
     idpName: undefined,
     spName: undefined,
     httpResponseCode: 500,
-    errorDetail: '',
+    errorDetail: undefined,
   };
 
   beforeEach(async () => {
@@ -102,8 +102,6 @@ describe('FcWebHtmlExceptionFilter', () => {
     generateErrorIdMock.mockReturnValue(idMock as unknown as string);
 
     resMock.status.mockReturnThis();
-
-    exceptionMock = new ExceptionMock();
   });
 
   it('should be defined', () => {
@@ -113,7 +111,6 @@ describe('FcWebHtmlExceptionFilter', () => {
   describe('catch', () => {
     beforeEach(() => {
       filter['shouldNotRedirect'] = jest.fn().mockReturnValue(false);
-      filter['getParams'] = jest.fn().mockReturnValue(paramsMock);
       filter['errorOutput'] = jest.fn();
     });
 
@@ -149,13 +146,16 @@ describe('FcWebHtmlExceptionFilter', () => {
 
     it('should output an OidcProviderNoWrapperException too', () => {
       // When
-      filter.catch(
-        new OidcProviderNoWrapperException(new Error()),
-        hostMock as unknown as ArgumentsHost,
-      );
+      const wrapped = new OidcProviderNoWrapperException(new Error());
+      filter.catch(wrapped, hostMock as unknown as ArgumentsHost);
 
       // Then
-      expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(paramsMock);
+      const expected = {
+        ...paramsMock,
+        exception: wrapped,
+        error: { ...paramsMock.error, message: 'Error' },
+      };
+      expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(expected);
     });
   });
 
@@ -222,12 +222,17 @@ describe('FcWebHtmlExceptionFilter', () => {
     });
 
     it('should render the error template with a missing exception code', () => {
-      // Whe
-      filter['errorOutput'](paramsMock as unknown as ApiErrorParams);
+      // When
+      const input = {
+        ...paramsMock,
+        exception: new BaseException(),
+        error: { ...paramsMock.error, code: undefined, message: undefined },
+      };
+      filter['errorOutput'](input as unknown as ApiErrorParams);
 
       // Then
       expect(resMock.render).toHaveBeenCalledWith('error', {
-        ...paramsMock,
+        ...input,
         errorDetail: undefined,
       });
     });
