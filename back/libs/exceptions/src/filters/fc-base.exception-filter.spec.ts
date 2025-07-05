@@ -1,11 +1,9 @@
-import { Response } from 'express';
 import { errors } from 'oidc-provider';
 
 import { HttpStatus } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ApiErrorMessage } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
@@ -25,11 +23,6 @@ describe('FcBaseExceptionFilter', () => {
   const loggerMock = getLoggerMock();
   const eventBusMock = {
     publish: jest.fn(),
-  };
-
-  const resMock = {
-    status: jest.fn(),
-    render: jest.fn(),
   };
 
   const prefixMock = 'Z';
@@ -78,29 +71,6 @@ describe('FcBaseExceptionFilter', () => {
 
   it('should be defined', () => {
     expect(filter).toBeDefined();
-  });
-
-  describe('getParams', () => {
-    const messageMock = {};
-    it('should return the params', () => {
-      // Given
-      filter['getHttpStatus'] = jest.fn().mockReturnValue(500);
-      // When
-      const result = filter['getParams'](
-        exceptionMock,
-        messageMock as ApiErrorMessage,
-        resMock as unknown as Response,
-      );
-
-      // Then
-      expect(result).toEqual({
-        exception: exceptionMock,
-        res: resMock,
-        error: messageMock,
-        httpResponseCode: 500,
-        errorDetail: undefined,
-      });
-    });
   });
 
   describe('getHttpStatus', () => {

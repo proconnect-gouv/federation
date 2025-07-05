@@ -1,11 +1,8 @@
-import { Response } from 'express';
-
 import { Catch, HttpException, HttpStatus } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { EventBus } from '@nestjs/cqrs';
 import { RpcException } from '@nestjs/microservices';
 
-import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
@@ -22,22 +19,6 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     protected readonly eventBus: EventBus,
   ) {
     super();
-  }
-
-  protected getParams(
-    exception: BaseException,
-    message: ApiErrorMessage,
-    res: Response,
-  ): ApiErrorParams {
-    const exceptionParam: ApiErrorParams = {
-      exception,
-      res,
-      error: message,
-      httpResponseCode: this.getHttpStatus(exception),
-      errorDetail: undefined,
-    };
-
-    return exceptionParam;
   }
 
   protected getHttpStatus(

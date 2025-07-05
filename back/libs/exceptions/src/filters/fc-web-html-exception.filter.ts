@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 
-import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
+import { ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
@@ -49,9 +49,13 @@ export class FcWebHtmlExceptionFilter
       message = exception.ui;
     }
 
-    // @todo: weird Naming / structure
-    const errorMessage: ApiErrorMessage = { code, id, message };
-    const exceptionParam = this.getParams(exception, errorMessage, res);
+    const exceptionParam: ApiErrorParams = {
+      exception,
+      res,
+      error: { code, id, message },
+      httpResponseCode: this.getHttpStatus(exception),
+      errorDetail: undefined,
+    };
 
     exceptionParam.idpName = this.session.get('User', 'idpName');
     exceptionParam.spName = this.session.get('User', 'spName');
