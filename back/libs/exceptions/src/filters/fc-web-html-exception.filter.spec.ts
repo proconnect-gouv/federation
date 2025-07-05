@@ -1,20 +1,24 @@
+import { Response } from 'express';
+
 import { ArgumentsHost } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { CoreFcaInvalidIdentityException } from '@fc/core-fca';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+import { TrackingMissingNetworkContextException } from '@fc/tracking-context/exceptions';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { FcException } from '../exceptions';
+import { BaseException, FcException } from '../exceptions';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
 
 jest.mock('@fc/exceptions/helpers', () => ({
@@ -55,11 +59,14 @@ describe('FcWebHtmlExceptionFilter', () => {
   const codeMock = Symbol('code');
   const idMock = Symbol('id');
 
-  const paramsMock = {
-    res: resMock,
+  const paramsMock: ApiErrorParams = {
+    exception: {} as BaseException,
+    error: { id: undefined, code: undefined, message: undefined },
+    res: resMock as unknown as Response,
+    idpName: undefined,
+    spName: undefined,
     httpResponseCode: 500,
-    error: {},
-    dictionary: {},
+    errorDetail: '',
   };
 
   beforeEach(async () => {
@@ -162,15 +169,67 @@ describe('FcWebHtmlExceptionFilter', () => {
       expect(resMock.status).toHaveBeenCalledWith(500);
     });
 
-    it('should render the error template', () => {
+    it('should render the error template with a static exception', () => {
       // When
+      const inputMock = {
+        ...paramsMock,
+        exception: new TrackingMissingNetworkContextException(),
+        error: {
+          message: 'TrackingContext.exceptions.trackingMissingNetworkContext',
+        },
+      };
+      filter['errorOutput'](inputMock as unknown as ApiErrorParams);
+
+      // Then
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        ...inputMock,
+        errorDetail: 'Missing network context (headers)',
+      });
+    });
+
+    it('should render the error template with a UI-less static exception', () => {
+      // When
+      const inputMock = {
+        ...paramsMock,
+        exception: new CoreFcaInvalidIdentityException('anyone'),
+        error: {
+          message: undefined,
+        },
+      };
+      filter['errorOutput'](inputMock as unknown as ApiErrorParams);
+
+      // Then
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        ...inputMock,
+        errorDetail: undefined,
+      });
+    });
+
+    it('should render the error template with a generic exception', () => {
+      // When
+      const inputMock = {
+        ...paramsMock,
+        error: { message: 'invalid_scope' },
+        exception: { generic: true, error_description: 'invalid scopes' },
+      };
+      filter['errorOutput'](inputMock as unknown as ApiErrorParams);
+
+      // Then
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        ...inputMock,
+        errorDetail: 'invalid scopes',
+      });
+    });
+
+    it('should render the error template with a missing exception code', () => {
+      // Whe
       filter['errorOutput'](paramsMock as unknown as ApiErrorParams);
 
       // Then
-      expect(resMock.render).toHaveBeenCalledExactlyOnceWith(
-        'error',
-        paramsMock,
-      );
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        ...paramsMock,
+        errorDetail: undefined,
+      });
     });
   });
 });
