@@ -71,30 +71,40 @@ app.get('/interaction/:uid', async (req, res, next) => {
   }
 });
 
+async function normalLogin(req, res) {
+  const {
+    prompt: { name },
+  } = await provider.interactionDetails(req, res);
+  assert.equal(name, 'login');
+  const { acr, ...userAttributes } = req.body;
+  const userId = createUser(userAttributes);
+
+  const result = {
+    login: {
+      accountId: userId,
+      acr,
+      // the user is considered to have just logged in
+      ts: Date.now(),
+      // the user is considered to have logged with a password
+      amr: ['pwd'],
+    },
+    // skip the consent
+    consent: {},
+  };
+  return result;
+}
+
 app.post(
   '/interaction/:uid/login',
   urlencoded({ extended: false }),
   async (req, res, next) => {
     try {
-      const {
-        prompt: { name },
-      } = await provider.interactionDetails(req, res);
-      assert.equal(name, 'login');
-      const { acr, ...userAttributes } = req.body;
-      const userId = createUser(userAttributes);
-
-      const result = {
-        login: {
-          accountId: userId,
-          acr,
-          // the user is considered to have just logged in
-          ts: Date.now(),
-          // the user is considered to have logged with a password
-          amr: ['pwd'],
-        },
-        // skip the consent
-        consent: {},
-      };
+      let result;
+      if (req.body['error']) {
+        result = req.body;
+      } else {
+        result = await normalLogin(req, res);
+      }
 
       await provider.interactionFinished(req, res, result);
     } catch (err) {

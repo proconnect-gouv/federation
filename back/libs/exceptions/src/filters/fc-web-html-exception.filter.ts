@@ -53,7 +53,6 @@ export class FcWebHtmlExceptionFilter
     const errorMessage: ApiErrorMessage = { code, id, message };
     const exceptionParam = this.getParams(exception, errorMessage, res);
 
-    exceptionParam.dictionary = messageDictionary;
     exceptionParam.idpName = this.session.get('User', 'idpName');
     exceptionParam.spName = this.session.get('User', 'spName');
 
@@ -67,11 +66,16 @@ export class FcWebHtmlExceptionFilter
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
 
-    /**
-     * Interceptors are not run in case of route not handled by our app (404)
-     * So we need to manually bind template helpers.
-     */
+    const key = errorParam.error.message;
+    const staticDetail = key
+      ? messageDictionary[key] ||
+        messageDictionary['exceptions.default_message']
+      : undefined;
+    const errorDetail = errorParam.exception.generic
+      ? errorParam.exception.error_description
+      : staticDetail;
+
     res.status(httpResponseCode);
-    res.render('error', errorParam);
+    res.render('error', { ...errorParam, errorDetail });
   }
 }
