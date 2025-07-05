@@ -98,7 +98,7 @@ describe('FcBaseExceptionFilter', () => {
         res: resMock,
         error: messageMock,
         httpResponseCode: 500,
-        dictionary: {},
+        errorDetail: undefined,
       });
     });
   });
@@ -176,22 +176,23 @@ describe('FcBaseExceptionFilter', () => {
   });
 
   describe('getExceptionCodeFor', () => {
-    it('should return the dynamic exception code if present', () => {
-      const idpException = new BaseException();
-      idpException.full_code = "invalid_scope";
-
-      const result = filter['getExceptionCodeFor'](idpException);
-
-      // Then
-      expect(result).toEqual("invalid_scope");
-    });
-
-    it('should return the Y/scope/code nomenclature otherwise', () => {
+    it('should return the Y/scope/code nomenclature for known exceptions', () => {
       // When
       const result = filter['getExceptionCodeFor'](exceptionMock);
 
       // Then
       expect(result).toEqual(`${prefixMock}${scopeMock}${codeMock}`);
+    });
+
+    it('should return the dynamic exception code otherwise', () => {
+      const idpException = new BaseException();
+      idpException.error = 'invalid_scope';
+      idpException.generic = true;
+
+      const result = filter['getExceptionCodeFor'](idpException);
+
+      // Then
+      expect(result).toEqual('invalid_scope');
     });
 
     it('should use the class name if the exception is an OidcProviderNoWrapperException', () => {

@@ -9,6 +9,7 @@ import { UserSession } from '@fc/core-fca';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
+import { BaseException } from '@fc/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
@@ -199,7 +200,7 @@ describe('OidcClientController', () => {
     const email = 'user@example.com';
 
     beforeEach(() => {
-      req = { query: {} };
+      req = {};
       res = { redirect: jest.fn() } as Partial<Response>;
       userSession = {
         set: jest.fn(),
@@ -369,7 +370,7 @@ describe('OidcClientController', () => {
     };
 
     beforeEach(() => {
-      req = { query: {} };
+      req = {};
       res = {
         redirect: jest.fn(),
         status: jest.fn(),
@@ -402,17 +403,15 @@ describe('OidcClientController', () => {
     });
 
     it('should exit early with render if error param is present', async () => {
-      req.query = {
-        error: 'invalid_scope',
-        error_description: 'scopes are invalid',
-      };
-      await controller.getOidcCallback(
-        req as Request,
-        res as Response,
-        userSession,
-      );
-      expect(res.render).toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(400);
+      await expect(
+        controller.getOidcCallback(
+          req as Request,
+          res as Response,
+          userSession,
+          'invalid_scope',
+          'scopes are invalid',
+        ),
+      ).rejects.toThrow(BaseException);
     });
 
     it('should process OIDC callback when identity is valid (no validation errors)', async () => {

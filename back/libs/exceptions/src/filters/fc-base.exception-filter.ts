@@ -34,7 +34,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
       res,
       error: message,
       httpResponseCode: this.getHttpStatus(exception),
-      dictionary: {},
+      errorDetail: undefined,
     };
 
     return exceptionParam;
@@ -87,7 +87,9 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     }
 
     if (exception instanceof BaseException) {
-      return exception.full_code || getCode(exception.scope, exception.code, prefix);
+      return exception.generic
+        ? exception.error
+        : getCode(exception.scope, exception.code, prefix);
     }
 
     if (exception instanceof HttpException) {
