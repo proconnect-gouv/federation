@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -51,6 +52,21 @@ export class ServiceProviderAdapterMongoDTO {
   readonly userinfo_signed_response_alg: string;
 
   @IsOptional()
+  @IsString()
+  @Transform(({ value }) => (value === null ? undefined : value))
+  readonly introspection_signed_response_alg?: string;
+
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => (value === null ? undefined : value))
+  readonly introspection_encrypted_response_alg?: string;
+
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => (value === null ? undefined : value))
+  readonly introspection_encrypted_response_enc?: string;
+
+  @IsOptional()
   @IsUrlRequiredTldFromConfig()
   readonly jwks_uri?: string;
 
@@ -59,4 +75,16 @@ export class ServiceProviderAdapterMongoDTO {
   @IsString()
   @IsIn(['private', 'public'])
   readonly type: 'private' | 'public';
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(({ value }) => (value === null ? undefined : value))
+  readonly response_types?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(({ value }) => (value === null ? undefined : value))
+  readonly grant_types?: string[];
 }

@@ -15,30 +15,31 @@ export class ValidTokenIntrospection {
 
   @IsString()
   @MinLength(1)
-  readonly aud: string;
+  readonly sub: string;
 
   @IsString()
   @MinLength(1)
-  readonly sub: string;
-
-  @IsNumber()
-  @IsPositive()
-  readonly iat: number;
+  readonly client_id: string;
 
   @IsNumber()
   @IsPositive()
   readonly exp: number;
 
-  @IsString()
-  @MinLength(1)
-  readonly acr: string;
+  @IsNumber()
+  @IsPositive()
+  readonly iat: number;
 
   @IsString()
   @MinLength(1)
-  readonly jti: string;
+  readonly iss: string;
 
   @IsString()
+  @MinLength(1)
   readonly scope: string;
+
+  @IsString()
+  @MinLength(1)
+  readonly token_type: string;
 }
 
 class ExpiredTokenIntrospection {

@@ -64,9 +64,14 @@ export class ServiceProviderAdapterMongoService
         redirect_uris: true,
         post_logout_redirect_uris: true,
         id_token_signed_response_alg: true,
+        introspection_signed_response_alg: true,
+        introspection_encrypted_response_alg: true,
+        introspection_encrypted_response_enc: true,
         userinfo_signed_response_alg: true,
         jwks_uri: true,
         type: true,
+        response_types: true,
+        grant_types: true,
       })
       .lean();
 

@@ -142,6 +142,10 @@ class Cookies {
 class FeatureSetting {
   @IsBoolean()
   readonly enabled: boolean;
+
+  @IsOptional()
+  @IsString()
+  readonly ack?: string;
 }
 
 class LogoutSourceFeatureSetting extends FeatureSetting {
@@ -192,7 +196,15 @@ class Features {
 
   @ValidateNested()
   @Type(() => FeatureSetting)
+  readonly introspection: FeatureSetting;
+
+  @ValidateNested()
+  @Type(() => FeatureSetting)
   readonly jwtUserinfo: FeatureSetting;
+
+  @ValidateNested()
+  @Type(() => FeatureSetting)
+  readonly jwtIntrospection: FeatureSetting;
 
   @IsOptional()
   @ValidateNested()
@@ -531,17 +543,14 @@ class AllClientMetadataValidator implements AllClientMetadata {
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly introspection_signed_response_alg?: SigningAlgorithmWithNone;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly introspection_encrypted_response_alg?: EncryptionAlgValues;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly introspection_encrypted_response_enc?: EncryptionEncValues;
 
   @IsBoolean()

@@ -12,8 +12,8 @@ Fonctionnalité: Fournisseur Données
     Quand le fournisseur de service demande l'accès aux données au fournisseur de données
     Alors le fournisseur de données vérifie l'access token fourni par le fournisseur de service
     Et le checktoken endpoint envoie un token d'introspection valide
-    Et le token d'introspection a une propriété "scope" égale à "groups"
-    Et le token d'introspection a une propriété "aud" avec le client_id du fournisseur de service "éligible au scope groups"
+    Et le token d'introspection a une propriété "scope" égale à "openid uid given_name usual_name email groups"
+    Et le token d'introspection a une propriété "client_id" avec le client_id du fournisseur de service "éligible au scope groups"
     Et le token d'introspection a une propriété "iat" avec le timestamp de création de l'access token
     Et le token d'introspection a une propriété "exp" avec le timestamp d'expiration de l'access token
 
@@ -27,15 +27,3 @@ Fonctionnalité: Fournisseur Données
     Et le fournisseur de service demande l'accès aux données au fournisseur de données
     Alors le fournisseur de données vérifie l'access token fourni par le fournisseur de service
     Et le checktoken endpoint envoie un token d'introspection expiré
-
-  Scénario: Access token aucun scope ne correspond au FD
-    Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires"
-    Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@fia1.fr"
-    Et que je clique sur le bouton de connexion
-    Et que je m'authentifie
-    Quand le fournisseur de service demande l'accès aux données au fournisseur de données
-    Alors le fournisseur de données vérifie l'access token fourni par le fournisseur de service
-    Et le checktoken endpoint envoie un token d'introspection valide
-    Et le token d'introspection a une propriété "scope" égale à ""

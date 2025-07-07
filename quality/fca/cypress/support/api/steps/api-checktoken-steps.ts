@@ -73,11 +73,11 @@ Then(
 );
 
 Then(
-  /le token d'introspection a une propriété "aud" avec le client_id du fournisseur de service "([^"]+)"/,
+  /le token d'introspection a une propriété "client_id" avec le client_id du fournisseur de service "([^"]+)"/,
   function (description: string) {
     const { clientId } = getServiceProviderByDescription(description);
     cy.get<PostChecktokenValidTokenDto>('@tokenIntrospection')
-      .its('token_introspection.aud')
+      .its('token_introspection.client_id')
       .should('equal', clientId);
   },
 );
