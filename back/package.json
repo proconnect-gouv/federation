@@ -63,7 +63,7 @@
     "axios": "^1.10.0",
     "body-parser": "^1.20.3",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.0",
+    "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.6",
     "deep-freeze": "^0.0.1",
     "ejs": "^3.1.10",
