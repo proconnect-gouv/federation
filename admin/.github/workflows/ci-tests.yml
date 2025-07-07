@@ -1,0 +1,149 @@
+name: 💚 CI Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  global:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ./package.json
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run lint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Run coverage
+        run: |
+          yarn test --coverage
+          ./node-scripts/coverage.sh
+
+  unit-shared:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./shared
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ./package.json
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run tests
+        run: yarn test
+
+  unit-exploitation:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./fc-exploitation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ./package.json
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run tests
+        run: yarn test
+
+  e2e-exploitation:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up dockerx
+        uses: docker/setup-buildx-action@v2
+
+      # Workaround for https://github.com/docker/compose/issues/12892
+      - name: Upgrade Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: latest
+
+      - name: Set up Node.js for federation-admin
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ./package.json
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Clone federation repository
+        uses: actions/checkout@v4
+        with:
+          repository: proconnect-gouv/federation
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./federation
+
+      - name: Set FEDERATION_ROOT environment variable
+        working-directory: ./federation
+        run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
+
+      - name: Set ADMIN_ROOT environment variable
+        working-directory: ./
+        run: |
+          echo "ADMIN_ROOT=$(pwd)" >> $GITHUB_ENV
+          echo "PC_ROOT=$(pwd)" >> $GITHUB_ENV
+
+      - name: Create symlinks in federation
+        working-directory: ./federation/docker/volumes/src
+        run: |
+          ln -s "$FEDERATION_ROOT" federation
+          ln -s "$ADMIN_ROOT" federation-admin
+
+      - name: Start docker stack
+        working-directory: federation/docker
+        run: |
+          ./docker-stack prune-ci
+          ./docker-stack up exploitation-fca-low
+          ./docker-stack start-all-ci
+          ./docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
+
+      - name: Start tests
+        working-directory: ./
+        run: |
+          yarn test:e2e:exploitation -c video=false
+
+      - name: Post failing tests
+        if: failure()
+        run: |
+          mkdir -p federation-admin/cypress/logs
+          docker cp pc-exploitation-1:/tmp/.pm2/logs federation-admin/cypress/logs/fc-exploitation || true
+          docker cp pc-rp-all:/var/log/nginx fc-exploitation/cypress/logs || true
+
+      - name: Publish artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-outputs
+          path: |
+            fc-exploitation/cypress/screenshots
+            fc-exploitation/cypress/videos
+            fc-exploitation/cypress/logs
