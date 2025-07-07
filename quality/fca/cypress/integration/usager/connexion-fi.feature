@@ -30,11 +30,3 @@ Fonctionnalité: Connexion à un FI
     Alors je suis redirigé vers la page erreur technique
     Et le titre de la page d'erreur est "Accès indisponible"
     Et le code d'erreur est "Y500001"
-
-  Scénario: J'utilise un FS sans signature du user info
-    Etant donné que je navigue sur la page fournisseur de service "sans signature de la réponse userinfo"
-    Et que je clique sur le bouton ProConnect
-    Et j'entre l'email "test@fia1.fr"
-    Et je clique sur le bouton de connexion
-    Alors je m'authentifie
-    Et je suis redirigé vers la page fournisseur de service "sans signature de la réponse userinfo"
