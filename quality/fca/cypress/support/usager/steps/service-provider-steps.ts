@@ -9,6 +9,7 @@ import {
   getScopeByDescription,
   getServiceProviderByDescription,
   getUserInfoProperty,
+  getUserInfoSignatureAlgorithmByDescription,
   isUsingFCBasicAuthorization,
   removeCodeChallengeMethod,
   removeFromRequestedClaims,
@@ -121,17 +122,23 @@ Then('je suis déconnecté du fournisseur de service', function () {
 });
 
 Then(
-  /le fournisseur de service a accès aux informations (?:du|des) scopes? "([^"]+)" en provenance du FI "([^"]+)"/,
-  function (spDescription: string, idpDescription: string) {
-    checkMandatoryData();
+  /le fournisseur de service "([^"]+)" a accès aux informations (?:du|des) scopes? "([^"]+)" en provenance du FI "([^"]+)"/,
+  function (
+    spDescription: string,
+    scopeDescription: string,
+    idpDescription: string,
+  ) {
+    const userInfoSignatureAlgorithm =
+      getUserInfoSignatureAlgorithmByDescription(spDescription);
+    checkMandatoryData(userInfoSignatureAlgorithm !== null);
 
     const idpClaims = {
       idp_acr: 'eidas1',
       idp_id: getIdentityProviderByDescription(idpDescription).id,
     };
 
-    checkExpectedUserClaims(spDescription, idpClaims);
-    checkNoExtraClaims(spDescription);
+    checkExpectedUserClaims(scopeDescription, idpClaims);
+    checkNoExtraClaims(scopeDescription, userInfoSignatureAlgorithm !== null);
   },
 );
 

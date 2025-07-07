@@ -48,8 +48,10 @@ export class ServiceProviderAdapterMongoDTO {
   @IsIn(['ES256', 'RS256', 'HS256'])
   readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';
 
+  @IsOptional()
   @IsString()
-  readonly userinfo_signed_response_alg: string;
+  @Transform(({ value }) => (value === null ? undefined : value))
+  readonly userinfo_signed_response_alg?: string;
 
   @IsOptional()
   @IsString()

@@ -13,7 +13,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et je m'authentifie
     Alors je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
-    Et le fournisseur de service a accès aux informations du scope "<scope>" en provenance du FI "<idpName>"
+    Et le fournisseur de service "par défaut" a accès aux informations du scope "<scope>" en provenance du FI "<idpName>"
 
     @ignoreInteg01
     Exemples:
