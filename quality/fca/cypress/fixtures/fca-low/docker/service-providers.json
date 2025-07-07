@@ -1,7 +1,7 @@
 [
   {
     "name": "fsa1-low",
-    "descriptions": ["par défaut", "premier FS", "éligible au scope groups","sans signature de la réponse userinfo"],
+    "descriptions": ["par défaut", "premier FS", "éligible au scope groups"],
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     "url": "https://fsa1-low.docker.dev-franceconnect.fr",
     "userinfo_signed_response_alg": null
