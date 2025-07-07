@@ -21,11 +21,11 @@ export const getUserInfoSignatureAlgorithmByDescription = (
   return serviceProvider.userinfo_signed_response_alg;
 };
 
-const nonSignedUserInfoMandatoryData = {
+const nonSignedUserInfoMandatoryPatterns = {
   sub: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
 }!;
 
-const signedUserInfoMandatoryData = {
+const signedUserInfoMandatoryPatterns = {
   aud: /^\w+$/,
   exp: /^\d+/,
   iat: /^\d+/,
@@ -34,13 +34,13 @@ const signedUserInfoMandatoryData = {
 };
 
 export const checkMandatoryData = (isUserinfoSigned: boolean): void => {
-  const mandatoryData = isUserinfoSigned
-    ? signedUserInfoMandatoryData
-    : nonSignedUserInfoMandatoryData;
+  const mandatoryPatterns = isUserinfoSigned
+    ? signedUserInfoMandatoryPatterns
+    : nonSignedUserInfoMandatoryPatterns;
   getUserInfo().then((userInfo) => {
-    Object.keys(mandatoryData).forEach((key) =>
+    Object.keys(mandatoryPatterns).forEach((key) =>
       expect(userInfo[key]).to.match(
-        mandatoryData[key],
+        mandatoryPatterns[key],
         `${key} should be present.`,
       ),
     );
@@ -91,8 +91,8 @@ export const checkNoExtraClaims = (
   isUserinfoSigned: boolean,
 ): void => {
   const mandatoryData = isUserinfoSigned
-    ? nonSignedUserInfoMandatoryData
-    : signedUserInfoMandatoryData;
+    ? nonSignedUserInfoMandatoryPatterns
+    : signedUserInfoMandatoryPatterns;
 
   const expectedScope = getScopeByDescription(expectedScopeDescription);
   const expectedClaims = getClaims(expectedScope);
