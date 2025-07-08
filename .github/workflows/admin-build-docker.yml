@@ -30,7 +30,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}/admin
+          images: subject-name: ghcr.io/${{ github.repository }}/fc-exploitation-v2
           tags: |
             type=sha,format=long,prefix=
             type=ref,event=branch
@@ -58,6 +58,6 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ghcr.io/${{ github.repository }}/admin
+          subject-name: subject-name: ghcr.io/${{ github.repository }}/fc-exploitation-v2
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
