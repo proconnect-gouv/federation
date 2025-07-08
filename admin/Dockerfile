@@ -1,46 +1,52 @@
 ARG NODE_VERSION=22.13.0
 ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
-FROM ${NODE_IMAGE} AS base
-RUN apk add --no-cache python3 make g++ lscpu
+FROM ${NODE_IMAGE} AS builder
 
-FROM base AS deps
-WORKDIR /admin
-COPY package.json yarn.lock ./
-COPY fc-exploitation/package.json ./fc-exploitation/
-COPY shared/package.json ./shared/
-# ARM64 emulation can take up to 6.4 minutes, so allow 7 minutes (420s)
-RUN yarn install --frozen-lockfile --network-timeout 420000
+COPY . /tmp/src
 
-FROM deps AS shared-builder
-COPY shared/ ./shared/
-RUN yarn --cwd shared run build
+RUN apk add python3 make g++ lscpu
 
-FROM shared-builder AS exploitation-builder
-COPY fc-exploitation/ ./fc-exploitation/
-RUN yarn --cwd fc-exploitation run build
+WORKDIR /tmp/src
+RUN yarn install
 
-FROM base AS prod-deps
-WORKDIR /admin
-COPY package.json yarn.lock ./
-COPY fc-exploitation/package.json ./fc-exploitation/
-COPY shared/package.json ./shared/
-# ARM64 emulation can take up to 4.5 minutes, so allow 7 minutes (420s)
-RUN yarn install --production --frozen-lockfile --network-timeout 420000
+## build shared
+WORKDIR /tmp/src/shared
+RUN yarn run build --outDir /federation-admin/shared
+
+## build fc-exploitation
+WORKDIR /tmp/src/fc-exploitation
+RUN yarn run build
+
+WORKDIR /federation-admin/shared
+RUN mv /tmp/src/shared/package.json ./ && \
+    mv /tmp/src/shared/views ./ && \
+    mv /tmp/src/shared/user/emails ./user/
+
+WORKDIR /federation-admin/fc-exploitation
+RUN mv /tmp/src/fc-exploitation/package.json ./ && \
+    mv /tmp/src/fc-exploitation/dist ./ && \
+    mv /tmp/src/fc-exploitation/views ./
+
+WORKDIR /federation-admin
+RUN mv /tmp/src/yarn.lock ./ && \
+    mv /tmp/src/package.json ./ && \
+    yarn install --production && \
+    rm -f package.json */package.json yarn.lock
+
+RUN mkdir /etc/pm2
+COPY deploy/pm2/app.json /etc/pm2/
 
 FROM ${NODE_IMAGE} AS production
-WORKDIR /var/www/app
+
 RUN npm install -g pm2
-ENV PM2_HOME=/tmp/.pm2 NODE_ENV=production
 
-COPY --from=shared-builder /admin/shared/dist ./shared/dist
-COPY --from=shared-builder /admin/shared/package.json ./shared/
-COPY --from=exploitation-builder /admin/fc-exploitation/dist ./fc-exploitation/dist
-COPY --from=exploitation-builder /admin/fc-exploitation/views ./fc-exploitation/views
-COPY --from=exploitation-builder /admin/fc-exploitation/package.json ./fc-exploitation/
-COPY --from=prod-deps /admin/node_modules ./node_modules
-COPY --from=prod-deps /admin/package.json ./
-COPY --from=prod-deps /admin/yarn.lock ./
+ENV PM2_HOME=/tmp/.pm2
+ENV NODE_ENV=production
 
-COPY deploy/pm2/app.json /etc/pm2/
+COPY --from=builder /federation-admin /var/www/app
+COPY --from=builder /etc/pm2 /etc/pm2
+
+WORKDIR /var/www/app
+
 CMD ["pm2-runtime", "/etc/pm2/app.json"]
