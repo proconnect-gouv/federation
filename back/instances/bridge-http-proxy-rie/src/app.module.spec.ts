@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+
 import { getConfigMock } from '@mocks/config';
 
 import { AppModule } from './app.module';
