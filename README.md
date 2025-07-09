@@ -229,5 +229,6 @@ yarn lint --fix
 
 ```bash
 cd $PC_ROOT/federation/quality/fca
-CYPRESS_TEST_ENV=integ01 yarn start:low
+# Get the credentials from a team member
+CYPRESS_TEST_ENV=integ01 CYPRESS_EXPLOIT_USER_NAME=proconnect-test-local CYPRESS_EXPLOIT_USER_PASS='xxx' CYPRESS_EXPLOIT_USER_TOTP='xxx' yarn start:low
 ```
