@@ -50,26 +50,27 @@ export class ServiceProviderAdapterMongoDTO {
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (value === null ? undefined : value))
+  @Transform(({ value }) => value || undefined)
   readonly userinfo_signed_response_alg?: string;
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (value === null ? undefined : value))
+  @Transform(({ value }) => value || undefined)
   readonly introspection_signed_response_alg?: string;
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (value === null ? undefined : value))
+  @Transform(({ value }) => value || undefined)
   readonly introspection_encrypted_response_alg?: string;
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (value === null ? undefined : value))
+  @Transform(({ value }) => value || undefined)
   readonly introspection_encrypted_response_enc?: string;
 
   @IsOptional()
   @IsUrlRequiredTldFromConfig()
+  @Transform(({ value }) => value || undefined)
   readonly jwks_uri?: string;
 
   // 'public' = sp that accepts public servants only
@@ -81,12 +82,12 @@ export class ServiceProviderAdapterMongoDTO {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  @Transform(({ value }) => (value === null ? undefined : value))
+  @Transform(({ value }) => value || undefined)
   readonly response_types?: string[];
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  @Transform(({ value }) => (value === null ? undefined : value))
+  @Transform(({ value }) => value || undefined)
   readonly grant_types?: string[];
 }
