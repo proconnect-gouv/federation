@@ -76,6 +76,27 @@ services:
       - rie
     command: -config /etc/docker-gen/config
 
+  squid:
+    image: ubuntu/squid
+    ulimits:
+      nofile:
+        soft: 1048576
+        hard: 1048576
+    extra_hosts:
+      - auth.llng.docker.dev-franceconnect.fr:172.16.1.254
+      - fia-rie-low.docker.dev-franceconnect.fr:172.16.1.254
+    networks:
+      - public
+      - fc
+      - exploitation
+      - rie
+    healthcheck:
+      test: ['CMD', 'bash', '-c', 'echo >/dev/tcp/localhost/3128 || exit 1']
+      interval: 1s
+      timeout: 1s
+      retries: 2
+      start_period: 1s
+
   log-hub:
     hostname: log-hub
     image: pc-nodejs

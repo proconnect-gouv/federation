@@ -32,3 +32,18 @@ services:
       - data
     init: true
     command: 'pm2 logs'
+
+  core-fca-low-squid:
+    extends: core-fca-low
+    hostname: core-fca-low-squid
+    depends_on:
+      mongo-fca-low:
+        condition: service_healthy
+      redis-pwd:
+        condition: service_healthy
+      squid:
+        condition: service_started
+    environment:
+      # Proxy Configuration for Hybridge
+      GLOBAL_AGENT_HTTP_PROXY: http://squid:3128
+      GLOBAL_AGENT_HTTPS_PROXY: http://squid:3128

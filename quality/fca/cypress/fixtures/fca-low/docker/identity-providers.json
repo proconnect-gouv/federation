@@ -23,5 +23,13 @@
     "signature": "RS256",
     "fqdn": "fia2.fr",
     "siret": ""
+  },
+  {
+    "id": "c6ecab5e-dc67-4390-af57-fe208e97b649",
+    "descriptions": ["Identity Provider RIE - eIDAS faible - ES256"],
+    "title": "Identity Provider RIE - eIDAS faible - ES256",
+    "url": "https://fia-rie-low.docker.dev-franceconnect.fr",
+    "signature": "ES256",
+    "fqdn": "fi-rie.fr"
   }
 ]
