@@ -1,0 +1,8 @@
+test_*.py
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+Dockerfile.test
+Dockerfile
+.coverage
