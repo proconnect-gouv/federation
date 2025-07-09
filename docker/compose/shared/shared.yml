@@ -77,7 +77,7 @@ services:
     command: -config /etc/docker-gen/config
 
   squid:
-    image: ubuntu/squid
+    image: ubuntu/squid:6.6-24.04_beta
     ulimits:
       nofile:
         soft: 1048576
