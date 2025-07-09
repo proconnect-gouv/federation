@@ -5,11 +5,12 @@
  */
 import { isURL } from 'class-validator';
 import { JWK } from 'jose-openid-client';
-import { CallbackParamsType } from 'openid-client';
+import { CallbackParamsType, errors } from 'openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CryptographyService } from '@fc/cryptography';
+import { FcException } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 
@@ -20,7 +21,6 @@ import {
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientInvalidStateException,
-  OidcClientMissingCodeException,
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
 } from '../exceptions';
@@ -390,6 +390,28 @@ describe('OidcClientUtilsService', () => {
       ).rejects.toThrow(OidcClientTokenFailedException);
       expect(loggerServiceMock.err).toHaveBeenCalledTimes(1);
     });
+
+    it('should throw FcException if oidc-client throws OPError', async () => {
+      // Given
+      const exception = new errors.OPError({ error: 'invalid_scope' });
+      callbackMock.mockRejectedValueOnce(exception);
+      // Then
+      await expect(
+        service.getTokenSet(req, providerId, params),
+      ).rejects.toThrow(FcException);
+    });
+
+    it('should throw FcException if oidc-client throws RPError', async () => {
+      // Given
+      const exception = new errors.RPError({
+        message: 'state missing from the response',
+      });
+      callbackMock.mockRejectedValueOnce(exception);
+      // Then
+      await expect(
+        service.getTokenSet(req, providerId, params),
+      ).rejects.toThrow(FcException);
+    });
   });
 
   describe('extractParams()', () => {
@@ -398,16 +420,6 @@ describe('OidcClientUtilsService', () => {
       code: Symbol('code'),
     } as unknown as CallbackParamsType;
     const state = params.state;
-
-    it('should throw if code is not provided in url', () => {
-      const missingCodeParams = {
-        state: params.state,
-      };
-      // Then
-      expect(() => service['extractParams'](missingCodeParams, state)).toThrow(
-        OidcClientMissingCodeException,
-      );
-    });
 
     it('should throw if state is not provided in url', () => {
       // Given

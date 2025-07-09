@@ -10,12 +10,14 @@ import {
   CallbackExtras,
   CallbackParamsType,
   Client,
+  errors,
   TokenSet,
 } from 'openid-client';
 
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CryptographyService } from '@fc/cryptography';
+import { FcException } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
 import {
   IServiceProviderAdapter,
@@ -27,7 +29,6 @@ import {
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientInvalidStateException,
-  OidcClientMissingCodeException,
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
 } from '../exceptions';
@@ -107,17 +108,10 @@ export class OidcClientUtilsService {
     }
   }
 
-  private checkCode(callbackParams): void {
-    if (!callbackParams.code) {
-      throw new OidcClientMissingCodeException();
-    }
-  }
-
   private extractParams(
     callbackParams: CallbackParamsType,
     stateFromSession: string,
   ): any {
-    this.checkCode(callbackParams);
     this.checkState(callbackParams, stateFromSession);
 
     return callbackParams;
@@ -157,14 +151,31 @@ export class OidcClientUtilsService {
         this.buildExtraParameters(extraParams),
       );
     } catch (error) {
-      this.logger.err(error.stack);
-      this.logger.debug({
-        client: { ...client, client_secret: '***' },
-        receivedParams,
-        params,
-      });
+      if (error instanceof errors.RPError) {
+        const exception = new FcException();
+        exception.generic = true;
+        exception.error = error.name;
+        exception.error_description = error.message;
+        exception.http_status_code = 400;
+        throw exception;
+      }
+      if (error instanceof errors.OPError) {
+        const exception = new FcException();
+        exception.generic = true;
+        exception.error = error.error;
+        exception.error_description = error.error_description;
+        exception.http_status_code = 400;
+        throw exception;
+      } else {
+        this.logger.err(error.stack);
+        this.logger.debug({
+          client: { ...client, client_secret: '***' },
+          receivedParams,
+          params,
+        });
 
-      throw new OidcClientTokenFailedException();
+        throw new OidcClientTokenFailedException();
+      }
     }
 
     return tokenSet;

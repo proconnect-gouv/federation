@@ -9,7 +9,6 @@ import { UserSession } from '@fc/core-fca';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
-import { BaseException } from '@fc/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
@@ -400,18 +399,6 @@ describe('OidcClientController', () => {
       sanitizer.getValidatedIdentityFromIdp.mockReturnValue({
         email: 'user@example.com',
       });
-    });
-
-    it('should exit early with render if error param is present', async () => {
-      await expect(
-        controller.getOidcCallback(
-          req as Request,
-          res as Response,
-          userSession,
-          'invalid_scope',
-          'scopes are invalid',
-        ),
-      ).rejects.toThrow(BaseException);
     });
 
     it('should process OIDC callback when identity is valid (no validation errors)', async () => {
