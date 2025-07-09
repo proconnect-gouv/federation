@@ -70,6 +70,7 @@ export class ServiceProviderAdapterMongoDTO {
 
   @IsOptional()
   @IsUrlRequiredTldFromConfig()
+  @Transform(({ value }) => (value === null ? undefined : value))
   readonly jwks_uri?: string;
 
   // 'public' = sp that accepts public servants only
