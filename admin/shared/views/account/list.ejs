@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head.ejs') -%>
+</head>
+<body>
+<%- include('partials/header.ejs') -%>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div>
+        <div class="flex-grow-1">
+          <p class="h2">Gestion des utilisateurs</p>
+          <form id="itemPerPage" data-init="itemPerPage" method="GET" action="<%= APP_ROOT %>/account">
+            <p id="users-count"><i><%= total %> utilisateurs - Résultats par page :</i>
+            <%- include('partials/choose-items-number-to-show.ejs') -%>
+          </form>
+          <%- include('partials/global-errors-handler.ejs') -%>
+          <% if (CURRENT_USER.roles.includes('admin')) { %>
+            <a class="btn btn-primary mb-3" href="<%= APP_ROOT %>/account/create">Créer un utilisateur</a>
+          <% } %>
+          <table class="table table-hover table-light shadow-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col" class="w-30">Login</th>
+              <th scope="col" class="w-50">Email</th>
+              <th scope="col" class="w-20">Rôles</th>
+              <th scope="col" class="w-10">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% users.forEach(function(user){ %>
+              <tr id="<%= user.username%>">
+                <th scope="row"><%= user.username %></th>
+                <td><%= user.email %></td>
+                <td class="roles">
+                  <% user.roles.forEach(function (role) { %>
+                    <span
+                      class="badge badge-secondary p-1"><%= USER_ROLES_OPTIONS.find(({value}) => value === role).label %></span>
+                  <% }) %>
+                </td>
+                <% if(CURRENT_USER.roles.find((role) => role === 'admin' && user.id !== CURRENT_USER.id)) { %>
+                  <td>
+                    <form
+                      name="deleteForm"
+                      method="POST"
+                      id="delete-<%= user.id %>"
+                      action="<%= APP_ROOT %>/account/<%= user.id%>?_method=DELETE"
+                      class="d-flex align-items-center"
+                      data-init="removeItem"
+                      data-element-title="<%= user.username %>"
+                      data-element-id="<%= user.id %>"
+                      data-element-type="le compte"
+                      novalidate>
+                        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+                        <input type="hidden" name="_totp">
+                        <input type="hidden" name="username" value="<%= user.username %>">
+                        <button type="submit" class="btn-action-delete">
+                          <i class="fa fa-trash" aria-hidden="true" title="Supprimer"></i>
+                        </button>
+                    </form>
+                  </td>
+                  <% } %>
+              </tr>
+            <% }) %>
+            </tbody>
+          </table>
+          <div class="container-fluid">
+          <%- include('partials/pagination.ejs', {
+              total,
+              baseHref: `${APP_ROOT}/account`,
+            }) %>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
