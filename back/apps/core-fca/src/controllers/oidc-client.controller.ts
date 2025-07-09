@@ -6,7 +6,6 @@ import {
   Get,
   Header,
   Post,
-  Query,
   Render,
   Req,
   Res,
@@ -22,7 +21,6 @@ import { UserSessionDecorator } from '@fc/core-fca/decorators';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
-import { FcException } from '@fc/exceptions';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -258,7 +256,7 @@ export class OidcClientController {
    * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
    */
-  // eslint-disable-next-line max-params
+
   @Get(OidcClientRoutes.OIDC_CALLBACK)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -277,17 +275,7 @@ export class OidcClientController {
      */
     @UserSessionDecorator(GetOidcCallbackSessionDto)
     userSession: ISessionService<UserSession>,
-    @Query('error') error?: string,
-    @Query('error_description') error_description?: string,
   ) {
-    if (error) {
-      const exception = new FcException();
-      exception.generic = true;
-      exception.error = error;
-      exception.error_description = error_description;
-      throw exception;
-    }
-
     // The session is duplicated here to mitigate cookie-theft-based attacks.
     // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
     await userSession.duplicate();
