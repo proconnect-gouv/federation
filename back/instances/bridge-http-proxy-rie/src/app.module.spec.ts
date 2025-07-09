@@ -9,25 +9,19 @@ import { AppModule } from './app.module';
 describe('AppModule (bridge-http-proxy-rie)', () => {
   it('should compile the module correctly', async () => {
     const configServiceMock = getConfigMock();
-    configServiceMock.get.mockImplementation((key: string) => {
-      if (key === 'Logger') {
-        return { threshold: 'info' };
-      }
-      if (key === 'Broker_URLS') {
-        return ['amqp://localhost:5672'];
-      }
-      if (key === 'Broker_QUEUE') {
-        return 'test-queue';
-      }
-      if (key === 'SessionModule') {
-        return {
-          cookie: {
-            secrets: ['test-secret'],
-          },
-        };
-      }
-      return null;
-    });
+    const configValues = {
+      Logger: { threshold: 'info' },
+      Session: {
+        cookie: {
+          secrets: ['test-secret'],
+        },
+        middlewareExcludedRoutes: [],
+        middlewareIncludedRoutes: [],
+      },
+    };
+    configServiceMock.get.mockImplementation(
+      (key: keyof typeof configValues) => configValues[key] || null,
+    );
 
     const moduleFixture = await Test.createTestingModule({
       imports: [
