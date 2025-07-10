@@ -55,16 +55,12 @@ export PC_DOCKER_REGISTRY= ghcr.io/proconnect-gouv/federation
 alias dks=$PC_ROOT/federation/docker/docker-stack
 ```
 
-- Clone every needed repository
+- Clone the repository
 
 ```bash
 mkdir -p $PC_ROOT && cd $PC_ROOT
 
-# The main repository
 git clone git@github.com:proconnect-gouv/federation.git
-
-# Back office app
-git clone git@github.com:proconnect-gouv/federation-admin.git
 ```
 
 - Link the cloned repository in the docker volumes
@@ -153,7 +149,7 @@ dks halt
 ### Cleanup installation
 
 ```bash
-docker-stack compose down --volumes --remove-orphans --rmi all
+dks compose down --volumes --remove-orphans --rmi all
 git clean -e docker/volumes/src -nxd # check the file list, if ok, launch the next command
 git clean -e docker/volumes/src -fxd
 ```
@@ -194,7 +190,7 @@ yarn start:low
 
 ```bash
 dks switch medium
-cd $PC_ROOT/federation-admin/fc-exploitation
+cd $PC_ROOT/federation/admin/fc-exploitation
 yarn test:e2e:open
 ```
 
@@ -220,7 +216,7 @@ yarn tsc --noEmit
 ```
 
 ```bash
-cd $PC_ROOT/federation-admin
+cd $PC_ROOT/federation/admin
 yarn test
 yarn lint --fix
 ```
