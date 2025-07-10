@@ -230,6 +230,6 @@ jobs:
       matrix:
         include:
           - stack: medium
-            tags: 'not @ignore'
+            tags: 'not @hybridge'
           - stack: hybridge
             tags: '@hybridge'
