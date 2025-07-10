@@ -72,7 +72,7 @@ git clone git@github.com:proconnect-gouv/federation-admin.git
 ```bash
 cd $PC_ROOT/federation/docker/volumes/src
 ln -s $PC_ROOT/federation
-ln -s $PC_ROOT/federation-admin
+ln -s $PC_ROOT/federation/admin ./federation-admin
 ```
 
 ## Run the application

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head.ejs') -%>
+</head>
+<body>
+  <%- include('partials/header.ejs') -%>
+  <section class="mt-5">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="alert alert-danger col-sm-12">
+          <p> Cette fonctionnalité de vérification de l’identité pivot d'un usager
+            utilise des données à caractère personnel, protégées par la loi n°78-17 du
+            6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés,
+            modifiée par la loi n°2004-801 du 6 août 2004 relative à la protection des
+            personnes physiques à l'égard des traitements de données à caractère personnel.</p>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <% if (locals.message) { %>
+            <div id="message" class="alert alert-danger" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                  <span class="sr-only">Fermer</span>
+              </button>
+              <%=message%><br>
+              <% if (locals.rawResponse) { %>
+              <%- include('partials/rnippRawResponse.ejs', {rnippCode: rnippCode, rnippRawResponse: rawResponse, index: 0}); -%>
+              <% } %>
+            </div>
+          <% } %>
+          <h3>Rechercher un usager</h3>
+          <form class="custom-validation" id="rnipp-form" name="rnipp-form" method="POST" action="<%= APP_ROOT %>/research" data-init="validateRnippForm" novalidate>
+            <div class="card my-3">
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="support-id" class="control-label">Numéro de ticket support</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="support-id"
+                    name="supportId"
+                    value="<%= locals.supportId || '' %>"
+                    pattern="^[0-9]{16}$"
+                    required
+                  >
+                  <div class="invalid-feedback">
+                    Veuillez renseigner un numéro de ticket valide (16 chiffres)
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card my-3">
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="gender" class="control-label">Genre</label>
+                  <br />
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input
+                      type="radio"
+                      class="custom-control-input"
+                      id="female"
+                      name="gender"
+                      value="female"
+                      required
+                      <% if(locals.requestedIdentity && locals.requestedIdentity.gender === 'female'){ %> checked <%} %>
+                    >
+                    <label class="custom-control-label" for="female">Féminin</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input
+                      type="radio"
+                      class="custom-control-input"
+                      id="male"
+                      name="gender"
+                      value="male"
+                      required
+                      <% if(locals.requestedIdentity && locals.requestedIdentity.gender === 'male'){ %> checked <%} %>
+                    >
+                    <label class="custom-control-label" for="male">Masculin</label>
+                    <div class="invalid-feedback" style="margin: 0.15rem 0 0 1rem">
+                      Vous devez choisir un genre
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="family-name" class="control-label">Nom</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="family-name"
+                    name="familyName"
+                    value="<%= (locals.requestedIdentity && locals.requestedIdentity.familyName) ? locals.requestedIdentity.familyName : '' %>"
+                    pattern="<%= VALID_INPUT_STRING_REGEX %>"
+                    required
+                  >
+                  <div class="invalid-feedback">
+                    Veuillez renseigner un nom de famille
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="preferred-username" class="control-label">Nom d'usage ( _Champ expérimental - Ne pas utiliser pour le support_)</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="preferred-username"
+                    name="preferredUsername"
+                    value="<%= (locals.requestedIdentity && locals.requestedIdentity.preferredUsername) ? locals.requestedIdentity.preferredUsername : '' %>"
+                    pattern="<%= VALID_INPUT_STRING_REGEX %>"
+                  >
+                  <div class="invalid-feedback">
+                    Veuillez renseigner un nom d'usage
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="given-name" class="control-label">Prénoms (séparés par des espaces)</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="given-name"
+                    name="givenName"
+                    placeholder="exemple : Jean Michel Pierre Marie"
+                    value="<%= (locals.requestedIdentity && locals.requestedIdentity.givenName) ? locals.requestedIdentity.givenName : '' %>"
+                    pattern="<%= VALID_INPUT_STRING_REGEX %>"
+                    required
+                  >
+                  <div class="invalid-feedback">
+                    Veuillez renseigner un prénom ou vos prénoms
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="birthdate" class="control-label">Date de naissance (format AAAA-MM-JJ ou JJ/MM/AAAA)</label>
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="birthdate"
+                      name="birthdate"
+                      placeholder="exemple : 1987-02-21 ou 21/02/1987"
+                      value="<%= (locals.requestedIdentity && locals.requestedIdentity.birthdate) ? locals.requestedIdentity.birthdate : '' %>"
+                      required
+                      autocomplete="off"
+                      pattern="^(?:\d{4}-\d{2}-\d{2})|(?:\d{2}[-/]\d{2}[-/]\d{4})$"
+                    >
+                    <div class="invalid-feedback">
+                      Veuillez renseigner une date au format AAAA-MM-JJ ou JJ/MM/AAAA
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="birthCountry" class="control-label">Né(e) en france</label>
+                  <br />
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input
+                      type="radio"
+                      class="custom-control-input"
+                      id="french"
+                      name="isFrench"
+                      value="true"
+                      required
+                      <% if (!locals.requestedIdentity || (locals.requestedIdentity && locals.requestedIdentity.isFrench)){ %> checked <%} %>
+                    >
+                    <label class="custom-control-label" for="french">Oui</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input
+                      type="radio"
+                      class="custom-control-input"
+                      id="no-french"
+                      name="isFrench"
+                      value="false"
+                      required
+                      <% if (locals.requestedIdentity && !locals.requestedIdentity.isFrench){ %> checked <%} %>
+                    >
+                    <label class="custom-control-label" for="no-french">Non</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="birthLocation" class="control-label">Code lieu de naissance (commune ou pays)</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="birthLocation"
+                    name="birthLocation"
+                    placeholder="exemple : 92012 pour Boulogne-Billancourt"
+                    value="<%= locals.requestedIdentity && locals.requestedIdentity.birthLocation
+                      ? locals.requestedIdentity.birthLocation
+                      : '' %>"
+                    pattern="^(?:(?:2[AB]|[0-9]{2})[0-9]{3}|[\p{Letter} -._]+)$"
+                    title="Veuillez renseigner le COG ou le nom du pays / de la commune du lieu de naissance"
+                    required
+                  >
+                  <div class="invalid-feedback">
+                    Veuillez renseigner le COG ou le nom du pays / de la commune du lieu de naissance
+                  </div>
+                </div>
+                <div class="form-group text-center">
+                    <button id="btn-research" type="submit" class="btn btn-primary">Rechercher</button>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" name="_csrf" value="<%= locals.csrfToken  %>">
+          </form>
+        </div>
+        <% if (locals.searchResults) { %>
+          <%- include('partials/rnipp-search/results.ejs') -%>
+        <% } %>
+      </div>
+    </div>
+    <%/** Make RNIPP response data easily available for ajax requests (fc-exploitation) */%>
+    <% if (locals.searchResults) { %>
+    <script type="text/javascript">
+      const __RNIPP_DATA_RESULTS__ = <%- locals.searchResults
+        ? JSON.stringify( locals.searchResults)
+        : 'undefined';
+        %>
+      const __SUPPORT_ID__ = "<%= locals.supportId || '' %>";
+      const __RECTIFY_RESPONSE_CODES__ = <%- JSON.stringify(locals.rectifyResponseCodes) %>;
+      const __APP_NAME__ = "<%= locals.appName %>";
+    </script>
+    <% } %>
+  </section>
+<%- include('partials/footer.ejs') -%>
