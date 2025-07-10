@@ -33,7 +33,7 @@ jobs:
       - name: Run coverage
         run: |
           yarn test --coverage
-          ./node-scripts/coverage.sh
+          ./scripts/coverage.sh
 
   unit-shared:
     runs-on: ubuntu-24.04
@@ -77,7 +77,9 @@ jobs:
 
   e2e-exploitation:
     runs-on: ubuntu-24.04
-
+    defaults:
+      run:
+        working-directory: ./admin
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -97,26 +99,20 @@ jobs:
           node-version-file: ./admin/package.json
 
       - name: Install dependencies
-        working-directory: ./admin
         run: yarn install
-
-      - name: Set FEDERATION_ROOT environment variable
-        run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
 
       - name: Set PC_ROOT environment variable
         run: |
           PC_ROOT=$(dirname "$(pwd)")
           echo "PC_ROOT=$PC_ROOT" >> $GITHUB_ENV
+        working-directory: ./
+
+      - name: Set FEDERATION_DIR environment variable
+        run: echo "FEDERATION_DIR=$(pwd)" >> $GITHUB_ENV
+        working-directory: ./
 
       - name: Set ADMIN_ROOT environment variable
-        working-directory: ./admin
         run: echo "ADMIN_ROOT=$(pwd)" >> $GITHUB_ENV
-
-      - name: Create symlinks in federation
-        working-directory: ./docker/volumes/src
-        run: |
-          ln -s "$FEDERATION_ROOT" federation
-          ln -s "$ADMIN_ROOT" federation-admin
 
       - name: Start docker stack
         working-directory: ./docker
@@ -127,14 +123,13 @@ jobs:
           ./docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests
-        working-directory: ./admin
         run: yarn test:e2e:exploitation -c video=false
 
       - name: Post failing tests
         if: failure()
         run: |
-          mkdir -p federation-admin/cypress/logs
-          docker cp pc-exploitation-1:/tmp/.pm2/logs federation-admin/cypress/logs/fc-exploitation || true
+          mkdir -p fc-exploitation/cypress/logs
+          docker cp pc-exploitation-1:/tmp/.pm2/logs fc-exploitation/cypress/logs/fc-exploitation || true
           docker cp pc-rp-all:/var/log/nginx fc-exploitation/cypress/logs || true
 
       - name: Publish artifacts
@@ -143,6 +138,6 @@ jobs:
         with:
           name: cypress-outputs
           path: |
-            fc-exploitation/cypress/screenshots
-            fc-exploitation/cypress/videos
-            fc-exploitation/cypress/logs
+            admin/fc-exploitation/cypress/screenshots
+            admin/fc-exploitation/cypress/videos
+            admin/fc-exploitation/cypress/logs
