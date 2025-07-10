@@ -2,8 +2,8 @@ name: 🐳 Build docker images
 
 on:
   push:
-    tags:
-      - '*'
+    # tags:
+    #   - '*'
 
 jobs:
   build_docker_back:
