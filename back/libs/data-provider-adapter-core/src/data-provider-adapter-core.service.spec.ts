@@ -175,7 +175,10 @@ describe('DataProviderAdapterCoreService', () => {
     it('should call the checktoken endpoint with the configuration', async () => {
       // Given
       const expectedOptions = {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+          Accept: 'application/token-introspection+jwt',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
         proxy: false,
       };
       const expectedUri =

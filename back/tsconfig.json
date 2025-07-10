@@ -81,8 +81,6 @@
       "@fc/email-validator": ["libs/email-validator/src"],
       "@fc/email-validator/*": ["libs/email-validator/src/*"],
       "@mocks/email-validator": ["libs/email-validator/.mocks"],
-      "@fc/override-oidc-provider": ["libs/override-oidc-provider/src"],
-      "@fc/override-oidc-provider/*": ["libs/override-oidc-provider/src/*"],
       "@fc/tracking": ["libs/tracking/src"],
       "@fc/tracking/*": ["libs/tracking/src/*"],
       "@fc/tracking-context": ["libs/tracking-context/src"],

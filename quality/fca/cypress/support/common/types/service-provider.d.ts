@@ -3,4 +3,5 @@ export interface ServiceProvider {
   descriptions: string[];
   clientId?: string;
   url: string;
+  userinfo_signed_response_alg: string | null;
 }
