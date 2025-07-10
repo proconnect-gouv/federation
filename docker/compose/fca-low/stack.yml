@@ -16,13 +16,6 @@ services:
       - 'fsa1-low'
       - 'fia1-low'
 
-  small-rie:
-    image: alpine
-    depends_on:
-      - 'core-fca-rie'
-      - 'fsa1-low'
-      - 'fia1-low'
-
   # -- used for e2e tests
   medium:
     image: alpine
@@ -68,10 +61,12 @@ services:
   hybridge:
     image: alpine
     depends_on:
-      - 'small'
-      - 'rp-bridge-proxy'
-      - 'bridge-proxy-rie'
+      - 'core-fca-low-squid'
+      - 'fsa1-low'
+      - 'fia1-low'
       ### RIE
-      - 'lemon-ldap'
+      - 'squid'
+      - 'bridge-proxy-rie'
       - 'csmr-rie'
       - 'fia-rie-low'
+      - 'rp-bridge-proxy'

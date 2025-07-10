@@ -3,6 +3,9 @@ name: 💚 CI Tests
 on:
   push:
 
+permissions:
+  contents: read
+
 jobs:
   test_static_back:
     runs-on: ubuntu-24.04
@@ -122,10 +125,20 @@ jobs:
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Test snapshots
-        working-directory: ./quality/fca
         run: |
           yarn test:low:snapshot -c video=false
           yarn report
+
+      - name: Create artifacts-logs directory
+        if: failure()
+        run: mkdir -p artifacts-logs
+
+      - name: Collect Docker logs
+        if: failure()
+        working-directory: ./docker
+        run: |
+          ./docker-stack compose logs --no-color > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
+          docker ps -a > ../quality/fca/artifacts-logs/docker-ps.log 2>&1
 
       - name: Upload Cypress Artifacts
         if: failure()
@@ -135,7 +148,7 @@ jobs:
           path: |
             quality/fca/cypress/reports/cucumber/html-report
             quality/fca/cypress/snapshots/diff
-            artifacts-logs
+            quality/fca/artifacts-logs
 
   test_e2e:
     runs-on: ubuntu-24.04
@@ -182,24 +195,41 @@ jobs:
         run: |
           set -x
           ./docker-stack prune-ci
-          ./docker-stack up medium
+          ./docker-stack up "${{ matrix.stack }}"
           ./docker-stack start-all-ci
 
       - name: Install quality dependencies
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Execute e2e tests
-        working-directory: ./quality/fca
         run: |
-          yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
+          yarn test:low:chrome-desktop -c video=false --env TAGS="${{ matrix.tags }}"
           yarn report
+
+      - name: Create artifacts-logs directory
+        if: failure()
+        run: mkdir -p artifacts-logs
+
+      - name: Collect Docker logs
+        if: failure()
+        working-directory: ./docker
+        run: |
+          ./docker-stack compose logs --no-color > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
+          docker ps -a > ../quality/fca/artifacts-logs/docker-ps.log 2>&1
 
       - name: Upload Cypress Artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-e2e-artifacts
+          name: cypress-${{ matrix.stack }}-artifacts
           path: |
             quality/fca/cypress/reports/cucumber/html-report
             quality/fca/cypress/snapshots/diff
-            artifacts-logs
+            quality/fca/artifacts-logs
+    strategy:
+      matrix:
+        include:
+          - stack: medium
+            tags: 'not @hybridge and not @ignore'
+          - stack: hybridge
+            tags: '@hybridge'
