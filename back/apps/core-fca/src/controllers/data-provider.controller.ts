@@ -49,6 +49,7 @@ export class DataProviderController {
         body.client_secret,
       );
 
+    // TODO continue here: find a way to use grants from oidc-provider instead of session
     const session = await this.dataProviderService.getSessionByAccessToken(
       body.token,
     );

@@ -70,6 +70,7 @@ export class DataProviderService {
   async getSessionByAccessToken(
     accessToken: string,
   ): Promise<CoreFcaSession | null> {
+    // const sessionId = ctx.oidc?.session?.accountId;
     const atHash = atHashFromAccessToken({ jti: accessToken });
     const sessionId = await this.session.getAlias(atHash);
 
