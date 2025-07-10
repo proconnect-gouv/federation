@@ -20,7 +20,7 @@
     "@types/nodemailer": "^6.4.4",
     "amqp-connection-manager": "^3.2.1",
     "amqplib": "^0.8.0",
-    "axios": "^0.22.0",
+    "axios": "^0.30.0",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.13.0",
