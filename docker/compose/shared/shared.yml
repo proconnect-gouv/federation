@@ -79,7 +79,11 @@ services:
   log-hub:
     hostname: log-hub
     image: pc-nodejs
-    build: { context: "${COMPOSE_DIR}/../builds/node", args: { NODE_VERSION: "${NODE_VERSION}" } }
+    build:
+      {
+        context: '${COMPOSE_DIR}/../builds/node',
+        args: { NODE_VERSION: '${NODE_VERSION}' },
+      }
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -257,3 +261,10 @@ networks:
     ipam:
       config:
         - subnet: 172.16.6.0/24
+
+####################
+# Volumes
+####################
+
+volumes:
+  node-modules:
