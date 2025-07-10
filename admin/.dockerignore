@@ -1,2 +1,9 @@
 node_modules
 dist
+**/*.spec.ts
+**/*.spec.js
+**/cypress/
+**/coverage/
+**/.gitignore
+**/README.md
+**/*.md
