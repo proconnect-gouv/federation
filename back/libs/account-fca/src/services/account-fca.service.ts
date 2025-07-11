@@ -27,7 +27,7 @@ export class AccountFcaService {
   }
 
   createAccount(): AccountFca {
-    const sub = uuid();
+    const sub: string = uuid();
     return new this.model({ sub });
   }
 

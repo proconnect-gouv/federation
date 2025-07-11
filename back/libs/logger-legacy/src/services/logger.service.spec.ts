@@ -1,4 +1,4 @@
-import * as uuid from 'uuid';
+import { v4 as uuid, Version4Options } from 'uuid';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -13,6 +13,12 @@ import { PinoService } from './pino.service';
 jest.mock('os');
 jest.mock('uuid');
 jest.mock('../utils');
+
+type uuidType = (
+  options?: Version4Options,
+  buf?: undefined,
+  offset?: number,
+) => string;
 
 describe('LoggerService', () => {
   const transportMock: LoggerTransport = {
@@ -72,9 +78,9 @@ describe('LoggerService', () => {
   });
 
   describe('getIdentifiedLog()', () => {
-    const uuidMock = 'uuidMockValue';
+    const mockUuid = 'uuidMockValue';
     beforeEach(() => {
-      uuid.v4.mockReturnValue(uuidMock);
+      jest.mocked<uuidType>(uuid).mockReturnValue(mockUuid);
     });
 
     it('should add a `logId` property', () => {
@@ -85,7 +91,7 @@ describe('LoggerService', () => {
       // Then
       expect(result).toEqual({
         foo: 'fooValue',
-        logId: uuidMock,
+        logId: mockUuid,
       });
     });
 
@@ -97,7 +103,7 @@ describe('LoggerService', () => {
       // Then
       expect(result).toEqual({
         foo: 'fooValue',
-        logId: uuidMock,
+        logId: mockUuid,
       });
     });
   });
