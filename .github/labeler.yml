@@ -1,0 +1,29 @@
+# Global
+
+':construction_worker: CI':
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
+':memo: documentation':
+  - changed-files:
+      - any-glob-to-any-file: '**/*.md'
+':traffic_light: quality':
+  - changed-files:
+      - any-glob-to-any-file: 'quality/**/*'
+':whale: docker':
+  - changed-files:
+      - any-glob-to-any-file: 'docker/**/*'
+':file_cabinet: e2e':
+  - changed-files:
+      - any-glob-to-any-file: 'migrations/**/*'
+':test_tube: unit test':
+  - changed-files:
+      - any-glob-to-any-file: '**/*.spec.ts'
+
+# Scopes
+
+'scope: back':
+  - changed-files:
+      - any-glob-to-any-file: 'back/**/*'
+'scope: admin':
+  - changed-files:
+      - any-glob-to-any-file: 'admin/**/*'
