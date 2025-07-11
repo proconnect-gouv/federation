@@ -19,6 +19,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
+          cache: yarn
+          cache-dependency-path: ./back/yarn.lock
           node-version-file: ./back/package.json
 
       - name: Install dependencies
@@ -49,6 +51,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
+          cache: yarn
+          cache-dependency-path: ./back/yarn.lock
           node-version-file: ./back/package.json
 
       - name: Install quality dependencies
@@ -73,6 +77,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
+          cache: yarn
+          cache-dependency-path: ./back/yarn.lock
           node-version-file: ./back/package.json
 
       - name: Install dependencies
@@ -99,19 +105,13 @@ jobs:
         with:
           version: latest
 
-      - name: Set FEDERATION_ROOT environment variable
+      - name: Set FEDERATION_DIR environment variable
         working-directory: ./
-        run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
+        run: echo "FEDERATION_DIR=$(pwd)" >> $GITHUB_ENV
 
       - name: Connect to docker registry
         working-directory: ./docker
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Create symlink to federation root
-        working-directory: ./docker/volumes/src
-        run: |
-          set -x
-          ln -s $FEDERATION_ROOT
 
       - name: Start docker stack
         working-directory: ./docker
@@ -168,20 +168,14 @@ jobs:
         with:
           version: latest
 
-      - name: Set FEDERATION_ROOT environment variable
+      - name: Set FEDERATION_DIR environment variable
         working-directory: ./
-        run: echo "FEDERATION_ROOT=$(pwd)" >> $GITHUB_ENV
+        run: echo "FEDERATION_DIR=$(pwd)" >> $GITHUB_ENV
 
       - name: Connect to docker registry
         working-directory: ./docker
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Create symlink to federation root
-        working-directory: ./docker/volumes/src
-        run: |
-          set -x
-          ln -s $FEDERATION_ROOT
 
       - name: Clone federation-admin repository
         uses: actions/checkout@v4

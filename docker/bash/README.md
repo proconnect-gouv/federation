@@ -12,7 +12,7 @@ We advise to create a shortcut alias as `dks` for everyday use.
 
 ```bash
 # ~/.bashrc
-alias dks=$PC_ROOT/federation/docker/docker-stack
+alias dks=$FEDERATION_DIR/docker/docker-stack
 ```
 
 List available commands by running `help` command:

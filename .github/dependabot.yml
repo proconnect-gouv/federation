@@ -8,6 +8,13 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "npm"
+    directory: "/admin"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+    versioning-strategy: increase
+  - package-ecosystem: "npm"
     directory: "/back"
     labels:
       - dependencies
