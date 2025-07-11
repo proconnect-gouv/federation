@@ -5,7 +5,7 @@ import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
   public documentation =
-    'Nous n’arrivons pas à vous identifier. Nous vous conseillons de créer un compte sur le site sans passer par le bouton ProConnect.';
+    'La connexion ne fonctionne pas depuis le réseau sécurisé que vous semblez utiliser. Merci de créer un compte directement sur le site, sans passer par le bouton ProConnect.';
   public code = ErrorCode.NO_IDP;
   public http_status_code = HttpStatus.BAD_REQUEST;
   public error = 'server_error';
@@ -14,8 +14,7 @@ export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
 
   public description = this.documentation;
   public illustration = 'access-restricted-error';
-  public title = 'Accès indisponible';
-  public displayContact = true;
-  public contactMessage =
-    'Si cette situation vous parait inhabituelle, vous pouvez nous signaler l’erreur.';
+  public title = 'Accès impossible';
+
+  public displayContact = false;
 }
