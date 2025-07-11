@@ -8,14 +8,13 @@ import { OidcAcrModule } from '@fc/oidc-acr';
 import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
 
-import { IOidcProviderConfigAppService } from './interfaces';
 import { OidcProviderController } from './oidc-provider.controller';
 import { OidcProviderService } from './oidc-provider.service';
 import {
+  OidcProviderConfigAppService,
   OidcProviderConfigService,
   OidcProviderErrorService,
 } from './services';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
 import { IsValidPromptConstraint } from './validators';
 
 @Module({})
@@ -27,18 +26,12 @@ export class OidcProviderModule {
    * @see https://docs.nestjs.com/fundamentals/custom-providers
    */
   static register(
-    OidcProviderConfigApp: Type<IOidcProviderConfigAppService>,
     ServiceProviderClass: Type<IServiceProviderAdapter>,
     ServiceProviderModule: Type<ModuleMetadata>,
   ): DynamicModule {
     const serviceProviderProvider = {
       provide: SERVICE_PROVIDER_SERVICE_TOKEN,
       useExisting: ServiceProviderClass,
-    };
-
-    const oidcProviderConfigApp = {
-      provide: OIDC_PROVIDER_CONFIG_APP_TOKEN,
-      useExisting: OidcProviderConfigApp,
     };
 
     return {
@@ -50,7 +43,7 @@ export class OidcProviderModule {
         SessionModule,
       ],
       providers: [
-        oidcProviderConfigApp,
+        OidcProviderConfigAppService,
         serviceProviderProvider,
         OidcProviderService,
         IsValidPromptConstraint,
@@ -60,8 +53,8 @@ export class OidcProviderModule {
       ],
       exports: [
         OidcProviderService,
+        OidcProviderConfigAppService,
         RedisModule,
-        oidcProviderConfigApp,
         serviceProviderProvider,
         OidcProviderErrorService,
       ],

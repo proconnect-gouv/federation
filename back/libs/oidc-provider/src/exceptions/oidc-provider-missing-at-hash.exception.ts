@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { ErrorCode } from '../enums';
-import { CoreBaseException } from './core-base.exception';
+import { OidcProviderBaseRenderedException } from './oidc-provider-base-rendered.exception';
 
-export class CoreMissingAtHashException extends CoreBaseException {
+export class OidcProviderMissingAtHashException extends OidcProviderBaseRenderedException {
   public code = ErrorCode.MISSING_AT_HASH;
   public documentation =
     "Le claim at_hash n'a pas été trouvé dans l'id_token_hint lors du logout";

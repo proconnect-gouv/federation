@@ -12,10 +12,7 @@ import { IServiceProviderAdapter } from '@fc/oidc';
 import { OidcAcrModule } from '@fc/oidc-acr';
 import { IIdentityProviderAdapter, OidcClientModule } from '@fc/oidc-client';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
-import {
-  IOidcProviderConfigAppService,
-  OidcProviderModule,
-} from '@fc/oidc-provider';
+import { OidcProviderModule } from '@fc/oidc-provider';
 import {
   OidcProviderRedirectExceptionFilter,
   OidcProviderRenderedHtmlExceptionFilter,
@@ -27,10 +24,7 @@ import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 
 import { CoreServiceInterface } from './interfaces';
-import {
-  CoreAccountService,
-  CoreOidcProviderConfigAppService,
-} from './services';
+import { CoreAccountService } from './services';
 import { CORE_SERVICE } from './tokens';
 
 @Module({})
@@ -39,7 +33,6 @@ export class CoreModule {
   // eslint-disable-next-line max-params
   static register(
     CoreService: Type<CoreServiceInterface>,
-    OidcProviderConfigApp: Type<IOidcProviderConfigAppService>,
     ServiceProviderClass: Type<IServiceProviderAdapter>,
     ServiceProviderModule: Type<ModuleMetadata>,
     IdentityProviderAdapterMongoService: Type<IIdentityProviderAdapter>,
@@ -54,11 +47,6 @@ export class CoreModule {
         OidcAcrModule,
         OidcProviderModule,
         AccountModule,
-        OidcProviderModule.register(
-          OidcProviderConfigApp,
-          ServiceProviderClass,
-          ServiceProviderModule,
-        ),
         OidcClientModule.register(
           IdentityProviderAdapterMongoService,
           IdentityProviderAdapterMongoModule,
@@ -70,7 +58,6 @@ export class CoreModule {
       ],
       providers: [
         CoreAccountService,
-        CoreOidcProviderConfigAppService,
         {
           provide: CORE_SERVICE,
           useExisting: CoreService,
@@ -107,11 +94,7 @@ export class CoreModule {
           useClass: HttpExceptionFilter,
         },
       ],
-      exports: [
-        CoreAccountService,
-        CoreOidcProviderConfigAppService,
-        TrackingModule,
-      ],
+      exports: [CoreAccountService, TrackingModule],
     };
   }
 }
