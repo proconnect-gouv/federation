@@ -268,3 +268,4 @@ networks:
 
 volumes:
   node-modules:
+  node-modules-admin:
