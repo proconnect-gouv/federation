@@ -3,6 +3,7 @@ export * from './oidc-provider-base-redirect.exception';
 export * from './oidc-provider-base-rendered.exception';
 export * from './oidc-provider-binding.exception';
 export * from './oidc-provider-initialisation.exception';
+export * from './oidc-provider-missing-at-hash.exception';
 export * from './oidc-provider-no-wrapper.exception';
 export * from './oidc-provider-parse-redis-response.exception';
 export * from './oidc-provider-runtime-exception';

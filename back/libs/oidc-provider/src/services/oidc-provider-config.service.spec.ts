@@ -7,8 +7,8 @@ import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 
 import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from '../tokens';
 import { OidcProviderConfigService } from './oidc-provider-config.service';
+import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
 
 describe('OidcProviderConfigService', () => {
@@ -57,19 +57,18 @@ describe('OidcProviderConfigService', () => {
       providers: [
         OidcProviderConfigService,
         ConfigService,
+        OidcProviderConfigAppService,
         OidcProviderErrorService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
         },
-        {
-          provide: OIDC_PROVIDER_CONFIG_APP_TOKEN,
-          useValue: oidcProviderConfigAppMock,
-        },
       ],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(OidcProviderConfigAppService)
+      .useValue(oidcProviderConfigAppMock)
       .overrideProvider(OidcProviderErrorService)
       .useValue(errorServiceMock)
       .compile();
