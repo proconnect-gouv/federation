@@ -1,5 +1,6 @@
 include:
   - ../shared/shared.yml
+  - node-module-installer.yml
   - postgres.yml
   - mongo.yml
   - core.yml
