@@ -41,7 +41,6 @@ import {
   CoreFcaTrackingService,
   DataProviderService,
   IdentitySanitizer,
-  OidcProviderConfigAppService,
 } from './services';
 
 @Global()
@@ -61,7 +60,6 @@ import {
     HttpProxyModule,
     OidcAcrModule,
     OidcProviderModule.register(
-      OidcProviderConfigAppService,
       ServiceProviderAdapterMongoService,
       ServiceProviderAdapterMongoModule,
     ),
@@ -77,7 +75,6 @@ import {
     AccountFcaModule,
     CoreModule.register(
       CoreFcaService,
-      OidcProviderConfigAppService,
       ServiceProviderAdapterMongoService,
       ServiceProviderAdapterMongoModule,
       IdentityProviderAdapterMongoService,
@@ -101,13 +98,12 @@ import {
       useExisting: IdentityProviderAdapterMongoService,
     },
     CsrfService,
-    OidcProviderConfigAppService,
     CoreFcaService,
     CoreFcaMiddlewareService,
     CoreFcaFqdnService,
     DataProviderService,
     IdentitySanitizer,
   ],
-  exports: [OidcProviderConfigAppService, CqrsModule, CoreFcaService],
+  exports: [CqrsModule, CoreFcaService],
 })
 export class CoreFcaModule {}

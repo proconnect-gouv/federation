@@ -2,14 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
-import { OidcProviderService } from '@fc/oidc-provider';
 
 import { getLoggerMock } from '@mocks/logger';
 
 import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 import { OidcProviderController } from './oidc-provider.controller';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
+import { OidcProviderConfigAppService, OidcProviderService } from './services';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -49,10 +48,7 @@ describe('OidcProviderController', () => {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
         },
-        {
-          provide: OIDC_PROVIDER_CONFIG_APP_TOKEN,
-          useValue: oidcProviderConfigAppMock,
-        },
+        OidcProviderConfigAppService,
         LoggerService,
       ],
     })
@@ -60,6 +56,8 @@ describe('OidcProviderController', () => {
       .useValue(jsonExceptionFilterMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
+      .overrideProvider(OidcProviderConfigAppService)
+      .useValue(oidcProviderConfigAppMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .compile();
