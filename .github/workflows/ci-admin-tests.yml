@@ -14,7 +14,7 @@ jobs:
         working-directory: ./admin
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -42,7 +42,7 @@ jobs:
         working-directory: ./admin/shared
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -65,7 +65,7 @@ jobs:
         working-directory: ./admin/fc-exploitation
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -88,7 +88,7 @@ jobs:
         working-directory: ./admin
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v2
