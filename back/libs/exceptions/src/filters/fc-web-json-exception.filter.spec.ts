@@ -39,6 +39,7 @@ describe('FcWebJsonExceptionFilter', () => {
   class ExceptionMock extends FcException {
     error = 'ERROR';
     error_description = 'ERROR_DESCRIPTION';
+    ui = 'some error message';
   }
 
   let exceptionMock: ExceptionMock;
@@ -59,7 +60,6 @@ describe('FcWebJsonExceptionFilter', () => {
       id: idMock,
       message: 'some error message',
     },
-    dictionary: {},
   };
 
   beforeEach(async () => {
@@ -111,7 +111,6 @@ describe('FcWebJsonExceptionFilter', () => {
   describe('catch', () => {
     beforeEach(() => {
       filter['shouldNotRedirect'] = jest.fn().mockReturnValue(false);
-      filter['getParams'] = jest.fn().mockReturnValue(paramsMock);
       filter['errorOutput'] = jest.fn();
     });
 

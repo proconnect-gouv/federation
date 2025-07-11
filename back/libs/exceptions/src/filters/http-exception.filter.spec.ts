@@ -12,7 +12,6 @@ import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { HttpExceptionFilter } from './http-exception.filter';
 
 jest.mock('@fc/exceptions/helpers', () => ({
@@ -56,7 +55,7 @@ describe('HttpExceptionFilter', () => {
       id: idMock,
       message: 'exceptions.http.500',
     },
-    dictionary: messageDictionary,
+    errorDetail: '',
   };
 
   beforeEach(async () => {
@@ -106,7 +105,6 @@ describe('HttpExceptionFilter', () => {
   describe('catch', () => {
     beforeEach(() => {
       filter['shouldNotRedirect'] = jest.fn().mockReturnValue(false);
-      filter['getParams'] = jest.fn().mockReturnValue(paramsMock);
       filter['errorOutput'] = jest.fn();
     });
 
