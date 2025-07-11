@@ -3,11 +3,7 @@ ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
 FROM ${NODE_IMAGE} AS dev
 
-WORKDIR /var/www/app
-
-RUN apk add python3 make g++ lscpu
-
-COPY . ./
+COPY . ./var/www/app
 
 
 FROM ${NODE_IMAGE} AS builder

@@ -23,6 +23,8 @@ services:
     image: alpine
     depends_on:
       - 'core-fca-low'
+      - 'node-modules-installer'
+      - 'node-modules-installer-admin'
       - 'exploitation-fca-low'
       # -- SP
       - 'fsa1-low'
@@ -40,6 +42,8 @@ services:
     image: alpine
     depends_on:
       - 'core-fca-low'
+      - 'node-modules-installer'
+      - 'node-modules-installer-admin'
       - 'fsa1-low'
       - 'fsa2-low'
       - 'fsa3-low'
