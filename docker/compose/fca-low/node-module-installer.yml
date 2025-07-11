@@ -5,5 +5,22 @@ services:
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - 'node-modules:/var/www/app/node_modules'
-    command: 'yarn install --ignore-engines --frozen-lockfile'
     # todo: create a volume for the yarn cache too
+    #  - 'yarn-cache:/root/.cache/yarn'
+    command: 'yarn install --ignore-engines --frozen-lockfile'
+
+  node-modules-installer-admin:
+    image: node:22.13.0-alpine
+    working_dir: /var/www/app
+    volumes:
+      - '${FEDERATION_DIR}/admin:/var/www/app'
+      - 'node-modules-admin:/var/www/app/node_modules'
+      - 'node-modules-admin-shared:/var/www/app/shared/node_modules'
+      - 'node-modules-admin-fc-exploitation:/var/www/app/fc-exploitation/node_modules'
+    command: >
+      sh -c "apk add python3 make g++ lscpu && 
+      yarn install --ignore-engines --frozen-lockfile &&
+      cd shared &&
+      yarn install --ignore-engines --frozen-lockfile &&
+      cd ../fc-exploitation &&
+      yarn install --ignore-engines --frozen-lockfile"

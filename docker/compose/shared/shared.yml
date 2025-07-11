@@ -291,3 +291,6 @@ networks:
 
 volumes:
   node-modules:
+  node-modules-admin:
+  node-modules-admin-shared:
+  node-modules-admin-fc-exploitation:
