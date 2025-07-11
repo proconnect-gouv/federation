@@ -3,18 +3,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
-import { OidcCtx, OidcProviderErrorService } from '@fc/oidc-provider';
+import {
+  OidcCtx,
+  OidcProviderErrorService,
+  OidcProviderMissingAtHashException,
+} from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { CoreMissingAtHashException } from '../exceptions';
-import { CoreOidcProviderConfigAppService } from './core-oidc-provider-config-app.service';
+import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
 
-describe('CoreOidcProviderConfigAppService', () => {
-  let service: CoreOidcProviderConfigAppService;
+describe('OidcProviderConfigAppService', () => {
+  let service: OidcProviderConfigAppService;
 
   const sessionServiceMock = getSessionServiceMock();
 
@@ -83,10 +86,10 @@ describe('CoreOidcProviderConfigAppService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CoreOidcProviderConfigAppService,
-        LoggerService,
+        OidcProviderConfigAppService,
         SessionService,
         OidcProviderErrorService,
+        LoggerService,
         OidcClientService,
         ConfigService,
         TrackingService,
@@ -106,8 +109,8 @@ describe('CoreOidcProviderConfigAppService', () => {
       .useValue(trackingServiceMock)
       .compile();
 
-    service = module.get<CoreOidcProviderConfigAppService>(
-      CoreOidcProviderConfigAppService,
+    service = module.get<OidcProviderConfigAppService>(
+      OidcProviderConfigAppService,
     );
 
     configServiceMock.get.mockReturnValue(appConfigMock);
@@ -204,7 +207,7 @@ describe('CoreOidcProviderConfigAppService', () => {
       ctxMock.oidc.entities.IdTokenHint.payload.at_hash = null;
       // When
       await expect(service['getSessionId'](ctxMock)).rejects.toThrow(
-        CoreMissingAtHashException,
+        OidcProviderMissingAtHashException,
       );
     });
   });
