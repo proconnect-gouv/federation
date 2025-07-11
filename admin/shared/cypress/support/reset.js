@@ -1,7 +1,7 @@
 const SAFETY_EXEC_TIMEOUT = 10000; // 10 sec
 const LONG_EXEC_TIMEOUT = 60 * 1000; // 1 minutes
 
-const DOCKER_DIR = 'cd $PC_ROOT/federation/docker';
+const DOCKER_DIR = 'cd ${FEDERATION_DIR}/docker';
 
 export function resetMongo() {
   const command = `${DOCKER_DIR} && CI=1 ./docker-stack reset-db`;

@@ -108,7 +108,7 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${PC_ROOT}/federation/docker/log-hub:/var/www/app'
+      - '${FEDERATION_DIR}/docker/log-hub:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'

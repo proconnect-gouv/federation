@@ -63,13 +63,6 @@ mkdir -p $PC_ROOT && cd $PC_ROOT
 git clone git@github.com:proconnect-gouv/federation.git
 ```
 
-- Link the cloned repository in the docker volumes
-
-```bash
-cd $PC_ROOT/federation/docker/volumes/src
-ln -s $PC_ROOT/federation
-ln -s $PC_ROOT/federation/admin ./federation-admin
-```
 
 ## Run the application
 
@@ -150,8 +143,8 @@ dks halt
 
 ```bash
 dks compose down --volumes --remove-orphans --rmi all
-git clean -e docker/volumes/src -nxd # check the file list, if ok, launch the next command
-git clean -e docker/volumes/src -fxd
+git clean -nxd # check the file list, if ok, launch the next command
+git clean -fxd
 ```
 
 ### See Usages
