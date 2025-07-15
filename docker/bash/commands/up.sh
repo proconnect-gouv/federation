@@ -14,8 +14,6 @@ function _hook_fc_apps() {
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
     ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
-
-    (cd ${FEDERATION_DIR}/admin/shared/cypress/support/ && ./db.sh ${db_container} create)
   done
 }
 

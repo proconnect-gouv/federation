@@ -1,7 +1,6 @@
 import { formType, formFill, formControl, totp } from './forms';
 import {
   resetMongo,
-  resetPostgres,
   resetEventsStats,
   resetMetricsStats,
 } from './reset';
@@ -13,7 +12,6 @@ import { clearBusinessLog } from './clear-business-log.command';
 Cypress.Commands.add('resetEnv', type => {
   switch (type) {
     case 'postgres':
-      resetPostgres();
       break;
     case 'mongo':
       resetMongo();

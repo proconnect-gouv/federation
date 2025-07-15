@@ -17,22 +17,6 @@ export function resetMongo() {
     .should('eq', 0);
 }
 
-export function resetPostgres() {
-  const command = ` ../shared/cypress/support/db.sh ${Cypress.env(
-    'APP_NAME',
-  )} apply`;
-
-  cy.log(`
-    Executing command:
-    > ${command}'
-    `);
-
-  return cy
-    .exec(command, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('code')
-    .should('eq', 0);
-}
-
 export function resetEventsStats() {
   const command1 = `${DOCKER_DIR} && CI=1 ./docker-stack reset-stats`;
 
