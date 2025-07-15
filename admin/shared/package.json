@@ -44,7 +44,7 @@
     "query-string": "^6.8.2",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.3.3",
-    "typeorm": "0.2.32",
+    "typeorm": "0.2.45",
     "xml-beautifier": "^0.4.3",
     "xml2js": "^0.4.19"
   },
