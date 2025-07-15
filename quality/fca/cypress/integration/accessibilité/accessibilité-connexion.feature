@@ -15,7 +15,6 @@ Fonctionnalité: Accessibilité
       | tablet landscape |
       | desktop          |
 
-  @exceptions
   Plan du Scénario: Accessibilité - page erreur usagé sans email renvoyé par le FI sur <device>
     Etant donné que j'utilise un navigateur web sur "<device>"
     Et que je navigue sur la page fournisseur de service
