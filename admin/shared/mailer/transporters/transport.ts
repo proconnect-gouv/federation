@@ -126,7 +126,7 @@ export abstract class Transport {
    * @memberof Transport
    */
 
-  abstract async constructMessage(
+  abstract constructMessage(
     sendParamsMessage: Email.SendParamsMessage,
     mailerParams: IMailerParams,
     transporterOptions: IMailerModuleOptions,

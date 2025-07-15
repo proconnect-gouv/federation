@@ -270,7 +270,7 @@ export class AccountController {
 
     return {
       users: users.items,
-      total: users.totalItems,
+      total: users.meta.totalItems,
       csrfToken,
       page,
       limit,
