@@ -206,7 +206,7 @@ export class AuthenticationService implements IAuthenticationService {
 
   async getAuthenticationAttemptCount(username: string): Promise<number> {
     try {
-      const numberOfAttemptsAndEntities = await this.authenticationFailuresRepository.findAndCount(
+      const numberOfAttemptsAndEntities = await this.authenticationFailuresRepository.findAndCountBy(
         {
           username,
         },

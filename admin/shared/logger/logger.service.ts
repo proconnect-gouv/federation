@@ -1,14 +1,14 @@
 import { ConfigService, InjectConfig } from 'nestjs-config';
-import { Logger } from '@nestjs/common';
+import { ConsoleLogger } from '@nestjs/common';
 import * as pino from 'pino';
 import { LogLevelNames } from './enum/log-levels.enum';
 import { pinoLevelsMap, nestLevelsMap } from './log-maps.map';
 
 let logger: any;
 
-export class LoggerService extends Logger {
+export class LoggerService extends ConsoleLogger {
   constructor(@InjectConfig() readonly config: ConfigService) {
-    super(null, false);
+    super(null, { timestamp: false });
     const level = this.config.get('logger.level');
 
     if (!(level in pinoLevelsMap)) {

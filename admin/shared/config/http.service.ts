@@ -7,10 +7,10 @@ import { InjectConfig, ConfigService } from 'nestjs-config';
 import * as https from 'https';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import * as fs from 'fs';
-export interface HeadersOptions {
+type HeadersOptions = {
   userId: string;
   clientSiret: string;
-}
+};
 
 @Injectable()
 export class HttpConfigService implements HttpModuleOptionsFactory {
