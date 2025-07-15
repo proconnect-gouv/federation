@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Repository, DeleteResult, UpdateResult } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { InjectConfig, ConfigService } from 'nestjs-config';
@@ -123,7 +123,7 @@ export class UserService implements IUserService {
   async findByUsername(username: string): Promise<User> {
     let user;
     try {
-      user = await this.userRepository.findOne({ username });
+      user = await this.userRepository.findOneBy({ username });
       return user;
     } catch (e) {
       this.logger.error(e);
@@ -199,7 +199,7 @@ export class UserService implements IUserService {
     let blockedUser;
 
     try {
-      blockedUser = await this.userRepository.findOne({ username });
+      blockedUser = await this.userRepository.findOneBy({ username });
 
       await this.userRepository.update(
         { username },
@@ -221,7 +221,7 @@ export class UserService implements IUserService {
   }
 
   async deleteUserById(id: string, author: string): Promise<DeleteResult> {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.userRepository.findOneBy({ id });
 
     const result = await this.userRepository.delete({ id });
 
@@ -321,7 +321,7 @@ export class UserService implements IUserService {
 
     const { username } = await this.findByUsername(currentUsername);
     try {
-      userLastFivePassword = await this.passwordRepository.find({
+      userLastFivePassword = await this.passwordRepository.findBy({
         username,
       });
     } catch (e) {
@@ -372,7 +372,7 @@ export class UserService implements IUserService {
     let userLastFivePassword: Password[];
     let haveFiveEntires: boolean = false;
     try {
-      userLastFivePassword = await this.passwordRepository.find({
+      userLastFivePassword = await this.passwordRepository.findBy({
         username,
       });
     } catch (e) {
