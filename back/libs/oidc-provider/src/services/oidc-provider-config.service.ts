@@ -86,7 +86,6 @@ export class OidcProviderConfigService {
     const findAccount = this.oidcProviderConfigApp.findAccount.bind(
       this.oidcProviderConfigApp,
     );
-    const pairwiseIdentifier = this.pairwiseIdentifier.bind(this);
     const renderError = this.errorService.renderError.bind(this.errorService);
     const clientBasedCORS = this.clientBasedCORS.bind(this);
     const url = this.url.bind(this, prefix);
@@ -111,7 +110,6 @@ export class OidcProviderConfigService {
         },
         adapter,
         findAccount,
-        pairwiseIdentifier,
         renderError,
         clientBasedCORS,
         interactions: { url },
@@ -125,21 +123,6 @@ export class OidcProviderConfigService {
     };
 
     return oidcProviderConfig;
-  }
-
-  /**
-   * Pass through original identifier (sub).
-   *
-   * While we could imagine that `accountId` would carry the value set by the `findAccount` method above,
-   * it actually carries the sub.
-   *
-   * We kept the parameter name to be consistent with documentation and original function signature
-   * Note that the function receives a third parameter `client` but it is of no use for our implementation.
-   *
-   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pairwiseidentifier
-   */
-  private pairwiseIdentifier(_ctx, accountId: string) {
-    return accountId;
   }
 
   private clientBasedCORS(
