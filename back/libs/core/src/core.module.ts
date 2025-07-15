@@ -45,8 +45,13 @@ export class CoreModule {
         ServiceProviderAdapterMongoModule,
         SessionModule,
         OidcAcrModule,
-        OidcProviderModule,
         AccountModule,
+        OidcProviderModule.register(
+          IdentityProviderAdapterMongoService,
+          IdentityProviderAdapterMongoModule,
+          ServiceProviderClass,
+          ServiceProviderModule,
+        ),
         OidcClientModule.register(
           IdentityProviderAdapterMongoService,
           IdentityProviderAdapterMongoModule,

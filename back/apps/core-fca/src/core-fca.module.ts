@@ -59,6 +59,8 @@ import {
     HttpProxyModule,
     OidcAcrModule,
     OidcProviderModule.register(
+      IdentityProviderAdapterMongoService,
+      IdentityProviderAdapterMongoModule,
       ServiceProviderAdapterMongoService,
       ServiceProviderAdapterMongoModule,
     ),

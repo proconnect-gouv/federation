@@ -5,8 +5,11 @@ import { IsUrlRequiredTldFromConfigConstraint } from '@fc/common';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcAcrModule } from '@fc/oidc-acr';
+import { IIdentityProviderAdapter, OidcClientModule } from '@fc/oidc-client';
+import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
+import { TrackingModule } from '@fc/tracking';
 
 import { OidcProviderController } from './oidc-provider.controller';
 import { OidcProviderService } from './oidc-provider.service';
@@ -25,7 +28,10 @@ export class OidcProviderModule {
    * This kind of injection can not be done statically.
    * @see https://docs.nestjs.com/fundamentals/custom-providers
    */
+
   static register(
+    IdentityProviderAdapterMongoService: Type<IIdentityProviderAdapter>,
+    IdentityProviderAdapterMongoModule: Type<ModuleMetadata>,
     ServiceProviderClass: Type<IServiceProviderAdapter>,
     ServiceProviderModule: Type<ModuleMetadata>,
   ): DynamicModule {
@@ -33,16 +39,27 @@ export class OidcProviderModule {
       provide: SERVICE_PROVIDER_SERVICE_TOKEN,
       useExisting: ServiceProviderClass,
     };
-
     return {
       module: OidcProviderModule,
       imports: [
         RedisModule,
         ServiceProviderModule,
+        IdentityProviderAdapterMongoModule,
         OidcAcrModule,
         SessionModule,
+        OidcClientModule.register(
+          IdentityProviderAdapterMongoService,
+          IdentityProviderAdapterMongoModule,
+          ServiceProviderClass,
+          ServiceProviderModule,
+        ),
+        TrackingModule,
       ],
       providers: [
+        {
+          provide: IDENTITY_PROVIDER_SERVICE,
+          useExisting: IdentityProviderAdapterMongoService,
+        },
         OidcProviderConfigAppService,
         serviceProviderProvider,
         OidcProviderService,
@@ -51,13 +68,7 @@ export class OidcProviderModule {
         OidcProviderConfigService,
         IsUrlRequiredTldFromConfigConstraint,
       ],
-      exports: [
-        OidcProviderService,
-        OidcProviderConfigAppService,
-        RedisModule,
-        serviceProviderProvider,
-        OidcProviderErrorService,
-      ],
+      exports: [OidcProviderService, RedisModule, serviceProviderProvider],
       controllers: [OidcProviderController],
     };
   }
