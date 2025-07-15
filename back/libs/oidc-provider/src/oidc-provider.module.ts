@@ -50,8 +50,6 @@ export class OidcProviderModule {
         OidcClientModule.register(
           IdentityProviderAdapterMongoService,
           IdentityProviderAdapterMongoModule,
-          ServiceProviderClass,
-          ServiceProviderModule,
         ),
         TrackingModule,
       ],

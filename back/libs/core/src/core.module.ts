@@ -10,7 +10,7 @@ import {
 } from '@fc/exceptions';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { OidcAcrModule } from '@fc/oidc-acr';
-import { IIdentityProviderAdapter, OidcClientModule } from '@fc/oidc-client';
+import { IIdentityProviderAdapter } from '@fc/oidc-client';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import {
@@ -29,7 +29,6 @@ import { CORE_SERVICE } from './tokens';
 
 @Module({})
 export class CoreModule {
-  // More than 4 parameters authorized for dependency injection
   // eslint-disable-next-line max-params
   static register(
     CoreService: Type<CoreServiceInterface>,
@@ -47,12 +46,6 @@ export class CoreModule {
         OidcAcrModule,
         AccountModule,
         OidcProviderModule.register(
-          IdentityProviderAdapterMongoService,
-          IdentityProviderAdapterMongoModule,
-          ServiceProviderClass,
-          ServiceProviderModule,
-        ),
-        OidcClientModule.register(
           IdentityProviderAdapterMongoService,
           IdentityProviderAdapterMongoModule,
           ServiceProviderClass,
