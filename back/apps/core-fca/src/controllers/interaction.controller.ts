@@ -16,12 +16,7 @@ import {
 } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import {
-  CoreConfig,
-  CoreIdpHintException,
-  CoreRoutes,
-  Interaction,
-} from '@fc/core';
+import { CoreConfig, CoreRoutes, Interaction } from '@fc/core';
 import { CsrfService } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -48,6 +43,7 @@ import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 import {
   CoreAcrNotSatisfiedException,
   CoreFcaAgentNotFromPublicServiceException,
+  CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
 import { CoreFcaFqdnService, CoreFcaService } from '../services';
