@@ -1345,10 +1345,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nest-middlewares/csurf@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@nest-middlewares/csurf/-/csurf-6.0.0.tgz#b4707698cd063cc1b0a873bcd431df55a36b34e9"
-  integrity sha512-PMilGv/eLWjELRAczsecbh7380RKDGrfqJj0QcUpXqAenkn0xZ8xg4zt1+ep+KAaBu8lnoiCxeZg+dbpzrHB6Q==
+"@nest-middlewares/csurf@^7.0.0":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@nest-middlewares/csurf/-/csurf-7.0.1.tgz#217715befe47e9cafb58e2fea1c73abe7ee1f82e"
+  integrity sha512-vJhvOGHge7BPLP/FzxrgMktS+vVH7CrErYIFJbUffEWi67QYg/qaSVa6426hziVKzGovsDrmajKrSG3YpagP0w==
   dependencies:
     "@types/csurf" "^1.9.35"
     "@types/express" "^4.16.0"
@@ -1387,26 +1387,26 @@
     json-socket "0.3.0"
     tslib "2.2.0"
 
-"@nestjs/mongoose@^6.1.2":
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/mongoose/-/mongoose-6.4.0.tgz#3ea2773528f8c4948b76377d24008f5b663b4e14"
-  integrity sha512-Q+W1ydZEYG24AnYYbgtNBXE2iIMwfiCUSMilt8swFE8Gl1dAum10NCPLbMgFc31JRKDJFmvxUBftTD0JiGYlmQ==
+"@nestjs/mongoose@^7.0.0":
+  version "7.2.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/mongoose/-/mongoose-7.2.4.tgz#60a50532a244279703344368d74ecd802aeda4a4"
+  integrity sha512-NTE/IwijFUEJytPHLoHRYe0X5p16W1Awf8tm6I3mWsIUuBnSDfMyN0fy30uVaM/exYvCkMwEsAVpeSeKVPMHxg==
 
 "@nestjs/passport@^7.0.0":
   version "7.1.6"
   resolved "https://registry.yarnpkg.com/@nestjs/passport/-/passport-7.1.6.tgz#608bb265dfd85602aa74bbceacc012ffb2e9d25d"
   integrity sha512-iHD/4D01CsKKWg7kUzo4yGNS4m90z1an0eUz+6nBlE5VeEOuCzhGFoBKAt0OKLJLOTEsJKuj4C2b5QfjqXVTyQ==
 
-"@nestjs/platform-express@^6.7.2":
-  version "6.11.11"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-6.11.11.tgz#d30ea1f39299e92e080553e893a0afac54f20c6e"
-  integrity sha512-4h3F3hDhNlO5+Ruy6eS+lSL2yIz5r4hF/BB3QkZVOuRdfji9n0gZAIR7tuSLTizqYxaHYRZ7dBv+PscQS/7ztQ==
+"@nestjs/platform-express@^7.0.0":
+  version "7.6.18"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-7.6.18.tgz#cdf442dfd85948fc7b67bbc4007dddef83cdd4b9"
+  integrity sha512-Dty2bBhsW7EInMRPS1pkXKJ3GBBusEj6fnEpb0UfkaT3E7asay9c64kCmZE+8hU430qQjY+fhBb1RNWWPnUiwQ==
   dependencies:
     body-parser "1.19.0"
     cors "2.8.5"
     express "4.17.1"
     multer "1.4.2"
-    tslib "1.11.1"
+    tslib "2.2.0"
 
 "@nestjs/testing@^6.0.0", "@nestjs/testing@^6.7.1":
   version "6.11.11"
