@@ -135,7 +135,6 @@ describe('OidcProviderConfigService', () => {
         'configuration.features.rpInitiatedLogout.postLogoutSuccessSource',
       );
       expect(result).toHaveProperty('configuration.findAccount');
-      expect(result).toHaveProperty('configuration.pairwiseIdentifier');
       expect(result).toHaveProperty('configuration.renderError');
       expect(result).toHaveProperty('configuration.clientBasedCORS');
       expect(result).toHaveProperty('configuration.interactions.url');
@@ -162,18 +161,6 @@ describe('OidcProviderConfigService', () => {
 
       // Then
       expect(result).toEqual('/prefix/interaction/123');
-    });
-  });
-
-  describe('pairwiseIdentifier()', () => {
-    it('should return second argument as is', () => {
-      // Given
-      const ctx = {};
-      const accountId = 'accountIdValue';
-      // When
-      const result = service['pairwiseIdentifier'](ctx, accountId);
-      // Then
-      expect(result).toBe(accountId);
     });
   });
 

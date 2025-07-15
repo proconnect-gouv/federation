@@ -58,11 +58,6 @@ export type FindAccountCallback = (
   sub: string,
   token?: any,
 ) => CanBePromise<any>;
-export type PairwiseIdentifierCallbacK = (
-  ctx: KoaContextWithOIDC,
-  accountId: string,
-  client: any,
-) => CanBePromise<string>;
 export type RenderErrorCallback = (
   ctx: KoaContextWithOIDC,
   out: ErrorOut,
@@ -760,24 +755,6 @@ export class Configuration {
    */
   @IsOptional()
   readonly findAccount?: FindAccountCallback;
-
-  /**
-   * pairwiseIdentifier is a function
-   * This is not something that should live in a DTO.
-   * Although this is the way `oidc-provider` library offers
-   * to implement our sub generator
-   *
-   * We do not actually generate our sub in this function, since we want to be able
-   * to control this mechanism at the application level (ie. in the apps/** folder).
-   * We just provide a passthru implementation that will override default implementation,
-   * and forward the sub provided in the identity (retrieved by `findAccount` (information about this function just above))
-   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pairwiseidentifier
-   *
-   * This property is optional because it is injected by the module
-   * rather than by real configuration.
-   */
-
-  readonly pairwiseIdentifier?: PairwiseIdentifierCallbacK;
 
   /**
    * `renderError` is a function.
