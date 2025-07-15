@@ -12,6 +12,6 @@ export class PaginationService<Entity> {
     if (options.limit === 0) {
       options.limit = 10;
     }
-    return await paginate<Entity>(this.repository, options);
+    return await paginate<Entity>(this.repository as any, options);
   }
 }
