@@ -11,10 +11,8 @@ import {
 import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderConfig } from '../dto';
 import { OidcProviderService } from '../oidc-provider.service';
-import {
-  OidcProviderConfigAppService,
-  OidcProviderErrorService,
-} from '../services';
+import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
+import { OidcProviderErrorService } from './oidc-provider-error.service';
 
 @Injectable()
 export class OidcProviderConfigService {
