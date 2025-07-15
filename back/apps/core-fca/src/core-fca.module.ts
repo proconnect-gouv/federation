@@ -67,8 +67,6 @@ import {
     OidcClientModule.register(
       IdentityProviderAdapterMongoService,
       IdentityProviderAdapterMongoModule,
-      ServiceProviderAdapterMongoService,
-      ServiceProviderAdapterMongoModule,
     ),
     FlowStepsModule,
     NotificationsModule,
