@@ -78,7 +78,7 @@
     "mongoose": "^8.9.5",
     "oidc-provider": "7.14.3",
     "oidc-provider-v8": "npm:oidc-provider@^8.8.0",
-    "openid-client": "5.7.0",
+    "openid-client": "6.6.2",
     "openid-client-v6": "npm:openid-client@^6.1.7",
     "otplib": "^12.0.1",
     "pg": "^8.16.3",
