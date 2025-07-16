@@ -29,6 +29,7 @@ describe('OidcClientService', () => {
       info: jest.fn(),
       debug: jest.fn(),
       err: jest.fn(),
+      alert: jest.fn(),
     } as unknown as jest.Mocked<LoggerService>;
 
     service = new OidcClientService(utilsMock, loggerMock);
@@ -78,8 +79,9 @@ describe('OidcClientService', () => {
           {} as any,
         ),
       ).rejects.toThrow(OidcClientTokenResultFailedException);
-      expect(loggerMock.info).toHaveBeenCalledWith({
-        tokenValidationErrors: [expect.any(ValidationError)],
+      expect(loggerMock.alert).toHaveBeenCalledWith({
+        msg: 'token validation error',
+        validationErrors: [expect.any(ValidationError)],
       });
     });
   });
