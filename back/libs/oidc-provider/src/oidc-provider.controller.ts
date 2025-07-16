@@ -27,12 +27,13 @@ export class OidcProviderController {
   @Header('Content-Type', ApiContentType.JSON)
   @UseFilters(OidcProviderRenderedJsonExceptionFilter)
   postToken(@Next() next, @Req() req) {
-    const { body, query, headers } = req;
-
     this.logger.debug({
-      body,
-      query,
-      headers,
+      msg: 'Oidc Provider post token request',
+      uri: req.url,
+      method: req.method,
+      body: req.body,
+      headers: req.headers,
+      query: req.query,
     });
 
     // Pass the query to oidc-provider
@@ -57,13 +58,15 @@ export class OidcProviderController {
   @Header('Content-Type', ApiContentType.JWT)
   @UseFilters(OidcProviderRenderedJsonExceptionFilter)
   getUserInfo(@Next() next, @Req() req) {
-    const { body, query, headers } = req;
-
     this.logger.debug({
-      body,
-      query,
-      headers,
+      msg: 'Oidc Provider userinfo request',
+      uri: req.url,
+      method: req.method,
+      body: req.body,
+      headers: req.headers,
+      query: req.query,
     });
+
     // Pass the query to oidc-provider
     return next();
   }
