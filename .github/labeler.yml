@@ -12,7 +12,7 @@
 ':whale: docker':
   - changed-files:
       - any-glob-to-any-file: 'docker/**/*'
-':file_cabinet: e2e':
+':file_cabinet: migrations':
   - changed-files:
       - any-glob-to-any-file: 'migrations/**/*'
 ':test_tube: unit test':
