@@ -33,10 +33,10 @@ export class IdentitySanitizer {
     const identityProvider = await this.identityProvider.getById(idpId);
 
     if (userinfoValidationErrors.length > 0) {
-      this.logger.err(
-        userinfoValidationErrors,
-        `Identity from "${idpId}" is invalid`,
-      );
+      this.logger.alert({
+        msg: `Identity from "${idpId}" is invalid`,
+        validationErrors: userinfoValidationErrors,
+      });
 
       const contact =
         identityProvider.supportEmail ||
@@ -116,7 +116,10 @@ export class IdentitySanitizer {
     // Defensive programming: this should never happen
     /* istanbul ignore next */
     if (identityValidationErrors.length > 0) {
-      this.logger.err({ identityValidationErrors });
+      this.logger.alert({
+        msg: 'transformIdentity final validation error',
+        validationErrors: identityValidationErrors,
+      });
       throw new UnknownException();
     }
 

@@ -1,7 +1,9 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+
 import { Injectable } from '@nestjs/common';
 
-import { validateDto } from '@fc/common';
-import { ConfigService, validationOptions } from '@fc/config';
+import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
@@ -35,9 +37,9 @@ export class SessionBackendStorageService {
   async get<T>(sessionId: string): Promise<T | never> {
     const sessionKey = this.getSessionKey(sessionId);
 
-    let dataCipher: string;
+    let serializedSession: string;
     try {
-      dataCipher = await this.redis.client.get(sessionKey);
+      serializedSession = await this.redis.client.get(sessionKey);
     } catch (error) {
       throw new SessionStorageException();
     }
@@ -45,14 +47,28 @@ export class SessionBackendStorageService {
     /**
      * If the cipher is invalid, we set an empty session.
      */
-    if (!dataCipher) {
+    if (!serializedSession) {
       throw new SessionNotFoundException('backend.get');
     }
 
-    const data = this.deserialize(dataCipher);
-    await this.validate(data);
+    const rawSession = this.deserialize(serializedSession);
 
-    return data as T;
+    const { schema } = this.config.get<SessionConfig>('Session');
+
+    const session = plainToInstance(schema, rawSession);
+    const errors = await validate(session, {
+      forbidNonWhitelisted: true,
+      whitelist: true,
+    });
+
+    if (errors.length > 0) {
+      this.logger.alert({
+        msg: 'SessionBackendStorageService:validate() Invalid session data from Redis.',
+        validationErrors: errors,
+      });
+    }
+
+    return session as T;
   }
 
   async remove(sessionId: string): Promise<number> {
@@ -134,41 +150,6 @@ export class SessionBackendStorageService {
       return JSON.parse(dataString);
     } catch (error) {
       throw new SessionBadFormatException();
-    }
-  }
-
-  /**
-   * Validate the session using the DTO provided at the library initialization
-   *
-   * @param session The full session
-   */
-  private async validate(session: Record<string, unknown>): Promise<void> {
-    /**
-     * @todo #416 Add specific error code
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/416
-     */
-    const { schema } = this.config.get<SessionConfig>('Session');
-
-    const errors = await validateDto(session, schema, validationOptions);
-
-    if (errors.length > 0) {
-      console.log({
-        location: 'SessionBackendStorageService:validate',
-        sessionValidationErrors: errors,
-        sessionData: session,
-      });
-      this.logger.crit(
-        'SessionBackendStorageService:validate() Invalid session data from Redis.',
-      );
-
-      /**
-       * Temporary disable throw
-       * For an iteration we watch logs and see if we have occurrences of invalid session data
-       *
-       * @todo #1575 Activate throw and remove logger
-       *
-       * throw new SessionInvalidSessionDataException();
-       */
     }
   }
 
