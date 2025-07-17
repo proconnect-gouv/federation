@@ -115,7 +115,7 @@ federation/docker/volumes/log
 You can output them with:
 
 ```
-tail -F * | npx pino-pretty
+tail -F $PC_ROOT/federation/docker/volumes/log/* | npx pino-pretty
 ```
 
 ### Restart a single container
@@ -153,13 +153,33 @@ git clean -fxd
 dks help
 ```
 
-## Run the integration tests
+## Run the unit tests
 
 These tests are included directly in source code rather than in a dedicated test folder.
+
+### Check coverage
+
+ProConnect expects 100% code coverage. You can test the coverage using the following commands.
 
 ```bash
 cd $PC_ROOT/federation/back
 yarn test --coverage --maxWorkers=50%
+cd $PC_ROOT/federation/admin
+yarn test
+```
+
+If you want to check the coverage for a single file:
+
+```bash
+yarn test:cov --collectCoverageFrom=path/to/file.ts path/to/file.spec.ts
+```
+
+### Run the tests without coverage
+
+To execute the unit tests faster, you can run them without coverage.
+
+```bash
+yarn test
 ```
 
 ## Run the quality Tests
@@ -206,11 +226,7 @@ yarn doc
 yarn lint --fix
 yarn prettier --write
 yarn tsc --noEmit
-```
-
-```bash
 cd $PC_ROOT/federation/admin
-yarn test
 yarn lint --fix
 ```
 
