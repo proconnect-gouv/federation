@@ -4,39 +4,15 @@ export  NODE_VERSION
 
 DOCKER_COMPOSE="docker compose"
 
-function _hook_fc_apps() {
-  local apps=${@:-pc-exploitation-fca-low}
-
-  for app in ${apps}; do
-    local db_container=$(echo "$app" | sed 's/^pc-*//')
-    echo "  Fixture for ${app} app..."
-    cd ${WORKING_DIR}
-    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
-    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
-    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
-
-    (cd ${FEDERATION_DIR}/admin/shared/cypress/support/ && ./db.sh ${db_container} create)
-  done
-}
-
-#!/usr/bin/env bash
-
-function _hook_lemon_ldap() {
-  # Sleep to wait for configuration initialization
-  echo "Restore LemonLDAP configuration"
+function _hook_admin() {
+  local app="exploitation-fca-low"
+  echo "  Fixtures for ${app} app..."
   cd ${WORKING_DIR}
-  ${DOCKER_COMPOSE} exec fia-llng-low bash /scripts/init.sh
-  echo "Loaded !"
-}
+  ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
+  ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
+  ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
 
-#!/usr/bin/env bash
-
-function _hook_mongo() {
-  local app="$1"
-
-  # Sleep to wait for mongodb replicat initialization
-  sleep 10
-  _reset_mongodb "$app"
+  (cd ${FEDERATION_DIR}/admin/shared/cypress/support/ && ./db.sh ${app} create)
 }
 
 _up() {
@@ -95,13 +71,17 @@ _up() {
     # Nodejs dependencies are already installed at this stage
     case $app in
     *"lemon-ldap"*)
-      _hook_lemon_ldap
+      echo "Restore LemonLDAP configuration"
+      cd ${WORKING_DIR}
+      ${DOCKER_COMPOSE} exec fia-llng-low bash /scripts/init.sh
+      echo "Loaded !"
       ;;
     *"mongo-fca-low"*)
-      _hook_mongo "mongo-fca-low"
+      sleep 10
+      _reset_mongodb "$app"
       ;;
     *"pg-exploitation-fca-low")
-      _hook_fc_apps "exploitation-fca-low"
+       _hook_admin "exploitation-fca-low"
       ;;
     *)
       ;;
