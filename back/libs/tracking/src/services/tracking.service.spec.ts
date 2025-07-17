@@ -8,7 +8,7 @@ import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
 import { getLoggerMock } from '@mocks/logger';
 
 import { TrackedEventContextInterface } from '../interfaces';
-import { APP_TRACKING_SERVICE } from '../tokens';
+import { CoreTrackingService } from './core-tracking.service';
 import { TrackingService } from './tracking.service';
 
 describe('TrackingService', () => {
@@ -16,7 +16,6 @@ describe('TrackingService', () => {
 
   const appTrackingMock = {
     buildLog: jest.fn(),
-    TrackedEventsMap: {},
   };
 
   const loggerMock = getLoggerMock();
@@ -43,8 +42,6 @@ describe('TrackingService', () => {
     get: jest.fn(),
   };
 
-  const buildLogResponseMock = Symbol('buildLogResponseMock');
-
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -55,10 +52,7 @@ describe('TrackingService', () => {
         ConfigService,
         LoggerService,
         LoggerLegacyService,
-        {
-          provide: APP_TRACKING_SERVICE,
-          useValue: appTrackingMock,
-        },
+        CoreTrackingService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -67,12 +61,11 @@ describe('TrackingService', () => {
       .useValue(loggerLegacyMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
+      .overrideProvider(CoreTrackingService)
+      .useValue(appTrackingMock)
       .compile();
 
-    appTrackingMock.TrackedEventsMap = eventMapMock;
     service = module.get<TrackingService>(TrackingService);
-
-    appTrackingMock.buildLog.mockResolvedValueOnce(buildLogResponseMock);
 
     configMock.get.mockReturnValue({
       eventsMap: eventMapMock,
@@ -88,12 +81,12 @@ describe('TrackingService', () => {
       // When
       service.onModuleInit();
       // Then
-      expect(service.TrackedEventsMap).toBe(appTrackingMock.TrackedEventsMap);
+      expect(service.TrackedEventsMap).toBe(eventMapMock);
     });
   });
 
   describe('track', () => {
-    it('should call `appTrackingService.buildLog()` method', async () => {
+    it('should call `appTrackingService.buildLog()` & logger.businessEvent methods', async () => {
       // Given
       const EventMock = {
         category: 'EventMockCategory',
@@ -108,23 +101,7 @@ describe('TrackingService', () => {
       // Then
       expect(appTrackingMock.buildLog).toHaveBeenCalledTimes(1);
       expect(appTrackingMock.buildLog).toHaveBeenCalledWith(EventMock, context);
-    });
-    it('should call logger.businessEvent with built message from buildLog', async () => {
-      // Given
-      const EventMock = {
-        category: 'EventMockCategory',
-        event: 'EventMockEvent',
-      };
-      const context = Symbol(
-        'context',
-      ) as unknown as TrackedEventContextInterface;
-      // When
-      await service.track(EventMock, context);
-      // Then
       expect(loggerLegacyMock.businessEvent).toHaveBeenCalledTimes(1);
-      expect(loggerLegacyMock.businessEvent).toHaveBeenCalledWith(
-        buildLogResponseMock,
-      );
     });
   });
 

@@ -1,4 +1,4 @@
-import { TrackingLogInterface } from '@fc/tracking';
+import { TrackingLogInterface } from './tracking-log.interface';
 
 export class ICoreTrackingLog extends TrackingLogInterface {
   readonly sessionId: string;

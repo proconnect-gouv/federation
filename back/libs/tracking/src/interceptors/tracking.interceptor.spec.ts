@@ -4,12 +4,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
-import { APP_TRACKING_SERVICE } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 
 import { Track } from '../decorators';
-import { TrackingService } from '../services';
+import { CoreTrackingService, TrackingService } from '../services';
 import { TrackingInterceptor } from './tracking.interceptor';
 
 describe('TrackingInterceptor', () => {
@@ -23,7 +22,6 @@ describe('TrackingInterceptor', () => {
 
   const appTrackingMock = {
     buildLog: jest.fn(),
-    TrackedEventsMap: {},
   };
 
   const httpContextMock = {
@@ -58,7 +56,7 @@ describe('TrackingInterceptor', () => {
   };
 
   const loggerMock = getLoggerMock();
-  const legacyLoggerMock = {
+  const loggerLegacyMock = {
     businessEvent: jest.fn(),
   };
 
@@ -70,10 +68,7 @@ describe('TrackingInterceptor', () => {
         ConfigService,
         LoggerService,
         LoggerLegacyService,
-        {
-          provide: APP_TRACKING_SERVICE,
-          useValue: appTrackingMock,
-        },
+        CoreTrackingService,
       ],
     })
       .overrideProvider(TrackingService)
@@ -83,7 +78,9 @@ describe('TrackingInterceptor', () => {
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(LoggerLegacyService)
-      .useValue(legacyLoggerMock)
+      .useValue(loggerLegacyMock)
+      .overrideProvider(CoreTrackingService)
+      .useValue(appTrackingMock)
       .compile();
 
     interceptor = module.get<TrackingInterceptor>(TrackingInterceptor);

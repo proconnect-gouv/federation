@@ -1,11 +1,6 @@
-import { RequestMethod, Type } from '@nestjs/common';
+import { Type } from '@nestjs/common';
 
 import { FcException } from '@fc/exceptions/exceptions';
-
-export interface InterceptRouteInterface {
-  method: RequestMethod;
-  path: string;
-}
 
 export interface TrackedEventInterface {
   /**
