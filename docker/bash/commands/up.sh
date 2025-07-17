@@ -77,7 +77,6 @@ _up() {
       echo "Loaded !"
       ;;
     *"mongo-fca-low"*)
-      sleep 10
       _reset_mongodb "$app"
       ;;
     *"pg-exploitation-fca-low")
