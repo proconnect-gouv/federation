@@ -24,4 +24,8 @@ export interface ICoreTrackingContext {
   readonly idpName?: string;
   readonly idpLabel?: string;
   readonly idpIdentity?: IdentityFromIdpDto;
+
+  readonly fqdn?: string;
+  readonly email?: string;
+  readonly idpSub?: string;
 }

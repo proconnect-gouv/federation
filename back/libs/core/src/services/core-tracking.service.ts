@@ -81,6 +81,9 @@ export class CoreTrackingService {
       idpName,
       idpLabel,
       idpIdentity,
+      fqdn,
+      email,
+      idpSub,
     } = ctx;
     const source = extractNetworkInfoFromHeaders(ctx);
 
@@ -103,6 +106,9 @@ export class CoreTrackingService {
       idpName,
       idpLabel,
       idpIdentity,
+      fqdn,
+      email,
+      idpSub,
     };
   }
 

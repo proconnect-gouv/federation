@@ -38,7 +38,6 @@ import {
   CoreFcaFqdnService,
   CoreFcaMiddlewareService,
   CoreFcaService,
-  CoreFcaTrackingService,
   DataProviderService,
   IdentitySanitizer,
   OidcProviderConfigAppService,
@@ -82,7 +81,6 @@ import {
       ServiceProviderAdapterMongoModule,
       IdentityProviderAdapterMongoService,
       IdentityProviderAdapterMongoModule,
-      CoreFcaTrackingService,
     ),
   ],
   controllers: [
