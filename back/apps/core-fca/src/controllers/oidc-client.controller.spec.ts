@@ -369,8 +369,12 @@ describe('OidcClientController', () => {
     };
 
     beforeEach(() => {
-      req = {} as Request;
-      res = { redirect: jest.fn() } as Partial<Response>;
+      req = {};
+      res = {
+        redirect: jest.fn(),
+        status: jest.fn(),
+        render: jest.fn(),
+      } as Partial<Response>;
       accountService.getOrCreateAccount.mockResolvedValue({ id: '123' });
       userSession = {
         duplicate: jest.fn().mockResolvedValue(undefined),

@@ -4,14 +4,12 @@ import { HttpStatus } from '@nestjs/common';
 
 import { BaseException } from '@fc/exceptions/exceptions';
 
-import { ApiErrorMessage } from './api-error-message';
-
 export interface ApiErrorParams {
   exception: BaseException;
-  error: ApiErrorMessage;
+  error: { code: string; id: string; message: string };
   httpResponseCode: HttpStatus;
   res: Response;
-  dictionary: Record<string, string>;
   idpName?: string;
   spName?: string;
+  errorDetail: string;
 }

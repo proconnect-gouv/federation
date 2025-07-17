@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 
-import { ApiContentType, ApiErrorMessage } from '@fc/app';
+import { ApiContentType } from '@fc/app';
 import { FcException } from '@fc/exceptions';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { FcWebJsonExceptionFilter } from '@fc/exceptions/filters';
@@ -24,15 +24,11 @@ export class DataProviderExceptionFilter
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
-    const message = exception.ui;
 
     this.logException(code, id, exception);
     this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
 
-    const errorMessage: ApiErrorMessage = { code, id, message };
-    const params = this.getParams(exception, errorMessage, res);
-
-    const { httpResponseCode } = params;
+    const httpResponseCode = this.getHttpStatus(exception);
     res.set('Content-Type', ApiContentType.JSON);
     res.status(httpResponseCode);
 

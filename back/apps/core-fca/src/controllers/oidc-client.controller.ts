@@ -256,6 +256,7 @@ export class OidcClientController {
    * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
    */
+
   @Get(OidcClientRoutes.OIDC_CALLBACK)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))

@@ -131,8 +131,6 @@ export const messageDictionary: Record<string, string> = {
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'OidcClient.exceptions.oidcClientInvalidState':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
-  'OidcClient.exceptions.oidcClientMissingCode':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'OidcClient.exceptions.oidcClientMissingState':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'OidcClient.exceptions.oidcClientTokenFailed':
