@@ -58,6 +58,9 @@ describe('TrackingInterceptor', () => {
   };
 
   const loggerMock = getLoggerMock();
+  const legacyLoggerMock = {
+    businessEvent: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -79,6 +82,8 @@ describe('TrackingInterceptor', () => {
       .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(LoggerLegacyService)
+      .useValue(legacyLoggerMock)
       .compile();
 
     interceptor = module.get<TrackingInterceptor>(TrackingInterceptor);
