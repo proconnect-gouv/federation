@@ -73,6 +73,17 @@ Then(
 );
 
 Then(
+  'le token d\'introspection a une propriété "sub" égale au sub mémorisé',
+  function () {
+    cy.get<string>('@spSub').then((previousSpSub) => {
+      cy.get('@tokenIntrospection')
+        .its(`token_introspection.sub`)
+        .should('equal', previousSpSub);
+    });
+  },
+);
+
+Then(
   /le token d'introspection a une propriété "client_id" avec le client_id du fournisseur de service "([^"]+)"/,
   function (description: string) {
     const { clientId } = getServiceProviderByDescription(description);

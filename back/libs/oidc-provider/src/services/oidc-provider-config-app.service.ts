@@ -188,20 +188,17 @@ export class OidcProviderConfigAppService {
    */
   async findAccount(
     _ctx: OidcCtx,
-    sessionId: string,
+    sub: string,
   ): Promise<{ accountId: string; claims: Function }> {
     try {
       // Use the user session from the service provider request
+      const sessionId = await this.sessionService.getAlias(sub);
       await this.sessionService.initCache(sessionId);
 
       const { spIdentity } = this.sessionService.get<UserSession>('User');
 
       return {
-        /**
-         * We used the `sessionId` as `accountId` identifier when building the grant
-         * @see OidcProviderService.finishInteraction()
-         */
-        accountId: sessionId,
+        accountId: spIdentity.sub,
         // eslint-disable-next-line require-await
         async claims() {
           return { ...spIdentity };
@@ -224,7 +221,10 @@ export class OidcProviderConfigAppService {
       acr: InteractionResults['login']['acr'];
     },
   ) {
+    const { spIdentity } = this.sessionService.get<UserSession>('User');
+
     const sessionId = this.sessionService.getId();
+    await this.sessionService.setAlias(spIdentity.sub, sessionId);
 
     /**
      * Build Interaction results
@@ -238,7 +238,7 @@ export class OidcProviderConfigAppService {
       login: {
         amr,
         acr,
-        accountId: sessionId,
+        accountId: spIdentity.sub,
         ts: Math.floor(Date.now() / 1000),
         remember: false,
       },
