@@ -36,6 +36,9 @@ export class DataProviderController {
     @Body() body: ChecktokenRequestDto,
   ) {
     this.logger.debug({
+      msg: 'Data Provider check token request',
+      uri: req.url,
+      method: req.method,
       body: req.body,
       headers: req.headers,
       query: req.query,
