@@ -1,225 +1,161 @@
-import { v4 as uuid, Version4Options } from 'uuid';
+import pino, { Logger } from 'pino';
+import { v4 as uuidV4 } from 'uuid';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { NestLoggerService } from '@fc/logger';
 
-import { LoggerLevelCodes, LoggerLevelNames } from '../enum';
-import { ILoggerBusinessEvent, LoggerTransport } from '../interfaces';
+import { ILoggerBusinessEvent } from '../interfaces';
 import { LoggerService } from './logger.service';
-import { PinoService } from './pino.service';
 
-jest.mock('os');
+jest.mock('pino');
 jest.mock('uuid');
-jest.mock('../utils');
-
-type uuidType = (
-  options?: Version4Options,
-  buf?: undefined,
-  offset?: number,
-) => string;
 
 describe('LoggerService', () => {
-  const transportMock: LoggerTransport = {
-    log: jest.fn(),
-    trace: jest.fn(),
-    verbose: jest.fn(),
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-    fatal: jest.fn(),
-  };
-
-  const externalLoggerMock = {
-    level: LoggerLevelCodes.INFO,
-    transport: transportMock,
-  };
-
-  const configServiceMock = {
-    get: jest.fn(),
-  };
-
   let service: LoggerService;
-  const ipMock = '123.123.123.123';
-  const sourcePortMock = '443';
-  const xForwardedForOriginalMock = '123.123.123.123, 124.124.124.124';
+  let configServiceMock: jest.Mocked<ConfigService>;
+  let loggerMock: jest.Mocked<Logger>;
+  let streamMock: { reopen: jest.Mock };
 
-  const nestLoggerMock = {
-    fatal: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    log: jest.fn(),
-    debug: jest.fn(),
-    verbose: jest.fn(),
-  };
+  const pathMock = '/path/to/logs';
+  const configMock = { path: pathMock };
+  const uuidMock = 'mocked-uuid-value';
 
   beforeEach(async () => {
-    jest.restoreAllMocks();
-    jest.resetAllMocks();
+    jest.clearAllMocks();
+
+    // Mock UUID
+    (uuidV4 as jest.Mock).mockReturnValue(uuidMock);
+
+    // Mock stream
+    streamMock = { reopen: jest.fn() };
+    jest.mocked(pino.destination).mockReturnValue(streamMock as any);
+
+    // Mock logger
+    loggerMock = { info: jest.fn() } as unknown as jest.Mocked<Logger<string>>;
+    jest.mocked(pino).mockReturnValue(loggerMock as unknown as Logger<string>);
+
+    // Mock config service
+    configServiceMock = {
+      get: jest.fn().mockReturnValue(configMock),
+    } as unknown as jest.Mocked<ConfigService>;
+
+    // Mock process.on
+    jest.spyOn(process, 'on').mockImplementation((_event, _callback) => {
+      return process;
+    });
+
+    // Mock console.warn
+    jest.spyOn(console, 'warn').mockImplementation();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LoggerService, ConfigService, PinoService, NestLoggerService],
+      providers: [LoggerService, ConfigService],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(PinoService)
-      .useValue(externalLoggerMock)
-      .overrideProvider(NestLoggerService)
-      .useValue(nestLoggerMock)
       .compile();
 
     service = module.get<LoggerService>(LoggerService);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getIdentifiedLog()', () => {
-    const mockUuid = 'uuidMockValue';
-    beforeEach(() => {
-      jest.mocked<uuidType>(uuid).mockReturnValue(mockUuid);
+  describe('constructor', () => {
+    it('should get the logger configuration from ConfigService', () => {
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('LoggerLegacy');
     });
 
-    it('should add a `logId` property', () => {
-      // Given
-      const logMock = { foo: 'fooValue' };
-      // When
-      const result = service['getIdentifiedLog'](logMock);
+    it('should create a pino destination with the configured path', () => {
       // Then
-      expect(result).toEqual({
-        foo: 'fooValue',
-        logId: mockUuid,
+      expect(pino.destination).toHaveBeenCalledTimes(1);
+      expect(pino.destination).toHaveBeenCalledWith(pathMock);
+    });
+
+    it('should initialize pino with the correct options', () => {
+      // Then
+      expect(pino).toHaveBeenCalledTimes(1);
+      expect(pino).toHaveBeenCalledWith(
+        {
+          formatters: {
+            level: expect.any(Function),
+          },
+          level: 'info',
+        },
+        streamMock,
+      );
+    });
+
+    it('should format the level correctly', () => {
+      // Given
+      const formatter = jest.mocked(pino).mock.calls[0][0].formatters.level;
+      const label = 'info';
+      const number = 30;
+
+      // When
+      const result = formatter(label, number);
+
+      // Then
+      expect(result).toEqual({ level: label });
+    });
+
+    it('should register a handler for SIGUSR2 signal', () => {
+      // Then
+      expect(process.on).toHaveBeenCalledTimes(1);
+      expect(process.on).toHaveBeenCalledWith('SIGUSR2', expect.any(Function));
+    });
+  });
+
+  describe('SIGUSR2 handler', () => {
+    it('should reopen the stream when SIGUSR2 signal is received', () => {
+      // Given
+      const handler = jest.mocked(process.on).mock.calls[0][1] as Function;
+
+      // When
+      handler();
+
+      // Then
+      expect(console.warn).toHaveBeenCalledTimes(2);
+      expect(console.warn).toHaveBeenNthCalledWith(
+        1,
+        `SIGUSR2: Reveived, reopening at ${pathMock}`,
+      );
+      expect(console.warn).toHaveBeenNthCalledWith(2, 'SIGUSR2: done');
+      expect(streamMock.reopen).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('businessEvent', () => {
+    it('should log the business event with a UUID', () => {
+      // Given
+      const businessEventMock: ILoggerBusinessEvent = {
+        category: 'test-category',
+        event: 'test-event',
+        ip: '123.123.123.123',
+        source: {
+          address: '123.123.123.123',
+          port: '443',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          original_addresses: '123.123.123.123, 124.124.124.124',
+        },
+      };
+
+      // When
+      service.businessEvent(businessEventMock);
+
+      // Then
+      expect(loggerMock.info).toHaveBeenCalledTimes(1);
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        ...businessEventMock,
+        logId: uuidMock,
       });
-    });
-
-    it('should override an existing `logId` property', () => {
-      // Given
-      const logMock = { foo: 'fooValue', logId: 'existingValue' };
-      // When
-      const result = service['getIdentifiedLog'](logMock);
-      // Then
-      expect(result).toEqual({
-        foo: 'fooValue',
-        logId: mockUuid,
-      });
-    });
-  });
-
-  describe('canLog()', () => {
-    it('can log if required level is greater than the logger level', () => {
-      // When
-      const result = service['canLog'](LoggerLevelNames.WARN);
-
-      // Then
-      expect(result).toBe(true);
-    });
-
-    it('can log if required level is equal to the logger level', () => {
-      // When
-      const result = service['canLog'](LoggerLevelNames.INFO);
-
-      // Then
-      expect(result).toBe(true);
-    });
-
-    it("can't log if required level is less than the logger level", () => {
-      // When
-      const result = service['canLog'](LoggerLevelNames.TRACE);
-
-      // Then
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('businessLogger()', () => {
-    let canLogMock: jest.SpyInstance;
-    let identifiedLogMock: jest.SpyInstance;
-
-    const levelMock = LoggerLevelNames.INFO;
-    const message = { foo: 'bar' };
-    const identifiedLog = { logId: 'bar' };
-
-    beforeEach(() => {
-      canLogMock = jest.spyOn<LoggerService, any>(service, 'canLog');
-
-      identifiedLogMock = jest.spyOn<LoggerService, any>(
-        service,
-        'getIdentifiedLog',
-      );
-      identifiedLogMock.mockReturnValueOnce(identifiedLog);
-    });
-
-    it('should log info message with context', () => {
-      // Given
-      canLogMock.mockReturnValueOnce(false);
-      // When
-      service['businessLogger'](levelMock, message);
-      // Then
-      expect(canLogMock).toHaveBeenCalledTimes(1);
-
-      expect(identifiedLogMock).toHaveBeenCalledTimes(0);
-    });
-
-    it('should add id to output log', () => {
-      // Given
-      canLogMock.mockReturnValueOnce(true);
-      // When
-      service['businessLogger'](levelMock, message);
-
-      // Then
-      expect(identifiedLogMock).toHaveBeenCalledTimes(1);
-      expect(identifiedLogMock).toHaveBeenCalledWith(message);
-    });
-
-    it('should trace and output log ', () => {
-      // Given
-      canLogMock.mockReturnValueOnce(true);
-
-      // When
-      service['businessLogger'](levelMock, message);
-
-      // Then
-      expect(transportMock[levelMock]).toHaveBeenCalledTimes(1);
-      expect(transportMock[levelMock]).toHaveBeenCalledWith(identifiedLog);
-    });
-  });
-
-  describe('businessEvent()', () => {
-    let businessLoggerMock: jest.SpyInstance;
-    const message: ILoggerBusinessEvent = {
-      category: 'categorValue',
-      event: 'eventValue',
-      ip: ipMock,
-      source: {
-        address: ipMock,
-        port: sourcePortMock,
-        // logs filter and analyses need this format
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        original_addresses: xForwardedForOriginalMock,
-      },
-    };
-
-    beforeEach(() => {
-      businessLoggerMock = jest.spyOn<LoggerService, any>(
-        service,
-        'businessLogger',
-      );
-      businessLoggerMock.mockReturnValueOnce(void 0);
-    });
-
-    it('should call business logger with info level', () => {
-      // When
-      service.businessEvent(message);
-
-      // Then
-      expect(businessLoggerMock).toHaveBeenCalledTimes(1);
-      expect(businessLoggerMock).toHaveBeenCalledWith(
-        LoggerLevelNames.INFO,
-        message,
-      );
     });
   });
 });
