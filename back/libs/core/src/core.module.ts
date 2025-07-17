@@ -24,12 +24,13 @@ import {
 import { ExceptionOccurredHandler } from '@fc/oidc-provider/handlers';
 import { ServiceProviderAdapterMongoModule } from '@fc/service-provider-adapter-mongo';
 import { SessionModule } from '@fc/session';
-import { AppTrackingServiceAbstract, TrackingModule } from '@fc/tracking';
+import { TrackingModule } from '@fc/tracking';
 
 import { CoreServiceInterface } from './interfaces';
 import {
   CoreAccountService,
   CoreOidcProviderConfigAppService,
+  CoreTrackingService,
 } from './services';
 import { CORE_SERVICE } from './tokens';
 
@@ -44,9 +45,8 @@ export class CoreModule {
     ServiceProviderModule: Type<ModuleMetadata>,
     IdentityProviderAdapterMongoService: Type<IIdentityProviderAdapter>,
     IdentityProviderAdapterMongoModule: Type<ModuleMetadata>,
-    AppCoreTrackingService: Type<AppTrackingServiceAbstract>,
   ): DynamicModule {
-    const trackingModule = TrackingModule.forRoot(AppCoreTrackingService);
+    const trackingModule = TrackingModule.forRoot(CoreTrackingService);
 
     return {
       module: CoreModule,
