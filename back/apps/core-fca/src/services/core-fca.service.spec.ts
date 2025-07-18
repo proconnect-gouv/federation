@@ -15,7 +15,6 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
-import { getCoreAuthorizationServiceMock } from '@mocks/core';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -80,7 +79,9 @@ describe('CoreFcaService', () => {
     getList: jest.fn(),
   };
 
-  const coreAuthorizationServiceMock = getCoreAuthorizationServiceMock();
+  const coreAuthorizationServiceMock = {
+    getAuthorizeUrl: jest.fn(),
+  };
 
   const coreFcaFqdnServiceMock = {
     getFqdnConfigFromEmail: jest.fn(),

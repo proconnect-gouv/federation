@@ -149,7 +149,7 @@ describe('InteractionController', () => {
 
       controller.getDefault(res as Response);
 
-      expect(configServiceMock.get).toHaveBeenCalledWith('Core');
+      expect(configServiceMock.get).toHaveBeenCalledWith('App');
       expect(res.redirect).toHaveBeenCalledWith(301, 'http://default-uri');
     });
   });

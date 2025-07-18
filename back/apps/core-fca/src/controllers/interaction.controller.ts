@@ -16,7 +16,6 @@ import {
 } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { CoreConfig, CoreRoutes, Interaction } from '@fc/core';
 import { CsrfService } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -37,9 +36,10 @@ import {
   ActiveUserSessionDto,
   AppConfig,
   GetVerifySessionDto,
+  Interaction,
   UserSession,
 } from '../dto';
-import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
+import { CoreFcaRoutes } from '../enums';
 import {
   CoreAcrNotSatisfiedException,
   CoreFcaAgentNotFromPublicServiceException,
@@ -66,21 +66,21 @@ export class InteractionController {
     private readonly csrfService: CsrfService,
   ) {}
 
-  @Get(CoreRoutes.DEFAULT)
+  @Get(CoreFcaRoutes.DEFAULT)
   @Header('cache-control', 'no-store')
   getDefault(@Res() res) {
-    const { defaultRedirectUri } = this.config.get<CoreConfig>('Core');
+    const { defaultRedirectUri } = this.config.get<AppConfig>('App');
     res.redirect(301, defaultRedirectUri);
   }
 
-  @Get(CoreRoutes.INTERACTION)
+  @Get(CoreFcaRoutes.INTERACTION)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @AuthorizeStepFrom([
     OidcProviderRoutes.AUTHORIZATION, // Standard flow
-    CoreRoutes.INTERACTION, // Refresh
+    CoreFcaRoutes.INTERACTION, // Refresh
     OidcClientRoutes.OIDC_CALLBACK, // Back on error
-    CoreRoutes.INTERACTION_VERIFY, // Back on error
+    CoreFcaRoutes.INTERACTION_VERIFY, // Back on error
     CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Client is choosing an identity provider
     OidcClientRoutes.REDIRECT_TO_IDP, // Browser back button
   ])
@@ -174,7 +174,7 @@ export class InteractionController {
       await this.tracking.track(FC_SSO_INITIATED, eventContext);
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
-      const url = `${urlPrefix}${CoreRoutes.INTERACTION_VERIFY.replace(
+      const url = `${urlPrefix}${CoreFcaRoutes.INTERACTION_VERIFY.replace(
         ':uid',
         interactionId,
       )}`;
@@ -208,12 +208,12 @@ export class InteractionController {
     });
   }
 
-  @Get(CoreRoutes.INTERACTION_VERIFY)
+  @Get(CoreFcaRoutes.INTERACTION_VERIFY)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @AuthorizeStepFrom([
     OidcClientRoutes.OIDC_CALLBACK, // Standard cinematic
-    CoreRoutes.INTERACTION, // Reuse of an existing session
+    CoreFcaRoutes.INTERACTION, // Reuse of an existing session
   ])
   @SetStep()
   // Note: The FC_REDIRECTED_TO_SP event is logged regardless of whether Panva's oidc-provider
@@ -248,7 +248,7 @@ export class InteractionController {
 
       await this.trackIdpDisabled(req);
 
-      const url = `${urlPrefix}${CoreRoutes.INTERACTION.replace(
+      const url = `${urlPrefix}${CoreFcaRoutes.INTERACTION.replace(
         ':uid',
         interactionId,
       )}`;
