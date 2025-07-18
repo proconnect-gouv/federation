@@ -1,7 +1,5 @@
 import { ConfigParser } from '@fc/config';
-import { CoreRoutes } from '@fc/core';
-import { CoreFcaSession } from '@fc/core-fca';
-import { CoreFcaRoutes } from '@fc/core-fca/enums/core-fca-routes.enum';
+import { CoreFcaRoutes, CoreFcaSession } from '@fc/core-fca';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 import { SessionConfig, SessionCookieOptionsInterface } from '@fc/session';
@@ -29,10 +27,10 @@ export default {
   middlewareIncludedRoutes: [
     // Connect flow
     OidcProviderRoutes.AUTHORIZATION,
-    `${CoreRoutes.INTERACTION}$`,
+    `${CoreFcaRoutes.INTERACTION}$`,
     OidcClientRoutes.REDIRECT_TO_IDP,
     OidcClientRoutes.OIDC_CALLBACK,
-    CoreRoutes.INTERACTION_VERIFY,
+    CoreFcaRoutes.INTERACTION_VERIFY,
     OidcProviderRoutes.REDIRECT_TO_SP,
     CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
 

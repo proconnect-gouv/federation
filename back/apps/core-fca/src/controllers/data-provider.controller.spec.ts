@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ChecktokenRequestDto } from '@fc/core';
 import {
   DataProviderAdapterMongoService,
   DataProviderMetadata,
@@ -13,6 +12,7 @@ import { LoggerService } from '@fc/logger';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
+import { ChecktokenRequestDto } from '../dto';
 import { DataProviderExceptionFilter } from '../filters';
 import { DataProviderService } from '../services';
 import { DataProviderController } from './data-provider.controller';

@@ -4,12 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountFca, AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import {
-  ChecktokenRequestDto,
-  DpJwtPayloadInterface,
-  InvalidChecktokenRequestException,
-  TokenIntrospectionInterface,
-} from '@fc/core';
 import { DataProviderMetadata } from '@fc/data-provider-adapter-mongo';
 import { JwtService } from '@fc/jwt';
 import { LoggerService } from '@fc/logger';
@@ -23,7 +17,12 @@ import { getLoggerMock } from '@mocks/logger';
 import { getRedisServiceMock } from '@mocks/redis';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { CoreFcaSession } from '../dto';
+import { ChecktokenRequestDto, CoreFcaSession } from '../dto';
+import { InvalidChecktokenRequestException } from '../exceptions';
+import {
+  DpJwtPayloadInterface,
+  TokenIntrospectionInterface,
+} from '../interfaces';
 import { DataProviderService } from './data-provider.service';
 
 jest.mock('@fc/oidc');

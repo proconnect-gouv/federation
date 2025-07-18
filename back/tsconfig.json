@@ -48,8 +48,6 @@
       "@fc/oidc-client/*": ["libs/oidc-client/src/*"],
       "@fc/cryptography": ["libs/cryptography/src"],
       "@fc/cryptography/*": ["libs/cryptography/src/*"],
-      "@fc/core": ["libs/core/src"],
-      "@fc/core/*": ["libs/core/src/*"],
       "@fc/core-fca": ["apps/core-fca/src"],
       "@fc/core-fca/*": ["apps/core-fca/src/*"],
       "@fc/csmr-http-proxy": ["apps/csmr-http-proxy/src"],

@@ -16,7 +16,6 @@ import {
 
 import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
-import { CoreRoutes } from '@fc/core';
 import { UserSessionDecorator } from '@fc/core-fca/decorators';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
@@ -43,7 +42,7 @@ import {
   RedirectToIdp,
   UserSession,
 } from '../dto';
-import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
+import { CoreFcaRoutes } from '../enums';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaFqdnService,
@@ -75,7 +74,7 @@ export class OidcClientController {
   @Get(CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION)
   @Header('cache-control', 'no-store')
   @AuthorizeStepFrom([
-    CoreRoutes.INTERACTION, // Standard flow
+    CoreFcaRoutes.INTERACTION, // Standard flow
     OidcClientRoutes.REDIRECT_TO_IDP, // Navigation back
   ])
   @SetStep()
@@ -119,7 +118,7 @@ export class OidcClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
   @AuthorizeStepFrom([
-    CoreRoutes.INTERACTION, // Standard flow
+    CoreFcaRoutes.INTERACTION, // Standard flow
     CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
   ])
   @SetStep()
@@ -262,7 +261,7 @@ export class OidcClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @AuthorizeStepFrom([
     OidcClientRoutes.REDIRECT_TO_IDP, // Standard flow
-    CoreRoutes.INTERACTION, // idp_hint flow
+    CoreFcaRoutes.INTERACTION, // idp_hint flow
   ])
   @SetStep()
   async getOidcCallback(
