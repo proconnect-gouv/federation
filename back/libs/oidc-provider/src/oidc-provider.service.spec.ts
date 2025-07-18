@@ -5,6 +5,7 @@ import { HttpAdapterHost } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { LoggerService } from '@fc/logger';
+import { OidcProviderConfigAppService } from '@fc/oidc-provider/services';
 import { RedisService } from '@fc/redis';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -22,7 +23,6 @@ import {
 import { COOKIES, OidcProviderService } from './oidc-provider.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
 import { OidcProviderErrorService } from './services/oidc-provider-error.service';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -111,10 +111,7 @@ describe('OidcProviderService', () => {
         RedisService,
         OidcProviderErrorService,
         OidcProviderConfigService,
-        {
-          provide: OIDC_PROVIDER_CONFIG_APP_TOKEN,
-          useValue: oidcProviderConfigAppMock,
-        },
+        OidcProviderConfigAppService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -127,6 +124,8 @@ describe('OidcProviderService', () => {
       .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(OidcProviderConfigService)
       .useValue(oidcProviderConfigServiceMock)
+      .overrideProvider(OidcProviderConfigAppService)
+      .useValue(oidcProviderConfigAppMock)
       .compile();
 
     service = module.get<OidcProviderService>(OidcProviderService);

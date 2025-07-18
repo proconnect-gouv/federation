@@ -5,7 +5,6 @@ import { AuthorizationParameters } from 'openid-client';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { CoreServiceInterface } from '@fc/core';
 import { AppConfig, UserSession } from '@fc/core-fca/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -25,7 +24,7 @@ import {
 import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 
 @Injectable()
-export class CoreFcaService implements CoreServiceInterface {
+export class CoreFcaService {
   // Dependency injection can require more than 4 parameters
   /* eslint-disable-next-line max-params */
   constructor(

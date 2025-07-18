@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ExceptionsModule } from '@fc/exceptions';
+import { BaseExceptionModule } from '@fc/base-exception';
 import { RabbitmqModule } from '@fc/rabbitmq';
 
 import { BridgeHttpProxyController } from './controllers';
@@ -11,7 +11,7 @@ import { BridgeHttpProxyService } from './services';
 @Module({
   imports: [
     AsyncLocalStorageModule,
-    ExceptionsModule,
+    BaseExceptionModule,
     RabbitmqModule.registerFor('BridgeProxy'),
   ],
   controllers: [BridgeHttpProxyController],

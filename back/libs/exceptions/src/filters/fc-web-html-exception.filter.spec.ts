@@ -5,6 +5,7 @@ import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiErrorParams } from '@fc/app';
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { CoreFcaInvalidIdentityException } from '@fc/core-fca';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
@@ -18,7 +19,7 @@ import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { BaseException, FcException } from '../exceptions';
+import { FcException } from '../exceptions';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
 
 jest.mock('@fc/exceptions/helpers', () => ({

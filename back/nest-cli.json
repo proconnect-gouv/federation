@@ -165,15 +165,6 @@
         "tsConfigPath": "libs/cryptography/tsconfig.lib.json"
       }
     },
-    "core": {
-      "type": "library",
-      "root": "libs/core",
-      "entryFile": "index",
-      "sourceRoot": "libs/core/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/core/tsconfig.lib.json"
-      }
-    },
     "core-fca": {
       "type": "library",
       "root": "apps/core-fca",
@@ -435,15 +426,6 @@
         "tsConfigPath": "libs/async-local-storage/tsconfig.lib.json"
       }
     },
-    "view-templates": {
-      "type": "library",
-      "root": "libs/view-templates",
-      "entryFile": "index",
-      "sourceRoot": "libs/view-templates/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/view-templates/tsconfig.lib.json"
-      }
-    },
     "csrf": {
       "type": "library",
       "root": "libs/csrf",
@@ -451,6 +433,15 @@
       "sourceRoot": "libs/csrf/src",
       "compilerOptions": {
         "tsConfigPath": "libs/csrf/tsconfig.lib.json"
+      }
+    },
+    "base-exception": {
+      "type": "library",
+      "root": "libs/base-exception",
+      "entryFile": "index",
+      "sourceRoot": "libs/base-exception/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/base-exception/tsconfig.lib.json"
       }
     },
     "exceptions": {

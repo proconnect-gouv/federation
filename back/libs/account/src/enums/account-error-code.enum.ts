@@ -8,6 +8,5 @@
  * @see ../../../../back/_doc/erreurs.md
  */
 export enum ErrorCode {
-  ACCOUNT_BLOCKED = 1,
   ACCOUNT_NOT_FOUND = 2,
 }

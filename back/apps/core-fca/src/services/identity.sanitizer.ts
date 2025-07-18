@@ -5,12 +5,11 @@ import { cloneDeep } from 'lodash';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { CoreConfig } from '@fc/core';
 import { UnknownException } from '@fc/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
-import { IdentityForSpDto, IdentityFromIdpDto } from '../dto';
+import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
 
 @Injectable()
@@ -40,7 +39,7 @@ export class IdentitySanitizer {
 
       const contact =
         identityProvider.supportEmail ||
-        this.config.get<CoreConfig>('Core').supportEmail;
+        this.config.get<AppConfig>('App').supportEmail;
 
       throw new CoreFcaInvalidIdentityException(
         contact,

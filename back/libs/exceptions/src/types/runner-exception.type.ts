@@ -1,4 +1,4 @@
-import { BaseException } from '../exceptions';
+import { BaseException } from '@fc/base-exception';
 
 export type PathAndException = {
   path: string;
