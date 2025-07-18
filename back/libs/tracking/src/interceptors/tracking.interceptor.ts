@@ -5,7 +5,6 @@ import { tap } from 'rxjs/operators';
 import {
   CallHandler,
   ExecutionContext,
-  Inject,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
@@ -13,11 +12,9 @@ import { Reflector } from '@nestjs/core';
 
 import { LoggerService } from '@fc/logger';
 import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
-import { AppTrackingServiceAbstract } from '@fc/tracking/interfaces';
-import { APP_TRACKING_SERVICE } from '@fc/tracking/tokens';
 
 import { Track } from '../decorators/track.decorator';
-import { TrackingService } from '../services';
+import { CoreTrackingService, TrackingService } from '../services';
 
 @Injectable()
 export class TrackingInterceptor implements NestInterceptor {
@@ -25,8 +22,7 @@ export class TrackingInterceptor implements NestInterceptor {
   // eslint-disable-next-line max-params
   constructor(
     // Injecting the two following dependencies to make them available for the tracking service
-    @Inject(APP_TRACKING_SERVICE)
-    private readonly appTrackingService: AppTrackingServiceAbstract,
+    private readonly appTrackingService: CoreTrackingService,
     private readonly loggerLegacy: LoggerLegacyService,
     private readonly tracking: TrackingService,
     private readonly logger: LoggerService,

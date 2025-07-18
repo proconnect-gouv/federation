@@ -1,4 +1,4 @@
-import { Global, Inject, Injectable, Scope, Type } from '@nestjs/common';
+import { Global, Injectable, Scope, Type } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { FcException } from '@fc/exceptions/exceptions';
@@ -7,20 +7,18 @@ import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
 
 import { TrackingConfig } from '../dto';
 import {
-  AppTrackingServiceAbstract,
   TrackedEventContextInterface,
   TrackedEventInterface,
   TrackedEventMapType,
 } from '../interfaces';
-import { APP_TRACKING_SERVICE } from '../tokens';
+import { CoreTrackingService } from './core-tracking.service';
 
 @Global()
 @Injectable({ scope: Scope.DEFAULT })
 export class TrackingService {
   public TrackedEventsMap: TrackedEventMapType = {};
   constructor(
-    @Inject(APP_TRACKING_SERVICE)
-    private readonly appTrackingService: AppTrackingServiceAbstract,
+    private readonly appTrackingService: CoreTrackingService,
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly loggerLegacy: LoggerLegacyService,
@@ -31,14 +29,12 @@ export class TrackingService {
     this.TrackedEventsMap = eventsMap;
   }
 
+  // eslint-disable-next-line require-await
   async track(
     trackedEvent: TrackedEventInterface,
     context: TrackedEventContextInterface,
   ): Promise<void> {
-    const message = await this.appTrackingService.buildLog(
-      trackedEvent,
-      context,
-    );
+    const message = this.appTrackingService.buildLog(trackedEvent, context);
 
     this.loggerLegacy.businessEvent(message);
   }

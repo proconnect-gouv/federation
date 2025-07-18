@@ -1,4 +1,6 @@
-export * from './app-tracking-service.abstract';
+export * from './core-tracking-context.interface';
+export * from './core-tracking-log.interface';
+export * from './core-tracking-providers.interface';
 export * from './tracked-event.interface';
 export * from './tracked-event-context.interface';
 export * from './tracked-event-map.interface';

@@ -30,7 +30,6 @@ import { CoreServiceInterface } from './interfaces';
 import {
   CoreAccountService,
   CoreOidcProviderConfigAppService,
-  CoreTrackingService,
 } from './services';
 import { CORE_SERVICE } from './tokens';
 
@@ -46,8 +45,6 @@ export class CoreModule {
     IdentityProviderAdapterMongoService: Type<IIdentityProviderAdapter>,
     IdentityProviderAdapterMongoModule: Type<ModuleMetadata>,
   ): DynamicModule {
-    const trackingModule = TrackingModule.forRoot(CoreTrackingService);
-
     return {
       module: CoreModule,
       imports: [
@@ -69,7 +66,7 @@ export class CoreModule {
           ServiceProviderModule,
         ),
         IdentityProviderAdapterMongoModule,
-        trackingModule,
+        TrackingModule,
       ],
       providers: [
         CoreAccountService,
@@ -113,7 +110,7 @@ export class CoreModule {
       exports: [
         CoreAccountService,
         CoreOidcProviderConfigAppService,
-        trackingModule,
+        TrackingModule,
       ],
     };
   }

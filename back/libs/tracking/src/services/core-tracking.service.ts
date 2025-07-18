@@ -3,28 +3,24 @@ import { Injectable } from '@nestjs/common';
 import { overrideWithSourceIfNotNull } from '@fc/common';
 import { UserSession } from '@fc/core-fca';
 import { SessionService } from '@fc/session';
-import {
-  TrackedEventContextInterface,
-  TrackedEventInterface,
-} from '@fc/tracking';
 import { extractNetworkInfoFromHeaders } from '@fc/tracking-context';
 
 import {
   ICoreTrackingContext,
   ICoreTrackingLog,
   ICoreTrackingProviders,
+  TrackedEventContextInterface,
+  TrackedEventInterface,
 } from '../interfaces';
 
 @Injectable()
 export class CoreTrackingService {
   constructor(private readonly sessionService: SessionService) {}
 
-  // BuildLog can be async as per @fc/tracking library
-  // eslint-disable-next-line require-await
-  async buildLog(
+  buildLog(
     trackedEvent: TrackedEventInterface,
     context: TrackedEventContextInterface,
-  ): Promise<ICoreTrackingLog> {
+  ): ICoreTrackingLog {
     const extractedFromContext = this.extractContext(context);
     const {
       claims,

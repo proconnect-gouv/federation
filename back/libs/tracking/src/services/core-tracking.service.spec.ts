@@ -143,16 +143,16 @@ describe('CoreTrackingService', () => {
       });
     });
 
-    it('should call extractContext with req property of context param', async () => {
+    it('should call extractContext with req property of context param', () => {
       // Given
       // When
-      await service.buildLog(eventMock, contextMock);
+      service.buildLog(eventMock, contextMock);
       // Then
       expect(service['extractContext']).toHaveBeenCalledTimes(1);
       expect(service['extractContext']).toHaveBeenCalledWith(contextMock);
     });
 
-    it('should return log message', async () => {
+    it('should return log message', () => {
       // Given
       const expectedResult = {
         ...sessionDataMock,
@@ -177,33 +177,30 @@ describe('CoreTrackingService', () => {
         dpTitle: 'dp_title',
       };
       // When
-      const result = await service.buildLog(eventMock, contextMock);
+      const result = service.buildLog(eventMock, contextMock);
       // Then
       expect(result).toEqual(expectedResult);
     });
 
-    it('should return object containing joined claims', async () => {
+    it('should return object containing joined claims', () => {
       // Given
       const contextMock = {
         req: {},
         claims: ['foo', 'bar'],
       };
       // When
-      const result = await service.buildLog(eventMock, contextMock);
+      const result = service.buildLog(eventMock, contextMock);
       // Then
       expect(result).toEqual(expect.objectContaining({ claims: 'foo bar' }));
     });
 
-    it('should return sessionId from context if provided', async () => {
+    it('should return sessionId from context if provided', () => {
       // Given
       const contextWithSessionIdMock = {
         sessionId: Symbol('contextWithSessionIdMock'),
       };
       // When
-      const result = await service.buildLog(
-        eventMock,
-        contextWithSessionIdMock,
-      );
+      const result = service.buildLog(eventMock, contextWithSessionIdMock);
       // Then
       expect(result).toEqual(
         expect.objectContaining({
@@ -212,7 +209,7 @@ describe('CoreTrackingService', () => {
       );
     });
 
-    it('should return object without claims if none provided', async () => {
+    it('should return object without claims if none provided', () => {
       // Given
       const contextMock = {
         req: {},
@@ -223,7 +220,7 @@ describe('CoreTrackingService', () => {
         .fn()
         .mockReturnValueOnce(extractedContextMockValue);
       // When
-      const result = await service.buildLog(eventMock, contextMock);
+      const result = service.buildLog(eventMock, contextMock);
       // Then
       expect(result).toEqual(
         expect.not.objectContaining({ claims: 'foo bar' }),
