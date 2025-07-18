@@ -15,13 +15,17 @@ import { MailerModule } from '../mailer/mailer.module';
 import * as uuid from 'uuid';
 import { LoggerService } from '@fc/shared/logger/logger.service';
 
+jest.mock('uuid', () => ({
+  v4: jest.fn(),
+}));
+
 const mockValidate = jest.fn();
 IsPasswordCompliant.prototype.validate = mockValidate;
 
 describe('UserService', () => {
   let userService: UserService;
   const userRepositoryMock = {
-    findOne: jest.fn(),
+    findOneBy: jest.fn(),
     save: jest.fn(),
     delete: jest.fn(),
     update: jest.fn(),
@@ -66,11 +70,13 @@ describe('UserService', () => {
   };
 
   const mockToken = '3a95ebfa-cd28-40f1-ab6e-5eb4cef352e3';
+
   const userTokenExpiresIn = 2880;
 
   const passwordRepositoryMock = {
     find: jest.fn(),
-    findOne: jest.fn(),
+    findBy: jest.fn(),
+    findOneBy: jest.fn(),
     save: jest.fn(),
     delete: jest.fn(),
     update: jest.fn(),
@@ -119,17 +125,17 @@ describe('UserService', () => {
       .useValue(passwordRepositoryMock)
       .compile();
 
-    userService = await module.get<UserService>(UserService);
+    userService = module.get<UserService>(UserService);
 
     jest.resetAllMocks();
     jest.clearAllMocks();
     jest.restoreAllMocks();
 
-    jest.spyOn(uuid, 'v4').mockReturnValueOnce(mockToken);
+    (uuid.v4 as jest.Mock).mockReturnValue(mockToken);
   });
 
   describe('callGeneratePassword', () => {
-    it('should be called with the wright arguments', () => {
+    it('should be called with the right arguments', () => {
       // setup
 
       const args = {
@@ -293,7 +299,7 @@ describe('UserService', () => {
 
   describe('findByUsername', () => {
     it('calls the repository', async () => {
-      userRepositoryMock.findOne.mockImplementation(() =>
+      userRepositoryMock.findOneBy.mockImplementation(() =>
         Promise.resolve({
           email: 'toto@toto.com',
           roles: ['admin'],
@@ -303,8 +309,8 @@ describe('UserService', () => {
       );
       const foundUser = await userService.findByUsername('jean_moust');
 
-      expect(userRepositoryMock.findOne).toHaveBeenCalledTimes(1);
-      expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
+      expect(userRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
+      expect(userRepositoryMock.findOneBy).toHaveBeenCalledWith({
         username: 'jean_moust',
       });
       expect(foundUser).toHaveProperty('email');
@@ -314,7 +320,7 @@ describe('UserService', () => {
     });
 
     it('fails when the user is not found', async () => {
-      userRepositoryMock.findOne.mockRejectedValue('User not found');
+      userRepositoryMock.findOneBy.mockRejectedValue('User not found');
 
       return expect(
         userService.findByUsername('michael jackson'),
@@ -324,7 +330,7 @@ describe('UserService', () => {
     it('should fall back in catch statement if the database could not be reached', async () => {
       // setup
       const username = 'toto';
-      userRepositoryMock.findOne.mockRejectedValueOnce('user not found');
+      userRepositoryMock.findOneBy.mockRejectedValueOnce('user not found');
 
       // action
       try {
@@ -486,7 +492,7 @@ describe('UserService', () => {
       jest
         .spyOn(bcrypt, 'hash')
         .mockRejectedValueOnce(
-          new Error('password hash could not be generated'),
+          new Error('password hash could not be generated') as never,
         );
       configServiceMock.get.mockReturnValueOnce({
         app_root: '/foo/bar',
@@ -539,7 +545,7 @@ describe('UserService', () => {
     };
     beforeEach(() => {
       userRepositoryMock.update.mockResolvedValue(mockedUserUpdateResponse);
-      userRepositoryMock.findOne.mockResolvedValue({
+      userRepositoryMock.findOneBy.mockResolvedValue({
         email: 'toto@toto.com',
         roles: ['admin'],
         passwordHash: 'MyPass',
@@ -605,7 +611,7 @@ describe('UserService', () => {
 
   describe('deleteUserById', () => {
     beforeEach(() => {
-      userRepositoryMock.findOne.mockResolvedValue({
+      userRepositoryMock.findOneBy.mockResolvedValue({
         email: 'toto@toto.com',
         roles: ['admin'],
         passwordHash: 'MyPass',
@@ -966,7 +972,7 @@ describe('UserService', () => {
 
       it('should return true if current password is find in database', async () => {
         // Setup
-        userRepositoryMock.findOne.mockImplementation(() =>
+        userRepositoryMock.findOneBy.mockImplementation(() =>
           Promise.resolve({
             username: 'jean_moust',
             email: 'toto@toto.com',
@@ -977,7 +983,7 @@ describe('UserService', () => {
           }),
         );
 
-        passwordRepositoryMock.find.mockImplementation(() =>
+        passwordRepositoryMock.findBy.mockImplementation(() =>
           Promise.resolve([
             {
               username: 'jean_moust',
@@ -1004,14 +1010,13 @@ describe('UserService', () => {
         );
 
         // Expected
-        expect(userRepositoryMock.findOne).toHaveBeenCalledTimes(1);
-        // expect(passwordRepositoryMock.find).toHaveBeenCalledTimes(1);
+        expect(userRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
         expect(result).toStrictEqual(true);
       });
 
       it('should return false if current password is not find in database', async () => {
         // Setup
-        userRepositoryMock.findOne.mockImplementation(() =>
+        userRepositoryMock.findOneBy.mockImplementation(() =>
           Promise.resolve({
             username: 'jean_moust',
             email: 'toto@toto.com',
@@ -1022,7 +1027,7 @@ describe('UserService', () => {
           }),
         );
 
-        passwordRepositoryMock.find.mockResolvedValue([
+        passwordRepositoryMock.findBy.mockResolvedValue([
           {
             username: 'jean_moust',
             passwordHash:
@@ -1047,7 +1052,7 @@ describe('UserService', () => {
         );
 
         // Expected
-        expect(userRepositoryMock.findOne).toHaveBeenCalledTimes(1);
+        expect(userRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
         expect(result).toStrictEqual(false);
       });
     });
@@ -1233,8 +1238,10 @@ describe('UserService', () => {
             updatedAt: new Date('2020-04-30T12:59:01.436Z'),
           },
         ];
-        userRepositoryMock.findOne.mockResolvedValueOnce(userMockData);
-        passwordRepositoryMock.find.mockResolvedValueOnce(userLastFivePassword);
+        userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
+        passwordRepositoryMock.findBy.mockResolvedValueOnce(
+          userLastFivePassword,
+        );
         // Action
         // tslint:disable-next-line: no-string-literal
         const result = await userService['checkIfOnlyFivePasswordsEntries'](
@@ -1271,9 +1278,11 @@ describe('UserService', () => {
           },
         ];
 
-        userRepositoryMock.findOne.mockResolvedValueOnce(userMockData);
+        userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
-        passwordRepositoryMock.find.mockResolvedValueOnce(userLastFivePassword);
+        passwordRepositoryMock.findBy.mockResolvedValueOnce(
+          userLastFivePassword,
+        );
 
         // Action
         // tslint:disable-next-line: no-string-literal
@@ -1311,9 +1320,9 @@ describe('UserService', () => {
           },
         ];
 
-        userRepositoryMock.findOne.mockResolvedValueOnce(userMockData);
+        userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
-        passwordRepositoryMock.find.mockRejectedValueOnce(
+        passwordRepositoryMock.findBy.mockRejectedValueOnce(
           new Error('The user could not be found due to a database error'),
         );
 
@@ -1374,7 +1383,7 @@ describe('UserService', () => {
           },
         ];
 
-        userRepositoryMock.findOne.mockResolvedValueOnce(userMockData);
+        userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
         passwordRepositoryMock.find.mockResolvedValueOnce(userLastFivePassword);
 
@@ -1406,9 +1415,9 @@ describe('UserService', () => {
           },
         ];
 
-        userRepositoryMock.findOne.mockResolvedValueOnce(userMockData);
+        userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
-        passwordRepositoryMock.find.mockRejectedValueOnce(
+        passwordRepositoryMock.findBy.mockRejectedValueOnce(
           new Error('The user could not be found due to a database error'),
         );
 
@@ -1446,7 +1455,7 @@ describe('UserService', () => {
           },
         ];
 
-        userRepositoryMock.findOne.mockRejectedValueOnce(
+        userRepositoryMock.findOneBy.mockRejectedValueOnce(
           new Error('The user could not be found due to a database error'),
         );
 
