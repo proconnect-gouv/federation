@@ -7,20 +7,18 @@ import {
   IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from '@fc/oidc';
-import { OidcProviderConfig } from '@fc/oidc-provider';
 
 import { OidcProviderRedisAdapter } from '../adapters';
-import { IOidcProviderConfigAppService } from '../interfaces';
+import { OidcProviderConfig } from '../dto';
 import { OidcProviderService } from '../oidc-provider.service';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from '../tokens';
+import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
 
 @Injectable()
 export class OidcProviderConfigService {
   constructor(
     private readonly config: ConfigService,
-    @Inject(OIDC_PROVIDER_CONFIG_APP_TOKEN)
-    private readonly oidcProviderConfigApp: IOidcProviderConfigAppService,
+    private readonly oidcProviderConfigApp: OidcProviderConfigAppService,
     private readonly errorService: OidcProviderErrorService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: IServiceProviderAdapter,

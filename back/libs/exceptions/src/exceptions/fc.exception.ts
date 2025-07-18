@@ -1,3 +1,3 @@
-import { BaseException } from './base.exception';
+import { BaseException } from '@fc/base-exception';
 
 export class FcException extends BaseException {}

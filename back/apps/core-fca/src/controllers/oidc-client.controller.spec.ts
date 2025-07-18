@@ -15,7 +15,7 @@ import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
+import { CoreFcaRoutes } from '../enums';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaFqdnService,

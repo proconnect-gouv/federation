@@ -4,7 +4,7 @@ import { ArgumentsHost } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiContentType } from '@fc/app';
-import { BaseException } from '@fc/exceptions';
+import { BaseException } from '@fc/base-exception';
 import {
   FcWebHtmlExceptionFilter,
   FcWebJsonExceptionFilter,
