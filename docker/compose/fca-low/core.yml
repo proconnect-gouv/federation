@@ -32,7 +32,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev core-fca-low'
 
   core-fca-low-squid:
     extends: core-fca-low
