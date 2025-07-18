@@ -143,8 +143,7 @@ dks halt
 
 ```bash
 dks compose down --volumes --remove-orphans --rmi all
-git clean -nxd # check the file list, if ok, launch the next command
-git clean -fxd
+dks clean
 ```
 
 ### See Usages
@@ -205,6 +204,22 @@ yarn start:low
 dks switch medium
 cd $PC_ROOT/federation/admin/fc-exploitation
 yarn test:e2e:open
+```
+
+### Run all quality tests for PCF Core
+
+```bash
+dks switch medium
+cd $PC_ROOT/federation/quality/fca
+yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @ignore'
+```
+
+### Run all quality tests for PCF Hybridge
+
+```bash
+dks switch hybridge
+cd $PC_ROOT/federation/quality/fca
+yarn test:low:chrome-desktop --env TAGS='@hybridge'
 ```
 
 ## Visualization Tests
