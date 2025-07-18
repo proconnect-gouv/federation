@@ -18,7 +18,7 @@ describe('AuthenticationService', () => {
   };
   const authenticationRepositoryMock = {
     save: jest.fn(),
-    findAndCount: jest.fn(),
+    findAndCountBy: jest.fn(),
     find: jest.fn(),
     delete: jest.fn(),
   };
@@ -290,7 +290,7 @@ describe('AuthenticationService', () => {
       });
       const mockDateExpire = new Date();
       mockDateExpire.setFullYear(mockDateExpire.getFullYear() + 1);
-      authenticationRepositoryMock.findAndCount.mockResolvedValueOnce([
+      authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
@@ -357,7 +357,7 @@ describe('AuthenticationService', () => {
         token: 'MyToken',
         tokenExpiresAt: mockDateExpire,
       });
-      authenticationRepositoryMock.findAndCount.mockResolvedValueOnce([
+      authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
@@ -396,7 +396,7 @@ describe('AuthenticationService', () => {
         token: 'MyToken',
         tokenExpiresAt: mockDateExpire,
       });
-      authenticationRepositoryMock.findAndCount.mockResolvedValueOnce([
+      authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
@@ -436,7 +436,7 @@ describe('AuthenticationService', () => {
         token: 'MyToken',
         tokenExpiresAt: mockDateExpire,
       });
-      authenticationRepositoryMock.findAndCount.mockResolvedValueOnce([
+      authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
@@ -474,7 +474,7 @@ describe('AuthenticationService', () => {
         token: 'MyToken',
         tokenExpiresAt: mockDateExpire,
       });
-      authenticationRepositoryMock.findAndCount.mockResolvedValueOnce([
+      authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
@@ -638,7 +638,7 @@ describe('AuthenticationService', () => {
     it('should return the number of times a user tried to log in', async () => {
       // setup
       const username = 'user';
-      authenticationRepositoryMock.findAndCount.mockReturnValueOnce([
+      authenticationRepositoryMock.findAndCountBy.mockReturnValueOnce([
         [
           {
             id: '123456',
@@ -674,7 +674,7 @@ describe('AuthenticationService', () => {
     it('should fall back in catch statement if the database could not be reached', async () => {
       // setup
       const username = 'user';
-      authenticationRepositoryMock.findAndCount.mockRejectedValueOnce(
+      authenticationRepositoryMock.findAndCountBy.mockRejectedValueOnce(
         undefined,
       );
 
@@ -700,7 +700,7 @@ describe('AuthenticationService', () => {
   describe('isMaxAuthenticationAttemptLimitReached', () => {
     it('should return false if authentication limit attempt is not reached', async () => {
       // setup
-      authenticationRepositoryMock.findAndCount.mockResolvedValueOnce(1);
+      authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce(1);
       const userAuthenticationMaxAttempt = 5;
       configServiceMock.get.mockReturnValue(userAuthenticationMaxAttempt);
       // action
@@ -717,7 +717,7 @@ describe('AuthenticationService', () => {
       // setup
       const mockDate = new Date();
       mockDate.setFullYear(mockDate.getFullYear() + 1);
-      authenticationRepositoryMock.findAndCount.mockResolvedValueOnce([
+      authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: '123456',
@@ -768,7 +768,7 @@ describe('AuthenticationService', () => {
       // setup
       const mockDate = new Date();
       mockDate.setFullYear(mockDate.getFullYear() + 1);
-      authenticationRepositoryMock.findAndCount.mockResolvedValueOnce([
+      authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: '123456',
