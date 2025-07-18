@@ -1,5 +1,6 @@
 include:
   - ../shared/shared.yml
+  - node-module-installer.yml
   - postgres.yml
   - mongo.yml
   - core.yml
@@ -13,6 +14,7 @@ services:
     image: alpine
     depends_on:
       - 'core-fca-low'
+      - 'node-modules-installer'
       - 'fsa1-low'
       - 'fia1-low'
 
@@ -21,6 +23,8 @@ services:
     image: alpine
     depends_on:
       - 'core-fca-low'
+      - 'node-modules-installer'
+      - 'node-modules-installer-admin'
       - 'exploitation-fca-low'
       # -- SP
       - 'fsa1-low'
@@ -38,6 +42,8 @@ services:
     image: alpine
     depends_on:
       - 'core-fca-low'
+      - 'node-modules-installer'
+      - 'node-modules-installer-admin'
       - 'fsa1-low'
       - 'fsa2-low'
       - 'fsa3-low'
