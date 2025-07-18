@@ -5,8 +5,7 @@ services:
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - 'node-modules:/var/www/app/node_modules'
-    # todo: create a volume for the yarn cache too
-    #  - 'yarn-cache:/root/.cache/yarn'
+      - 'yarn-cache:/usr/local/share/.cache/yarn/v6'
     command: 'yarn install --ignore-engines --frozen-lockfile'
 
   node-modules-installer-admin:

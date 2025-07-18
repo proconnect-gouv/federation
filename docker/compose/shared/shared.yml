@@ -291,6 +291,7 @@ networks:
 
 volumes:
   node-modules:
+  yarn-cache:
   node-modules-admin:
   node-modules-admin-shared:
   node-modules-admin-fc-exploitation:
