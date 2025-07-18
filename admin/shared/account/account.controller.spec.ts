@@ -251,10 +251,14 @@ describe('AccountController', () => {
           itemTest11,
           itemTest12,
         ],
-        itemCount: 12,
-        totalItems: 12,
-        totalUsers: 12,
-        pageCount: 2,
+        meta: {
+          totalItems: 12,
+          itemCount: 12,
+          totalUsers: 12,
+          pageCount: 2,
+          currentPage: 1,
+          itemsPerPage: 10,
+        },
         next: '/account?page=2&limit=10',
         previous: '',
       };
@@ -263,7 +267,7 @@ describe('AccountController', () => {
       // Mocking the return of the paginate function
       const result: Promise<Pagination<User>> = Promise.resolve(user);
 
-      // Mocking the return of service paginte function
+      // Mocking the return of service paginate function
       const spy = jest
         .spyOn(service, 'paginate')
         .mockImplementation(() => Promise.resolve(result));
