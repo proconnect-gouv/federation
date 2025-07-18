@@ -7,6 +7,7 @@ import {
 import { EventBus } from '@nestjs/cqrs';
 
 import { ApiErrorParams } from '@fc/app';
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
@@ -14,12 +15,10 @@ import { SessionService } from '@fc/session';
 
 import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { ExceptionCaughtEvent } from '../events';
-import { FcException } from '../exceptions';
-import { BaseException } from '../exceptions/base.exception';
 import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
-@Catch(FcException)
+@Catch(BaseException)
 @Injectable()
 export class FcWebHtmlExceptionFilter
   extends FcBaseExceptionFilter

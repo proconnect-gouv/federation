@@ -1,7 +1,7 @@
+import { BaseException } from '@fc/base-exception';
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
 
 import { ExceptionOccurredCommand } from '../commands';
-import { BaseException } from '../exceptions';
 import { throwException } from './throw-exception.helper';
 
 jest.mock('@fc/common', () => ({

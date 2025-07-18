@@ -3,12 +3,12 @@ import { BaseExceptionFilter } from '@nestjs/core';
 import { EventBus } from '@nestjs/cqrs';
 import { RpcException } from '@nestjs/microservices';
 
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 
 import { ExceptionsConfig } from '../dto';
-import { BaseException } from '../exceptions/base.exception';
 import { getCode, getStackTraceArray } from '../helpers';
 
 @Catch()
