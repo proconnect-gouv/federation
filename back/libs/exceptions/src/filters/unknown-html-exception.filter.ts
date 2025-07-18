@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 
 import { UnknownException } from '../exceptions';
-import { BaseException } from '../exceptions/base.exception';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
 
 @Catch()
@@ -15,7 +14,7 @@ export class UnknownHtmlExceptionFilter
   extends FcWebHtmlExceptionFilter
   implements ExceptionFilter
 {
-  catch(exception: BaseException, host: ArgumentsHost) {
+  catch(exception: Error, host: ArgumentsHost) {
     const wrapped = new UnknownException(exception);
 
     super.catch(wrapped, host);

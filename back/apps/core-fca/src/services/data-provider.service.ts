@@ -6,13 +6,6 @@ import { Injectable } from '@nestjs/common';
 import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import {
-  ChecktokenRequestDto,
-  DpJwtPayloadInterface,
-  InvalidChecktokenRequestException,
-  TokenIntrospectionInterface,
-} from '@fc/core';
-import { CoreFcaSession } from '@fc/core-fca';
 import { Use } from '@fc/cryptography';
 import { DataProviderMetadata } from '@fc/data-provider-adapter-mongo';
 import { JwtService } from '@fc/jwt';
@@ -21,6 +14,13 @@ import { OidcProviderConfig } from '@fc/oidc-provider';
 import { OidcProviderRedisAdapter } from '@fc/oidc-provider/adapters';
 import { RedisService } from '@fc/redis';
 import { SessionService } from '@fc/session';
+
+import { ChecktokenRequestDto, CoreFcaSession } from '../dto';
+import { InvalidChecktokenRequestException } from '../exceptions';
+import {
+  DpJwtPayloadInterface,
+  TokenIntrospectionInterface,
+} from '../interfaces';
 
 @Injectable()
 export class DataProviderService {

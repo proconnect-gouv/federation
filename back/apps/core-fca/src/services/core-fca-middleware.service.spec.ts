@@ -3,6 +3,7 @@ import { validate } from 'class-validator';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { CoreNoSessionIdException } from '@fc/core-fca/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { atHashFromAccessToken } from '@fc/oidc';
@@ -54,6 +55,7 @@ describe('CoreFcaMiddlewareService', () => {
           useValue: {
             track: jest.fn(),
             TrackedEventsMap: {
+              SP_REQUESTED_FC_TOKEN: {},
               SP_REQUESTED_FC_USERINFO: {},
             },
           },
@@ -144,19 +146,28 @@ describe('CoreFcaMiddlewareService', () => {
     expect(unsupportedCtx.query.prompt).toBeUndefined();
   });
 
-  it('should return the event context with session IDs in getEventContext', () => {
+  it('should return the event context with session IDs in getEventContext', async () => {
     const mockCtx = {
       oidc: { entities: { Account: { accountId: '123' } } },
       req: {},
     };
-    const eventContext = (service as any).getEventContext(mockCtx);
+    mockSessionService.getAlias.mockResolvedValueOnce('123');
+    const eventContext = await (service as any).getEventContext(mockCtx);
     expect(eventContext.sessionId).toBe('123');
+  });
+
+  it('should throw CoreNoSessionIdException if session ID is not set in getEventContext', async () => {
+    const mockCtx = { oidc: {}, req: {} };
+    await expect((service as any).getEventContext(mockCtx)).rejects.toThrow(
+      CoreNoSessionIdException,
+    );
   });
 
   it('should initialize session, set alias, and track event in tokenMiddleware', async () => {
     const mockCtx = {
       oidc: { entities: { AccessToken: {}, Account: { accountId: '123' } } },
     };
+    mockSessionService.getAlias.mockResolvedValueOnce('123');
     const atHashFromAccessTokenMock = jest.mocked(atHashFromAccessToken);
     atHashFromAccessTokenMock.mockReturnValueOnce('atHash');
     const spyInitCache = jest.spyOn(mockSessionService, 'initCache');
@@ -170,6 +181,7 @@ describe('CoreFcaMiddlewareService', () => {
     const mockCtx = {
       oidc: { entities: { Account: { accountId: '123' } } },
     };
+    mockSessionService.getAlias.mockResolvedValueOnce('123');
     const spyInitCache = jest.spyOn(mockSessionService, 'initCache');
     const spyTrack = jest.spyOn(mockTrackingService, 'track');
     await (service as any).userinfoMiddleware(mockCtx);
@@ -197,10 +209,5 @@ describe('CoreFcaMiddlewareService', () => {
     });
     await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
     expect(spyOverride).toHaveBeenCalled();
-  });
-
-  it('should throw an error if session ID is not set in getSessionId', () => {
-    const mockCtx = { oidc: {}, req: {} };
-    expect(() => (service as any).getSessionId(mockCtx)).toThrow();
   });
 });

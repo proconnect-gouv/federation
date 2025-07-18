@@ -1,9 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from '../enums';
-import { CoreBaseException } from './core-base.exception';
+import { CoreFcaBaseException } from '@fc/core-fca/exceptions/core-fca-base.exception';
 
-export class InvalidChecktokenRequestException extends CoreBaseException {
+import { ErrorCode } from '../enums';
+
+export class InvalidChecktokenRequestException extends CoreFcaBaseException {
   public code = ErrorCode.IDENTITY_CHECK_TOKEN;
   public documentation =
     "La requête reçue pour vérifier le token n'est pas valide. Des paramètres obligatoires sont manquants ou au mauvais format.";

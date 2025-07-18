@@ -5,10 +5,10 @@ import {
   AsyncLocalStorageRequestInterface,
   AsyncLocalStorageService,
 } from '@fc/async-local-storage';
+import { BaseException } from '@fc/base-exception';
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
 
 import { ExceptionOccurredCommand } from '../commands';
-import { BaseException } from '../exceptions';
 
 export async function throwException(exception: BaseException) {
   const commandBus =

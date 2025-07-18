@@ -19,10 +19,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
 import { FcException } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
-import {
-  IServiceProviderAdapter,
-  SERVICE_PROVIDER_SERVICE_TOKEN,
-} from '@fc/oidc';
 
 import {
   OidcClientGetEndSessionUrlException,
@@ -50,8 +46,6 @@ export class OidcClientUtilsService {
     private readonly issuer: OidcClientIssuerService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly crypto: CryptographyService,
-    @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
-    private readonly serviceProvider: IServiceProviderAdapter,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderAdapter,
   ) {}
