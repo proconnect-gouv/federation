@@ -6,7 +6,7 @@ import {
 } from 'oidc-provider';
 import { HttpOptions } from 'openid-client';
 
-import { Global, Inject, Injectable } from '@nestjs/common';
+import { Global, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { LoggerService } from '@fc/logger';
@@ -22,12 +22,11 @@ import {
   OidcProviderInitialisationException,
   OidcProviderRuntimeException,
 } from './exceptions';
-import type { IOidcProviderConfigAppService } from './interfaces';
 import {
+  OidcProviderConfigAppService,
   OidcProviderConfigService,
   OidcProviderErrorService,
 } from './services';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
 
 export const COOKIES = ['_session', '_interaction', '_interaction_resume'];
 
@@ -50,8 +49,7 @@ export class OidcProviderService {
     readonly redis: RedisService,
     private readonly errorService: OidcProviderErrorService,
     private readonly configService: OidcProviderConfigService,
-    @Inject(OIDC_PROVIDER_CONFIG_APP_TOKEN)
-    private readonly oidcProviderConfigApp: IOidcProviderConfigAppService,
+    private readonly oidcProviderConfigApp: OidcProviderConfigAppService,
   ) {}
 
   /**

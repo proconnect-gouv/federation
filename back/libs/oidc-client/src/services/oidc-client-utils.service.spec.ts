@@ -12,7 +12,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CryptographyService } from '@fc/cryptography';
 import { FcException } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
-import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -93,8 +92,6 @@ describe('OidcClientUtilsService', () => {
 
   const createOidcClientMock = jest.fn();
 
-  const serviceProviderServiceMock = {};
-
   const identityProviderServiceMock = {
     getById: jest.fn(),
   };
@@ -107,10 +104,6 @@ describe('OidcClientUtilsService', () => {
         CryptographyService,
         OidcClientConfigService,
         OidcClientIssuerService,
-        {
-          provide: SERVICE_PROVIDER_SERVICE_TOKEN,
-          useValue: serviceProviderServiceMock,
-        },
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useValue: identityProviderServiceMock,

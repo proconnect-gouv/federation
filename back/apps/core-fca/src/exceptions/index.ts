@@ -4,4 +4,5 @@ export * from './core-fca-idp-disabled.exception';
 export * from './core-fca-invalid-identity.exception';
 export * from './core-fca-no-idp.exception';
 export * from './core-fca-unauthorized-email-exception';
+export * from './core-idp-hint.exception';
 export * from './core-login-required.exception';
