@@ -7,16 +7,15 @@ import {
 import { EventBus } from '@nestjs/cqrs';
 
 import { ApiErrorParams } from '@fc/app';
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
 import { ExceptionCaughtEvent } from '../events';
-import { FcException } from '../exceptions';
-import { BaseException } from '../exceptions/base.exception';
 import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
-@Catch(FcException)
+@Catch(BaseException)
 @Injectable()
 export class FcWebJsonExceptionFilter
   extends FcBaseExceptionFilter
