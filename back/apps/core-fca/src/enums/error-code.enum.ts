@@ -1,6 +1,7 @@
 export enum ErrorCode {
   NO_IDP = 1,
   INVALID_IDENTITY = 6,
+  NO_SESSION_ID = 9,
   IDENTITY_CHECK_TOKEN = 13,
   AGENT_NOT_FOUND = 15,
   IDP_HINT_NOT_FOUND = 16,

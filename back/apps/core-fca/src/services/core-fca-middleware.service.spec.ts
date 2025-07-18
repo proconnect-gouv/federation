@@ -3,6 +3,7 @@ import { validate } from 'class-validator';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { CoreNoSessionIdException } from '@fc/core-fca/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { atHashFromAccessToken } from '@fc/oidc';
@@ -153,6 +154,13 @@ describe('CoreFcaMiddlewareService', () => {
     expect(eventContext.sessionId).toBe('123');
   });
 
+  it('should throw CoreNoSessionIdException if session ID is not set in getEventContext', () => {
+    const mockCtx = { oidc: {}, req: {} };
+    expect(() => (service as any).getEventContext(mockCtx)).toThrow(
+      CoreNoSessionIdException,
+    );
+  });
+
   it('should initialize session, set alias, and track event in tokenMiddleware', async () => {
     const mockCtx = {
       oidc: { entities: { AccessToken: {}, Account: { accountId: '123' } } },
@@ -197,10 +205,5 @@ describe('CoreFcaMiddlewareService', () => {
     });
     await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
     expect(spyOverride).toHaveBeenCalled();
-  });
-
-  it('should throw an error if session ID is not set in getSessionId', () => {
-    const mockCtx = { oidc: {}, req: {} };
-    expect(() => (service as any).getSessionId(mockCtx)).toThrow();
   });
 });

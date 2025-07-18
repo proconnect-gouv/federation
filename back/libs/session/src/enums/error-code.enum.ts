@@ -14,7 +14,6 @@ export const enum ErrorCode {
   INVALID_SESSION = 4,
   STORAGE_ISSUE = 5,
   BAD_STRINGIFY = 8,
-  NO_SESSION_ID = 9,
   BAD_COOKIE = 12,
   CANNOT_COMMIT = 13,
 }

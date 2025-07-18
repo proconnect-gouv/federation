@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { ActiveUserSessionDto, UserSession } from '@fc/core-fca/dto';
+import { CoreNoSessionIdException } from '@fc/core-fca/exceptions';
 import { throwException } from '@fc/exceptions/helpers';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -20,7 +21,7 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionNoSessionIdException, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 @Injectable()
@@ -147,47 +148,37 @@ export class CoreFcaMiddlewareService {
     const sessionId =
       ctx.oidc?.entities?.Account?.accountId || ctx.req.sessionId;
 
-    const eventContext: TrackedEventContextInterface = {
+    if (!sessionId) {
+      throw new CoreNoSessionIdException();
+    }
+
+    return {
       req: ctx.req,
       sessionId,
     };
-
-    return eventContext;
   }
 
   protected async tokenMiddleware(ctx: OidcCtx) {
-    const sessionId = this.getSessionId(ctx);
-    await this.sessionService.initCache(sessionId);
+    const eventContext = this.getEventContext(ctx);
+
+    await this.sessionService.initCache(eventContext.sessionId);
 
     const { AccessToken } = ctx.oidc.entities;
     const atHash = atHashFromAccessToken(AccessToken);
 
-    await this.sessionService.setAlias(atHash, sessionId);
-
-    const eventContext = this.getEventContext(ctx);
+    await this.sessionService.setAlias(atHash, eventContext.sessionId);
 
     const { SP_REQUESTED_FC_TOKEN } = this.tracking.TrackedEventsMap;
     await this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);
   }
 
   protected async userinfoMiddleware(ctx) {
-    const sessionId = this.getSessionId(ctx);
-    await this.sessionService.initCache(sessionId);
-
     const eventContext = this.getEventContext(ctx);
+
+    await this.sessionService.initCache(eventContext.sessionId);
 
     const { SP_REQUESTED_FC_USERINFO } = this.tracking.TrackedEventsMap;
     await this.tracking.track(SP_REQUESTED_FC_USERINFO, eventContext);
-  }
-
-  private getSessionId(ctx: OidcCtx): string {
-    const { sessionId } = this.getEventContext(ctx);
-
-    if (!sessionId) {
-      throw new SessionNoSessionIdException();
-    }
-
-    return sessionId;
   }
 
   protected async handleSilentAuthenticationMiddleware(
