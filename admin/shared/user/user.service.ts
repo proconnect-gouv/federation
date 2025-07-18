@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import { Repository, DeleteResult, UpdateResult } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import * as uuid from 'uuid';
 import { InjectConfig, ConfigService } from 'nestjs-config';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -138,7 +138,7 @@ export class UserService implements IUserService {
   async createUser(user: ICreateUserDTO, author: string): Promise<User> {
     const { appFqdn } = this.config.get('app');
     const { username, email, roles, secret } = user;
-    const token: string = uuid();
+    const token = uuid.v4();
 
     let passwordHash;
     const updatedAt = new Date();

@@ -32,21 +32,22 @@ describe('FormErrorsInterceptor', () => {
   const callHandler = {
     handle: () =>
       throwError(
-        new BadRequestException([
-          {
-            property: 'password',
-            constraints: {
-              length: 'Length',
-              strength: 'Strength',
+        () =>
+          new BadRequestException([
+            {
+              property: 'password',
+              constraints: {
+                length: 'Length',
+                strength: 'Strength',
+              },
             },
-          },
-          {
-            property: 'age',
-            constraints: {
-              minimum: 'Minimum',
+            {
+              property: 'age',
+              constraints: {
+                minimum: 'Minimum',
+              },
             },
-          },
-        ]),
+          ]),
       ),
   };
   const formErrorsInterceptor = new FormErrorsInterceptor(urlTemplate);
