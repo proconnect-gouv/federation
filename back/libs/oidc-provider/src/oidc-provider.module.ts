@@ -1,7 +1,10 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
+import { APP_FILTER } from '@nestjs/core';
+import { CqrsModule } from '@nestjs/cqrs';
 
 import { IsUrlRequiredTldFromConfigConstraint } from '@fc/common';
+import { ExceptionsModule, FcWebHtmlExceptionFilter } from '@fc/exceptions';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcAcrModule } from '@fc/oidc-acr';
@@ -11,6 +14,12 @@ import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 
+import {
+  OidcProviderRedirectExceptionFilter,
+  OidcProviderRenderedHtmlExceptionFilter,
+  OidcProviderRenderedJsonExceptionFilter,
+} from './filters';
+import { ExceptionOccurredHandler } from './handlers';
 import { OidcProviderController } from './oidc-provider.controller';
 import { OidcProviderService } from './oidc-provider.service';
 import {
@@ -42,6 +51,7 @@ export class OidcProviderModule {
     return {
       module: OidcProviderModule,
       imports: [
+        CqrsModule,
         RedisModule,
         ServiceProviderModule,
         IdentityProviderAdapterMongoModule,
@@ -52,11 +62,25 @@ export class OidcProviderModule {
           IdentityProviderAdapterMongoModule,
         ),
         TrackingModule,
+        ExceptionsModule,
       ],
       providers: [
+        ExceptionOccurredHandler,
+        OidcProviderRenderedHtmlExceptionFilter,
+        OidcProviderRenderedJsonExceptionFilter,
+        OidcProviderRedirectExceptionFilter,
+        FcWebHtmlExceptionFilter,
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useExisting: IdentityProviderAdapterMongoService,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: OidcProviderRenderedHtmlExceptionFilter,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: OidcProviderRedirectExceptionFilter,
         },
         OidcProviderConfigAppService,
         serviceProviderProvider,

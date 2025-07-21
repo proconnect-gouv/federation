@@ -14,8 +14,6 @@ export const messageDictionary: Record<string, string> = {
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
 
   // account
-  'Account.exceptions.accountBlocked':
-    'Votre accès a été désactivé. Pour le réactiver merci de nous contacter.',
   'Account.exceptions.accountNotFound':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
 

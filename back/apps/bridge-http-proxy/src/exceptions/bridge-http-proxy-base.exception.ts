@@ -1,5 +1,5 @@
-import { FcException } from '@fc/exceptions/exceptions';
+import { BaseException } from '@fc/base-exception';
 
-export class BridgeHttpProxyBaseException extends FcException {
+export class BridgeHttpProxyBaseException extends BaseException {
   public scope = 30;
 }

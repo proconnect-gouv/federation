@@ -1,7 +1,6 @@
 import { CoreFcaConfig } from '@fc/core-fca';
 
 import App from './app';
-import Core from './core';
 import DataProviderAdapterMongo from './data-provider-adapter-mongo';
 import EmailValidator from './email-validator';
 import Exceptions from './exceptions';
@@ -20,7 +19,6 @@ export default {
   App,
   EmailValidator,
   Exceptions,
-  Core,
   Logger,
   LoggerLegacy,
   OidcProvider,

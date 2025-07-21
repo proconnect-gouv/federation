@@ -12,10 +12,11 @@ import {
 } from '@nestjs/common';
 
 import { ApiContentType } from '@fc/app';
-import { ChecktokenRequestDto, DataProviderRoutes } from '@fc/core';
 import { DataProviderAdapterMongoService } from '@fc/data-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
+import { ChecktokenRequestDto } from '../dto';
+import { CoreFcaRoutes } from '../enums';
 import { DataProviderExceptionFilter } from '../filters';
 import { DataProviderService } from '../services';
 
@@ -29,7 +30,7 @@ export class DataProviderController {
 
   @UseFilters(DataProviderExceptionFilter)
   @Header('Content-Type', ApiContentType.INTROSPECTION)
-  @Post(DataProviderRoutes.CHECKTOKEN)
+  @Post(CoreFcaRoutes.CHECKTOKEN)
   async checktoken(
     @Req() req: Request,
     @Res() res: Response,

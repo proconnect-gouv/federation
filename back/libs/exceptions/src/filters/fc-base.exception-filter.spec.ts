@@ -4,6 +4,7 @@ import { HttpStatus } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
@@ -11,7 +12,7 @@ import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
-import { BaseException, HttpException, RpcException } from '../exceptions';
+import { HttpException, RpcException } from '../exceptions';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
 describe('FcBaseExceptionFilter', () => {
