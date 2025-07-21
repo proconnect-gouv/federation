@@ -20,12 +20,6 @@
       "@fc/identity-provider-adapter-mongo/*": [
         "libs/identity-provider-adapter-mongo/src/*"
       ],
-      "@fc/data-provider-adapter-mongo": [
-        "libs/data-provider-adapter-mongo/src"
-      ],
-      "@fc/data-provider-adapter-mongo/*": [
-        "libs/data-provider-adapter-mongo/src/*"
-      ],
       "@fc/identity": ["libs/identity/src"],
       "@fc/identity/*": ["libs/identity/src/*"],
       "@fc/service-provider-adapter-mongo": [
@@ -97,24 +91,12 @@
       "@fc/cog/*": ["libs/cog/src/*"],
       "@fc/bridge-http-proxy": ["apps/bridge-http-proxy/src"],
       "@fc/bridge-http-proxy/*": ["apps/bridge-http-proxy/src/*"],
-      "@fc/data-provider-core-auth": ["libs/data-provider-core-auth/src"],
-      "@fc/data-provider-core-auth/*": ["libs/data-provider-core-auth/src/*"],
       "@fc/hybridge-http-proxy": ["libs/hybridge-http-proxy/src"],
       "@fc/hybridge-http-proxy/*": ["libs/hybridge-http-proxy/src/*"],
-      "@fc/jwt": ["libs/jwt/src"],
-      "@fc/jwt/*": ["libs/jwt/src/*"],
-      "@mocks/jwt": ["libs/jwt/.mocks"],
-      "@mocks/jwt/*": ["libs/jwt/.mocks/*"],
-      "@fc/mock-data-provider": ["apps/mock-data-provider/src"],
-      "@fc/mock-data-provider/*": ["apps/mock-data-provider/src/*"],
       "@fc/oidc-acr": ["libs/oidc-acr/src"],
       "@fc/oidc-acr/*": ["libs/oidc-acr/src/*"],
       "@fc/flow-steps": ["libs/flow-steps/src"],
       "@fc/flow-steps/*": ["libs/flow-steps/src/*"],
-      "@fc/data-provider-adapter-core": ["libs/data-provider-adapter-core/src"],
-      "@fc/data-provider-adapter-core/*": [
-        "libs/data-provider-adapter-core/src/*"
-      ],
       "@mocks/session": ["libs/session/.mocks"],
       "@mocks/session/*": ["libs/session/.mocks/*"],
       "@fc/fqdn-to-idp-adapter-mongo": ["libs/fqdn-to-idp-adapter-mongo/src"],

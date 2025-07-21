@@ -39,8 +39,9 @@ const PC_ID_TOKEN_SIGNED_RESPONSE_ALG =
   process.env.IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG;
 const PC_USERINFO_SIGNED_RESPONSE_ALG =
   process.env.IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG;
-const dataProviderConfigs: { name: string; url: string; secret: string }[] =
-  JSON.parse(process.env.App_DATA_APIS);
+const dataProviderConfigs: { name: string; url: string }[] = JSON.parse(
+  process.env.App_DATA_APIS,
+);
 
 const app = express();
 
@@ -245,18 +246,13 @@ app.post('/fetch-userdata', async (req, res, next) => {
     ).toString('base64');
     const userdataPromises = dataProviderConfigs.map(
       // eslint-disable-next-line max-nested-callbacks
-      async ({ name, url, secret }) => {
+      async ({ name, url }) => {
         const response = await fetch(url, {
-          method: 'POST',
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${encodedAccessToken}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            // Input data for the mock-data-provider endpoint
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            auth_secret: secret,
-          }),
         });
         return {
           name,

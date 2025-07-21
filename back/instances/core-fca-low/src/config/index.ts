@@ -1,7 +1,6 @@
 import { CoreFcaConfig } from '@fc/core-fca';
 
 import App from './app';
-import DataProviderAdapterMongo from './data-provider-adapter-mongo';
 import EmailValidator from './email-validator';
 import Exceptions from './exceptions';
 import IdentityProviderAdapterMongo from './identity-provider-adapter-mongo';
@@ -29,5 +28,4 @@ export default {
   IdentityProviderAdapterMongo,
   Session,
   Tracking,
-  DataProviderAdapterMongo,
 } as CoreFcaConfig;

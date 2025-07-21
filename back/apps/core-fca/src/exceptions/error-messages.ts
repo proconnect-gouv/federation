@@ -36,11 +36,8 @@ export const messageDictionary: Record<string, string> = {
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous',
   'Core.exceptions.coreInvalidAcr':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-  'Core.exceptions.coreInvalidCheckTokenRequest':
-    'Required parameter missing or invalid.',
   'Core.exceptions.coreLowAcr':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-  'Core.exceptions.coreMissingAtHash': 'Missing at_hash claim in id_token_hint',
   'Core.exceptions.coreMissingContext':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Core.exceptions.coreMissingIdentity':

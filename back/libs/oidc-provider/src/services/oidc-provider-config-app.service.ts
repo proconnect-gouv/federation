@@ -8,17 +8,14 @@ import { Injectable } from '@nestjs/common';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { CoreFcaSession, UserSession } from '@fc/core-fca';
+import { UserSession } from '@fc/core-fca';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcClientRoutes, OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
-import {
-  OidcProviderMissingAtHashException,
-  OidcProviderRuntimeException,
-} from '../exceptions';
+import { OidcProviderRuntimeException } from '../exceptions';
 import { LogoutFormParamsInterface, OidcCtx } from '../interfaces';
 
 @Injectable()
@@ -41,14 +38,15 @@ export class OidcProviderConfigAppService {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
    */
   async logoutSource(ctx: OidcCtx, form: any): Promise<void> {
-    this.sessionService.init(ctx.res);
+    const sub = ctx.oidc?.session?.accountId;
 
-    const sessionId = await this.getSessionId(ctx);
-
-    let session: CoreFcaSession;
+    let userSession: UserSession;
     try {
-      session =
-        await this.sessionService.getDataFromBackend<CoreFcaSession>(sessionId);
+      const sessionId = await this.sessionService.getAlias(sub);
+
+      await this.sessionService.initCache(sessionId);
+
+      userSession = this.sessionService.get<UserSession>('User');
     } catch (error) {
       // Session may have been destroyed or expired
       // Render the logout page to let oidc-provider complete the logout flow
@@ -93,7 +91,7 @@ export class OidcProviderConfigAppService {
       spEssentialAcr,
       spId,
       spName,
-    } = session.User;
+    } = userSession;
 
     this.sessionService.set('User', {
       browsingSessionId,
@@ -117,20 +115,6 @@ export class OidcProviderConfigAppService {
     await this.tracking.track(SP_REQUESTED_LOGOUT, trackingContext);
 
     await this.logoutFormSessionDestroy(ctx, form, params);
-  }
-
-  private async getSessionId(ctx: OidcCtx): Promise<string> {
-    const { oidc } = ctx;
-    const alias = oidc.entities?.IdTokenHint?.payload?.at_hash;
-
-    // Check on `typeof` since `oidc-provider` types `at_hash` as `unknown`
-    if (typeof alias !== 'string') {
-      throw new OidcProviderMissingAtHashException();
-    }
-
-    const sessionId = await this.sessionService.getAlias(alias);
-
-    return sessionId;
   }
 
   private async getLogoutParams(

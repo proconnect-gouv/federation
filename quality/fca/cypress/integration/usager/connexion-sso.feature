@@ -37,7 +37,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "premier FS"
     Et que je suis connecté au fournisseur de service
-    Quand je me déconnecte du fournisseur de service
+    Quand je clique sur le bouton de déconnexion
     Alors je suis déconnecté du fournisseur de service
     Et je clique sur le bouton ProConnect
     Et je suis redirigé vers la page interaction
@@ -62,11 +62,11 @@ Fonctionnalité: Connexion Usager - SSO
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "premier FS"
     Et que je suis connecté au fournisseur de service
-    Et que je me déconnecte du fournisseur de service
+    Et que je clique sur le bouton de déconnexion
     Et que je suis déconnecté du fournisseur de service
     Et que je navigue sur la page fournisseur de service "troisième fs"
     Et que je suis connecté au fournisseur de service
-    Quand je me déconnecte du fournisseur de service
+    Quand je clique sur le bouton de déconnexion
     Alors je suis déconnecté du fournisseur de service
     Alors le fournisseur de service requiert l'accès aux informations du scope "obligatoires"
     Et le fournisseur de service ne requiert pas le claim "amr"

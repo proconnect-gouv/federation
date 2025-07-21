@@ -10,7 +10,7 @@ Fonctionnalité: Déconnexion Usager
     Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "par défaut"
     Et que je suis connecté au fournisseur de service
-    Quand je me déconnecte du fournisseur de service et j'enregistre la réponse de ProConnect et du FI "par défaut"
+    Quand je clique sur le bouton de déconnexion et j'enregistre la réponse de ProConnect et du FI "par défaut"
     Alors je suis déconnecté du fournisseur de service, de ProConnect et du FI
     Et je suis déconnecté du fournisseur de service
     Et je suis redirigé vers la page fournisseur de service "par défaut"
@@ -28,7 +28,7 @@ Fonctionnalité: Déconnexion Usager
     Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "second fs"
     Et que je suis connecté au fournisseur de service
-    Quand je me déconnecte du fournisseur de service et j'enregistre la réponse de ProConnect et du FI "par défaut"
+    Quand je clique sur le bouton de déconnexion et j'enregistre la réponse de ProConnect et du FI "par défaut"
     Alors je suis déconnecté du fournisseur de service, de ProConnect et du FI
     Et je suis déconnecté du fournisseur de service
     Et l'événement "SP_REQUESTED_LOGOUT" est journalisé

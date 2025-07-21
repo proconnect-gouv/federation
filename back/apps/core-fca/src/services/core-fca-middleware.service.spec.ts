@@ -6,7 +6,6 @@ import { ConfigService } from '@fc/config';
 import { CoreNoSessionIdException } from '@fc/core-fca/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { atHashFromAccessToken } from '@fc/oidc';
 import { OidcCtx, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
@@ -17,10 +16,6 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcaMiddlewareService } from './core-fca-middleware.service';
 
-jest.mock('@fc/oidc', () => ({
-  ...jest.requireActual('@fc/oidc'),
-  atHashFromAccessToken: jest.fn(),
-}));
 jest.mock('class-validator', () => ({
   ...jest.requireActual('class-validator'),
   validate: jest.fn(),
@@ -168,8 +163,6 @@ describe('CoreFcaMiddlewareService', () => {
       oidc: { entities: { AccessToken: {}, Account: { accountId: '123' } } },
     };
     mockSessionService.getAlias.mockResolvedValueOnce('123');
-    const atHashFromAccessTokenMock = jest.mocked(atHashFromAccessToken);
-    atHashFromAccessTokenMock.mockReturnValueOnce('atHash');
     const spyInitCache = jest.spyOn(mockSessionService, 'initCache');
     const spyTrack = jest.spyOn(mockTrackingService, 'track');
     await (service as any).tokenMiddleware(mockCtx);

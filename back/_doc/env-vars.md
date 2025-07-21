@@ -7,7 +7,6 @@
 1. [bridge-http-proxy-rie](#bridge-http-proxy-rie)
 2. [core-fca-low](#core-fca-low)
 3. [csmr-rie](#csmr-rie)
-4. [mock-data-provider](#mock-data-provider)
 
 ## Variables
 
@@ -88,23 +87,3 @@
 | REQUEST_TIMEOUT | string |
 | RieBroker_QUEUE | string |
 | RieBroker_URLS | json |
-
-### mock-data-provider
-
-| Var Name | Inferred type |
-|---|---|
-| APP_NAME | string |
-| App_API_AUTH_SECRET | string |
-| App_ENVIRONMENT | string |
-| App_HTTPS_SERVER_CERT | file |
-| App_HTTPS_SERVER_KEY | file |
-| DataProviderAdapterCore_CHECKTOKEN_ENDPOINT | string |
-| DataProviderAdapterCore_CHECKTOKEN_JWT_ENCRYPTED_RESPONSE_ALG | string |
-| DataProviderAdapterCore_CHECKTOKEN_JWT_ENCRYPTED_RESPONSE_ENC | string |
-| DataProviderAdapterCore_CHECKTOKEN_JWT_SIGNED_RESPONSE_ALG | string |
-| DataProviderAdapterCore_CLIENT_ID | string |
-| DataProviderAdapterCore_CLIENT_SECRET | string |
-| DataProviderAdapterCore_ISSUER | string |
-| DataProviderAdapterCore_JWKS | json |
-| DataProviderAdapterCore_JWKS_ENDPOINT | string |
-| Logger_THRESHOLD | string |
