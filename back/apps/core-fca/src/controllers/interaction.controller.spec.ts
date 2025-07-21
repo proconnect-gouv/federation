@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CoreIdpHintException } from '@fc/core';
 import { CsrfService } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { NotificationsService } from '@fc/notifications';
@@ -19,6 +18,7 @@ import { UserSession } from '../dto';
 import {
   CoreAcrNotSatisfiedException,
   CoreFcaAgentNotFromPublicServiceException,
+  CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
 import { CoreFcaFqdnService, CoreFcaService } from '../services';
