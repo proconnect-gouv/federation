@@ -18,7 +18,7 @@
     "@nestjs/passport": "^6.1.0",
     "@nestjs/typeorm": "^6.1.2",
     "@types/nodemailer": "^6.4.4",
-    "amqp-connection-manager": "^3.2.1",
+    "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.8.0",
     "axios": "^0.30.0",
     "bcrypt": "^5.0.1",
