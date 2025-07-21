@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { ErrorCode } from '../enums';
-import { SessionBaseException } from './session-base.exception';
+import { CoreFcaBaseException } from '../exceptions/core-fca-base.exception';
 
-export class SessionNoSessionIdException extends SessionBaseException {
+export class CoreNoSessionIdException extends CoreFcaBaseException {
   public code = ErrorCode.NO_SESSION_ID;
   public documentation =
     'Cette erreur technique est émise lorsque le session id est introuvable dans l\'objet "req". L\'interceptor de la session a-t-il pu récupérer le cookie de session ?';
