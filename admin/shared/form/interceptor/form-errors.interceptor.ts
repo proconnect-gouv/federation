@@ -1,6 +1,6 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 export class FormErrorsInterceptor implements NestInterceptor {
   /**
@@ -35,21 +35,28 @@ export class FormErrorsInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       catchError(error => {
+        const parsedError = JSON.parse(error.message) as Array<{
+          property: string;
+          constraints: string[];
+        }>;
         // In case of validation error, we render the redirect with the flashed errors and DTO
-        const validationErrors = error.response?.message || error.message;
-        const errors = validationErrors.reduce(
-          (validationErrorsObject, validationError) => ({
-            ...validationErrorsObject,
-            [validationError.property]: Object.values(
-              validationError.constraints,
-            ),
+        return of(parsedError).pipe(
+          map(validationErrors => {
+            return validationErrors.reduce(
+              (acc, currentValidationError) => ({
+                ...acc,
+                [currentValidationError.property]:
+                  currentValidationError.constraints,
+              }),
+              {},
+            );
           }),
-          {},
+          map(errors => {
+            req.flash('errors', errors);
+            req.flash('values', dto);
+            return res.redirect(redirectURL);
+          }),
         );
-
-        req.flash('errors', errors);
-        req.flash('values', dto);
-        return of(res.redirect(redirectURL));
       }),
     );
   }

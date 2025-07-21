@@ -29,26 +29,18 @@ describe('FormErrorsInterceptor', () => {
     getHandler: jest.fn(),
     getType: jest.fn(),
   };
+  const errorMessage = JSON.stringify([
+    {
+      property: 'password',
+      constraints: ['Length', 'Strength'],
+    },
+    {
+      property: 'age',
+      constraints: ['Minimum'],
+    },
+  ]);
   const callHandler = {
-    handle: () =>
-      throwError(
-        () =>
-          new BadRequestException([
-            {
-              property: 'password',
-              constraints: {
-                length: 'Length',
-                strength: 'Strength',
-              },
-            },
-            {
-              property: 'age',
-              constraints: {
-                minimum: 'Minimum',
-              },
-            },
-          ]),
-      ),
+    handle: () => throwError(() => new BadRequestException(errorMessage)),
   };
   const formErrorsInterceptor = new FormErrorsInterceptor(urlTemplate);
 

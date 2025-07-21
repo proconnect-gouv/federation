@@ -210,16 +210,16 @@ describe('Account', () => {
 
       it('if an error occured in the form, we diplays error (name)', () => {
         const userInfo = {
-          username: '',
+          username: '-%^ `ù',
           email: 'email@email.fr',
         };
 
         const configuration = Object.assign({}, basicConfiguration, {
-          totpNotFilled: true,
+          totpNotFilled: false,
         });
 
         createUserAccount(userInfo, configuration);
-        cy.contains(`Le nom d'utilisateur doit être renseigné`).should(
+        cy.contains(`Veuillez mettre un nom d'utilisateur ( Majuscule, minuscule, nombres et trait d'union, sans espace)`).should(
           'be.visible',
         );
       });
