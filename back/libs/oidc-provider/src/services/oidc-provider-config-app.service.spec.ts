@@ -322,19 +322,26 @@ describe('OidcProviderConfigAppService', () => {
   describe('findAccount', () => {
     it('should return account details with accountId and claims when session is valid', async () => {
       // Given
+      const sub = 'test-sub';
       const sessionId = 'test-session-id';
-      const spIdentityMock = { given_name: 'John', family_name: 'Doe' };
+      const spIdentityMock = {
+        sub: 'test-sub',
+        given_name: 'John',
+        family_name: 'Doe',
+      };
+      sessionServiceMock.getAlias.mockResolvedValueOnce(sessionId);
       sessionServiceMock.initCache.mockResolvedValueOnce(true);
       sessionServiceMock.get.mockReturnValueOnce({
         spIdentity: spIdentityMock,
       });
 
       // When
-      const result = await service.findAccount(ctxMock, sessionId);
+      const result = await service.findAccount(ctxMock, sub);
 
       // Then
+      expect(sessionServiceMock.getAlias).toHaveBeenCalledWith(sub);
       expect(result).toEqual({
-        accountId: sessionId,
+        accountId: spIdentityMock.sub,
         claims: expect.any(Function),
       });
 
@@ -345,12 +352,14 @@ describe('OidcProviderConfigAppService', () => {
 
     it('should throw an error when session initialization fails', async () => {
       // Given
+      const sub = 'test-sub';
       const sessionId = 'invalid-session-id';
       const error = new Error('Session initialization failed');
+      sessionServiceMock.getAlias.mockResolvedValueOnce(sessionId);
       sessionServiceMock.initCache.mockRejectedValueOnce(error);
 
       // When
-      await service.findAccount(ctxMock, sessionId);
+      await service.findAccount(ctxMock, sub);
 
       // Then
       expect(throwExceptionMock).toHaveBeenCalledWith(error);
@@ -363,9 +372,13 @@ describe('OidcProviderConfigAppService', () => {
       fc: { interactionId: 'interactiondMockValue' },
     };
     const resMock = {};
+    const spIdentityMock = { sub: 'test-sub' };
 
     beforeEach(() => {
       sessionServiceMock.getId.mockReturnValue('sessionId');
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: spIdentityMock,
+      });
     });
 
     it('should finish interaction with grant', async () => {
@@ -373,7 +386,7 @@ describe('OidcProviderConfigAppService', () => {
       const resultMock = {
         consent: {},
         login: {
-          accountId: 'sessionId',
+          accountId: spIdentityMock.sub,
           acr: 'acrValue',
           amr: ['amrValue'],
           ts: expect.any(Number),
@@ -388,6 +401,11 @@ describe('OidcProviderConfigAppService', () => {
       });
 
       // Then
+      expect(sessionServiceMock.get).toHaveBeenCalledWith('User');
+      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
+        spIdentityMock.sub,
+        'sessionId',
+      );
       expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
       expect(providerMock.interactionFinished).toHaveBeenCalledWith(
         reqMock,
@@ -398,6 +416,9 @@ describe('OidcProviderConfigAppService', () => {
 
     it('should throw OidcProviderRuntimeException', async () => {
       // Given
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: spIdentityMock,
+      });
       providerMock.interactionFinished.mockRejectedValueOnce(
         new Error('invalid_request'),
       );
@@ -409,6 +430,11 @@ describe('OidcProviderConfigAppService', () => {
           acr: 'acrValue',
         }),
       ).rejects.toThrow(OidcProviderRuntimeException);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith('User');
+      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
+        spIdentityMock.sub,
+        'sessionId',
+      );
     });
   });
 

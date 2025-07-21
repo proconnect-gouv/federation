@@ -143,10 +143,15 @@ export class CoreFcaMiddlewareService {
     });
   }
 
-  protected getEventContext(ctx): TrackedEventContextInterface {
-    // Retrieve the sessionId from the oidc context (stored in accountId) or from the request
-    const sessionId =
-      ctx.oidc?.entities?.Account?.accountId || ctx.req.sessionId;
+  protected async getEventContext(ctx): Promise<TrackedEventContextInterface> {
+    const accountId = ctx.oidc?.entities?.Account?.accountId;
+
+    let sessionId: string | undefined;
+    if (accountId) {
+      sessionId = await this.sessionService.getAlias(accountId);
+    } else {
+      sessionId = ctx.req.sessionId;
+    }
 
     if (!sessionId) {
       throw new CoreNoSessionIdException();
@@ -159,7 +164,7 @@ export class CoreFcaMiddlewareService {
   }
 
   protected async tokenMiddleware(ctx: OidcCtx) {
-    const eventContext = this.getEventContext(ctx);
+    const eventContext = await this.getEventContext(ctx);
 
     await this.sessionService.initCache(eventContext.sessionId);
 
@@ -173,7 +178,7 @@ export class CoreFcaMiddlewareService {
   }
 
   protected async userinfoMiddleware(ctx) {
-    const eventContext = this.getEventContext(ctx);
+    const eventContext = await this.getEventContext(ctx);
 
     await this.sessionService.initCache(eventContext.sessionId);
 
