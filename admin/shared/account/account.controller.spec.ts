@@ -9,7 +9,6 @@ import { EnrollUserDto } from './dto/enroll-user.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountController } from './account.controller';
 import { AccountService } from './account.service';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import { TotpService } from '@fc/shared/authentication/totp/totp.service';
 
 describe('AccountController', () => {
@@ -17,7 +16,7 @@ describe('AccountController', () => {
   let service: AccountService;
 
   const serviceMock = {
-    paginate: jest.fn(),
+    findAll: jest.fn(),
   };
 
   const userService = {
@@ -235,8 +234,9 @@ describe('AccountController', () => {
         secret: '1234',
       };
 
+      // Actions
       // Mocking return value of serviceProviderController.list(page, limit)
-      const user = {
+      const result = Promise.resolve({
         items: [
           itemTest1,
           itemTest2,
@@ -251,25 +251,12 @@ describe('AccountController', () => {
           itemTest11,
           itemTest12,
         ],
-        meta: {
-          totalItems: 12,
-          itemCount: 12,
-          totalUsers: 12,
-          pageCount: 2,
-          currentPage: 1,
-          itemsPerPage: 10,
-        },
-        next: '/account?page=2&limit=10',
-        previous: '',
-      };
+        total: 12,
+      });
 
-      // Actions
-      // Mocking the return of the paginate function
-      const result: Promise<Pagination<User>> = Promise.resolve(user);
-
-      // Mocking the return of service paginate function
+      // Mocking the return of service findAll function
       const spy = jest
-        .spyOn(service, 'paginate')
+        .spyOn(service, 'findAll')
         .mockImplementation(() => Promise.resolve(result));
 
       // Calling the list function
