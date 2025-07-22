@@ -7080,11 +7080,6 @@ nestjs-console@^6.0.0:
   dependencies:
     ora "5.4.0"
 
-nestjs-typeorm-paginate@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/nestjs-typeorm-paginate/-/nestjs-typeorm-paginate-4.1.0.tgz#ca12165a20720f10c92a5b196c67fa28f0344bc7"
-  integrity sha512-IzMbLDrWmpi/+UIScPYsWN6kDJ6OaI/TSU3MgZr6hL9ELeDN2Fq3jhtpsvKwKYSSk80M2t6jx/ESQwsitFrl4A==
-
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
