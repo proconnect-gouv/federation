@@ -10,8 +10,6 @@ import {
   Req,
   Res,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
   ParseUUIDPipe,
   Param,
   Query,
@@ -49,7 +47,6 @@ export class AccountController {
   @Post('create')
   @Roles(UserRole.ADMIN)
   @UseInterceptors(new FormErrorsInterceptor(`/account/create`))
-  @UsePipes(new ValidationPipe({ transform: true }))
   async createUser(
     @Body() { username, email, password, roles }: CreateUserDto,
     @Req() req,
@@ -107,7 +104,6 @@ export class AccountController {
   @Patch('enrollment')
   @Roles(UserRole.NEWUSER)
   @UseInterceptors(new FormErrorsInterceptor(`/account/enrollment`))
-  @UsePipes(ValidationPipe)
   async enrollUser(
     @Body() enrollUserDto: EnrollUserDto,
     @Req() req,
@@ -204,7 +200,6 @@ export class AccountController {
   @Patch('update-account/:username')
   @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.SECURITY)
   @UseInterceptors(new FormErrorsInterceptor(`/account/me`))
-  @UsePipes(ValidationPipe)
   async updateUserPassword(
     @Body() updateAccountDto: UpdateAccountDto,
     @Req() req,
