@@ -9,10 +9,6 @@
     "test:cov": "jest --coverage",
     "test:e2e:exploitation": "cypress run -P fc-exploitation --browser chrome"
   },
-  "resolutions": {
-    "cookie-signature": "1.1.0",
-    "deasync": "0.1.28"
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@gitlab.com/proconnect/proconnect-exploitation.git"

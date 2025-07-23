@@ -3206,10 +3206,10 @@ cookie-parser@^1.4.4:
     cookie "0.4.1"
     cookie-signature "1.0.6"
 
-cookie-signature@1.0.6, cookie-signature@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.1.0.tgz#cc94974f91fb9a9c1bb485e95fc2b7f4b120aff2"
-  integrity sha512-Alvs19Vgq07eunykd3Xy2jF0/qSNv2u7KDbAek9H5liV1UMijbqFs5cycZvv5dVsvseT/U4H8/7/w8Koh35C4A==
+cookie-signature@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
+  integrity sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==
 
 cookie@0.4.0:
   version "0.4.0"
@@ -3637,7 +3637,7 @@ dayjs@^1.10.4:
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
   integrity sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==
 
-deasync@0.1.28, deasync@^0.1.14:
+deasync@^0.1.14:
   version "0.1.28"
   resolved "https://registry.yarnpkg.com/deasync/-/deasync-0.1.28.tgz#9b447b79b3f822432f0ab6a8614c0062808b5ad2"
   integrity sha512-QqLF6inIDwiATrfROIyQtwOQxjZuek13WRYZ7donU5wJPLoP67MnYxA6QtqdvdBy2mMqv5m3UefBVdJjvevOYg==
