@@ -24,7 +24,7 @@
     "class-transformer": "^0.2.3",
     "class-validator": "^0.13.0",
     "commander": "^11.0.0",
-    "generate-password": "^1.4.2",
+    "generate-password": "^1.7.1",
     "https-proxy-agent": "^4.0.0",
     "jsdom": "^16.1.0",
     "lodash": "^4.17.11",
