@@ -54,11 +54,6 @@
 | [<b>190012</b>](../libs/session/src/exceptions/session-bad-cookie.exception.ts) | Cette erreur technique est émise lorsque le cookie de session contient une valeur anormale. Ne devrait pas se produire en dehors d&#39;une connexion malveillante. | Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous. | <b>Classe :</b> [SessionBadCookieException](../libs/session/src/exceptions/session-bad-cookie.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
 | [<b>190013</b>](../libs/session/src/exceptions/session-cannot-commit-undefined-session.exception.ts) | La session n&#39;a pas été trouvé au moment ou elle aurait due être sauvegardée. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3 | Votre session a expiré, fermez l’onglet de votre navigateur et reconnectez-vous. | <b>Classe :</b> [SessionCannotCommitUndefinedSession](../libs/session/src/exceptions/session-cannot-commit-undefined-session.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
 
-## @fc/apache-ignite
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>230001</b>](../libs/apache-ignite/src/exceptions/invalid-socket.exception.ts) | Le socket entre le bridge et le cache apache ignite n&#39;existe pas. Problème de connexion entre le bridge et le noeud. Impossible de mettre en place le keep alive. | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [ApacheIgniteInvalidSocketException](../libs/apache-ignite/src/exceptions/invalid-socket.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
 ## @fc/csv
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|

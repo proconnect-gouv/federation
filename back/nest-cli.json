@@ -282,15 +282,6 @@
         "tsConfigPath": "libs/app/tsconfig.lib.json"
       }
     },
-    "apache-ignite": {
-      "type": "library",
-      "root": "libs/apache-ignite",
-      "entryFile": "index",
-      "sourceRoot": "libs/apache-ignite/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/apache-ignite/tsconfig.lib.json"
-      }
-    },
     "feature-handler": {
       "type": "library",
       "root": "libs/feature-handler",

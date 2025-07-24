@@ -79,8 +79,6 @@
       "@fc/tracking-context/*": ["libs/tracking-context/src/*"],
       "@fc/app": ["libs/app/src"],
       "@fc/app/*": ["libs/app/src/*"],
-      "@fc/apache-ignite": ["libs/apache-ignite/src"],
-      "@fc/apache-ignite/*": ["libs/apache-ignite/src/*"],
       "@fc/notifications": ["libs/notifications/src"],
       "@fc/notifications/*": ["libs/notifications/src/*"],
       "@fc/elasticsearch": ["libs/elasticsearch/src"],
