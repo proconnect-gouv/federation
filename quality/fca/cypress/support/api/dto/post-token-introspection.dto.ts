@@ -47,40 +47,16 @@ class ExpiredTokenIntrospection {
   readonly active: boolean;
 }
 
-export class PostChecktokenValidTokenDto {
+export class GetTokenIntrospectionValidTokenDto {
   @IsObject()
   @ValidateNested()
   @Type(() => ValidTokenIntrospection)
   readonly token_introspection: ValidTokenIntrospection;
-
-  @IsString()
-  @MinLength(1)
-  readonly aud: string;
-
-  @IsNumber()
-  @IsPositive()
-  readonly iat: number;
-
-  @IsString()
-  @MinLength(1)
-  readonly iss: string;
 }
 
-export class PostChecktokenExpiredTokenDto {
+export class GetTokenIntrospectionExpiredTokenDto {
   @IsObject()
   @ValidateNested()
   @Type(() => ExpiredTokenIntrospection)
   readonly token_introspection: ExpiredTokenIntrospection;
-
-  @IsString()
-  @MinLength(1)
-  readonly aud: string;
-
-  @IsNumber()
-  @IsPositive()
-  readonly iat: number;
-
-  @IsString()
-  @MinLength(1)
-  readonly iss: string;
 }

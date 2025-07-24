@@ -10,7 +10,7 @@ import { CoreNoSessionIdException } from '@fc/core-fca/exceptions';
 import { throwException } from '@fc/exceptions/helpers';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { atHashFromAccessToken, stringToArray } from '@fc/oidc';
+import { stringToArray } from '@fc/oidc';
 import {
   OidcCtx,
   OidcProviderConfig,
@@ -167,11 +167,6 @@ export class CoreFcaMiddlewareService {
     const eventContext = await this.getEventContext(ctx);
 
     await this.sessionService.initCache(eventContext.sessionId);
-
-    const { AccessToken } = ctx.oidc.entities;
-    const atHash = atHashFromAccessToken(AccessToken);
-
-    await this.sessionService.setAlias(atHash, eventContext.sessionId);
 
     const { SP_REQUESTED_FC_TOKEN } = this.tracking.TrackedEventsMap;
     await this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);

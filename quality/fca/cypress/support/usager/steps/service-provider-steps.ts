@@ -102,6 +102,10 @@ When('je clique sur le bouton ProConnect PKCE', function () {
   }
 });
 
+When('je clique sur le bouton de déconnexion', function () {
+  cy.get('[action="/logout"] button').click();
+});
+
 Then(
   /je suis redirigé vers la page fournisseur de service "([^"]+)"/,
   function (description: string) {
@@ -117,7 +121,7 @@ Then('je suis connecté au fournisseur de service', function () {
 Then('je suis déconnecté du fournisseur de service', function () {
   // I am on the sp page
   cy.contains('Se connecter');
-  // userinfo section is not displayed as I am disconnected
+  // the userinfo section is not displayed as I am disconnected
   cy.contains('Information utilisateur').should('not.exist');
 });
 

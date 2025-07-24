@@ -102,15 +102,6 @@
         "tsConfigPath": "libs/identity-provider-adapter-mongo/tsconfig.lib.json"
       }
     },
-    "data-provider-adapter-mongo": {
-      "type": "library",
-      "root": "libs/data-provider-adapter-mongo",
-      "entryFile": "index",
-      "sourceRoot": "libs/data-provider-adapter-mongo/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/data-provider-adapter-mongo/tsconfig.lib.json"
-      }
-    },
     "service-provider-adapter-mongo": {
       "type": "library",
       "root": "libs/service-provider-adapter-mongo",
@@ -345,15 +336,6 @@
         "tsConfigPath": "apps/csmr-http-proxy/tsconfig.app.json"
       }
     },
-    "data-provider-core-auth": {
-      "type": "library",
-      "root": "libs/data-provider-core-auth",
-      "entryFile": "index",
-      "sourceRoot": "libs/data-provider-core-auth/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/data-provider-core-auth/tsconfig.lib.json"
-      }
-    },
     "hybridge-http-proxy": {
       "type": "library",
       "root": "libs/hybridge-http-proxy",
@@ -388,24 +370,6 @@
       "sourceRoot": "libs/flow-steps/src",
       "compilerOptions": {
         "tsConfigPath": "libs/flow-steps/tsconfig.lib.json"
-      }
-    },
-    "data-provider-adapter-core": {
-      "type": "library",
-      "root": "libs/data-provider-adapter-core",
-      "entryFile": "index",
-      "sourceRoot": "libs/data-provider-adapter-core/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/data-provider-adapter-core/tsconfig.lib.json"
-      }
-    },
-    "jwt": {
-      "type": "library",
-      "root": "libs/jwt",
-      "entryFile": "index",
-      "sourceRoot": "libs/jwt/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/jwt/tsconfig.lib.json"
       }
     },
     "fqdn-to-idp-adapter-mongo": {

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { JWK } = require('jose-openid-client');
+const { JWK } = require('jose-v2');
 
 /**
  * Execute this function to generate the JSON Object Signing and Encryption

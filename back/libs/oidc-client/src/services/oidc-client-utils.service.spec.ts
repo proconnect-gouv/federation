@@ -4,7 +4,7 @@
  * @ticket #FC-1024
  */
 import { isURL } from 'class-validator';
-import { JWK } from 'jose-openid-client';
+import { JWK } from 'jose-v2';
 import { CallbackParamsType, errors } from 'openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';

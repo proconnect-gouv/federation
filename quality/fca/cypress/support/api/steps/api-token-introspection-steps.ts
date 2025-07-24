@@ -1,11 +1,12 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 
 import { getServiceProviderByDescription } from '../../common/helpers';
 import {
-  PostChecktokenExpiredTokenDto,
-  PostChecktokenValidTokenDto,
-} from '../dto/post-checktoken.dto';
-import { validateDto } from '../helpers/class-validator-helper';
+  GetTokenIntrospectionExpiredTokenDto,
+  GetTokenIntrospectionValidTokenDto,
+} from '../dto/post-token-introspection.dto';
 
 Then("le corps de la réponse contient un JWT d'introspection", function () {
   cy.get('@apiResponse')
@@ -34,12 +35,15 @@ Then(
       .its('token_introspection.active')
       .should('equal', true);
 
-    cy.get('@tokenIntrospection').then(async (introspection) => {
-      const errors = await validateDto(
-        introspection,
-        PostChecktokenValidTokenDto,
-        { forbidNonWhitelisted: true, whitelist: true },
+    cy.get('@tokenIntrospection').then(async (rawTokenIntrospection) => {
+      const tokenIntrospection = plainToInstance(
+        GetTokenIntrospectionValidTokenDto,
+        rawTokenIntrospection,
       );
+      const errors = await validate(tokenIntrospection, {
+        forbidNonWhitelisted: true,
+        whitelist: true,
+      });
       expect(errors, JSON.stringify(errors)).to.have.length(0);
     });
   },
@@ -52,12 +56,15 @@ Then(
       .its('token_introspection.active')
       .should('equal', false);
 
-    cy.get('@tokenIntrospection').then(async (introspection) => {
-      const errors = await validateDto(
-        introspection,
-        PostChecktokenExpiredTokenDto,
-        { forbidNonWhitelisted: true, whitelist: true },
+    cy.get('@tokenIntrospection').then(async (rawTokenIntrospection) => {
+      const tokenIntrospection = plainToInstance(
+        GetTokenIntrospectionExpiredTokenDto,
+        rawTokenIntrospection,
       );
+      const errors = await validate(tokenIntrospection, {
+        forbidNonWhitelisted: true,
+        whitelist: true,
+      });
       expect(errors, JSON.stringify(errors)).to.have.length(0);
     });
   },
@@ -87,7 +94,7 @@ Then(
   /le token d'introspection a une propriété "client_id" avec le client_id du fournisseur de service "([^"]+)"/,
   function (description: string) {
     const { clientId } = getServiceProviderByDescription(description);
-    cy.get<PostChecktokenValidTokenDto>('@tokenIntrospection')
+    cy.get<GetTokenIntrospectionValidTokenDto>('@tokenIntrospection')
       .its('token_introspection.client_id')
       .should('equal', clientId);
   },
@@ -96,7 +103,7 @@ Then(
 Then(
   'le token d\'introspection a une propriété "iat" avec le timestamp de création de l\'access token',
   function () {
-    cy.get<PostChecktokenValidTokenDto>('@tokenIntrospection').then(
+    cy.get<GetTokenIntrospectionValidTokenDto>('@tokenIntrospection').then(
       (introspection) => {
         const {
           token_introspection: { iat },
@@ -111,7 +118,7 @@ Then(
 Then(
   "le token d'introspection a une propriété \"exp\" avec le timestamp d'expiration de l'access token",
   function () {
-    cy.get<PostChecktokenValidTokenDto>('@tokenIntrospection').then(
+    cy.get<GetTokenIntrospectionValidTokenDto>('@tokenIntrospection').then(
       (introspection) => {
         const {
           token_introspection: { exp },

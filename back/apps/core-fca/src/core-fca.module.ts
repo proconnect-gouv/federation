@@ -5,7 +5,6 @@ import { AccountModule } from '@fc/account';
 import { AccountFcaModule } from '@fc/account-fca';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { CsrfModule, CsrfService } from '@fc/csrf';
-import { DataProviderAdapterMongoModule } from '@fc/data-provider-adapter-mongo';
 import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
 import { ExceptionsModule } from '@fc/exceptions';
 import { FlowStepsModule } from '@fc/flow-steps';
@@ -15,7 +14,6 @@ import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
 } from '@fc/identity-provider-adapter-mongo';
-import { JwtModule } from '@fc/jwt';
 import { MongooseModule } from '@fc/mongoose';
 import { NotificationsModule } from '@fc/notifications';
 import { OidcAcrModule } from '@fc/oidc-acr';
@@ -29,7 +27,6 @@ import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 
 import {
-  DataProviderController,
   InteractionController,
   OidcClientController,
   OidcProviderController,
@@ -38,7 +35,6 @@ import {
   CoreFcaFqdnService,
   CoreFcaMiddlewareService,
   CoreFcaService,
-  DataProviderService,
   IdentitySanitizer,
 } from './services';
 
@@ -54,8 +50,6 @@ import {
     ServiceProviderAdapterMongoModule,
     IdentityProviderAdapterMongoModule,
     FqdnToIdpAdapterMongoModule,
-    DataProviderAdapterMongoModule,
-    JwtModule,
     HttpProxyModule,
     OidcAcrModule,
     // The Exceptions module should be imported first so that OidcProvider ExceptionFilters have precedence
@@ -80,7 +74,6 @@ import {
     InteractionController,
     OidcClientController,
     OidcProviderController,
-    DataProviderController,
   ],
   providers: [
     CoreFcaService,
@@ -92,7 +85,6 @@ import {
     CoreFcaService,
     CoreFcaMiddlewareService,
     CoreFcaFqdnService,
-    DataProviderService,
     IdentitySanitizer,
   ],
 })
