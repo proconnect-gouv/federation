@@ -1,7 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
-import { AccountModule } from '@fc/account';
 import { AccountFcaModule } from '@fc/account-fca';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { CsrfModule, CsrfService } from '@fc/csrf';
@@ -46,7 +45,6 @@ import {
     EmailValidatorModule,
     SessionModule,
     MongooseModule.forRoot(),
-    AccountModule,
     ServiceProviderAdapterMongoModule,
     IdentityProviderAdapterMongoModule,
     FqdnToIdpAdapterMongoModule,

@@ -62,8 +62,6 @@
       "@fc/rabbitmq/*": ["libs/rabbitmq/src/*"],
       "@fc/microservices": ["libs/microservices/src"],
       "@fc/microservices/*": ["libs/microservices/src/*"],
-      "@fc/account": ["libs/account/src"],
-      "@fc/account/*": ["libs/account/src/*"],
       "@fc/oidc": ["libs/oidc/src"],
       "@fc/oidc/*": ["libs/oidc/src/*"],
       "@fc/http-proxy": ["libs/http-proxy/src"],
