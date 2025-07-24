@@ -37,11 +37,6 @@
 | [<b>160004</b>](../libs/cryptography/src/exceptions/password-hash-failure.exception.ts) | Une erreur est survenue lors de la vérification d&#39;un mot de passe. Contacter le support N3. | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [PasswordHashFailure](../libs/cryptography/src/exceptions/password-hash-failure.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 | [<b>160005</b>](../libs/cryptography/src/exceptions/low-entropy-argument.exception.ts) | Problème de configuration dans la librairie de cryptographie (Une fonction de génération d&#39;aléa requiert une longueur minimale pour éviter des collisions) | Entropy must be at least 32 Bytes for random bytes generation | <b>Classe :</b> [LowEntropyArgumentException](../libs/cryptography/src/exceptions/low-entropy-argument.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
 
-## @fc/account
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>180002</b>](../libs/account/src/exceptions/account-not-found.exception.ts) | Le compte demandé basé sur cet identityHash n&#39;existe pas dans la base de donnée | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [AccountNotFoundException](../libs/account/src/exceptions/account-not-found.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
 ## @fc/session
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|

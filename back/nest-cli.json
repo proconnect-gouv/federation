@@ -219,15 +219,6 @@
         "tsConfigPath": "libs/microservices/tsconfig.lib.json"
       }
     },
-    "account": {
-      "type": "library",
-      "root": "libs/account",
-      "entryFile": "index",
-      "sourceRoot": "libs/account/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/account/tsconfig.lib.json"
-      }
-    },
     "oidc": {
       "type": "library",
       "root": "libs/oidc",
