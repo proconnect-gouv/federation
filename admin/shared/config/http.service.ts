@@ -13,7 +13,7 @@ export class HttpConfigService implements HttpModuleOptionsFactory {
   public constructor(@InjectConfig() private readonly config: ConfigService) {}
 
   createHttpOptions(): HttpModuleOptions {
-    const headers: Record<string, string> = {
+    const headers = {
       userId: this.config.get('rnipp').userId,
       clientSiret: this.config.get('rnipp').clientSiret,
     };
