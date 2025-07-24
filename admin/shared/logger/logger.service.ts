@@ -1,6 +1,6 @@
 import { ConfigService, InjectConfig } from 'nestjs-config';
 import { ConsoleLogger } from '@nestjs/common';
-import * as pino from 'pino';
+import pino from 'pino';
 import { LogLevelNames } from './enum/log-levels.enum';
 import { pinoLevelsMap, nestLevelsMap } from './log-maps.map';
 
