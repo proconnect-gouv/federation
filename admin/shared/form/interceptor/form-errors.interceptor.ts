@@ -1,6 +1,9 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { plainToClass } from 'class-transformer';
+import { Observable, of, from } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { FormValidationErrorsDto } from '../dto/form-validation-errors.dto';
+import { validate, validateSync, ValidationError } from 'class-validator';
 
 export class FormErrorsInterceptor implements NestInterceptor {
   /**
@@ -35,28 +38,36 @@ export class FormErrorsInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       catchError(error => {
-        const parsedError = JSON.parse(error.message) as Array<{
-          property: string;
-          constraints: string[];
-        }>;
-        // In case of validation error, we render the redirect with the flashed errors and DTO
-        return of(parsedError).pipe(
-          map(validationErrors => {
-            return validationErrors.reduce(
-              (acc, currentValidationError) => ({
-                ...acc,
-                [currentValidationError.property]:
-                  currentValidationError.constraints,
-              }),
-              {},
-            );
-          }),
-          map(errors => {
-            req.flash('errors', errors);
-            req.flash('values', dto);
-            return res.redirect(redirectURL);
-          }),
+        const formValidationErrors = plainToClass(
+          FormValidationErrorsDto,
+          error.response,
         );
+
+        const formValidationErrorsErrors = validateSync(formValidationErrors);
+
+        if (formValidationErrorsErrors.length > 0) {
+          return next.handle();
+        }
+
+        const flashErrors = formValidationErrors.message
+          .map(validationError => ({
+            property: validationError.property,
+            constraints: validationError.constraints
+              ? Object.values(validationError.constraints)
+              : [],
+          }))
+          .reduce(
+            (acc, currentValidationError) => ({
+              ...acc,
+              [currentValidationError.property]:
+                currentValidationError.constraints,
+            }),
+            {},
+          );
+
+        req.flash('errors', flashErrors);
+        req.flash('values', dto);
+        return new Observable(res.redirect(redirectURL));
       }),
     );
   }
