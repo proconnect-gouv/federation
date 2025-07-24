@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectConfig, ConfigService } from 'nestjs-config';
 import * as https from 'https';
-import * as HttpsProxyAgent from 'https-proxy-agent';
+import HttpsProxyAgent from 'https-proxy-agent';
 import * as fs from 'fs';
 
 @Injectable()
