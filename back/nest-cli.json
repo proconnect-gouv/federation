@@ -408,15 +408,6 @@
         "tsConfigPath": "libs/account-fca/tsconfig.lib.json"
       }
     },
-    "dto2form": {
-      "type": "library",
-      "root": "libs/dto2form",
-      "entryFile": "index",
-      "sourceRoot": "libs/dto2form/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/dto2form/tsconfig.lib.json"
-      }
-    },
     "logger-plugins": {
       "type": "library",
       "root": "libs/logger-plugins",
