@@ -27,7 +27,6 @@ import {
   OidcProviderConfigService,
   OidcProviderErrorService,
 } from './services';
-import { IsValidPromptConstraint } from './validators';
 
 @Module({})
 export class OidcProviderModule {
@@ -85,7 +84,6 @@ export class OidcProviderModule {
         OidcProviderConfigAppService,
         serviceProviderProvider,
         OidcProviderService,
-        IsValidPromptConstraint,
         OidcProviderErrorService,
         OidcProviderConfigService,
         IsUrlRequiredTldFromConfigConstraint,

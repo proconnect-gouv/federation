@@ -1,5 +1,4 @@
 import {
-  IsArray,
   IsAscii,
   IsEmail,
   IsOptional,
@@ -7,12 +6,7 @@ import {
   Length,
 } from 'class-validator';
 
-import {
-  IsIncludedInConfig,
-  IsUrlRequiredTldFromConfig,
-  Split,
-} from '@fc/common';
-import { OidcProviderConfig } from '@fc/oidc-provider';
+import { IsUrlRequiredTldFromConfig } from '@fc/common';
 
 /**
  * Control parameters on the authentication request.
@@ -23,9 +17,7 @@ export class AuthorizeParamsDto {
   readonly client_id: string;
 
   @IsOptional()
-  @IsString({ each: true })
-  @IsArray()
-  @Split(/[ ]+/, { maxLength: 64 })
+  @IsString()
   readonly acr_values?: string;
 
   @IsOptional()
@@ -59,14 +51,8 @@ export class AuthorizeParamsDto {
   @IsString()
   readonly scope: string;
 
-  @IsString({ each: true })
-  @Split(/[ ]+/, { maxLength: 64 })
-  /**
-   * @TODO #199 Retourner chez le FS en cas d'erreur
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/199
-   */
   @IsOptional()
-  @IsIncludedInConfig<OidcProviderConfig>('OidcProvider', 'allowedPrompt')
+  @IsString()
   readonly prompt?: string;
 
   @IsOptional()

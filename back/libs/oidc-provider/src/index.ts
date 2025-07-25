@@ -7,4 +7,3 @@ export * from './oidc-provider.controller';
 export * from './oidc-provider.module';
 export * from './oidc-provider.service';
 export * from './services';
-export * from './validators';

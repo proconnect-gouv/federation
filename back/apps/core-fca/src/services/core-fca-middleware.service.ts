@@ -10,7 +10,6 @@ import { CoreNoSessionIdException } from '@fc/core-fca/exceptions';
 import { throwException } from '@fc/exceptions/helpers';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { stringToArray } from '@fc/oidc';
 import {
   OidcCtx,
   OidcProviderConfig,
@@ -216,7 +215,7 @@ export class CoreFcaMiddlewareService {
   }
 
   private isPromptStrictlyEqualNone(prompt: string) {
-    const promptValues = stringToArray(prompt);
+    const promptValues = prompt.split(' ');
     return (
       promptValues.length === 1 && promptValues[0] === OidcProviderPrompt.NONE
     );
