@@ -1,10 +1,7 @@
 name: 💚 CI Tests - Federation Admin
 
 on:
-  pull_request:
   push:
-    branches:
-      - main
 
 jobs:
   global:
