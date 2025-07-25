@@ -9,7 +9,7 @@ import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
-import { Amr, IdentityProviderMetadata } from '@fc/oidc';
+import { IdentityProviderMetadata } from '@fc/oidc';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -17,6 +17,7 @@ import {
   DiscoveryIdpAdapterMongoDTO,
   NoDiscoveryIdpAdapterMongoDTO,
 } from './dto';
+import { Amr } from './enums';
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
 import { IdentityProvider } from './schemas';
 

@@ -2,8 +2,6 @@ export const messageDictionary: Record<string, string> = {
   // Exceptions
   'exceptions.default_message':
     "Une erreur s'est produite, veuillez réessayer ultérieurement",
-  // 404 NetsJS
-  'exceptions.http.404': 'Page non trouvée',
 
   // bridge-http-proxy
   'BridgeHttpProxy.exceptions.bridgeHttpProxyCsmr':
@@ -11,14 +9,6 @@ export const messageDictionary: Record<string, string> = {
   'BridgeHttpProxy.exceptions.bridgeHttpProxyRabbitmq':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'BridgeHttpProxy.exceptions.bridgeHttpProxyVariableMissing':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-
-  // account
-  'Account.exceptions.accountNotFound':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-
-  // apache-ignite
-  'ApacheIgnite.exceptions.invalidSocket':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
 
   // async-local-storage
@@ -61,49 +51,11 @@ export const messageDictionary: Record<string, string> = {
   'Csv.exceptions.csvParsing':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
 
-  // data-provider-adapter-core
-  'DataProviderAdapterCore.exceptions.checktokenHttpStatus':
-    'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
-  'DataProviderAdapterCore.exceptions.checktokenInvalidAlgorithm':
-    'The encryption algorithm for the configured checktoken does not match the one received.',
-  'DataProviderAdapterCore.exceptions.checktokenInvalidEncoding':
-    'The encryption encoding for the configured checktoken does not match the one received.',
-  'DataProviderAdapterCore.exceptions.checktokenTimeout':
-    'The authorization server is currently unable to handle the request.',
-  'DataProviderAdapterCore.exceptions.jwksFetchFailed': 'Can not fetch jwks',
-
-  // data-provider-adapter-mongo
-  'DataProviderAdapterMongo.exceptions.dataProviderInvalidCredentials':
-    'Client authentication failed.',
-  'DataProviderAdapterMongo.exceptions.dataProviderNotFound': 'Unknown client.',
-
-  // feature-handler
-  'FeatureHandler.exceptions.featureHandlerEmpty':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-  'FeatureHandler.exceptions.featureHandlerUnregistered':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
-
   // flow-steps
   'FlowSteps.exceptions.undefinedStepRoute':
     'Nous vous invitons à fermer tous les onglets de votre navigateur et à vous authentifier de nouveau en suivant les étapes de connexion.',
   'FlowSteps.exceptions.unexpectedNavigation':
     'Nous vous invitons à fermer tous les onglets de votre navigateur et à vous authentifier de nouveau en suivant les étapes de connexion.',
-
-  // jwt
-  'Jwt.exceptions.canNotDecodePlaintext': 'Can not decode plaintext',
-  'Jwt.exceptions.canNotDecodeProtectedHeader':
-    'Can not decode protected header',
-  'Jwt.exceptions.canNotDecrypt': 'Can not decrypt',
-  'Jwt.exceptions.canNotEncrypt': 'Can not encrypt',
-  'Jwt.exceptions.canNotImportJwk': 'Can not import JWK',
-  'Jwt.exceptions.canNotSignJwt': 'Can not sign JWT',
-  'Jwt.exceptions.fetchJwksFailed': 'Failed to fetch JWKS',
-  'Jwt.exceptions.invalidSignature': 'Signature not verified',
-  'Jwt.exceptions.multipleRelevantKeys': 'Multiple relevant keys found',
-  'Jwt.exceptions.noRelevantKey': 'undefined',
-
-  // oidc-acr
-  'OidcAcr.exceptions.oidcAcrNoSsoAllowedAcrFound': 'No SSO allowed ACR found',
 
   // oidc-client
   'OidcClient.exceptions.oidcClientGetEndSessionUrl':
