@@ -29,16 +29,21 @@ describe('FormErrorsInterceptor', () => {
     getHandler: jest.fn(),
     getType: jest.fn(),
   };
-  const errorMessage = JSON.stringify([
+  const errorMessage = [
     {
       property: 'password',
-      constraints: ['Length', 'Strength'],
+      constraints: {
+        length: 'Length',
+        strength: 'Strength',
+      },
     },
     {
       property: 'age',
-      constraints: ['Minimum'],
+      constraints: {
+        minimum: 'Minimum',
+      },
     },
-  ]);
+  ];
   const callHandler = {
     handle: () => throwError(() => new BadRequestException(errorMessage)),
   };
@@ -71,7 +76,7 @@ describe('FormErrorsInterceptor', () => {
     // action
     formErrorsInterceptor
       .intercept(executionContext, callHandler)
-      .subscribe(result => {
+      .subscribe(() => {
         // expect
         expect(request.flash).toHaveBeenCalledTimes(2);
         expect(request.flash).toHaveBeenCalledWith(

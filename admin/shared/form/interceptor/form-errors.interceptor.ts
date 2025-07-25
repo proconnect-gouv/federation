@@ -1,9 +1,8 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { Observable, of, from } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { FormValidationErrorsDto } from '../dto/form-validation-errors.dto';
-import { validate, validateSync, ValidationError } from 'class-validator';
+import { validateSync } from 'class-validator';
 
 export class FormErrorsInterceptor implements NestInterceptor {
   /**
@@ -12,10 +11,7 @@ export class FormErrorsInterceptor implements NestInterceptor {
    */
   constructor(private readonly redirectTemplateURL: string) {}
 
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler<any>,
-  ): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler<any>): any {
     const req = context.switchToHttp().getRequest();
     const res = context.switchToHttp().getResponse();
     const dto = req.body;
@@ -33,7 +29,7 @@ export class FormErrorsInterceptor implements NestInterceptor {
     if (req.totp && req.totp === 'invalid') {
       req.flash('errors', { _totp: ["Le TOTP saisi n'est pas valide"] });
       req.flash('values', dto);
-      return new Observable(res.redirect(redirectURL));
+      return Promise.resolve(res.redirect(redirectURL));
     }
 
     return next.handle().pipe(
@@ -67,7 +63,7 @@ export class FormErrorsInterceptor implements NestInterceptor {
 
         req.flash('errors', flashErrors);
         req.flash('values', dto);
-        return new Observable(res.redirect(redirectURL));
+        return Promise.resolve(res.redirect(redirectURL));
       }),
     );
   }
