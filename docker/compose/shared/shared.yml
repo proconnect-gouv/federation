@@ -284,3 +284,14 @@ networks:
     ipam:
       config:
         - subnet: 172.16.6.0/24
+
+####################
+# Volumes
+####################
+
+volumes:
+  node-modules:
+  yarn-cache:
+  node-modules-admin:
+  node-modules-admin-shared:
+  node-modules-admin-fc-exploitation:
