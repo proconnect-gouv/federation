@@ -11,17 +11,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@entities/*": ["entities/*"],
-      "@fc/rnipp": ["libs/rnipp/src"],
-      "@fc/rnipp/*": ["libs/rnipp/src/*"],
       "@fc/identity-provider-adapter-mongo": [
         "libs/identity-provider-adapter-mongo/src"
       ],
       "@fc/identity-provider-adapter-mongo/*": [
         "libs/identity-provider-adapter-mongo/src/*"
       ],
-      "@fc/identity": ["libs/identity/src"],
-      "@fc/identity/*": ["libs/identity/src/*"],
       "@fc/service-provider-adapter-mongo": [
         "libs/service-provider-adapter-mongo/src"
       ],
@@ -79,12 +74,8 @@
       "@fc/app/*": ["libs/app/src/*"],
       "@fc/notifications": ["libs/notifications/src"],
       "@fc/notifications/*": ["libs/notifications/src/*"],
-      "@fc/elasticsearch": ["libs/elasticsearch/src"],
-      "@fc/elasticsearch/*": ["libs/elasticsearch/src/*"],
       "@fc/csv": ["libs/csv/src"],
       "@fc/csv/*": ["libs/csv/src/*"],
-      "@fc/cog": ["libs/cog/src"],
-      "@fc/cog/*": ["libs/cog/src/*"],
       "@fc/bridge-http-proxy": ["apps/bridge-http-proxy/src"],
       "@fc/bridge-http-proxy/*": ["apps/bridge-http-proxy/src/*"],
       "@fc/hybridge-http-proxy": ["libs/hybridge-http-proxy/src"],
@@ -114,11 +105,7 @@
       "@fc/logger-plugins": ["libs/logger-plugins/src"],
       "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"],
       "@mocks/common": ["libs/common/.mocks"],
-      "@mocks/common/*": ["libs/common/.mocks/*"],
-      "@fc/postgres": ["libs/postgres/src"],
-      "@fc/postgres/*": ["libs/postgres/src/*"],
-      "@mocks/typeorm": ["libs/typeorm/.mocks"],
-      "@mocks/typeorm/*": ["libs/typeorm/.mocks/*"]
+      "@mocks/common/*": ["libs/common/.mocks/*"]
     }
   },
   "files": ["global.d.ts"],

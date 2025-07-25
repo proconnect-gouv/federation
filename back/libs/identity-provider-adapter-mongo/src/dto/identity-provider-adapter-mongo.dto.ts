@@ -16,8 +16,8 @@ import {
 } from 'class-validator';
 
 import { IsIncludedInConfig } from '@fc/common';
-import { Amr, ResponseTypes } from '@fc/oidc';
 
+import { Amr, ResponseTypes } from '../enums';
 import { JwksUriValidator } from './jwksuri.validator';
 
 export class ModalIdpAdapterMongo {

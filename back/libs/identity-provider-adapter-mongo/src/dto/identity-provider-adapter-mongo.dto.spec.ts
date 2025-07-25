@@ -1,8 +1,8 @@
 import { validateDto } from '@fc/common';
-import { Amr } from '@fc/oidc';
 
 import { mockValidator } from '@mocks/common';
 
+import { Amr } from '../enums';
 import {
   DiscoveryIdpAdapterMongoDTO,
   MetadataIdpAdapterMongoDTO,
