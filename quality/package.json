@@ -23,7 +23,7 @@
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
     "@simonsmith/cypress-image-snapshot": "^9.1.0",
     "@types/ejs": "^3.1.5",
-    "@types/node": "^24.0.13",
+    "@types/node": "^24.1.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
     "axe-core": "^4.10.3",
