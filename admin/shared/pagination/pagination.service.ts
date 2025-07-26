@@ -13,15 +13,15 @@ export class PaginationService {
       };
     }
 
-    let orderBy;
+    let order;
     if (options.sort) {
       const { field, direction } = options.sort;
-      orderBy = {
+      order = {
         [field]: direction === 'asc' ? 'ASC' : 'DESC',
       };
     }
 
-    const params = { skip, take, where, orderBy };
+    const params = { skip, take, where, order };
 
     return params;
   }
