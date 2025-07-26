@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConsoleModule } from 'nestjs-console';
 import { UserService } from '@fc/shared/user/user.service';
 import { CliService } from './cli.service';
+import { TotpService } from '@fc/shared/authentication/totp/totp.service';
 
 describe('CliService', () => {
   let service: CliService;
@@ -35,9 +36,8 @@ describe('CliService', () => {
       imports: [ConsoleModule],
       providers: [
         CliService,
-        UserService,
-        { provide: 'UserService', useValue: userServiceMock },
-        { provide: 'TotpService', useValue: totpServiceMock },
+        { provide: UserService, useValue: userServiceMock },
+        { provide: TotpService, useValue: totpServiceMock },
       ],
       exports: [CliService],
     }).compile();

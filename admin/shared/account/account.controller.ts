@@ -10,8 +10,6 @@ import {
   Req,
   Res,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
   ParseUUIDPipe,
   Param,
   Query,
@@ -24,7 +22,6 @@ import { User } from '@fc/shared/user/user.sql.entity';
 import { Roles } from '@fc/shared/authentication/decorator/roles.decorator';
 import { FormErrorsInterceptor } from '@fc/shared/form/interceptor/form-errors.interceptor';
 import { AccountService } from './account.service';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import { TotpService } from '@fc/shared/authentication/totp/totp.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
 
@@ -50,7 +47,6 @@ export class AccountController {
   @Post('create')
   @Roles(UserRole.ADMIN)
   @UseInterceptors(new FormErrorsInterceptor(`/account/create`))
-  @UsePipes(new ValidationPipe({ transform: true }))
   async createUser(
     @Body() { username, email, password, roles }: CreateUserDto,
     @Req() req,
@@ -108,7 +104,6 @@ export class AccountController {
   @Patch('enrollment')
   @Roles(UserRole.NEWUSER)
   @UseInterceptors(new FormErrorsInterceptor(`/account/enrollment`))
-  @UsePipes(ValidationPipe)
   async enrollUser(
     @Body() enrollUserDto: EnrollUserDto,
     @Req() req,
@@ -205,7 +200,6 @@ export class AccountController {
   @Patch('update-account/:username')
   @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.SECURITY)
   @UseInterceptors(new FormErrorsInterceptor(`/account/me`))
-  @UsePipes(ValidationPipe)
   async updateUserPassword(
     @Body() updateAccountDto: UpdateAccountDto,
     @Req() req,
@@ -255,22 +249,21 @@ export class AccountController {
   @Render('account/list')
   async list(
     @Req() req,
-    @Query('page') pageQuery: string = '0',
+    @Query('page') pageQuery: string = '1',
     @Query('limit') limitQuery: string = '10',
   ) {
     const page = parseInt(pageQuery, 10);
     const limit = parseInt(limitQuery, 10);
 
     const csrfToken = req.csrfToken();
-    const users: Pagination<User> = await this.accountService.paginate({
+    const { items, total } = await this.accountService.findAll({
       page,
       limit,
-      route: '/account',
     });
 
     return {
-      users: users.items,
-      total: users.totalItems,
+      users: items,
+      total,
       csrfToken,
       page,
       limit,

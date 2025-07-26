@@ -1,7 +1,8 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
-import { totp } from 'otplib';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { plainToClass } from 'class-transformer';
+import { catchError } from 'rxjs/operators';
+import { FormValidationErrorsDto } from '../dto/form-validation-errors.dto';
+import { validateSync } from 'class-validator';
 
 export class FormErrorsInterceptor implements NestInterceptor {
   /**
@@ -10,10 +11,7 @@ export class FormErrorsInterceptor implements NestInterceptor {
    */
   constructor(private readonly redirectTemplateURL: string) {}
 
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler<any>,
-  ): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler<any>): any {
     const req = context.switchToHttp().getRequest();
     const res = context.switchToHttp().getResponse();
     const dto = req.body;
@@ -31,31 +29,41 @@ export class FormErrorsInterceptor implements NestInterceptor {
     if (req.totp && req.totp === 'invalid') {
       req.flash('errors', { _totp: ["Le TOTP saisi n'est pas valide"] });
       req.flash('values', dto);
-      return new Observable(res.redirect(redirectURL));
+      return Promise.resolve(res.redirect(redirectURL));
     }
 
     return next.handle().pipe(
       catchError(error => {
-        // In case of validation error, we render the redirect with the flashed errors and DTO
-        return of(error.message).pipe(
-          map(({ message }) => message),
-          map(validationErrors => {
-            return validationErrors.reduce(
-              (validationErrorsObject, validationError) => ({
-                ...validationErrorsObject,
-                [validationError.property]: Object.values(
-                  validationError.constraints,
-                ),
-              }),
-              {},
-            );
-          }),
-          map(errors => {
-            req.flash('errors', errors);
-            req.flash('values', dto);
-            return res.redirect(redirectURL);
-          }),
+        const formValidationErrors = plainToClass(
+          FormValidationErrorsDto,
+          error.response,
         );
+
+        const formValidationErrorsErrors = validateSync(formValidationErrors);
+
+        if (formValidationErrorsErrors.length > 0) {
+          return next.handle();
+        }
+
+        const flashErrors = formValidationErrors.message
+          .map(validationError => ({
+            property: validationError.property,
+            constraints: validationError.constraints
+              ? Object.values(validationError.constraints)
+              : [],
+          }))
+          .reduce(
+            (acc, currentValidationError) => ({
+              ...acc,
+              [currentValidationError.property]:
+                currentValidationError.constraints,
+            }),
+            {},
+          );
+
+        req.flash('errors', flashErrors);
+        req.flash('values', dto);
+        return Promise.resolve(res.redirect(redirectURL));
       }),
     );
   }
