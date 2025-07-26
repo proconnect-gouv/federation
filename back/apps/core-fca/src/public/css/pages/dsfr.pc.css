@@ -17,7 +17,6 @@
 
 @media screen and (min-width: 993px) {
   .ac-survey {
-    background-color: (to right, white 50%, pink 50%);
     background: linear-gradient(
       to right,
       white 50%,

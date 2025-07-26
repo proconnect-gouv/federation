@@ -193,22 +193,6 @@ export class IdentityProviderAdapterMongoService
     return Boolean(idp?.active);
   }
 
-  private updateProviderStatus(
-    provider: IdentityProviderMetadata,
-    isIdpAuthorized: boolean,
-    showExcludedIdp: boolean,
-  ): IdentityProviderMetadata {
-    if (!isIdpAuthorized) {
-      provider.active = false;
-    }
-
-    if (!showExcludedIdp && !isIdpAuthorized) {
-      provider.display = false;
-    }
-
-    return provider;
-  }
-
   // todo: remove this method for proconnect, we have no legacy IdP
   private legacyToOpenIdPropertyName(
     source: IdentityProvider,
