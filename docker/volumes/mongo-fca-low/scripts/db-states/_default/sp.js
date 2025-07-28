@@ -1,4 +1,3 @@
-// == FS
 const fsa = {
   // -- FSA - FSA1-LOW - Activated - HS256 - no encrypted response
   'FSA1-LOW': {
@@ -202,50 +201,6 @@ const fsa = {
     userinfo_signed_response_alg: 'RS256',
     jwks_uri:
       'https://fsa4-low.docker.dev-franceconnect.fr/client/.well-known/keys',
-  },
-  'DPA1-LOW': {
-    entityId: "6f21b751-ed06-48b6-a59c-36e1300a368a",
-    name: "Fournisseur de données Mock - 1",
-    title: "Fournisseur de données Mock - 1",
-    active: true,
-    scopes: ["groups"],
-    key: "423dcbdc5a15ece61ed00ff5989d72379c26d9ed4c8e4e05a87cffae019586e0",
-    client_secret:
-    // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
-      "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
-    jwks_uri: "https://dpa1-low.docker.dev-franceconnect.fr/api/v1/jwks",
-    introspection_signed_response_alg: "ES256",
-    introspection_encrypted_response_alg: "ECDH-ES",
-    introspection_encrypted_response_enc: "A256GCM",
-    id_token_signed_response_alg: 'ES256',
-    userinfo_signed_response_alg: 'ES256',
-    redirect_uris: [],
-    post_logout_redirect_uris: [],
-    response_types: [],
-    grant_types: [],
-    type: 'private',
-  },
-  'DPA2-LOW': {
-    entityId: "735c6dc3-1e47-41b1-9fa6-6c7f667cfba1",
-    name: "Fournisseur de données Mock - 2",
-    title: "Fournisseur de données Mock - 2",
-    active: true,
-    scopes: ["groups"],
-    key: "71c27fec9540e5aa30b34f8c012154f88f8416530b25f31ba4873a2e58e3d3fe",
-    client_secret:
-    // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
-      "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
-    jwks_uri: "https://dpa2-low.docker.dev-franceconnect.fr/api/v1/jwks",
-    introspection_signed_response_alg: "ES256",
-    introspection_encrypted_response_alg: "RSA-OAEP",
-    introspection_encrypted_response_enc: "A256GCM",
-    id_token_signed_response_alg: 'ES256',
-    userinfo_signed_response_alg: 'ES256',
-    redirect_uris: [],
-    post_logout_redirect_uris: [],
-    response_types: [],
-    grant_types: [],
-    type: 'private',
   }
 };
 
