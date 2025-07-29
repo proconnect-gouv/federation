@@ -13,15 +13,50 @@ import {
 } from '@nestjs/common';
 
 import { ApiContentType } from '@fc/app';
+import { SetStep } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
 
-import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
+import {
+  AuthorizeParamsDto,
+  LogoutParamsDto,
+  RevocationTokenParamsDTO,
+} from './dto';
 import { OidcProviderRoutes } from './enums';
 import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 
 @Controller()
 export class OidcProviderController {
   constructor(private readonly logger: LoggerService) {}
+
+  @Get(OidcProviderRoutes.AUTHORIZATION)
+  @Header('cache-control', 'no-store')
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  @SetStep()
+  getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDto) {
+    // Pass the query to oidc-provider
+    return next();
+  }
+
+  @Post(OidcProviderRoutes.AUTHORIZATION)
+  @Header('cache-control', 'no-store')
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  @SetStep()
+  postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
+    // Pass the query to oidc-provider
+    return next();
+  }
 
   @Post(OidcProviderRoutes.TOKEN)
   @Header('Content-Type', ApiContentType.JSON)

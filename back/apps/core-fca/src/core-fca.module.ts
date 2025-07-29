@@ -25,11 +25,7 @@ import {
 import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 
-import {
-  InteractionController,
-  OidcClientController,
-  OidcProviderController,
-} from './controllers';
+import { InteractionController, OidcClientController } from './controllers';
 import {
   CoreFcaFqdnService,
   CoreFcaMiddlewareService,
@@ -68,11 +64,7 @@ import {
     AccountFcaModule,
     TrackingModule,
   ],
-  controllers: [
-    InteractionController,
-    OidcClientController,
-    OidcProviderController,
-  ],
+  controllers: [InteractionController, OidcClientController],
   providers: [
     CoreFcaService,
     {

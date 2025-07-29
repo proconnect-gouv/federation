@@ -1,6 +1,5 @@
 export * from './active-user-session.dto';
 export * from './app-config.dto';
-export * from './authorize-params.dto';
 export * from './base-identity.dto';
 export * from './core-fca-config.dto';
 export * from './core-fca-session.dto';
