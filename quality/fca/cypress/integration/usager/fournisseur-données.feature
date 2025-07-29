@@ -1,7 +1,6 @@
 #language: fr
+@ignoreInteg01
 Fonctionnalité: Fournisseur Données
-
-  @ignoreInteg01
   Scénario: Access token valide avec un scope groups
     Etant donné que je navigue sur la page fournisseur de service "éligible au scope groups"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires et groups"
