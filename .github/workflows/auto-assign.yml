@@ -1,0 +1,26 @@
+name: 🔨 Auto Assign PR Creator
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto_assign:
+    name: 🔨 Auto assign PR creator
+    permissions:
+      contents: read
+      issues: write
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - name: Assign PR creator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.actor }}
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/assignees \
+            -d '{"assignees":["'"$PR_AUTHOR"'"]}'
