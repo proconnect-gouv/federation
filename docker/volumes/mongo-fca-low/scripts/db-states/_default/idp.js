@@ -1,4 +1,3 @@
-// == FI
 const fia = {
   // -- FIA - FIA1-LOW - Activated
   'FIA1-LOW': {

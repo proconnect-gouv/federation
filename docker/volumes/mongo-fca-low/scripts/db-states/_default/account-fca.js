@@ -1,4 +1,3 @@
-// == ACCOUNTS
 const accountsFca = {
   // -- User E000001 already deactivated for test purpose
   deactivated: {
