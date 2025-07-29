@@ -76,7 +76,7 @@ export default {
     idTokenSigningAlgValues: ['HS256', 'ES256', 'RS256'],
     userinfoSigningAlgValues: ['HS256', 'ES256', 'RS256'],
   },
-  extraParams: ['sp_id'],
+  extraParams: ['sp_id', 'sp_name'],
   features: {
     claimsParameter: { enabled: true },
     jwtUserinfo: { enabled: true },
