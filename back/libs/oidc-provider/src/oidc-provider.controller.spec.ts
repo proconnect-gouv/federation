@@ -5,7 +5,11 @@ import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
+import {
+  AuthorizeParamsDto,
+  LogoutParamsDto,
+  RevocationTokenParamsDTO,
+} from './dto';
 import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 import { OidcProviderController } from './oidc-provider.controller';
 import { OidcProviderService } from './oidc-provider.service';
@@ -70,6 +74,30 @@ describe('OidcProviderController', () => {
     serviceProviderServiceMock.isActive.mockResolvedValue(true);
 
     jest.resetAllMocks();
+  });
+
+  describe('getAuthorize()', () => {
+    it('should call next', () => {
+      // Given
+      const next = jest.fn();
+      const queryMock = {} as AuthorizeParamsDto;
+      // When
+      oidcProviderController.getAuthorize(next, queryMock);
+      // Then
+      expect(next).toHaveReturnedTimes(1);
+    });
+  });
+
+  describe('postAuthorize()', () => {
+    it('should call next', () => {
+      // Given
+      const next = jest.fn();
+      const bodyMock = {} as AuthorizeParamsDto;
+      // When
+      oidcProviderController.postAuthorize(next, bodyMock);
+      // Then
+      expect(next).toHaveReturnedTimes(1);
+    });
   });
 
   describe('getUserInfo()', () => {
