@@ -10,18 +10,18 @@ COPY . /build/back
 
 WORKDIR /build/back
 
-RUN yarn install --ignore-engines
+RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
 
 RUN yarn run build:${INSTANCE}
 
-RUN rm -rf node_modules && yarn install --production --ignore-engines
+RUN rm -rf node_modules && yarn install --ignore-engines --immutable --immutable-cache --check-cache --production
 
 
 FROM ${NODE_IMAGE} AS production
 
 ARG INSTANCE
 
-RUN npm install -g pm2
+RUN yarn global add pm2@6.0.8
 
 ENV NODE_ENV=production
 ENV PM2_HOME=/tmp/.pm2

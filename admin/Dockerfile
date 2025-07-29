@@ -8,7 +8,8 @@ COPY . /tmp/src
 RUN apk add python3 make g++ lscpu
 
 WORKDIR /tmp/src
-RUN yarn install
+RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
+
 
 ## build shared
 WORKDIR /tmp/src/shared
@@ -31,7 +32,7 @@ RUN mv /tmp/src/fc-exploitation/package.json ./ && \
 WORKDIR /federation-admin
 RUN mv /tmp/src/yarn.lock ./ && \
     mv /tmp/src/package.json ./ && \
-    yarn install --production && \
+    yarn install --ignore-engines --immutable --immutable-cache --check-cache --production && \
     rm -f package.json */package.json yarn.lock
 
 RUN mkdir /etc/pm2
@@ -39,7 +40,7 @@ COPY deploy/pm2/app.json /etc/pm2/
 
 FROM ${NODE_IMAGE} AS production
 
-RUN npm install -g pm2
+RUN yarn global add pm2@6.0.8
 
 ENV PM2_HOME=/tmp/.pm2
 ENV NODE_ENV=production
