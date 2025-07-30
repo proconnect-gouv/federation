@@ -7,12 +7,11 @@ services:
 
   fsa1-low:
     hostname: fsa1-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-service-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -36,12 +35,11 @@ services:
 
   fsa2-low:
     hostname: fsa2-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-service-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -65,12 +63,11 @@ services:
 
   fsa3-low:
     hostname: fsa3-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-service-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -94,12 +91,11 @@ services:
 
   fsa4-low:
     hostname: fsa4-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-service-provider-fca-low
     working_dir: /var/www/app
     depends_on:
       redis-pwd:
@@ -126,12 +122,11 @@ services:
 
   fia1-low:
     hostname: fia1-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-identity-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -156,12 +151,11 @@ services:
 
   fia2-low:
     hostname: fia2-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-identity-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -186,12 +180,11 @@ services:
 
   moncomptepro:
     hostname: moncomptepro
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-identity-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -220,12 +213,11 @@ services:
 
   dpa1-low:
     hostname: dpa1-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-data-provider
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -244,12 +236,11 @@ services:
 
   dpa2-low:
     hostname: dpa2-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-data-provider
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:

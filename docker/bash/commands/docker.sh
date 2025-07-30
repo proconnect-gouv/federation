@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
+_get_node_containers() {
+  local ancestor_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
+  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-core|^pc-fsa|^pc-fia|^pc-moncomptepro|^pc-dpa|^pc-bridge-proxy-rie|^pc-csmr-rie|^pc-exploitation-fca-low')
+
+  echo -e "${ancestor_containers}\n${pattern_containers}" | sort | uniq
+}
+
 # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
 _get_running_containers() {
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
+  local raw_nodejs_containers=$(_get_node_containers)
   local raw_all_containers=$(docker ps --format '{{.Names}}')
 
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")

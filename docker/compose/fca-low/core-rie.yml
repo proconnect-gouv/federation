@@ -3,12 +3,11 @@
 services:
   core-fca-rie:
     hostname: core-fca-rie
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: core-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:

@@ -33,10 +33,7 @@ _up() {
 
   # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
   echo " * Populate global variables"
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
-
-  echo " * Found nodejs containers: ${raw_nodejs_containers}"
-
+  local raw_nodejs_containers=$(_get_node_containers)
   local raw_all_containers=$(docker ps --format '{{.Names}}')
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
   
