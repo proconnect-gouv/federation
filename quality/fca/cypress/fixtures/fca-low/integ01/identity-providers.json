@@ -9,7 +9,7 @@
   },
   {
     "id": "fia1v2",
-    "descriptions": ["par défaut", "actif"],
+    "descriptions": ["premier FI", "par défaut"],
     "title": "Identity Provider 1 - HS256",
     "url": "https://fia1v2.integ01.dev-agentconnect.fr",
     "signature": "HS256",
@@ -17,7 +17,7 @@
   },
   {
     "id": "fia2v2",
-    "descriptions": ["différent"],
+    "descriptions": ["second FI"],
     "title": "Identity Provider 2 - ES256",
     "url": "https://fia2v2.integ01.dev-agentconnect.fr",
     "signature": "ES256",

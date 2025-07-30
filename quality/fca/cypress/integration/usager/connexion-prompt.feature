@@ -8,10 +8,10 @@ Fonctionnalité: Connexion avec manipulation du paramêtre prompt
     Et je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "premier FS"
     Et que je suis connecté au fournisseur de service
-    Et que je navigue sur la page fournisseur de service "second fs"
+    Et que je navigue sur la page fournisseur de service "second FS"
     Et que je rentre "none" dans le champ prompt
     Quand je clique sur le bouton ProConnect
-    Alors je suis redirigé vers la page fournisseur de service "second fs"
+    Alors je suis redirigé vers la page fournisseur de service "second FS"
     Et je suis connecté au fournisseur de service
 
   Scénario: Prompt=none pour un utilisateur non connecté
