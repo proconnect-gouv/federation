@@ -225,6 +225,15 @@ Then(
   },
 );
 
+Then(
+  /le idp_id transmis au fournisseur de service est celui du fournisseur d'identité "([^"]+)"/,
+  function (idpDescription: string) {
+    const { id: idpId } = getIdentityProviderByDescription(idpDescription);
+
+    getUserInfoProperty('idp_id').should('be.equal', idpId);
+  },
+);
+
 Given(
   /je rentre un id qui ne correspond à aucun fournisseur d'identité dans le champ idp_hint/,
   function () {

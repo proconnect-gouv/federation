@@ -19,13 +19,13 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Exemples:
       | idpLabel                                   | idpName    | scope           |
       | Identity Provider 1 - eIDAS faible - ES256 | par défaut | tous les scopes |
-      | Identity Provider 2 - eIDAS faible - RS256 | différent  | tous les scopes |
+      | Identity Provider 2 - eIDAS faible - RS256 | second FI  | tous les scopes |
 
     @ignoreDocker
     Exemples:
       | idpLabel                    | idpName    | scope           |
       | Identity Provider 1 - HS256 | par défaut | tous les scopes |
-      | Identity Provider 2 - ES256 | différent  | tous les scopes |
+      | Identity Provider 2 - ES256 | second FI  | tous les scopes |
 
   Scénario: Connexion d'un usager - fournisseur d'identité autre
     Etant donné que je navigue sur la page fournisseur de service
