@@ -8,22 +8,22 @@
   },
   {
     "name": "fsa2-low",
-    "descriptions": ["second fs", "acceptant le privé"],
+    "descriptions": ["second FS", "acceptant le privé"],
     "clientId": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
     "url": "https://fsa2-low.docker.dev-franceconnect.fr",
     "userinfo_signed_response_alg": "ES256"
-    
+
   },
   {
     "name": "fsa4-low",
     "descriptions": [
-      "troisième fs",
+      "troisième FS",
       "non habilité à demander le scope belonging_population",
       "avec une restriction de fqdn"
     ],
     "clientId": "6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77",
     "url": "https://fsa4-low.docker.dev-franceconnect.fr",
     "userinfo_signed_response_alg": "RS256"
-    
+
   }
 ]

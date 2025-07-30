@@ -20,9 +20,9 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que l'événement "SP_REQUESTED_FC_USERINFO" est journalisé avec "reusesActiveSession" "false"
     Et que je mémorise la valeur "browsingSessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "sessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
-    Quand je navigue sur la page fournisseur de service "second fs"
+    Quand je navigue sur la page fournisseur de service "second FS"
     Et je clique sur le bouton ProConnect
-    Alors je suis redirigé vers la page fournisseur de service "second fs"
+    Alors je suis redirigé vers la page fournisseur de service "second FS"
     Et je suis connecté au fournisseur de service
     # le cookie n'est pas supprimé en fin de cinématique
     Et le cookie "pc_session_id" est présent
@@ -49,4 +49,3 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je m'authentifie
     Et je suis connecté au fournisseur de service
     Et le cookie "pc_session_id" est présent
-

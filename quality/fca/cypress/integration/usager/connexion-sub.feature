@@ -11,12 +11,12 @@ Fonctionnalité: Connexion Usager - Sub
     Et que je mémorise le sub envoyé au fournisseur de service
     Et que je clique sur le bouton de déconnexion
     Et que je suis déconnecté du fournisseur de service
-    Quand je navigue sur la page fournisseur de service "second fs"
+    Quand je navigue sur la page fournisseur de service "second FS"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
     Et que je m'authentifie
-    Et que je suis redirigé vers la page fournisseur de service "second fs"
+    Et que je suis redirigé vers la page fournisseur de service "second FS"
     Et que je suis connecté au fournisseur de service
     Alors le sub transmis au fournisseur de service est identique au sub mémorisé
 
