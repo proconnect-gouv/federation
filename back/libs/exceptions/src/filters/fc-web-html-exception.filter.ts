@@ -66,17 +66,23 @@ export class FcWebHtmlExceptionFilter
     this.errorOutput(exceptionParam);
   }
 
+  // eslint-disable-next-line complexity
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
+    let errorDetail: string;
 
-    const key = errorParam.error.message;
-    const staticDetail = key
-      ? messageDictionary[key] ||
-        messageDictionary['exceptions.default_message']
-      : undefined;
-    const errorDetail = errorParam.exception.generic
-      ? errorParam.exception.error_description
-      : staticDetail;
+    if (errorParam.errorDetail) {
+      errorDetail = errorParam.errorDetail;
+    } else if (errorParam.exception.generic) {
+      errorDetail = errorParam.exception.error_description;
+    } else {
+      const key = errorParam.error.message;
+
+      errorDetail = key
+        ? messageDictionary[key] ||
+          messageDictionary['exceptions.default_message']
+        : undefined;
+    }
 
     res.status(httpResponseCode);
     res.render('error', { ...errorParam, errorDetail });
