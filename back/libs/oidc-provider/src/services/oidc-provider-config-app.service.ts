@@ -18,6 +18,10 @@ import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 import { OidcProviderRuntimeException } from '../exceptions';
 import { LogoutFormParamsInterface, OidcCtx } from '../interfaces';
 
+/**
+ * More documentation can be found in oidc-provider repo
+ * @see https://github.com/panva/node-oidc-provider/blob/v7.14.3/docs/README.md
+ */
 @Injectable()
 export class OidcProviderConfigAppService {
   protected provider: Provider;
@@ -31,12 +35,6 @@ export class OidcProviderConfigAppService {
     protected readonly tracking: TrackingService,
   ) {}
 
-  /**
-   * More documentation can be found in oidc-provider repo
-   * @see https://github.com/panva/node-oidc-provider/blob/v6.x/docs/README.md#featuresrpinitiatedlogout
-   * @TODO #109 Check the behaving of the page when javascript is disabled
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
-   */
   async logoutSource(ctx: OidcCtx, form: any): Promise<void> {
     const sub = ctx.oidc?.session?.accountId;
 
@@ -147,12 +145,6 @@ export class OidcProviderConfigAppService {
     return await this.oidcClient.hasEndSessionUrl(idpId);
   }
 
-  /**
-   * More documentation can be found in oidc-provider repo
-   * @see https://github.com/panva/node-oidc-provider/blob/v6.x/docs/README.md#featuresrpinitiatedlogout
-   * @TODO #109 Check the behaving of the page when javascript is disabled
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
-   */
   postLogoutSuccessSource(ctx: KoaContextWithOIDC) {
     ctx.body = `<!DOCTYPE html>
         <head>
@@ -164,18 +156,11 @@ export class OidcProviderConfigAppService {
         </html>`;
   }
 
-  /**
-   * Returned object should contains an `accountId` property
-   * and an async `claims` function.
-   * More documentation can be found in oidc-provider repo.
-   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#accounts
-   */
   async findAccount(
     _ctx: OidcCtx,
     sub: string,
   ): Promise<{ accountId: string; claims: Function }> {
     try {
-      // Use the user session from the service provider request
       const sessionId = await this.sessionService.getAlias(sub);
       await this.sessionService.initCache(sessionId);
 
@@ -210,14 +195,6 @@ export class OidcProviderConfigAppService {
     const sessionId = this.sessionService.getId();
     await this.sessionService.setAlias(spIdentity.sub, sessionId);
 
-    /**
-     * Build Interaction results
-     * For all available options, refer to `oidc-provider` documentation:
-     * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#user-flows
-     *
-     * We use `sessionId` as `accountId` in order to to easily retrieve the session for back channel requests
-     * @see OidcProviderConfigService.findAccount()
-     */
     const result = {
       login: {
         amr,
@@ -237,10 +214,6 @@ export class OidcProviderConfigAppService {
     }
   }
 
-  /**
-   * Set provider implementation from OidcProviderService
-   * @param provider
-   */
   setProvider(provider: Provider): void {
     this.provider = provider;
   }
