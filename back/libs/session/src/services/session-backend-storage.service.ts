@@ -28,11 +28,7 @@ export class SessionBackendStorageService {
   ) {}
 
   /**
-   * Retrieves the entire session in redis and validate it using the DTO
-   *
-   * provided at the initialization
-   * @param ctx The context bound by the interceptor
-   * @return The full session
+   * Retrieves the entire session in redis
    */
   async get<T>(sessionId: string): Promise<T | never> {
     const sessionKey = this.getSessionKey(sessionId);
@@ -153,12 +149,6 @@ export class SessionBackendStorageService {
     }
   }
 
-  /**
-   * Contruct the session key using the context
-   *
-   * @param ctx The context bound by the interceptor
-   * @return The session key
-   */
   private getSessionKey(sessionId: string) {
     const { prefix } = this.config.get<SessionConfig>('Session');
     return `${prefix}::${sessionId}`;
@@ -179,12 +169,6 @@ export class SessionBackendStorageService {
     return result;
   }
 
-  /**
-   * Get our corresponding `sessionId` from Panva's `interactionId`
-   *
-   * @param {string} key interactionId
-   * @returns {Promise<string>} return `sessionId`
-   */
   async getAlias(key: string): Promise<string> {
     if (!key) {
       throw new SessionBadAliasException();
