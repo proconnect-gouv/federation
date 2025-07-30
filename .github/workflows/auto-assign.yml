@@ -9,7 +9,7 @@ jobs:
     name: 🔨 Auto assign PR creator
     permissions:
       contents: read
-      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     if: github.actor != 'dependabot[bot]'
     steps:
