@@ -37,6 +37,7 @@ export class CoreFcaMiddlewareService {
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}
 
+  // TODO remove this useless function
   protected registerMiddleware(
     step: OidcProviderMiddlewareStep,
     pattern: OidcProviderMiddlewarePattern | OidcProviderRoutes,
@@ -57,19 +58,19 @@ export class CoreFcaMiddlewareService {
   }
 
   onModuleInit() {
-    this.registerMiddleware(
-      OidcProviderMiddlewareStep.BEFORE,
-      OidcProviderRoutes.AUTHORIZATION,
-      this.koaErrorCatcherMiddlewareFactory(this.beforeAuthorizeMiddleware),
-    );
+    // this.registerMiddleware(
+    //   OidcProviderMiddlewareStep.BEFORE,
+    //   OidcProviderRoutes.AUTHORIZATION,
+    //   this.koaErrorCatcherMiddlewareFactory(this.beforeAuthorizeMiddleware),
+    // );
 
-    this.registerMiddleware(
-      OidcProviderMiddlewareStep.BEFORE,
-      OidcProviderRoutes.AUTHORIZATION,
-      this.koaErrorCatcherMiddlewareFactory(
-        this.handleSilentAuthenticationMiddleware,
-      ),
-    );
+    // this.registerMiddleware(
+    //   OidcProviderMiddlewareStep.BEFORE,
+    //   OidcProviderRoutes.AUTHORIZATION,
+    //   this.koaErrorCatcherMiddlewareFactory(
+    //     this.handleSilentAuthenticationMiddleware,
+    //   ),
+    // );
 
     this.registerMiddleware(
       OidcProviderMiddlewareStep.AFTER,

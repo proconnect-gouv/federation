@@ -1,4 +1,5 @@
 import {
+  interactionPolicy,
   InteractionResults,
   KoaContextWithOIDC,
   Provider,
@@ -8,7 +9,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core';
+import { ActiveUserSessionDto, CoreFcaSession, UserSession } from '@fc/core';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcClientRoutes, OidcClientService } from '@fc/oidc-client';
@@ -17,6 +18,9 @@ import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import { OidcProviderRuntimeException } from '../exceptions';
 import { LogoutFormParamsInterface, OidcCtx } from '../interfaces';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { isEmpty } from 'lodash';
 
 /**
  * More documentation can be found in oidc-provider repo
@@ -162,6 +166,7 @@ export class OidcProviderConfigAppService {
   ): Promise<{ accountId: string; claims: Function }> {
     try {
       const sessionId = await this.sessionService.getAlias(sub);
+      // TODO in all the service fetch data directly from redis with getDataFromBackend
       await this.sessionService.initCache(sessionId);
 
       const { spIdentity } = this.sessionService.get<UserSession>('User');
@@ -239,5 +244,73 @@ export class OidcProviderConfigAppService {
         </script>
       </body>
     </html>`;
+  }
+
+  getCustomizedPolicy() {
+    const { Check, base } = interactionPolicy;
+
+    // fixed in @types/oidc-provider@8.5.0
+    // see https://github.com/DefinitelyTyped/DefinitelyTyped/commit/4190e90fd2fa2a7cf845eb57157a97de38636cb6
+    type FixedCheckType = typeof Check & {
+      REQUEST_PROMPT: true;
+      NO_NEED_TO_PROMPT: false;
+    };
+
+    const policy = base();
+
+    const loginPrompt = policy.get('login');
+
+    loginPrompt.checks.add(
+      new Check(
+        'invalid_session_prompt',
+        'current End-User session is invalid or incomplete',
+        async (ctx) => {
+          const sub = ctx.oidc?.session?.accountId;
+
+          let userSession: UserSession;
+          try {
+            const sessionId = await this.sessionService.getAlias(sub);
+
+            if (!sessionId) {
+              return (Check as FixedCheckType).REQUEST_PROMPT;
+            }
+
+            userSession =
+              await this.sessionService.getDataFromBackend<CoreFcaSession>(
+                sessionId,
+              )['User'];
+          } catch (error) {
+            // sessionId or session might not exist in redis
+            return (Check as FixedCheckType).REQUEST_PROMPT;
+          }
+
+          const activeUserSession = plainToInstance(
+            ActiveUserSessionDto,
+            userSession,
+          );
+
+          const activeSessionValidationErrors =
+            await validate(activeUserSession);
+
+          if (!isEmpty(activeSessionValidationErrors)) {
+            return (Check as FixedCheckType).REQUEST_PROMPT;
+          }
+
+          const idpHint = ctx.oidc?.params?.idp_hint;
+          if (idpHint && userSession.spIdentity.idp_id !== idpHint) {
+            return (Check as FixedCheckType).REQUEST_PROMPT;
+          }
+
+          const loginHint = ctx.oidc?.params?.login_hint;
+          if (loginHint && userSession.spIdentity.email !== loginHint) {
+            return (Check as FixedCheckType).REQUEST_PROMPT;
+          }
+
+          return (Check as FixedCheckType).NO_NEED_TO_PROMPT;
+        },
+      ),
+    );
+
+    return policy;
   }
 }

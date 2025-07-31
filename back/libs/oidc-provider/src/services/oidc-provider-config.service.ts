@@ -87,6 +87,9 @@ export class OidcProviderConfigService {
     const renderError = this.errorService.renderError.bind(this.errorService);
     const clientBasedCORS = this.clientBasedCORS.bind(this);
     const url = this.url.bind(this, prefix);
+    const policy = this.oidcProviderConfigApp.getCustomizedPolicy.bind(
+      this.oidcProviderConfigApp,
+    )();
 
     /**
      * Build final configuration object
@@ -110,7 +113,10 @@ export class OidcProviderConfigService {
         findAccount,
         renderError,
         clientBasedCORS,
-        interactions: { url },
+        interactions: {
+          policy,
+          url,
+        },
         loadExistingGrant: this.loadExistingGrant,
         pkce: {
           methods: ['S256'],
