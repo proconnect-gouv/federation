@@ -81,6 +81,14 @@ Then(
   },
 );
 
+Then(
+  /la page du FI affiche le nom du FS "([^"]*)"/,
+  function (spDescription: string) {
+    const { name } = getServiceProviderByDescription(spDescription);
+    cy.contains(`"sp_name": "${name}"`);
+  },
+);
+
 Then('le champ identifiant correspond à {string}', function (email: string) {
   cy.get('input[name="email"]').should('have.value', email);
 });

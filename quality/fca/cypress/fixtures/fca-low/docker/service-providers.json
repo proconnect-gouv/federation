@@ -1,13 +1,13 @@
 [
   {
-    "name": "fsa1-low",
+    "name": "FSA - FSA1-LOW",
     "descriptions": ["par défaut", "premier FS", "éligible au scope groups"],
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     "url": "https://fsa1-low.docker.dev-franceconnect.fr",
     "userinfo_signed_response_alg": null
   },
   {
-    "name": "fsa2-low",
+    "name": "FSA - FSA2-LOW",
     "descriptions": ["second FS", "acceptant le privé"],
     "clientId": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
     "url": "https://fsa2-low.docker.dev-franceconnect.fr",
@@ -15,7 +15,7 @@
 
   },
   {
-    "name": "fsa4-low",
+    "name": "FSA - FSA4-LOW",
     "descriptions": [
       "troisième FS",
       "non habilité à demander le scope belonging_population",

@@ -11,6 +11,15 @@ Fonctionnalité: Connexion à un FI
     Alors la page du FI affiche l'id du FS "premier FS"
 
   @ignoreInteg01
+  Scénario: Je me rends sur la page du FI et je récupère correctement le sp_name
+    Etant donné que je navigue sur la page fournisseur de service "premier FS"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Quand je clique sur le bouton de connexion
+    Et je suis redirigé vers la page login du fournisseur d'identité "par défaut"
+    Alors la page du FI affiche le nom du FS "premier FS"
+
+  @ignoreInteg01
   Scénario: J'utilise un fournisseur d'identité désactivé
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect

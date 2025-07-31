@@ -43,7 +43,7 @@ export class CoreFcaService {
     res: Response,
     idpId: string,
   ): Promise<void> {
-    const { spId, login_hint } = this.session.get<UserSession>('User');
+    const { spId, login_hint, spName } = this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
     await this.validateEmailForSp(spId, login_hint);
@@ -72,6 +72,7 @@ export class CoreFcaService {
       },
       login_hint,
       sp_id: spId,
+      sp_name: spName,
     };
 
     const interaction = await this.oidcProvider.getInteraction(req, res);

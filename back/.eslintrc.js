@@ -64,6 +64,7 @@ const allowedSnakeCaseParameters = [
   'revocation_endpoint_auth_method',
   'send_transactional',
   'sp_id',
+  'sp_name',
   'street_address',
   'token_endpoint',
   'token_endpoint_auth_method',
@@ -75,7 +76,7 @@ const allowedSnakeCaseParameters = [
   'userinfo_endpoint',
   'userinfo_signed_response_alg',
   'usual_name',
-  'http_status_code'
+  'http_status_code',
 ];
 
 const allowedSnakeCaseParametersRegexPattern = `^(${allowedSnakeCaseParameters.join('|')})$`;
