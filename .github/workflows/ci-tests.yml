@@ -146,8 +146,10 @@ jobs:
         with:
           name: cypress-snapshots-artifacts
           path: |
+            quality/fca/cypress/screenshots
+            quality/fca/cypress/snapshots
+            quality/fca/cypress/logs
             quality/fca/cypress/reports/cucumber/html-report
-            quality/fca/cypress/snapshots/diff
             quality/fca/artifacts-logs
 
   test_e2e:
@@ -217,8 +219,9 @@ jobs:
         with:
           name: cypress-${{ matrix.stack }}-artifacts
           path: |
+            quality/fca/cypress/screenshots
+            quality/fca/cypress/logs
             quality/fca/cypress/reports/cucumber/html-report
-            quality/fca/cypress/snapshots/diff
             quality/fca/artifacts-logs
     strategy:
       matrix:
