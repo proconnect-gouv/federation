@@ -72,7 +72,7 @@ _prune_all() {
 }
 
 _prune_ci() {
-  ${DOCKER_COMPOSE} down --volumes --remove-orphans
+  $DOCKER_COMPOSE down --volumes --remove-orphans
 }
 
 _get_env() {
