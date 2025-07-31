@@ -13,6 +13,8 @@
     "preserveSymlinks": true,
     "moduleResolution": "node",
     "allowJs": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
   },
   "exclude": ["node_modules"]
 }
