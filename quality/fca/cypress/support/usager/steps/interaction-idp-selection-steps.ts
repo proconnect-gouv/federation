@@ -25,12 +25,12 @@ Then(
 Then(
   "je teste l'hybridge avec le fournisseur d'identité {string}",
   function (text: string) {
-    cy.intercept('GET', '**').as('allRequests');
+    cy.intercept(/.*rie.gouv.fr.*/).as('allRieRequests');
 
     cy.contains('label', text).click();
     cy.contains('button', 'Continue').click();
 
-    cy.wait('@allRequests').then((interceptions) => {
+    cy.wait('@allRieRequests').then((interceptions) => {
       // Ensure interceptions is an array of requests
       const requests = Array.isArray(interceptions)
         ? interceptions
