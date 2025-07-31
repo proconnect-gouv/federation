@@ -57,19 +57,19 @@ export class CoreFcaMiddlewareService {
   }
 
   onModuleInit() {
-    this.registerMiddleware(
-      OidcProviderMiddlewareStep.BEFORE,
-      OidcProviderRoutes.AUTHORIZATION,
-      this.koaErrorCatcherMiddlewareFactory(this.beforeAuthorizeMiddleware),
-    );
+    // this.registerMiddleware(
+    //   OidcProviderMiddlewareStep.BEFORE,
+    //   OidcProviderRoutes.AUTHORIZATION,
+    //   this.koaErrorCatcherMiddlewareFactory(this.beforeAuthorizeMiddleware),
+    // );
 
-    this.registerMiddleware(
-      OidcProviderMiddlewareStep.BEFORE,
-      OidcProviderRoutes.AUTHORIZATION,
-      this.koaErrorCatcherMiddlewareFactory(
-        this.handleSilentAuthenticationMiddleware,
-      ),
-    );
+    // this.registerMiddleware(
+    //   OidcProviderMiddlewareStep.BEFORE,
+    //   OidcProviderRoutes.AUTHORIZATION,
+    //   this.koaErrorCatcherMiddlewareFactory(
+    //     this.handleSilentAuthenticationMiddleware,
+    //   ),
+    // );
 
     this.registerMiddleware(
       OidcProviderMiddlewareStep.AFTER,
