@@ -4,7 +4,7 @@ services:
   core-fca-low:
     extends:
       file: ../shared/shared.yml
-      service: base-core-service
+      service: base-core
     hostname: core-fca-low
     env_file:
       - '${COMPOSE_DIR}/fca-low/.env/core-fca-low.env'
