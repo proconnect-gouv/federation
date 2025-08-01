@@ -1,0 +1,6 @@
+<% Object.values(AlgoName).forEach(element => { %>
+<% if (messages.errors[0][element]) { %>
+<p>
+  <%- messages.errors[0][element] %>
+</p>
+<% }});%>

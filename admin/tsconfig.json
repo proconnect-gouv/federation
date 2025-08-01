@@ -13,6 +13,11 @@
     "preserveSymlinks": true,
     "moduleResolution": "node",
     "allowJs": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@pc/shared": ["src/shared"],
+      "@pc/shared/*": ["src/shared/*"]
+    }
   },
   "exclude": ["node_modules"]
 }

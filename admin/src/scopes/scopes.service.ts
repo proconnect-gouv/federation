@@ -1,0 +1,168 @@
+import { v4 as uuid } from 'uuid';
+import { DeleteResult, ObjectID, Repository } from 'mongodb';
+
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { LoggerService } from '@pc/shared/logger/logger.service';
+
+import { ICrudTrack } from '../interfaces';
+
+import { Scopes } from './scopes.mongodb.entity';
+import { IScopes } from './interface';
+
+@Injectable()
+export class ScopesService {
+  baseScopes: IScopes[] = null;
+
+  constructor(
+    @InjectRepository(Scopes, 'fc-mongo')
+    private readonly scopesRepository: Repository<Scopes>,
+    private readonly logger: LoggerService,
+  ) {}
+
+  private track(log: ICrudTrack) {
+    this.logger.businessEvent(log);
+  }
+
+  /**
+   * Create new scopes entry.
+   *
+   * @param {IScopes} newScope
+   * @returns {Promise<Scopes>}
+   */
+  async create(newScope: IScopes, user: string): Promise<Scopes> {
+    const id = (uuid() as string).substr(0, 12);
+
+    const scopeToSave: Scopes = {
+      id: new ObjectID(id),
+      scope: newScope.scope,
+      label: `${newScope.label} (${newScope.fd})`,
+      updatedBy: user,
+      fd: newScope.fd,
+    };
+
+    const result = await this.scopesRepository.insertOne(scopeToSave);
+
+    this.track({
+      entity: 'scope',
+      action: 'create',
+      user,
+      id: result.insertedId,
+      name: newScope.scope,
+    });
+
+    return result;
+  }
+
+  /**
+   * Update scopes.
+   *
+   * @param {ObjectID} id
+   * @param {IScopes} newScopes
+   * @returns {Promise<Scopes>}
+   */
+  async update(id: ObjectID, user: string, newScope: IScopes): Promise<Scopes> {
+    this.track({
+      entity: 'scope',
+      action: 'update',
+      user,
+      id,
+      name: newScope.scope,
+    });
+
+    const { fd, label, scope } = newScope;
+    const oldScope: IScopes = await this.getById(id);
+    const oldFd = ScopesService.getFdNameFromLabel(oldScope.label);
+    const newLabel = newScope.label.replace(`(${oldFd})`, '').trim();
+
+    /**
+     * @TODO Remove the concatenation of the label + fd.
+     * it shouldn't be anymore necessary.
+     * @ticket FC-xxx
+     * @author brice
+     * @date 2021-08-12
+     */
+    const scopeToUpdate: Scopes = {
+      scope,
+      id,
+      updatedBy: user,
+      label: `${newLabel} (${fd})`,
+      fd,
+    };
+
+    const result = await this.scopesRepository.save(scopeToUpdate);
+
+    return result;
+  }
+
+  async remove(id: ObjectID, user: string): Promise<DeleteResult> {
+    const scope = await this.scopesRepository.findOne(id);
+
+    await this.scopesRepository.delete(id);
+
+    this.track({
+      entity: 'scope',
+      action: 'delete',
+      user,
+      id,
+      name: scope.scope,
+    });
+
+    return scope;
+  }
+
+  /**
+   * Get scope labels list.
+   *
+   * @return {Promise<Scopes[]>}
+   */
+  async getAll(): Promise<Scopes[]> {
+    return await this.scopesRepository.find();
+  }
+
+  /**
+   * Get scopes list grouped by fd.
+   * @returns {Promise<Record<string, Scopes[]>>}
+   */
+  async getScopesGroupedByFd(): Promise<Record<string, Scopes[]>> {
+    const allScopes = await this.scopesRepository.find();
+
+    return allScopes.reduce<Record<string, Scopes[]>>((acc, scope) => {
+      const fdMetadata = acc[scope.fd] || [];
+      return { ...acc, [scope.fd]: [...fdMetadata, scope] };
+    }, {});
+  }
+
+  /**
+   * Get a scope by its ID.
+   *
+   * @param {ObjectID} id Unic ID for a specific scope to retreive.
+   * @returns {Promise<IScopes>}
+   */
+  async getById(id: ObjectID): Promise<IScopes> {
+    const scope = await this.scopesRepository.findOne(id);
+    return scope;
+  }
+
+  /**
+   * Extract the `fd` name from the label.
+   * The RegExp extract the content of the parentessis.
+   * Ex: label = `My Label (FD-NAME)` > return `FD-NAME`.
+   *
+   * @param {string} label
+   * @returns {string}
+   *
+   *
+   * @TODO Remove the concatenation of the label + fd.
+   * it shouldn't be anymore necessary.
+   * @ticket FC-xxx
+   * @author brice
+   * @date 2021-08-12
+   */
+  private static getFdNameFromLabel(label: string): string {
+    const regExp = /\(([^()]*)\)/;
+    const getFd = regExp.exec(label);
+    return getFd && getFd.length > 0 ? getFd[1] : '';
+  }
+}

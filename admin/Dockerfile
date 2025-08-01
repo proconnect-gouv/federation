@@ -3,37 +3,41 @@ ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
 FROM ${NODE_IMAGE} AS builder
 
-COPY . /tmp/src
+# COPY . /tmp/src
+COPY package.json /federation-admin/package.json
+COPY yarn.lock /federation-admin/yarn.lock
+COPY . /federation-admin
 
 RUN apk add python3 make g++ lscpu
 
-WORKDIR /tmp/src
+WORKDIR /federation-admin
 RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
-
-
-## build shared
-WORKDIR /tmp/src/shared
-RUN yarn run build --outDir /federation-admin/shared
-
-## build fc-exploitation
-WORKDIR /tmp/src/fc-exploitation
 RUN yarn run build
 
-WORKDIR /federation-admin/shared
-RUN mv /tmp/src/shared/package.json ./ && \
-    mv /tmp/src/shared/views ./ && \
-    mv /tmp/src/shared/user/emails ./user/
+# ## build shared
+# WORKDIR /tmp/src/shared
+# RUN yarn run build --outDir /federation-admin/shared
 
-WORKDIR /federation-admin/fc-exploitation
-RUN mv /tmp/src/fc-exploitation/package.json ./ && \
-    mv /tmp/src/fc-exploitation/dist ./ && \
-    mv /tmp/src/fc-exploitation/views ./
+# ## build fc-exploitation
+# WORKDIR /tmp/src
+# RUN yarn run build
 
-WORKDIR /federation-admin
-RUN mv /tmp/src/yarn.lock ./ && \
-    mv /tmp/src/package.json ./ && \
-    yarn install --ignore-engines --immutable --immutable-cache --check-cache --production && \
-    rm -f package.json */package.json yarn.lock
+# WORKDIR /federation-admin/shared
+# RUN mv /tmp/src/shared/package.json ./ && \
+#     mv /tmp/src/shared/views ./ && \
+#     mv /tmp/src/shared/user/emails ./user/
+
+# WORKDIR /federation-admin/fc-exploitation
+# RUN mv /tmp/src/fc-exploitation/package.json ./ && \
+#     mv /tmp/src/fc-exploitation/dist ./ && \
+#     mv /tmp/src/fc-exploitation/views ./
+
+
+# WORKDIR /federation-admin
+# RUN mv /tmp/src/yarn.lock ./ && \
+#     mv /tmp/src/package.json ./ && \
+#     yarn install --ignore-engines --immutable --immutable-cache --check-cache --production && \
+#     rm -f package.json yarn.lock
 
 RUN mkdir /etc/pm2
 COPY deploy/pm2/app.json /etc/pm2/

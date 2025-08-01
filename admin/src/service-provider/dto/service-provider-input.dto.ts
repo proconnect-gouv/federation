@@ -1,0 +1,164 @@
+/* istanbul ignore file */
+
+// Declarative code
+import {
+  IsNotEmpty,
+  Matches,
+  IsArray,
+  IsOptional,
+  IsString,
+  IsIn,
+  IsUrl,
+} from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  defaultNoneOrLinesToNullableArray,
+  linesToArray,
+  toArray,
+  toBoolean,
+  toNullableString,
+} from '@pc/shared/transforms/string.transform';
+import { IsOptionalExtended } from '@pc/shared/validators/is-optional-extended.validator';
+import { IsValidInputString } from '@pc/shared/validators/is-valid-input-string';
+import { AlgoValue } from '../../enum';
+import { IP_VALIDATOR_REGEX } from '../../utils/ip-validator.constant';
+
+const { ES256, RS256, HS256 } = AlgoValue;
+
+// tslint:disable-next-line:max-line-length
+// match empty string because of optionals paramters
+// impossible to use IsOptionalExtended because of the Transform which always return something
+const URL_REGEX = /^(?:((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|(([A-Za-z0-9\.\+-]{6,}):(?:\/\/)?(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-_]+)|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)?)$/;
+
+export class ServiceProviderDto {
+  @IsValidInputString({
+    message: `Veuillez mettre un nom valide ( Majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+  })
+  @IsNotEmpty({
+    message: `Le nom du fournisseur de service doit être renseigné`,
+  })
+  readonly name: string;
+
+  @Transform(linesToArray)
+  @Matches(URL_REGEX, {
+    each: true,
+    message: 'Veuillez mettre une url valide ( Ex: https://toto.com/ )',
+  })
+  readonly redirectUri: string[];
+
+  @Transform(linesToArray)
+  @Matches(URL_REGEX, {
+    each: true,
+    message: ' Veuillez mettre une url valide ( Ex: https://toto.com/ )',
+  })
+  readonly redirectUriLogout: string[];
+
+  @IsOptional()
+  @Transform(linesToArray)
+  @Matches(/^$|^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, {
+    each: true,
+    message: 'Veuillez mettre des emails valides ( Ex: email@email.com )',
+  })
+  readonly emails: string[];
+  // match empty string because of optionals parameters
+  // impossible to use IsOptionalExtended because of the Transform which always return something
+  @Transform(linesToArray)
+  @Matches(IP_VALIDATOR_REGEX, {
+    each: true,
+    message: 'Veuillez mettre des ips valides ( Ex: 1.1.1.1 )',
+  })
+  readonly ipAddresses: string[];
+
+  @IsNotEmpty({
+    message: 'Veuillez faire un choix',
+  })
+  @Transform(toBoolean)
+  readonly active: boolean;
+
+  @IsNotEmpty({
+    message: 'Veuillez faire un choix',
+  })
+  @IsString()
+  readonly type: string;
+
+  @IsOptional()
+  @Transform(toArray)
+  @IsArray()
+  readonly scopes: string[];
+
+  @IsOptionalExtended()
+  @IsIn([ES256, RS256, HS256], {
+    message: `<strong>userinfo_signed_response_alg</strong> doit être une des valeurs suivantes: ${ES256}, ${RS256} ou ${HS256}`,
+  })
+  @Transform(toNullableString)
+  // oidc defined variable name
+  // tslint:disable-next-line: variable-name
+  readonly userinfo_signed_response_alg?: string | null;
+
+  @IsOptionalExtended()
+  @IsIn([ES256, RS256, HS256], {
+    message: `<strong>id_token_signed_response_alg</strong> doit être une des valeurs suivantes: ${ES256}, ${RS256} ou ${HS256}`,
+  })
+  // oidc defined variable name
+  // tslint:disable-next-line: variable-name
+  readonly id_token_signed_response_alg?: string;
+
+  // todo: check what theses properties are used for
+  @IsOptionalExtended()
+  @Matches(/^[a-zA-Z0-9]{1}[a-zA-Z0-9\-]{31,}$/, {
+    each: true,
+    message:
+      "Veuillez mettre un id d'entité valide (lettres, chiffres, tirets et 32 caractères minimum)",
+  })
+  readonly entityId?: string;
+
+  @Transform(linesToArray)
+  @Matches(URL_REGEX, {
+    each: true,
+    message: ' Veuillez mettre une url valide ( Ex: https://site.com/ )',
+  })
+  readonly site: string[];
+
+  @Transform(toArray)
+  @IsString({ each: true })
+  @IsArray()
+  readonly claims: string[];
+
+  @IsOptional()
+  @IsString()
+  @Transform(toNullableString)
+  // tslint:disable-next-line: variable-name
+  readonly introspection_signed_response_alg?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Transform(toNullableString)
+  // tslint:disable-next-line: variable-name
+  readonly introspection_encrypted_response_alg?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Transform(toNullableString)
+  // tslint:disable-next-line: variable-name
+  readonly introspection_encrypted_response_enc?: string | null;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(defaultNoneOrLinesToNullableArray)
+  // tslint:disable-next-line: variable-name
+  readonly response_types?: string[] | null;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(defaultNoneOrLinesToNullableArray)
+  // tslint:disable-next-line: variable-name
+  readonly grant_types?: string[] | null;
+
+  @IsOptional()
+  @IsUrl()
+  @Transform(toNullableString)
+  // tslint:disable-next-line: variable-name
+  readonly jwks_uri?: string | null;
+}
