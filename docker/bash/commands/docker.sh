@@ -13,7 +13,7 @@ _get_running_containers() {
   local raw_all_containers=$(docker ps --format '{{.Names}}')
 
   NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
-  FC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
+  PC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
 }
 
 _reload_rp() {
