@@ -79,7 +79,7 @@ services:
     networks:
       - public
 
-  base-rie-service:
+  base-rie:
     extends: base-nodejs-app
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'

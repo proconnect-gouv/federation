@@ -43,7 +43,7 @@ services:
   csmr-rie:
     extends:
       file: ../shared/shared.yml
-      service: base-rie-service
+      service: base-rie
     hostname: csmr-rie
     depends_on:
       - broker
@@ -65,7 +65,7 @@ services:
   fia-rie-low:
     extends:
       file: ../shared/shared.yml
-      service: base-rie-service
+      service: base-rie
     hostname: fia-rie-low
     depends_on:
       redis-pwd:
