@@ -1,6 +1,11 @@
 ARG NODE_VERSION=22.13.0
 ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
+FROM ${NODE_IMAGE} AS dev
+
+COPY . ./var/www/app
+
+
 FROM ${NODE_IMAGE} AS builder
 
 COPY . /tmp/src

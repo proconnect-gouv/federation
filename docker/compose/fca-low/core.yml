@@ -3,21 +3,22 @@
 services:
   core-fca-low:
     hostname: core-fca-low
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
-    user: ${CURRENT_UID}
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: core-fca-low
     working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
         condition: service_healthy
       redis-pwd:
         condition: service_healthy
+      node-modules-installer:
+        condition: service_completed_successfully
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
+      - 'node-modules:/var/www/app/node_modules'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -31,7 +32,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev core-fca-low'
 
   core-fca-low-squid:
     extends: core-fca-low
@@ -47,3 +48,4 @@ services:
       # Proxy Configuration for Hybridge
       GLOBAL_AGENT_HTTP_PROXY: http://squid:3128
       GLOBAL_AGENT_HTTPS_PROXY: http://squid:3128
+    command: 'yarn start:dev core-fca-low'
