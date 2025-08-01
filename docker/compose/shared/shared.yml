@@ -25,7 +25,7 @@ services:
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
 
-  base-core-service:
+  base-core:
     extends: base-nodejs-app
     depends_on:
       mongo-fca-low:
