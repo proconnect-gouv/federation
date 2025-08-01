@@ -13,12 +13,7 @@ import {
 
 /**
  * List all common function for all service ( mailjet, stdout )
- *
- * @export
- * @abstract
- * @class Transport
  */
-
 @Injectable()
 export abstract class Transport {
   // Plain object => Class object used with plainToClass ( class-transformer )
@@ -26,12 +21,7 @@ export abstract class Transport {
 
   /**
    *  Function to check if the body is correct ( used class-tranformer to cast a plain obejct into class obejct)
-   *
-   * @param {Email.SendParamsMessage} optionsMailer all parameters used to build a correct email ( body )
-   * @returns {Promise<ValidationError[]>}
-   * @memberof Transport
    */
-
   public async isValid(
     optionsMailer: Email.SendParamsMessage,
   ): Promise<ValidationError[]> {
@@ -50,14 +40,7 @@ export abstract class Transport {
 
   /**
    *  Function to build an correct email with a template
-   *
-   * @param {Email.SendParamsMessage} sendParamsMessage all parameters used to build a correct email
-   * @param {IMailerParams} mailerParams another options as token, templateName used, etc ...
-   * @param {IMailerModuleOptions} transporterOptions from dynamic module => useFactory create this object with our config
-   * @returns {Promise<Email.SendParams>}
-   * @memberof Transport
    */
-
   public async setEmailBody(
     sendParamsMessage: Email.SendParamsMessage,
     mailerParams: IMailerParams,
@@ -96,12 +79,6 @@ export abstract class Transport {
 
   /**
    * Function to create a simple html content using ejs template
-   *
-   * @private
-   * @param {IMailerModuleOptions} transporterOptions from dynamic module => useFactory create this object with our config
-   * @param {IMailerParams} mailerParams another options as token, templateName used, etc ...
-   * @returns {Promise<string>}
-   * @memberof Transport
    */
 
   private async setHtmlPart(
@@ -118,14 +95,7 @@ export abstract class Transport {
 
   /**
    * Function as interface to define what parameters are used to build a message
-   *
-   * @abstract
-   * @param {Email.SendParamsMessage} sendParamsMessage
-   * @param {IMailerParams} mailerParams
-   * @param {IMailerModuleOptions} transporterOptions
-   * @memberof Transport
    */
-
   abstract constructMessage(
     sendParamsMessage: Email.SendParamsMessage,
     mailerParams: IMailerParams,
