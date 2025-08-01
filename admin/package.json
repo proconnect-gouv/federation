@@ -1,17 +1,94 @@
 {
   "name": "federation-admin",
   "version": "0.0.1",
+  "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "tslint 'fc-exploitation/src/**/*.ts' 'shared/**/*.ts' --exclude '**/node_modules/**/*'",
+    "prebuild": "parcel build -d ./dist/client ./public/javascript/main.js && cp ./public/favicon.ico ./dist/client/ && cp -R ./public/images ./dist/client/ ",
+    "watch:front": "parcel watch entry ./public/javascript/main.js -d ./dist/client/",
+    "build": "tsc -p tsconfig.build.json",
+    "fixtures:load": "fixtures load ../shared/fixtures --dataSource src/dataSource.ts --require=ts-node/register --require=tsconfig-paths/register",
+    "migrations:run": "yarn typeorm migration:run && echo '\n\n ***Make sure to load fixtures and create backup DB for E2E***\n from you host run:\n > ../shared/cypress/support/db.sh exploitation create'",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prestart": "yarn run prebuild",
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:dev": "yarn run prestart && ts-node-dev -r tsconfig-paths/register src/main.ts",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "cypress run --e2e",
+    "test:e2e:open": "cypress open --e2e",
+    "typeorm": "ts-node node_modules/typeorm/cli.js --dataSource src/dataSource.ts",
+    "console": "node dist/console.js",
+    "console:dev": "ts-node -r tsconfig-paths/register src/console.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e:exploitation": "cypress run -P fc-exploitation --browser chrome"
   },
+  "alias": {
+    "@pc/shared": "./src/shared"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@gitlab.com/proconnect/proconnect-exploitation.git"
+  },
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@nest-middlewares/csurf": "^7.0.0",
+    "@nestjs/common": "^8.0.0",
+    "@nestjs/core": "^8.0.0",
+    "@nestjs/microservices": "^8.0.0",
+    "@nestjs/passport": "^8.0.0",
+    "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/typeorm": "^8.0.0",
+    "amqp-connection-manager": "^4.0.0",
+    "amqplib": "^0.10.0",
+    "babel-polyfill": "^6.26.0",
+    "bcryptjs": "^3.0.2",
+    "bootstrap": "^4.3.1",
+    "class-transformer": "^0.2.3",
+    "class-validator": "^0.13.0",
+    "clipboard": "^2.0.11",
+    "commander": "^11.0.0",
+    "cookie-parser": "^1.4.4",
+    "deep-freeze": "^0.0.1",
+    "dotenv": "^17.2.0",
+    "ejs": "^3.1.10",
+    "express-flash": "0.0.2",
+    "express-session": "^1.16.1",
+    "font-awesome": "^4.7.0",
+    "fuse.js": "^6.6.2",
+    "helmet": "^3.23.3",
+    "jquery": "^3.7.1",
+    "lightpick": "^1.6.2",
+    "method-override": "^3.0.0",
+    "moment-timezone": "^0.5.31",
+    "mongodb": "^3.6.3",
+    "nestjs-config": "^1.4.11",
+    "nestjs-console": "^6.0.0",
+    "papaparse": "^5.1.1",
+    "pg": "^8.1.0",
+    "popper.js": "^1.15.0",
+    "query-string": "^7.0.0",
+    "rimraf": "^3.0.0",
+    "rxjs": "^7.2.0",
+    "typeorm": "0.3.0",
+    "uuid": "^3.3.3",
+    "validator": "^13.1.0",
+    "@types/nodemailer": "^6.4.17",
+    "generate-password": "^1.7.1",
+    "https-proxy-agent": "^4.0.0",
+    "jsdom": "^26.0.0",
+    "lodash": "^4.17.21",
+    "nodemailer": "^7.0.5",
+    "otplib": "^12.0.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pino": "^9.7.0",
+    "qrcode": "^1.5.4",
+    "reflect-metadata": "^0.1.12",
+    "xml-beautifier": "^0.4.3",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "cypress": "13.15.0",
@@ -20,7 +97,27 @@
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^4.3.0"
+    "typescript": "^4.3.0",
+    "@hapi/joi": "^17.1.1",
+    "@nestjs/testing": "^8.0.0",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/express": "^4.17.1",
+    "@types/jest": "^26.0.0",
+    "@types/node": "^12.7.5",
+    "@types/supertest": "^2.0.8",
+    "jest": "^27.0.0",
+    "less": "~3.12.0",
+    "luxon": "^2.3.0",
+    "mockdate": "^2.0.5",
+    "parcel-bundler": "1.12.5",
+    "supertest": "^4.0.2",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^3.9.0",
+    "typeorm-fixtures-cli": "^3.0.0",
+    "@types/ejs": "^3.1.5",
+    "@types/uuid": "^10.0.0",
+    "concurrently": "^7.0.0"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -35,17 +132,12 @@
     },
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
-    "roots": [
-      "<rootDir>/fc-exploitation/",
-      "<rootDir>/shared/"
-    ]
+    "moduleNameMapping": {
+      "^@pc/shared/(.*)$": "<rootDir>/src/shared/$1",
+      "^@pc/shared$": "<rootDir>/src/shared"
+    }
   },
   "engines": {
     "node": "22.13.0"
-  },
-  "workspaces": [
-    "fc-exploitation",
-    "shared"
-  ],
-  "dependencies": {}
+  }
 }

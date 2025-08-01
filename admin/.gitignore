@@ -1,6 +1,7 @@
 .idea
 .editorconfig
 node_modules
+dist
 
 # Cypress
 */cypress/downloads
@@ -8,3 +9,5 @@ node_modules
 */cypress/videos
 
 coverage
+
+.cache

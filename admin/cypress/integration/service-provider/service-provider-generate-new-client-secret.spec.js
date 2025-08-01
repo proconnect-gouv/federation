@@ -1,0 +1,113 @@
+import {
+  USER_OPERATOR,
+  USER_PASS,
+} from '../../../src/shared/cypress/support/constants';
+import { createServiceProvider } from './service-provider-create.utils';
+
+const configuration = {};
+
+describe('update a service-provider', () => {
+  before(() => {
+    cy.resetEnv('postgres');
+    cy.resetEnv('mongo');
+  });
+
+  beforeEach(() => {
+    cy.login(USER_OPERATOR, USER_PASS);
+  });
+
+  describe('first step: create FS', () => {
+    it('Should be able to add a fs', () => {
+      // Setup
+      const mockConfig = {
+        ...configuration,
+        totp: true,
+      };
+
+      const fs = {
+        name: 'GenerateClientSecretFS',
+        platform: 'CORE_FCP',
+        signupId: '123456',
+        redirectUri: 'https://url.com',
+        redirectUriLogout: 'https://url.com/logout',
+        site: 'https://url.com',
+        emails: 'valenttin@gmail.com',
+        ipAddresses: '192.0.0.0',
+        eidas: 1,
+      };
+
+      // Action
+      createServiceProvider(fs, mockConfig);
+
+      // Assert
+      cy.url().should(
+        'eq',
+        'https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider',
+      );
+      cy.contains(
+        `Le fournisseur de service ${fs.name} a été créé avec succès !`,
+      );
+    });
+
+    it('should re-generate a csrf token if the form validation failed previously', () => {
+      // Setup
+      const mockConfig = {
+        ...configuration,
+        totp: true,
+      };
+
+      const fs = {
+        name: 'MyFirstFS',
+        platform: 'CORE_FCP',
+        signupId: '123456',
+        redirectUri: 'https://url.com',
+        redirectUriLogout: 'https://url.com/logout',
+        site: 'https://url.com',
+        emails: 'valenttin@gmail.com',
+        ipAddresses: 'Obviously not an IP',
+        eidas: 1,
+      };
+
+      // Action
+      createServiceProvider(fs, mockConfig);
+
+      // Assert
+      cy.get('input[name="_csrf"]').should('not.have.value', '');
+    });
+  });
+
+  describe('Second step: update the FS => generate a new client secret', () => {
+    it('Should be able to update a fs with a good totp', () => {
+      cy.visit('/service-provider?page=1&limit=9000&sortField=createdAt&sortDirection=asc');
+
+      cy.contains(`GenerateClientSecretFS`).should('be.visible');
+      cy.get('a.btn-action-generate-client-secret')
+        .last()
+        .click();
+      cy.totp(configuration);
+
+      cy.get('button[type="submit"]').click();
+      cy.contains('Confirmer').click();
+      cy.contains(
+        `Le nouveau client secret du fournisseur de service GenerateClientSecretFS a été généré avec succés !`,
+      ).should('be.visible');
+      cy.get('.alert-success > .close').click();
+    });
+
+    it('Should not be able to update a fs with a false totp', () => {
+      cy.visit('/service-provider?page=1&limit=9000');
+
+      cy.contains(`GenerateClientSecretFS`).should('be.visible');
+      cy.get('a.btn-action-generate-client-secret')
+        .last()
+        .click();
+
+      cy.formType('input[name="_totp"]', '123456');
+      cy.get('button[type="submit"]').click();
+
+      cy.contains('Confirmer').click();
+
+      cy.contains(` Le TOTP saisi n'est pas valide`).should('be.visible');
+    });
+  });
+});

@@ -1,0 +1,1268 @@
+import { Repository } from 'typeorm';
+import { ConfigService } from 'nestjs-config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { ObjectId } from 'mongodb';
+import { LoggerService } from '@pc/shared/logger/logger.service';
+import { InstanceService } from '@pc/shared/utils';
+import { IdentityProviderDTO } from './dto/identity-provider.dto';
+import { IIdentityProviderLegacy, IIdentityProvider } from './interface/';
+import { identityProvidersMock } from './fixture';
+import { IdentityProviderService } from './identity-provider.service';
+import { IdentityProvider } from './identity-provider.mongodb.entity';
+import { SecretManagerService } from '../utils/secret-manager.service';
+import * as MockDate from 'mockdate';
+import { ICrudTrack } from '../interfaces';
+import { v4 as uuidv4 } from 'uuid';
+import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
+import { PaginationService } from '@pc/shared/pagination';
+
+jest.mock('uuid');
+
+describe('IdentityProviderService', () => {
+  let module: TestingModule;
+  let identityProviderService: IdentityProviderService;
+
+  const identityProviderRepository = {
+    save: jest.fn(),
+    insert: jest.fn(),
+    find: jest.fn(),
+    findAndCount: jest.fn(),
+    findOneByOrFail: jest.fn(),
+    delete: jest.fn(),
+  };
+
+  const insertResultMock = {
+    insertedId: 'insertedIdValueMock',
+  };
+
+  const secretManagerMocked = {
+    encrypt: jest.fn(),
+    generateSHA256: jest.fn(),
+  };
+
+  const encryptedSecret = '**********';
+  const objectId = new ObjectId('648c1742c74d6a3d84b31943');
+
+  const additionalFields = {
+    featureHandlers: {
+      coreVerify: 'coreVerify',
+      authenticationEmail: 'authenticationEmail',
+      idpIdentityCheck: 'idpIdentityCheck',
+    },
+    response_types: ['code'],
+    redirect_uris: ['https://sp.fr/oidc-callback'],
+    post_logout_redirect_uris: ['https://sp.fr/oidc-callback'],
+    revocation_endpoint_auth_method: 'client_secret_post',
+  };
+
+  const configIdentityProviderMock = {
+    defaultValues: {},
+  };
+
+  const configMock = {
+    get: jest.fn(),
+  };
+
+  const loggerMock = {
+    businessEvent: jest.fn(),
+    error: jest.fn(),
+  };
+
+  const instanceServiceMock = {
+    isFcaLow: jest.fn(),
+    isCl: jest.fn(),
+  };
+
+  const fqdnToProviderServiceMock = {
+    saveFqdnsProvider: jest.fn(),
+    updateFqdnsProvider: jest.fn(),
+    deleteFqdnsProvider: jest.fn(),
+    createFqdnsWithAcceptance: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    module = await Test.createTestingModule({
+      imports: [TypeOrmModule.forFeature([IdentityProvider], 'fc-mongo')],
+      providers: [
+        IdentityProviderService,
+        Repository,
+        SecretManagerService,
+        ConfigService,
+        LoggerService,
+        InstanceService,
+        FqdnToProviderService,
+        PaginationService,
+      ],
+    })
+      .overrideProvider(getRepositoryToken(IdentityProvider, 'fc-mongo'))
+      .useValue(identityProviderRepository)
+      .overrideProvider(SecretManagerService)
+      .useValue(secretManagerMocked)
+      .overrideProvider(ConfigService)
+      .useValue(configMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
+      .overrideProvider(InstanceService)
+      .useValue(instanceServiceMock)
+      .overrideProvider(FqdnToProviderService)
+      .useValue(fqdnToProviderServiceMock)
+      .compile();
+
+    identityProviderService = await module.get<IdentityProviderService>(
+      IdentityProviderService,
+    );
+
+    jest.resetAllMocks();
+
+    MockDate.set('1970-01-01');
+    secretManagerMocked.encrypt.mockResolvedValueOnce(encryptedSecret);
+    configMock.get.mockResolvedValue(configIdentityProviderMock);
+    identityProviderRepository.insert.mockResolvedValue(insertResultMock);
+    identityProviderRepository.find.mockResolvedValueOnce(
+      identityProvidersMock,
+    );
+
+    instanceServiceMock.isFcaLow.mockReturnValue(false);
+  });
+
+  afterAll(async () => {
+    MockDate.reset();
+    module.close();
+  });
+
+  describe('getAll', () => {
+    it('shoud return the array of all IdentityProviders', async () => {
+      // Given
+      const expectedResult: IIdentityProvider[] = [
+        {
+          id: 'mock-id-1',
+          active: true,
+          display: true,
+          name: 'mock-identity-provider-name-1',
+          title: 'mock-identity-provider-title-1',
+        } as IIdentityProvider,
+        {
+          id: 'mock-id-2',
+          active: false,
+          display: false,
+          name: 'mock-identity-provider-name-2',
+          title: 'mock-identity-provider-title-2',
+        } as IIdentityProvider,
+      ];
+
+      // When
+      const result = await identityProviderService.getAll();
+
+      // Then
+      expect(result.length).toEqual(2);
+      expect(identityProviderRepository.find).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual(expectedResult);
+    });
+
+    it('shoud throw if repository.find is failling ', async () => {
+      // Given
+      const errorMessage = 'any error mock';
+      const thrownMessage = `Unable to retrieve all identity providers : ${errorMessage}`;
+
+      identityProviderRepository.find
+        .mockReset()
+        .mockRejectedValueOnce(new Error(errorMessage));
+
+      // When/Then
+      await expect(identityProviderService.getAll()).rejects.toThrow(
+        thrownMessage,
+      );
+      expect(loggerMock.error).toHaveBeenCalledTimes(1);
+      expect(loggerMock.error).toHaveBeenCalledWith(thrownMessage);
+    });
+  });
+
+  describe('create', () => {
+    const identityProvider: IdentityProviderDTO = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      issuer: 'https://issuer.fr',
+      authorizationUrl: 'https://issuer.fr/auth',
+      tokenUrl: 'https://issuer.fr/token',
+      userInfoUrl: 'https://issuer.fr/userinfo',
+      logoutUrl: 'https://issuer.fr/logout',
+      statusUrl: 'https://issuer.fr/state',
+      jwksUrl: 'https://issuer.fr/discovery',
+      discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
+      discovery: true,
+      clientId: '09a1a257648c1742c74d6a3d84b31943',
+      client_secret: '1234567890AZERTYUIOP',
+      messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
+      redirectionTargetWhenInactive: 'https://issuer.fr/promo',
+      active: false,
+      display: false,
+      isBeta: false,
+      alt: 'MonFI Image',
+      image: 'AliceM.svg',
+      imageFocus: 'AliceM.svg',
+      trustedIdentity: false,
+      eidas: 2,
+      allowedAcr: ['eidas2'],
+      order: 1,
+      emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
+      specificText:
+        "Veuillez fournir une capture d'écran de votre page de profil !",
+      amr: ['pop'],
+      ...additionalFields,
+      modalActive: false,
+      modalTitle: 'title',
+      modalBody: 'body',
+      modalContinueText: 'continueText',
+      modalMoreInfoLabel: 'moreInfoLabel',
+      modalMoreInfoUrl: 'moreInfoUrl',
+    };
+
+    const defaultedProvider = {
+      ...identityProvider,
+    };
+
+    const transformedIntoEntity = {
+      ...defaultedProvider,
+      active: true,
+      display: true,
+      createdAt: new Date('1970-01-01'),
+      updatedAt: new Date('1970-01-01'),
+      updatedBy: 'user',
+      client_secret: 'clientSecret',
+      jwtAlgorithm: [],
+      blacklistByIdentityProviderActivated: false,
+      whitelistByServiceProviderActivated: false,
+      messageToDisplayWhenInactive: 'Disponible prochainement',
+      specificText:
+        'Une erreur est survenue lors de la transmission de votre identité.',
+    };
+
+    const transformedIntoLegacy = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
+      discovery: true,
+      client_secret: '1234567890AZERTYUIOP',
+      active: false,
+      display: false,
+      isBeta: false,
+      alt: 'MonFI Image',
+      image: 'AliceM.svg',
+      imageFocus: 'AliceM.svg',
+      trustedIdentity: false,
+      eidas: 2,
+      order: 1,
+      specificText:
+        "Veuillez fournir une capture d'écran de votre page de profil !",
+      ...additionalFields,
+      hoverMsg: 'SUPER MESSAGE !!!',
+      hoverRedirectLink: 'https://issuer.fr/promo',
+      clientID: '09a1a257648c1742c74d6a3d84b31943',
+      authzURL: 'https://issuer.fr/auth',
+      statusURL: 'https://issuer.fr/state',
+      tokenURL: 'https://issuer.fr/token',
+      userInfoURL: 'https://issuer.fr/userinfo',
+      endSessionURL: 'https://issuer.fr/logout',
+      jwksURL: 'https://issuer.fr/discovery',
+      WhitelistByServiceProviderActivated: true,
+      mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',
+      url: 'https://issuer.fr',
+    };
+
+    beforeEach(() => {
+      // tslint:disable-next-line:no-string-literal
+      identityProviderService['setDefaultValues'] = jest
+        .fn()
+        .mockResolvedValue(defaultedProvider);
+      identityProviderService[
+        // tslint:disable-next-line:no-string-literal
+        'transformIntoEntity'
+      ] = jest.fn().mockResolvedValue(transformedIntoEntity);
+      // tslint:disable-next-line:no-string-literal
+      identityProviderService['tranformIntoLegacy'] = jest
+        .fn()
+        .mockReturnValue(transformedIntoLegacy);
+      identityProviderRepository.insert = jest
+        .fn()
+        .mockResolvedValue({ identifiers: [{ _id: objectId }] });
+
+      // tslint:disable-next-line:no-string-literal
+      identityProviderService['track'] = jest.fn();
+    });
+
+    it('should call setDefaultValues', async () => {
+      // WHEN
+      await identityProviderService.create(identityProvider, 'user');
+
+      // THEN
+      // tslint:disable-next-line:no-string-literal
+      expect(identityProviderService['setDefaultValues']).toHaveBeenCalledTimes(
+        1,
+      );
+      // tslint:disable-next-line:no-string-literal
+      expect(identityProviderService['setDefaultValues']).toHaveBeenCalledWith(
+        identityProvider,
+      );
+    });
+
+    it('should call transformIntoEntity', async () => {
+      // WHEN
+      await identityProviderService.create(identityProvider, 'user');
+
+      // THEN
+      expect(
+        // tslint:disable-next-line:no-string-literal
+        identityProviderService['transformIntoEntity'],
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        // tslint:disable-next-line:no-string-literal
+        identityProviderService['transformIntoEntity'],
+      ).toHaveBeenCalledWith(defaultedProvider, 'user', 'create');
+    });
+
+    it('should call tranformIntoLegacy', async () => {
+      // WHEN
+      await identityProviderService.create(identityProvider, 'user');
+
+      // THEN
+      expect(
+        // tslint:disable-next-line:no-string-literal
+        identityProviderService['tranformIntoLegacy'],
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        // tslint:disable-next-line:no-string-literal
+        identityProviderService['tranformIntoLegacy'],
+      ).toHaveBeenCalledWith(transformedIntoEntity);
+    });
+
+    it('should call identityProviderRepository.insert', async () => {
+      // WHEN
+      await identityProviderService.create(identityProvider, 'user');
+
+      // THEN
+      expect(identityProviderRepository.insert).toHaveBeenCalledTimes(1);
+      expect(identityProviderRepository.insert).toHaveBeenCalledWith(
+        transformedIntoLegacy,
+      );
+    });
+
+    it('should call the tracking method of the service', async () => {
+      // WHEN
+      await identityProviderService.create(identityProvider, 'user');
+
+      // THEN
+      // tslint:disable-next-line:no-string-literal
+      expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
+      // tslint:disable-next-line:no-string-literal
+      expect(identityProviderService['track']).toHaveBeenCalledWith({
+        entity: 'identity-provider',
+        action: 'create',
+        user: 'user',
+        id: objectId,
+        name: identityProvider.name,
+      });
+    });
+
+    it('should return saved operation', async () => {
+      // WHEN
+      const result = await identityProviderService.create(
+        identityProvider,
+        'user',
+      );
+
+      // THEN
+      expect(result).toEqual(objectId);
+    });
+
+    it('should add fqdns when it is AC instance', async () => {
+      // GIVEN
+      instanceServiceMock.isFcaLow.mockReturnValue(true);
+      const fqdns = ['stendhal.fr', 'woolf.uk'];
+      const identityProviderWithFqdns = { ...defaultedProvider, fqdns };
+
+      identityProviderService[
+        'setDefaultValues'
+      ] = jest.fn().mockResolvedValue({ ...defaultedProvider, fqdns });
+
+      fqdnToProviderServiceMock.createFqdnsWithAcceptance.mockReturnValue([
+        { acceptsDefaultIdp: true, fqdn: fqdns[0] },
+        { acceptsDefaultIdp: true, fqdn: fqdns[1] },
+      ]);
+
+      // WHEN
+      await identityProviderService.create(identityProviderWithFqdns, 'user');
+
+      // THEN
+      expect(fqdnToProviderServiceMock.saveFqdnsProvider).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(fqdnToProviderServiceMock.saveFqdnsProvider).toHaveBeenCalledWith(
+        identityProviderWithFqdns.uid,
+        [
+          { acceptsDefaultIdp: true, fqdn: fqdns[0] },
+          { acceptsDefaultIdp: true, fqdn: fqdns[1] },
+        ],
+      );
+    });
+
+    it('should not add fqdns when fqdns are empty when it is AC instance', async () => {
+      // GIVEN
+      instanceServiceMock.isFcaLow.mockReturnValue(true);
+      const fqdns = [];
+      const identityProviderWithFqdns = { ...defaultedProvider, fqdns };
+
+      identityProviderService[
+        'setDefaultValues'
+      ] = jest.fn().mockResolvedValue({ ...defaultedProvider, fqdns });
+
+      // WHEN
+      await identityProviderService.create(identityProviderWithFqdns, 'user');
+
+      // THEN
+      expect(fqdnToProviderServiceMock.saveFqdnsProvider).toHaveBeenCalledTimes(
+        0,
+      );
+    });
+  });
+
+  describe('update()', () => {
+    const idMock = objectId;
+    const userMock = 'userMockValue';
+    const methodMock = 'update';
+    const identityProviderMock = ({
+      _id: objectId,
+      uid: 'MonFI',
+      name: 'MonFI',
+    } as unknown) as IdentityProvider;
+    const identityProviderToUpdate: IdentityProviderDTO = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      issuer: 'https://new-issuer.fr',
+      logoutUrl: '',
+      statusUrl: '',
+      discoveryUrl: 'https://discoveryurl.com',
+      discovery: true,
+      clientId: 'new-09a1a257648c1742c74d6a3d84b31943',
+      client_secret: '1234567890AZERTYUIOP',
+      messageToDisplayWhenInactive: '',
+      redirectionTargetWhenInactive: '',
+      active: true,
+      display: true,
+      isBeta: false,
+      alt: '',
+      image: '',
+      imageFocus: '',
+      trustedIdentity: false,
+      eidas: 2,
+      allowedAcr: ['eidas2'],
+      order: 0,
+      emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
+      specificText: '',
+      amr: ['pop'],
+      ...additionalFields,
+      modalActive: false,
+      modalTitle: 'title',
+      modalBody: 'body',
+      modalContinueText: 'continueText',
+      modalMoreInfoLabel: 'moreInfoLabel',
+      modalMoreInfoUrl: 'moreInfoUrl',
+    };
+
+    const transformedIntoEntity = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      issuer: 'https://new-issuer.fr',
+      logoutUrl: '',
+      statusUrl: '',
+      discoveryUrl: 'https://discoveryurl.com',
+      discovery: true,
+      clientId: 'new-09a1a257648c1742c74d6a3d84b31943',
+      messageToDisplayWhenInactive: '',
+      redirectionTargetWhenInactive: '',
+      active: true,
+      display: true,
+      isBeta: false,
+      alt: '',
+      image: '',
+      imageFocus: '',
+      trustedIdentity: false,
+      eidas: 2,
+      order: 0,
+      emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
+      specificText: '',
+      ...additionalFields,
+      createdAt: new Date('1970-01-01'),
+      updatedAt: new Date('1970-01-01'),
+      updatedBy: 'user',
+      client_secret: secretManagerMocked,
+      jwtAlgorithm: [],
+      blacklistByIdentityProviderActivated: false,
+      whitelistByServiceProviderActivated: false,
+    };
+
+    const transformedIntoEntityWithoutUidNorCreatedAt = {
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      issuer: 'https://new-issuer.fr',
+      logoutUrl: '',
+      statusUrl: '',
+      discoveryUrl: 'https://discoveryurl.com',
+      discovery: true,
+      clientId: 'new-09a1a257648c1742c74d6a3d84b31943',
+      messageToDisplayWhenInactive: '',
+      redirectionTargetWhenInactive: '',
+      active: true,
+      display: true,
+      isBeta: false,
+      alt: '',
+      image: '',
+      imageFocus: '',
+      trustedIdentity: false,
+      eidas: 2,
+      order: 0,
+      emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
+      specificText: '',
+      ...additionalFields,
+      updatedAt: new Date('1970-01-01'),
+      updatedBy: 'user',
+      client_secret: secretManagerMocked,
+      jwtAlgorithm: [],
+      blacklistByIdentityProviderActivated: false,
+      whitelistByServiceProviderActivated: false,
+    };
+
+    const transformedIntoLegacy = {
+      _id: objectId,
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
+      discovery: true,
+      client_secret: '1234567890AZERTYUIOP',
+      active: false,
+      display: false,
+      isBeta: false,
+      alt: 'MonFI Image',
+      image: 'AliceM.svg',
+      imageFocus: 'AliceM.svg',
+      trustedIdentity: false,
+      eidas: 2,
+      order: 1,
+      specificText:
+        "Veuillez fournir une capture d'écran de votre page de profil !",
+      ...additionalFields,
+      hoverMsg: 'SUPER MESSAGE !!!',
+      hoverRedirectLink: 'https://issuer.fr/promo',
+      clientID: '09a1a257648c1742c74d6a3d84b31943',
+      authzURL: 'https://issuer.fr/auth',
+      statusURL: 'https://issuer.fr/state',
+      tokenURL: 'https://issuer.fr/token',
+      userInfoURL: 'https://issuer.fr/userinfo',
+      endSessionURL: 'https://issuer.fr/logout',
+      jwksURL: 'https://issuer.fr/discovery',
+      WhitelistByServiceProviderActivated: true,
+      mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',
+      url: 'https://issuer.fr',
+    };
+
+    const updatedIdentityProvider = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
+      discovery: true,
+      client_secret: '1234567890AZERTYUIOP',
+      active: false,
+      display: false,
+      isBeta: false,
+      alt: 'MonFI Image',
+      image: 'AliceM.svg',
+      imageFocus: 'AliceM.svg',
+      trustedIdentity: false,
+      eidas: 2,
+      order: 1,
+      specificText:
+        "Veuillez fournir une capture d'écran de votre page de profil !",
+      ...additionalFields,
+      hoverMsg: 'SUPER MESSAGE !!!',
+      hoverRedirectLink: 'https://issuer.fr/promo',
+      clientID: '09a1a257648c1742c74d6a3d84b31943',
+      statusURL: 'https://issuer.fr/state',
+      endSessionURL: 'https://issuer.fr/logout',
+      WhitelistByServiceProviderActivated: true,
+      mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',
+      url: 'https://issuer.fr',
+    };
+
+    beforeEach(() => {
+      // tslint:disable-next-line:no-string-literal
+      identityProviderService['track'] = jest.fn();
+      identityProviderService[
+        // tslint:disable-next-line:no-string-literal
+        'transformIntoEntity'
+      ] = jest.fn().mockResolvedValue(transformedIntoEntity);
+      // tslint:disable-next-line:no-string-literal
+      identityProviderService['tranformIntoLegacy'] = jest
+        .fn()
+        .mockReturnValue(transformedIntoLegacy);
+      identityProviderRepository.save.mockResolvedValue(
+        updatedIdentityProvider,
+      );
+      identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
+        identityProviderMock,
+      );
+      // identityProviderRepository.save.mockResolvedValueOnce(identityProviderMock);
+      identityProviderService.buildModifier = jest
+        .fn()
+        .mockReturnValueOnce(transformedIntoLegacy);
+    });
+
+    it('should call the tracking method of the service', async () => {
+      // WHEN
+      await identityProviderService.update(
+        objectId,
+        identityProviderToUpdate,
+        userMock,
+      );
+
+      // THEN
+      // tslint:disable-next-line:no-string-literal
+      expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
+      // tslint:disable-next-line:no-string-literal
+      expect(identityProviderService['track']).toHaveBeenCalledWith({
+        entity: 'identity-provider',
+        action: 'update',
+        user: userMock,
+        name: 'MonFI',
+        id: objectId,
+      });
+    });
+
+    it('should call transformIntoEntity', async () => {
+      // WHEN
+      await identityProviderService.update(
+        idMock,
+        identityProviderToUpdate,
+        userMock,
+      );
+
+      // THEN
+      expect(
+        // tslint:disable-next-line:no-string-literal
+        identityProviderService['transformIntoEntity'],
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        // tslint:disable-next-line:no-string-literal
+        identityProviderService['transformIntoEntity'],
+      ).toHaveBeenCalledWith(identityProviderToUpdate, userMock, methodMock);
+    });
+
+    it('should call tranformIntoLegacy', async () => {
+      // WHEN
+      await identityProviderService.update(
+        idMock,
+        identityProviderToUpdate,
+        userMock,
+      );
+
+      // THEN
+      expect(
+        // tslint:disable-next-line:no-string-literal
+        identityProviderService['tranformIntoLegacy'],
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        // tslint:disable-next-line:no-string-literal
+        identityProviderService['tranformIntoLegacy'],
+      ).toHaveBeenCalledWith(transformedIntoEntityWithoutUidNorCreatedAt);
+    });
+
+    it('should call identityProviderRepository.findOneAndUpdate', async () => {
+      // WHEN
+      await identityProviderService.update(
+        idMock,
+        identityProviderToUpdate,
+        userMock,
+      );
+
+      // THEN
+      expect(identityProviderRepository.save).toHaveBeenCalledTimes(1);
+      expect(identityProviderRepository.save).toHaveBeenCalledWith(
+        transformedIntoLegacy,
+      );
+    });
+
+    it('should return the updated identityProvider', async () => {
+      // WHEN
+      const result = await identityProviderService.update(
+        idMock,
+        identityProviderToUpdate,
+        userMock,
+      );
+
+      // THEN
+      expect(result).toEqual(updatedIdentityProvider);
+    });
+
+    it('should update fqdns when it is AC instance', async () => {
+      // GIVEN
+      instanceServiceMock.isFcaLow.mockReturnValue(true);
+      const uid = 'MonFI';
+
+      const fqdns = ['stendhal.fr', 'woolf.uk'];
+      const identityProviderWithFqdns = { ...identityProviderToUpdate, fqdns };
+      identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
+        identityProviderMock,
+      );
+      identityProviderRepository.save.mockResolvedValueOnce(
+        identityProviderMock,
+      );
+
+      // WHEN
+      await identityProviderService.update(
+        idMock,
+        identityProviderWithFqdns,
+        userMock,
+      );
+
+      // THEN
+      expect(
+        fqdnToProviderServiceMock.updateFqdnsProvider,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        fqdnToProviderServiceMock.updateFqdnsProvider,
+      ).toHaveBeenCalledWith(uid, fqdns, idMock);
+    });
+  });
+
+  describe('track', () => {
+    it('should call logger.businessEvent()', () => {
+      // Given
+      const argsMock = {} as ICrudTrack;
+      // When
+      // tslint:disable-next-line:no-string-literal
+      identityProviderService['track'](argsMock);
+      // Then
+      expect(loggerMock.businessEvent).toHaveBeenCalledTimes(1);
+      expect(loggerMock.businessEvent).toHaveBeenCalledWith(argsMock);
+    });
+  });
+
+  describe('should delete identity provider by id', () => {
+    beforeEach(() => {
+      const identityProviderMock = ({
+        _id: objectId,
+        uid: 'MonFI',
+        name: 'MonFI',
+      } as unknown) as IdentityProvider;
+
+      identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
+        identityProviderMock,
+      );
+    });
+    it('should call the delete function of the identityProviderRepository with an ID as argument', async () => {
+      // set up
+      const expectedRepositoryDeleteArguments = { _id: objectId };
+      const user = 'mockUsername';
+      // action
+      await identityProviderService.deleteIdentityProvider(objectId, user);
+      // assertion
+      expect(identityProviderRepository.delete).toHaveBeenCalledTimes(1);
+      expect(identityProviderRepository.delete).toHaveBeenCalledWith(
+        expectedRepositoryDeleteArguments,
+      );
+    });
+
+    it('should call the tracking method of the service', async () => {
+      // Given
+      const user = 'mockUsername';
+      // tslint:disable-next-line:no-string-literal
+      identityProviderService['track'] = jest.fn();
+      // When
+      await identityProviderService.deleteIdentityProvider(objectId, user);
+      // Then
+      // tslint:disable-next-line:no-string-literal
+      expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
+      // tslint:disable-next-line:no-string-literal
+      expect(identityProviderService['track']).toHaveBeenCalledWith({
+        entity: 'identity-provider',
+        action: 'delete',
+        name: 'MonFI',
+        user,
+        id: objectId,
+      });
+    });
+
+    it('should delete fqdns when it is AC instance', async () => {
+      // GIVEN
+      instanceServiceMock.isFcaLow.mockReturnValue(true);
+      const uid = 'MonFI';
+      const identityProviderMock = ({
+        _id: objectId,
+        uid,
+        name: 'MonFI',
+      } as unknown) as IdentityProvider;
+
+      identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
+        identityProviderMock,
+      );
+
+      // WHEN
+      await identityProviderService.deleteIdentityProvider(
+        identityProviderMock._id,
+        'user',
+      );
+
+      // THEN
+      expect(
+        fqdnToProviderServiceMock.deleteFqdnsProvider,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        fqdnToProviderServiceMock.deleteFqdnsProvider,
+      ).toHaveBeenCalledWith(uid);
+    });
+  });
+
+  describe('buildModifier', () => {
+    let identityProviderMock: IIdentityProviderLegacy;
+    beforeEach(() => {
+      identityProviderMock = {
+        uid: 'MonFI',
+        name: 'MonFI',
+        url: 'https://issuer.fr',
+        hoverMsg: 'Disponible prochainement',
+        hoverRedirectLink: '',
+        display: true,
+        title: 'Mon FI mieux écrit',
+        image: '',
+        alt: '',
+        imageFocus: '',
+        eidas: 1,
+        mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',
+        statusURL: '',
+        authzURL: 'https://issuer.fr/auth',
+        tokenURL: 'https://issuer.fr/token',
+        userInfoURL: 'https://issuer.fr/userinfo',
+        endSessionURL: '',
+        discoveryUrl: 'https://discoveryUrl.com',
+        discovery: true,
+        clientID: '09a1a257648c1742c74d6a3d84b31943',
+        client_secret: '**********',
+        order: 0,
+        jwksURL: '',
+        jwtAlgorithm: [],
+        trustedIdentity: false,
+        specificText:
+          'Une erreur est survenue lors de la transmission de votre identité.',
+        active: true,
+        isBeta: false,
+        createdAt: new Date('1970-01-01T00:00:00.000Z'),
+        updatedAt: new Date('1970-01-01T00:00:00.000Z'),
+        updatedBy: 'user',
+        blacklistByIdentityProviderActivated: false,
+        WhitelistByServiceProviderActivated: false,
+        amr: ['pop'],
+        modal: {
+          active: false,
+          title: 'title',
+          body: 'body',
+          continueText: 'continueText',
+          moreInfoLabel: 'moreInfoLabel',
+          moreInfoUrl: 'moreInfoUrl',
+        },
+        ...additionalFields,
+      };
+    });
+    it('Should generate modifier with discovery mode', () => {
+      // Given
+      const providerToSave = JSON.parse(JSON.stringify(identityProviderMock));
+      delete providerToSave.authzURL;
+      delete providerToSave.tokenURL;
+      delete providerToSave.userInfoURL;
+      delete providerToSave.jwksURL;
+
+      // When
+      const result = identityProviderService.buildModifier(providerToSave);
+
+      // Then
+      expect(result).toStrictEqual({
+        $set: {
+          ...providerToSave,
+        },
+        $unset: {
+          authzURL: '',
+          tokenURL: '',
+          userInfoURL: '',
+          jwksURL: '',
+        },
+      });
+    });
+
+    it('Should generate modifier without discovery', () => {
+      // Given
+      const providerToSave = JSON.parse(JSON.stringify(identityProviderMock));
+      delete providerToSave.discoveryUrl;
+      providerToSave.discovery = false;
+
+      // When
+      const result = identityProviderService.buildModifier(providerToSave);
+
+      // Then
+      expect(result).toStrictEqual({
+        $set: {
+          ...providerToSave,
+        },
+        $unset: {
+          discoveryUrl: '',
+        },
+      });
+    });
+  });
+
+  describe('setDefaultValues', () => {
+    const identityProvider: IdentityProviderDTO = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      issuer: 'https://issuer.fr',
+      authorizationUrl: 'https://issuer.fr/auth',
+      tokenUrl: 'https://issuer.fr/token',
+      userInfoUrl: 'https://issuer.fr/userinfo',
+      logoutUrl: 'https://issuer.fr/logout',
+      statusUrl: 'https://issuer.fr/state',
+      jwksUrl: 'https://issuer.fr/discovery',
+      discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
+      discovery: true,
+      clientId: '09a1a257648c1742c74d6a3d84b31943',
+      client_secret: '1234567890AZERTYUIOP',
+      messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
+      redirectionTargetWhenInactive: 'https://issuer.fr/promo',
+      active: false,
+      display: false,
+      isBeta: false,
+      alt: 'MonFI Image',
+      image: 'AliceM.svg',
+      imageFocus: 'AliceM.svg',
+      trustedIdentity: false,
+      eidas: 2,
+      allowedAcr: ['eidas2'],
+      order: 1,
+      emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
+      specificText:
+        "Veuillez fournir une capture d'écran de votre page de profil !",
+      amr: ['pop'],
+      ...additionalFields,
+      modalActive: false,
+      modalTitle: 'title',
+      modalBody: 'body',
+      modalContinueText: 'continueText',
+      modalMoreInfoLabel: 'moreInfoLabel',
+      modalMoreInfoUrl: 'moreInfoUrl',
+    };
+    const configMockIdentityProvider = {
+      featureHandlers: {},
+      response_types: ['response_types'],
+      redirect_uris: ['http:redirect_uris.fr'],
+      post_logout_redirect_uris: ['http://post_logout_redirect_uris'],
+      revocation_endpoint_auth_method: ['client_secret_post'],
+    };
+
+    beforeEach(() => {
+      configMock.get.mockReturnValue(configMockIdentityProvider);
+      (uuidv4 as jest.Mock).mockReturnValue('76eded44d32b40c0cb1006065');
+    });
+    it('should retrieve identity provider config', async () => {
+      // WHEN
+      // tslint:disable-next-line:no-string-literal
+      await identityProviderService['setDefaultValues'](identityProvider);
+
+      // THEN
+      expect(configMock.get).toHaveBeenCalledTimes(1);
+      expect(configMock.get).toHaveBeenCalledWith('identity-provider');
+    });
+
+    it('should call uid library', async () => {
+      // WHEN
+      // tslint:disable-next-line:no-string-literal
+      await identityProviderService['setDefaultValues'](identityProvider);
+
+      // THEN
+      expect(uuidv4).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return a provider with a uid and default values', async () => {
+      // GIVEN
+      const expectedIdentityProvider = {
+        ...identityProvider,
+      };
+
+      // WHEN
+      // tslint:disable-next-line:no-string-literal
+      const result = await identityProviderService['setDefaultValues'](
+        identityProvider,
+      );
+
+      // THEN
+      expect(result).toEqual(expectedIdentityProvider);
+    });
+  });
+
+  describe('transformIntoEntity', () => {
+    const identityProviderWithDefaultValues: IdentityProviderDTO = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      issuer: 'https://issuer.fr',
+      authorizationUrl: 'https://issuer.fr/auth',
+      tokenUrl: 'https://issuer.fr/token',
+      userInfoUrl: 'https://issuer.fr/userinfo',
+      logoutUrl: 'https://issuer.fr/logout',
+      statusUrl: 'https://issuer.fr/state',
+      jwksUrl: 'https://issuer.fr/discovery',
+      discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
+      discovery: true,
+      clientId: '09a1a257648c1742c74d6a3d84b31943',
+      client_secret: '1234567890AZERTYUIOP',
+      messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
+      redirectionTargetWhenInactive: 'https://issuer.fr/promo',
+      active: false,
+      display: false,
+      isBeta: false,
+      alt: 'MonFI Image',
+      image: 'AliceM.svg',
+      imageFocus: 'AliceM.svg',
+      trustedIdentity: false,
+      eidas: 2,
+      allowedAcr: ['eidas2'],
+      order: 1,
+      emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
+      specificText:
+        "Veuillez fournir une capture d'écran de votre page de profil !",
+      amr: ['pop'],
+      ...additionalFields,
+      modalActive: false,
+      modalTitle: 'title',
+      modalBody: 'body',
+      modalContinueText: 'continueText',
+      modalMoreInfoLabel: 'moreInfoLabel',
+      modalMoreInfoUrl: 'moreInfoUrl',
+    };
+
+    it('should call encrypt', async () => {
+      // WHEN
+      // tslint:disable-next-line:no-string-literal
+      await identityProviderService['transformIntoEntity'](
+        identityProviderWithDefaultValues,
+        'user',
+        'create',
+      );
+
+      // THEN
+      expect(secretManagerMocked.encrypt).toHaveBeenCalledTimes(1);
+      expect(secretManagerMocked.encrypt).toHaveBeenCalledWith(
+        identityProviderWithDefaultValues.client_secret,
+      );
+    });
+
+    it('should return a transform identity provider', async () => {
+      // GIVEN
+      const expectedTransformedIdentityProvider = {
+        ...identityProviderWithDefaultValues,
+        active: false,
+        display: false,
+        createdAt: new Date('1970-01-01'),
+        updatedAt: new Date('1970-01-01'),
+        updatedBy: 'user',
+        client_secret: encryptedSecret,
+        jwtAlgorithm: [],
+        blacklistByIdentityProviderActivated: false,
+        whitelistByServiceProviderActivated: false,
+        messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
+        specificText:
+          "Veuillez fournir une capture d'écran de votre page de profil !",
+      };
+
+      // WHEN
+      // tslint:disable-next-line:no-string-literal
+      const result = await identityProviderService['transformIntoEntity'](
+        identityProviderWithDefaultValues,
+        'user',
+        'create',
+      );
+
+      // THEN
+      expect(result).toEqual(expectedTransformedIdentityProvider);
+    });
+  });
+
+  describe('tranformIntoLegacy', () => {
+    beforeEach(() => {
+      configMock.get.mockReturnValue({
+        defaultValues: {
+          featureHandlers: {
+            coreVerify: 'coreVerify',
+            authenticationEmail: 'authenticationEmail',
+            idpIdentityCheck: 'idpIdentityCheck',
+          },
+          response_types: ['code'],
+          revocation_endpoint_auth_method: 'client_secret_post',
+        },
+      });
+    });
+
+    const identityProviderTransformedToEntity: IIdentityProvider = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      issuer: 'https://issuer.fr',
+      authorizationUrl: 'https://issuer.fr/auth',
+      tokenUrl: 'https://issuer.fr/token',
+      userInfoUrl: 'https://issuer.fr/userinfo',
+      logoutUrl: 'https://issuer.fr/logout',
+      statusUrl: 'https://issuer.fr/state',
+      jwksUrl: 'https://issuer.fr/discovery',
+      discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
+      discovery: true,
+      clientId: '09a1a257648c1742c74d6a3d84b31943',
+      redirectionTargetWhenInactive: 'https://issuer.fr/promo',
+      active: false,
+      display: false,
+      isBeta: false,
+      alt: 'MonFI Image',
+      image: 'AliceM.svg',
+      imageFocus: 'AliceM.svg',
+      trustedIdentity: false,
+      eidas: 1,
+      order: 1,
+      emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
+      ...additionalFields,
+      createdAt: new Date('1970-01-01'),
+      updatedAt: new Date('1970-01-01'),
+      updatedBy: 'user',
+      client_secret: encryptedSecret,
+      jwtAlgorithm: [],
+      blacklistByIdentityProviderActivated: false,
+      whitelistByServiceProviderActivated: false,
+      messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
+      specificText:
+        "Veuillez fournir une capture d'écran de votre page de profil !",
+      amr: ['pop'],
+      modalActive: false,
+      modalTitle: 'title',
+      modalBody: 'body',
+      modalContinueText: 'continueText',
+      modalMoreInfoLabel: 'moreInfoLabel',
+      modalMoreInfoUrl: 'moreInfoUrl',
+    };
+    // GIVEN
+    const identityProviderTransformedIntoLegacy: IIdentityProviderLegacy = {
+      uid: 'MonFI',
+      name: 'MonFI',
+      title: 'Mon FI mieux écrit',
+      discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
+      discovery: true,
+      client_secret: encryptedSecret,
+      active: false,
+      display: false,
+      isBeta: false,
+      alt: 'MonFI Image',
+      image: 'AliceM.svg',
+      imageFocus: 'AliceM.svg',
+      trustedIdentity: false,
+      eidas: 1,
+      order: 1,
+      specificText:
+        "Veuillez fournir une capture d'écran de votre page de profil !",
+      ...additionalFields,
+      jwtAlgorithm: [],
+      createdAt: new Date('1970-01-01'),
+      updatedAt: new Date('1970-01-01'),
+      updatedBy: 'user',
+      hoverMsg: 'SUPER MESSAGE !!!',
+      hoverRedirectLink: 'https://issuer.fr/promo',
+      clientID: '09a1a257648c1742c74d6a3d84b31943',
+      authzURL: 'https://issuer.fr/auth',
+      statusURL: 'https://issuer.fr/state',
+      tokenURL: 'https://issuer.fr/token',
+      userInfoURL: 'https://issuer.fr/userinfo',
+      endSessionURL: 'https://issuer.fr/logout',
+      jwksURL: 'https://issuer.fr/discovery',
+      blacklistByIdentityProviderActivated: false,
+      WhitelistByServiceProviderActivated: false,
+      mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',
+      url: 'https://issuer.fr',
+      amr: ['pop'],
+      featureHandlers: {
+        coreVerify: 'coreVerify',
+        authenticationEmail: 'authenticationEmail',
+        idpIdentityCheck: 'idpIdentityCheck',
+      },
+      response_types: ['code'],
+      modal: {
+        active: false,
+        title: 'title',
+        body: 'body',
+        continueText: 'continueText',
+        moreInfoLabel: 'moreInfoLabel',
+        moreInfoUrl: 'moreInfoUrl',
+      },
+    };
+
+    it('should return a transformed identity provider', () => {
+      // WHEN
+      // tslint:disable-next-line:no-string-literal
+      const result = identityProviderService['tranformIntoLegacy'](
+        identityProviderTransformedToEntity,
+      );
+
+      // THEN
+      expect(result).toEqual(identityProviderTransformedIntoLegacy);
+    });
+
+    it('should return a transformed identity provider without modal if instance is AC', () => {
+      // Given
+      instanceServiceMock.isFcaLow.mockReturnValue(true);
+
+      // WHEN
+      // tslint:disable-next-line:no-string-literal
+      const result = identityProviderService['tranformIntoLegacy'](
+        identityProviderTransformedToEntity,
+      );
+
+      // THEN
+      expect(result).not.toHaveProperty('modal');
+    });
+
+    it('should return a transformed identity provider keeping the MonComptePro feature handlers', () => {
+      // Given
+      const monCompteProFields = {
+        featureHandlers: {
+          coreVerify: 'core-fca-mcp-verify',
+          authenticationEmail: null,
+          coreAuthorization: 'core-fca-mcp-authorization',
+        },
+      };
+
+      const monCompteProIdentityProvider = {
+        ...identityProviderTransformedToEntity,
+        ...monCompteProFields,
+      };
+
+      // WHEN
+      // tslint:disable-next-line:no-string-literal
+      const result = identityProviderService['tranformIntoLegacy'](
+        monCompteProIdentityProvider,
+      );
+
+      // THEN
+      expect(result).toEqual({
+        ...identityProviderTransformedIntoLegacy,
+        ...monCompteProFields,
+      });
+    });
+  });
+});
