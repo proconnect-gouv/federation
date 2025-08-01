@@ -26,7 +26,7 @@ COPY package.json yarn.lock ./
 COPY fc-exploitation/package.json ./fc-exploitation/
 COPY shared/package.json ./shared/
 # ARM64 emulation can take up to 4.5 minutes, so allow 7 minutes (420s)
-RUN yarn install --production --frozen-lockfile --network-timeout 420000
+RUN yarn install  --immutable --immutable-cache --check-cache --production --network-timeout 420000
 
 FROM ${NODE_IMAGE} AS production
 WORKDIR /var/www/app
