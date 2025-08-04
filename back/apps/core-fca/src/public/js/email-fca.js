@@ -1,4 +1,4 @@
-const LOCAL_STORAGE_MAIL = 'agentConnectEmail';
+const LOCAL_STORAGE_MAIL = 'proConnectEmail';
 
 function init() {
   const input = document.querySelector('#email-input');
@@ -15,9 +15,9 @@ function init() {
     localStorage.setItem(LOCAL_STORAGE_MAIL, loginHint);
     input.value = loginHint;
   } else {
-    const agentConnectEmail = localStorage.getItem(LOCAL_STORAGE_MAIL);
-    if (agentConnectEmail) {
-      input.value = agentConnectEmail;
+    const proConnectEmail = localStorage.getItem(LOCAL_STORAGE_MAIL);
+    if (proConnectEmail) {
+      input.value = proConnectEmail;
     }
   }
 
