@@ -15,19 +15,9 @@ RUN apk add python3 make g++ lscpu
 WORKDIR /tmp/src
 RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
 
-
-## build shared
-WORKDIR /tmp/src/shared
-RUN yarn run build --outDir /federation-admin/shared
-
 ## build fc-exploitation
 WORKDIR /tmp/src/fc-exploitation
 RUN yarn run build
-
-WORKDIR /federation-admin/shared
-RUN mv /tmp/src/shared/package.json ./ && \
-    mv /tmp/src/shared/views ./ && \
-    mv /tmp/src/shared/user/emails ./user/
 
 WORKDIR /federation-admin/fc-exploitation
 RUN mv /tmp/src/fc-exploitation/package.json ./ && \
