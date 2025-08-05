@@ -8,6 +8,7 @@ include:
   - hybridge.yml
   - core-rie.yml
   - core-prod.yml
+  - admin-prod.yml
 
 services:
   small:
@@ -78,3 +79,9 @@ services:
       - 'core-prod'
       - 'fsa1-low'
       - 'fia1-low'
+      - 'admin-prod'
+
+  admin-prod-stack:
+    image: alpine
+    depends_on:
+      - 'admin-prod'

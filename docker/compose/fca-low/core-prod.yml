@@ -3,7 +3,7 @@
 services:
   core-prod:
     hostname: core-prod
-    image: ghcr.io/proconnect-gouv/federation/core-fca-low:test-build-docker-2
+    image: ghcr.io/proconnect-gouv/federation/core-fca-low:latest
     working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
