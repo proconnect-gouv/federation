@@ -23,7 +23,7 @@ WORKDIR /federation-admin/fc-exploitation
 RUN mv /tmp/src/fc-exploitation/package.json ./ && \
     mv /tmp/src/fc-exploitation/dist ./ && \
     mv /tmp/src/fc-exploitation/views ./ && \
-    mv /tmp/src/fc-exploitation/src/shared/user/emails ./user/
+    mv /tmp/src/fc-exploitation/src/user/emails ./user/
 
 WORKDIR /federation-admin
 RUN mv /tmp/src/yarn.lock ./ && \
