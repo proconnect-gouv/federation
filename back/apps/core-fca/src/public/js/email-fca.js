@@ -11,6 +11,12 @@ function init() {
     loginHint = container.dataset.loginHint;
   }
 
+  // when there is an email in localStorage, we use validate remember me
+
+  // when remember me is enabled, we store the email in localStorage
+
+  // when remember is not enable, we delete the email from localStorage
+
   if (loginHint) {
     localStorage.setItem(LOCAL_STORAGE_MAIL, loginHint);
     input.value = loginHint;

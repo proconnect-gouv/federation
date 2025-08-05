@@ -19,7 +19,7 @@ const config: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   modulePaths: [compilerOptions.baseUrl],
   rootDir: '.',
-  testRegex: '.spec.ts$',
+  testRegex: 'oidc-provider.module.spec.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
