@@ -37,7 +37,7 @@
   },
   "linterOptions": {
     "exclude": [
-      "./fc-exploitation/src/shared/migrations"
+      "./fc-exploitation/src/migrations"
     ]
   },
   "rulesDirectory": [
