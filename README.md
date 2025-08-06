@@ -49,7 +49,7 @@ export COMPOSE_HTTP_TIMEOUT=200
 export CYPRESS_PC_ROOT=$PC_ROOT
 
 # Setup the docker registry url (for now, we still continue to use the ProConnect container registry)
-export PC_DOCKER_REGISTRY= ghcr.io/proconnect-gouv/federation
+export PC_DOCKER_REGISTRY=ghcr.io/proconnect-gouv/federation
 
 # Alias for the docker-stack command (you can add it to your "~/.bash_aliases" if you prefer but don't forget to set the variables before the .bash_aliases sourcing in your .bashrc 😉) :
 alias dks=$PC_ROOT/federation/docker/docker-stack
@@ -62,7 +62,6 @@ mkdir -p $PC_ROOT && cd $PC_ROOT
 
 git clone git@github.com:proconnect-gouv/federation.git
 ```
-
 
 ## Run the application
 
