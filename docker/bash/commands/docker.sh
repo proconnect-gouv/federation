@@ -3,7 +3,7 @@
 _get_node_containers() {
   # log-hub and hybridge containers are still using the old legacy nodejs docker image
   local ancestor_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
-  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-core|^pc-fsa|^pc-fia|^pc-moncomptepro|^pc-dpa|^pc-exploitation-fca-low')
+  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-core|^pc-fsa|^pc-fia|^pc-moncomptepro|^pc-dpa')
 
   echo -e "${ancestor_containers}\n${pattern_containers}" | sort | uniq
 }

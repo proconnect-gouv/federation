@@ -24,6 +24,7 @@ function _hook_admin_prod() {
   cd ${WORKING_DIR}
   ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm:prod schema:drop
   ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm:prod migration:run
+  ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" apk add python3 make g++ lscpu
   ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn install --frozen-lockfile
   ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:prod:load
 
