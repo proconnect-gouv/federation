@@ -41,9 +41,18 @@
 
           <input class="fr-input fr-bx-1v" type="email" id="email-input" spellcheck="off" autocomplete="email" name="email"
                  required />
+          <div class="fr-fieldset__element fr-mt-2w">
+            <div class="fr-checkbox-group fr-checkbox-group--sm">
+                <input name="remember" id="remember-me" type="checkbox" aria-describedby="remember-me-messages">
+                <label class="fr-label" for="remember-me">
+                    Se souvenir de moi
+                </label>
+                <div class="fr-messages-group" id="remember-me-messages" aria-live="assertive">
+                </div>
+            </div>
+          </div>
           <div class="fr-btns-group">
-            <button id="email-submit-button" onclick="" type="submit" class="fr-mt-2w fr-mb-0 fr-btn"
-                    data-testid="interaction-connection-button">
+            <button id="email-submit-button" onclick="" type="submit" class="fr-mb-0 fr-btn" data-testid="interaction-connection-button">
               Continuer
             </button>
           </div>
