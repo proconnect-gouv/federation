@@ -334,5 +334,5 @@ Given(
 );
 
 When('je clique sur la checkbox "se souvenir de moi"', function () {
-  cy.get('input#remember-me').click({ force: true });
+  cy.contains('Se souvenir de moi').click();
 });
