@@ -1,20 +1,27 @@
 #!/usr/bin/env bash
 
-_get_node_containers() {
-  # log-hub and hybridge containers are still using the old legacy nodejs docker image
+_get_containers_for_installing_node_modules() {
+  # ancestor=pc-nodejs means we display the name of the container that is based on the pc-nodejs image
+  # log-hub is still using the old legacy nodejs docker image
   local ancestor_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
-  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-core|^pc-fsa|^pc-fia|^pc-moncomptepro|^pc-dpa|^pc-exploitation-fca-low')
+  # for containers not based on pc-nodejs but still requiring installation in _up, we use a pattern to match their names.  
+  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-exploitation-fca-low')
 
   echo -e "${ancestor_containers}\n${pattern_containers}" | sort | uniq
 }
 
-# Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
-_get_running_containers() {
-  local raw_nodejs_containers=$(_get_node_containers)
-  local raw_all_containers=$(docker ps --format '{{.Names}}')
+# Find which nodejs containers to start
+_get_node_containers_to_start() {
+  local ancestor_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
+  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-core|^pc-fsa|^pc-fia|^pc-moncomptepro|^pc-dpa|^pc-exploitation-fca-low')
 
-  NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
-  PC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
+  local raw_nodejs_containers=$(
+    for container in $ancestor_containers $pattern_containers; do
+      _container_to_compose_name "$container"
+    done | sort | uniq
+  )
+
+  echo ${raw_nodejs_containers}
 }
 
 _reload_rp() {

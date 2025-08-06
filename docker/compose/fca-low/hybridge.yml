@@ -22,14 +22,15 @@ services:
     hostname: bridge-proxy-rie
     image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: bridge-http-proxy-rie
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
+      - '/var/www/app/node_modules'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -53,16 +54,17 @@ services:
     hostname: csmr-rie
     image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: csmr-rie
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
       - broker
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
+      - '/var/www/app/node_modules'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'
@@ -92,10 +94,10 @@ services:
     hostname: fia-rie-low
     image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+      args:
+        INSTANCE: mock-identity-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -103,6 +105,7 @@ services:
         condition: service_healthy
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
+      - '/var/www/app/node_modules'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
       - '${VOLUMES_DIR}/log/:/var/log/app'

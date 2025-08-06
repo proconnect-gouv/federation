@@ -6,6 +6,11 @@ FROM ${NODE_IMAGE} AS dev
 RUN yarn global add pm2@6.0.8
 RUN apk add --no-cache bash
 
+WORKDIR /var/www/app
+
+COPY package.json yarn.lock ./
+RUN yarn install --ignore-engines
+
 
 FROM ${NODE_IMAGE} AS builder
 
