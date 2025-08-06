@@ -332,3 +332,7 @@ Given(
     setCodeChallengeMethod(codeChallengeMethod);
   },
 );
+
+When('je clique sur la checkbox "se souvenir de moi"', function () {
+  cy.get('input#remember-me').click({ force: true });
+});
