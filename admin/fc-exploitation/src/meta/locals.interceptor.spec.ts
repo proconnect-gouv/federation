@@ -1,7 +1,6 @@
 import { ConfigService } from 'nestjs-config';
 import { Test } from '@nestjs/testing';
 import { UserRole } from '../user/roles.enum';
-import { InstanceService } from '../utils/instance.service';
 import { LocalsInterceptor } from './locals.interceptor';
 
 describe('LocalsInterceptor', () => {
@@ -10,19 +9,12 @@ describe('LocalsInterceptor', () => {
     get: jest.fn(),
   };
 
-  const instanceServiceMock = {
-    isFcaLow: jest.fn(),
-    isFc: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [LocalsInterceptor, ConfigService, InstanceService],
+      providers: [LocalsInterceptor, ConfigService],
     })
       .overrideProvider(ConfigService)
       .useValue(configService)
-      .overrideProvider(InstanceService)
-      .useValue(instanceServiceMock)
       .compile();
     localsInterceptor = await module.get<LocalsInterceptor>(LocalsInterceptor);
   });
@@ -87,7 +79,6 @@ describe('LocalsInterceptor', () => {
         { label: 'Sécurité inactif', value: UserRole.INACTIVE_SECURITY },
         { label: 'Utilisateur bloqué', value: UserRole.BLOCKED_USER },
       ]);
-      expect(res.locals.instanceService).toBe(instanceServiceMock);
       expect(next.handle).toBeCalledTimes(1);
     });
   });

@@ -5,16 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigurationService } from './configuration.service';
 import { LocalsInterceptor } from '../meta/locals.interceptor';
 import { TotpService } from '../authentication/totp/totp.service';
-import { InstanceService } from '../utils/instance.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Configuration], 'fc-mongo')],
   controllers: [ConfigurationController],
-  providers: [
-    LocalsInterceptor,
-    ConfigurationService,
-    TotpService,
-    InstanceService,
-  ],
+  providers: [LocalsInterceptor, ConfigurationService, TotpService],
 })
 export class ConfigurationModule {}
