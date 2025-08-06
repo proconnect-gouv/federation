@@ -7,6 +7,8 @@ include:
   - exploitation-fca-low.yml
   - hybridge.yml
   - core-rie.yml
+  - core-prod.yml
+  - admin-prod.yml
 
 services:
   small:
@@ -70,3 +72,16 @@ services:
       - 'csmr-rie'
       - 'fia-rie-low'
       - 'rp-bridge-proxy'
+
+  prod:
+    image: alpine
+    depends_on:
+      - 'core-prod'
+      - 'fsa1-low'
+      - 'fia1-low'
+      - 'admin-prod'
+
+  admin-prod-stack:
+    image: alpine
+    depends_on:
+      - 'admin-prod'
