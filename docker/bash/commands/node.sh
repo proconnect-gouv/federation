@@ -149,9 +149,9 @@ _clean() {
 
   rm -rf back/node_modules
   rm -rf admin/node_modules
-  rm -rf admin/fc-exploitation/node_modules
+  rm -rf admin/node_modules
 
-  rm -rf admin/fc-exploitation/dist
+  rm -rf admin/dist
   rm -rf back/dist
 
   echo "Done cleaning"
