@@ -22,7 +22,7 @@ RUN yarn run build
 WORKDIR /federation-admin
 RUN mv /tmp/admin/package.json ./ && \
     mv /tmp/admin/dist ./ && \
-    mv /tmp/admin/views ./ && \
+    mv /tmp/admin/views ./dist && \
     mv /tmp/admin/src/user/emails ./user/
 
 WORKDIR /federation-admin
