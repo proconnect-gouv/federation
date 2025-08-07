@@ -13,6 +13,7 @@
     "preserveSymlinks": true,
     "moduleResolution": "node",
     "allowJs": true,
+    "skipLibCheck": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist", "public/**/*.js", "cypress/**/*.js"]
 }
