@@ -150,10 +150,8 @@ _clean() {
   rm -rf back/node_modules
   rm -rf admin/node_modules
   rm -rf admin/fc-exploitation/node_modules
-  rm -rf admin/shared/node_modules
 
   rm -rf admin/fc-exploitation/dist
-  rm -rf admin/shared/dist
   rm -rf back/dist
 
   echo "Done cleaning"

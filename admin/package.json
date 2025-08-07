@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "lint": "tslint 'fc-exploitation/src/**/*.ts' 'shared/**/*.ts' --exclude '**/node_modules/**/*'",
+    "lint": "tslint 'fc-exploitation/src/**/*.ts' --exclude '**/node_modules/**/*'",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -36,16 +36,14 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/fc-exploitation/",
-      "<rootDir>/shared/"
+      "<rootDir>/fc-exploitation/"
     ]
   },
   "engines": {
     "node": "22.13.0"
   },
   "workspaces": [
-    "fc-exploitation",
-    "shared"
+    "fc-exploitation"
   ],
   "dependencies": {}
 }

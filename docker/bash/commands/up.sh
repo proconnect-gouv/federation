@@ -13,7 +13,7 @@ function _hook_admin() {
   ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
   ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
 
-  (cd ${FEDERATION_DIR}/admin/shared/cypress/support/ && ./db.sh ${app} create)
+  (cd ${FEDERATION_DIR}/admin/fc-exploitation/cypress/support/ && ./db.sh ${app} create)
 }
 
 
