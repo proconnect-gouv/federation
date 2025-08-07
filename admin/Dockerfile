@@ -23,7 +23,7 @@ WORKDIR /federation-admin
 RUN mv /tmp/admin/package.json ./ && \
     mv /tmp/admin/dist ./ && \
     mv /tmp/admin/views ./dist && \
-    mv /tmp/admin/src/user/emails ./user/
+    mv /tmp/admin/src/user/emails ./dist/src/user/
 
 WORKDIR /federation-admin
 RUN mv /tmp/admin/yarn.lock ./ && \
