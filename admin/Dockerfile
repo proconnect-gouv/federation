@@ -8,26 +8,25 @@ RUN apk add --no-cache bash python3 make g++ lscpu
 
 FROM ${NODE_IMAGE} AS builder
 
-COPY . /tmp/src
+COPY . /tmp/admin
 
 RUN apk add python3 make g++ lscpu
 
-WORKDIR /tmp/src
+WORKDIR /tmp/admin
 RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
 
 ## build fc-exploitation
-WORKDIR /tmp/src/fc-exploitation
+WORKDIR /tmp/admin
 RUN yarn run build
 
-WORKDIR /federation-admin/fc-exploitation
-RUN mv /tmp/src/fc-exploitation/package.json ./ && \
-    mv /tmp/src/fc-exploitation/dist ./ && \
-    mv /tmp/src/fc-exploitation/views ./ && \
-    mv /tmp/src/fc-exploitation/src/user/emails ./user/
+WORKDIR /federation-admin
+RUN mv /tmp/admin/package.json ./ && \
+    mv /tmp/admin/dist ./ && \
+    mv /tmp/admin/views ./dist && \
+    mv /tmp/admin/src/user/emails ./dist/src/user/
 
 WORKDIR /federation-admin
-RUN mv /tmp/src/yarn.lock ./ && \
-    mv /tmp/src/package.json ./ && \
+RUN mv /tmp/admin/yarn.lock ./ && \
     yarn install --ignore-engines --immutable --immutable-cache --check-cache --production && \
     rm -f package.json */package.json yarn.lock
 
