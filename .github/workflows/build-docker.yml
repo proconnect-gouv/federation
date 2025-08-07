@@ -9,7 +9,7 @@ on:
 
 jobs:
   build_docker_back:
-    name: 🐳 Build and register docker images
+    name: 🐳 Build docker images
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
@@ -94,7 +94,7 @@ jobs:
           - instance: mock-service-provider-fca-low
 
   build_docker_admin:
-    name: 🐳 Build and register admin docker image
+    name: 🐳 Build admin docker image
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
