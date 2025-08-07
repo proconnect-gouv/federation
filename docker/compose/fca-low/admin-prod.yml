@@ -2,7 +2,7 @@ services:
   admin-prod:
     hostname: admin-prod
     image: ghcr.io/proconnect-gouv/federation/fc-exploitation-v2:latest
-    working_dir: /var/www/app/fc-exploitation
+    working_dir: /var/www/app
     depends_on:
       pg-exploitation-fca-low:
         condition: service_started
@@ -15,8 +15,8 @@ services:
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
       - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${FEDERATION_DIR}/admin/fc-exploitation/package.json:/var/www/app/fc-exploitation/package.json:ro'
-      - '${FEDERATION_DIR}/admin/shared/fixtures:/var/www/app/shared/fixtures'
+      - '${FEDERATION_DIR}/admin/package.json:/var/www/app/package.json:ro'
+      - '${FEDERATION_DIR}/admin/fixtures:/var/www/app/fixtures'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/shared/.env/postgres.env'
