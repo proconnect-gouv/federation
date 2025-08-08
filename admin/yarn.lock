@@ -10591,10 +10591,10 @@ x-xss-protection@1.3.0:
   resolved "https://registry.yarnpkg.com/x-xss-protection/-/x-xss-protection-1.3.0.tgz#3e3a8dd638da80421b0e9fff11a2dbe168f6d52c"
   integrity sha512-kpyBI9TlVipZO4diReZMAHWtS0MMa/7Kgx8hwG/EuZLiA6sg4Ah/4TRdASHhRRN3boobzcYgFRUFSgHRge6Qhg==
 
-xml-beautifier@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/xml-beautifier/-/xml-beautifier-0.4.3.tgz#2d5e320e19bf70ac7343c01135a1f99df08b4c37"
-  integrity sha512-jtqVgG2mXX+mZYSq80tPWBcrtPGL3JwCtcME52c7Aau1R34quuJw86R9A+KFO7F6EQAaagUmMXGhDRKGV3UXhw==
+xml-beautifier@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/xml-beautifier/-/xml-beautifier-0.5.0.tgz#476fd7118b972c2ec5863babca6812934d34bb56"
+  integrity sha512-QG/qiHeolHUd1tAtM+5zHxTzDprb8qvhmIYUYV1E9QK/jTFlrAa1Mz7QQqJPeqc3uuFAGzTOhjvbdx2hOP6bHw==
   dependencies:
     repeat-string "1.6.1"
 
