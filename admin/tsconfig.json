@@ -12,8 +12,7 @@
     "incremental": true,
     "preserveSymlinks": true,
     "moduleResolution": "node",
-    "allowJs": true,
-    "skipLibCheck": true
+    "allowJs": true
   },
   "exclude": ["node_modules", "dist", "public/**/*.js", "cypress/**/*.js"]
 }
