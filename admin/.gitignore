@@ -31,3 +31,4 @@ lerna-debug.log*
 
 # Parcel cache folder
 .cache
+.parcel-cache

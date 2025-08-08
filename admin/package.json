@@ -7,7 +7,7 @@
     "url": "git+ssh://git@gitlab.com/proconnect/proconnect-exploitation.git"
   },
   "scripts": {
-    "prebuild": "parcel build -d ./dist/client ./public/javascript/main.js && cp ./public/favicon.ico ./dist/client/ && cp -R ./public/images ./dist/client/ ",
+    "prebuild": "parcel build --dist-dir ./dist/client ./public/javascript/main.js && cp ./public/favicon.ico ./dist/client/ && cp -R ./public/images ./dist/client/ ",
     "build": "tsc -p tsconfig.build.json",
     "console": "node dist/console.js",
     "console:dev": "ts-node -r tsconfig-paths/register src/console.ts",
@@ -103,6 +103,7 @@
   "devDependencies": {
     "@hapi/joi": "^17.1.1",
     "@nestjs/testing": "^9.0.0",
+    "@parcel/transformer-less": "^2.15.4",
     "@types/bcryptjs": "^2.4.2",
     "@types/ejs": "^3.1.5",
     "@types/express": "^4.16.0",
@@ -116,7 +117,7 @@
     "less": "~3.12.0",
     "luxon": "^2.3.0",
     "mockdate": "^2.0.5",
-    "parcel-bundler": "1.12.5",
+    "parcel": "^2.15.4",
     "prettier": "^1.18.2",
     "supertest": "^3.4.1",
     "ts-jest": "^27.0.0",
