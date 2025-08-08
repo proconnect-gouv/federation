@@ -7,7 +7,6 @@ import {
 import { Observable } from 'rxjs';
 import { ConfigService } from 'nestjs-config';
 import * as moment from 'moment-timezone';
-import * as queryString from 'query-string';
 import { errorCodeTranslations } from './error-code-translations';
 import { UserRole } from '../user/roles.enum';
 import { VALID_INPUT_STRING_REGEX } from '../utils/validators/is-valid-input-string';
@@ -51,7 +50,6 @@ export class LocalsInterceptor implements NestInterceptor {
     res.locals.CURRENT_USER = req.user;
 
     res.locals.REQ_QUERY = req.query;
-    res.locals.queryString = queryString;
 
     res.locals.moment = moment;
     res.locals.title = appConfig.appName;
