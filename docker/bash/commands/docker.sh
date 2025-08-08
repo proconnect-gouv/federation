@@ -3,7 +3,7 @@
 # Find which nodejs containers to start
 _get_node_containers_to_start() {
   local ancestor_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
-  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-core|^pc-fsa|^pc-fia|^pc-moncomptepro|^pc-dpa|^pc-exploitation-fca-low')
+  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-core|^pc-fsa|^pc-fia|^pc-moncomptepro|^pc-dpa|^pc-exploitation-fca-low|^pc-bridge-proxy-rie|^pc-csmr-rie')
 
   local raw_nodejs_containers=$(
     for container in $ancestor_containers $pattern_containers; do
