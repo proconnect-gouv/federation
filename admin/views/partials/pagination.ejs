@@ -4,11 +4,6 @@ if (!locals.REQ_QUERY) {
   console.error('your app should expose a `REQ_QUERY` variable via locals.interceptor');
 }
 
-if (!locals.queryString) {
-  console.error('your app should expose a `queryString` helper via locals.interceptor');
-}
-
-
 // Configurables params
 const {
   baseHref = '/',
@@ -38,8 +33,9 @@ if (end > pageCount) {
 // Helper function to inject pagination params into href
 function getHref(baseHref, page) {
   const newQuery = { ...REQ_QUERY, page, limit };
+  const newParams = new URLSearchParams(newQuery);
 
-  return `${baseHref}?${queryString.stringify(newQuery)}`;
+  return `${baseHref}?${newParams.toString()}`;
 }
 
 // Compute items list

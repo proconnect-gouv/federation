@@ -17,7 +17,13 @@ describe('Pagination', () => {
       it('Should on click change to the page correct page number', () => {
         cy.visit(`/service-provider?page=1&limit=1`);
         cy.get('#pagination-container > li').contains('2').click();
-        cy.url().should('eq', `${BASE_URL}/service-provider?limit=1&page=2`);
+          cy.url().should((urlString) => {
+          const url = new URL(urlString);
+          expect(url.pathname).to.eq('/service-provider');
+          const params = url.searchParams;
+          expect(params.get('limit')).to.eq('1');
+          expect(params.get('page')).to.eq('2');
+        });
       });
 
       it('Should show a selected color on the current page', () => {
@@ -44,7 +50,13 @@ describe('Pagination', () => {
       it('Should on click change to the page correct page number', () => {
         cy.visit(`/identity-provider?page=1&limit=1`);
         cy.get('#pagination-container > li').contains('2').click();
-        cy.url().should('eq', `${BASE_URL}/identity-provider?limit=1&page=2`);
+        cy.url().should((urlString) => {
+          const url = new URL(urlString);
+          expect(url.pathname).to.eq('/identity-provider');
+          const params = url.searchParams;
+          expect(params.get('limit')).to.eq('1');
+          expect(params.get('page')).to.eq('2');
+        });
       });
 
       it('Should show a selected color on the current page', () => {
@@ -71,7 +83,13 @@ describe('Pagination', () => {
       it('Should on click change to the page correct page number', () => {
         cy.visit(`/account?page=1&limit=1`);
         cy.get('#pagination-container > li').contains('2').click();
-        cy.url().should('eq', `${BASE_URL}/account?limit=1&page=2`);
+        cy.url().should((urlString) => {
+          const url = new URL(urlString);
+          expect(url.pathname).to.eq('/account');
+          const params = url.searchParams;
+          expect(params.get('limit')).to.eq('1');
+          expect(params.get('page')).to.eq('2');
+        });
       });
 
       it('Should show a selected color on the current page', () => {

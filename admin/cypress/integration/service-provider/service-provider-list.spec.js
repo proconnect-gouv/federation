@@ -74,10 +74,15 @@ describe('Service provider list', () => {
 
       cy.get('a[id="name-asc"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/service-provider?sortField=name&sortDirection=asc&page=1&limit=10`,
-      );
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/service-provider');
+        const params = url.searchParams;
+        expect(params.get('sortField')).to.eq('name');
+        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get('limit')).to.eq('10');
+        expect(params.get('page')).to.eq('1');
+      });
     });
 
     it('Query "sortField" and "sortDirection" are visible if I click on createdAt-asc button', () => {
@@ -85,10 +90,15 @@ describe('Service provider list', () => {
 
       cy.get('a[id="createdAt-asc"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/service-provider?sortField=createdAt&sortDirection=asc&page=1&limit=10`,
-      );
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/service-provider');
+        const params = url.searchParams;
+        expect(params.get('sortField')).to.eq('createdAt');
+        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get('limit')).to.eq('10');
+        expect(params.get('page')).to.eq('1');
+      });
     });
 
     it('Query "sortField" and "sortDirection" are visible if I click on secretUpdatedAt-asc button', () => {
@@ -96,10 +106,16 @@ describe('Service provider list', () => {
 
       cy.get('a[id="secretUpdatedAt-asc"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/service-provider?sortField=secretUpdatedAt&sortDirection=asc&page=1&limit=10`,
-      );
+
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/service-provider');
+        const params = url.searchParams;
+        expect(params.get('sortField')).to.eq('secretUpdatedAt');
+        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get('limit')).to.eq('10');
+        expect(params.get('page')).to.eq('1');
+      });
     });
 
     it('Query "sortField" and "sortDirection" are visible if I click on active-asc button', () => {
@@ -107,10 +123,15 @@ describe('Service provider list', () => {
 
       cy.get('a[id="active-asc"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/service-provider?sortField=active&sortDirection=asc&page=1&limit=10`,
-      );
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/service-provider');
+        const params = url.searchParams;
+        expect(params.get('sortField')).to.eq('active');
+        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get('limit')).to.eq('10');
+        expect(params.get('page')).to.eq('1');
+      });
     });
 
     it('Query "sortField" and "sortDirection" are visible when I click on next button', () => {
@@ -118,17 +139,29 @@ describe('Service provider list', () => {
 
       cy.get('a[id="name-asc"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/service-provider?sortField=name&sortDirection=asc&page=1&limit=2`,
-      );
+
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/service-provider');
+        const params = url.searchParams;
+        expect(params.get('sortField')).to.eq('name');
+        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get('limit')).to.eq('2');
+        expect(params.get('page')).to.eq('1');
+      });
 
       cy.get('a[id="next-link"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/service-provider?limit=2&page=2&sortDirection=asc&sortField=name`,
-      );
+
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/service-provider');
+        const params = url.searchParams;
+        expect(params.get('sortField')).to.eq('name');
+        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get('limit')).to.eq('2');
+        expect(params.get('page')).to.eq('2');
+      });
     });
 
     it('Query "sortField" and "sortDirection" are visible when I click on previous button', () => {
@@ -136,10 +169,15 @@ describe('Service provider list', () => {
 
       cy.get('a[id="previous-link"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/service-provider?limit=2&page=1&sortDirection=asc&sortField=name`,
-      );
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/service-provider');
+        const params = url.searchParams;
+        expect(params.get('sortField')).to.eq('name');
+        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get('limit')).to.eq('2');
+        expect(params.get('page')).to.eq('1');
+      });
     });
 
     it('I can click on the name of the FS to go to the update page', () => {
