@@ -6,6 +6,12 @@ FROM ${NODE_IMAGE} AS dev
 RUN yarn global add pm2@6.0.8
 RUN apk add --no-cache bash python3 make g++ lscpu
 
+WORKDIR /var/www/app
+
+COPY package.json yarn.lock ./
+RUN yarn install --ignore-engines
+
+
 FROM ${NODE_IMAGE} AS builder
 
 COPY . /tmp/admin
@@ -32,6 +38,7 @@ RUN mv /tmp/admin/yarn.lock ./ && \
 
 RUN mkdir /etc/pm2
 COPY deploy/pm2/app.json /etc/pm2/
+
 
 FROM ${NODE_IMAGE} AS production
 

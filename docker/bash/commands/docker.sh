@@ -4,8 +4,6 @@ _get_containers_for_installing_node_modules() {
   # ancestor=pc-nodejs means we display the name of the container that is based on the pc-nodejs image
   # log-hub is still using the old legacy nodejs docker image
   local ancestor_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
-  # for containers not based on pc-nodejs but still requiring installation in _up, we use a pattern to match their names.  
-  local pattern_containers=$(docker ps --format '{{.Names}}' | grep -E '^pc-exploitation-fca-low')
 
   echo -e "${ancestor_containers}\n${pattern_containers}" | sort | uniq
 }
