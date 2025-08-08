@@ -63,10 +63,15 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="name-asc"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/identity-provider?sortField=name&sortDirection=asc&page=1&limit=10`,
-      );
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/identity-provider');
+        const params = url.searchParams;
+        expect(params.get('limit')).to.eq('10');
+        expect(params.get('page')).to.eq('1');
+        expect(params.get('sortField')).to.eq('name');
+        expect(params.get('sortDirection')).to.eq('asc');
+      });
     });
 
     it('"Sort" && "param" are visible when I click on next button', () => {
@@ -76,10 +81,15 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="next-link"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/identity-provider?limit=2&page=2&sortDirection=asc&sortField=name`,
-      );
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/identity-provider');
+        const params = url.searchParams;
+        expect(params.get('limit')).to.eq('2');
+        expect(params.get('page')).to.eq('2');
+        expect(params.get('sortField')).to.eq('name');
+        expect(params.get('sortDirection')).to.eq('asc');
+      });
     });
 
     it('"Sort" && "param" are visible when I click on previous button', () => {
@@ -89,10 +99,15 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="previous-link"]').click();
 
-      cy.url().should(
-        'eq',
-        `${BASE_URL}/identity-provider?limit=2&page=1&sortDirection=asc&sortField=name`,
-      );
+      cy.url().should((urlString) => {
+        const url = new URL(urlString);
+        expect(url.pathname).to.eq('/identity-provider');
+        const params = url.searchParams;
+        expect(params.get('limit')).to.eq('2');
+        expect(params.get('page')).to.eq('1');
+        expect(params.get('sortField')).to.eq('name');
+        expect(params.get('sortDirection')).to.eq('asc');
+      });
     });
 
     it('I can click on the name of the FI to go to the update page', () => {
