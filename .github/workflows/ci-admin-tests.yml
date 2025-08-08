@@ -32,29 +32,6 @@ jobs:
           yarn test --coverage
           ./scripts/coverage.sh
 
-  unit-exploitation:
-    runs-on: ubuntu-24.04
-    defaults:
-      run:
-        working-directory: ./admin/fc-exploitation
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ./admin/package.json
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Run build
-        run: yarn build
-
-      - name: Run tests
-        run: yarn test
-
   e2e-exploitation:
     runs-on: ubuntu-24.04
     defaults:
@@ -108,9 +85,9 @@ jobs:
       - name: Post failing tests
         if: failure()
         run: |
-          mkdir -p fc-exploitation/cypress/logs
-          docker cp pc-exploitation-1:/tmp/.pm2/logs fc-exploitation/cypress/logs/fc-exploitation || true
-          docker cp pc-rp-all:/var/log/nginx fc-exploitation/cypress/logs || true
+          mkdir -p cypress/logs
+          docker cp pc-exploitation-1:/tmp/.pm2/logs cypress/logs || true
+          docker cp pc-rp-all:/var/log/nginx cypress/logs || true
 
       - name: Publish artifacts
         if: failure()
@@ -118,6 +95,6 @@ jobs:
         with:
           name: cypress-outputs
           path: |
-            admin/fc-exploitation/cypress/screenshots
-            admin/fc-exploitation/cypress/videos
-            admin/fc-exploitation/cypress/logs
+            admin/cypress/screenshots
+            admin/cypress/videos
+            admin/cypress/logs
