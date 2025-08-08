@@ -17,6 +17,7 @@ services:
         condition: service_healthy
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
+      - '/var/www/app/node_modules'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/log:/var/log/app'
       - '${VOLUMES_DIR}/.home:/home'

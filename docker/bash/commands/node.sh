@@ -105,15 +105,17 @@ _do_start_prod() {
 }
 
 _start_all() {
-  _get_running_containers
+
+  local containers=$(_get_node_containers_to_start)
   echo " * Automatically start apps for started nodejs containers"
-  _start "${NODEJS_CONTAINERS}"
+  echo "   * Found containers to start: ${containers}"
+  _start "${containers}"
 }
 
 _start_all_ci() {
-  _get_running_containers
+  local containers=$(_get_node_containers_to_start)
   echo " * Automatically start apps for started nodejs containers"
-  _start_ci "${NODEJS_CONTAINERS}"
+  _start_ci "${containers}"
 }
 
 _stop() {
@@ -132,8 +134,8 @@ _do_stop() {
 }
 
 _stop_all() {
-  _get_running_containers
-  _stop $NODEJS_CONTAINERS
+  local containers=$(_get_node_containers_to_start)
+  _stop $containers
 }
 
 _log_rotate() {

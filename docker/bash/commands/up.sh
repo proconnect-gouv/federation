@@ -33,9 +33,9 @@ _up() {
 
   # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
   echo " * Populate global variables"
-  local raw_nodejs_containers=$(_get_node_containers)
+  local raw_nodejs_containers=$(_get_containers_for_installing_node_modules)
   local raw_all_containers=$(docker ps --format '{{.Names}}')
-  NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
+  NODE_MODULE_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
   
   # Find all containers and store it into $PC_CONTAINERS
   PC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
@@ -43,13 +43,13 @@ _up() {
   # Execute starting scripts in build containers
   echo " * Automatically install dependencies for started containers"
 
-  if [ "${NODEJS_CONTAINERS:-xxx}" != "xxx" ]; then
+  if [ "${NODE_MODULE_CONTAINERS:-xxx}" != "xxx" ]; then
     echo "Installing node modules..."
-    echo " * Installing dependencies for $(format_emphasis "${NODEJS_CONTAINERS}")"
+    echo " * Installing dependencies for $(format_emphasis "${NODE_MODULE_CONTAINERS}")"
 
     apps=${@:-no-container}
 
-    for app in ${NODEJS_CONTAINERS}; do
+    for app in ${NODE_MODULE_CONTAINERS}; do
       echo "Installing dependencies for ${app}:"
       cd ${WORKING_DIR}
       $DOCKER_COMPOSE exec ${NO_TTY} "${app}" sh -c "cd /var/www/app && yarn install --frozen-lockfile --ignore-engines"
