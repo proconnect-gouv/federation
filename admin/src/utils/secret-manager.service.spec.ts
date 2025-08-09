@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 import { TestingModule, Test } from '@nestjs/testing';
 import { ConfigService } from 'nestjs-config';
 import { SecretManagerService } from '../utils/secret-manager.service';

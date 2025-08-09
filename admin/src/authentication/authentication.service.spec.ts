@@ -7,7 +7,7 @@ import { AuthenticationFailures } from './authentication-failures.sql.entity';
 import { UserService } from '../user/user.service';
 import { UserRole } from '../user/roles.enum';
 import { AuthenticationStates } from './authentication-actions.enum';
-import * as MockDate from 'mockdate';
+import MockDate from 'mockdate';
 import { LoggerService } from '../logger/logger.service';
 
 describe('AuthenticationService', () => {

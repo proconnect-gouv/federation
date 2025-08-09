@@ -4,7 +4,7 @@ import { ConfigService } from 'nestjs-config';
 import { IMailerParams, IMailerModuleOptions } from '../interfaces';
 import { Email } from '../mailer.types';
 import { Transport } from './transport';
-import * as nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer';
 
 @Injectable()
 export class SmtpTransport extends Transport {

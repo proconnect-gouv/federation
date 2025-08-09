@@ -1,4 +1,4 @@
-import * as passport from 'passport';
+import passport from 'passport';
 import { LocalStrategy } from './passport/local.strategy';
 import { LocalSerializer } from './passport/local.serializer';
 import { TotpService } from './totp/totp.service';

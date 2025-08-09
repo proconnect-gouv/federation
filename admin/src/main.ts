@@ -7,12 +7,12 @@ import {
 } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { join } from 'path';
-import * as session from 'express-session';
-import * as cookieParser from 'cookie-parser';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import { json, urlencoded } from 'express';
-import * as flash from 'express-flash';
-import * as helmet from 'helmet';
-import * as methodOverride from 'method-override';
+import flash from 'express-flash';
+import helmet from 'helmet';
+import methodOverride from 'method-override';
 
 import 'dotenv';
 import { ConfigService } from 'nestjs-config';
