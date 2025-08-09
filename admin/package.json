@@ -50,7 +50,7 @@
     "@nestjs/microservices": "^10.0.0",
     "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
-    "@nestjs/typeorm": "^10.0.0",
+    "@nestjs/typeorm": "^11.0.0",
     "@types/nodemailer": "^6.4.17",
     "amqp-connection-manager": "^4.0.0",
     "amqplib": "^0.10.0",
