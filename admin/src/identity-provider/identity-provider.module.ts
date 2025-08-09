@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { IdentityProviderController } from './identity-provider.controller';
 import { IdentityProviderService } from './identity-provider.service';
 import { SecretManagerService } from '../utils/secret-manager.service';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 import { InstanceService } from '../utils/instance.service';
 import { FqdnToProvider } from '../fqdn-to-provider/fqdn-to-provider.mongodb.entity';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';

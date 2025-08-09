@@ -8,7 +8,7 @@ import { AccountService } from './account.service';
 import { AuthenticationModule } from '../authentication/authentication.module';
 import { TotpService } from '../authentication/totp/totp.service';
 import { UserService } from '../user/user.service';
-import * as generatePassword from 'generate-password';
+import generatePassword from 'generate-password';
 import { MailerModule } from '../mailer/mailer.module';
 import { EjsAdapter } from '../mailer/ejs.adapter';
 import { ConfigModule, ConfigService } from 'nestjs-config';

@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
@@ -12,7 +12,7 @@ import { IsPasswordCompliant } from '../account/validator/is-compliant.validator
 import { ConfigService } from 'nestjs-config';
 import { MailerService } from '../mailer/mailer.service';
 import { MailerModule } from '../mailer/mailer.module';
-import * as uuid from 'uuid';
+import uuid from 'uuid';
 import { LoggerService } from '../logger/logger.service';
 
 jest.mock('uuid', () => ({

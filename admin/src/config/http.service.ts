@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { HttpModuleOptionsFactory, HttpModuleOptions } from '@nestjs/axios';
 import { InjectConfig, ConfigService } from 'nestjs-config';
-import * as https from 'https';
-import * as HttpsProxyAgent from 'https-proxy-agent';
-import * as fs from 'fs';
+import https from 'https';
+import HttpsProxyAgent from 'https-proxy-agent';
+import fs from 'fs';
 
 @Injectable()
 export class HttpConfigService implements HttpModuleOptionsFactory {

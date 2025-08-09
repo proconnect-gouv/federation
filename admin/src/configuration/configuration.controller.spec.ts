@@ -1,4 +1,4 @@
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import * as classTransformer from 'class-transformer';
 
 import { Test, TestingModule } from '@nestjs/testing';

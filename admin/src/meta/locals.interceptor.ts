@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ConfigService } from 'nestjs-config';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import { errorCodeTranslations } from './error-code-translations';
 import { UserRole } from '../user/roles.enum';
 import { VALID_INPUT_STRING_REGEX } from '../utils/validators/is-valid-input-string';

@@ -1,5 +1,5 @@
 import * as otplib from 'otplib';
-import * as qrcode from 'qrcode';
+import qrcode from 'qrcode';
 import { InjectConfig } from 'nestjs-config';
 import { Injectable } from '@nestjs/common';
 

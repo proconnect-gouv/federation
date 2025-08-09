@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb';
 import { ConfigService } from 'nestjs-config';
-import * as Joi from '@hapi/joi';
+import Joi from '@hapi/joi';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { FileStorageService } from './file-storage.service';

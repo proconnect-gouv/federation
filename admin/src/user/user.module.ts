@@ -5,7 +5,7 @@ import { MailerModule } from '../mailer/mailer.module';
 import { User } from './user.sql.entity';
 import { Password } from './password.sql.entity';
 import { UserService } from './user.service';
-import * as generatePassword from 'generate-password';
+import generatePassword from 'generate-password';
 import { LoggerService } from '../logger/logger.service';
 import { ConfigModule, ConfigService } from 'nestjs-config';
 import { EjsAdapter } from '../mailer/ejs.adapter';

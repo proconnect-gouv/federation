@@ -1,6 +1,6 @@
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { Repository, DeleteResult, UpdateResult } from 'typeorm';
-import * as uuid from 'uuid';
+import uuid from 'uuid';
 import { InjectConfig, ConfigService } from 'nestjs-config';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';

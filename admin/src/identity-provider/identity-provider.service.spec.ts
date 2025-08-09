@@ -11,7 +11,7 @@ import { identityProvidersMock } from './fixture';
 import { IdentityProviderService } from './identity-provider.service';
 import { IdentityProvider } from './identity-provider.mongodb.entity';
 import { SecretManagerService } from '../utils/secret-manager.service';
-import * as MockDate from 'mockdate';
+import MockDate from 'mockdate';
 import { ICrudTrack } from '../interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';

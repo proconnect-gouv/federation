@@ -11,7 +11,11 @@ describe('RabbitmqModule', () => {
     get: jest.fn(),
   };
 
-  const configServiceReturnValue = Symbol('configServiceReturnValue');
+  const configServiceReturnValue = {
+    urls: ['amqp://localhost'],
+    queue: 'test-queue',
+    queueOptions: { durable: false },
+  };
 
   beforeEach(() => {
     jest.resetAllMocks();
