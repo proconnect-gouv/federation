@@ -1,5 +1,6 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
+import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { FormValidationErrorsDto } from '../dto/form-validation-errors.dto';
 import { validateSync } from 'class-validator';
@@ -20,7 +21,7 @@ export class FormErrorsInterceptor implements NestInterceptor {
 
     // Replace params keys in redirect uri with the corresponding value
     for (const param in req.params) {
-      if (req.params.hasOwnProperty(param)) {
+      if (Object.prototype.hasOwnProperty.call(req.params, param)) {
         redirectURL = redirectURL.replace(`:${param}`, req.params[param]);
       }
     }
@@ -29,12 +30,13 @@ export class FormErrorsInterceptor implements NestInterceptor {
     if (req.totp && req.totp === 'invalid') {
       req.flash('errors', { _totp: ["Le TOTP saisi n'est pas valide"] });
       req.flash('values', dto);
-      return Promise.resolve(res.redirect(redirectURL));
+      res.redirect(redirectURL);
+      return of(null);
     }
 
     return next.handle().pipe(
       catchError(error => {
-        const formValidationErrors = plainToClass(
+        const formValidationErrors = plainToInstance(
           FormValidationErrorsDto,
           error.response,
         );
@@ -63,7 +65,8 @@ export class FormErrorsInterceptor implements NestInterceptor {
 
         req.flash('errors', flashErrors);
         req.flash('values', dto);
-        return Promise.resolve(res.redirect(redirectURL));
+        res.redirect(redirectURL);
+        return of(null);
       }),
     );
   }

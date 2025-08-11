@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 import {
   Controller,
@@ -34,7 +34,7 @@ export class ConfigurationController {
       data = await this.configurationService.getLastConfigIndisponibilityData();
       return { csrfToken, data, moment };
     }
-    data = plainToClass(IndisponibiliteDTO, req.session.flash.values[0]);
+    data = plainToInstance(IndisponibiliteDTO, req.session.flash.values[0]);
     return { csrfToken, data, moment };
   }
 

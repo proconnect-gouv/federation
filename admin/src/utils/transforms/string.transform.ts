@@ -10,7 +10,7 @@ export function toDate(format: string) {
   };
 }
 
-export function toBoolean(value: string): boolean | undefined {
+export function toBoolean({ value }: { value: string }): boolean | undefined {
   switch (value) {
     case 'true':
     case 'on':
@@ -27,7 +27,11 @@ export function toBoolean(value: string): boolean | undefined {
   }
 }
 
-export function linesToArray(value: string): string[] | undefined {
+export function linesToArray({
+  value,
+}: {
+  value: string;
+}): string[] | undefined {
   let result: string[];
   try {
     result = value
@@ -47,17 +51,17 @@ export function arrayToLines(value: any) {
   return value;
 }
 
-export function defaultNoneOrLinesToNullableArray(value: any) {
+export function defaultNoneOrLinesToNullableArray({ value }: { value: any }) {
   if (!value || value === 'default') {
     return null;
   } else if (value === 'none') {
     return [];
   } else {
-    return linesToArray(value);
+    return linesToArray({ value });
   }
 }
 
-export function nullableArrayToDefaultNoneOrLines(value: any) {
+export function nullableArrayToDefaultNoneOrLines({ value }: { value: any }) {
   if (!value) {
     return 'default';
   } else if (Array.isArray(value) && value.length === 0) {
@@ -69,14 +73,14 @@ export function nullableArrayToDefaultNoneOrLines(value: any) {
   }
 }
 
-export function toArray(value: string | string[]) {
+export function toArray({ value }: { value: string | string[] }) {
   return Array.isArray(value) ? value : [value];
 }
 
-export function toNullableString(value: any) {
+export function toNullableString({ value }: { value: any }) {
   return value ? value : null;
 }
 
-export function toEmptiableString(value: any) {
+export function toEmptiableString({ value }: { value: any }) {
   return value ? value : '';
 }

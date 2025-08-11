@@ -375,7 +375,7 @@ export class IdentityProviderService {
       jwksUrl: inputProvider.jwksURL,
       whitelistByServiceProviderActivated:
         inputProvider.WhitelistByServiceProviderActivated,
-      emails: linesToArray(inputProvider.mailto),
+      emails: linesToArray({ value: inputProvider.mailto }),
       issuer: inputProvider.url,
       modalActive: inputProvider.modal.active,
       modalTitle: inputProvider.modal.title,

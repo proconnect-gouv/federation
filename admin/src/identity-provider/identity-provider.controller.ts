@@ -19,7 +19,7 @@ import { UserRole } from '../user/roles.enum';
 import { FormErrorsInterceptor } from '../form/interceptor/form-errors.interceptor';
 import { IdentityProviderService } from './identity-provider.service';
 import { IdentityProviderDTO } from './dto/identity-provider.dto';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { Amr } from './enum';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { InstanceService } from '../utils/instance.service';
@@ -106,7 +106,7 @@ export class IdentityProviderController {
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP
     if (req.session.flash && req.session.flash.errors) {
-      const postedValues = plainToClass(
+      const postedValues = plainToInstance(
         IdentityProviderDTO,
         req.session.flash.values[0],
       );
@@ -178,7 +178,7 @@ export class IdentityProviderController {
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP
     if (req.session.flash && req.session.flash.errors) {
-      const postedValues = plainToClass(
+      const postedValues = plainToInstance(
         IdentityProviderDTO,
         req.session.flash.values[0],
       );
