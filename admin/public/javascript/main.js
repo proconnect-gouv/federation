@@ -19,7 +19,6 @@ import { lazyInit } from './lazy-init';
 import { validateEnrollment } from './validate-enrollment';
 import { comparePassword } from './compare-password';
 import { copyText } from './clipboard';
-import { rnippForm } from './rnipp-form';
 import { validateInputDate } from './validate-input-date';
 import { validateInputHour } from './validate-input-hour';
 import { validateAccountUpdate } from './validateAccountUpdate';
@@ -54,7 +53,6 @@ const initMap = {
   comparePassword,
   handleEmail,
   copyText,
-  validateRnippForm: rnippForm,
   itemPerPage,
   validateInputDate,
   validateInputHour,
