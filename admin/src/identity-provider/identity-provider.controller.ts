@@ -22,7 +22,6 @@ import { IdentityProviderDTO } from './dto/identity-provider.dto';
 import { plainToInstance } from 'class-transformer';
 import { Amr } from './enum';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
-import { InstanceService } from '../utils/instance.service';
 import { IIdentityProviderDTO } from './interface';
 import { PaginationSortDirectionType } from '../pagination';
 
@@ -31,7 +30,6 @@ export class IdentityProviderController {
   constructor(
     private readonly identityProviderService: IdentityProviderService,
     private readonly fqdnToProviderService: FqdnToProviderService,
-    private readonly instanceService: InstanceService,
     private readonly config: ConfigService,
   ) {}
 
@@ -72,14 +70,9 @@ export class IdentityProviderController {
       },
     });
 
-    let identityProviders = paginatedIdentityProviders;
-    const isFcaLow = this.instanceService.isFcaLow();
-
-    if (isFcaLow) {
-      identityProviders = (await this.fqdnToProviderService.getProvidersWithFqdns(
-        paginatedIdentityProviders as any,
-      )) as any[];
-    }
+    const identityProviders = (await this.fqdnToProviderService.getProvidersWithFqdns(
+      paginatedIdentityProviders as any,
+    )) as any[];
 
     return {
       identityProviders,
@@ -166,14 +159,9 @@ export class IdentityProviderController {
       id,
     );
 
-    const isFcaLow = this.instanceService.isFcaLow();
-
-    // For AgentConnect, we need to add the fqdns
-    if (isFcaLow) {
-      identityProvider = await this.fqdnToProviderService.getProviderWithFqdns(
-        identityProvider,
-      );
-    }
+    identityProvider = await this.fqdnToProviderService.getProviderWithFqdns(
+      identityProvider,
+    );
 
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP

@@ -28,9 +28,7 @@
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "name" }); %>
           </th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Nom technique</th>
-          <% if (locals.instanceService.isFcaLow()) { %>
-            <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Fqdns</th>
-          <% } %>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Fqdns</th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Email de contact</th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">
             <div class="align-text-th">Activé</div>
@@ -62,19 +60,17 @@
                 <%= identityProvider.name %>
               <% } %>
             </td>
-            <% if (locals.instanceService.isFcaLow()) { %>            
-              <td class="border border-bottom-0 border-top-0 border-right-0 border-secondary">
-                <% if (identityProvider.fqdns) { %>
-                  <a class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>">
-                    <% identityProvider.fqdns.forEach((fqdn) => { %>
-                      <span>
-                        <%= fqdn %>
-                      </span>
-                    <% }); %>
-                  </a>
-                <% } %>
-              </td>
-            <% } %>
+            <td class="border border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <% if (identityProvider.fqdns) { %>
+                <a class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>">
+                  <% identityProvider.fqdns.forEach((fqdn) => { %>
+                    <span>
+                      <%= fqdn %>
+                    </span>
+                  <% }); %>
+                </a>
+              <% } %>
+            </td>
             <td class="border border-bottom-0 border-top-0 border-right-0 border-secondary"><%= identityProvider.mailto %></td>
             <td class="text-center border border-bottom-0 border-top-0 border-right-0 border-secondary">
               <i class="fa fa-toggle-<%= identityProvider.active ? "on" : "off" %>"></i>

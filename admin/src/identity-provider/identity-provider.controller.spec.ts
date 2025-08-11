@@ -9,12 +9,10 @@ import { IdentityProviderService } from './identity-provider.service';
 
 import * as classTransformer from 'class-transformer';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
-import { InstanceService } from '../utils/instance.service';
 import { IIdentityProvider } from './interface';
 
 describe('IdentityProviderController', () => {
   let identityProviderController;
-  let service: IdentityProviderService;
   const mockedIdentityProviderRepository = {
     findAndCount: jest.fn(),
   };
@@ -82,11 +80,6 @@ describe('IdentityProviderController', () => {
     },
   };
 
-  const instanceServiceMock = {
-    isFcaLow: jest.fn(),
-    isCl: jest.fn(),
-  };
-
   const fqdnToProviderServiceMock = {
     getProvidersWithFqdns: jest.fn(),
     getProviderWithFqdns: jest.fn(),
@@ -111,7 +104,6 @@ describe('IdentityProviderController', () => {
           provide: getRepositoryToken(IdentityProviderService),
           useClass: Repository,
         },
-        InstanceService,
         FqdnToProviderService,
         ConfigService,
       ],
@@ -120,8 +112,6 @@ describe('IdentityProviderController', () => {
       .useValue(mockedIdentityProviderRepository)
       .overrideProvider(IdentityProviderService)
       .useValue(serviceMock)
-      .overrideProvider(InstanceService)
-      .useValue(instanceServiceMock)
       .overrideProvider(FqdnToProviderService)
       .useValue(fqdnToProviderServiceMock)
       .overrideProvider(ConfigService)
@@ -130,9 +120,6 @@ describe('IdentityProviderController', () => {
 
     identityProviderController = module.get<IdentityProviderController>(
       IdentityProviderController,
-    );
-    service = await module.get<IdentityProviderService>(
-      IdentityProviderService,
     );
 
     jest.resetAllMocks();
@@ -190,14 +177,6 @@ describe('IdentityProviderController', () => {
         updatedBy: 'admin',
         token_endpoint_auth_method: 'client_secret_post',
         amr: ['pop'],
-        modal: {
-          active: false,
-          title: 'title',
-          body: 'body',
-          continueText: 'continueText',
-          moreInfoLabel: 'moreInfoLabel',
-          moreInfoUrl: 'moreInfoUrl',
-        },
         siret: '12345678910001',
       };
 
@@ -207,22 +186,15 @@ describe('IdentityProviderController', () => {
       // Mocking return value of serviceProviderController.list(page, limit)
       const identityProviders = {
         items: [itemTest1, itemTest2, itemTest3],
-        totalProvider: 3,
         total: 3,
-        itemCount: 3,
-        pageCount: 1,
-        next: '',
-        previous: '',
       };
 
       // Actions
-      // Mocking the return of the paginate function
-      const paginateResult = Promise.resolve(identityProviders);
-
-      // Mocking the return of service paginte function
-      const spy = jest
-        .spyOn(service, 'paginate')
-        .mockImplementation(() => Promise.resolve(paginateResult));
+      // Mocking the return of service paginate function
+      serviceMock.paginate.mockResolvedValueOnce(identityProviders);
+      fqdnToProviderServiceMock.getProvidersWithFqdns.mockResolvedValueOnce(
+        identityProviders.items,
+      );
 
       // Calling the list function
       const listResult = await identityProviderController.list(
@@ -232,12 +204,11 @@ describe('IdentityProviderController', () => {
       );
 
       // Expected
-      expect(spy).toHaveBeenCalled();
       expect(listResult.totalItems).toEqual(3);
       expect(listResult.identityProviders.length).toEqual(3);
     });
 
-    it('should call fqdnToProviderService.saveFqdnsProvider if the instance is FCA low', async () => {
+    it('should call fqdnToProviderService.saveFqdnsProvider', async () => {
       // Given
       // Mocking return value of serviceProviderController.list(page, limit)
       const paginatedIdentityProviders = {
@@ -250,15 +221,8 @@ describe('IdentityProviderController', () => {
         previous: '',
       };
 
-      // Mocking the return of the paginate function
-      const paginateResult = Promise.resolve(paginatedIdentityProviders);
-
       // Mocking the return of service paginate function
-      const spy = jest
-        .spyOn(service, 'paginate')
-        .mockImplementation(() => Promise.resolve(paginateResult));
-
-      instanceServiceMock.isFcaLow.mockReturnValue(true);
+      serviceMock.paginate.mockResolvedValueOnce(paginatedIdentityProviders);
 
       // When
       await identityProviderController.list(req);
@@ -492,7 +456,6 @@ describe('IdentityProviderController', () => {
       const now = new Date();
       const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
 
-      instanceServiceMock.isFcaLow.mockReturnValue(true);
       const idpMock: IIdentityProvider = {
         id: itemId,
         uid: 'fip1',
@@ -533,9 +496,7 @@ describe('IdentityProviderController', () => {
         modalMoreInfoUrl: 'moreInfoUrl',
       };
 
-      jest
-        .spyOn(service, 'findById')
-        .mockImplementation(() => Promise.resolve(idpMock));
+      serviceMock.findById.mockResolvedValueOnce(idpMock);
 
       // When
       await identityProviderController.findOne(params.id, req, res);
@@ -610,11 +571,11 @@ describe('IdentityProviderController', () => {
       );
 
       // expect
-      expect(service.deleteIdentityProvider).toHaveBeenCalledWith(
+      expect(serviceMock.deleteIdentityProvider).toHaveBeenCalledWith(
         id,
         req.user.username,
       );
-      expect(service.deleteIdentityProvider).toHaveBeenCalledTimes(1);
+      expect(serviceMock.deleteIdentityProvider).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
         `${res.locals.APP_ROOT}/identity-provider`,
       );
@@ -636,487 +597,15 @@ describe('IdentityProviderController', () => {
         body,
       );
       // expect
-      expect(service.deleteIdentityProvider).toHaveBeenCalledWith(
+      expect(serviceMock.deleteIdentityProvider).toHaveBeenCalledWith(
         id,
         req.user.username,
       );
-      expect(service.deleteIdentityProvider).toHaveBeenCalledTimes(1);
+      expect(serviceMock.deleteIdentityProvider).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledWith('globalError', 'Try again buddy');
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.redirect).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  describe('GET: paginate[mongodb] identityProvider (list) ', () => {
-    it('should return a list of identity providers even with sort/action as undefined values', async () => {
-      // Setup
-      const page = '0';
-      const limit = '10';
-      const sort = undefined;
-      const action = undefined;
-
-      // Mocking item id
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
-
-      const now = new Date('2019-11-08T09:52:29.984Z');
-
-      // //Mocking Items
-      const itemTest1: IdentityProvider = {
-        _id: itemId,
-        uid: 'Batman',
-        name: 'Batman',
-        active: true,
-        order: 2,
-        hoverMsg: 'Message to display',
-        hoverRedirectLink: 'Message to display',
-        blacklistByIdentityProviderActivated: true,
-        WhitelistByServiceProviderActivated: true,
-        display: true,
-        isBeta: false,
-        title: 'Identity Provider Example',
-        image: '',
-        imageFocus: '',
-        alt: 'impots',
-        eidas: 2,
-        allowedAcr: ['eidas2'],
-        mailto: '',
-        specificText: 'specific text fip1',
-        url: 'https://fip1.docker.dev-franceconnect.fr/',
-        statusURL: 'https://fip1.docker.dev-franceconnect.fr/',
-        authzURL: 'https://fip1.docker.dev-franceconnect.fr/user/authorize',
-        tokenURL: 'https://fip1.docker.dev-franceconnect.fr/user/token',
-        userInfoURL: 'https://fip1.docker.dev-franceconnect.fr/api/user',
-        endSessionURL: 'https://issuer.fr/logout',
-        discoveryUrl: 'https://issuer/.well-known/openid-configuration',
-        discovery: true,
-        clientID: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: 'bbe8f1b2a1415d6942b653689a51ba16f22b41e57a4e44b40799d',
-        jwksURL: 'toto',
-        jwtAlgorithm: [],
-        trustedIdentity: false,
-        createdAt: now,
-        updatedAt: now,
-        updatedBy: 'admin',
-        userinfo_encrypted_response_enc: 'ES256',
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_signed_response_alg: 'ES256',
-        id_token_signed_response_alg: 'ES256',
-        id_token_encrypted_response_alg: 'RSA-OAEP',
-        id_token_encrypted_response_enc: 'A256GCM',
-        amr: ['pop'],
-        modal: {
-          active: false,
-          title: 'title',
-          body: 'body',
-          continueText: 'continueText',
-          moreInfoLabel: 'moreInfoLabel',
-          moreInfoUrl: 'moreInfoUrl',
-        },
-        siret: '12345678910001',
-      };
-
-      const itemTest2 = { ...itemTest1, name: 'joker' };
-
-      const identityProvidersResult = {
-        items: [itemTest1, itemTest2],
-        itemCount: 2,
-        totalItems: 2,
-        pageCount: 0,
-        next: '',
-        previous: '',
-      };
-
-      // Actions
-      // Mocking the return of the paginate function
-      serviceMock.paginate.mockResolvedValueOnce(
-        Promise.resolve(identityProvidersResult),
-      );
-
-      // Calling the list function
-      const resultat = await identityProviderController.list(
-        req,
-        sort,
-        action,
-        page,
-        limit,
-      );
-
-      // Expected
-      expect(resultat.identityProviders.length).toEqual(2);
-      expect(resultat.identityProviders).toEqual([itemTest1, itemTest2]);
-    });
-
-    it('should return return a list sort alphabetically of identity providers if sortField="name" and sortDirection="asc"', async () => {
-      // Setup
-      const page = '0';
-      const limit = '10';
-      const sort = 'name';
-      const action = 'asc';
-
-      // Mocking item id
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
-
-      const now = new Date('2019-11-08T09:52:29.984Z');
-
-      // //Mocking Items
-      const itemTest1: IdentityProvider = {
-        _id: itemId,
-        uid: 'Batman',
-        name: 'Batman',
-        active: true,
-        order: 2,
-        hoverMsg: 'Message to display',
-        hoverRedirectLink: 'Message to display',
-        blacklistByIdentityProviderActivated: true,
-        WhitelistByServiceProviderActivated: true,
-        display: true,
-        isBeta: false,
-        title: 'Identity Provider Example',
-        image: '',
-        imageFocus: '',
-        alt: 'impots',
-        eidas: 2,
-        allowedAcr: ['eidas2'],
-        mailto: '',
-        specificText: 'specific text fip1',
-        url: 'https://fip1.docker.dev-franceconnect.fr/',
-        statusURL: 'https://fip1.docker.dev-franceconnect.fr/',
-        authzURL: 'https://fip1.docker.dev-franceconnect.fr/user/authorize',
-        tokenURL: 'https://fip1.docker.dev-franceconnect.fr/user/token',
-        userInfoURL: 'https://fip1.docker.dev-franceconnect.fr/api/user',
-        endSessionURL: 'https://issuer.fr/logout',
-        discoveryUrl: 'https://issuer/.well-known/openid-configuration',
-        discovery: true,
-        clientID: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: 'bbe8f1b2a1415d6942b653689a51ba16f22b41e57a4e44b40799d',
-        jwksURL: 'toto',
-        jwtAlgorithm: [],
-        trustedIdentity: false,
-        createdAt: now,
-        updatedAt: now,
-        updatedBy: 'admin',
-        token_endpoint_auth_method: 'client_secret_post',
-        amr: ['pop'],
-        modal: {
-          active: false,
-          title: 'title',
-          body: 'body',
-          continueText: 'continueText',
-          moreInfoLabel: 'moreInfoLabel',
-          moreInfoUrl: 'moreInfoUrl',
-        },
-        siret: '12345678910001',
-      };
-
-      const itemTest2 = { ...itemTest1, name: 'joker' };
-
-      const identityProvidersResult = {
-        items: [itemTest1, itemTest2],
-        itemCount: 2,
-        totalItems: 2,
-        pageCount: 0,
-        next: '',
-        previous: '',
-      };
-
-      // Actions
-      // Mocking the return of the paginate function
-      serviceMock.paginate.mockResolvedValueOnce(identityProvidersResult);
-
-      // Calling the list function
-      const resultat = await identityProviderController.list(
-        req,
-        sort,
-        action,
-        page,
-        limit,
-      );
-
-      // Expected
-      expect(resultat.identityProviders.length).toEqual(2);
-      expect(resultat.identityProviders).toEqual([itemTest1, itemTest2]);
-    });
-
-    it('should return return a list sort alphabetically of identity providers if sortField="name" and sortDirection="desc"', async () => {
-      // Setup
-      const page = '0';
-      const limit = '10';
-      const sort = 'name';
-      const action = 'desc';
-
-      // Mocking item id
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
-
-      const now = new Date('2019-11-08T09:52:29.984Z');
-
-      // //Mocking Items
-      const itemTest1: IdentityProvider = {
-        _id: itemId,
-        uid: 'joker',
-        name: 'joker',
-        active: true,
-        order: 2,
-        hoverMsg: 'Message to display',
-        hoverRedirectLink: 'Message to display',
-        blacklistByIdentityProviderActivated: true,
-        WhitelistByServiceProviderActivated: true,
-        display: true,
-        isBeta: false,
-        title: 'Identity Provider Example',
-        image: '',
-        imageFocus: '',
-        alt: 'impots',
-        eidas: 2,
-        allowedAcr: ['eidas2'],
-        mailto: '',
-        specificText: 'specific text fip1',
-        url: 'https://fip1.docker.dev-franceconnect.fr/',
-        statusURL: 'https://fip1.docker.dev-franceconnect.fr/',
-        authzURL: 'https://fip1.docker.dev-franceconnect.fr/user/authorize',
-        tokenURL: 'https://fip1.docker.dev-franceconnect.fr/user/token',
-        userInfoURL: 'https://fip1.docker.dev-franceconnect.fr/api/user',
-        endSessionURL: 'https://issuer.fr/logout',
-        discoveryUrl: 'https://issuer/.well-known/openid-configuration',
-        discovery: true,
-        clientID: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: 'bbe8f1b2a1415d6942b653689a51ba16f22b41e57a4e44b40799d',
-        jwksURL: 'toto',
-        jwtAlgorithm: [],
-        trustedIdentity: false,
-        createdAt: now,
-        updatedAt: now,
-        updatedBy: 'admin',
-        userinfo_encrypted_response_enc: 'ES256',
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_signed_response_alg: 'ES256',
-        id_token_signed_response_alg: 'ES256',
-        id_token_encrypted_response_alg: 'RSA-OAEP',
-        id_token_encrypted_response_enc: 'A256GCM',
-        amr: ['pop'],
-        modal: {
-          active: false,
-          title: 'title',
-          body: 'body',
-          continueText: 'continueText',
-          moreInfoLabel: 'moreInfoLabel',
-          moreInfoUrl: 'moreInfoUrl',
-        },
-        siret: '12345678910001',
-      };
-      const itemTest2 = { ...itemTest1, name: 'Batman' };
-
-      const identityProvidersResult = {
-        items: [itemTest1, itemTest2],
-        itemCount: 2,
-        totalItems: 2,
-        pageCount: 0,
-        next: '',
-        previous: '',
-      };
-
-      // Actions
-      // Mocking the return of the paginate function
-      serviceMock.paginate.mockResolvedValueOnce(identityProvidersResult);
-
-      // Calling the list function
-      const {
-        pageCount,
-        identityProviders,
-      } = await identityProviderController.list(req, sort, action, page, limit);
-
-      // Expected
-      expect(identityProviders.length).toEqual(2);
-      expect(identityProviders).toEqual([itemTest1, itemTest2]);
-    });
-
-    it('should return return a list sort (active value) of identity providers if sortField="active" and sortDirection="desc"', async () => {
-      // Setup
-      const page = '0';
-      const limit = '10';
-      const sort = 'name';
-      const action = 'desc';
-
-      // Mocking item id
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
-
-      const now = new Date('2019-11-08T09:52:29.984Z');
-
-      // //Mocking Items
-      const itemTest1: IdentityProvider = {
-        _id: itemId,
-        uid: 'joker',
-        name: 'joker',
-        active: false,
-        order: 2,
-        hoverMsg: 'Message to display',
-        hoverRedirectLink: 'Message to display',
-        blacklistByIdentityProviderActivated: true,
-        WhitelistByServiceProviderActivated: true,
-        display: true,
-        isBeta: false,
-        title: 'Identity Provider Example',
-        image: '',
-        imageFocus: '',
-        alt: 'impots',
-        eidas: 2,
-        allowedAcr: ['eidas2'],
-        mailto: '',
-        specificText: 'specific text fip1',
-        url: 'https://fip1.docker.dev-franceconnect.fr/',
-        statusURL: 'https://fip1.docker.dev-franceconnect.fr/',
-        authzURL: 'https://fip1.docker.dev-franceconnect.fr/user/authorize',
-        tokenURL: 'https://fip1.docker.dev-franceconnect.fr/user/token',
-        userInfoURL: 'https://fip1.docker.dev-franceconnect.fr/api/user',
-        endSessionURL: 'https://issuer.fr/logout',
-        discoveryUrl: 'https://issuer/.well-known/openid-configuration',
-        discovery: true,
-        clientID: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: 'bbe8f1b2a1415d6942b653689a51ba16f22b41e57a4e44b40799d',
-        jwksURL: 'toto',
-        jwtAlgorithm: [],
-        trustedIdentity: false,
-        createdAt: now,
-        updatedAt: now,
-        updatedBy: 'admin',
-        userinfo_encrypted_response_enc: 'ES256',
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_signed_response_alg: 'ES256',
-        id_token_signed_response_alg: 'ES256',
-        id_token_encrypted_response_alg: 'RSA-OAEP',
-        id_token_encrypted_response_enc: 'A256GCM',
-        token_endpoint_auth_method: 'client_secret_post',
-        amr: ['pop'],
-        modal: {
-          active: false,
-          title: 'title',
-          body: 'body',
-          continueText: 'continueText',
-          moreInfoLabel: 'moreInfoLabel',
-          moreInfoUrl: 'moreInfoUrl',
-        },
-        siret: '12345678910001',
-        supportEmail: 'batman@wanadoo.fr',
-      };
-      const itemTest2 = { ...itemTest1, name: 'Batman', active: true };
-
-      const identityProvidersResult = {
-        items: [itemTest1, itemTest2],
-        itemCount: 2,
-        totalItems: 2,
-        pageCount: 0,
-        next: '',
-        previous: '',
-      };
-
-      // Actions
-      // Mocking the return of the paginate function
-      serviceMock.paginate.mockResolvedValueOnce(identityProvidersResult);
-
-      // Calling the list function
-      const {
-        pageCount,
-        identityProviders,
-      } = await identityProviderController.list(req, sort, action, page, limit);
-
-      // Expected
-      expect(identityProviders.length).toEqual(2);
-      expect(identityProviders).toEqual([itemTest1, itemTest2]);
-    });
-
-    it('should return return a list sort (active value) of identity providers if sortField="active" and sortDirection="asc"', async () => {
-      // Setup
-      const page = '0';
-      const limit = '10';
-      const sort = 'name';
-      const action = 'desc';
-
-      // Mocking item id
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
-
-      const now = new Date('2019-11-08T09:52:29.984Z');
-
-      // //Mocking Items
-      const itemTest1: IdentityProvider = {
-        _id: itemId,
-        uid: 'joker',
-        name: 'joker',
-        active: true,
-        order: 2,
-        hoverMsg: 'Message to display',
-        hoverRedirectLink: 'Message to display',
-        blacklistByIdentityProviderActivated: true,
-        WhitelistByServiceProviderActivated: true,
-        display: true,
-        isBeta: false,
-        title: 'Identity Provider Example',
-        image: '',
-        imageFocus: '',
-        alt: 'impots',
-        eidas: 2,
-        allowedAcr: ['eidas2'],
-        mailto: '',
-        specificText: 'specific text fip1',
-        url: 'https://fip1.docker.dev-franceconnect.fr/',
-        statusURL: 'https://fip1.docker.dev-franceconnect.fr/',
-        authzURL: 'https://fip1.docker.dev-franceconnect.fr/user/authorize',
-        tokenURL: 'https://fip1.docker.dev-franceconnect.fr/user/token',
-        userInfoURL: 'https://fip1.docker.dev-franceconnect.fr/api/user',
-        endSessionURL: 'https://issuer.fr/logout',
-        discoveryUrl: 'https://issuer/.well-known/openid-configuration',
-        discovery: true,
-        clientID: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: 'bbe8f1b2a1415d6942b653689a51ba16f22b41e57a4e44b40799d',
-        jwksURL: 'toto',
-        jwtAlgorithm: [],
-        trustedIdentity: false,
-        createdAt: now,
-        updatedAt: now,
-        updatedBy: 'admin',
-        userinfo_encrypted_response_enc: 'ES256',
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_signed_response_alg: 'ES256',
-        id_token_signed_response_alg: 'ES256',
-        id_token_encrypted_response_alg: 'RSA-OAEP',
-        id_token_encrypted_response_enc: 'A256GCM',
-        amr: ['pop'],
-        modal: {
-          active: false,
-          title: 'title',
-          body: 'body',
-          continueText: 'continueText',
-          moreInfoLabel: 'moreInfoLabel',
-          moreInfoUrl: 'moreInfoUrl',
-        },
-        siret: '12345678910001',
-      };
-
-      const itemTest2 = { ...itemTest1, name: 'Batman', active: false };
-
-      const identityProvidersResult = {
-        items: [itemTest1, itemTest2],
-        itemCount: 2,
-        totalItems: 2,
-        pageCount: 0,
-        next: '',
-        previous: '',
-      };
-
-      // Actions
-      // Mocking the return of the paginate function
-      serviceMock.paginate.mockResolvedValueOnce(identityProvidersResult);
-      // Calling the list function
-      const resultat = await identityProviderController.list(
-        req,
-        sort,
-        action,
-        page,
-        limit,
-      );
-
-      // Expected
-      expect(resultat.identityProviders.length).toEqual(2);
-      expect(resultat.identityProviders).toEqual([itemTest1, itemTest2]);
     });
   });
 });

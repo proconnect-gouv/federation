@@ -3,7 +3,6 @@ import { FqdnToProviderService } from './fqdn-to-provider.service';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { FqdnToProvider } from './fqdn-to-provider.mongodb.entity';
 import { MongoRepository } from 'typeorm';
-import { InstanceService } from '../utils/instance.service';
 import { IFqdnToProvider } from './interface/fqdn.interface';
 import { IIdentityProvider } from '../identity-provider';
 import { ObjectId } from 'mongodb';
@@ -21,18 +20,11 @@ describe('FqdnToProviderService', () => {
     delete: jest.fn(),
   };
 
-  const instanceServiceMock = {
-    isFcaLow: jest.fn(),
-    isCl: jest.fn(),
-  };
-
   beforeEach(async () => {
     module = await Test.createTestingModule({
       imports: [TypeOrmModule.forFeature([FqdnToProvider], 'fc-mongo')],
-      providers: [FqdnToProviderService, MongoRepository, InstanceService],
+      providers: [FqdnToProviderService, MongoRepository],
     })
-      .overrideProvider(InstanceService)
-      .useValue(instanceServiceMock)
       .overrideProvider(getRepositoryToken(FqdnToProvider, 'fc-mongo'))
       .useValue(fqdnToProviderRepository)
 

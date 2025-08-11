@@ -5,7 +5,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScopesService } from './scopes.service';
 import { Scopes } from './scopes.mongodb.entity';
-import { InstanceService } from '../utils/instance.service';
 import { Claims, ClaimsService } from '../claims';
 
 import { ScopesController } from './scopes.controller';
@@ -13,7 +12,7 @@ import { ScopesController } from './scopes.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([Scopes, Claims], 'fc-mongo')],
   controllers: [ScopesController],
-  providers: [ScopesService, InstanceService, ClaimsService],
+  providers: [ScopesService, ClaimsService],
   exports: [ScopesService],
 })
 export class ScopesModule {}
