@@ -21,11 +21,13 @@ export class CliService {
     try {
       const user = await this.getUser(username, email, roles);
 
-      await this.userService.createUser(user, 'cli');
+      const firstLoginLink = await this.userService.createUser(user, 'cli');
 
       // We are in a CLI app
       // tslint:disable-next-line no-console
-      console.log(user.password);
+      console.log(`Password: ${user.password}`);
+      // tslint:disable-next-line no-console
+      console.log(`First login link: ${firstLoginLink}`);
       process.exit(0);
     } catch (error) {
       // tslint:disable-next-line no-console

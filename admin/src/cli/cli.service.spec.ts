@@ -47,12 +47,16 @@ describe('CliService', () => {
   });
 
   describe('createUser', () => {
-    it('Should return Password on success', async () => {
+    it('Should return Password and first login link on success', async () => {
       // Given
       const name = 'john';
       const roles = 'admin';
       const email = 'jhon@doe.com';
-      userServiceMock.generateTmpPass.mockReturnValueOnce('Azertyuio34!');
+      const firstLoginLink = 'http://localhost:3000/first-login?token=XXXXX';
+      const password = 'Azertyuio34!';
+
+      userServiceMock.generateTmpPass.mockReturnValueOnce(password);
+      userServiceMock.createUser.mockReturnValueOnce(firstLoginLink);
       totpServiceMock.generateTotpSecret.mockReturnValue('XXXXX');
       // When
       await service.createUser(name, email, roles);
@@ -60,8 +64,15 @@ describe('CliService', () => {
       expect(userServiceMock.generateTmpPass).toHaveBeenCalledTimes(1);
       expect(userServiceMock.createUser).toHaveBeenCalledTimes(1);
 
-      expect(consoleLogMock).toHaveBeenCalledTimes(1);
-      expect(consoleLogMock).toHaveBeenCalledWith('Azertyuio34!');
+      expect(consoleLogMock).toHaveBeenCalledTimes(2);
+      expect(consoleLogMock).toHaveBeenNthCalledWith(
+        1,
+        `Password: ${password}`,
+      );
+      expect(consoleLogMock).toHaveBeenNthCalledWith(
+        2,
+        `First login link: ${firstLoginLink}`,
+      );
 
       expect(processExitMock).toHaveBeenCalledTimes(1);
       expect(processExitMock).toHaveBeenCalledWith(0);

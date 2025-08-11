@@ -10,7 +10,7 @@ export interface IUserService {
   enrollUser(user, enrollmentPassword: IEnrollUserDto): Promise<UpdateResult>;
   findByUsername(username: string): Promise<User>;
   compareHash(password: string, hash: string): Promise<boolean>;
-  createUser(user: ICreateUserDTO, author: string): Promise<User>;
+  createUser(user: ICreateUserDTO, author: string): Promise<string>;
   deleteUserById(id: string, user: string): Promise<DeleteResult>;
   isEqualToTemporaryPassword(
     newPassword: string,

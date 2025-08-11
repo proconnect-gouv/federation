@@ -10,8 +10,6 @@ import { IUserPasswordUpdateDTO } from './interface/user-password-update-dto.int
 import { ICreateUserDTO } from './interface/create-user-dto.interface';
 import { IsPasswordCompliant } from '../account/validator/is-compliant.validator';
 import { ConfigService } from 'nestjs-config';
-import { MailerService } from '../mailer/mailer.service';
-import { MailerModule } from '../mailer/mailer.module';
 import uuid from 'uuid';
 import { LoggerService } from '../logger/logger.service';
 
@@ -43,10 +41,6 @@ describe('UserService', () => {
   const loggerMock = {
     businessEvent: businessEventMock,
     error: jest.fn(),
-  };
-
-  const transporterMock = {
-    send: jest.fn(),
   };
 
   const generatePasswordProvider = {
@@ -90,26 +84,12 @@ describe('UserService', () => {
     });
 
     const module = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forFeature([User, Password]),
-        MailerModule.forRoot({
-          transport: 'log',
-          emailOptions: {
-            from: {
-              name: 'batou',
-              email: 'batou@gotham.bt',
-            },
-            smtpSenderName: 'someName',
-            smtpSenderEmail: 'someEmail',
-          },
-        }),
-      ],
+      imports: [TypeOrmModule.forFeature([User, Password])],
       providers: [
         UserService,
         generatePasswordProvider,
         Repository,
         ConfigService,
-        MailerService,
         LoggerService,
       ],
     })
@@ -117,8 +97,6 @@ describe('UserService', () => {
       .useValue(userRepositoryMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(MailerService)
-      .useValue(transporterMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(getRepositoryToken(Password))
@@ -383,8 +361,6 @@ describe('UserService', () => {
         tokenExpiresAt: '2020-03-05T16:36:56.135Z',
       });
 
-      userService.sendNewAccountEmail = jest.fn().mockReturnValueOnce({});
-
       // action
       await userService.createUser(userMock, authorMock);
 
@@ -430,7 +406,6 @@ describe('UserService', () => {
         tokenExpiresAt: '2020-03-05T16:36:56.135Z',
       });
 
-      userService.sendNewAccountEmail = jest.fn().mockReturnValueOnce({});
       // tslint:disable-next-line:no-string-literal
       userService['track'] = jest.fn();
 
@@ -471,7 +446,6 @@ describe('UserService', () => {
         smtpSenderEmail: 'someString',
       });
 
-      userService.sendNewAccountEmail = jest.fn().mockReturnValueOnce({});
       try {
         await userService.createUser(userMock, authorMock);
       } catch (err) {
