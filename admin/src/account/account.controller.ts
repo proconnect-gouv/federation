@@ -63,15 +63,20 @@ export class AccountController {
       secret: this.totpService.generateTotpSecret(),
     };
 
+    let firstLoginLink = '';
+
     try {
-      await this.userService.createUser(newAccount, req.user.username);
+      firstLoginLink = await this.userService.createUser(
+        newAccount,
+        req.user.username,
+      );
     } catch (error) {
       req.flash('globalError', { code: '23505' });
       return res.redirect(`${res.locals.APP_ROOT}/account/create`);
     }
     req.flash(
       'success',
-      `L'utilisateur ${newAccount.username} a été créé avec succès !`,
+      `L'utilisateur ${newAccount.username} a été créé avec succès ! Veuillez lui envoyer le lien suivant pour qu'il puisse se connecter : ${firstLoginLink}`,
     );
     return res.redirect(`${res.locals.APP_ROOT}/account`);
   }

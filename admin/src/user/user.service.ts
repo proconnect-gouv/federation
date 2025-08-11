@@ -9,9 +9,6 @@ import { UserRole } from '../user/roles.enum';
 import { LoggerService } from '../logger/logger.service';
 
 import { IsPasswordCompliant } from '../account/validator/is-compliant.validator';
-import { MailerService } from '../mailer/mailer.service';
-import { Email } from '../mailer/mailer.types';
-import { IMailerParams } from '../mailer/interfaces';
 
 import { User } from './user.sql.entity';
 import { Password } from './password.sql.entity';
@@ -34,7 +31,6 @@ export class UserService implements IUserService {
     private readonly passwordRepository: Repository<Password>,
     private readonly logger: LoggerService,
     @InjectConfig() private readonly config: ConfigService,
-    private readonly transporterService: MailerService,
   ) {
     this.userTokenExpiresIn =
       this.config.get('app').userTokenExpiresIn * 60 * 1000;
@@ -137,7 +133,7 @@ export class UserService implements IUserService {
     return bcrypt.compare(password, hash);
   }
 
-  async createUser(user: ICreateUserDTO, author: string): Promise<User> {
+  async createUser(user: ICreateUserDTO, author: string): Promise<string> {
     const { appFqdn } = this.config.get('app');
     const { username, email, roles, secret } = user;
     const token = uuid.v4();
@@ -151,24 +147,8 @@ export class UserService implements IUserService {
       throw new Error('password hash could not be generated');
     }
 
-    try {
-      await this.sendNewAccountEmail(
-        { username, email },
-        {
-          templateName: 'enrollment',
-          variables: {
-            appFqdn,
-            token,
-          },
-        },
-      );
-    } catch (err) {
-      this.logger.error(err);
+    const firstLoginLink = `https://${appFqdn}/first-login/${token}`;
 
-      throw new Error(
-        `Sending email failed. Abandonment of user creation : ${err}`,
-      );
-    }
     try {
       const {
         tokenCreatedAt,
@@ -194,7 +174,7 @@ export class UserService implements IUserService {
         name: email,
       });
 
-      return enrolledUser;
+      return firstLoginLink;
     } catch (err) {
       this.logger.error(err);
 
@@ -271,32 +251,6 @@ export class UserService implements IUserService {
     }
 
     return userEntity;
-  }
-
-  sendNewAccountEmail({ username, email }, options: IMailerParams) {
-    return this.transporterService.send(
-      this.createRecipients(username, email),
-      options,
-    );
-  }
-
-  createRecipients(username: string, email: string): Email.SendParamsMessage {
-    const { appName } = this.config.get('app');
-    const { smtpSenderName, smtpSenderEmail } = this.config.get('transporter');
-
-    return {
-      From: {
-        Email: smtpSenderEmail,
-        Name: smtpSenderName,
-      },
-      To: [
-        {
-          Email: email,
-          Name: username,
-        },
-      ],
-      Subject: `Demande de création d'un compte utilisateur sur ${appName}`,
-    };
   }
 
   private setAuthenticationTokenExpirationDate() {
