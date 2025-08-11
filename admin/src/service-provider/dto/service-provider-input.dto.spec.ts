@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 
 import { ServiceProviderDto } from './service-provider-input.dto';
@@ -20,7 +20,7 @@ describe('Service Provider Input (Data Transfer Object)', () => {
 
   it('should validate if all properties are correct', async () => {
     // When | Action
-    const serviceProviderToClass = plainToClass(
+    const serviceProviderToClass = plainToInstance(
       ServiceProviderDto,
       serviceProvider,
     );
@@ -37,7 +37,7 @@ describe('Service Provider Input (Data Transfer Object)', () => {
     };
 
     // When | Action
-    const serviceProviderToClass = plainToClass(
+    const serviceProviderToClass = plainToInstance(
       ServiceProviderDto,
       customServiceProvider,
     );

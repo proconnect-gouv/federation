@@ -43,7 +43,7 @@ export class CreateUserDto {
     each: true,
     message: 'Veuillez renseigner des rôles valides',
   })
-  @Transform(value => (typeof value === 'string' ? [value] : value))
+  @Transform(({ value }) => (typeof value === 'string' ? [value] : value))
   readonly roles: UserRole[];
 
   @IsString()

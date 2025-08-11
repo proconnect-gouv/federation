@@ -165,15 +165,15 @@ export class ServiceProviderController {
       emails: Array.isArray(serviceProvider.email)
         ? arrayToLines(serviceProvider.email)
         : this.formatEmailFields(serviceProvider.email),
-      response_types: nullableArrayToDefaultNoneOrLines(
-        serviceProvider.response_types,
-      ),
-      grant_types: nullableArrayToDefaultNoneOrLines(
-        serviceProvider.grant_types,
-      ),
-      userinfo_signed_response_alg: toEmptiableString(
-        serviceProvider.userinfo_signed_response_alg,
-      ),
+      response_types: nullableArrayToDefaultNoneOrLines({
+        value: serviceProvider.response_types,
+      }),
+      grant_types: nullableArrayToDefaultNoneOrLines({
+        value: serviceProvider.grant_types,
+      }),
+      userinfo_signed_response_alg: toEmptiableString({
+        value: serviceProvider.userinfo_signed_response_alg,
+      }),
     };
 
     /**

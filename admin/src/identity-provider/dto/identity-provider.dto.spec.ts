@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 
 import { IdentityProviderDTO } from './identity-provider.dto';
@@ -78,7 +78,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
   describe('should validate', () => {
     it('without discovery properties', async () => {
       // When | Action
-      const serviceProviderToClass = plainToClass(
+      const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
         idpNoDiscoveryMock,
       );
@@ -90,7 +90,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
 
     it('with discovery properties', async () => {
       // When | Action
-      const serviceProviderToClass = plainToClass(
+      const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
         idpDiscoveryMock,
       );
@@ -112,7 +112,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       delete failIdpNoDiscoveryMock.authorizationUrl;
 
       // When | Action
-      const serviceProviderToClass = plainToClass(
+      const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
         failIdpNoDiscoveryMock,
       );
@@ -129,7 +129,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       };
 
       // When | Action
-      const serviceProviderToClass = plainToClass(
+      const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
         failIdpNoDiscoveryMock,
       );
@@ -147,7 +147,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       delete failIdpDiscoveryMock.discoveryUrl;
 
       // When | Action
-      const serviceProviderToClass = plainToClass(
+      const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
         failIdpDiscoveryMock,
       );
@@ -166,7 +166,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       };
 
       // When | Action
-      const serviceProviderToClass = plainToClass(
+      const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
         failIdpDiscoveryMock,
       );

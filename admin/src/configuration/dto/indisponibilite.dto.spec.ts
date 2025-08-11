@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 
 import { IndisponibiliteDTO } from './indisponibilite.dto';
@@ -16,7 +16,7 @@ describe('Indisponibilite (Data Transfer Object)', () => {
 
   it('Should validate all properties', async () => {
     // When | Action
-    const messagetoCLass = plainToClass(IndisponibiliteDTO, indisponibilite);
+    const messagetoCLass = plainToInstance(IndisponibiliteDTO, indisponibilite);
     const result = await validate(messagetoCLass);
 
     // Then | Assert
@@ -25,7 +25,7 @@ describe('Indisponibilite (Data Transfer Object)', () => {
 
   it('Should not validate message property to prevent XSS attacks', async () => {
     // When | Action
-    const messagetoCLass = plainToClass(IndisponibiliteDTO, {
+    const messagetoCLass = plainToInstance(IndisponibiliteDTO, {
       ...indisponibilite,
       message: `<script>alert('XSS')</script>`,
     });

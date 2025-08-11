@@ -350,14 +350,14 @@ describe('IdentityProviderController', () => {
       };
 
       jest
-        .spyOn(classTransformer, 'plainToClass')
+        .spyOn(classTransformer, 'plainToInstance')
         .mockReturnValueOnce(resultMock);
 
       // Action
       await identityProviderController.showCreationForm(reqMock);
 
       // Assertion
-      expect(classTransformer.plainToClass).toHaveBeenCalledTimes(1);
+      expect(classTransformer.plainToInstance).toHaveBeenCalledTimes(1);
       expect(reqMock.session.flash.values[0]).toStrictEqual(resultMock);
     });
   });
@@ -476,14 +476,14 @@ describe('IdentityProviderController', () => {
       };
 
       jest
-        .spyOn(classTransformer, 'plainToClass')
+        .spyOn(classTransformer, 'plainToInstance')
         .mockReturnValueOnce(resultMock);
 
       // Action
       await identityProviderController.findOne(params.id, reqMock, res);
 
       // Assertion
-      expect(classTransformer.plainToClass).toHaveBeenCalledTimes(1);
+      expect(classTransformer.plainToInstance).toHaveBeenCalledTimes(1);
       expect(reqMock.session.flash.values[0]).toStrictEqual(resultMock);
     });
 

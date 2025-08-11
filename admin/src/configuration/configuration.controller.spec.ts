@@ -118,7 +118,7 @@ describe('Configuration Controller', () => {
         activateMessage: true,
       };
       jest
-        .spyOn(classTransformer, 'plainToClass')
+        .spyOn(classTransformer, 'plainToInstance')
         .mockReturnValueOnce(resultMock);
       // action
       const result = await configurationController.indisponibilite(reqMock);

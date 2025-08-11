@@ -63,7 +63,7 @@ describe('String transform', () => {
       const value = 'true';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(true);
@@ -74,7 +74,7 @@ describe('String transform', () => {
       const value = 'on';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(true);
@@ -85,7 +85,7 @@ describe('String transform', () => {
       const value = '1';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(true);
@@ -96,7 +96,7 @@ describe('String transform', () => {
       const value = 'yes';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(true);
@@ -107,7 +107,7 @@ describe('String transform', () => {
       const value = 'false';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(false);
@@ -118,7 +118,7 @@ describe('String transform', () => {
       const value = 'off';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(false);
@@ -129,7 +129,7 @@ describe('String transform', () => {
       const value = '0';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(false);
@@ -140,7 +140,7 @@ describe('String transform', () => {
       const value = 'no';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(false);
@@ -151,7 +151,7 @@ describe('String transform', () => {
       const value = 'toto';
 
       // When
-      const result = toBoolean(value);
+      const result = toBoolean({ value });
 
       // Then
       expect(result).toEqual(undefined);
@@ -164,7 +164,7 @@ describe('String transform', () => {
       const value = 'toto';
 
       // When
-      const result = toArray(value);
+      const result = toArray({ value });
 
       // Then
       expect(result).toEqual([value]);
@@ -175,7 +175,7 @@ describe('String transform', () => {
       const value = ['toto'];
 
       // When
-      const result = toArray(value);
+      const result = toArray({ value });
 
       // Then
       expect(result).toEqual(value);
@@ -188,7 +188,7 @@ describe('String transform', () => {
       const value = 'line1\nline2\nline3';
 
       // When
-      const result = linesToArray(value);
+      const result = linesToArray({ value });
 
       // Then
       expect(result).toEqual(['line1', 'line2', 'line3']);
@@ -199,7 +199,7 @@ describe('String transform', () => {
       const value = 'line1\rline2\rline3';
 
       // When
-      const result = linesToArray(value);
+      const result = linesToArray({ value });
 
       // Then
       expect(result).toEqual(['line1', 'line2', 'line3']);
@@ -210,7 +210,7 @@ describe('String transform', () => {
       const value = 'line1\r\nline2\r\nline3';
 
       // When
-      const result = linesToArray(value);
+      const result = linesToArray({ value });
 
       // Then
       expect(result).toEqual(['line1', 'line2', 'line3']);
@@ -221,7 +221,7 @@ describe('String transform', () => {
       const value = 'line1;line2;line3';
 
       // When
-      const result = linesToArray(value);
+      const result = linesToArray({ value });
 
       // Then
       expect(result).toEqual(['line1', 'line2', 'line3']);
@@ -232,7 +232,7 @@ describe('String transform', () => {
       const value = ' line1 ; line2 ; line3 ';
 
       // When
-      const result = linesToArray(value);
+      const result = linesToArray({ value });
 
       // Then
       expect(result).toEqual(['line1', 'line2', 'line3']);
@@ -243,7 +243,7 @@ describe('String transform', () => {
       const value = 'line1;;line3';
 
       // When
-      const result = linesToArray(value);
+      const result = linesToArray({ value });
 
       // Then
       expect(result).toEqual(['line1', 'line3']);
@@ -254,7 +254,7 @@ describe('String transform', () => {
       const value = null;
 
       // When
-      const result = linesToArray(value);
+      const result = linesToArray({ value });
 
       // Then
       expect(result).toEqual(undefined);
@@ -291,7 +291,7 @@ describe('String transform', () => {
       const value = 'default';
 
       // When
-      const result = defaultNoneOrLinesToNullableArray(value);
+      const result = defaultNoneOrLinesToNullableArray({ value });
 
       // Then
       expect(result).toEqual(null);
@@ -302,7 +302,7 @@ describe('String transform', () => {
       const value = '';
 
       // When
-      const result = defaultNoneOrLinesToNullableArray(value);
+      const result = defaultNoneOrLinesToNullableArray({ value });
 
       // Then
       expect(result).toEqual(null);
@@ -313,7 +313,7 @@ describe('String transform', () => {
       const value = 'none';
 
       // When
-      const result = defaultNoneOrLinesToNullableArray(value);
+      const result = defaultNoneOrLinesToNullableArray({ value });
 
       // Then
       expect(result).toEqual([]);
@@ -324,7 +324,7 @@ describe('String transform', () => {
       const value = 'line1\nline2';
 
       // When
-      const result = defaultNoneOrLinesToNullableArray(value);
+      const result = defaultNoneOrLinesToNullableArray({ value });
 
       // Then
       expect(result).toEqual(['line1', 'line2']);
@@ -337,7 +337,7 @@ describe('String transform', () => {
       const value = null;
 
       // When
-      const result = nullableArrayToDefaultNoneOrLines(value);
+      const result = nullableArrayToDefaultNoneOrLines({ value });
 
       // Then
       expect(result).toEqual('default');
@@ -348,7 +348,7 @@ describe('String transform', () => {
       const value = [];
 
       // When
-      const result = nullableArrayToDefaultNoneOrLines(value);
+      const result = nullableArrayToDefaultNoneOrLines({ value });
 
       // Then
       expect(result).toEqual('none');
@@ -359,7 +359,7 @@ describe('String transform', () => {
       const value = ['line1', 'line2'];
 
       // When
-      const result = nullableArrayToDefaultNoneOrLines(value);
+      const result = nullableArrayToDefaultNoneOrLines({ value });
 
       // Then
       expect(result).toEqual('line1\r\nline2');
@@ -370,7 +370,7 @@ describe('String transform', () => {
       const value = 'not an array';
 
       // When
-      const result = nullableArrayToDefaultNoneOrLines(value);
+      const result = nullableArrayToDefaultNoneOrLines({ value });
 
       // Then
       expect(result).toEqual(value);
@@ -383,7 +383,7 @@ describe('String transform', () => {
       const value = 'some string';
 
       // When
-      const result = toNullableString(value);
+      const result = toNullableString({ value });
 
       // Then
       expect(result).toEqual(value);
@@ -394,7 +394,7 @@ describe('String transform', () => {
       const value = '';
 
       // When
-      const result = toNullableString(value);
+      const result = toNullableString({ value });
 
       // Then
       expect(result).toEqual(null);
