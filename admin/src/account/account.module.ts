@@ -8,12 +8,6 @@ import { AccountService } from './account.service';
 import { AuthenticationModule } from '../authentication/authentication.module';
 import { TotpService } from '../authentication/totp/totp.service';
 import { UserService } from '../user/user.service';
-import generatePassword from 'generate-password';
-
-const generatePasswordProvider = {
-  provide: 'generatePassword',
-  useValue: generatePassword,
-};
 
 @Module({
   imports: [
@@ -23,11 +17,6 @@ const generatePasswordProvider = {
     AuthenticationModule,
   ],
   controllers: [AccountController],
-  providers: [
-    AccountService,
-    UserService,
-    TotpService,
-    generatePasswordProvider,
-  ],
+  providers: [AccountService, UserService, TotpService],
 })
 export class AccountModule {}

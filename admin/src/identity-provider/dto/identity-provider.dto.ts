@@ -10,7 +10,6 @@ import {
   IsUrl,
   IsNotEmpty,
   Length,
-  IsEmail,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import {

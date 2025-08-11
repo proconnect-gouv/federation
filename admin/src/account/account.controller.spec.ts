@@ -82,7 +82,6 @@ describe('AccountController', () => {
           provide: getRepositoryToken(AccountService),
           useClass: Repository,
         },
-        { provide: 'generatePassword', useValue: mockedGeneratePassword },
       ],
     })
       .overrideProvider(UserService)

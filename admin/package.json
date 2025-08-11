@@ -68,7 +68,6 @@
     "express-flash": "0.0.2",
     "express-session": "^1.16.1",
     "font-awesome": "^4.7.0",
-    "generate-password": "^1.7.1",
     "helmet": "^3.23.3",
     "jquery": "^3.7.1",
     "jsdom": "^26.0.0",

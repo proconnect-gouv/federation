@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { Repository, DeleteResult, UpdateResult } from 'typeorm';
 import uuid from 'uuid';
+import crypto from 'crypto';
 import { InjectConfig, ConfigService } from 'nestjs-config';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UserRole } from '../user/roles.enum';
@@ -24,7 +25,6 @@ export class UserService implements IUserService {
   private readonly userTokenExpiresIn;
 
   constructor(
-    @Inject('generatePassword') private readonly generatePassword,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Password)
@@ -40,23 +40,12 @@ export class UserService implements IUserService {
     this.logger.businessEvent({ entity: 'user', ...log });
   }
 
-  callGeneratePassword() {
-    return this.generatePassword.generate({
-      length: 12,
-      numbers: true,
-      symbols: true,
-      uppercase: true,
-      excludeSimilarCharacters: true,
-      strict: true,
-    });
-  }
-
   generateTmpPass() {
     const validator = new IsPasswordCompliant();
     let temporaryPassword = '';
     let i = 0;
     while (i < 10) {
-      temporaryPassword = this.callGeneratePassword();
+      temporaryPassword = this.generatePassword();
       if (validator.validate(temporaryPassword)) {
         return temporaryPassword;
       }
@@ -386,5 +375,21 @@ export class UserService implements IUserService {
       this.logger.error(error);
       throw new Error(`Cannot Save data in database`);
     }
+  }
+
+  generatePassword() {
+    const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
+    const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const NUMBERS = '0123456789';
+    const SYMBOLS = '!@#$%^&*()+_-=}{[]|:;"/?.><,`~';
+    const CHARACTERS = [LOWERCASE, UPPERCASE, NUMBERS, SYMBOLS];
+    const length = 12;
+
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      const randomCharacterIndex = crypto.randomInt(CHARACTERS.length);
+      password += CHARACTERS[randomCharacterIndex];
+    }
+    return password;
   }
 }

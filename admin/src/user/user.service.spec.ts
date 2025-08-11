@@ -29,10 +29,6 @@ describe('UserService', () => {
     update: jest.fn(),
   };
 
-  const generatePasswordMock = {
-    generate: jest.fn(),
-  };
-
   const configServiceMock = {
     get: jest.fn(),
   };
@@ -41,11 +37,6 @@ describe('UserService', () => {
   const loggerMock = {
     businessEvent: businessEventMock,
     error: jest.fn(),
-  };
-
-  const generatePasswordProvider = {
-    provide: 'generatePassword',
-    useValue: generatePasswordMock,
   };
 
   const user = {
@@ -85,13 +76,7 @@ describe('UserService', () => {
 
     const module = await Test.createTestingModule({
       imports: [TypeOrmModule.forFeature([User, Password])],
-      providers: [
-        UserService,
-        generatePasswordProvider,
-        Repository,
-        ConfigService,
-        LoggerService,
-      ],
+      providers: [UserService, Repository, ConfigService, LoggerService],
     })
       .overrideProvider(getRepositoryToken(User))
       .useValue(userRepositoryMock)
@@ -112,33 +97,11 @@ describe('UserService', () => {
     (uuid.v4 as jest.Mock).mockReturnValue(mockToken);
   });
 
-  describe('callGeneratePassword', () => {
-    it('should be called with the right arguments', () => {
-      // setup
-
-      const args = {
-        length: 12,
-        numbers: true,
-        symbols: true,
-        uppercase: true,
-        excludeSimilarCharacters: true,
-        strict: true,
-      };
-
-      // action
-      userService.callGeneratePassword();
-      // assertion
-      expect(generatePasswordMock.generate).toHaveBeenCalledWith(args);
-    });
-  });
-
   describe('generateTmpPass', () => {
     it('should return a temporary password', () => {
       // Set up
       mockValidate.mockReturnValue(true);
-      userService.callGeneratePassword = jest
-        .fn()
-        .mockReturnValue('GoodToGo10!!');
+      userService.generatePassword = jest.fn().mockReturnValue('GoodToGo10!!');
 
       // action
       const result = userService.generateTmpPass();
@@ -150,9 +113,7 @@ describe('UserService', () => {
     it('should return an error message', () => {
       // Set up
       mockValidate.mockReturnValue(false);
-      userService.callGeneratePassword = jest
-        .fn()
-        .mockReturnValue('GoodToGo10!!');
+      userService.generatePassword = jest.fn().mockReturnValue('GoodToGo10!!');
 
       // action
       const result = userService.generateTmpPass();
