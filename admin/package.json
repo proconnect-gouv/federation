@@ -70,7 +70,7 @@
     "font-awesome": "^4.7.0",
     "fuse.js": "^6.6.2",
     "generate-password": "^1.7.1",
-    "helmet": "^3.23.3",
+    "helmet": "^8.1.0",
     "jquery": "^3.7.1",
     "jsdom": "^26.0.0",
     "lightpick": "^1.6.2",
