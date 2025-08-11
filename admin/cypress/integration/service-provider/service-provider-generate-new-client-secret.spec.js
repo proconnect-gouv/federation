@@ -79,7 +79,9 @@ describe('update a service-provider', () => {
 
   describe('Second step: update the FS => generate a new client secret', () => {
     it('Should be able to update a fs with a good totp', () => {
-      cy.visit('/service-provider?page=1&limit=9000&sortField=createdAt&sortDirection=asc');
+      cy.visit(
+        '/service-provider?page=1&limit=9000&sortField=createdAt&sortDirection=asc',
+      );
 
       cy.contains(`GenerateClientSecretFS`).should('be.visible');
       cy.get('a.btn-action-generate-client-secret')

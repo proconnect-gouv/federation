@@ -1,7 +1,4 @@
-import {
-  USER_OPERATOR,
-  USER_PASS,
-} from '../../support/constants';
+import { USER_OPERATOR, USER_PASS } from '../../support/constants';
 import { createServiceProvider } from './service-provider-create.utils';
 
 const BASE_URL = Cypress.config('baseUrl');

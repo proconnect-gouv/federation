@@ -1,7 +1,4 @@
-import {
-  USER_OPERATOR,
-  USER_PASS,
-} from '../../support/constants';
+import { USER_OPERATOR, USER_PASS } from '../../support/constants';
 import { createServiceProvider } from './service-provider-create.utils';
 
 const basicConfiguration = {
@@ -101,7 +98,9 @@ describe('Delete service provider', () => {
   describe('Should delete', () => {
     beforeEach(() => {
       createServiceProvider(fs, { ...basicConfiguration });
-      cy.visit(`/service-provider?page=1&limit=9999&sortField=createdAt&sortDirection=asc`);
+      cy.visit(
+        `/service-provider?page=1&limit=9999&sortField=createdAt&sortDirection=asc`,
+      );
       cy.contains(fs.name).should('be.visible');
     });
     it('One service provider thanks quick method (trash button)', () => {
@@ -133,7 +132,9 @@ describe('Delete service provider', () => {
 
     it('One service provider thanks long method (checkbox & delete button)', () => {
       fs.name = 'uniquefranceconnect3';
-      cy.visit(`/service-provider?page=1&limit=9999&sortField=createdAt&sortDirection=asc`);
+      cy.visit(
+        `/service-provider?page=1&limit=9999&sortField=createdAt&sortDirection=asc`,
+      );
       cy.get('input.delete-items')
         .last()
         .click();

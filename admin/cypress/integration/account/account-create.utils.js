@@ -1,7 +1,4 @@
-import {
-  USER_ADMIN,
-  LIMIT_PAGE,
-} from '../../support/constants';
+import { USER_ADMIN, LIMIT_PAGE } from '../../support/constants';
 import { deleteUser } from './account-delete.utils';
 
 /**
@@ -16,7 +13,9 @@ export function createUserAccount(userInfo, basicConfiguration) {
   cy.formType('#username', userInfo.username, basicConfiguration);
   cy.formType('#email', userInfo.email, basicConfiguration);
 
-  cy.get('#tmpPassword').invoke('text').then((tmpPassword) => cy.wrap(tmpPassword).as('tmpPassword'));
+  cy.get('#tmpPassword')
+    .invoke('text')
+    .then(tmpPassword => cy.wrap(tmpPassword).as('tmpPassword'));
 
   if (basicConfiguration.adminRole) {
     cy.get('form')
@@ -61,7 +60,7 @@ export function createUserAndLogWith(userInfo, basicConfiguration) {
   createUserAccount(userInfo, configuration);
   cy.logout(USER_ADMIN);
 
-  cy.get('@tmpPassword').then((tmpPassword) => {
+  cy.get('@tmpPassword').then(tmpPassword => {
     cy.firstLogin(userInfo.username, tmpPassword);
   });
 

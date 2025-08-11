@@ -1,7 +1,4 @@
-import {
-  USER_ONLY_ADMIN,
-  USER_PASS,
-} from '../../support/constants';
+import { USER_ONLY_ADMIN, USER_PASS } from '../../support/constants';
 
 describe('Forbidden - error 403', () => {
   const option = {

@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import "bootstrap/dist/js/bootstrap";
+import 'bootstrap/dist/js/bootstrap';
 
 export function handleEmail() {
   let i = 0;
-  $('#addEmail').click((ev) => {
+  $('#addEmail').click(ev => {
     $('.email-list').append(`
       <li id="email${i}">
         <div class="col-xs-9 col-sm-12 col-md-4">
@@ -28,7 +28,9 @@ export function handleEmail() {
   });
 }
 
-$(document).on('click', '#deleteEmail', function (e) {
+$(document).on('click', '#deleteEmail', function(e) {
   const child = e.target.dataset.reference;
-  document.getElementById("email-list").removeChild(document.getElementById(child));
+  document
+    .getElementById('email-list')
+    .removeChild(document.getElementById(child));
 });

@@ -1,8 +1,4 @@
-import {
-  USER_ADMIN,
-  USER_PASS,
-  LIMIT_PAGE,
-} from '../../support/constants';
+import { USER_ADMIN, USER_PASS, LIMIT_PAGE } from '../../support/constants';
 
 import { deleteUser } from './account-delete.utils';
 import { createUserAccount } from './account-create.utils';

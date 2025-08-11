@@ -10,10 +10,7 @@ import {
   displayRemoveButtonEvent,
   submitDeletion,
 } from './delete-service-provider';
-import {
-  removeItem,
-  updateItem,
-} from './modals/confirm-form';
+import { removeItem, updateItem } from './modals/confirm-form';
 import { customFileInput } from './custom-file-input';
 import { lazyInit } from './lazy-init';
 import { validateEnrollment } from './validate-enrollment';
