@@ -1,7 +1,4 @@
-import {
-  USER_OPERATOR,
-  USER_PASS,
-} from '../../support/constants';
+import { USER_OPERATOR, USER_PASS } from '../../support/constants';
 import {
   createServiceProvider,
   uploadCSV,

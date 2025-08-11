@@ -10,11 +10,12 @@
 export function lazyInit(initMap, selector) {
   document.querySelectorAll(`${selector} [data-init]`).forEach(element => {
     const initKeys = element.getAttribute('data-init');
-    initKeys.split(',')
+    initKeys
+      .split(',')
       .filter(key => key && typeof initMap[key] != 'undefined')
       .map(key => initMap[key])
       .forEach(fn => {
         fn.call(null, element);
-      })
+      });
   });
 }

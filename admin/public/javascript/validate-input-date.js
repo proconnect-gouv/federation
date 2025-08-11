@@ -9,7 +9,7 @@ export function validateInputDate(element) {
   dateFinEl = document.getElementById('dateFin');
   submitButton = document.getElementById('submit-button');
 
-  element.addEventListener('input', function(){
+  element.addEventListener('input', function() {
     if (moment(dateDebutEl.value).isAfter(dateFinEl.value)) {
       dateDebutEl.classList.add('is-invalid');
       dateFinEl.classList.add('is-invalid');

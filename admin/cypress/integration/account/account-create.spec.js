@@ -219,9 +219,9 @@ describe('Account', () => {
         });
 
         createUserAccount(userInfo, configuration);
-        cy.contains(`Veuillez mettre un nom d'utilisateur ( Majuscule, minuscule, nombres et trait d'union, sans espace)`).should(
-          'be.visible',
-        );
+        cy.contains(
+          `Veuillez mettre un nom d'utilisateur ( Majuscule, minuscule, nombres et trait d'union, sans espace)`,
+        ).should('be.visible');
       });
 
       it('if an error occured in the form, we diplays error (email)', () => {

@@ -12,7 +12,7 @@
     "console": "node dist/console.js",
     "console:dev": "ts-node -r tsconfig-paths/register src/console.ts",
     "fixtures:load": "fixtures load fixtures --dataSource src/dataSource.ts --require=ts-node/register --require=tsconfig-paths/register",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"cypress/**/*.js\" \"public/**/*.js\" ",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "migrations:run": "yarn typeorm migration:run && echo '\n\n ***Make sure to load fixtures and create backup DB for E2E***\n from you host run:\n > ./cypress/support/db.sh exploitation create'",
     "prestart": "yarn run prebuild",

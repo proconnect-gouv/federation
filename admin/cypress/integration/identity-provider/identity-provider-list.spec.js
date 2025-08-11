@@ -63,7 +63,7 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="name-asc"]').click();
 
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/identity-provider');
         const params = url.searchParams;
@@ -81,7 +81,7 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="next-link"]').click();
 
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/identity-provider');
         const params = url.searchParams;
@@ -99,7 +99,7 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="previous-link"]').click();
 
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/identity-provider');
         const params = url.searchParams;
@@ -140,7 +140,10 @@ describe('Identity provider creation', () => {
       cy.visit(
         `${BASE_URL}/identity-provider?sortField=createdAt&sortDirection=asc&page=1&limit=10&search=${fi.name}`,
       );
-      cy.get('#list-table > tbody > tr:first > td:nth-child(3)').should('contain', 'yopmail.com');
+      cy.get('#list-table > tbody > tr:first > td:nth-child(3)').should(
+        'contain',
+        'yopmail.com',
+      );
     });
   });
 

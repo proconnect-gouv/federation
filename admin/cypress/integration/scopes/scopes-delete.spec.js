@@ -1,7 +1,4 @@
-import {
-  USER_OPERATOR,
-  USER_PASS,
-} from '../../support/constants';
+import { USER_OPERATOR, USER_PASS } from '../../support/constants';
 import { scrollToBottom } from './scopes.utils';
 
 import {

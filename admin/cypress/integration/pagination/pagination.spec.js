@@ -16,8 +16,10 @@ describe('Pagination', () => {
 
       it('Should on click change to the page correct page number', () => {
         cy.visit(`/service-provider?page=1&limit=1`);
-        cy.get('#pagination-container > li').contains('2').click();
-          cy.url().should((urlString) => {
+        cy.get('#pagination-container > li')
+          .contains('2')
+          .click();
+        cy.url().should(urlString => {
           const url = new URL(urlString);
           expect(url.pathname).to.eq('/service-provider');
           const params = url.searchParams;
@@ -28,8 +30,12 @@ describe('Pagination', () => {
 
       it('Should show a selected color on the current page', () => {
         cy.visit(`/service-provider?page=1&limit=1`);
-        cy.get('#pagination-container > li').contains('2').click();
-        cy.get('#pagination-container > li').eq('2').should('have.class', 'active');
+        cy.get('#pagination-container > li')
+          .contains('2')
+          .click();
+        cy.get('#pagination-container > li')
+          .eq('2')
+          .should('have.class', 'active');
       });
     });
     describe('Failling Case', () => {
@@ -49,8 +55,10 @@ describe('Pagination', () => {
 
       it('Should on click change to the page correct page number', () => {
         cy.visit(`/identity-provider?page=1&limit=1`);
-        cy.get('#pagination-container > li').contains('2').click();
-        cy.url().should((urlString) => {
+        cy.get('#pagination-container > li')
+          .contains('2')
+          .click();
+        cy.url().should(urlString => {
           const url = new URL(urlString);
           expect(url.pathname).to.eq('/identity-provider');
           const params = url.searchParams;
@@ -61,8 +69,12 @@ describe('Pagination', () => {
 
       it('Should show a selected color on the current page', () => {
         cy.visit(`/identity-provider?page=1&limit=1`);
-        cy.get('#pagination-container > li').contains('2').click();
-        cy.get('#pagination-container > li').eq('2').should('have.class', 'active');
+        cy.get('#pagination-container > li')
+          .contains('2')
+          .click();
+        cy.get('#pagination-container > li')
+          .eq('2')
+          .should('have.class', 'active');
       });
     });
     describe('Failling Case', () => {
@@ -82,8 +94,10 @@ describe('Pagination', () => {
 
       it('Should on click change to the page correct page number', () => {
         cy.visit(`/account?page=1&limit=1`);
-        cy.get('#pagination-container > li').contains('2').click();
-        cy.url().should((urlString) => {
+        cy.get('#pagination-container > li')
+          .contains('2')
+          .click();
+        cy.url().should(urlString => {
           const url = new URL(urlString);
           expect(url.pathname).to.eq('/account');
           const params = url.searchParams;
@@ -94,8 +108,12 @@ describe('Pagination', () => {
 
       it('Should show a selected color on the current page', () => {
         cy.visit(`/account?page=1&limit=1`);
-        cy.get('#pagination-container > li').contains('2').click();
-        cy.get('#pagination-container > li').eq('2').should('have.class', 'active');
+        cy.get('#pagination-container > li')
+          .contains('2')
+          .click();
+        cy.get('#pagination-container > li')
+          .eq('2')
+          .should('have.class', 'active');
       });
     });
     describe('Failling Case', () => {

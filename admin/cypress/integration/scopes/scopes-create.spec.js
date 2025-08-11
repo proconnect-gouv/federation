@@ -1,7 +1,4 @@
-import {
-  USER_OPERATOR,
-  USER_PASS,
-} from '../../support/constants';
+import { USER_OPERATOR, USER_PASS } from '../../support/constants';
 import { useMenuToFdPage } from './scopes.utils';
 
 const BASE_URL = Cypress.config('baseUrl');

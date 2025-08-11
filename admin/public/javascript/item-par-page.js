@@ -1,10 +1,10 @@
 import $ from 'jquery';
 
 export function itemPerPage(element) {
-  const form = $('#itemPerPage')
+  const form = $('#itemPerPage');
 
-  element.addEventListener('change', function (ev) {
-    $('#itemNumberList').removeClass('selected')
-    form.submit()
-  })
+  element.addEventListener('change', function(ev) {
+    $('#itemNumberList').removeClass('selected');
+    form.submit();
+  });
 }

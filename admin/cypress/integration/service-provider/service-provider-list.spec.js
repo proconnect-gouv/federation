@@ -74,7 +74,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="name-asc"]').click();
 
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -90,7 +90,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="createdAt-asc"]').click();
 
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -106,8 +106,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="secretUpdatedAt-asc"]').click();
 
-
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -123,7 +122,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="active-asc"]').click();
 
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -135,12 +134,13 @@ describe('Service provider list', () => {
     });
 
     it('Query "sortField" and "sortDirection" are visible when I click on next button', () => {
-      cy.visit(`/service-provider?sortField=name&sortDirection=asc&page=1&limit=2`);
+      cy.visit(
+        `/service-provider?sortField=name&sortDirection=asc&page=1&limit=2`,
+      );
 
       cy.get('a[id="name-asc"]').click();
 
-
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -152,8 +152,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="next-link"]').click();
 
-
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -165,11 +164,13 @@ describe('Service provider list', () => {
     });
 
     it('Query "sortField" and "sortDirection" are visible when I click on previous button', () => {
-      cy.visit(`/service-provider?sortField=name&sortDirection=asc&limit=2&page=2`);
+      cy.visit(
+        `/service-provider?sortField=name&sortDirection=asc&limit=2&page=2`,
+      );
 
       cy.get('a[id="previous-link"]').click();
 
-      cy.url().should((urlString) => {
+      cy.url().should(urlString => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -181,7 +182,9 @@ describe('Service provider list', () => {
     });
 
     it('I can click on the name of the FS to go to the update page', () => {
-      cy.visit(`/service-provider?sortField=name&sortDirection=asc&page=2&limit=2`);
+      cy.visit(
+        `/service-provider?sortField=name&sortDirection=asc&page=2&limit=2`,
+      );
 
       cy.get('[id^="provider-"]:first').click();
 
@@ -192,7 +195,9 @@ describe('Service provider list', () => {
     });
 
     it('I can click on the client ID of the FS to go to the update secret page', () => {
-      cy.visit(`/service-provider?sortField=name&sortDirection=asc&page=2&limit=2`);
+      cy.visit(
+        `/service-provider?sortField=name&sortDirection=asc&page=2&limit=2`,
+      );
 
       cy.get('[id^="key-"]:first').click({ force: true });
 
@@ -211,7 +216,9 @@ describe('Service provider list', () => {
     });
 
     it("I can't click on the name of the FS to go to the update page", () => {
-      cy.visit(`/service-provider?sortField=name&sortDirection=asc&limit=2&page=2`);
+      cy.visit(
+        `/service-provider?sortField=name&sortDirection=asc&limit=2&page=2`,
+      );
 
       cy.get('#list-table > tbody > tr:first > th').then($el => {
         expect($el).to.not.have.descendants('a');
@@ -219,7 +226,9 @@ describe('Service provider list', () => {
     });
 
     it("I can't click on the client ID of the FS to go to the update secret page", () => {
-      cy.visit(`/service-provider?sortField=name&sortDirection=asc&limit=2&page=2`);
+      cy.visit(
+        `/service-provider?sortField=name&sortDirection=asc&limit=2&page=2`,
+      );
 
       cy.get('#list-table > tbody > tr:first > td').then($el => {
         expect($el).to.not.have.descendants('a');

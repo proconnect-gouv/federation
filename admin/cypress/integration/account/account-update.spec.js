@@ -1,8 +1,4 @@
-import {
-  USER_ADMIN,
-  USER_PASS,
-  LIMIT_PAGE,
-} from '../../support/constants';
+import { USER_ADMIN, USER_PASS, LIMIT_PAGE } from '../../support/constants';
 import { createUserAndLogWith } from './account-create.utils';
 import { deleteUser } from './account-delete.utils';
 import { updatePassword } from './account-update.utils';
@@ -143,72 +139,78 @@ describe('Patch update-account/:username', () => {
     fast: true,
   };
 
-  describe("is-compliant-validator", () => {
-    it("should throw an error if his password is too short", () => {
+  describe('is-compliant-validator', () => {
+    it('should throw an error if his password is too short', () => {
       testIsCompliantPasswordUpdate(
-        {...basicConfiguration},
+        { ...basicConfiguration },
         {
           password: 'short@Pass1',
           passwordConfirmation: 'short@Pass1',
-          errorMessage: 'Le mot de passe saisi est invalide'
-        });
-    })
+          errorMessage: 'Le mot de passe saisi est invalide',
+        },
+      );
+    });
 
-    it("should throw an error if his password does not contain lowercase letters", () => {
+    it('should throw an error if his password does not contain lowercase letters', () => {
       testIsCompliantPasswordUpdate(
-        {...basicConfiguration},
+        { ...basicConfiguration },
         {
           password: 'NO-LOWER@PASS10',
           passwordConfirmation: 'NO-LOWER@PASS10',
-          errorMessage: 'Le mot de passe saisi est invalide'
-        });
-    })
+          errorMessage: 'Le mot de passe saisi est invalide',
+        },
+      );
+    });
 
-    it("should throw an error if his password does not contain uppercase letters", () => {
+    it('should throw an error if his password does not contain uppercase letters', () => {
       testIsCompliantPasswordUpdate(
-        {...basicConfiguration},
+        { ...basicConfiguration },
         {
           password: 'no-upper@pass1',
           passwordConfirmation: 'no-upper@pass1',
-          errorMessage: 'Le mot de passe saisi est invalide'
-        });
-    })
+          errorMessage: 'Le mot de passe saisi est invalide',
+        },
+      );
+    });
 
-    it("should throw an error if his password does not contain special characters", () => {
+    it('should throw an error if his password does not contain special characters', () => {
       testIsCompliantPasswordUpdate(
-        {...basicConfiguration},
+        { ...basicConfiguration },
         {
           passwordConfirmation: 'NoSpecialChars123',
           passwordConfirmation: 'NoSpecialChars123',
-          errorMessage: 'Le mot de passe saisi est invalide'
-        });
-    })
+          errorMessage: 'Le mot de passe saisi est invalide',
+        },
+      );
+    });
 
-    it("should throw an error if his password does not contain numbers", () => {
+    it('should throw an error if his password does not contain numbers', () => {
       testIsCompliantPasswordUpdate(
-        {...basicConfiguration},
+        { ...basicConfiguration },
         {
           password: 'NoNumbers@TryAgainBuddy',
           passwordConfirmation: 'NoNumbers@TryAgainBuddy',
-          errorMessage: 'Le mot de passe saisi est invalide'
-        });
-    })
+          errorMessage: 'Le mot de passe saisi est invalide',
+        },
+      );
+    });
   });
-  
-  describe("isSameAS", () => {
+
+  describe('isSameAS', () => {
     it('should throw an error if his passwords do not match', () => {
       testIsCompliantPasswordUpdate(
-        {...basicConfiguration},
+        { ...basicConfiguration },
         {
           password: 'DoesNotMatch@TryAgainBuddy',
           passwordConfirmation: 'NotMatching@TryAgainBuddy',
-          errorMessage: 'Les mots de passe fournis ne correspondent pas'
-        });
+          errorMessage: 'Les mots de passe fournis ne correspondent pas',
+        },
+      );
     });
   });
 });
 
-describe("isEqualToOneOfTheLastFivePasswords", () => {
+describe('isEqualToOneOfTheLastFivePasswords', () => {
   before(() => {
     Cypress.session.clearAllSavedSessions();
     cy.resetEnv('postgres');
@@ -265,6 +267,8 @@ describe("isEqualToOneOfTheLastFivePasswords", () => {
     currentPassword = newPassword;
     newPassword = 'MyNewPassword10!!';
     updatePassword(userInfo.username, currentPassword, newPassword);
-    cy.contains("Votre nouveau mot de passe ne peut être l'un des cinq derniers mots de passe utilisés");
+    cy.contains(
+      "Votre nouveau mot de passe ne peut être l'un des cinq derniers mots de passe utilisés",
+    );
   });
 });

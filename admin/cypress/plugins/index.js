@@ -20,4 +20,4 @@ module.exports = (on, config) => {
   on('task', {
     getTotp,
   });
-}
+};

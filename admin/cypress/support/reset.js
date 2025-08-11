@@ -1,7 +1,7 @@
 const SAFETY_EXEC_TIMEOUT = 10000; // 10 sec
 const LONG_EXEC_TIMEOUT = 60 * 1000; // 1 minutes
 
-const DOCKER_DIR = `cd ${Cypress.env("FEDERATION_DIR")}/docker`;
+const DOCKER_DIR = `cd ${Cypress.env('FEDERATION_DIR')}/docker`;
 
 export function resetMongo() {
   const command = `${DOCKER_DIR} && CI=1 ./docker-stack reset-db`;
@@ -18,9 +18,7 @@ export function resetMongo() {
 }
 
 export function resetPostgres() {
-  const command = `./cypress/support/db.sh ${Cypress.env(
-    'APP_NAME',
-  )} apply`;
+  const command = `./cypress/support/db.sh ${Cypress.env('APP_NAME')} apply`;
 
   cy.log(`
     Executing command:
