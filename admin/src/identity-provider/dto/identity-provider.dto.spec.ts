@@ -30,6 +30,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
     allowedAcr: ['eidas2', 'eidas3'],
     order: 1,
     emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
+    siret: '',
     specificText:
       "Veuillez fournir une capture d'écran de votre page de profil !",
     token_endpoint_auth_method: 'client_secret_post',
@@ -64,6 +65,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
     allowedAcr: ['eidas2', 'eidas3'],
     order: 1,
     emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
+    siret: '',
     specificText:
       "Veuillez fournir une capture d'écran de votre page de profil !",
     token_endpoint_auth_method: 'client_secret_post',
@@ -102,7 +104,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
   });
 
   describe('should fail', () => {
-    it('if discovery is not enable and token, userInfo and authorization url are missing', async () => {
+    it('if discovery is not enabled and token, userInfo and authorization url are missing', async () => {
       const failIdpNoDiscoveryMock = {
         ...idpNoDiscoveryMock,
       };
@@ -122,7 +124,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it.skip('if discovery is not enable but their is a discoveryUrl', async () => {
+    it.skip('if discovery is not enabled but there is a discoveryUrl', async () => {
       const failIdpNoDiscoveryMock = {
         ...idpNoDiscoveryMock,
         discoveryUrl: 'https://issuer.fr/discovery',
@@ -139,7 +141,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it('if discovery is enable but their no discoveryUrl', async () => {
+    it('if discovery is enabled but there is no discoveryUrl', async () => {
       const failIdpDiscoveryMock = {
         ...idpDiscoveryMock,
       };
@@ -157,7 +159,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it.skip('if discovery is enable but their is token, userInfo and authorization url', async () => {
+    it.skip('if discovery is enabled and there are token, userInfo and authorization url', async () => {
       const failIdpDiscoveryMock = {
         ...idpDiscoveryMock,
         tokenUrl: 'https://issuer.fr/token',
