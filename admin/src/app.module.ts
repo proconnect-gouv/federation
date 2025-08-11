@@ -34,7 +34,6 @@ import { CliModule } from './cli/cli.module';
 import { CsurfMiddleware } from '@nest-middlewares/csurf';
 import { TotpMiddleware } from './authentication/middleware/totp.middleware';
 import { LoggerModule } from './logger/logger.module';
-import { InstanceService } from './utils/instance.service';
 import { FqdnToProviderModule } from './fqdn-to-provider/fqdn-to-provider.module';
 
 const otplibProvider = {
@@ -67,7 +66,7 @@ const otplibProvider = {
       storage: memoryStorage(),
     }),
   ],
-  providers: [LocalsInterceptor, otplibProvider, InstanceService],
+  providers: [LocalsInterceptor, otplibProvider],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {

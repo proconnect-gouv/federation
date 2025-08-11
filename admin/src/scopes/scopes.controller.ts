@@ -12,7 +12,6 @@ import {
   Post,
   Patch,
 } from '@nestjs/common';
-import { InstanceService } from '../utils/instance.service';
 import { Roles } from '../authentication/decorator/roles.decorator';
 import { UserRole } from '../user/roles.enum';
 import { FormErrorsInterceptor } from '../form/interceptor/form-errors.interceptor';
@@ -29,7 +28,6 @@ export class ScopesController {
   constructor(
     private readonly scopesService: ScopesService,
     private readonly claimsService: ClaimsService,
-    private readonly instanceService: InstanceService,
   ) {}
   /**
    * Lists the scopes and labels
@@ -48,11 +46,9 @@ export class ScopesController {
       csrfToken,
     };
 
-    if (!this.instanceService.isCl()) {
-      // Retrieve claims
-      const claimsList = await this.claimsService.getAll();
-      Object.assign(result, { claimsList });
-    }
+    // Retrieve claims
+    const claimsList = await this.claimsService.getAll();
+    Object.assign(result, { claimsList });
 
     return result;
   }

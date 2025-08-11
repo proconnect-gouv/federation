@@ -11,14 +11,10 @@ import { errorCodeTranslations } from './error-code-translations';
 import { UserRole } from '../user/roles.enum';
 import { VALID_INPUT_STRING_REGEX } from '../utils/validators/is-valid-input-string';
 import { IP_VALIDATOR_REGEX } from '../utils/ip-validator.constant';
-import { InstanceService } from '../utils/instance.service';
 
 @Injectable()
 export class LocalsInterceptor implements NestInterceptor {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly instanceService: InstanceService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   async intercept(
     context: ExecutionContext,
@@ -69,8 +65,6 @@ export class LocalsInterceptor implements NestInterceptor {
 
     res.locals.VALID_INPUT_STRING_REGEX = VALID_INPUT_STRING_REGEX.source;
     res.locals.IP_VALIDATOR_REGEX = IP_VALIDATOR_REGEX.source;
-
-    res.locals.instanceService = this.instanceService;
 
     return next.handle();
   }

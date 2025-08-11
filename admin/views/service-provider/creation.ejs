@@ -200,7 +200,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-2 col-form-label" for="userinfo_signed_response_alg">userinfo_signed_response_alg <%= !locals.instanceService.isCl() ? '*' : '' %> : </label>
+              <label class="col-2 col-form-label" for="userinfo_signed_response_alg">userinfo_signed_response_alg * : </label>
               <div class="col-10">
                 <select class="custom-select" name="userinfo_signed_response_alg">
                   <option value="" <%= messages.values && messages.values[0].userinfo_signed_response_alg === "" ? 'selected' : '' %>>Aucun</option>
