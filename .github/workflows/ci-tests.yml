@@ -179,13 +179,6 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Clone federation-admin repository
-        uses: actions/checkout@v4
-        with:
-          repository: proconnect-gouv/federation-admin
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./docker/volumes/src/federation-admin
-
       - name: Start docker stack
         working-directory: ./docker
         run: |
