@@ -48,7 +48,7 @@
     "otplib": "^12.0.1",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "5.8.3"
+    "typescript": "5.9.2"
   },
   "scripts": {
     "prettier": "prettier -c \"{.,fca}/{.,cypress,scripts}/**/*.ts\"",
