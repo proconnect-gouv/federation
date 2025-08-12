@@ -10,7 +10,6 @@ import { identityProvidersMock } from './fixture';
 import { IdentityProviderService } from './identity-provider.service';
 import { IdentityProvider } from './identity-provider.mongodb.entity';
 import { SecretManagerService } from '../utils/secret-manager.service';
-import MockDate from 'mockdate';
 import { ICrudTrack } from '../interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
@@ -106,7 +105,9 @@ describe('IdentityProviderService', () => {
 
     jest.resetAllMocks();
 
-    MockDate.set('1970-01-01');
+    const mockDate = new Date('1970-01-01');
+    jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+
     secretManagerMocked.encrypt.mockResolvedValueOnce(encryptedSecret);
     configMock.get.mockResolvedValue(configIdentityProviderMock);
     identityProviderRepository.insert.mockResolvedValue(insertResultMock);
@@ -116,7 +117,7 @@ describe('IdentityProviderService', () => {
   });
 
   afterAll(async () => {
-    MockDate.reset();
+    jest.restoreAllMocks();
     module.close();
   });
 

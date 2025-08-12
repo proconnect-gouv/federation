@@ -9,6 +9,8 @@ import { UserService } from '../../user/user.service';
 import { AuthenticationService } from '../authentication.service';
 
 describe('LocalStrategy', () => {
+  const now = new Date();
+
   const authenticationServiceMock = {
     validateCredentials: jest.fn(),
     getAuthenticationFailureReason: jest.fn(),
@@ -68,8 +70,9 @@ describe('LocalStrategy', () => {
 
     it('should validate the new user authentication', async () => {
       // setup
-      const mockDate = new Date();
-      mockDate.setFullYear(mockDate.getFullYear() + 10);
+      const mockDate = new Date(now.getFullYear() + 10, now.getMonth());
+      jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+
       const reqStub = {
         params: {
           token: '123456',
@@ -121,8 +124,9 @@ describe('LocalStrategy', () => {
       authenticationServiceMock.getAuthenticationFailureReason.mockResolvedValueOnce(
         AuthenticationStates.DENIED_USER_NOT_FOUND,
       );
-      const mockDate = new Date();
-      mockDate.setFullYear(mockDate.getFullYear());
+
+      const mockDate = now;
+      jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
 
       // action
       const result = await localStrategyMock.validate(reqStub, 'user', 'toto');
@@ -162,8 +166,8 @@ describe('LocalStrategy', () => {
       authenticationServiceMock.getAuthenticationFailureReason.mockResolvedValueOnce(
         AuthenticationStates.DENIED_MAX_AUTHENTICATION_ATTEMPTS_REACHED,
       );
-      const mockDate = new Date();
-      mockDate.setFullYear(mockDate.getFullYear());
+      const mockDate = now;
+      jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
       // We need this syntax to test or mock privates methods
       // tslint:disable-next-line no-string-literal
       const originalBlockUser = localStrategyMock['blockUser'];
@@ -216,8 +220,8 @@ describe('LocalStrategy', () => {
       authenticationServiceMock.getAuthenticationFailureReason.mockResolvedValueOnce(
         AuthenticationStates.DENIED_BLOCKED_USER,
       );
-      const mockDate = new Date();
-      mockDate.setFullYear(mockDate.getFullYear());
+      const mockDate = now;
+      jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
 
       // action
       const result = await localStrategyMock.validate(req, 'user', 'toto');
@@ -316,10 +320,8 @@ describe('LocalStrategy', () => {
     it('should call block user of userService', async () => {
       // setup
       const username = 'user';
-      const mockDateCreate = new Date();
-      const mockDateExpire = new Date();
-      mockDateCreate.setFullYear(mockDateCreate.getFullYear() - 2);
-      mockDateExpire.setFullYear(mockDateExpire.getFullYear() - 1);
+      const mockDateCreate = new Date(now.getFullYear() - 2, now.getMonth());
+      const mockDateExpire = new Date(now.getFullYear() - 1, now.getMonth());
       userServiceMock.blockUser.mockResolvedValue({
         id: '12346',
         email: 'user@user.com',

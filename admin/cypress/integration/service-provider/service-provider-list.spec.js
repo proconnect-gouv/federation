@@ -1,10 +1,10 @@
-import { DateTime } from 'luxon';
 import {
   USER_OPERATOR,
   USER_PASS,
   USER_SECURITY,
 } from '../../support/constants';
 import { createServiceProvider } from './service-provider-create.utils';
+import { getTodayDate } from './service-provider.utils';
 
 const BASE_URL = Cypress.config('baseUrl');
 
@@ -48,9 +48,9 @@ describe('Service provider list', () => {
       cy.get('.time-client-id')
         .last()
         .then((item) => {
-          const todaysDate = DateTime.now().toFormat('dd/MM/yyyy');
+          const todayDate = getTodayDate();
           const test = item[0].textContent;
-          expect(todaysDate).to.equal(test);
+          expect(todayDate).to.equal(test);
         });
     });
 
@@ -63,9 +63,9 @@ describe('Service provider list', () => {
       cy.get('.time-secret')
         .last()
         .then((item) => {
-          const todaysDate = DateTime.now().toFormat('dd/MM/yyyy');
+          const todayDate = getTodayDate();
           const test = item[0].textContent;
-          expect(todaysDate).to.equal(test);
+          expect(todayDate).to.equal(test);
         });
     });
 
