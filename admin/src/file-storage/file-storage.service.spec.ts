@@ -1,6 +1,5 @@
 import { ObjectID } from 'mongodb';
 import { ConfigService } from 'nestjs-config';
-import Joi from '@hapi/joi';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { FileStorageService } from './file-storage.service';
@@ -468,23 +467,12 @@ describe('FileStorageService', () => {
 
         // Assert;
         expect(result).toBeTruthy();
-        const fileSchema = Joi.object({
-          originalname: Joi.string().required(),
-          mimetype: Joi.string()
-            .regex(/^image\/([a-z]{3,4})/)
-            .required(),
-          size: Joi.number().min(1000).max(2000),
-          buffer: Joi.binary().required(),
-          encoding: Joi.string().required(),
-        });
-        const options = { allowUnknown: false };
-        const validate = await fileSchema.validateAsync(result, options);
-        const { originalname, mimetype, encoding, size, buffer } = validate;
+        const { originalname, mimetype, encoding, size, buffer } = result;
         expect(originalname).toEqual(filename + '.png');
         expect(mimetype).toEqual('image/png');
         expect(size).toEqual(1435);
         expect(encoding).toEqual('buffer');
-        expect(buffer).toBeTruthy();
+        expect(buffer).toBeInstanceOf(Buffer);
       });
       it('with name', async () => {
         // Arrange
@@ -495,23 +483,12 @@ describe('FileStorageService', () => {
 
         // Assert;
         expect(result).toBeTruthy();
-        const fileSchema = Joi.object({
-          originalname: Joi.string().required(),
-          mimetype: Joi.string()
-            .regex(/^image\/([a-z]{3,4})/)
-            .required(),
-          size: Joi.number().min(1000).max(2000),
-          buffer: Joi.binary().required(),
-          encoding: Joi.string().required(),
-        });
-        const options = { allowUnknown: false };
-        const validate = await fileSchema.validateAsync(result, options);
-        const { originalname, mimetype, encoding, size, buffer } = validate;
+        const { originalname, mimetype, encoding, size, buffer } = result;
         expect(originalname).toEqual(name + '.png');
         expect(mimetype).toEqual('image/png');
         expect(size).toEqual(1435);
         expect(encoding).toEqual('buffer');
-        expect(buffer).toBeTruthy();
+        expect(buffer).toBeInstanceOf(Buffer);
       });
     });
 

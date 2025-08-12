@@ -7,10 +7,11 @@ import { AuthenticationFailures } from './authentication-failures.sql.entity';
 import { UserService } from '../user/user.service';
 import { UserRole } from '../user/roles.enum';
 import { AuthenticationStates } from './authentication-actions.enum';
-import MockDate from 'mockdate';
 import { LoggerService } from '../logger/logger.service';
 
 describe('AuthenticationService', () => {
+  const now = new Date();
+
   let authenticationService: AuthenticationService;
   const mockedUserService = {
     findByUsername: jest.fn(),
@@ -288,8 +289,7 @@ describe('AuthenticationService', () => {
         passwordHash:
           '$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci',
       });
-      const mockDateExpire = new Date();
-      mockDateExpire.setFullYear(mockDateExpire.getFullYear() + 1);
+      const mockDateExpire = new Date(now.getFullYear() + 1, now.getMonth());
       authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
@@ -346,8 +346,7 @@ describe('AuthenticationService', () => {
 
     it("should return DENIED_NEW_USER_TOKEN_EXPIRED if the new user's token has expired", async () => {
       // setup
-      const mockDateExpire = new Date();
-      mockDateExpire.setFullYear(mockDateExpire.getFullYear() - 1);
+      const mockDateExpire = new Date(now.getFullYear() - 1, now.getMonth());
       mockedUserService.findByUsername.mockResolvedValueOnce({
         id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
         username: 'user',
@@ -385,8 +384,7 @@ describe('AuthenticationService', () => {
 
     it('should return DENIED_PASSWORD_AND_TOKEN if password and token are invalid', async () => {
       // setup
-      const mockDateExpire = new Date();
-      mockDateExpire.setFullYear(mockDateExpire.getFullYear() + 1);
+      const mockDateExpire = new Date(now.getFullYear() + 1, now.getMonth());
       mockedUserService.findByUsername.mockResolvedValueOnce({
         id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
         username: 'user',
@@ -425,8 +423,7 @@ describe('AuthenticationService', () => {
 
     it('should return DENIED_TOKEN if only token is invalid', async () => {
       // setup
-      const mockDateExpire = new Date();
-      mockDateExpire.setFullYear(mockDateExpire.getFullYear() + 1);
+      const mockDateExpire = new Date(now.getFullYear() + 1, now.getMonth());
       mockedUserService.findByUsername.mockResolvedValueOnce({
         id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
         username: 'user',
@@ -463,8 +460,7 @@ describe('AuthenticationService', () => {
 
     it('should return DENIED_PASSWORD if only password is invalid', async () => {
       // setup
-      const mockDateExpire = new Date();
-      mockDateExpire.setFullYear(mockDateExpire.getFullYear() + 1);
+      const mockDateExpire = new Date(now.getFullYear() + 1, now.getMonth());
       mockedUserService.findByUsername.mockResolvedValueOnce({
         id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
         username: 'user',
@@ -714,39 +710,38 @@ describe('AuthenticationService', () => {
 
     it('should return true if authentication limit attempt is reached', async () => {
       // setup
-      const mockDate = new Date();
-      mockDate.setFullYear(mockDate.getFullYear() + 1);
+      const mockDate = new Date(now.getFullYear() + 1, now.getMonth());
       authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
         ],
         5,
@@ -766,45 +761,44 @@ describe('AuthenticationService', () => {
 
     it('should return true if authentication limit attempt is exceeded ', async () => {
       // setup
-      const mockDate = new Date();
-      mockDate.setFullYear(mockDate.getFullYear() + 1);
+      const mockDate = new Date(now.getFullYear() + 1, now.getMonth());
       authenticationRepositoryMock.findAndCountBy.mockResolvedValueOnce([
         [
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
           {
             id: '123456',
             username: 'user',
             token: 'MyToken',
-            authenticationAttemptedAt: MockDate,
+            authenticationAttemptedAt: mockDate,
           },
         ],
         6,
@@ -826,8 +820,7 @@ describe('AuthenticationService', () => {
   describe('isTokenExpired', () => {
     it('should return false if the token is not expired', async () => {
       // setup
-      const mockDateExpire = new Date();
-      mockDateExpire.setFullYear(mockDateExpire.getFullYear() + 1);
+      const mockDateExpire = new Date(now.getFullYear() + 1, now.getMonth());
 
       // action
       const result =
@@ -842,8 +835,7 @@ describe('AuthenticationService', () => {
 
     it('should return true if the token is expired', async () => {
       // setup
-      const mockDateExpire = new Date();
-      mockDateExpire.setFullYear(mockDateExpire.getFullYear() - 1);
+      const mockDateExpire = new Date(now.getFullYear() - 1, now.getMonth());
 
       // action
       const result =
