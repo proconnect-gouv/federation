@@ -69,7 +69,6 @@ describe('UserService', () => {
 
   const passwordRepositoryMock = {
     find: jest.fn(),
-    findBy: jest.fn(),
     findOneBy: jest.fn(),
     save: jest.fn(),
     delete: jest.fn(),
@@ -957,7 +956,7 @@ describe('UserService', () => {
           }),
         );
 
-        passwordRepositoryMock.findBy.mockImplementation(() =>
+        passwordRepositoryMock.find.mockImplementation(() =>
           Promise.resolve([
             {
               username: 'jean_moust',
@@ -1001,7 +1000,7 @@ describe('UserService', () => {
           }),
         );
 
-        passwordRepositoryMock.findBy.mockResolvedValue([
+        passwordRepositoryMock.find.mockResolvedValue([
           {
             username: 'jean_moust',
             passwordHash:
@@ -1213,9 +1212,7 @@ describe('UserService', () => {
           },
         ];
         userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
-        passwordRepositoryMock.findBy.mockResolvedValueOnce(
-          userLastFivePassword,
-        );
+        passwordRepositoryMock.find.mockResolvedValueOnce(userLastFivePassword);
         // Action
         // tslint:disable-next-line: no-string-literal
         const result = await userService['checkIfOnlyFivePasswordsEntries'](
@@ -1254,9 +1251,7 @@ describe('UserService', () => {
 
         userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
-        passwordRepositoryMock.findBy.mockResolvedValueOnce(
-          userLastFivePassword,
-        );
+        passwordRepositoryMock.find.mockResolvedValueOnce(userLastFivePassword);
 
         // Action
         // tslint:disable-next-line: no-string-literal
@@ -1296,7 +1291,7 @@ describe('UserService', () => {
 
         userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
-        passwordRepositoryMock.findBy.mockRejectedValueOnce(
+        passwordRepositoryMock.find.mockRejectedValueOnce(
           new Error('The user could not be found due to a database error'),
         );
 
@@ -1391,7 +1386,7 @@ describe('UserService', () => {
 
         userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
-        passwordRepositoryMock.findBy.mockRejectedValueOnce(
+        passwordRepositoryMock.find.mockRejectedValueOnce(
           new Error('The user could not be found due to a database error'),
         );
 

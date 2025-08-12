@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { DeleteResult, Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { ConfigService } from 'nestjs-config';
@@ -383,7 +383,7 @@ export class IdentityProviderService {
   ): Promise<IIdentityProviderDTO> {
     const { defaultValues } = this.config.get('identity-provider');
 
-    const uid = uuid();
+    const uid = uuidv4();
 
     return {
       uid,

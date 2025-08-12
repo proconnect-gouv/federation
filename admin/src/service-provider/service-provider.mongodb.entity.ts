@@ -1,7 +1,7 @@
 import {
   Entity,
   ObjectIdColumn,
-  ObjectID,
+  ObjectId,
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -9,7 +9,7 @@ import {
 @Entity('client')
 export class ServiceProvider {
   @ObjectIdColumn()
-  _id: ObjectID;
+  _id: ObjectId;
 
   @Column()
   name: string;

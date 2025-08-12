@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { DeleteResult, ObjectID, Repository } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,7 +15,7 @@ export class ClaimsService {
   ) {}
 
   async create({ name }: IClaims): Promise<Claims> {
-    const id = (uuid() as string).substr(0, 12);
+    const id = (uuidv4() as string).substr(0, 12);
 
     const claimToSave: IClaims = {
       id: new ObjectID(id),
