@@ -759,14 +759,14 @@
   resolved "https://registry.yarnpkg.com/@rtsao/scc/-/scc-1.1.0.tgz#927dd2fae9bc3361403ac2c7a00c32ddce9ad7e8"
   integrity sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==
 
-"@simonsmith/cypress-image-snapshot@^9.1.0":
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/@simonsmith/cypress-image-snapshot/-/cypress-image-snapshot-9.1.0.tgz#13a95074627b682aaabc85c6edbb41fa4ff43b53"
-  integrity sha512-Lme+POO6mQi9eXEe3OB/6mBhdb73qbDgE/VkSCNZWVQlCt6wOOZCjVKCvfO8mPPmKjnEiePzSTSjTvpwDSogBg==
+"@simonsmith/cypress-image-snapshot@^10.0.2":
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/@simonsmith/cypress-image-snapshot/-/cypress-image-snapshot-10.0.2.tgz#606aa4d684ee941cf30b85ec0bf0ecc160bc5ed8"
+  integrity sha512-FXapCkDKsL6F0M3Pqh8mIjhS5R4Jt8LaVxojLkGcza/WeqBxRYjkq+INfVV3hfzGRpQHsF3hklU1srALEDciQQ==
   dependencies:
-    "@types/jest-image-snapshot" "^6.1.0"
+    "@types/jest-image-snapshot" "^6.4.0"
     chalk "^4.1.2"
-    jest-image-snapshot "^6.1.0"
+    jest-image-snapshot "^6.5.1"
 
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
@@ -822,7 +822,7 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest-image-snapshot@^6.1.0":
+"@types/jest-image-snapshot@^6.4.0":
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/@types/jest-image-snapshot/-/jest-image-snapshot-6.4.0.tgz#641054d2fa2ff130a49c844ee7a9a68f281b6017"
   integrity sha512-8TQ/EgqFCX0UWSpH488zAc21fCkJNpZPnnp3xWFMqElxApoJV5QOoqajnVRV7AhfF0rbQWTVyc04KG7tXnzCPA==
@@ -3793,10 +3793,10 @@ jest-get-type@^29.6.3:
   resolved "https://registry.yarnpkg.com/jest-get-type/-/jest-get-type-29.6.3.tgz#36f499fdcea197c1045a127319c0481723908fd1"
   integrity sha512-zrteXnqYxfQh7l5FHyL38jL39di8H8rHoecLH3JNxH3BwOrBsNeabdap5e0I23lD4HHI8W5VFBZqG4Eaq5LNcw==
 
-jest-image-snapshot@^6.1.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/jest-image-snapshot/-/jest-image-snapshot-6.4.0.tgz#65831d13beb1680f3bba9fb28230fa53d76939be"
-  integrity sha512-IWGtSOnelwaVPd09STbJuLmnAwlBC/roJtTLGLb8M3TA0vfku3MRNEXmljTa1EMXqdRbA0oIWiqHFB1ttTGazQ==
+jest-image-snapshot@^6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/jest-image-snapshot/-/jest-image-snapshot-6.5.1.tgz#cc714aff86187ecf38f90c506b443769aff87499"
+  integrity sha512-xlJFufgfY2Z4DsRsjcnTwxuynvo1bKdhf4OfcEftNuUAK+BwSCUtPmwlBGJhQ0XJXfm9JMAi/4BhQiHbaV8HrA==
   dependencies:
     chalk "^4.0.0"
     get-stdin "^5.0.1"
@@ -3804,7 +3804,6 @@ jest-image-snapshot@^6.1.0:
     lodash "^4.17.4"
     pixelmatch "^5.1.0"
     pngjs "^3.4.0"
-    rimraf "^2.6.2"
     ssim.js "^3.1.1"
 
 jest-matcher-utils@^29.7.0:
@@ -4899,13 +4898,6 @@ reusify@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/reusify/-/reusify-1.0.4.tgz#90da382b1e126efc02146e90845a88db12925d76"
   integrity sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==
-
-rimraf@^2.6.2:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.7.1.tgz#35797f13a7fdadc566142c29d4f07ccad483e3ec"
-  integrity sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==
-  dependencies:
-    glob "^7.1.3"
 
 rimraf@^3.0.2:
   version "3.0.2"
