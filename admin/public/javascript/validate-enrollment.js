@@ -3,7 +3,7 @@ export function validateEnrollment(element) {
   for (let i = 0; i < inputs.length; ++i) {
     inputs[i].addEventListener(
       'input',
-      function() {
+      function () {
         // check input pattern
         if (inputs[i].checkValidity() === false) {
           inputs[i].classList.remove('is-valid');
@@ -19,7 +19,7 @@ export function validateEnrollment(element) {
     // check on submit if form is valid
     element.addEventListener(
       'submit',
-      function(event) {
+      function (event) {
         if (inputs[i].checkValidity() === false) {
           inputs[i].classList.remove('is-valid');
           inputs[i].classList.add('is-invalid');

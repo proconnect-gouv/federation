@@ -1,7 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddBlockedUserMigration1585158679573
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(
       `ALTER TYPE "user_roles_enum" RENAME TO "user_roles_enum_old"`,

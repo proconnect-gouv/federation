@@ -3,7 +3,7 @@ import { AlgoValue } from '../../src/enum';
 export function changeDiscovery() {
   document
     .querySelector('#no-discovery')
-    .addEventListener('change', function() {
+    .addEventListener('change', function () {
       _handleState('discoveryUrl', true);
       _handleState('userInfoUrl', false);
       _handleState('authorizationUrl', false);
@@ -11,7 +11,7 @@ export function changeDiscovery() {
       displayJwksUrlField();
     });
 
-  document.querySelector('#discovery').addEventListener('change', function() {
+  document.querySelector('#discovery').addEventListener('change', function () {
     _handleState('discoveryUrl', false);
     _handleState('userInfoUrl', true);
     _handleState('authorizationUrl', true);
@@ -27,10 +27,10 @@ export function changeSignature() {
   const userInfoSignedResponseAlg =
     fiForm.elements['userinfo_signed_response_alg'];
 
-  idTokenSignedResponseAlg.addEventListener('change', function() {
+  idTokenSignedResponseAlg.addEventListener('change', function () {
     displayJwksUrlField();
   });
-  userInfoSignedResponseAlg.addEventListener('change', function() {
+  userInfoSignedResponseAlg.addEventListener('change', function () {
     displayJwksUrlField();
   });
 }

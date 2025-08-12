@@ -7,9 +7,9 @@ import {
 
 describe('AuthenticationController', () => {
   const businessEventMock = jest.fn();
-  const loggerMock = ({
+  const loggerMock = {
     businessEvent: businessEventMock,
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   beforeEach(() => {
     jest.resetAllMocks();

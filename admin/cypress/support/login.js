@@ -30,8 +30,6 @@ export function login(username, password) {
 }
 
 export function logout(username) {
-  cy.get('.dropdown-toggle')
-    .contains(username)
-    .click();
+  cy.get('.dropdown-toggle').contains(username).click();
   cy.contains('Déconnexion').click();
 }

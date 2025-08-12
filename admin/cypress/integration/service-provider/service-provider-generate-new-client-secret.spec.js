@@ -84,9 +84,7 @@ describe('update a service-provider', () => {
       );
 
       cy.contains(`GenerateClientSecretFS`).should('be.visible');
-      cy.get('a.btn-action-generate-client-secret')
-        .last()
-        .click();
+      cy.get('a.btn-action-generate-client-secret').last().click();
       cy.totp(configuration);
 
       cy.get('button[type="submit"]').click();
@@ -101,9 +99,7 @@ describe('update a service-provider', () => {
       cy.visit('/service-provider?page=1&limit=9000');
 
       cy.contains(`GenerateClientSecretFS`).should('be.visible');
-      cy.get('a.btn-action-generate-client-secret')
-        .last()
-        .click();
+      cy.get('a.btn-action-generate-client-secret').last().click();
 
       cy.formType('input[name="_totp"]', '123456');
       cy.get('button[type="submit"]').click();

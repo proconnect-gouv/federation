@@ -5,7 +5,7 @@ export function searchReset(element) {
   element.focus();
   element.setSelectionRange(searchLength, searchLength);
 
-  element.addEventListener('input', function() {
+  element.addEventListener('input', function () {
     if (element.value.length == 0) {
       window.location.replace(currentURI.split('?')[0]);
     }

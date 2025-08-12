@@ -371,9 +371,9 @@ describe('IdentityProviderService', () => {
       const fqdns = ['stendhal.fr', 'woolf.uk'];
       const identityProviderWithFqdns = { ...defaultedProvider, fqdns };
 
-      identityProviderService[
-        'setDefaultValues'
-      ] = jest.fn().mockResolvedValue({ ...defaultedProvider, fqdns });
+      identityProviderService['setDefaultValues'] = jest
+        .fn()
+        .mockResolvedValue({ ...defaultedProvider, fqdns });
 
       fqdnToProviderServiceMock.createFqdnsWithAcceptance.mockReturnValue([
         { acceptsDefaultIdp: true, fqdn: fqdns[0] },
@@ -401,9 +401,9 @@ describe('IdentityProviderService', () => {
       const fqdns = [];
       const identityProviderWithFqdns = { ...defaultedProvider, fqdns };
 
-      identityProviderService[
-        'setDefaultValues'
-      ] = jest.fn().mockResolvedValue({ ...defaultedProvider, fqdns });
+      identityProviderService['setDefaultValues'] = jest
+        .fn()
+        .mockResolvedValue({ ...defaultedProvider, fqdns });
 
       // WHEN
       await identityProviderService.create(identityProviderWithFqdns, 'user');
@@ -419,11 +419,11 @@ describe('IdentityProviderService', () => {
     const idMock = objectId;
     const userMock = 'userMockValue';
     const methodMock = 'update';
-    const identityProviderMock = ({
+    const identityProviderMock = {
       _id: objectId,
       uid: 'MonFI',
       name: 'MonFI',
-    } as unknown) as IdentityProvider;
+    } as unknown as IdentityProvider;
     const identityProviderToUpdate: IdentityProviderDTO = {
       uid: 'MonFI',
       name: 'MonFI',
@@ -740,11 +740,11 @@ describe('IdentityProviderService', () => {
 
   describe('should delete identity provider by id', () => {
     beforeEach(() => {
-      const identityProviderMock = ({
+      const identityProviderMock = {
         _id: objectId,
         uid: 'MonFI',
         name: 'MonFI',
-      } as unknown) as IdentityProvider;
+      } as unknown as IdentityProvider;
 
       identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
         identityProviderMock,
@@ -786,11 +786,11 @@ describe('IdentityProviderService', () => {
     it('should delete fqdns when it is AC instance', async () => {
       // GIVEN
       const uid = 'MonFI';
-      const identityProviderMock = ({
+      const identityProviderMock = {
         _id: objectId,
         uid,
         name: 'MonFI',
-      } as unknown) as IdentityProvider;
+      } as unknown as IdentityProvider;
 
       identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
         identityProviderMock,
@@ -987,9 +987,8 @@ describe('IdentityProviderService', () => {
 
       // WHEN
       // tslint:disable-next-line:no-string-literal
-      const result = await identityProviderService['setDefaultValues'](
-        identityProvider,
-      );
+      const result =
+        await identityProviderService['setDefaultValues'](identityProvider);
 
       // THEN
       expect(result).toEqual(expectedIdentityProvider);

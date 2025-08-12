@@ -6,6 +6,6 @@ export function updatePassword(username, currentPassword, newPassword) {
   cy.formType('#confirm-password', newPassword);
   cy.get('#secret > td')
     .invoke('text')
-    .then(secret => cy.totp({}, secret));
+    .then((secret) => cy.totp({}, secret));
   cy.contains('Mettre à jour mon mot de passe').click();
 }

@@ -13,8 +13,6 @@ const CIPHER_HEAD_LENGTH = NONCE_LENGTH + AUTHTAG_LENGTH;
 
 @Injectable()
 export class SecretManagerService {
-  private readonly SALT_ROUNDS = 10;
-
   constructor(@InjectConfig() private readonly config: ConfigService) {}
 
   encrypt(data: string): string {
@@ -80,8 +78,6 @@ export class SecretManagerService {
     const length = lengthValue;
     const random = randomBytes(length);
 
-    return createHash(hashFunction)
-      .update(random)
-      .digest(digestType);
+    return createHash(hashFunction).update(random).digest(digestType);
   }
 }

@@ -41,8 +41,8 @@ export class AllExceptionFilter implements ExceptionFilter {
       typeof (exception as any).getStatus === 'function'
         ? (exception as any).getStatus()
         : exception.hasOwnProperty('status')
-        ? (exception as any).status
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+          ? (exception as any).status
+          : HttpStatus.INTERNAL_SERVER_ERROR;
 
     if (
       status === HttpStatus.INTERNAL_SERVER_ERROR ||

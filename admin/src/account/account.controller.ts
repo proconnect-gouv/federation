@@ -52,7 +52,7 @@ export class AccountController {
     @Req() req,
     @Res() res,
   ) {
-    const rolesToRegister = roles.map(role => `inactive_${role}`);
+    const rolesToRegister = roles.map((role) => `inactive_${role}`);
     rolesToRegister.push('new_account');
 
     const newAccount: CreateUserDto = {
@@ -85,14 +85,8 @@ export class AccountController {
   @Roles(UserRole.NEWUSER)
   @Render('account/enrollment')
   public async firstLogin(@Req() req, @Res() res) {
-    const {
-      user,
-      issuer,
-      secret,
-      QRCode,
-      step,
-      algorithm,
-    } = await this.totpService.generateTotpQRCode(req.user);
+    const { user, issuer, secret, QRCode, step, algorithm } =
+      await this.totpService.generateTotpQRCode(req.user);
     const csrfToken = req.csrfToken();
 
     return {
@@ -119,10 +113,11 @@ export class AccountController {
       req.user.username,
     );
 
-    const isEqualToTemporaryPassword = await this.userService.isEqualToTemporaryPassword(
-      req.body.password,
-      req.user.passwordHash,
-    );
+    const isEqualToTemporaryPassword =
+      await this.userService.isEqualToTemporaryPassword(
+        req.body.password,
+        req.user.passwordHash,
+      );
 
     if (isEqualToTemporaryPassword) {
       req.flash(
@@ -183,14 +178,8 @@ export class AccountController {
   @Render('account/userAccount')
   async showUserAccount(@Req() req) {
     const csrfToken = req.csrfToken();
-    const {
-      user,
-      issuer,
-      secret,
-      QRCode,
-      step,
-      algorithm,
-    } = await this.totpService.generateTotpQRCode(req.user);
+    const { user, issuer, secret, QRCode, step, algorithm } =
+      await this.totpService.generateTotpQRCode(req.user);
     return {
       csrfToken,
       user,
@@ -223,10 +212,11 @@ export class AccountController {
       return res.redirect(`${res.locals.APP_ROOT}/account/me`);
     }
 
-    const isEqualToOneOfTheLastFivePasswords = await this.userService.isEqualToOneOfTheLastFivePasswords(
-      req.user.username,
-      req.body.password,
-    );
+    const isEqualToOneOfTheLastFivePasswords =
+      await this.userService.isEqualToOneOfTheLastFivePasswords(
+        req.user.username,
+        req.body.password,
+      );
 
     if (isEqualToOneOfTheLastFivePasswords) {
       req.flash(

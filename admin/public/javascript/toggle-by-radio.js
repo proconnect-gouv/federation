@@ -26,7 +26,7 @@ function toggleTarget(target, state) {
     ...target.getElementsByTagName('textarea'),
   ];
 
-  children.forEach(child => {
+  children.forEach((child) => {
     const required = child.className.split(' ').includes('required');
     child.required = state && required;
     child.readOnly = !state;

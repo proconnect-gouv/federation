@@ -77,7 +77,7 @@ export class FileStorageService {
     const fileFromGridFS: Promise<string> = new Promise((resolve, reject) => {
       const dataArray = [];
 
-      stream.on('data', data => {
+      stream.on('data', (data) => {
         dataArray.push(data);
       });
 
@@ -88,7 +88,7 @@ export class FileStorageService {
         );
       });
 
-      stream.on('error', error => {
+      stream.on('error', (error) => {
         reject(error);
       });
 
@@ -111,7 +111,7 @@ export class FileStorageService {
     const fileInfos = filesInfos[0];
 
     const deletePromise = new Promise((resolve, reject) => {
-      this.gridFSBucket.delete(fileInfos._id, err => {
+      this.gridFSBucket.delete(fileInfos._id, (err) => {
         if (err) {
           return reject(err);
         }

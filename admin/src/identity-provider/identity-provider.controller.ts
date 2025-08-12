@@ -52,27 +52,26 @@ export class IdentityProviderController {
     const limit = parseInt(queryLimit, 10);
     const csrfToken = req.csrfToken();
 
-    const {
-      items: paginatedIdentityProviders,
-      total: totalItems,
-    } = await this.identityProviderService.paginate({
-      page,
-      limit,
-      search: querySearch
-        ? { fields: ['name', 'title', 'clientID'], value: querySearch }
-        : undefined,
-      sort: querySortField
-        ? { field: querySortField, direction: querySortDirection }
-        : undefined,
-      defaultSort: {
-        field: 'createdAt',
-        direction: 'desc',
-      },
-    });
+    const { items: paginatedIdentityProviders, total: totalItems } =
+      await this.identityProviderService.paginate({
+        page,
+        limit,
+        search: querySearch
+          ? { fields: ['name', 'title', 'clientID'], value: querySearch }
+          : undefined,
+        sort: querySortField
+          ? { field: querySortField, direction: querySortDirection }
+          : undefined,
+        defaultSort: {
+          field: 'createdAt',
+          direction: 'desc',
+        },
+      });
 
-    const identityProviders = (await this.fqdnToProviderService.getProvidersWithFqdns(
-      paginatedIdentityProviders as any,
-    )) as any[];
+    const identityProviders =
+      (await this.fqdnToProviderService.getProvidersWithFqdns(
+        paginatedIdentityProviders as any,
+      )) as any[];
 
     return {
       identityProviders,
@@ -155,13 +154,11 @@ export class IdentityProviderController {
     const csrfToken = req.csrfToken();
 
     // we map the entity as a DTO
-    let identityProvider: IIdentityProviderDTO = await this.identityProviderService.findById(
-      id,
-    );
+    let identityProvider: IIdentityProviderDTO =
+      await this.identityProviderService.findById(id);
 
-    identityProvider = await this.fqdnToProviderService.getProviderWithFqdns(
-      identityProvider,
-    );
+    identityProvider =
+      await this.fqdnToProviderService.getProviderWithFqdns(identityProvider);
 
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP

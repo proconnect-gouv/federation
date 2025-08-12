@@ -7,7 +7,7 @@ export function validateAccountUpdate(element) {
     // check if inputs which change are valid
     inputs[i].addEventListener(
       'input',
-      function(event) {
+      function (event) {
         // check input pattern
         if (inputs[i].checkValidity() === false) {
           inputInvalid(inputs[i]);
@@ -21,7 +21,7 @@ export function validateAccountUpdate(element) {
     // check on submit if form is valid
     element.addEventListener(
       'submit',
-      function(event) {
+      function (event) {
         if (inputs[i].checkValidity() === false) {
           inputInvalid(inputs[i]);
           event.preventDefault();

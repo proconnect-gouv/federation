@@ -56,9 +56,8 @@ export class ServiceProviderController {
     @Query('page') queryPage: string = '1',
     @Query('limit') queryLimit: string = '10',
   ) {
-    const activeServiceProvidersCount = await this.serviceProviderRepository.countBy(
-      { active: true },
-    );
+    const activeServiceProvidersCount =
+      await this.serviceProviderRepository.countBy({ active: true });
 
     const page = parseInt(queryPage, 10);
     const limit = parseInt(queryLimit, 10);

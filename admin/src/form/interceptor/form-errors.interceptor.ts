@@ -35,7 +35,7 @@ export class FormErrorsInterceptor implements NestInterceptor {
     }
 
     return next.handle().pipe(
-      catchError(error => {
+      catchError((error) => {
         const formValidationErrors = plainToInstance(
           FormValidationErrorsDto,
           error.response,
@@ -48,7 +48,7 @@ export class FormErrorsInterceptor implements NestInterceptor {
         }
 
         const flashErrors = formValidationErrors.message
-          .map(validationError => ({
+          .map((validationError) => ({
             property: validationError.property,
             constraints: validationError.constraints
               ? Object.values(validationError.constraints)

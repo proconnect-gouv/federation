@@ -12,8 +12,5 @@ export function clearBusinessLog() {
   );
 
   cy.log('Clear business logs');
-  return cy
-    .exec(command)
-    .its('code')
-    .should('eq', 0);
+  return cy.exec(command).its('code').should('eq', 0);
 }

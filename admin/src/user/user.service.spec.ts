@@ -1215,9 +1215,8 @@ describe('UserService', () => {
         passwordRepositoryMock.find.mockResolvedValueOnce(userLastFivePassword);
         // Action
         // tslint:disable-next-line: no-string-literal
-        const result = await userService['checkIfOnlyFivePasswordsEntries'](
-          username,
-        );
+        const result =
+          await userService['checkIfOnlyFivePasswordsEntries'](username);
 
         // Expected
         expect(result).toStrictEqual(true);

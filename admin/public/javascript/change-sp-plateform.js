@@ -1,5 +1,5 @@
 export function changeSpPlatform(elt) {
-  elt.addEventListener('click', function() {
+  elt.addEventListener('click', function () {
     const blacklistWhitelistContainer = document.querySelector(
       '#blacklist-whitelist-container',
     );

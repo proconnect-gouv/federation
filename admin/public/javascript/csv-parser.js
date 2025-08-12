@@ -8,7 +8,7 @@ const ERROR = 'red';
 
 export function csvParser(element) {
   handleFile();
-  element.addEventListener('change', function(el) {
+  element.addEventListener('change', function (el) {
     const alertError = document.querySelector('#alert_error');
     if (alertError) {
       alertError.remove();
@@ -39,7 +39,7 @@ const handleFile = () => {
  * Get the data from csv
  * @param {file} file
  */
-const getData = file => {
+const getData = (file) => {
   const csvReader = new FileReader();
   csvReader.onload = loadHandler;
   csvReader.onerror = csvErrorHandler;
@@ -50,7 +50,7 @@ const getData = file => {
  * Getting the csv file's name for display
  * @param {string} file
  */
-const getName = file => {
+const getName = (file) => {
   const csvName = document.querySelector('#file-name');
   csvName.textContent = file.name;
 };
@@ -59,7 +59,7 @@ const getName = file => {
  * Parsing csv data
  * @param {Array} csvFile
  */
-const parseData = csvFile => {
+const parseData = (csvFile) => {
   let parsedData = {};
   try {
     // improve CSV delimiter detection
@@ -91,7 +91,7 @@ const parseData = csvFile => {
  * filling the form with the parsed data
  * @param {Object} event
  */
-const loadHandler = event => {
+const loadHandler = (event) => {
   const csvFile = event.target.result;
   const csvPasredData = parseData(csvFile);
   fillFormWithCsvData(csvPasredData);
@@ -101,7 +101,7 @@ const loadHandler = event => {
  * Handle error if reading csv is not possible
  * @param {Object} event
  */
-const csvErrorHandler = event => {
+const csvErrorHandler = (event) => {
   if (event.target.error.name === 'NotReadableError') {
     displayError('Impossible de lire le fichier.');
   }
@@ -111,13 +111,13 @@ const csvErrorHandler = event => {
  * Filling the form with parsed data from csv
  * @param {Array} data
  */
-const fillFormWithCsvData = data => {
+const fillFormWithCsvData = (data) => {
   if ('scopes' in data) {
     const { scopes = '' } = data;
     const scopesList = scopes.split(',');
     scopesList
-      .filter(scope => scope)
-      .map(scope => {
+      .filter((scope) => scope)
+      .map((scope) => {
         try {
           return document.querySelector(`#scope-${scope}`);
         } catch (e) {
@@ -125,8 +125,8 @@ const fillFormWithCsvData = data => {
           return null;
         }
       })
-      .filter(input => input)
-      .forEach(checkbox => {
+      .filter((input) => input)
+      .forEach((checkbox) => {
         checkbox.checked = true;
       });
     delete data.scopes;
@@ -155,7 +155,7 @@ const fillFormWithCsvData = data => {
         return null;
       }
     })
-    .filter(data => data) // remove all null previous results
+    .filter((data) => data) // remove all null previous results
     .forEach(([input, value]) => {
       console.log(`input: ${input} - value : ${value}`);
       input.value = value;
@@ -166,7 +166,7 @@ const fillFormWithCsvData = data => {
  * Check if csv size is allowed.
  * @param {number} size
  */
-const isSizeOk = size => {
+const isSizeOk = (size) => {
   if (size > CSV_SIZE_LIMIT) {
     displayError(
       'Le fichier csv est trop lourd. La taille maximum est de 1.5Mo',
@@ -182,7 +182,7 @@ const isSizeOk = size => {
  * Display error message relative to importing a csv.
  * @param {string} message
  */
-const displayError = message => {
+const displayError = (message) => {
   const alertContainer = document.querySelector('#form-card');
   const alert = document.createElement('div');
 
@@ -199,7 +199,7 @@ const displayError = message => {
  * Check validity of the dataURI
  * @param {string} dataURI
  */
-const checkDataUriValues = dataURI => {
+const checkDataUriValues = (dataURI) => {
   const [type, base64] = dataURI.split(';');
   const [format, extension] = type.split('/');
   const [, base64String] = base64.split(',');
@@ -214,7 +214,7 @@ const checkDataUriValues = dataURI => {
  * Set text color if error or valid csv file or actions.
  * @param {string} color
  */
-const setTextColor = color => {
+const setTextColor = (color) => {
   const csvName = document.querySelector('#file-name');
   csvName.style.color = color;
 };

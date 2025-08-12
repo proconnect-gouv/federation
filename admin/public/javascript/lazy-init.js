@@ -8,13 +8,13 @@
  * DOM branch to search for ini is scoped with param selector.
  */
 export function lazyInit(initMap, selector) {
-  document.querySelectorAll(`${selector} [data-init]`).forEach(element => {
+  document.querySelectorAll(`${selector} [data-init]`).forEach((element) => {
     const initKeys = element.getAttribute('data-init');
     initKeys
       .split(',')
-      .filter(key => key && typeof initMap[key] != 'undefined')
-      .map(key => initMap[key])
-      .forEach(fn => {
+      .filter((key) => key && typeof initMap[key] != 'undefined')
+      .map((key) => initMap[key])
+      .forEach((fn) => {
         fn.call(null, element);
       });
   });

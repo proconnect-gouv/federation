@@ -64,9 +64,7 @@ describe('update a service-provider', () => {
       // Action
       cy.visit(`/service-provider?page=1&limit=9000`);
 
-      cy.contains(`${sp.name}`)
-        .should('be.visible')
-        .click();
+      cy.contains(`${sp.name}`).should('be.visible').click();
 
       cy.formFill(sp, mockConfig);
 
@@ -110,9 +108,7 @@ describe('update a service-provider', () => {
 
       cy.contains(`${sp.name}`).should('be.visible');
 
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
       cy.get('[id="scope-openid"]').check('openid', { force: true });
@@ -144,9 +140,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       // Fill in form
       cy.formFill(sp, mockConfig);
@@ -174,9 +168,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       // Fill in form
       cy.formFill(sp, mockConfig);
@@ -204,9 +196,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
 
@@ -234,9 +224,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
 
@@ -265,9 +253,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
 
@@ -296,9 +282,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
 
@@ -324,9 +308,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
 
@@ -352,9 +334,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
 
@@ -380,9 +360,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
 
@@ -415,9 +393,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
 
@@ -444,9 +420,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.get('#fs-form').within(() => {
         cy.formFill(sp, mockConfig);
@@ -470,9 +444,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.get('#fs-form').within(() => {
         cy.formFill(sp, mockConfig);
@@ -496,9 +468,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.get('#fs-form').within(() => {
         cy.formFill(sp, mockConfig);
@@ -522,9 +492,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.get('#fs-form').within(() => {
         cy.formFill(sp, mockConfig);
@@ -550,9 +518,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.get('#fs-form').within(() => {
         cy.formFill(sp, mockConfig);
@@ -583,9 +549,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.formFill(sp, mockConfig);
       cy.get('#scope-email').uncheck();
@@ -623,9 +587,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.contains('Section Fournisseur de données').click();
 
@@ -660,9 +622,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.get('#fs-form').within(() => {
         cy.formFill(sp, mockConfig);
@@ -695,9 +655,7 @@ describe('update a service-provider', () => {
       cy.visit(`/service-provider?page=1&limit=9000`);
 
       cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update')
-        .last()
-        .click();
+      cy.get('a.btn-action-update').last().click();
 
       cy.get('#fs-form').within(() => {
         cy.formFill(sp, mockConfig);

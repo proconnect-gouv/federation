@@ -17,9 +17,8 @@ describe('AppContextMiddleware', () => {
       .overrideProvider(ConfigService)
       .useValue(configService)
       .compile();
-    appContextMiddleware = await module.get<AppContextMiddleware>(
-      AppContextMiddleware,
-    );
+    appContextMiddleware =
+      await module.get<AppContextMiddleware>(AppContextMiddleware);
   });
 
   it('injects the APP_ROOT variable to response locals', () => {

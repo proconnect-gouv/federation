@@ -64,7 +64,7 @@ describe('Account', () => {
         cy.visit(`/account?page=1&limit=${LIMIT_PAGE}`);
         cy.get(
           `form[data-element-title="${userInfo.username}"] input[name="_csrf"]`,
-        ).then(user => {
+        ).then((user) => {
           user[0].value = 'obviouslyBadCSRF';
         });
 

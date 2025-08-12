@@ -3,7 +3,7 @@ const { authenticator } = require('otplib');
 const MIN_REMAINING_TIME = 5;
 
 async function generateTotp(key) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const ttl = authenticator.timeRemaining();
     // If TOTP expires in less than 5 seconds
     // we'll wait for the next timeframe

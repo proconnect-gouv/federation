@@ -64,7 +64,7 @@ describe('RabbitmqModule', () => {
       // tslint:disable-next-line: no-string-literal
       RabbitmqModule['factory'](
         clientNameMock,
-        (configServiceMock as unknown) as ConfigService,
+        configServiceMock as unknown as ConfigService,
       );
       // Then
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
@@ -80,7 +80,7 @@ describe('RabbitmqModule', () => {
       // tslint:disable-next-line: no-string-literal
       RabbitmqModule['factory'](
         clientNameMock,
-        (configServiceMock as unknown) as ConfigService,
+        configServiceMock as unknown as ConfigService,
       );
       // Then
       expect(ClientProxyFactory.create).toHaveBeenCalledTimes(1);

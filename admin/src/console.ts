@@ -6,7 +6,7 @@ const bootstrapConsole = new BootstrapConsole({ module: AppModule });
 bootstrapConsole
   .create()
   .then(({ init }) => init())
-  .catch(e => {
+  .catch((e) => {
     // We are in a CLI app
     // tslint:disable-next-line no-console
     console.error('Error', e);

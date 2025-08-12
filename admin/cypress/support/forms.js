@@ -51,11 +51,11 @@ export function formType(input, value, config = { fast: true }) {
  * @example cy.formFill({ foo: 'foo', bar: 'bar'}, { fast: true });
  */
 export function formFill(inputs, configuration) {
-  Object.keys(inputs).forEach(inputName => {
+  Object.keys(inputs).forEach((inputName) => {
     const value = String(inputs[inputName]);
     const selector = `[name="${inputName}"]`;
     const input = cy.get(selector);
-    input.then($input => {
+    input.then(($input) => {
       switch ($input.prop('tagName')) {
         case 'TEXTAREA':
         case 'INPUT':
@@ -91,7 +91,7 @@ export function formFill(inputs, configuration) {
  * @example cy.formControl({ foo: 'foo', bar: 'bar'});
  */
 export function formControl(inputs) {
-  Object.keys(inputs).forEach(inputName => {
+  Object.keys(inputs).forEach((inputName) => {
     const value = String(inputs[inputName]);
     if (!value) {
       return;
@@ -99,7 +99,7 @@ export function formControl(inputs) {
 
     const selector = `[name="${inputName}"]`;
     const input = cy.get(selector);
-    input.then($input => {
+    input.then(($input) => {
       switch ($input.prop('tagName')) {
         case 'TEXTAREA':
         case 'INPUT':
@@ -150,5 +150,5 @@ export function totp(subject, arg1, arg2) {
   // Retrieve the totp when the totp input is present
   cy.get(input)
     .then(() => cy.task('getTotp', { secret }))
-    .then(token => formType(input, token, configuration));
+    .then((token) => formType(input, token, configuration));
 }

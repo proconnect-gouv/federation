@@ -1,4 +1,5 @@
-const base64REGEX = /^(?:[A-Za-z0-9\\\+/]{4})*(?:[A-Za-z0-9\\\+/]{2}==|[A-Za-z0-9\\\+/]{3}=|[A-Za-z0-9\\\+/]{4})$/;
+const base64REGEX =
+  /^(?:[A-Za-z0-9\\\+/]{4})*(?:[A-Za-z0-9\\\+/]{2}==|[A-Za-z0-9\\\+/]{3}=|[A-Za-z0-9\\\+/]{4})$/;
 /**
  * Allow to convert base64 content in blob
  * @param {string} base64 base64 data

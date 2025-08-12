@@ -70,7 +70,7 @@ describe('Account', () => {
 
       cy.get(`#${userInfo.username} .roles span`)
         .should('be.visible')
-        .then(roles => {
+        .then((roles) => {
           expect(roles).to.have.length(4);
           const firstRole = roles[0].textContent;
           const secondRole = roles[1].textContent;
@@ -98,7 +98,7 @@ describe('Account', () => {
 
       cy.get(`#${userInfo.username} .roles span`)
         .should('be.visible')
-        .then(roles => {
+        .then((roles) => {
           expect(roles).to.have.length(2);
           const firstRole = roles[0].textContent;
           const secondRole = roles[1].textContent;
@@ -122,7 +122,7 @@ describe('Account', () => {
 
       cy.get(`#${userInfo.username} .roles span`)
         .should('be.visible')
-        .then(roles => {
+        .then((roles) => {
           expect(roles).to.have.length(2);
           const firstRole = roles[0].textContent;
           const secondRole = roles[1].textContent;
@@ -146,7 +146,7 @@ describe('Account', () => {
 
       cy.get(`#${userInfo.username} .roles span`)
         .should('be.visible')
-        .then(roles => {
+        .then((roles) => {
           expect(roles).to.have.length(2);
           const firstRole = roles[0].textContent;
           const secondRole = roles[1].textContent;
@@ -282,7 +282,7 @@ describe('Account', () => {
         cy.visit(`/account?page=1&limit=${LIMIT_PAGE}`);
         cy.get(`#${userInfo.username} .roles span`)
           .should('be.visible')
-          .then(roles => {
+          .then((roles) => {
             expect(roles).to.have.length(2);
             const firstRole = roles[0].textContent;
             const secondRole = roles[1].textContent;
@@ -324,7 +324,7 @@ describe('Account', () => {
 
         cy.url().should('contain', `/account/enrollment`);
 
-        cy.get('#password + div > span').then(checkPassword => {
+        cy.get('#password + div > span').then((checkPassword) => {
           // use jquery's map to grab all of their classes
           // jquery's map returns a new jquery object
           const classes = checkPassword.map((i, el) => {
@@ -471,13 +471,11 @@ describe('Account', () => {
         cy.contains('Créer un utilisateur').click();
         cy.formType('#username', userInfo.username, basicConfiguration);
         cy.formType('#email', userInfo.email, basicConfiguration);
-        cy.get('form')
-          .find('[id="role-admin"]')
-          .check();
+        cy.get('form').find('[id="role-admin"]').check();
 
         cy.totp(basicConfiguration);
 
-        cy.get('#tmpPassword').then(tmpPassword => {
+        cy.get('#tmpPassword').then((tmpPassword) => {
           cy.contains("Créer l'utilisateur").click();
           cy.logout(USER_ADMIN);
           const password = tmpPassword[0].textContent;
@@ -495,7 +493,7 @@ describe('Account', () => {
 
               cy.get('#secret > td')
                 .invoke('text')
-                .then(secret =>
+                .then((secret) =>
                   cy.totp({ totp: basicConfiguration.totpFirstLogin }, secret),
                 );
 

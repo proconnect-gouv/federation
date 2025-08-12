@@ -75,9 +75,8 @@ describe('FileStorageService', () => {
       .useValue(configServiceMock)
       .compile();
 
-    fileStorageService = await module.get<FileStorageService>(
-      FileStorageService,
-    );
+    fileStorageService =
+      await module.get<FileStorageService>(FileStorageService);
     jest.resetAllMocks();
   });
 
@@ -230,9 +229,8 @@ describe('FileStorageService', () => {
 
     it('should return the file as data uri', async () => {
       // action
-      const fileAsDataUri = await fileStorageService.getFileAsDataUri(
-        filenameAsSaved,
-      );
+      const fileAsDataUri =
+        await fileStorageService.getFileAsDataUri(filenameAsSaved);
 
       // expect
       expect(fileAsDataUri).toBe(
@@ -261,9 +259,8 @@ describe('FileStorageService', () => {
       });
 
       // action
-      const fileAsDataUri = await fileStorageService.getFileAsDataUri(
-        filenameAsSaved,
-      );
+      const fileAsDataUri =
+        await fileStorageService.getFileAsDataUri(filenameAsSaved);
 
       // expect
       expect(readStreamMock).toHaveBeenCalledTimes(1);
@@ -297,9 +294,8 @@ describe('FileStorageService', () => {
 
       // action
       try {
-        const fileAsDataUri = await fileStorageService.getFileAsDataUri(
-          filenameAsSaved,
-        );
+        const fileAsDataUri =
+          await fileStorageService.getFileAsDataUri(filenameAsSaved);
       } catch (e) {
         // expect
         expect(readStreamMock).toHaveBeenCalledTimes(1);
@@ -325,9 +321,8 @@ describe('FileStorageService', () => {
       });
 
       // action
-      const fileAsDataUri = await fileStorageService.getFileAsDataUri(
-        filenameAsSaved,
-      );
+      const fileAsDataUri =
+        await fileStorageService.getFileAsDataUri(filenameAsSaved);
 
       // expect
       expect(readStreamMock).toHaveBeenCalledTimes(0);
@@ -478,9 +473,7 @@ describe('FileStorageService', () => {
           mimetype: Joi.string()
             .regex(/^image\/([a-z]{3,4})/)
             .required(),
-          size: Joi.number()
-            .min(1000)
-            .max(2000),
+          size: Joi.number().min(1000).max(2000),
           buffer: Joi.binary().required(),
           encoding: Joi.string().required(),
         });
@@ -507,9 +500,7 @@ describe('FileStorageService', () => {
           mimetype: Joi.string()
             .regex(/^image\/([a-z]{3,4})/)
             .required(),
-          size: Joi.number()
-            .min(1000)
-            .max(2000),
+          size: Joi.number().min(1000).max(2000),
           buffer: Joi.binary().required(),
           encoding: Joi.string().required(),
         });

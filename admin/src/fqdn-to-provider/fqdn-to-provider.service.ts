@@ -74,7 +74,7 @@ export class FqdnToProviderService {
   createFqdnsWithAcceptance(
     fqdns: string[],
   ): Array<Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>> {
-    return fqdns.map(fqdn => {
+    return fqdns.map((fqdn) => {
       return {
         fqdn,
         // by default, for now, the fqdn is accepted
@@ -87,7 +87,7 @@ export class FqdnToProviderService {
     identityProviderUid: string,
     fqdns: Array<Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>>,
   ): Promise<void> {
-    fqdns.filter(Boolean).forEach(async fqdn => {
+    fqdns.filter(Boolean).forEach(async (fqdn) => {
       await this.fqdnToProviderRepository.save({
         fqdn: fqdn.fqdn,
         identityProvider: identityProviderUid,
@@ -107,10 +107,9 @@ export class FqdnToProviderService {
      * and must fetch it in db.
      * We only fetch the fqdns of the idp that match the input fqdns.
      */
-    const providerFqdns: Array<Pick<
-      IFqdnToProvider,
-      'fqdn' | 'acceptsDefaultIdp'
-    >> = await this.fqdnToProviderRepository.find({
+    const providerFqdns: Array<
+      Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>
+    > = await this.fqdnToProviderRepository.find({
       select: {
         fqdn: true,
         acceptsDefaultIdp: true,
@@ -128,15 +127,14 @@ export class FqdnToProviderService {
      * new fqdns are the fqdn from input that are not already in the collection.
      * We gave them a true default acceptance value.
      */
-    const fqdnsToAdd: Array<Pick<
-      IFqdnToProvider,
-      'fqdn' | 'acceptsDefaultIdp'
-    >> = fqdns
+    const fqdnsToAdd: Array<
+      Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>
+    > = fqdns
       .filter(
-        fqdn =>
-          !providerFqdns.find(fqdnToProvider => fqdnToProvider.fqdn === fqdn),
+        (fqdn) =>
+          !providerFqdns.find((fqdnToProvider) => fqdnToProvider.fqdn === fqdn),
       )
-      .map(fqdn => ({ fqdn, acceptsDefaultIdp: true }));
+      .map((fqdn) => ({ fqdn, acceptsDefaultIdp: true }));
 
     // Eventually we merge the new fqdns with the fetched fqdnToProvider
     providerFqdns.push(...fqdnsToAdd);
@@ -160,7 +158,7 @@ export class FqdnToProviderService {
     });
     if (existingFqdns?.length > 0) {
       await this.fqdnToProviderRepository.delete({
-        _id: { $in: existingFqdns.map(fqdn => fqdn._id) } as any,
+        _id: { $in: existingFqdns.map((fqdn) => fqdn._id) } as any,
       });
     }
   }
@@ -179,7 +177,7 @@ export class FqdnToProviderService {
       }
     });
 
-    return identityPoviders.map(identityProvider => {
+    return identityPoviders.map((identityProvider) => {
       const idpWithFqdns = {
         ...identityProvider,
         fqdns: fqdnToProvidersHashMap[identityProvider.uid] || [],

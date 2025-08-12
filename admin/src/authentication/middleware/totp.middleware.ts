@@ -71,9 +71,10 @@ export class TotpMiddleware implements NestMiddleware {
     this.authenticationService.saveUserAuthenticationFailure(username, null);
 
     let message = 'Connexion impossible.';
-    const maxAuthenticationAttemptLimitReached = await this.authenticationService.isMaxAuthenticationAttemptLimitReached(
-      username,
-    );
+    const maxAuthenticationAttemptLimitReached =
+      await this.authenticationService.isMaxAuthenticationAttemptLimitReached(
+        username,
+      );
 
     if (maxAuthenticationAttemptLimitReached) {
       await this.userService.blockUser(username);

@@ -50,7 +50,7 @@ describe('Update account', () => {
 
     cy.get('#secret > td')
       .invoke('text')
-      .then(secret => cy.totp(basicConfiguration, secret));
+      .then((secret) => cy.totp(basicConfiguration, secret));
 
     cy.contains('Mettre à jour mon mot de passe').click();
     cy.contains('Le mot de passe a bien été mis à jour !');
@@ -66,7 +66,7 @@ describe('Update account', () => {
 
     cy.get('#secret > td')
       .invoke('text')
-      .then(secret => cy.totp(basicConfiguration, secret));
+      .then((secret) => cy.totp(basicConfiguration, secret));
 
     cy.contains('Mettre à jour mon mot de passe').click();
     cy.contains(
@@ -86,7 +86,7 @@ describe('Update account', () => {
 
     cy.get('#secret > td')
       .invoke('text')
-      .then(secret => cy.totp(basicConfiguration, secret));
+      .then((secret) => cy.totp(basicConfiguration, secret));
 
     cy.contains('Mettre à jour mon mot de passe').click();
     cy.visit(`/account?page=1&limit=${LIMIT_PAGE}`);
@@ -103,7 +103,7 @@ describe('Update account', () => {
 
     cy.get('#secret > td')
       .invoke('text')
-      .then(secret => cy.totp(basicConfiguration, secret));
+      .then((secret) => cy.totp(basicConfiguration, secret));
 
     cy.contains('Mettre à jour mon mot de passe').click();
     cy.visit(`/account?page=1&limit=${LIMIT_PAGE}`);

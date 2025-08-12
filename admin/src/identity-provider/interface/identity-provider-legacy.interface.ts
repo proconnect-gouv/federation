@@ -43,8 +43,6 @@ export interface IIdentityProviderLegacy {
   revocation_endpoint_auth_method?: string;
   amr?: string[];
   featureHandlers?: Record<string, string>;
-  // oidc param name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   response_types?: string[];
   modal?: {
     active: boolean;

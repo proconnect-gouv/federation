@@ -69,11 +69,9 @@ export function createServiceProvider(serviceProviderInfo, configuration) {
       force: true,
     });
 
-    cy.get('form')
-      .find('[id="consent-required"]')
-      .check('true', {
-        force: true,
-      });
+    cy.get('form').find('[id="consent-required"]').check('true', {
+      force: true,
+    });
   }
 
   cy.totp(configuration);

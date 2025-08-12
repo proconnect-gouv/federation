@@ -24,7 +24,7 @@ describe('AllExceptionFilter', () => {
 
     exceptionFilter = new AllExceptionFilter(
       configurationMock,
-      (loggerMock as unknown) as LoggerService,
+      loggerMock as unknown as LoggerService,
     );
 
     Date.now = jest.fn().mockReturnValue(1570007990164);

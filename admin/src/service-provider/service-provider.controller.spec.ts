@@ -552,7 +552,7 @@ describe('ServiceProviderController', () => {
     });
 
     it('should update a servicerProvider with URIScheme for redirectUri field and return to the serviceProvider page', async () => {
-      (ServiceProviderDtoMock.redirectUri = [
+      ((ServiceProviderDtoMock.redirectUri = [
         'https://url.com',
         'fc+app01://openid_redirect_url',
         'FC-app.02://openid_redirect_url',
@@ -563,7 +563,7 @@ describe('ServiceProviderController', () => {
           idParam,
           req,
           res,
-        );
+        ));
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
         `${res.locals.APP_ROOT}/service-provider/${idParam}`,
@@ -571,7 +571,7 @@ describe('ServiceProviderController', () => {
     });
 
     it('should update a servicerProvider with URIScheme for redirectUriLogout field and return to the serviceProvider page', async () => {
-      (ServiceProviderDtoMock.redirectUriLogout = [
+      ((ServiceProviderDtoMock.redirectUriLogout = [
         'https://url.com',
         'fc+app01://openid_redirect_url',
         'FC-app.02://openid_redirect_url',
@@ -582,7 +582,7 @@ describe('ServiceProviderController', () => {
           idParam,
           req,
           res,
-        );
+        ));
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
         `${res.locals.APP_ROOT}/service-provider/${idParam}`,

@@ -1,5 +1,5 @@
 function getHeaders(url = '/', callback) {
-  cy.request(url).then(response => {
+  cy.request(url).then((response) => {
     const { headers } = response;
     callback(headers);
   });
@@ -15,7 +15,7 @@ function checkIfHasNotHeader(headerName, headerValue, url = '/') {
 
 function checkHeader(exists, headerName, headerValue, url) {
   const propertyName = headerName.toLowerCase();
-  getHeaders(url, headers => {
+  getHeaders(url, (headers) => {
     const hasProperty = propertyName in headers;
 
     if (headerValue) {

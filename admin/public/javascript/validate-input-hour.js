@@ -5,7 +5,7 @@ export function validateInputHour(element) {
   const heureFinEl = document.getElementById('heureFin');
   const submitButton = document.getElementById('submit-button');
 
-  element.addEventListener('input', function() {
+  element.addEventListener('input', function () {
     const heureDebutVal = `${document.getElementById('dateDebut').value}T${
       document.getElementById('heureDebut').value
     }`;
