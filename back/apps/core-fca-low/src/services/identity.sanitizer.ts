@@ -2,10 +2,9 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { cloneDeep } from 'lodash';
 
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { UnknownException } from '@fc/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
@@ -112,14 +111,38 @@ export class IdentitySanitizer {
 
     // Now the identity should be valid
     const identityValidationErrors = await validate(identityForSp);
-    // Defensive programming: this should never happen
+    // The following may happen if the IdP has no default value
+    // to substitute for an incorrect siret
     /* istanbul ignore next */
     if (identityValidationErrors.length > 0) {
       this.logger.alert({
         msg: 'transformIdentity final validation error',
         validationErrors: identityValidationErrors,
       });
-      throw new UnknownException();
+
+      const identityProvider = await this.identityProvider.getById(idpId);
+
+      const contact =
+        identityProvider.supportEmail ||
+        this.config.get<AppConfig>('App').supportEmail;
+
+      const exception = new CoreFcaInvalidIdentityException(
+        contact,
+        JSON.stringify(
+          identityValidationErrors.map((error) => error?.constraints),
+        ),
+        JSON.stringify(identityValidationErrors[0]?.target), // same target for all validation errors
+      );
+
+      exception.generic = true;
+      // Because we've set the generic flag, we need to imitate the code
+      // Which is preferable for consistency
+      exception.error = 'Y500006';
+      exception.error_description = identityFromIdp.siret
+        ? 'siret incorrect'
+        : 'siret manquant';
+      exception.http_status_code = HttpStatus.INTERNAL_SERVER_ERROR;
+      throw exception;
     }
 
     return identityForSp;

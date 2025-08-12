@@ -65,5 +65,17 @@ Fonctionnalité: Connexion Usager personnalisé
     Quand j'utilise un compte usager avec siret incorrect
     Et que je m'authentifie
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y000000"
+    Et le code d'erreur est "Y500006"
+    Et le message d'erreur est "siret incorrect"
 
+  @ignoreInteg01
+  Scénario: Connexion d'un usager - siret non fourni sans siret par défaut
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia2.fr"
+    Et que je clique sur le bouton de connexion
+    Quand j'utilise un compte usager dont le FI ne fournit pas le siret
+    Et que je m'authentifie
+    Alors je suis redirigé vers la page erreur technique
+    Et le code d'erreur est "Y500006"
+    Et le message d'erreur est "siret manquant"
