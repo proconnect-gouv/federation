@@ -42,7 +42,7 @@ jobs:
             latest=${{ github.ref == 'refs/heads/main' }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Mount Cache
         uses: actions/cache@v4
@@ -127,7 +127,7 @@ jobs:
             latest=${{ github.ref == 'refs/heads/main' }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build image
         id: build
