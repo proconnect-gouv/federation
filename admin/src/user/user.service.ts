@@ -75,8 +75,8 @@ export class UserService implements IUserService {
     enrollmentPassword: IEnrollUserDto,
   ): Promise<UpdateResult> {
     const roles = user.roles
-      .filter(role => role !== 'new_account')
-      .map(role => role.replace('inactive_', ''));
+      .filter((role) => role !== 'new_account')
+      .map((role) => role.replace('inactive_', ''));
 
     this.track({
       action: 'enroll',
@@ -150,10 +150,8 @@ export class UserService implements IUserService {
     const firstLoginLink = `https://${appFqdn}/first-login/${token}`;
 
     try {
-      const {
-        tokenCreatedAt,
-        tokenExpiresAt,
-      } = this.setAuthenticationTokenExpirationDate();
+      const { tokenCreatedAt, tokenExpiresAt } =
+        this.setAuthenticationTokenExpirationDate();
 
       const enrolledUser = await this.userRepository.save({
         passwordHash,

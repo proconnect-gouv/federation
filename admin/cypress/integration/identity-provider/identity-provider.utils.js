@@ -16,10 +16,7 @@ export function updateIdentityProvider(
 ) {
   cy.url().should('eq', `${BASE_URL}/identity-provider?page=1&limit=9001`);
   cy.contains(name).should('exist');
-  cy.contains(name)
-    .closest('tr')
-    .find('.btn-action-update')
-    .click();
+  cy.contains(name).closest('tr').find('.btn-action-update').click();
 
   cy.get('#fi-subtitle')
     .contains(`Modifier le fournisseur d'identité:`)

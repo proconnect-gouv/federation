@@ -10,14 +10,14 @@ export function testIsCompliantPasswordUpdate(basicConfiguration, request) {
 
   cy.get('#secret > td')
     .invoke('text')
-    .then(secret => cy.totp(basicConfiguration, secret));
+    .then((secret) => cy.totp(basicConfiguration, secret));
 
   cy.get('input[name="_totp"]')
     .invoke('val')
-    .then(totp => {
+    .then((totp) => {
       cy.get('input[name="_csrf"]')
         .invoke('val')
-        .then(csrf => {
+        .then((csrf) => {
           cy.request({
             method: 'POST',
             url: `/account/update-account/jean_moust?_method=PATCH`,
@@ -51,10 +51,10 @@ export function testIsCompliantPasswordEnrollment(
 
   cy.get('input[name="_totp"]')
     .invoke('val')
-    .then(totp => {
+    .then((totp) => {
       cy.get('input[name="_csrf"]')
         .invoke('val')
-        .then(csrf => {
+        .then((csrf) => {
           cy.request({
             method: 'POST',
             url: `/account/enrollment/?_method=PATCH`,

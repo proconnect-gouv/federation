@@ -6,7 +6,7 @@ export function copyText() {
   eventCleanerListenerForTooltip(COPY_BUTTON);
   const clipboard = new ClipboardJS(COPY_BUTTON);
 
-  clipboard.on('success', e => {
+  clipboard.on('success', (e) => {
     e.clearSelection();
     const { action, text, trigger } = e;
     console.info({ action, text, trigger });
@@ -21,20 +21,16 @@ export function copyText() {
 function eventCleanerListenerForTooltip(elm) {
   $(elm).tooltip('disable');
   const btns = document.querySelectorAll(elm);
-  Array.from(btns).map(btn => {
+  Array.from(btns).map((btn) => {
     btn.addEventListener('mouseleave', clearTooltip);
     btn.addEventListener('blur', clearTooltip);
   });
 }
 
 function clearTooltip() {
-  $(COPY_BUTTON)
-    .tooltip('hide')
-    .tooltip('disable');
+  $(COPY_BUTTON).tooltip('hide').tooltip('disable');
 }
 
 function showTooltip(elm) {
-  $(elm)
-    .tooltip('enable')
-    .tooltip('show');
+  $(elm).tooltip('enable').tooltip('show');
 }

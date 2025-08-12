@@ -25,7 +25,7 @@ async function loadLog(path) {
   return rawData
     .split('\n')
     .filter(Boolean)
-    .map(row => JSON.parse(row));
+    .map((row) => JSON.parse(row));
 }
 
 async function interactionHasEvent([logFile, stringifiedTestEvent]) {
@@ -40,7 +40,7 @@ async function interactionHasEvent([logFile, stringifiedTestEvent]) {
      * rather than having no match at all,
      * usefull for debuging purpose.
      */
-    const foundEvent = logs.find(log => log.action === testEvent.action);
+    const foundEvent = logs.find((log) => log.action === testEvent.action);
 
     if (!foundEvent) {
       console.error('Event not found');

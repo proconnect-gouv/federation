@@ -30,7 +30,7 @@ describe('CliService', () => {
 
     processExitMock = jest
       .spyOn(process, 'exit')
-      .mockImplementation(code => code as never);
+      .mockImplementation((code) => code as never);
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConsoleModule],

@@ -63,7 +63,7 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="name-asc"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/identity-provider');
         const params = url.searchParams;
@@ -81,7 +81,7 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="next-link"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/identity-provider');
         const params = url.searchParams;
@@ -99,7 +99,7 @@ describe('Identity provider creation', () => {
 
       cy.get('a[id="previous-link"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/identity-provider');
         const params = url.searchParams;
@@ -160,11 +160,11 @@ describe('Identity provider creation', () => {
 
       const first = cy
         .get('#list-table > tbody > tr:first > *:first')
-        .then($el => {
+        .then(($el) => {
           expect($el).to.not.have.descendants('a');
         });
 
-      first.next().then($el => {
+      first.next().then(($el) => {
         expect($el).to.not.have.descendants('a');
       });
     });

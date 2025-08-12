@@ -68,7 +68,7 @@ export class CliService {
 
   private formatValidationErrors(errors: any[]): string {
     return errors
-      .map(error =>
+      .map((error) =>
         Object.keys(error.constraints).reduce(
           (acc, curr) => acc.concat([error.constraints[curr]]),
           [],
@@ -80,7 +80,7 @@ export class CliService {
   private getRoles(roles: string): UserRole[] {
     return roles
       .split(',')
-      .map(role => `inactive_${role}`)
+      .map((role) => `inactive_${role}`)
       .concat(['new_account']) as UserRole[];
   }
 }

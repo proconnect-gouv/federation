@@ -63,8 +63,8 @@ const initMap = {
   changeSpPlatform,
 };
 
-$(document).ready(function() {
-  $('.nav-link[data-prefix]').each(function(index, link) {
+$(document).ready(function () {
+  $('.nav-link[data-prefix]').each(function (index, link) {
     const prefix = $(link).attr('data-prefix');
     if (window.location.pathname.startsWith(prefix)) {
       $(link).addClass('active');

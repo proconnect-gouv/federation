@@ -66,13 +66,11 @@ export class IdentityProviderService {
       'create',
     );
 
-    const providerToSave: IIdentityProviderLegacy = this.tranformIntoLegacy(
-      newProvider,
-    );
+    const providerToSave: IIdentityProviderLegacy =
+      this.tranformIntoLegacy(newProvider);
 
-    const saveOperation = await this.identityProviderRepository.insert(
-      providerToSave,
-    );
+    const saveOperation =
+      await this.identityProviderRepository.insert(providerToSave);
 
     if (identityProviderInput.fqdns?.length > 0) {
       await this.fqdnToProviderService.saveFqdnsProvider(
@@ -95,9 +93,10 @@ export class IdentityProviderService {
   }
 
   async findById(id: string): Promise<IIdentityProvider> {
-    const identityProviderLegacy: IdentityProvider = await this.identityProviderRepository.findOneByOrFail(
-      { _id: ObjectId(id) },
-    );
+    const identityProviderLegacy: IdentityProvider =
+      await this.identityProviderRepository.findOneByOrFail({
+        _id: ObjectId(id),
+      });
 
     if (!identityProviderLegacy) {
       throw new NotFoundException();
@@ -144,22 +143,21 @@ export class IdentityProviderService {
     delete newProvider.createdAt;
 
     // for fca: it will remove the fqdns from the provider object
-    const providerToSave: IIdentityProviderLegacy = this.tranformIntoLegacy(
-      newProvider,
-    );
+    const providerToSave: IIdentityProviderLegacy =
+      this.tranformIntoLegacy(newProvider);
 
     // Find the existing provider
-    const existingProvider = await this.identityProviderRepository.findOneByOrFail(
-      { _id: ObjectId(id) },
-    );
+    const existingProvider =
+      await this.identityProviderRepository.findOneByOrFail({
+        _id: ObjectId(id),
+      });
 
     // Apply the updates from providerToSave
     Object.assign(existingProvider, providerToSave);
 
     // Save the updated provider
-    const identityProviderResponse = await this.identityProviderRepository.save(
-      existingProvider,
-    );
+    const identityProviderResponse =
+      await this.identityProviderRepository.save(existingProvider);
 
     /**
      *  We need to update the corresponding fqdn
@@ -198,9 +196,10 @@ export class IdentityProviderService {
   }
 
   async deleteIdentityProvider(id, user: string): Promise<DeleteResult> {
-    const identityProvider = await this.identityProviderRepository.findOneByOrFail(
-      { _id: new ObjectId(id) },
-    );
+    const identityProvider =
+      await this.identityProviderRepository.findOneByOrFail({
+        _id: new ObjectId(id),
+      });
 
     this.track({
       entity: 'identity-provider',
@@ -254,13 +253,11 @@ export class IdentityProviderService {
   }
 
   async paginate(options: PaginationOptions) {
-    const paginationParams = this.paginationService.buildPaginationParams(
-      options,
-    );
+    const paginationParams =
+      this.paginationService.buildPaginationParams(options);
 
-    const [items, total] = await this.identityProviderRepository.findAndCount(
-      paginationParams,
-    );
+    const [items, total] =
+      await this.identityProviderRepository.findAndCount(paginationParams);
 
     return { items, total };
   }
@@ -312,8 +309,8 @@ export class IdentityProviderService {
     delete legacyProvider.modalMoreInfoUrl;
 
     Object.keys(legacyProvider)
-      .filter(key => typeof legacyProvider[key] === 'undefined')
-      .map(key => {
+      .filter((key) => typeof legacyProvider[key] === 'undefined')
+      .map((key) => {
         delete legacyProvider[key];
       });
     return legacyProvider;

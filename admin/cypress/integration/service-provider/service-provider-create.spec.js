@@ -272,12 +272,10 @@ describe('Service provider creation', () => {
       );
       cy.get('.alert-success > .close').click();
       cy.contains('check hexa');
-      cy.get('#list-table > tbody > tr > td')
-        .eq(0)
-        .click();
+      cy.get('#list-table > tbody > tr > td').eq(0).click();
       cy.get('#client_secret')
         .invoke('val')
-        .then(val => {
+        .then((val) => {
           const hexaConstraints = /[0-9A-Fa-f]{64}/g;
           const secretIsValid = hexaConstraints.test(val);
           expect(secretIsValid).to.be.true;

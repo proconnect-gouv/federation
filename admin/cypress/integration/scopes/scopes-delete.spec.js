@@ -32,9 +32,7 @@ describe('Delete a scope label', () => {
       fd: 'IDENTITY',
     };
 
-    cy.get(`table`)
-      .scrollIntoView()
-      .should('be.visible');
+    cy.get(`table`).scrollIntoView().should('be.visible');
 
     createScopeLabels(scopeLabelsInfo, configuration);
     cy.get('button[type="submit"]').click();
@@ -45,9 +43,7 @@ describe('Delete a scope label', () => {
     );
     cy.get('.alert-success > .close').click();
 
-    cy.contains(scopeLabelsInfo.scope)
-      .scrollIntoView()
-      .should('be.visible');
+    cy.contains(scopeLabelsInfo.scope).scrollIntoView().should('be.visible');
     cy.contains(scopeLabelsInfo.scope)
       .parent('tr')
       .find('.btn-action-delete')
@@ -67,9 +63,7 @@ describe('Delete a scope label', () => {
         fd: 'IDENTITY',
       };
 
-      cy.get(`table`)
-        .scrollIntoView()
-        .should('be.visible');
+      cy.get(`table`).scrollIntoView().should('be.visible');
 
       createScopeLabels(scopeLabelsInfo, configuration);
       cy.get('button[type="submit"]').click();
@@ -100,9 +94,7 @@ describe('Delete a scope label', () => {
         fd: 'IDENTITY',
       };
 
-      cy.get(`table`)
-        .scrollIntoView()
-        .should('be.visible');
+      cy.get(`table`).scrollIntoView().should('be.visible');
 
       createScopeLabels(scopeLabelsInfo, configuration);
       cy.get('button[type="submit"]').click();
@@ -140,9 +132,7 @@ describe('Delete a scope label', () => {
         fd: 'IDENTITY',
       };
 
-      cy.get(`table`)
-        .scrollIntoView()
-        .should('be.visible');
+      cy.get(`table`).scrollIntoView().should('be.visible');
 
       createScopeLabels(scopeLabelsInfo, configuration);
       cy.get('button[type="submit"]').click();

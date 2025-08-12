@@ -47,7 +47,7 @@ describe('Service provider list', () => {
       cy.get('a[id="name-desc"]').click();
       cy.get('.time-client-id')
         .last()
-        .then(item => {
+        .then((item) => {
           const todaysDate = DateTime.now().toFormat('dd/MM/yyyy');
           const test = item[0].textContent;
           expect(todaysDate).to.equal(test);
@@ -62,7 +62,7 @@ describe('Service provider list', () => {
       cy.get('a[id="name-desc"]').click();
       cy.get('.time-secret')
         .last()
-        .then(item => {
+        .then((item) => {
           const todaysDate = DateTime.now().toFormat('dd/MM/yyyy');
           const test = item[0].textContent;
           expect(todaysDate).to.equal(test);
@@ -74,7 +74,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="name-asc"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -90,7 +90,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="createdAt-asc"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -106,7 +106,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="secretUpdatedAt-asc"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -122,7 +122,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="active-asc"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -140,7 +140,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="name-asc"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -152,7 +152,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="next-link"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -170,7 +170,7 @@ describe('Service provider list', () => {
 
       cy.get('a[id="previous-link"]').click();
 
-      cy.url().should(urlString => {
+      cy.url().should((urlString) => {
         const url = new URL(urlString);
         expect(url.pathname).to.eq('/service-provider');
         const params = url.searchParams;
@@ -220,7 +220,7 @@ describe('Service provider list', () => {
         `/service-provider?sortField=name&sortDirection=asc&limit=2&page=2`,
       );
 
-      cy.get('#list-table > tbody > tr:first > th').then($el => {
+      cy.get('#list-table > tbody > tr:first > th').then(($el) => {
         expect($el).to.not.have.descendants('a');
       });
     });
@@ -230,7 +230,7 @@ describe('Service provider list', () => {
         `/service-provider?sortField=name&sortDirection=asc&limit=2&page=2`,
       );
 
-      cy.get('#list-table > tbody > tr:first > td').then($el => {
+      cy.get('#list-table > tbody > tr:first > td').then(($el) => {
         expect($el).to.not.have.descendants('a');
       });
     });

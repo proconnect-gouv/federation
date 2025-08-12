@@ -33,9 +33,7 @@ describe('Update a scope label', () => {
     };
 
     it('if a valid form is submit', () => {
-      cy.get(`table`)
-        .scrollIntoView()
-        .should('be.visible');
+      cy.get(`table`).scrollIntoView().should('be.visible');
 
       createScopeLabels(scopeLabelsInfo, configuration);
       cy.get('button[type="submit"]').click();

@@ -42,9 +42,9 @@ describe('LocalStrategy', () => {
     jest.resetAllMocks();
 
     localStrategyMock = new LocalStrategy(
-      (authenticationServiceMock as unknown) as AuthenticationService,
-      (loggerMock as unknown) as LoggerService,
-      (userServiceMock as unknown) as UserService,
+      authenticationServiceMock as unknown as AuthenticationService,
+      loggerMock as unknown as LoggerService,
+      userServiceMock as unknown as UserService,
     );
   });
 
@@ -332,11 +332,12 @@ describe('LocalStrategy', () => {
         tokenExpiresAt: mockDateExpire,
       });
       // action
-      const result = await localStrategyMock[
-        // We need this syntax to test or mock privates methods
-        // tslint:disable-next-line no-string-literal
-        'blockUser'
-      ](username);
+      const result =
+        await localStrategyMock[
+          // We need this syntax to test or mock privates methods
+          // tslint:disable-next-line no-string-literal
+          'blockUser'
+        ](username);
       // assertion
       expect(result).toEqual({
         id: '12346',

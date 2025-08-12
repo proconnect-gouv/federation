@@ -6,8 +6,8 @@ export function validateForm(element) {
 
   // check select
   if (!!selects.length) {
-    selects.forEach(select => {
-      select.addEventListener('change', function() {
+    selects.forEach((select) => {
+      select.addEventListener('change', function () {
         if (select.required && select.value === '') {
           select.classList.remove('is-valid');
           select.classList.add('is-invalid');
@@ -17,7 +17,7 @@ export function validateForm(element) {
         }
       });
 
-      element.addEventListener('submit', function(event) {
+      element.addEventListener('submit', function (event) {
         if (select.required && select.value === '') {
           select.classList.remove('is-valid');
           select.classList.add('is-invalid');
@@ -37,14 +37,14 @@ export function validateForm(element) {
       if (inputs.hasOwnProperty(key)) {
         inputs[key].addEventListener(
           'input',
-          function() {
+          function () {
             // check if inputs which change are valid
             if (inputs[key].checked) {
               const inputRadioName = inputs[key].getAttribute('name');
               const inputsRadio = document.querySelectorAll(
                 `input[name="${inputRadioName}"]`,
               );
-              inputsRadio.forEach(inputRadio => {
+              inputsRadio.forEach((inputRadio) => {
                 inputRadio.classList.add('is-valid');
               });
             }
@@ -62,7 +62,7 @@ export function validateForm(element) {
         // check on submit if form is valid
         element.addEventListener(
           'submit',
-          function(event) {
+          function (event) {
             if (inputs[key].checkValidity() === false) {
               inputs[key].classList.remove('is-valid');
               inputs[key].classList.add('is-invalid');
@@ -86,12 +86,12 @@ export function validateForm(element) {
   if (!!txtAreas.length) {
     for (const key in txtAreas) {
       if (txtAreas.hasOwnProperty(key)) {
-        txtAreas[key].addEventListener('input', function() {
+        txtAreas[key].addEventListener('input', function () {
           validateTextarea(txtAreas[key]);
         });
         element.addEventListener(
           'submit',
-          function(event) {
+          function (event) {
             if (!validateTextarea(txtAreas[key])) {
               txtAreas[key].classList.remove('is-valid');
               txtAreas[key].classList.add('is-invalid');
@@ -106,11 +106,9 @@ export function validateForm(element) {
   }
 
   // force consent to "not required" if service provider type is "public"
-  $('.is-consent-required').on('change', e => {
+  $('.is-consent-required').on('change', (e) => {
     const isPublicProvider = e.target.value === 'public';
-    $('.consent')
-      .eq(0)
-      .attr('disabled', isPublicProvider);
+    $('.consent').eq(0).attr('disabled', isPublicProvider);
 
     if (isPublicProvider) {
       $('.consent[value="false"]').prop('checked', true);
@@ -129,7 +127,7 @@ function validateTextarea(textarea) {
   const pattern = new RegExp('^' + $(textarea).attr('pattern') + '$');
   let isValid = false;
   // check each line of text
-  $.each(textAreaValue.split('\n'), function() {
+  $.each(textAreaValue.split('\n'), function () {
     // check if the line matches the pattern
     isValid = pattern.test(this);
     // Not supported by the browser, fallback to manual error display...

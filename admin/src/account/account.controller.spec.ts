@@ -276,9 +276,8 @@ describe('AccountController', () => {
         return 'mygreattmppassword';
       });
       // action
-      const { csrfToken, tmpPassword } = accountController.showCreationForm(
-        req,
-      );
+      const { csrfToken, tmpPassword } =
+        accountController.showCreationForm(req);
       // assertion
       expect(userService.generateTmpPass).toHaveBeenCalledTimes(1);
       expect(csrfToken).toEqual('mygreatcsrftoken');
@@ -336,15 +335,8 @@ describe('AccountController', () => {
   describe('get enrollment', () => {
     it('should generate qr code and return values to enter totp code without scanning qrcode', async () => {
       // action
-      const {
-        user,
-        issuer,
-        secret,
-        QRCode,
-        step,
-        algorithm,
-        csrfToken,
-      } = await accountController.firstLogin(req, res);
+      const { user, issuer, secret, QRCode, step, algorithm, csrfToken } =
+        await accountController.firstLogin(req, res);
       // assertion
       expect(user).toEqual('toto');
       expect(issuer).toEqual('fce');
@@ -568,15 +560,8 @@ describe('AccountController', () => {
     describe('get account/me', () => {
       it('showUserAccount', async () => {
         // action
-        const {
-          user,
-          issuer,
-          secret,
-          QRCode,
-          step,
-          algorithm,
-          csrfToken,
-        } = await accountController.showUserAccount(req);
+        const { user, issuer, secret, QRCode, step, algorithm, csrfToken } =
+          await accountController.showUserAccount(req);
         // assertion
         expect(totpService.generateTotpQRCode).toHaveBeenCalledTimes(1);
         expect(totpService.generateTotpQRCode).toHaveBeenCalledWith(req.user);

@@ -1,11 +1,11 @@
 export function toggleIdpFilterList(elt) {
-  elt.addEventListener('change', function() {
+  elt.addEventListener('change', function () {
     const optionSelected = elt.options[elt.selectedIndex].text;
     const hasNoRestriction = optionSelected === 'Aucune restriction';
 
     document
       .querySelectorAll('#idpFilterList input[type="checkbox"]')
-      .forEach(child => {
+      .forEach((child) => {
         child.disabled = hasNoRestriction;
 
         if (hasNoRestriction) {

@@ -40,7 +40,7 @@ describe('ServiceProviderService', () => {
 
   const userMock = 'userMockValue';
 
-  const serviceProviderMock = ({
+  const serviceProviderMock = {
     key: 'keyMock',
     name: 'monfs',
     redirectUri: ['https://monfs.com'],
@@ -52,7 +52,7 @@ describe('ServiceProviderService', () => {
     type: 'private',
     scopes: [],
     trustedIdentity: false,
-  } as unknown) as ServiceProviderDto;
+  } as unknown as ServiceProviderDto;
 
   const expectedServiceProviderCreated = {
     active: true,
@@ -368,11 +368,11 @@ describe('ServiceProviderService', () => {
 
     it('should update service provider', async () => {
       // Given
-      const dataToUpdate = ({
+      const dataToUpdate = {
         ...serviceProviderMock,
         id_token_signed_response_alg: 'id_token_signed_response_alg',
         userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-      } as unknown) as ServiceProviderDto;
+      } as unknown as ServiceProviderDto;
 
       serviceProviderRepository.findOneByOrFail.mockImplementationOnce(() =>
         Promise.resolve({

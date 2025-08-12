@@ -28,19 +28,19 @@ export function confirmDialog(message, handler) {
   });
 
   //Pass true to a callback function
-  $('.btn-yes').click(function() {
+  $('.btn-yes').click(function () {
     handler(true);
     $('.confirm-modal').modal('hide');
   });
 
   //Pass false to a callback function
-  $('.btn-no').click(function() {
+  $('.btn-no').click(function () {
     handler(false);
     $('.confirm-modal').modal('hide');
   });
 
   //Remove the modal once it is closed.
-  $('.confirm-modal').on('hidden.bs.modal', function() {
+  $('.confirm-modal').on('hidden.bs.modal', function () {
     $('.confirm-modal').remove();
   });
 }
@@ -81,7 +81,7 @@ export function confirmDialogWithTotp(message, handler) {
   });
 
   //Pass true to a callback function
-  $('.btn-yes').click(function() {
+  $('.btn-yes').click(function () {
     const totp = document.getElementById('totpModal');
     if (totp.value !== '') {
       totp.classList.remove('is-invalid');
@@ -93,20 +93,18 @@ export function confirmDialogWithTotp(message, handler) {
   });
 
   //Pass false to callback function
-  $('.btn-no').click(function() {
+  $('.btn-no').click(function () {
     handler(false, '');
     $('.confirm-modal-totp').modal('hide');
   });
 
   // Every time a modal is shown, if it has an autofocus element, focus on it.
-  $('.modal').on('shown.bs.modal', function() {
-    $(this)
-      .find('[autofocus]')
-      .focus();
+  $('.modal').on('shown.bs.modal', function () {
+    $(this).find('[autofocus]').focus();
   });
 
   //Remove the modal once it is closed.
-  $('.confirm-modal-totp').on('hidden.bs.modal', function() {
+  $('.confirm-modal-totp').on('hidden.bs.modal', function () {
     $('.confirm-modal-totp').remove();
   });
 }

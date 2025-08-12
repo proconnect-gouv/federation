@@ -43,9 +43,7 @@ describe('Delete service provider', () => {
     createServiceProvider(fs, {
       ...basicConfiguration,
     });
-    cy.get('button.btn-action-delete')
-      .last()
-      .click();
+    cy.get('button.btn-action-delete').last().click();
     cy.contains('Confirmer').click();
     cy.contains(`Le TOTP n'a pas été saisi`).should('be.visible');
     cy.get('#totpModal').type('000000');
@@ -69,29 +67,17 @@ describe('Delete service provider', () => {
     });
 
     it('(checkbox & delete button)', () => {
-      cy.get('input.delete-items')
-        .first()
-        .click();
-      cy.get('input.delete-items')
-        .last()
-        .click();
-      cy.contains('Supprimer')
-        .should('be.visible')
-        .click();
+      cy.get('input.delete-items').first().click();
+      cy.get('input.delete-items').last().click();
+      cy.contains('Supprimer').should('be.visible').click();
       cy.contains('Annuler').click();
-      cy.get('table')
-        .contains(fs.name)
-        .should('be.visible');
+      cy.get('table').contains(fs.name).should('be.visible');
     });
 
     it('(trash button)', () => {
-      cy.get('button.btn-action-delete')
-        .last()
-        .click();
+      cy.get('button.btn-action-delete').last().click();
       cy.contains('Annuler').click();
-      cy.get('table')
-        .contains(fs.name)
-        .should('be.visible');
+      cy.get('table').contains(fs.name).should('be.visible');
     });
   });
 
@@ -104,9 +90,7 @@ describe('Delete service provider', () => {
       cy.contains(fs.name).should('be.visible');
     });
     it('One service provider thanks quick method (trash button)', () => {
-      cy.get('button.btn-action-delete')
-        .last()
-        .click();
+      cy.get('button.btn-action-delete').last().click();
 
       cy.get('#totpModal').then(() =>
         cy.totp({
@@ -119,9 +103,7 @@ describe('Delete service provider', () => {
         `Le fournisseur de service ${fs.name} a été supprimé avec succès !`,
       ).should('be.visible');
       cy.get('.alert-success > .close').click();
-      cy.get('table')
-        .contains(fs.name)
-        .should('not.exist');
+      cy.get('table').contains(fs.name).should('not.exist');
 
       cy.hasBusinessLog({
         entity: 'service-provider',
@@ -135,12 +117,8 @@ describe('Delete service provider', () => {
       cy.visit(
         `/service-provider?page=1&limit=9999&sortField=createdAt&sortDirection=asc`,
       );
-      cy.get('input.delete-items')
-        .last()
-        .click();
-      cy.contains('Supprimer')
-        .should('be.visible')
-        .click();
+      cy.get('input.delete-items').last().click();
+      cy.contains('Supprimer').should('be.visible').click();
 
       cy.get('#totpModal').then(() =>
         cy.totp({
@@ -154,15 +132,9 @@ describe('Delete service provider', () => {
     });
 
     it('Several service provider with uuid and old id', () => {
-      cy.get('input.delete-items')
-        .first()
-        .click();
-      cy.get('input.delete-items')
-        .last()
-        .click();
-      cy.contains('Supprimer')
-        .should('be.visible')
-        .click();
+      cy.get('input.delete-items').first().click();
+      cy.get('input.delete-items').last().click();
+      cy.contains('Supprimer').should('be.visible').click();
 
       cy.get('#totpModal').then(() =>
         cy.totp({

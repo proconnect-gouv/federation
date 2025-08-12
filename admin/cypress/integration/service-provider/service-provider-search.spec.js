@@ -17,9 +17,7 @@ describe('Service provider search', () => {
       cy.formType('input[name=search]', 'FSA1');
       cy.get('#searchBtn').click();
       cy.contains('tbody > tr > th', `FSA - FSA1-LOW`);
-      cy.get('tbody')
-        .find('tr')
-        .should('have.length', 1);
+      cy.get('tbody').find('tr').should('have.length', 1);
       cy.url().should('eq', `${BASE_URL}/service-provider?search=FSA1`);
     });
 
@@ -27,9 +25,7 @@ describe('Service provider search', () => {
       cy.formType('input[name=search]', 'fsa1');
       cy.get('#searchBtn').click();
       cy.contains('tbody > tr > th', `FSA - FSA1-LOW`);
-      cy.get('tbody')
-        .find('tr')
-        .should('have.length', 1);
+      cy.get('tbody').find('tr').should('have.length', 1);
       cy.url().should('eq', `${BASE_URL}/service-provider?search=fsa1`);
     });
 
@@ -53,9 +49,7 @@ describe('Service provider search', () => {
       );
       cy.get('#searchBtn').click();
       cy.contains('tbody > tr > th', `FSA - FSA1-LOW`);
-      cy.get('tbody')
-        .find('tr')
-        .should('have.length', 1);
+      cy.get('tbody').find('tr').should('have.length', 1);
       cy.url().should(
         'eq',
         `${BASE_URL}/service-provider?search=6925FB8143C76EDED44D32B40C0CB1006065F7F003DE52712B78985704F39950`,

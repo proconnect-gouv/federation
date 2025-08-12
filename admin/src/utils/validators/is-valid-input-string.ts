@@ -7,7 +7,8 @@ import { ValidateIf, ValidationOptions } from 'class-validator';
  * \u0026 => &
  * \u002f => /
  */
-export const VALID_INPUT_STRING_REGEX = /^[A-Za-zÀ-žØ-öø-ÿ0-9\s,.:!\(\)_'\-\u0026-\u002f]+$/;
+export const VALID_INPUT_STRING_REGEX =
+  /^[A-Za-zÀ-žØ-öø-ÿ0-9\s,.:!\(\)_'\-\u0026-\u002f]+$/;
 
 export function IsValidInputString(validationOptions?: ValidationOptions) {
   return ValidateIf((obj, value) => {

@@ -28,7 +28,8 @@ const { ES256, RS256, HS256 } = AlgoValue;
 // tslint:disable-next-line:max-line-length
 // match empty string because of optionals paramters
 // impossible to use IsOptionalExtended because of the Transform which always return something
-const URL_REGEX = /^(?:((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|(([A-Za-z0-9\.\+-]{6,}):(?:\/\/)?(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-_]+)|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)?)$/;
+const URL_REGEX =
+  /^(?:((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|(([A-Za-z0-9\.\+-]{6,}):(?:\/\/)?(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-_]+)|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)?)$/;
 
 export class ServiceProviderDto {
   @IsValidInputString({

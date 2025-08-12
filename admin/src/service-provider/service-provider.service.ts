@@ -71,9 +71,10 @@ export class ServiceProviderService {
   }
 
   async findById(id: string): Promise<ServiceProvider> {
-    const serviceProvider = await this.serviceProviderRepository.findOneByOrFail(
-      { _id: new ObjectId(id) },
-    );
+    const serviceProvider =
+      await this.serviceProviderRepository.findOneByOrFail({
+        _id: new ObjectId(id),
+      });
     serviceProvider.client_secret = this.secretManager.decrypt(
       serviceProvider.client_secret,
     );
@@ -81,9 +82,10 @@ export class ServiceProviderService {
   }
 
   async update(id: string, input: ServiceProviderDto, user: string) {
-    const serviceProvider = await this.serviceProviderRepository.findOneByOrFail(
-      { _id: new ObjectId(id) },
-    );
+    const serviceProvider =
+      await this.serviceProviderRepository.findOneByOrFail({
+        _id: new ObjectId(id),
+      });
 
     serviceProvider.name = input.name;
     serviceProvider.redirect_uris = input.redirectUri;
@@ -144,13 +146,16 @@ export class ServiceProviderService {
    * Dirty costly solution: iterate through given ids
    */
   async deleteManyServiceProvidersById(ids: string[], user: string) {
-    return Promise.all(ids.map(id => this.deleteServiceProviderById(id, user)));
+    return Promise.all(
+      ids.map((id) => this.deleteServiceProviderById(id, user)),
+    );
   }
 
   async deleteServiceProviderById(id: string, user: string): Promise<boolean> {
-    const serviceProvider = await this.serviceProviderRepository.findOneByOrFail(
-      { _id: new ObjectId(id) },
-    );
+    const serviceProvider =
+      await this.serviceProviderRepository.findOneByOrFail({
+        _id: new ObjectId(id),
+      });
 
     const result = await this.serviceProviderRepository.delete({
       _id: new ObjectId(id),
@@ -171,9 +176,10 @@ export class ServiceProviderService {
     serviceProviderID: string,
     currentUser: string,
   ): Promise<ServiceProvider> {
-    const serviceProvider = await this.serviceProviderRepository.findOneByOrFail(
-      { _id: new ObjectId(serviceProviderID) },
-    );
+    const serviceProvider =
+      await this.serviceProviderRepository.findOneByOrFail({
+        _id: new ObjectId(serviceProviderID),
+      });
 
     const unEncryptedSecret = await this.secretAdapter.generateSecret();
 
@@ -192,13 +198,11 @@ export class ServiceProviderService {
   }
 
   async paginate(options: PaginationOptions) {
-    const paginationParams = this.paginationService.buildPaginationParams(
-      options,
-    );
+    const paginationParams =
+      this.paginationService.buildPaginationParams(options);
 
-    const [items, total] = await this.serviceProviderRepository.findAndCount(
-      paginationParams,
-    );
+    const [items, total] =
+      await this.serviceProviderRepository.findAndCount(paginationParams);
 
     return { items, total };
   }

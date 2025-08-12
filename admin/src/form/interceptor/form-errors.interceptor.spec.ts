@@ -62,7 +62,7 @@ describe('FormErrorsInterceptor', () => {
     request.totp = 'valid';
   });
 
-  it("should redirect to the provided url with errors sent by Nest's built-in ValidationPipe when there is no totp", done => {
+  it("should redirect to the provided url with errors sent by Nest's built-in ValidationPipe when there is no totp", (done) => {
     // setup
     delete request.totp;
 
@@ -95,7 +95,7 @@ describe('FormErrorsInterceptor', () => {
       });
   });
 
-  it('should complete the template url with the rights params', done => {
+  it('should complete the template url with the rights params', (done) => {
     // setup
     const specialRequest = {
       params: {
@@ -126,7 +126,7 @@ describe('FormErrorsInterceptor', () => {
     // action
     specialFormErrorsInterceptor
       .intercept(executionContext, callHandler)
-      .subscribe(result => {
+      .subscribe((result) => {
         // expect
         expect(specialRequest.flash).toHaveBeenCalledTimes(2);
         expect(specialRequest.flash).toHaveBeenCalledWith(
@@ -145,7 +145,7 @@ describe('FormErrorsInterceptor', () => {
       });
   });
 
-  it("should redirect to the provided url with errors sent by Nest's built-in ValidationPipe when totp is valid", done => {
+  it("should redirect to the provided url with errors sent by Nest's built-in ValidationPipe when totp is valid", (done) => {
     // setup
     const expectedFirstFlashCallArgs = {
       password: ['Length', 'Strength'],
@@ -157,7 +157,7 @@ describe('FormErrorsInterceptor', () => {
     // action
     formErrorsInterceptor
       .intercept(executionContext, callHandler)
-      .subscribe(result => {
+      .subscribe((result) => {
         // expect
         expect(request.flash).toHaveBeenCalledTimes(2);
         expect(request.flash).toHaveBeenCalledWith(

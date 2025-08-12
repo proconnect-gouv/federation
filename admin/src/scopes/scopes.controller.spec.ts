@@ -440,9 +440,7 @@ describe('Scopes Controller', () => {
         'globalError',
         'Impossible de modifier le claim',
       );
-      expect(
-        resMock.redirect,
-      ).toHaveBeenCalledWith(
+      expect(resMock.redirect).toHaveBeenCalledWith(
         `${resMock.locals.APP_ROOT}/scopes/claim/form/5d9c677da8bb151b00720451`,
         { action: 'update' },
       );

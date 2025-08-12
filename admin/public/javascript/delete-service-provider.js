@@ -5,7 +5,7 @@ export function displayRemoveButtonEvent(element) {
   // display delete button if at least one checkbox is checked
   element.addEventListener(
     'change',
-    function() {
+    function () {
       const chboxs = document.getElementsByClassName('delete-items');
       let display = 'none';
       for (let i = 0; i < chboxs.length; i++) {
@@ -24,12 +24,12 @@ export function submitDeletion(element) {
   if (element !== null) {
     element.addEventListener(
       'click',
-      function() {
+      function () {
         let deleteItems;
         let eltTitle;
         let i = 0;
         // retrieve all checkbox that are checked
-        $('input:checkbox[name=deleteItems]:checked').each(function() {
+        $('input:checkbox[name=deleteItems]:checked').each(function () {
           if (i === 0) {
             deleteItems = $(this).val();
             eltTitle = $(this).data('elementTitle');
@@ -47,9 +47,8 @@ export function submitDeletion(element) {
               // create a form for submit all items which must deleted
               const form = document.createElement('form');
               const inputForRemove = document.createElement('input');
-              const inputForServiceProviderName = document.createElement(
-                'input',
-              );
+              const inputForServiceProviderName =
+                document.createElement('input');
               const inputCsrf = document.createElement('input');
               const inputTotp = document.createElement('input');
               const app_root = document.getElementById('app').value;

@@ -74,7 +74,7 @@ export class IsPasswordCompliant implements ValidatorConstraintInterface {
     }
 
     const occurringMoreThanOnce = patterns.filter(
-      pattern => password.split(pattern).length !== 2,
+      (pattern) => password.split(pattern).length !== 2,
     );
     return occurringMoreThanOnce.length > 0;
   }
@@ -98,7 +98,7 @@ export class IsPasswordCompliant implements ValidatorConstraintInterface {
   static hasUnhauthorizedCaractersChain(password) {
     const unauthorized = UNAUTHORIZED;
     return unauthorized
-      .map(word => password.includes(word))
+      .map((word) => password.includes(word))
       .reduce((acc, val) => acc || val);
   }
 

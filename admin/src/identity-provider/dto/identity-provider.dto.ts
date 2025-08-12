@@ -21,7 +21,8 @@ import {
 import { toBoolean, linesToArray, toArray } from '../../utils/transforms';
 
 // tslint:disable-next-line:max-line-length
-const URL_REGEX = /^((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)$/;
+const URL_REGEX =
+  /^((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)$/;
 const EMAIL_REGEX = /^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 const FQDN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 const IMG_REGEX = /\.(png|svg|jpg|gif)$/;
@@ -50,27 +51,27 @@ export class IdentityProviderDTO {
    * @TODO remplacer jwksUrl par jwksUri pour harmoniser avec la partie service-provider
    * et être plus openid compliant dans le nommage des variables
    */
-  @ValidateIf(i => i.discovery === false)
+  @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
     message: 'Veuillez mettre une url valide ( Ex: https://my-jwks-url.com/ )',
   })
   @IsOptional()
   readonly jwksUrl?: string;
 
-  @ValidateIf(i => i.discovery === false)
+  @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
     message:
       'Veuillez mettre une url valide ( Ex: https://my-authorization-url.com/ )',
   })
   readonly authorizationUrl?: string;
 
-  @ValidateIf(i => i.discovery === false)
+  @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
     message: 'Veuillez mettre une url valide ( Ex: https://my-token-url.com/ )',
   })
   readonly tokenUrl?: string;
 
-  @ValidateIf(i => i.discovery === false)
+  @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
     message:
       'Veuillez mettre une url valide ( Ex: https://my-user-info-url.com/ )',
@@ -91,7 +92,7 @@ export class IdentityProviderDTO {
   })
   readonly statusUrl: string;
 
-  @ValidateIf(i => i.discovery === true)
+  @ValidateIf((i) => i.discovery === true)
   @Matches(URL_REGEX, {
     message:
       'Veuillez mettre une url valide ( Ex: https://my-user-info-url.com/ )',

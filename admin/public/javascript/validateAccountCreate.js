@@ -10,7 +10,7 @@ export function validateAccountCreate(element) {
     // check if inputs which change are valid
     inputs[i].addEventListener(
       'input',
-      function(event) {
+      function (event) {
         // check input pattern
         if (inputs[i].checkValidity() === false) {
           inputInvalid(inputs[i]);
@@ -20,7 +20,7 @@ export function validateAccountCreate(element) {
 
         // check if inputs checkbox which change are valid
         if (inputs[i].checked) {
-          inputCheckboxRoles.forEach(chkboxRole => {
+          inputCheckboxRoles.forEach((chkboxRole) => {
             inputValid(chkboxRole);
             document.querySelector('.roles-error').innerText = '';
           });
@@ -29,7 +29,7 @@ export function validateAccountCreate(element) {
             ({ checked }) => checked === true,
           ).length;
           if (countCheckedRole === 0) {
-            inputCheckboxRoles.forEach(chkboxRole => {
+            inputCheckboxRoles.forEach((chkboxRole) => {
               inputInvalid(chkboxRole);
             });
             document.querySelector('.roles-error').innerText =
@@ -43,7 +43,7 @@ export function validateAccountCreate(element) {
     // check on submit if form is valid
     element.addEventListener(
       'submit',
-      function(event) {
+      function (event) {
         const countCheckedRole = inputCheckboxRoles.filter(
           ({ checked }) => checked === true,
         ).length;
@@ -57,7 +57,7 @@ export function validateAccountCreate(element) {
         }
 
         if (countCheckedRole === 0) {
-          inputCheckboxRoles.forEach(chkboxRole => {
+          inputCheckboxRoles.forEach((chkboxRole) => {
             inputInvalid(chkboxRole);
           });
           document.querySelector('.roles-error').innerText =

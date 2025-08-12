@@ -73,7 +73,7 @@ describe('AuthenticationService', () => {
       password = Symbol('password');
       jest
         .spyOn(mockedUserService, 'findByUsername')
-        .mockImplementation(candidate => {
+        .mockImplementation((candidate) => {
           if (candidate === username) {
             return Promise.resolve(user);
           }
@@ -560,10 +560,11 @@ describe('AuthenticationService', () => {
       authenticationRepositoryMock.save.mockRejectedValueOnce(undefined);
       // action
       try {
-        const result = await authenticationService.saveUserAuthenticationFailure(
-          username,
-          token,
-        );
+        const result =
+          await authenticationService.saveUserAuthenticationFailure(
+            username,
+            token,
+          );
       } catch (e) {
         const { message } = e;
         expect(e).toBeInstanceOf(Error);
@@ -600,9 +601,8 @@ describe('AuthenticationService', () => {
       const expectedResult = userToDelete;
 
       // action
-      const result = await authenticationService.deleteUserAuthenticationFailures(
-        username,
-      );
+      const result =
+        await authenticationService.deleteUserAuthenticationFailures(username);
 
       // assertion
       expect(authenticationRepositoryMock.delete).toHaveBeenCalledTimes(1);
@@ -663,9 +663,8 @@ describe('AuthenticationService', () => {
       ]);
 
       // action
-      const result = await authenticationService.getAuthenticationAttemptCount(
-        username,
-      );
+      const result =
+        await authenticationService.getAuthenticationAttemptCount(username);
 
       // assertion
       expect(result).toEqual(3);
@@ -680,9 +679,8 @@ describe('AuthenticationService', () => {
 
       // action
       try {
-        const result = await authenticationService.getAuthenticationAttemptCount(
-          username,
-        );
+        const result =
+          await authenticationService.getAuthenticationAttemptCount(username);
       } catch (e) {
         const { message } = e;
         expect(e).toBeInstanceOf(Error);
@@ -704,10 +702,11 @@ describe('AuthenticationService', () => {
       const userAuthenticationMaxAttempt = 5;
       configServiceMock.get.mockReturnValue(userAuthenticationMaxAttempt);
       // action
-      const result = await authenticationService[
-        // tslint:disable-next-line no-string-literal
-        'isMaxAuthenticationAttemptLimitReached'
-      ]('user');
+      const result =
+        await authenticationService[
+          // tslint:disable-next-line no-string-literal
+          'isMaxAuthenticationAttemptLimitReached'
+        ]('user');
 
       // assertion
       expect(result).toEqual(false);
@@ -755,10 +754,11 @@ describe('AuthenticationService', () => {
       const userAuthenticationMaxAttempt = 5;
       configServiceMock.get.mockReturnValue(userAuthenticationMaxAttempt);
       // action
-      const result = await authenticationService[
-        // tslint:disable-next-line no-string-literal
-        'isMaxAuthenticationAttemptLimitReached'
-      ]('user');
+      const result =
+        await authenticationService[
+          // tslint:disable-next-line no-string-literal
+          'isMaxAuthenticationAttemptLimitReached'
+        ]('user');
 
       // assertion
       expect(result).toEqual(true);
@@ -812,10 +812,11 @@ describe('AuthenticationService', () => {
       const userAuthenticationMaxAttempt = 5;
       configServiceMock.get.mockReturnValue(userAuthenticationMaxAttempt);
       // action
-      const result = await authenticationService[
-        // tslint:disable-next-line no-string-literal
-        'isMaxAuthenticationAttemptLimitReached'
-      ]('user');
+      const result =
+        await authenticationService[
+          // tslint:disable-next-line no-string-literal
+          'isMaxAuthenticationAttemptLimitReached'
+        ]('user');
 
       // assertion
       expect(result).toEqual(true);
@@ -829,10 +830,11 @@ describe('AuthenticationService', () => {
       mockDateExpire.setFullYear(mockDateExpire.getFullYear() + 1);
 
       // action
-      const result = await authenticationService[
-        // tslint:disable-next-line no-string-literal
-        'isTokenExpired'
-      ](mockDateExpire);
+      const result =
+        await authenticationService[
+          // tslint:disable-next-line no-string-literal
+          'isTokenExpired'
+        ](mockDateExpire);
 
       // assertion
       expect(result).toEqual(false);
@@ -844,10 +846,11 @@ describe('AuthenticationService', () => {
       mockDateExpire.setFullYear(mockDateExpire.getFullYear() - 1);
 
       // action
-      const result = await authenticationService[
-        // tslint:disable-next-line no-string-literal
-        'isTokenExpired'
-      ](mockDateExpire);
+      const result =
+        await authenticationService[
+          // tslint:disable-next-line no-string-literal
+          'isTokenExpired'
+        ](mockDateExpire);
 
       // assertion
       expect(result).toEqual(true);
@@ -868,7 +871,7 @@ describe('AuthenticationService', () => {
       password = Symbol('password');
       jest
         .spyOn(mockedUserService, 'findByUsername')
-        .mockImplementation(candidate => {
+        .mockImplementation((candidate) => {
           if (candidate === username) {
             return Promise.resolve(user);
           }

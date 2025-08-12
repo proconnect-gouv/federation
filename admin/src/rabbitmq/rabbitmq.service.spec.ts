@@ -51,7 +51,7 @@ describe('RabbitmqService', () => {
 
     brokerMock.send.mockReturnValue(messageMock);
     messageMock.pipe.mockReturnValue(pipeMock);
-    pipeMock.subscribe.mockImplementation(res => res(brokerResponseMock));
+    pipeMock.subscribe.mockImplementation((res) => res(brokerResponseMock));
     configMock.get.mockReturnValue({
       payloadEncoding: 'base64',
       requestTimeout: 200,
@@ -147,7 +147,7 @@ describe('RabbitmqService', () => {
       const payload = {};
       // tslint:disable-next-line: no-string-literal
       service['success'] = jest.fn();
-      pipeMock.subscribe.mockImplementationOnce(res => res());
+      pipeMock.subscribe.mockImplementationOnce((res) => res());
       // When
       service.publish(command, payload);
       // Then

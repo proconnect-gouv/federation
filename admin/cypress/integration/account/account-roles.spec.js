@@ -21,11 +21,11 @@ describe('Account', () => {
 
     it('checking account page is well displayed', () => {
       cy.visit(`/account?page=1&limit=${LIMIT_PAGE}`);
-      cy.get('tbody th').then(userRows => {
+      cy.get('tbody th').then((userRows) => {
         expect(userRows.length).to.be.greaterThan(0);
       });
 
-      cy.get('#users-count').then(users => {
+      cy.get('#users-count').then((users) => {
         const sentence = users[0].innerText.split(' ');
         const number = parseInt(sentence[0], 10);
 
@@ -70,7 +70,7 @@ describe('Account', () => {
       cy.contains('Évènements').should('not.exist');
       cy.contains('Métriques').should('not.exist');
 
-      cy.get('body nav ul li').each(elem => {
+      cy.get('body nav ul li').each((elem) => {
         const tab = elem[0].innerText;
         cy.contains(tab).click();
         cy.get('.btn-action-update', { timeout: 0 }).should('not.exist');

@@ -10,7 +10,7 @@ import { getUserActivationToken } from './get-user-activation-token';
 import { hasBusinessLog } from './has-business-log.command';
 import { clearBusinessLog } from './clear-business-log.command';
 
-Cypress.Commands.add('resetEnv', type => {
+Cypress.Commands.add('resetEnv', (type) => {
   switch (type) {
     case 'postgres':
       resetPostgres();

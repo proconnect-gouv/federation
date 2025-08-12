@@ -40,9 +40,7 @@ export interface IAuthenticationService {
 export class AuthenticationService implements IAuthenticationService {
   constructor(
     @InjectRepository(AuthenticationFailures)
-    private readonly authenticationFailuresRepository: Repository<
-      AuthenticationFailures
-    >,
+    private readonly authenticationFailuresRepository: Repository<AuthenticationFailures>,
     private readonly userService: UserService,
     private readonly logger: LoggerService,
     @InjectConfig() private readonly config: ConfigService,
@@ -103,9 +101,8 @@ export class AuthenticationService implements IAuthenticationService {
       return AuthenticationStates.DENIED_NOT_A_NEW_USER;
     }
 
-    const maxAuthenticationAttemptLimitReached = await this.isMaxAuthenticationAttemptLimitReached(
-      usernameInput,
-    );
+    const maxAuthenticationAttemptLimitReached =
+      await this.isMaxAuthenticationAttemptLimitReached(usernameInput);
 
     if (maxAuthenticationAttemptLimitReached) {
       return AuthenticationStates.DENIED_MAX_AUTHENTICATION_ATTEMPTS_REACHED;
@@ -165,9 +162,8 @@ export class AuthenticationService implements IAuthenticationService {
     username: string,
   ): Promise<DeleteResult> {
     try {
-      const removeUserEntries = await this.authenticationFailuresRepository.delete(
-        { username },
-      );
+      const removeUserEntries =
+        await this.authenticationFailuresRepository.delete({ username });
 
       return removeUserEntries;
     } catch (e) {
@@ -190,9 +186,8 @@ export class AuthenticationService implements IAuthenticationService {
   async isMaxAuthenticationAttemptLimitReached(
     usernameInput: string,
   ): Promise<boolean> {
-    const authenticationAttemptLimitReached = await this.getAuthenticationAttemptCount(
-      usernameInput,
-    );
+    const authenticationAttemptLimitReached =
+      await this.getAuthenticationAttemptCount(usernameInput);
 
     const userAuthenticationMaxAttempt = this.config.get(
       'app.userAuthenticationMaxAttempt',
@@ -206,11 +201,10 @@ export class AuthenticationService implements IAuthenticationService {
 
   async getAuthenticationAttemptCount(username: string): Promise<number> {
     try {
-      const numberOfAttemptsAndEntities = await this.authenticationFailuresRepository.findAndCountBy(
-        {
+      const numberOfAttemptsAndEntities =
+        await this.authenticationFailuresRepository.findAndCountBy({
           username,
-        },
-      );
+        });
       const attempts = numberOfAttemptsAndEntities[1];
       return attempts;
     } catch (e) {

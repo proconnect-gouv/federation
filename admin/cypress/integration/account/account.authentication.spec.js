@@ -25,9 +25,9 @@ describe('Authentication failures', () => {
 
     it('should renew session id when loging in', () => {
       cy.visit('/login');
-      cy.getCookie('sessionId').then(firstSessionCookie => {
+      cy.getCookie('sessionId').then((firstSessionCookie) => {
         cy.forceLogin(USER_ADMIN, USER_PASS);
-        cy.getCookie('sessionId').then(secondSessionCookie => {
+        cy.getCookie('sessionId').then((secondSessionCookie) => {
           expect(firstSessionCookie.value).not.to.equal(
             secondSessionCookie.value,
           );
@@ -37,9 +37,9 @@ describe('Authentication failures', () => {
 
     it('should renew session id when loging out', () => {
       cy.forceLogin(USER_ADMIN, USER_PASS);
-      cy.getCookie('sessionId').then(firstSessionCookie => {
+      cy.getCookie('sessionId').then((firstSessionCookie) => {
         cy.logout(USER_ADMIN);
-        cy.getCookie('sessionId').then(secondSessionCookie => {
+        cy.getCookie('sessionId').then((secondSessionCookie) => {
           expect(firstSessionCookie.value).not.to.equal(
             secondSessionCookie.value,
           );
@@ -51,7 +51,7 @@ describe('Authentication failures', () => {
       // Regular Login
       cy.forceLogin(USER_ADMIN, USER_PASS);
       // Grab logged in cookie
-      cy.getCookie('sessionId').then(firstSessionCookie => {
+      cy.getCookie('sessionId').then((firstSessionCookie) => {
         cy.logout(USER_ADMIN);
         cy.setCookie('sessionId', firstSessionCookie.value);
         cy.visit('/');
@@ -484,13 +484,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', userInfo.username, basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -517,13 +515,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', userInfo.username, basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -541,13 +537,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', userInfo.username, basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -577,13 +571,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'kevin', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -616,13 +608,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Arthur', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -685,13 +675,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Tom', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -754,13 +742,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Tristan', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -815,13 +801,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Margot', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -880,13 +864,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Laetitia', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -949,13 +931,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Marie', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -1018,13 +998,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Dominique', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -1069,7 +1047,7 @@ describe('Authentication failures', () => {
 
             cy.get('#secret > td')
               .invoke('text')
-              .then(secret => cy.totp(basicConfiguration, secret));
+              .then((secret) => cy.totp(basicConfiguration, secret));
 
             cy.get('button[type="submit"]').click();
             cy.logout('Dominique');
@@ -1095,13 +1073,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Cyril', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -1149,7 +1125,7 @@ describe('Authentication failures', () => {
             cy.get('#confirm-password').type('new_Password01');
             cy.get('#secret > td')
               .invoke('text')
-              .then(secret => cy.totp(basicConfiguration, secret));
+              .then((secret) => cy.totp(basicConfiguration, secret));
 
             cy.get('button[type="submit"]').click();
             cy.logout('Cyril');
@@ -1175,13 +1151,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'Mathias', basicConfiguration);
       cy.formType('#email', userInfo.email, basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 
@@ -1230,7 +1204,7 @@ describe('Authentication failures', () => {
 
             cy.get('#secret > td')
               .invoke('text')
-              .then(secret => cy.totp(basicConfiguration, secret));
+              .then((secret) => cy.totp(basicConfiguration, secret));
 
             cy.get('button[type="submit"]').click();
             cy.logout('Mathias');
@@ -1265,13 +1239,11 @@ describe('Authentication failures', () => {
       cy.contains('Créer un utilisateur').click();
       cy.formType('#username', 'tempUser', basicConfiguration);
       cy.formType('#email', 'temp@temp.com', basicConfiguration);
-      cy.get('form')
-        .find('[id="role-admin"]')
-        .check();
+      cy.get('form').find('[id="role-admin"]').check();
 
       cy.totp(basicConfiguration);
 
-      cy.get('#tmpPassword').then(tmpPassword => {
+      cy.get('#tmpPassword').then((tmpPassword) => {
         cy.contains("Créer l'utilisateur").click();
         cy.logout(USER_ADMIN);
 

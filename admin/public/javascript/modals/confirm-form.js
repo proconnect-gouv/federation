@@ -9,7 +9,7 @@ const confirmTotp = (element, prefix, action) => {
 
   element.addEventListener(
     'submit',
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
 

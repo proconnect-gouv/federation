@@ -50,11 +50,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       return validUser;
     }
 
-    const authenticationFailureReason: AuthenticationStates = await this.authenticationService.getAuthenticationFailureReason(
-      usernameInput,
-      passwordInput,
-      token,
-    );
+    const authenticationFailureReason: AuthenticationStates =
+      await this.authenticationService.getAuthenticationFailureReason(
+        usernameInput,
+        passwordInput,
+        token,
+      );
 
     let messageToDisplay = 'Connexion impossible';
 

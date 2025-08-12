@@ -1,5 +1,5 @@
 export function checkSelectValue(element) {
-  element.addEventListener('input', function() {
+  element.addEventListener('input', function () {
     if (element.value === 'Choix') {
       element.classList.add('is-invalid');
     } else {

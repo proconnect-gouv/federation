@@ -13,7 +13,7 @@ describe('Page not found - error 404', () => {
     cy.contains(USER_OPERATOR).should('not.exist');
     cy.contains('Oops, la page est introuvable...').should('be.visible');
 
-    cy.request(option).then(response => {
+    cy.request(option).then((response) => {
       expect(response.status).to.eq(404);
       expect(response.statusText).to.eq('Not Found');
     });
@@ -28,7 +28,7 @@ describe('Page not found - error 404', () => {
     cy.get('nav').should('be.visible');
     cy.contains('Oops, la page est introuvable...').should('be.visible');
 
-    cy.request(option).then(response => {
+    cy.request(option).then((response) => {
       expect(response.status).to.eq(404);
       expect(response.statusText).to.eq('Not Found');
     });

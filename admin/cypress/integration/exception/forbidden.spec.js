@@ -16,7 +16,7 @@ describe('Forbidden - error 403', () => {
     cy.get('nav').should('be.visible');
     cy.contains('Accès refusé').should('be.visible');
 
-    cy.request(option).then(response => {
+    cy.request(option).then((response) => {
       expect(response.status).to.eq(403);
       expect(response.statusText).to.eq('Forbidden');
     });

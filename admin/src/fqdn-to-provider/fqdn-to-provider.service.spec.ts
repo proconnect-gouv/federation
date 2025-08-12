@@ -56,9 +56,8 @@ describe('FqdnToProviderService', () => {
       fqdnToProviderRepository.find.mockReturnValueOnce(expectedResult);
 
       // When
-      const result = await fqdnToProviderService['findFqdnsForOneProvider'](
-        'mock-id-1',
-      );
+      const result =
+        await fqdnToProviderService['findFqdnsForOneProvider']('mock-id-1');
 
       // Then
       expect(result).toStrictEqual(expectedResult);
@@ -70,9 +69,8 @@ describe('FqdnToProviderService', () => {
       fqdnToProviderRepository.find.mockReturnValueOnce(mockResponse);
 
       // Then
-      const result = await fqdnToProviderService['findFqdnsForOneProvider'](
-        'mock-id-1',
-      );
+      const result =
+        await fqdnToProviderService['findFqdnsForOneProvider']('mock-id-1');
       expect(result).toStrictEqual([]);
     });
   });
@@ -136,9 +134,8 @@ describe('FqdnToProviderService', () => {
       fqdnToProviderRepository.find.mockReturnValueOnce(fqdns);
 
       // When
-      const result = await fqdnToProviderService['getProviderWithFqdns'](
-        identityProvider,
-      );
+      const result =
+        await fqdnToProviderService['getProviderWithFqdns'](identityProvider);
 
       // Then
       expect(result).toStrictEqual(expectedResult);
@@ -164,9 +161,8 @@ describe('FqdnToProviderService', () => {
       };
 
       // When
-      const result = await fqdnToProviderService['getProviderWithFqdns'](
-        identityProvider,
-      );
+      const result =
+        await fqdnToProviderService['getProviderWithFqdns'](identityProvider);
 
       // Then
       expect(result).toStrictEqual(expectedResult);
@@ -230,9 +226,8 @@ describe('FqdnToProviderService', () => {
       fqdnToProviderRepository.find.mockReturnValueOnce(fqdns);
 
       // When
-      const result = await fqdnToProviderService['getProvidersWithFqdns'](
-        identityProviders,
-      );
+      const result =
+        await fqdnToProviderService['getProvidersWithFqdns'](identityProviders);
 
       // Then
       expect(result).toStrictEqual(expectedResult);

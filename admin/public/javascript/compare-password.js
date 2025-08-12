@@ -2,7 +2,7 @@ const UNAUTHORIZED = require('./unauthorized');
 
 export function comparePassword(element) {
   const password = document.getElementById('password');
-  password.addEventListener('input', function() {
+  password.addEventListener('input', function () {
     matcheRegexpInput(
       /(?=.*[A-Z])/,
       password.value,
@@ -39,7 +39,7 @@ export function comparePassword(element) {
 
   element.addEventListener(
     'input',
-    function() {
+    function () {
       // check input pattern
       if (password.value !== element.value) {
         element.classList.remove('is-valid');
@@ -69,7 +69,7 @@ function hasRecurrentPattern(value, documentId, patternLength) {
   }
 
   const occurringMoreThanOnce = patterns.filter(
-    pattern => value.split(pattern).length !== 2,
+    (pattern) => value.split(pattern).length !== 2,
   );
 
   if (occurringMoreThanOnce.length > 0 || hasEasyToGuessPatterns(value)) {
@@ -97,7 +97,7 @@ function hasEasyToGuessPatterns(password) {
 function hasUnhauthorizedCaractersChain(password) {
   const unauthorized = UNAUTHORIZED;
   return unauthorized
-    .map(word => password.includes(word))
+    .map((word) => password.includes(word))
     .reduce((acc, val) => acc || val);
 }
 
