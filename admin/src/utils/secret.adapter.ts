@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { SecretManagerService } from './secret-manager.service';
 
 @Injectable()
@@ -11,6 +11,6 @@ export class SecretAdapter {
   }
 
   generateKey(): string {
-    return uuid();
+    return uuidv4();
   }
 }

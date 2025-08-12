@@ -1,12 +1,12 @@
 /* istanbul ignore file */
 // Declarative code
-import { Entity, ObjectIdColumn, ObjectID, Column, Unique } from 'typeorm';
+import { Entity, ObjectIdColumn, ObjectId, Column, Unique } from 'typeorm';
 
 @Entity('scopes')
 @Unique(['scope'])
 export class Scopes {
   @ObjectIdColumn()
-  id: ObjectID;
+  id: ObjectId;
 
   @Column({ name: 'scope' })
   scope: string;

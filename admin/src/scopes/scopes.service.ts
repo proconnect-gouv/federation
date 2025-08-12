@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { DeleteResult, ObjectID, Repository } from 'mongodb';
 
 import { Injectable } from '@nestjs/common';
@@ -32,7 +32,7 @@ export class ScopesService {
    * @returns {Promise<Scopes>}
    */
   async create(newScope: IScopes, user: string): Promise<Scopes> {
-    const id = (uuid() as string).substr(0, 12);
+    const id = uuidv4().substring(0, 12);
 
     const scopeToSave: Scopes = {
       id: new ObjectID(id),

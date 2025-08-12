@@ -15,7 +15,6 @@ describe('FqdnToProviderService', () => {
 
   const fqdnToProviderRepository = {
     find: jest.fn(),
-    findBy: jest.fn(),
     save: jest.fn(),
     delete: jest.fn(),
   };
@@ -54,7 +53,7 @@ describe('FqdnToProviderService', () => {
           fqdn: 'flaubert.fr',
         } as IFqdnToProvider,
       ];
-      fqdnToProviderRepository.findBy.mockReturnValueOnce(expectedResult);
+      fqdnToProviderRepository.find.mockReturnValueOnce(expectedResult);
 
       // When
       const result = await fqdnToProviderService['findFqdnsForOneProvider'](
@@ -95,7 +94,7 @@ describe('FqdnToProviderService', () => {
           fqdn: 'duras.fr',
         } as IFqdnToProvider,
       ];
-      fqdnToProviderRepository.findBy.mockReturnValueOnce(expectedResult);
+      fqdnToProviderRepository.find.mockReturnValueOnce(expectedResult);
 
       // When
       const result = await fqdnToProviderService['findFqdnsForProviders']([
@@ -134,7 +133,7 @@ describe('FqdnToProviderService', () => {
         ...identityProvider,
         fqdns: ['stendhal.fr', 'flaubert.fr'],
       };
-      fqdnToProviderRepository.findBy.mockReturnValueOnce(fqdns);
+      fqdnToProviderRepository.find.mockReturnValueOnce(fqdns);
 
       // When
       const result = await fqdnToProviderService['getProviderWithFqdns'](
@@ -228,7 +227,7 @@ describe('FqdnToProviderService', () => {
         },
       ];
 
-      fqdnToProviderRepository.findBy.mockReturnValueOnce(fqdns);
+      fqdnToProviderRepository.find.mockReturnValueOnce(fqdns);
 
       // When
       const result = await fqdnToProviderService['getProvidersWithFqdns'](
@@ -315,14 +314,16 @@ describe('FqdnToProviderService', () => {
       ];
 
       // When
-      fqdnToProviderRepository.findBy.mockReturnValueOnce(existingFqdns);
+      fqdnToProviderRepository.find.mockReturnValueOnce(existingFqdns);
 
       await fqdnToProviderService['deleteFqdnsProvider'](identityProviderUid);
 
       // Then
-      expect(fqdnToProviderRepository.findBy).toHaveBeenCalledTimes(1);
-      expect(fqdnToProviderRepository.findBy).toHaveBeenCalledWith({
-        identityProvider: identityProviderUid,
+      expect(fqdnToProviderRepository.find).toHaveBeenCalledTimes(1);
+      expect(fqdnToProviderRepository.find).toHaveBeenCalledWith({
+        where: {
+          identityProvider: identityProviderUid,
+        },
       });
 
       expect(fqdnToProviderRepository.delete).toHaveBeenCalledTimes(1);
@@ -337,14 +338,16 @@ describe('FqdnToProviderService', () => {
       const existingFqdns = [];
 
       // When
-      fqdnToProviderRepository.findBy.mockReturnValueOnce(existingFqdns);
+      fqdnToProviderRepository.find.mockReturnValueOnce(existingFqdns);
 
       await fqdnToProviderService['deleteFqdnsProvider'](identityProviderUid);
 
       // Then
-      expect(fqdnToProviderRepository.findBy).toHaveBeenCalledTimes(1);
-      expect(fqdnToProviderRepository.findBy).toHaveBeenCalledWith({
-        identityProvider: identityProviderUid,
+      expect(fqdnToProviderRepository.find).toHaveBeenCalledTimes(1);
+      expect(fqdnToProviderRepository.find).toHaveBeenCalledWith({
+        where: {
+          identityProvider: identityProviderUid,
+        },
       });
 
       expect(fqdnToProviderRepository.delete).toHaveBeenCalledTimes(0);

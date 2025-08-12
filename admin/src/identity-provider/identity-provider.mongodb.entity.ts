@@ -1,10 +1,10 @@
-import { Column, Entity, ObjectID, ObjectIdColumn, Unique } from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn, Unique } from 'typeorm';
 
 @Entity('provider')
 @Unique(['name'])
 export class IdentityProvider {
   @ObjectIdColumn()
-  _id: ObjectID;
+  _id: ObjectId;
 
   @Column()
   uid: string;

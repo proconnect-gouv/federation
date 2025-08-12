@@ -17,8 +17,10 @@ export class FqdnToProviderService {
   private async findFqdnsForProviders(
     identityProvidersUuids: string[],
   ): Promise<FqdnToProvider[]> {
-    const fqdnToProviders = await this.fqdnToProviderRepository.findBy({
-      identityProvider: { $in: identityProvidersUuids },
+    const fqdnToProviders = await this.fqdnToProviderRepository.find({
+      where: {
+        identityProvider: { $in: identityProvidersUuids },
+      },
     });
 
     return fqdnToProviders;
@@ -27,8 +29,10 @@ export class FqdnToProviderService {
   private async findFqdnsForOneProvider(
     identityProviderUid: string,
   ): Promise<FqdnToProvider[]> {
-    const fqdnToProvider = await this.fqdnToProviderRepository.findBy({
-      identityProvider: identityProviderUid,
+    const fqdnToProvider = await this.fqdnToProviderRepository.find({
+      where: {
+        identityProvider: identityProviderUid,
+      },
     });
 
     if (!fqdnToProvider) {
@@ -149,8 +153,10 @@ export class FqdnToProviderService {
   }
 
   async deleteFqdnsProvider(identityProviderUid: string): Promise<void> {
-    const existingFqdns = await this.fqdnToProviderRepository.findBy({
-      identityProvider: identityProviderUid,
+    const existingFqdns = await this.fqdnToProviderRepository.find({
+      where: {
+        identityProvider: identityProviderUid,
+      },
     });
     if (existingFqdns?.length > 0) {
       await this.fqdnToProviderRepository.delete({

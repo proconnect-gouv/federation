@@ -1,15 +1,9 @@
-import {
-  Entity,
-  ObjectIdColumn,
-  ObjectID,
-  Column,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Entity, ObjectIdColumn, ObjectId, Column } from 'typeorm';
 
 @Entity('file')
 export class FileStorage {
   @ObjectIdColumn()
-  id: ObjectID;
+  id: ObjectId;
 
   @Column()
   fieldname: string;

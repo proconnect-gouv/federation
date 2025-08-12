@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { Repository, DeleteResult, UpdateResult } from 'typeorm';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { InjectConfig, ConfigService } from 'nestjs-config';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -136,7 +136,7 @@ export class UserService implements IUserService {
   async createUser(user: ICreateUserDTO, author: string): Promise<string> {
     const { appFqdn } = this.config.get('app');
     const { username, email, roles, secret } = user;
-    const token = uuid.v4();
+    const token = uuidv4();
 
     let passwordHash;
     const updatedAt = new Date();
@@ -284,8 +284,10 @@ export class UserService implements IUserService {
 
     const { username } = await this.findByUsername(currentUsername);
     try {
-      userLastFivePassword = await this.passwordRepository.findBy({
-        username,
+      userLastFivePassword = await this.passwordRepository.find({
+        where: {
+          username,
+        },
       });
     } catch (e) {
       this.logger.error(e);
@@ -335,8 +337,10 @@ export class UserService implements IUserService {
     let userLastFivePassword: Password[];
     let haveFiveEntires: boolean = false;
     try {
-      userLastFivePassword = await this.passwordRepository.findBy({
-        username,
+      userLastFivePassword = await this.passwordRepository.find({
+        where: {
+          username,
+        },
       });
     } catch (e) {
       this.logger.error(e);

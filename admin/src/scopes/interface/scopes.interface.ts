@@ -1,7 +1,7 @@
-import { ObjectID } from 'typeorm';
+import { ObjectId } from 'typeorm';
 
 export interface IScopes {
-  id: ObjectID;
+  id: ObjectId;
   scope: string;
   fd: string;
   label: string;

@@ -16,7 +16,7 @@ export class AuthenticationDto {
 
   @IsNotEmpty({ message: 'Le TOTP doit être renseigné' })
   @IsNumber()
-  @Matches(/^[\d]{6}+$/, {
+  @Matches(/^\d{6}$/, {
     message: `Le TOTP de passe saisi est invalide`,
   })
   // tslint:disable-next-line: variable-name

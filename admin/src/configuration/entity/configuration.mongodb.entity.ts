@@ -1,4 +1,4 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 import { ILogger } from '../interface/logger.interface';
 import { IDebug } from '../interface/debug.interface';
 import { IBuyan } from '../interface/buyan.interface';
@@ -17,8 +17,7 @@ import { IMailjet } from '../interface/mailjet.entity';
 @Entity('configuration')
 export class Configuration {
   @ObjectIdColumn()
-  // tslint:disable-next-line: variable-name
-  _id: ObjectID;
+  _id: ObjectId;
 
   @Column()
   env: string;

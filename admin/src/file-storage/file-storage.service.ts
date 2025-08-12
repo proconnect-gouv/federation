@@ -1,7 +1,7 @@
 import { MongoDriver } from 'typeorm/driver/mongodb/MongoDriver';
 import { Repository } from 'typeorm';
 import { ConfigService } from 'nestjs-config';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileStorage } from './file-storage.mongodb.entity';
 
@@ -144,7 +144,7 @@ export class FileStorageService {
     const buffer = Buffer.from(data, 'base64');
 
     const logoFile = new FileStorage();
-    logoFile.originalname = `${filename || uuid()}${
+    logoFile.originalname = `${filename || uuidv4()}${
       extension ? '.' + extension : ''
     }`;
     logoFile.mimetype = mime;
