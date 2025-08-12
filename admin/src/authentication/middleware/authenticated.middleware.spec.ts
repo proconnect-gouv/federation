@@ -13,7 +13,7 @@ describe('AuthenticatedMiddleware', () => {
 
     authenticatedMiddleware.use(req, res, next);
 
-    expect(next).toBeCalledTimes(1);
+    expect(next).toHaveBeenCalledTimes(1);
   });
 
   it('sends an UnauthenticatedException if no user is found on the request', () => {

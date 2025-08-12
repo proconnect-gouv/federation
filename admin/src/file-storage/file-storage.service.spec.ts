@@ -531,7 +531,7 @@ describe('FileStorageService', () => {
 
         // Action
         // Assert
-        expect(() => FileStorageService.fromBase64(failedImgMock)).toThrowError(
+        expect(() => FileStorageService.fromBase64(failedImgMock)).toThrow(
           error,
         );
       });
@@ -541,9 +541,9 @@ describe('FileStorageService', () => {
 
         // Action
         // Assert
-        expect(() =>
-          FileStorageService.fromBase64(failedFormatMock),
-        ).toThrowError(error);
+        expect(() => FileStorageService.fromBase64(failedFormatMock)).toThrow(
+          error,
+        );
       });
     });
   });

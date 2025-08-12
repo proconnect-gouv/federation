@@ -55,7 +55,7 @@ describe('LocalsInterceptor', () => {
 
       await localsInterceptor.intercept(context, next);
 
-      expect(configService.get).toBeCalledWith('app');
+      expect(configService.get).toHaveBeenCalledWith('app');
       expect(res.locals.APP_ENVIRONMENT).toBe('testing');
       expect(res.locals.APP_ROOT).toBe('/foo/bar');
       expect(res.locals.TIMEZONE).toBe('Europe/Paris');
@@ -79,7 +79,7 @@ describe('LocalsInterceptor', () => {
         { label: 'Sécurité inactif', value: UserRole.INACTIVE_SECURITY },
         { label: 'Utilisateur bloqué', value: UserRole.BLOCKED_USER },
       ]);
-      expect(next.handle).toBeCalledTimes(1);
+      expect(next.handle).toHaveBeenCalledTimes(1);
     });
   });
 });

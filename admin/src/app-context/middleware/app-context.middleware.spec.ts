@@ -32,6 +32,6 @@ describe('AppContextMiddleware', () => {
     expect(res.locals).toMatchObject({
       APP_ROOT: '/foo/bar',
     });
-    expect(next).toBeCalledTimes(1);
+    expect(next).toHaveBeenCalledTimes(1);
   });
 });
