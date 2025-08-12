@@ -58,8 +58,8 @@ describe('AuthenticationController', () => {
 
       // assertion
       expect(res.redirect).toHaveBeenCalledWith('/foo/bar/');
-      expect(loggerMock.businessEvent).toBeCalledTimes(1);
-      expect(loggerMock.businessEvent).toBeCalledWith({
+      expect(loggerMock.businessEvent).toHaveBeenCalledTimes(1);
+      expect(loggerMock.businessEvent).toHaveBeenCalledWith({
         action: AuthenticationActions.TOKEN_SIGNUP,
         state: AuthenticationStates.GRANTED,
         user: req.user.username,
@@ -104,8 +104,8 @@ describe('AuthenticationController', () => {
       authenticationController.login(req, res);
 
       // assertion
-      expect(loggerMock.businessEvent).toBeCalledTimes(1);
-      expect(loggerMock.businessEvent).toBeCalledWith({
+      expect(loggerMock.businessEvent).toHaveBeenCalledTimes(1);
+      expect(loggerMock.businessEvent).toHaveBeenCalledWith({
         action: AuthenticationActions.SIGNIN,
         state: AuthenticationStates.GRANTED,
         user: req.user.username,
@@ -143,7 +143,7 @@ describe('AuthenticationController', () => {
       await authenticationController.logout(req, res);
 
       // assert
-      expect(loggerMock.businessEvent).toBeCalledWith({
+      expect(loggerMock.businessEvent).toHaveBeenCalledWith({
         action: AuthenticationActions.SIGNOUT,
         user: req.user.username,
       });

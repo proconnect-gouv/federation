@@ -129,8 +129,8 @@ describe('ClaimsService', () => {
       const result = await service.update(id, claimMock);
 
       // Then
-      expect(claimsRepositoryMock.save).toBeCalledTimes(1);
-      expect(claimsRepositoryMock.save).toBeCalledWith(claimMock);
+      expect(claimsRepositoryMock.save).toHaveBeenCalledTimes(1);
+      expect(claimsRepositoryMock.save).toHaveBeenCalledWith(claimMock);
       expect(result).toStrictEqual(expectedResult);
     });
   });
@@ -144,8 +144,8 @@ describe('ClaimsService', () => {
       const result = await service.remove(id);
 
       // Expected
-      expect(claimsRepositoryMock.delete).toBeCalledTimes(1);
-      expect(claimsRepositoryMock.delete).toBeCalledWith(id);
+      expect(claimsRepositoryMock.delete).toHaveBeenCalledTimes(1);
+      expect(claimsRepositoryMock.delete).toHaveBeenCalledWith(id);
       expect(result).toStrictEqual({});
     });
   });

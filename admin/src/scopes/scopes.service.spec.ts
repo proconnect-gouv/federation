@@ -130,7 +130,7 @@ describe('ScopesService', () => {
       const result: Scopes = await service.create(scopeAndLabel, userMock);
 
       // Expected
-      expect(scopesRepositoryMock.insertOne).toBeCalledTimes(1);
+      expect(scopesRepositoryMock.insertOne).toHaveBeenCalledTimes(1);
       /**
        * @todo enhance UT
        *
@@ -182,8 +182,8 @@ describe('ScopesService', () => {
       await service.update(id, userMock, scopesMock);
 
       // Expected
-      expect(saveSpy).toBeCalledTimes(1);
-      expect(saveSpy).toBeCalledWith({
+      expect(saveSpy).toHaveBeenCalledTimes(1);
+      expect(saveSpy).toHaveBeenCalledWith({
         id,
         scope: 'Seldon',
         label: 'Seldon Label (Direction générale des Finances publiques)',
@@ -233,8 +233,8 @@ describe('ScopesService', () => {
       await service.remove(id, userMock);
 
       // Expected
-      expect(deleteSpy).toBeCalledTimes(1);
-      expect(deleteSpy).toBeCalledWith(id);
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+      expect(deleteSpy).toHaveBeenCalledWith(id);
     });
 
     it('calls the tracking method', async () => {
