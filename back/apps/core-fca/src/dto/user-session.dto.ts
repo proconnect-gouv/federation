@@ -142,4 +142,8 @@ export class UserSession {
   @IsOptional()
   @IsString()
   readonly login_hint?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  readonly rememberMe?: boolean;
 }

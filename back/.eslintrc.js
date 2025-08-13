@@ -63,6 +63,7 @@ const allowedSnakeCaseParameters = [
   'response_types',
   'revocation_endpoint_auth_method',
   'send_transactional',
+  'remember_me',
   'sp_id',
   'sp_name',
   'street_address',
