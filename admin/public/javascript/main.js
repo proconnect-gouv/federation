@@ -25,8 +25,6 @@ import { searchReset } from './search-reset';
 import { csvParser } from './csv-parser';
 import { selectScopesGroup } from './select-scopes-group';
 import { validateNotificationCreation } from './modals/validate-notification-creation';
-import { toggleIdpFilterList } from './toggle-idp-filter-list';
-import { changeSpPlatform } from './change-sp-plateform';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/fonts/fontawesome-webfont.ttf';
@@ -58,8 +56,6 @@ const initMap = {
   csvParser,
   validateNotificationCreation,
   selectScopesGroup,
-  toggleIdpFilterList,
-  changeSpPlatform,
 };
 
 $(document).ready(function () {
