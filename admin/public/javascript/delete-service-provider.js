@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from './jquery_wrapper';
 import { confirmDialogWithTotp } from './modals/confirm-dialog';
 
 export function displayRemoveButtonEvent(element) {

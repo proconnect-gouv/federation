@@ -41,21 +41,17 @@
 
             <tr class="d-flex">
               <th scope="col" class="col-3 border-bottom-0 border-top-0 border-right-0 border-secondary">
-                <div class="align-text-th">Nom du service (mire)</div>
-                <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "name" }); %>
+                <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "name", fieldName: "Nom du service (mire)" }); %>
               </th>
               <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Client ID</th>
               <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-right-0 border-secondary">
-                <div class="align-text-th">Date de création de la clé de production</div>
-                <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "createdAt" }); %>
+                <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "createdAt", fieldName: "Date de création de la clé de production" }); %>
               </th>
               <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-right-0 border-secondary">
-                <div class="align-text-th">Date de génération du secret</div>
-                <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "secretUpdatedAt" }); %>
+                <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "secretUpdatedAt", fieldName: "Date de génération du secret" }); %>
               </th>
               <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-right-0 border-secondary">
-                <div class="align-text-th">Activé</div>
-                <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "active" }); %>
+                <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "active", fieldName: "Activé" }); %>
               </th>
               <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-right-0 border-secondary">Actions</th>
             </tr>

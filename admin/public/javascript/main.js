@@ -1,6 +1,6 @@
 import 'babel-polyfill';
-import $ from 'jquery';
-import 'bootstrap/dist/js/bootstrap';
+import $ from './jquery_wrapper';
+import 'bootstrap/dist/js/bootstrap.bundle';
 import { validateForm } from './validate-form';
 import { changeDiscovery, initForm, changeSignature } from './change-discovery';
 import { toggleByRadio } from './toggle-by-radio';

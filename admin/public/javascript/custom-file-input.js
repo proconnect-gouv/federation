@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from './jquery_wrapper';
 
 export function customFileInput(element) {
   // Display the name of the selected file
