@@ -1,5 +1,3 @@
-import pickBy from 'lodash/pickBy';
-
 const BASE_URL = Cypress.config('baseUrl');
 
 export function uploadCSV(filename) {
@@ -76,4 +74,18 @@ export function createServiceProvider(serviceProviderInfo, configuration) {
 
   cy.totp(configuration);
   cy.get('form[name="fs-form"] button[type="submit"]').click();
+}
+
+function pickBy(obj) {
+  const result = {};
+  for (const key in obj) {
+    if (
+      Object.prototype.hasOwnProperty.call(obj, key) &&
+      obj[key] !== undefined &&
+      obj[key] !== null
+    ) {
+      result[key] = obj[key];
+    }
+  }
+  return result;
 }

@@ -1,5 +1,4 @@
 import { PaginationOptions } from './interface';
-import { escapeRegExp } from 'lodash';
 
 export class PaginationService {
   buildPaginationParams(options: PaginationOptions) {
@@ -12,7 +11,10 @@ export class PaginationService {
       where = { $or: [] };
       for (const field of options.search.fields) {
         where.$or.push({
-          [field]: new RegExp(escapeRegExp(options.search.value), 'i'),
+          [field]: new RegExp(
+            options.search.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            'i',
+          ),
         });
       }
     }
