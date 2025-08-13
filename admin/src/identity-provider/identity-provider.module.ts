@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { IdentityProvider } from './identity-provider.mongodb.entity';
+import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IdentityProviderController } from './identity-provider.controller';
 import { IdentityProviderService } from './identity-provider.service';
@@ -16,7 +16,10 @@ const cryptoProvider = {
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([IdentityProvider, FqdnToProvider], 'fc-mongo'),
+    TypeOrmModule.forFeature(
+      [IdentityProviderFromDb, FqdnToProvider],
+      'fc-mongo',
+    ),
   ],
   controllers: [IdentityProviderController],
   providers: [

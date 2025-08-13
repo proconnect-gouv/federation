@@ -12,7 +12,7 @@ import { LoggerService } from '../logger/logger.service';
 import { ICrudTrack } from '../interfaces';
 import { SecretManagerService } from '../utils/secret-manager.service';
 
-import { IdentityProvider } from './identity-provider.mongodb.entity';
+import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
 import { IIdentityProviderDTO } from './interface/identity-provider-dto.interface';
 import { IIdentityProvider } from './interface/identity-provider.interface';
 import { IIdentityProviderLegacy } from './interface/identity-provider-legacy.interface';
@@ -23,8 +23,8 @@ import { PaginationOptions, PaginationService } from '../pagination';
 @Injectable()
 export class IdentityProviderService {
   constructor(
-    @InjectRepository(IdentityProvider, 'fc-mongo')
-    private readonly identityProviderRepository: Repository<IdentityProvider>,
+    @InjectRepository(IdentityProviderFromDb, 'fc-mongo')
+    private readonly identityProviderRepository: Repository<IdentityProviderFromDb>,
     private readonly secretManager: SecretManagerService,
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
@@ -36,7 +36,7 @@ export class IdentityProviderService {
     this.logger.businessEvent(log);
   }
 
-  async getAll(): Promise<IdentityProvider[]> {
+  async getAll(): Promise<IdentityProviderFromDb[]> {
     try {
       const result = await this.identityProviderRepository.find();
       return result;
@@ -93,21 +93,23 @@ export class IdentityProviderService {
   }
 
   async findById(id: string): Promise<IIdentityProvider> {
-    const identityProviderLegacy: IdentityProvider =
-      await this.identityProviderRepository.findOneByOrFail({
-        _id: ObjectId(id),
+    const identityProviderFromDb =
+      await this.identityProviderRepository.findOne({
+        where: {
+          _id: ObjectId(id),
+        },
       });
 
-    if (!identityProviderLegacy) {
+    if (!identityProviderFromDb) {
       throw new NotFoundException();
     }
 
-    identityProviderLegacy.client_secret = this.secretManager.decrypt(
-      identityProviderLegacy.client_secret,
+    identityProviderFromDb.client_secret = this.secretManager.decrypt(
+      identityProviderFromDb.client_secret,
     );
 
     const identityProvider: IIdentityProvider = this.tranformFromLegacy(
-      identityProviderLegacy,
+      identityProviderFromDb,
     );
 
     return identityProvider;
