@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set up dockerx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       # Workaround for https://github.com/docker/compose/issues/12892
       - name: Upgrade Docker Compose
