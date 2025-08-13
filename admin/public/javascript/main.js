@@ -20,7 +20,6 @@ import { validateInputDate } from './validate-input-date';
 import { validateInputHour } from './validate-input-hour';
 import { validateAccountUpdate } from './validateAccountUpdate';
 import { validateAccountCreate } from './validateAccountCreate';
-import 'lightpick/css/lightpick.css';
 import { handleEmail } from './handle-email';
 import { searchReset } from './search-reset';
 import { csvParser } from './csv-parser';
