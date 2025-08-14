@@ -92,7 +92,8 @@ export class IdentityProviderController {
   @Render('identity-provider/creation')
   async showCreationForm(@Req() req) {
     const csrfToken = req.csrfToken();
-    const nbrProviders = await this.identityProviderService.countProviders();
+    const identityProvidersCount =
+      await this.identityProviderService.countIdentityProviders();
 
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP
@@ -109,7 +110,7 @@ export class IdentityProviderController {
 
     return {
       csrfToken,
-      nbrProviders,
+      identityProvidersCount,
       amrList: Amr,
       acrList: allowedAcr,
     };

@@ -47,7 +47,7 @@ export class IdentityProviderService {
     }
   }
 
-  async countProviders() {
+  async countIdentityProviders() {
     return this.identityProviderRepository.count();
   }
 
