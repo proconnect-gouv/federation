@@ -20,7 +20,6 @@ import { FormErrorsInterceptor } from '../form/interceptor/form-errors.intercept
 import { IdentityProviderService } from './identity-provider.service';
 import { IdentityProviderDTO } from './dto/identity-provider.dto';
 import { plainToInstance } from 'class-transformer';
-import { Amr } from './enum';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationSortDirectionType } from '../pagination';
 
@@ -111,7 +110,6 @@ export class IdentityProviderController {
     return {
       csrfToken,
       identityProvidersCount,
-      amrList: Amr,
       acrList: allowedAcr,
     };
   }
@@ -186,7 +184,6 @@ export class IdentityProviderController {
       id,
       amrSelected: identityProvider?.amr || [],
       acrSelected: identityProvider?.allowedAcr || [],
-      amrList: Amr,
       acrList: allowedAcr,
     };
   }
