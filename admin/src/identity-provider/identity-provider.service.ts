@@ -19,6 +19,7 @@ import { IIdentityProviderLegacy } from './interface/identity-provider-legacy.in
 import { ModifierData } from './interface/modifier-data.interface';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationOptions, PaginationService } from '../pagination';
+import { IdentityProviderDTO } from './dto/identity-provider.dto';
 
 @Injectable()
 export class IdentityProviderService {
@@ -51,7 +52,7 @@ export class IdentityProviderService {
     return this.identityProviderRepository.count();
   }
 
-  async create(identityProviderDto: IIdentityProviderDTO, username: string) {
+  async create(identityProviderDto: IdentityProviderDTO, username: string) {
     const defaultedProvider = await this.setDefaultValues(identityProviderDto);
 
     /**
