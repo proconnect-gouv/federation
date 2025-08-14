@@ -68,13 +68,13 @@ export class IdentityProviderController {
         },
       });
 
-    const identityProviders =
-      (await this.fqdnToProviderService.getProvidersWithFqdns(
+    const identityProvidersWithFqdns =
+      await this.fqdnToProviderService.getProvidersWithFqdns(
         paginatedIdentityProviders as any,
-      )) as any[];
+      );
 
     return {
-      identityProviders,
+      identityProviders: identityProvidersWithFqdns,
       totalItems,
       csrfToken,
       page,
