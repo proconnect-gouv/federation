@@ -51,7 +51,7 @@ export class IdentityProviderService {
     return this.identityProviderRepository.count();
   }
 
-  async create(provider: IIdentityProviderDTO, user) {
+  async create(provider: IIdentityProviderDTO, username: string) {
     const defaultedProvider = await this.setDefaultValues(provider);
 
     /**
@@ -62,7 +62,7 @@ export class IdentityProviderService {
 
     const newProvider: IIdentityProvider = await this.transformIntoEntity(
       defaultedProvider,
-      user,
+      username,
       'create',
     );
 
@@ -84,7 +84,7 @@ export class IdentityProviderService {
     this.track({
       entity: 'identity-provider',
       action: 'create',
-      user,
+      user: username,
       id: saveOperation.identifiers[0]._id,
       name: provider.name,
     });
@@ -218,7 +218,7 @@ export class IdentityProviderService {
 
   private async transformIntoEntity(
     identityProviderDto: IIdentityProviderDTO,
-    user: string,
+    username: string,
     mode: string,
   ): Promise<IIdentityProvider> {
     const now = new Date();
@@ -240,7 +240,7 @@ export class IdentityProviderService {
       display: mode === 'create' ? false : identityProviderDto.display,
       createdAt: now,
       updatedAt: now,
-      updatedBy: user,
+      updatedBy: username,
       client_secret: clientSecret,
       jwtAlgorithm: [],
       blacklistByIdentityProviderActivated: false,
