@@ -268,6 +268,7 @@ export class IdentityProviderService {
         identityProviderDto.id_token_encrypted_response_enc,
       token_endpoint_auth_method:
         identityProviderDto.token_endpoint_auth_method,
+      supportEmail: identityProviderDto.supportEmail,
       specificText:
         identityProviderDto.specificText ||
         'Une erreur est survenue lors de la transmission de votre identité.',
@@ -301,6 +302,18 @@ export class IdentityProviderService {
       eidas: inputProvider.eidas,
       allowedAcr: inputProvider.allowedAcr,
       specificText: inputProvider.specificText,
+      discoveryUrl: inputProvider.discoveryUrl,
+      id_token_encrypted_response_enc:
+        inputProvider.id_token_encrypted_response_enc,
+      id_token_encrypted_response_alg:
+        inputProvider.id_token_encrypted_response_alg,
+      id_token_signed_response_alg: inputProvider.id_token_signed_response_alg,
+      userinfo_signed_response_alg: inputProvider.userinfo_signed_response_alg,
+      userinfo_encrypted_response_alg:
+        inputProvider.userinfo_encrypted_response_alg,
+      userinfo_encrypted_response_enc:
+        inputProvider.userinfo_encrypted_response_enc,
+      supportEmail: inputProvider.supportEmail,
       featureHandlers: inputProvider.featureHandlers,
       messageToDisplayWhenInactive: inputProvider.hoverMsg,
       redirectionTargetWhenInactive: inputProvider.hoverRedirectLink,
@@ -313,12 +326,12 @@ export class IdentityProviderService {
       jwksUrl: inputProvider.jwksURL,
       emails: linesToArray({ value: inputProvider.mailto }),
       issuer: inputProvider.url,
-      modalActive: inputProvider.modal.active,
-      modalTitle: inputProvider.modal.title,
-      modalBody: inputProvider.modal.body,
-      modalContinueText: inputProvider.modal.continueText,
-      modalMoreInfoLabel: inputProvider.modal.moreInfoLabel,
-      modalMoreInfoUrl: inputProvider.modal.moreInfoUrl,
+      modalActive: inputProvider.modal?.active,
+      modalTitle: inputProvider.modal?.title,
+      modalBody: inputProvider.modal?.body,
+      modalContinueText: inputProvider.modal?.continueText,
+      modalMoreInfoLabel: inputProvider.modal?.moreInfoLabel,
+      modalMoreInfoUrl: inputProvider.modal?.moreInfoUrl,
     };
   }
   private getDefaultValues(): {
