@@ -52,17 +52,13 @@ export class IdentityProviderService {
   }
 
   async create(identityProviderDto: IdentityProviderDTO, username: string) {
-    const defaultedProvider =
+    const identityProviderDtoWithDefaultValues =
       await this.addDefaultValuesToDto(identityProviderDto);
 
-    /**
-     * we need to keep the fqdns from the identityProviderDto object for fca
-     * the transform operation will remove them
-     */
-    const identityProviderInput = { ...defaultedProvider };
+    const fqdns = identityProviderDto.fqdns || [];
 
     const providerToSave = await this.transformDtoToEntity(
-      defaultedProvider,
+      identityProviderDtoWithDefaultValues,
       username,
       'create',
     );
@@ -70,10 +66,10 @@ export class IdentityProviderService {
     const saveOperation =
       await this.identityProviderRepository.insert(providerToSave);
 
-    if (identityProviderInput.fqdns?.length > 0) {
+    if (fqdns.length > 0) {
       await this.fqdnToProviderService.saveFqdnsProvider(
         providerToSave.uid,
-        identityProviderInput.fqdns,
+        fqdns,
       );
     }
 
