@@ -76,9 +76,7 @@ export class IdentityProviderService {
     if (identityProviderInput.fqdns?.length > 0) {
       await this.fqdnToProviderService.saveFqdnsProvider(
         defaultedProvider.uid,
-        this.fqdnToProviderService.createFqdnsWithAcceptance(
-          identityProviderInput.fqdns,
-        ),
+        identityProviderInput.fqdns,
       );
     }
 

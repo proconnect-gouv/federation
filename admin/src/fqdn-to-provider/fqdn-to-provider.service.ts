@@ -64,29 +64,17 @@ export class FqdnToProviderService {
     );
   }
 
-  createFqdnsWithAcceptance(
-    fqdns: string[],
-  ): Array<Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>> {
-    return fqdns.map((fqdn) => {
-      return {
-        fqdn,
-        // by default, for now, the fqdn is accepted
-        acceptsDefaultIdp: true,
-      };
-    });
-  }
-
   async saveFqdnsProvider(
     identityProviderUid: string,
-    fqdns: Array<Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>>,
+    fqdns: string[],
   ): Promise<void> {
     const filteredFqdns = fqdns.filter(Boolean);
     for (let index = 0; index < filteredFqdns.length; index++) {
-      const { fqdn, acceptsDefaultIdp } = filteredFqdns[index];
+      const fqdn = filteredFqdns[index];
       await this.fqdnToProviderRepository.save({
         fqdn,
         identityProvider: identityProviderUid,
-        acceptsDefaultIdp,
+        acceptsDefaultIdp: true,
       });
     }
   }
@@ -142,7 +130,10 @@ export class FqdnToProviderService {
     }
 
     // create new relations
-    await this.saveFqdnsProvider(identityProviderUid, providerFqdns);
+    await this.saveFqdnsProvider(
+      identityProviderUid,
+      providerFqdns.map(({ fqdn }) => fqdn),
+    );
   }
 
   async deleteFqdnsProvider(identityProviderUid: string): Promise<void> {
