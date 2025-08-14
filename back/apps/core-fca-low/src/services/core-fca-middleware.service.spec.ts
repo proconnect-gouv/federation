@@ -203,4 +203,16 @@ describe('CoreFcaMiddlewareService', () => {
     await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
     expect(spyOverride).toHaveBeenCalled();
   });
+
+  it('should handle silent authentication prompts only if value is none', async () => {
+    const mockCtx = { method: 'POST', req: { body: { prompt: 'whatever' } } };
+    const spyOverride = jest.spyOn(service as any, 'overrideAuthorizePrompt');
+    mockSessionService.get.mockReturnValueOnce({});
+    validateMock.mockResolvedValueOnce([]);
+    mockConfigService.get.mockReturnValueOnce({
+      forcedPrompt: ['login', 'consent'],
+    });
+    await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
+    expect(spyOverride).not.toHaveBeenCalled();
+  });
 });

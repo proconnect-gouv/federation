@@ -92,7 +92,8 @@ export class CoreFcaService {
     // these specific behaviors are legacy implementations and should be homogenized in the future
     if (idpId === defaultIdpId) {
       authorizeParams['scope'] += ' is_service_public';
-    } else if (!acrValues && !acrClaims) {
+    }
+    if (idpId !== defaultIdpId && !acrValues && !acrClaims) {
       authorizeParams['acr_values'] = 'eidas1';
     }
 

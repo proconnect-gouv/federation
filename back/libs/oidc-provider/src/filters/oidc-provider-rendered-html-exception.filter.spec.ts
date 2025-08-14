@@ -152,6 +152,21 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
       );
     });
 
+    it('should log the exception even if there is no wrapped exception', () => {
+      // Given
+      exceptionMock.originalError = null;
+
+      // When
+      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
+
+      // Then
+      expect(filter['logException']).toHaveBeenCalledExactlyOnceWith(
+        codeMock,
+        idMock,
+        exceptionMock,
+      );
+    });
+
     it('should publish an ExceptionCaughtEvent', () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);

@@ -113,6 +113,86 @@ describe('IdentitySanitizer', () => {
       });
     });
 
+    it('should not transform identity if a siret is already present', async () => {
+      const idpId = 'idp1';
+      const sub = 'sub123';
+      const acr = 'acr1';
+      const identityFromIdp = {
+        aud: 'aud123',
+        email: 'test@test.com',
+        extra: 'extra',
+        given_name: 'John',
+        sub: '123',
+        uid: 'UID123',
+        usual_name: 'Doe',
+        siret: '98765432100007',
+      };
+
+      jest
+        .spyOn(identityProvider, 'getById')
+        .mockResolvedValue({ siret: '12345678900007' } as any);
+
+      const result = await identitySanitizer.transformIdentity(
+        identityFromIdp as IdentityFromIdpDto,
+        idpId,
+        sub,
+        acr,
+      );
+
+      expect(result).toEqual({
+        custom: { extra: 'extra' },
+        email: 'test@test.com',
+        given_name: 'John',
+        idp_acr: acr,
+        idp_id: idpId,
+        siret: '98765432100007',
+        sub,
+        uid: 'UID123',
+        usual_name: 'Doe',
+      });
+    });
+
+    it('should not transform identity if a valid phone number is present', async () => {
+      const idpId = 'idp1';
+      const sub = 'sub123';
+      const acr = 'acr1';
+      const identityFromIdp = {
+        aud: 'aud123',
+        email: 'test@test.com',
+        extra: 'extra',
+        given_name: 'John',
+        sub: '123',
+        uid: 'UID123',
+        usual_name: 'Doe',
+        siret: '98765432100007',
+        phone_number: '+331234567890',
+      };
+
+      jest
+        .spyOn(identityProvider, 'getById')
+        .mockResolvedValue({ siret: '12345678900007' } as any);
+
+      const result = await identitySanitizer.transformIdentity(
+        identityFromIdp as IdentityFromIdpDto,
+        idpId,
+        sub,
+        acr,
+      );
+
+      expect(result).toEqual({
+        custom: { extra: 'extra' },
+        email: 'test@test.com',
+        given_name: 'John',
+        idp_acr: acr,
+        idp_id: idpId,
+        siret: '98765432100007',
+        sub,
+        uid: 'UID123',
+        usual_name: 'Doe',
+        phone_number: '+331234567890',
+      });
+    });
+
     it('should throw CoreFcaInvalidIdentityException when siret is missing and no default is provided', async () => {
       const idpId = 'idp1';
       const sub = 'sub123';
