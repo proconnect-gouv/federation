@@ -81,15 +81,17 @@ export class IdentityProviderService {
       );
     }
 
+    const identityProviderId = saveOperation.identifiers[0]._id;
+
     this.track({
       entity: 'identity-provider',
       action: 'create',
       user: username,
-      id: saveOperation.identifiers[0]._id,
+      id: identityProviderId,
       name: provider.name,
     });
 
-    return saveOperation.identifiers[0]._id;
+    return identityProviderId;
   }
 
   async findById(id: string): Promise<IIdentityProvider> {
