@@ -114,9 +114,9 @@ export class FqdnToProviderService {
       Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>
     > = fqdns
       .filter(
-        (fqdn) =>
+        (fqdnToAddFqdn) =>
           !existingFqdnToProviders.find(
-            (fqdnToProvider) => fqdnToProvider.fqdn === fqdn,
+            (fqdnToProvider) => fqdnToProvider.fqdn === fqdnToAddFqdn,
           ),
       )
       .map((fqdn) => ({ fqdn, acceptsDefaultIdp: true }));
