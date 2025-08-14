@@ -56,7 +56,7 @@ export class IdentityProviderService {
 
     const fqdns = identityProviderDto.fqdns || [];
 
-    const providerToSave = await this.transformDtoToEntity(
+    const providerToSave = this.transformDtoToEntity(
       identityProviderDtoWithDefaultValues,
       username,
       'create',
@@ -152,7 +152,10 @@ export class IdentityProviderService {
     return identityProviderResponse;
   }
 
+  async deleteIdentityProvider(
     id: string,
+    user: string,
+  ): Promise<DeleteResult> {
     const identityProvider =
       await this.identityProviderRepository.findOneByOrFail({
         _id: new ObjectId(id),
