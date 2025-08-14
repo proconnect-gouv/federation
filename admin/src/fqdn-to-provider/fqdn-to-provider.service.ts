@@ -4,7 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { FqdnToProvider } from './fqdn-to-provider.mongodb.entity';
-import { IIdentityProvider, IIdentityProviderDTO } from '../identity-provider';
+import {
+  IdentityProviderFromDb,
+  IdentityProviderWithFqdn,
+} from '../identity-provider';
 import { IFqdnToProvider } from './interface/fqdn.interface';
 
 @Injectable()
@@ -38,33 +41,27 @@ export class FqdnToProviderService {
     return fqdnToProvider;
   }
 
-  async getProviderWithFqdns(
-    identityProvider: IIdentityProviderDTO,
-  ): Promise<IIdentityProviderDTO> {
-    const fqdnToProviders = await this.findFqdnsForOneProvider(
-      identityProvider.uid,
-    );
+  async getFqdnsForIdentityProviderUid(idpUid: string): Promise<string[]> {
+    const fqdnToProviders = await this.findFqdnsForOneProvider(idpUid);
 
-    const idpWithFqdns = { ...identityProvider, fqdns: [] };
-    fqdnToProviders.forEach(({ fqdn }) => {
-      idpWithFqdns.fqdns.push(fqdn);
-    });
-
-    return idpWithFqdns;
+    return fqdnToProviders.map(({ fqdn }) => fqdn);
   }
 
   async getProvidersWithFqdns(
-    identityProviders: IIdentityProvider[],
-  ): Promise<IIdentityProviderDTO[]> {
+    identityProviders: IdentityProviderFromDb[],
+  ): Promise<IdentityProviderWithFqdn[]> {
     const identityProvidersUids = identityProviders.map(
-      (idp: IIdentityProvider) => idp.uid,
+      (identityProviderFromDb) => identityProviderFromDb.uid,
     );
 
     const fqdnToProviders = await this.findFqdnsForProviders(
       identityProvidersUids,
     );
 
-    return this.getIdentityProvidersDTO(identityProviders, fqdnToProviders);
+    return this.aggregateFqdnToProviderWithIdentityProvider(
+      identityProviders,
+      fqdnToProviders,
+    );
   }
 
   createFqdnsWithAcceptance(
@@ -159,10 +156,10 @@ export class FqdnToProviderService {
     }
   }
 
-  private getIdentityProvidersDTO(
-    identityPoviders: IIdentityProvider[],
+  private aggregateFqdnToProviderWithIdentityProvider(
+    identityProviders: IdentityProviderFromDb[],
     fqdnToProviders: IFqdnToProvider[],
-  ): IIdentityProviderDTO[] {
+  ): IdentityProviderWithFqdn[] {
     const fqdnToProvidersHashMap: Record<string, string[]> = {};
 
     fqdnToProviders.forEach(({ identityProvider: uid, fqdn }) => {
@@ -173,7 +170,7 @@ export class FqdnToProviderService {
       }
     });
 
-    return identityPoviders.map((identityProvider) => {
+    return identityProviders.map((identityProvider) => {
       const idpWithFqdns = {
         ...identityProvider,
         fqdns: fqdnToProvidersHashMap[identityProvider.uid] || [],

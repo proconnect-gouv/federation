@@ -154,11 +154,17 @@ export class IdentityProviderController {
     const csrfToken = req.csrfToken();
 
     // we map the entity as a DTO
-    let identityProvider: IIdentityProviderDTO =
-      await this.identityProviderService.findById(id);
+    const identityProvider = await this.identityProviderService.findById(id);
 
-    identityProvider =
-      await this.fqdnToProviderService.getProviderWithFqdns(identityProvider);
+    const fqdns =
+      await this.fqdnToProviderService.getFqdnsForIdentityProviderUid(
+        identityProvider.uid,
+      );
+
+    const identityProviderWithFqdn = {
+      ...identityProvider,
+      fqdns,
+    };
 
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP
@@ -171,7 +177,7 @@ export class IdentityProviderController {
       // Keep the user last inputs when displaying an error in the form
       req.session.flash.values[0] = Object.assign({}, postedValues);
     } else {
-      req.flash('values', identityProvider);
+      req.flash('values', identityProviderWithFqdn);
     }
     const { allowedAcr } = this.config.get('acr');
 
