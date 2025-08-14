@@ -115,7 +115,7 @@ export class FqdnToProviderService {
     > = fqdns
       .filter(
         (fqdnToAddFqdn) =>
-          !existingFqdnToProviders.find(
+          !existingFqdnToProviders.some(
             (fqdnToProvider) => fqdnToProvider.fqdn === fqdnToAddFqdn,
           ),
       )
