@@ -146,7 +146,7 @@ export class FqdnToProviderService {
 
   private aggregateFqdnToProviderWithIdentityProvider(
     identityProviders: IdentityProviderFromDb[],
-    fqdnToProviders: IFqdnToProvider[],
+    fqdnToProviders: FqdnToProvider[],
   ): IdentityProviderWithFqdn[] {
     const fqdnToProvidersHashMap: Record<string, string[]> = {};
 
