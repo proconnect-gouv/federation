@@ -52,7 +52,8 @@ export class IdentityProviderService {
   }
 
   async create(identityProviderDto: IdentityProviderDTO, username: string) {
-    const defaultedProvider = await this.setDefaultValues(identityProviderDto);
+    const defaultedProvider =
+      await this.addDefaultValuesToDto(identityProviderDto);
 
     /**
      * we need to keep the fqdns from the identityProviderDto object for fca
@@ -373,7 +374,7 @@ export class IdentityProviderService {
     return provider;
   }
 
-  private async setDefaultValues(
+  private async addDefaultValuesToDto(
     provider: IdentityProviderDTO,
   ): Promise<IdentityProviderDTO> {
     const { defaultValues } = this.config.get('identity-provider');
