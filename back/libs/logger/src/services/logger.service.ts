@@ -113,9 +113,7 @@ export class LoggerService {
     const context = {};
 
     this.plugins.forEach((plugin) => {
-      if (typeof plugin.getContext === 'function') {
-        Object.assign(context, plugin.getContext());
-      }
+      Object.assign(context, plugin.getContext());
     });
 
     return context;

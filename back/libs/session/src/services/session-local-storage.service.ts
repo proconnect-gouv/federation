@@ -58,10 +58,13 @@ export class SessionLocalStorageService {
   set(moduleName: string, keyOrData: string | object, data?: unknown): void {
     const store = this.getStore();
 
-    if (typeof keyOrData === 'string') {
-      this.setByKey(moduleName, store.data, keyOrData, data);
-    } else if (typeof keyOrData === 'object') {
-      this.setModule(moduleName, store.data, keyOrData);
+    switch (typeof keyOrData) {
+      case 'string':
+        this.setByKey(moduleName, store.data, keyOrData, data);
+        break;
+      case 'object':
+        this.setModule(moduleName, store.data, keyOrData);
+        break;
     }
 
     /**
