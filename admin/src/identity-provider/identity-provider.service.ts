@@ -87,7 +87,9 @@ export class IdentityProviderService {
     return identityProviderId;
   }
 
-  async findById(id: string): Promise<IIdentityProvider> {
+  async findById(
+    id: string,
+  ): Promise<{ identityProviderDto: IdentityProviderDTO; uid: string }> {
     const identityProviderFromDb =
       await this.identityProviderRepository.findOne({
         where: {
@@ -107,7 +109,7 @@ export class IdentityProviderService {
       identityProviderFromDb,
     );
 
-    return identityProviderDto;
+    return { identityProviderDto, uid: identityProviderFromDb.uid };
   }
 
   async update(
@@ -275,25 +277,32 @@ export class IdentityProviderService {
 
   private transformEntityToDto(
     identityProviderFromDb: IdentityProviderFromDb,
-  ): IIdentityProvider {
-    const defaultValues = {
-      modal: {
-        active: false,
-        title: '',
-        body: '',
-        continueText: '',
-        moreInfoLabel: '',
-        moreInfoUrl: '',
-      },
-    };
+  ): IdentityProviderDTO {
+    const defaultValues = this.getDefaultValues();
 
     const inputProvider = {
       ...defaultValues,
       ...identityProviderFromDb,
     };
 
-    const provider = {
-      ...inputProvider,
+    return {
+      name: inputProvider.name,
+      title: inputProvider.title,
+      discovery: inputProvider.discovery,
+      isBeta: inputProvider.isBeta,
+      order: inputProvider.order,
+      trustedIdentity: inputProvider.trustedIdentity,
+      siret: inputProvider.siret,
+      client_secret: inputProvider.client_secret,
+      alt: inputProvider.alt,
+      image: inputProvider.image,
+      imageFocus: inputProvider.imageFocus,
+      active: inputProvider.active,
+      display: inputProvider.display,
+      eidas: inputProvider.eidas,
+      allowedAcr: inputProvider.allowedAcr,
+      specificText: inputProvider.specificText,
+      featureHandlers: inputProvider.featureHandlers,
       messageToDisplayWhenInactive: inputProvider.hoverMsg,
       redirectionTargetWhenInactive: inputProvider.hoverRedirectLink,
       clientId: inputProvider.clientID,
@@ -303,8 +312,6 @@ export class IdentityProviderService {
       userInfoUrl: inputProvider.userInfoURL,
       logoutUrl: inputProvider.endSessionURL,
       jwksUrl: inputProvider.jwksURL,
-      whitelistByServiceProviderActivated:
-        inputProvider.WhitelistByServiceProviderActivated,
       emails: linesToArray({ value: inputProvider.mailto }),
       issuer: inputProvider.url,
       modalActive: inputProvider.modal.active,
@@ -314,25 +321,12 @@ export class IdentityProviderService {
       modalMoreInfoLabel: inputProvider.modal.moreInfoLabel,
       modalMoreInfoUrl: inputProvider.modal.moreInfoUrl,
     };
-
-    delete provider.hoverMsg;
-    delete provider.hoverRedirectLink;
-    delete provider.clientID;
-    delete provider.authzURL;
-    delete provider.statusURL;
-    delete provider.tokenURL;
-    delete provider.userInfoURL;
-    delete provider.endSessionURL;
-    delete provider.jwksURL;
-    delete provider.WhitelistByServiceProviderActivated;
-    delete provider.mailto;
-    delete provider.url;
-    delete provider.modal;
-
-    return provider;
   }
-
-  private async getDefaultValues(): Promise<IdentityProviderDTO> {
+  private getDefaultValues(): {
+    featureHandlers: any;
+    response_types: any;
+    revocation_endpoint_auth_method: string;
+  } {
     const { defaultValues } = this.config.get('identity-provider');
 
     return {

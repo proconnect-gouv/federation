@@ -152,12 +152,11 @@ export class IdentityProviderController {
     const csrfToken = req.csrfToken();
 
     // we map the entity as a DTO
-    const identityProviderDto = await this.identityProviderService.findById(id);
+    const { identityProviderDto, uid } =
+      await this.identityProviderService.findById(id);
 
     const fqdns =
-      await this.fqdnToProviderService.getFqdnsForIdentityProviderUid(
-        identityProviderDto.uid,
-      );
+      await this.fqdnToProviderService.getFqdnsForIdentityProviderUid(uid);
 
     const identityProviderWithFqdn = {
       ...identityProviderDto,
