@@ -226,7 +226,7 @@ export class IdentityProviderService {
   private async transformIntoEntity(
     identityProviderDto: IdentityProviderDTO,
     username: string,
-    mode: string,
+    mode: 'create' | 'update',
   ): Promise<IIdentityProvider> {
     const now = new Date();
 
