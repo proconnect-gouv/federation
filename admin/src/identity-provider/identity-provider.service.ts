@@ -15,7 +15,6 @@ import { SecretManagerService } from '../utils/secret-manager.service';
 import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
 import { IIdentityProvider } from './interface/identity-provider.interface';
 import { IIdentityProviderLegacy } from './interface/identity-provider-legacy.interface';
-import { ModifierData } from './interface/modifier-data.interface';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationOptions, PaginationService } from '../pagination';
 import { IdentityProviderDTO } from './dto/identity-provider.dto';
