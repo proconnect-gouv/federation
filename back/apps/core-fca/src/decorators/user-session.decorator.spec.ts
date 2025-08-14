@@ -112,7 +112,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
-    ).rejects.toThrowError('UserSessionDecorator: Session data is invalid.');
+    ).rejects.toThrow('UserSessionDecorator: Session data is invalid.');
 
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
@@ -130,7 +130,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
-    ).rejects.toThrowError('UserSessionDecorator: Session data is invalid.');
+    ).rejects.toThrow('UserSessionDecorator: Session data is invalid.');
 
     expect(validateMock).toHaveBeenCalledTimes(2);
   });
@@ -159,7 +159,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(undefined, fakeExecutionContext),
-    ).rejects.toThrowError('UserSessionDecorator: Session data is invalid.');
+    ).rejects.toThrow('UserSessionDecorator: Session data is invalid.');
 
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
