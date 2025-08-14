@@ -119,19 +119,14 @@ export class IdentityProviderService {
       name: identityProviderDto.name,
     });
 
-    /**
-     * We need to keep the fqdns from the provider object for fca
-     * the transform operation will remove them
-     */
-    const identityProviderInput = { ...identityProviderDto };
+    const fqdns = identityProviderDto.fqdns || [];
 
-    const providerToSave = await this.transformDtoToEntity(
+    const providerToSave = this.transformDtoToEntity(
       identityProviderDto,
       user,
       'update',
     );
 
-    // Find the existing provider
     const existingProvider =
       await this.identityProviderRepository.findOneByOrFail({
         _id: ObjectId(identityProviderId),
@@ -150,7 +145,7 @@ export class IdentityProviderService {
      */
     await this.fqdnToProviderService.updateFqdnsProvider(
       identityProviderResponse.uid,
-      identityProviderInput.fqdns,
+      fqdns,
       identityProviderId,
     );
 
