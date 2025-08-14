@@ -250,7 +250,7 @@ describe('OidcProviderService', () => {
         callback,
       );
       // Then
-      expect(useSpy).toBeCalledTimes(1);
+      expect(useSpy).toHaveBeenCalledTimes(1);
       expect(providerMock.middlewares).toHaveLength(1);
       expect(callback).toHaveBeenCalledTimes(0);
     });
