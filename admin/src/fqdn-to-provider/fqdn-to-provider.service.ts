@@ -90,7 +90,7 @@ export class FqdnToProviderService {
      * and must fetch it in db.
      * We only fetch the fqdns of the idp that match the input fqdns.
      */
-    const fqdnToProviders: Array<
+    const existingFqdnToProviders: Array<
       Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>
     > = await this.fqdnToProviderRepository.find({
       select: {
@@ -115,26 +115,26 @@ export class FqdnToProviderService {
     > = fqdns
       .filter(
         (fqdn) =>
-          !fqdnToProviders.find(
+          !existingFqdnToProviders.find(
             (fqdnToProvider) => fqdnToProvider.fqdn === fqdn,
           ),
       )
       .map((fqdn) => ({ fqdn, acceptsDefaultIdp: true }));
 
     // Eventually we merge the new fqdns with the fetched fqdnToProvider
-    fqdnToProviders.push(...fqdnsToAdd);
+    const newFqdnToProviders = [...existingFqdnToProviders, ...fqdnsToAdd];
 
     // delete all previous relations for this identityProvider
     await this.deleteFqdnsProvider(identityProviderUid);
 
-    if (fqdnToProviders.length === 0) {
+    if (newFqdnToProviders.length === 0) {
       return;
     }
 
     // create new relations
     await this.saveFqdnsProvider(
       identityProviderUid,
-      fqdnToProviders.map(({ fqdn }) => fqdn),
+      newFqdnToProviders.map(({ fqdn }) => fqdn),
     );
   }
 
