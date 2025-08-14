@@ -117,7 +117,7 @@ export class IdentityProviderService {
   }
 
   async update(
-    id: string,
+    identityProviderId: string,
     identityProviderDto: IIdentityProviderDTO,
     user: string,
   ) {
@@ -125,7 +125,7 @@ export class IdentityProviderService {
       entity: 'identity-provider',
       action: 'update',
       user,
-      id,
+      id: identityProviderId,
       name: identityProviderDto.name,
     });
 
@@ -152,7 +152,7 @@ export class IdentityProviderService {
     // Find the existing provider
     const existingProvider =
       await this.identityProviderRepository.findOneByOrFail({
-        _id: ObjectId(id),
+        _id: ObjectId(identityProviderId),
       });
 
     // Apply the updates from providerToSave
@@ -169,7 +169,7 @@ export class IdentityProviderService {
     await this.fqdnToProviderService.updateFqdnsProvider(
       identityProviderResponse.uid,
       identityProviderInput.fqdns,
-      id,
+      identityProviderId,
     );
 
     return identityProviderResponse;
