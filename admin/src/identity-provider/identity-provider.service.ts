@@ -152,7 +152,7 @@ export class IdentityProviderService {
     return identityProviderResponse;
   }
 
-  async deleteIdentityProvider(id, user: string): Promise<DeleteResult> {
+    id: string,
     const identityProvider =
       await this.identityProviderRepository.findOneByOrFail({
         _id: new ObjectId(id),
@@ -192,7 +192,10 @@ export class IdentityProviderService {
       identityProviderDto.client_secret,
     );
 
-    let createdAt, uid, active, display;
+    let createdAt: Date | undefined,
+      uid: string,
+      active: boolean,
+      display: boolean;
     switch (mode) {
       case 'create':
         uid = uuidv4();
