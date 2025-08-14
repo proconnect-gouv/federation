@@ -8,7 +8,6 @@ import {
   IdentityProviderFromDb,
   IdentityProviderWithFqdn,
 } from '../identity-provider';
-import { IFqdnToProvider } from './interface/fqdn.interface';
 
 @Injectable()
 export class FqdnToProviderService {
