@@ -35,10 +35,6 @@ export class FqdnToProviderService {
       },
     });
 
-    if (!fqdnToProvider) {
-      return [];
-    }
-
     return fqdnToProvider;
   }
 
