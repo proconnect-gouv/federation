@@ -101,9 +101,11 @@ export class IdentityProviderService {
       identityProviderFromDb.client_secret,
     );
 
-    const identityProvider = this.tranformFromLegacy(identityProviderFromDb);
+    const identityProviderDto = this.transformEntityToDto(
+      identityProviderFromDb,
+    );
 
-    return identityProvider;
+    return identityProviderDto;
   }
 
   async update(
@@ -269,8 +271,8 @@ export class IdentityProviderService {
     };
   }
 
-  private tranformFromLegacy(
-    legacyProvider: IIdentityProviderLegacy,
+  private transformEntityToDto(
+    identityProviderFromDb: IdentityProviderFromDb,
   ): IIdentityProvider {
     const defaultValues = {
       modal: {
@@ -285,7 +287,7 @@ export class IdentityProviderService {
 
     const inputProvider = {
       ...defaultValues,
-      ...legacyProvider,
+      ...identityProviderFromDb,
     };
 
     const provider = {

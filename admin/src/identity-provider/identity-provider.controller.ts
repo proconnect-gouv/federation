@@ -152,15 +152,15 @@ export class IdentityProviderController {
     const csrfToken = req.csrfToken();
 
     // we map the entity as a DTO
-    const identityProvider = await this.identityProviderService.findById(id);
+    const identityProviderDto = await this.identityProviderService.findById(id);
 
     const fqdns =
       await this.fqdnToProviderService.getFqdnsForIdentityProviderUid(
-        identityProvider.uid,
+        identityProviderDto.uid,
       );
 
     const identityProviderWithFqdn = {
-      ...identityProvider,
+      ...identityProviderDto,
       fqdns,
     };
 
@@ -182,8 +182,8 @@ export class IdentityProviderController {
     return {
       csrfToken,
       id,
-      amrSelected: identityProvider?.amr || [],
-      acrSelected: identityProvider?.allowedAcr || [],
+      amrSelected: identityProviderDto?.amr || [],
+      acrSelected: identityProviderDto?.allowedAcr || [],
       acrList: allowedAcr,
     };
   }
