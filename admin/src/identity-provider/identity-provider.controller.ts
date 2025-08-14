@@ -20,9 +20,7 @@ import { FormErrorsInterceptor } from '../form/interceptor/form-errors.intercept
 import { IdentityProviderService } from './identity-provider.service';
 import { IdentityProviderDTO } from './dto/identity-provider.dto';
 import { plainToInstance } from 'class-transformer';
-import { Amr } from './enum';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
-import { IIdentityProviderDTO } from './interface';
 import { PaginationSortDirectionType } from '../pagination';
 
 @Controller('identity-provider')
@@ -68,13 +66,13 @@ export class IdentityProviderController {
         },
       });
 
-    const identityProviders =
-      (await this.fqdnToProviderService.getProvidersWithFqdns(
-        paginatedIdentityProviders as any,
-      )) as any[];
+    const identityProvidersWithFqdns =
+      await this.fqdnToProviderService.getProvidersWithFqdns(
+        paginatedIdentityProviders,
+      );
 
     return {
-      identityProviders,
+      identityProviders: identityProvidersWithFqdns,
       totalItems,
       csrfToken,
       page,
@@ -93,7 +91,8 @@ export class IdentityProviderController {
   @Render('identity-provider/creation')
   async showCreationForm(@Req() req) {
     const csrfToken = req.csrfToken();
-    const nbrProviders = await this.identityProviderService.countProviders();
+    const identityProvidersCount =
+      await this.identityProviderService.countIdentityProviders();
 
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP
@@ -110,8 +109,7 @@ export class IdentityProviderController {
 
     return {
       csrfToken,
-      nbrProviders,
-      amrList: Amr,
+      identityProvidersCount,
       acrList: allowedAcr,
     };
   }
@@ -154,11 +152,16 @@ export class IdentityProviderController {
     const csrfToken = req.csrfToken();
 
     // we map the entity as a DTO
-    let identityProvider: IIdentityProviderDTO =
+    const { identityProviderDto, uid } =
       await this.identityProviderService.findById(id);
 
-    identityProvider =
-      await this.fqdnToProviderService.getProviderWithFqdns(identityProvider);
+    const fqdns =
+      await this.fqdnToProviderService.getFqdnsForIdentityProviderUid(uid);
+
+    const identityProviderWithFqdn = {
+      ...identityProviderDto,
+      fqdns,
+    };
 
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP
@@ -171,16 +174,15 @@ export class IdentityProviderController {
       // Keep the user last inputs when displaying an error in the form
       req.session.flash.values[0] = Object.assign({}, postedValues);
     } else {
-      req.flash('values', identityProvider);
+      req.flash('values', identityProviderWithFqdn);
     }
     const { allowedAcr } = this.config.get('acr');
 
     return {
       csrfToken,
       id,
-      amrSelected: identityProvider?.amr || [],
-      acrSelected: identityProvider?.allowedAcr || [],
-      amrList: Amr,
+      amrSelected: identityProviderDto?.amr || [],
+      acrSelected: identityProviderDto?.allowedAcr || [],
       acrList: allowedAcr,
     };
   }

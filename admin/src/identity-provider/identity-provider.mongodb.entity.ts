@@ -2,7 +2,7 @@ import { Column, Entity, ObjectId, ObjectIdColumn, Unique } from 'typeorm';
 
 @Entity('provider')
 @Unique(['name'])
-export class IdentityProvider {
+export class IdentityProviderFromDb {
   @ObjectIdColumn()
   _id: ObjectId;
 
