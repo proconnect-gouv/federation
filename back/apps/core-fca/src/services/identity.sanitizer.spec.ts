@@ -1,5 +1,4 @@
 import { ConfigService } from '@fc/config';
-import { UnknownException } from '@fc/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
@@ -114,7 +113,7 @@ describe('IdentitySanitizer', () => {
       });
     });
 
-    it('should throw NoDefaultSiretException when siret is missing and no default is provided', async () => {
+    it('should throw CoreFcaInvalidIdentityException when siret is missing and no default is provided', async () => {
       const idpId = 'idp1';
       const sub = 'sub123';
       const acr = 'acr1';
@@ -137,7 +136,7 @@ describe('IdentitySanitizer', () => {
           sub,
           acr,
         ),
-      ).rejects.toThrow(UnknownException);
+      ).rejects.toThrow(CoreFcaInvalidIdentityException);
     });
   });
 });
