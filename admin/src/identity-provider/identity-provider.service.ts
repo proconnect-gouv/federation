@@ -13,7 +13,6 @@ import { ICrudTrack } from '../interfaces';
 import { SecretManagerService } from '../utils/secret-manager.service';
 
 import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
-import { IIdentityProviderDTO } from './interface/identity-provider-dto.interface';
 import { IIdentityProvider } from './interface/identity-provider.interface';
 import { IIdentityProviderLegacy } from './interface/identity-provider-legacy.interface';
 import { ModifierData } from './interface/modifier-data.interface';
@@ -115,7 +114,7 @@ export class IdentityProviderService {
 
   async update(
     identityProviderId: string,
-    identityProviderDto: IIdentityProviderDTO,
+    identityProviderDto: IdentityProviderDTO,
     user: string,
   ) {
     this.track({
@@ -224,7 +223,7 @@ export class IdentityProviderService {
   }
 
   private async transformIntoEntity(
-    identityProviderDto: IIdentityProviderDTO,
+    identityProviderDto: IdentityProviderDTO,
     username: string,
     mode: string,
   ): Promise<IIdentityProvider> {
@@ -375,8 +374,8 @@ export class IdentityProviderService {
   }
 
   private async setDefaultValues(
-    provider: IIdentityProviderDTO,
-  ): Promise<IIdentityProviderDTO> {
+    provider: IdentityProviderDTO,
+  ): Promise<IdentityProviderDTO> {
     const { defaultValues } = this.config.get('identity-provider');
 
     const uid = uuidv4();
