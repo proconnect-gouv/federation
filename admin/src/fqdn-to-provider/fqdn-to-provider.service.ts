@@ -90,39 +90,33 @@ export class FqdnToProviderService {
      * and must fetch it in db.
      * We only fetch the fqdns of the idp that match the input fqdns.
      */
-    const existingFqdnToProviders: Array<
-      Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>
-    > = await this.fqdnToProviderRepository.find({
-      select: {
-        fqdn: true,
-        acceptsDefaultIdp: true,
-      },
+    const existingFqdnToProviders = await this.fqdnToProviderRepository.find({
       where: {
         _id: ObjectID(identityProviderId),
         // we only keep the fqdns that are in the new list
         // we will delete the others
-        fqdn: { $in: fqdns } as any,
+        fqdn: { $in: fqdns },
       },
     });
+    const existingFqdnToProvidersFqdns = existingFqdnToProviders.map(
+      (fqdnToProvider) => fqdnToProvider.fqdn,
+    );
 
     /**
      * Then we filter the new fqdns to create:
      * new fqdns are the fqdn from input that are not already in the collection.
      * We gave them a true default acceptance value.
      */
-    const fqdnsToAdd: Array<
-      Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>
-    > = fqdns
-      .filter(
-        (fqdnToAddFqdn) =>
-          !existingFqdnToProviders.some(
-            (fqdnToProvider) => fqdnToProvider.fqdn === fqdnToAddFqdn,
-          ),
-      )
-      .map((fqdn) => ({ fqdn, acceptsDefaultIdp: true }));
+    const fqdnsToAdd = fqdns.filter(
+      (fqdnToAddFqdn) =>
+        !existingFqdnToProvidersFqdns.some(
+          (existingFqdnToProvidersFqdn) =>
+            existingFqdnToProvidersFqdn === fqdnToAddFqdn,
+        ),
+    );
 
     // Eventually we merge the new fqdns with the fetched fqdnToProvider
-    const newFqdnToProviders = [...existingFqdnToProviders, ...fqdnsToAdd];
+    const newFqdnToProviders = [...existingFqdnToProvidersFqdns, ...fqdnsToAdd];
 
     // delete all previous relations for this identityProvider
     await this.deleteFqdnsProvider(identityProviderUid);
@@ -132,10 +126,7 @@ export class FqdnToProviderService {
     }
 
     // create new relations
-    await this.saveFqdnsProvider(
-      identityProviderUid,
-      newFqdnToProviders.map(({ fqdn }) => fqdn),
-    );
+    await this.saveFqdnsProvider(identityProviderUid, newFqdnToProviders);
   }
 
   async deleteFqdnsProvider(identityProviderUid: string): Promise<void> {
