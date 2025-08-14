@@ -1,5 +1,5 @@
+import $ from './jquery_wrapper';
 import ClipboardJS from 'clipboard';
-import $ from 'jquery';
 
 const COPY_BUTTON = '.copy-button';
 export function copyText() {

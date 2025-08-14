@@ -30,7 +30,7 @@
         </li>
       </ul>
       <div class="dropdown">
-        <a class="dropdown-toggle mr-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+        <a class="dropdown-toggle mr-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
           aria-expanded="false"><i class="fa fa-git-square"></i></a>
         <div class="dropdown-menu dropdown-menu-right p-3 text-muted meta-information-container">
           <div class="meta-information">
@@ -53,7 +53,7 @@
 <% if (messages.success) { %>
 <div class="row">
   <div class="col-10 offset-1 alert alert-success" id="successBanner" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">x<span>
           <span class="sr-only">Fermer</span>
     </button>
@@ -65,7 +65,7 @@
 <% if (locals.messages.errors && messages.errors[0]._totp) { %>
 <div class="row">
   <div class="col-10 offset-1 alert alert-danger" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">x<span>
           <span class="sr-only">Fermer</span>
     </button>

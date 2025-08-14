@@ -1,5 +1,5 @@
-import $ from 'jquery';
-import 'bootstrap/dist/js/bootstrap';
+import $ from './jquery_wrapper';
+import 'bootstrap/dist/js/bootstrap.bundle';
 
 export function handleEmail() {
   let i = 0;

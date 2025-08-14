@@ -1,8 +1,8 @@
-import $ from 'jquery';
-import 'bootstrap/dist/js/bootstrap';
+import $ from '../jquery_wrapper';
+import 'bootstrap/dist/js/bootstrap.bundle';
 
 export function confirmDialog(message, handler) {
-  $(`<div class="modal fade confirm-modal" tabindex="-1" role="dialog"> 
+  $(`<div class="modal fade confirm-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"> 
     <div class="modal-dialog modal-dialog-centered" role="document"> 
       <!-- Modal content--> 
       <div class="modal-content"> 
@@ -22,19 +22,16 @@ export function confirmDialog(message, handler) {
   </div>`).appendTo('body');
 
   //Trigger the modal
-  $('.confirm-modal').modal({
-    backdrop: 'static',
-    keyboard: false,
-  });
+  $('.confirm-modal').modal('show');
 
   //Pass true to a callback function
-  $('.btn-yes').click(function () {
+  $('.btn-yes').on("click", function () {
     handler(true);
     $('.confirm-modal').modal('hide');
   });
 
   //Pass false to a callback function
-  $('.btn-no').click(function () {
+  $('.btn-no').on("click", function () {
     handler(false);
     $('.confirm-modal').modal('hide');
   });
@@ -46,7 +43,7 @@ export function confirmDialog(message, handler) {
 }
 
 export function confirmDialogWithTotp(message, handler) {
-  $(`<div class="modal fade confirm-modal-totp" tabindex="-1" role="dialog"> 
+  $(`<div class="modal fade confirm-modal-totp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"> 
     <div class="modal-dialog modal-dialog-centered" role="document"> 
       <!-- Modal content--> 
       <div class="modal-content"> 
@@ -75,13 +72,10 @@ export function confirmDialogWithTotp(message, handler) {
   </div>`).appendTo('body');
 
   //Trigger the modal
-  $('.confirm-modal-totp').modal({
-    backdrop: 'static',
-    keyboard: false,
-  });
+  $('.confirm-modal-totp').modal('show');
 
   //Pass true to a callback function
-  $('.btn-yes').click(function () {
+  $('.btn-yes').on("click", function () {
     const totp = document.getElementById('totpModal');
     if (totp.value !== '') {
       totp.classList.remove('is-invalid');
@@ -93,14 +87,14 @@ export function confirmDialogWithTotp(message, handler) {
   });
 
   //Pass false to callback function
-  $('.btn-no').click(function () {
+  $('.btn-no').on("click", function () {
     handler(false, '');
     $('.confirm-modal-totp').modal('hide');
   });
 
   // Every time a modal is shown, if it has an autofocus element, focus on it.
   $('.modal').on('shown.bs.modal', function () {
-    $(this).find('[autofocus]').focus();
+    $(this).find('[autofocus]').trigger("focus");
   });
 
   //Remove the modal once it is closed.
