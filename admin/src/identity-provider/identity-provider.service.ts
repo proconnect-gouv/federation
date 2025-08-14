@@ -61,7 +61,7 @@ export class IdentityProviderService {
      */
     const identityProviderInput = { ...defaultedProvider };
 
-    const newProvider = await this.transformIntoEntity(
+    const newProvider = await this.transformDtoToEntity(
       defaultedProvider,
       username,
       'create',
@@ -132,15 +132,11 @@ export class IdentityProviderService {
      */
     const identityProviderInput = { ...identityProviderDto };
 
-    const newProvider = await this.transformIntoEntity(
+    const newProvider = await this.transformDtoToEntity(
       identityProviderDto,
       user,
       'update',
     );
-
-    // we don't want the uid or the createdAt date to be changed
-    delete newProvider.uid;
-    delete newProvider.createdAt;
 
     // it will remove the fqdns from the provider object
     const providerToSave = this.tranformIntoLegacy(newProvider);
@@ -223,7 +219,7 @@ export class IdentityProviderService {
     return { items, total };
   }
 
-  private async transformIntoEntity(
+  private async transformDtoToEntity(
     identityProviderDto: IdentityProviderDTO,
     username: string,
     mode: 'create' | 'update',
@@ -237,15 +233,32 @@ export class IdentityProviderService {
     // we don't want to store the fqdns in the provider collection
     Reflect.deleteProperty(identityProviderDto, 'fqdns');
 
-    const clientSecret = await this.secretManager.encrypt(
+    const clientSecret = this.secretManager.encrypt(
       identityProviderDto.client_secret,
     );
 
+    let createdAt, uid, active, display;
+    switch (mode) {
+      case 'create':
+        uid = uuidv4();
+        createdAt = now;
+        active = false;
+        display = false;
+        break;
+      case 'update':
+        uid = undefined;
+        createdAt = undefined;
+        active = identityProviderDto.active;
+        display = identityProviderDto.display;
+        break;
+    }
+
     return {
+      uid,
       ...identityProviderDto,
-      active: mode === 'create' ? false : identityProviderDto.active,
-      display: mode === 'create' ? false : identityProviderDto.display,
-      createdAt: now,
+      active,
+      display,
+      createdAt,
       updatedAt: now,
       updatedBy: username,
       client_secret: clientSecret,
