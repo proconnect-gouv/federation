@@ -162,29 +162,6 @@ export class IdentityProviderService {
     return identityProviderResponse;
   }
 
-  buildModifier(providerToSave: IIdentityProviderLegacy): ModifierData {
-    const modifier: any = {
-      $set: {
-        ...providerToSave,
-      },
-    };
-
-    if (providerToSave.discovery) {
-      modifier.$unset = {
-        jwksURL: '',
-        authzURL: '',
-        userInfoURL: '',
-        tokenURL: '',
-      };
-    } else {
-      modifier.$unset = {
-        discoveryUrl: '',
-      };
-    }
-
-    return modifier;
-  }
-
   async deleteIdentityProvider(id, user: string): Promise<DeleteResult> {
     const identityProvider =
       await this.identityProviderRepository.findOneByOrFail({
