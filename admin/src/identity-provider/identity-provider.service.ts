@@ -213,6 +213,16 @@ export class IdentityProviderService {
     return this.identityProviderRepository.delete({ _id: new ObjectId(id) });
   }
 
+  async paginate(options: PaginationOptions) {
+    const paginationParams =
+      this.paginationService.buildPaginationParams(options);
+
+    const [items, total] =
+      await this.identityProviderRepository.findAndCount(paginationParams);
+
+    return { items, total };
+  }
+
   private async transformIntoEntity(
     identityProviderDto: IIdentityProviderDTO,
     username: string,
@@ -249,16 +259,6 @@ export class IdentityProviderService {
         identityProviderDto.specificText ||
         'Une erreur est survenue lors de la transmission de votre identité.',
     };
-  }
-
-  async paginate(options: PaginationOptions) {
-    const paginationParams =
-      this.paginationService.buildPaginationParams(options);
-
-    const [items, total] =
-      await this.identityProviderRepository.findAndCount(paginationParams);
-
-    return { items, total };
   }
 
   private tranformIntoLegacy(
