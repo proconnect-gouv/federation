@@ -80,13 +80,15 @@ export class FqdnToProviderService {
     identityProviderUid: string,
     fqdns: Array<Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>>,
   ): Promise<void> {
-    fqdns.filter(Boolean).forEach(async (fqdn) => {
+    const filteredFqdns = fqdns.filter(Boolean);
+    for (let index = 0; index < filteredFqdns.length; index++) {
+      const { fqdn, acceptsDefaultIdp } = filteredFqdns[index];
       await this.fqdnToProviderRepository.save({
-        fqdn: fqdn.fqdn,
+        fqdn,
         identityProvider: identityProviderUid,
-        acceptsDefaultIdp: fqdn.acceptsDefaultIdp,
+        acceptsDefaultIdp,
       });
-    });
+    }
   }
 
   async updateFqdnsProvider(
