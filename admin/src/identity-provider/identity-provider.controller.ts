@@ -22,7 +22,6 @@ import { IdentityProviderDTO } from './dto/identity-provider.dto';
 import { plainToInstance } from 'class-transformer';
 import { Amr } from './enum';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
-import { IIdentityProviderDTO } from './interface';
 import { PaginationSortDirectionType } from '../pagination';
 
 @Controller('identity-provider')
