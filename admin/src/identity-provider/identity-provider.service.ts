@@ -61,13 +61,11 @@ export class IdentityProviderService {
      */
     const identityProviderInput = { ...defaultedProvider };
 
-    const newProvider = await this.transformDtoToEntity(
+    const providerToSave = await this.transformDtoToEntity(
       defaultedProvider,
       username,
       'create',
     );
-
-    const providerToSave = this.tranformIntoLegacy(newProvider);
 
     const saveOperation =
       await this.identityProviderRepository.insert(providerToSave);
@@ -132,14 +130,11 @@ export class IdentityProviderService {
      */
     const identityProviderInput = { ...identityProviderDto };
 
-    const newProvider = await this.transformDtoToEntity(
+    const providerToSave = await this.transformDtoToEntity(
       identityProviderDto,
       user,
       'update',
     );
-
-    // it will remove the fqdns from the provider object
-    const providerToSave = this.tranformIntoLegacy(newProvider);
 
     // Find the existing provider
     const existingProvider =
@@ -223,7 +218,7 @@ export class IdentityProviderService {
     identityProviderDto: IdentityProviderDTO,
     username: string,
     mode: 'create' | 'update',
-  ): Promise<IIdentityProvider> {
+  ) {
     const now = new Date();
 
     // quick-fix to not register these three in database...
@@ -253,7 +248,7 @@ export class IdentityProviderService {
         break;
     }
 
-    return {
+    const entity = {
       uid,
       ...identityProviderDto,
       active,
@@ -272,6 +267,8 @@ export class IdentityProviderService {
         identityProviderDto.specificText ||
         'Une erreur est survenue lors de la transmission de votre identité.',
     };
+
+    return this.tranformIntoLegacy(entity);
   }
 
   private tranformIntoLegacy(
