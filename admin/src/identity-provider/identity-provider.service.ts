@@ -145,9 +145,8 @@ export class IdentityProviderService {
     delete newProvider.uid;
     delete newProvider.createdAt;
 
-    // for fca: it will remove the fqdns from the provider object
-    const providerToSave: IIdentityProviderLegacy =
-      this.tranformIntoLegacy(newProvider);
+    // it will remove the fqdns from the provider object
+    const providerToSave = this.tranformIntoLegacy(newProvider);
 
     // Find the existing provider
     const existingProvider =
