@@ -50,8 +50,11 @@ export class IdentityProviderService {
   }
 
   async create(identityProviderDto: IdentityProviderDTO, username: string) {
-    const identityProviderDtoWithDefaultValues =
-      await this.addDefaultValuesToDto(identityProviderDto);
+    const defaultValues = await this.getDefaultValues();
+    const identityProviderDtoWithDefaultValues = {
+      ...defaultValues,
+      ...identityProviderDto,
+    };
 
     const fqdns = identityProviderDto.fqdns || [];
 
@@ -329,14 +332,11 @@ export class IdentityProviderService {
     return provider;
   }
 
-  private async addDefaultValuesToDto(
-    provider: IdentityProviderDTO,
-  ): Promise<IdentityProviderDTO> {
+  private async getDefaultValues(): Promise<IdentityProviderDTO> {
     const { defaultValues } = this.config.get('identity-provider');
 
     return {
       ...defaultValues,
-      ...provider,
     };
   }
 }
