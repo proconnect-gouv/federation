@@ -137,7 +137,9 @@ export class FqdnToProviderService {
     });
     if (existingFqdns.length > 0) {
       await this.fqdnToProviderRepository.delete({
-        _id: { $in: existingFqdns.map((fqdn) => fqdn._id) } as any,
+        _id: {
+          $in: existingFqdns.map((existingFqdn) => existingFqdn._id),
+        } as any,
       });
     }
   }
