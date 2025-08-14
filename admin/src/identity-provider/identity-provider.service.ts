@@ -61,14 +61,13 @@ export class IdentityProviderService {
      */
     const identityProviderInput = { ...defaultedProvider };
 
-    const newProvider: IIdentityProvider = await this.transformIntoEntity(
+    const newProvider = await this.transformIntoEntity(
       defaultedProvider,
       username,
       'create',
     );
 
-    const providerToSave: IIdentityProviderLegacy =
-      this.tranformIntoLegacy(newProvider);
+    const providerToSave = this.tranformIntoLegacy(newProvider);
 
     const saveOperation =
       await this.identityProviderRepository.insert(providerToSave);
@@ -109,9 +108,7 @@ export class IdentityProviderService {
       identityProviderFromDb.client_secret,
     );
 
-    const identityProvider: IIdentityProvider = this.tranformFromLegacy(
-      identityProviderFromDb,
-    );
+    const identityProvider = this.tranformFromLegacy(identityProviderFromDb);
 
     return identityProvider;
   }
@@ -135,7 +132,7 @@ export class IdentityProviderService {
      */
     const identityProviderInput = { ...identityProviderDto };
 
-    const newProvider: IIdentityProvider = await this.transformIntoEntity(
+    const newProvider = await this.transformIntoEntity(
       identityProviderDto,
       user,
       'update',
