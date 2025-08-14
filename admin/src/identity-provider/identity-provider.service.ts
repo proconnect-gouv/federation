@@ -51,11 +51,11 @@ export class IdentityProviderService {
     return this.identityProviderRepository.count();
   }
 
-  async create(provider: IIdentityProviderDTO, username: string) {
-    const defaultedProvider = await this.setDefaultValues(provider);
+  async create(identityProviderDto: IIdentityProviderDTO, username: string) {
+    const defaultedProvider = await this.setDefaultValues(identityProviderDto);
 
     /**
-     * we need to keep the fqdns from the provider object for fca
+     * we need to keep the fqdns from the identityProviderDto object for fca
      * the transform operation will remove them
      */
     const identityProviderInput = { ...defaultedProvider };
@@ -88,7 +88,7 @@ export class IdentityProviderService {
       action: 'create',
       user: username,
       id: identityProviderId,
-      name: provider.name,
+      name: identityProviderDto.name,
     });
 
     return identityProviderId;
