@@ -187,19 +187,12 @@ export class IdentityProviderService {
     return { items, total };
   }
 
-  private async transformDtoToEntity(
+  private transformDtoToEntity(
     identityProviderDto: IdentityProviderDTO,
     username: string,
     mode: 'create' | 'update',
-  ) {
+  ): Omit<IdentityProviderFromDb, '_id'> {
     const now = new Date();
-
-    // quick-fix to not register these three in database...
-    Reflect.deleteProperty(identityProviderDto, '_totp');
-    Reflect.deleteProperty(identityProviderDto, '_csrf');
-
-    // we don't want to store the fqdns in the provider collection
-    Reflect.deleteProperty(identityProviderDto, 'fqdns');
 
     const clientSecret = this.secretManager.encrypt(
       identityProviderDto.client_secret,
@@ -221,81 +214,59 @@ export class IdentityProviderService {
         break;
     }
 
-    const entity = {
+    return {
       uid,
-      ...identityProviderDto,
       active,
       display,
       createdAt,
       updatedAt: now,
       updatedBy: username,
       client_secret: clientSecret,
+      name: identityProviderDto.name,
+      title: identityProviderDto.title,
+      image: identityProviderDto.image,
+      imageFocus: identityProviderDto.imageFocus,
+      alt: identityProviderDto.alt,
+      eidas: identityProviderDto.eidas,
+      allowedAcr: identityProviderDto.allowedAcr,
+      discovery: identityProviderDto.discovery,
+      isBeta: identityProviderDto.isBeta,
+      order: identityProviderDto.order,
+      trustedIdentity: identityProviderDto.trustedIdentity,
+      siret: identityProviderDto.siret,
+      discoveryUrl: identityProviderDto.discoveryUrl,
       jwtAlgorithm: [],
       blacklistByIdentityProviderActivated: false,
-      whitelistByServiceProviderActivated: false,
-      messageToDisplayWhenInactive:
-        identityProviderDto.messageToDisplayWhenInactive ||
-        'Disponible prochainement',
+      WhitelistByServiceProviderActivated: false,
+      hoverMsg: identityProviderDto.messageToDisplayWhenInactive,
+      hoverRedirectLink: identityProviderDto.redirectionTargetWhenInactive,
+      clientID: identityProviderDto.clientId,
+      authzURL: identityProviderDto.authorizationUrl,
+      statusURL: identityProviderDto.statusUrl,
+      tokenURL: identityProviderDto.tokenUrl,
+      userInfoURL: identityProviderDto.userInfoUrl,
+      endSessionURL: identityProviderDto.logoutUrl,
+      jwksURL: identityProviderDto.jwksUrl,
+      mailto: identityProviderDto.emails.join('\r\n'),
+      url: identityProviderDto.issuer,
+      userinfo_encrypted_response_enc:
+        identityProviderDto.userinfo_encrypted_response_enc,
+      userinfo_encrypted_response_alg:
+        identityProviderDto.userinfo_encrypted_response_alg,
+      userinfo_signed_response_alg:
+        identityProviderDto.userinfo_signed_response_alg,
+      id_token_signed_response_alg:
+        identityProviderDto.id_token_signed_response_alg,
+      id_token_encrypted_response_alg:
+        identityProviderDto.id_token_encrypted_response_alg,
+      id_token_encrypted_response_enc:
+        identityProviderDto.id_token_encrypted_response_enc,
+      token_endpoint_auth_method:
+        identityProviderDto.token_endpoint_auth_method,
       specificText:
         identityProviderDto.specificText ||
         'Une erreur est survenue lors de la transmission de votre identité.',
     };
-
-    return this.tranformIntoLegacy(entity);
-  }
-
-  private tranformIntoLegacy(
-    provider: IIdentityProvider,
-  ): IIdentityProviderLegacy {
-    const legacyProvider: IIdentityProviderLegacy & IIdentityProvider = {
-      ...provider,
-      hoverMsg: provider.messageToDisplayWhenInactive,
-      hoverRedirectLink: provider.redirectionTargetWhenInactive,
-      clientID: provider.clientId,
-      authzURL: provider.authorizationUrl,
-      statusURL: provider.statusUrl,
-      tokenURL: provider.tokenUrl,
-      userInfoURL: provider.userInfoUrl,
-      endSessionURL: provider.logoutUrl,
-      jwksURL: provider.jwksUrl,
-      WhitelistByServiceProviderActivated:
-        provider.whitelistByServiceProviderActivated,
-      mailto: provider.emails.join('\r\n'),
-      url: provider.issuer,
-      userinfo_encrypted_response_enc: provider.userinfo_encrypted_response_enc,
-      userinfo_encrypted_response_alg: provider.userinfo_encrypted_response_alg,
-      userinfo_signed_response_alg: provider.userinfo_signed_response_alg,
-      id_token_signed_response_alg: provider.id_token_signed_response_alg,
-      id_token_encrypted_response_alg: provider.id_token_encrypted_response_alg,
-      id_token_encrypted_response_enc: provider.id_token_encrypted_response_enc,
-      token_endpoint_auth_method: provider.token_endpoint_auth_method,
-    };
-
-    delete legacyProvider.messageToDisplayWhenInactive;
-    delete legacyProvider.redirectionTargetWhenInactive;
-    delete legacyProvider.clientId;
-    delete legacyProvider.authorizationUrl;
-    delete legacyProvider.statusUrl;
-    delete legacyProvider.tokenUrl;
-    delete legacyProvider.userInfoUrl;
-    delete legacyProvider.logoutUrl;
-    delete legacyProvider.jwksUrl;
-    delete legacyProvider.whitelistByServiceProviderActivated;
-    delete legacyProvider.emails;
-    delete legacyProvider.issuer;
-    delete legacyProvider.modalActive;
-    delete legacyProvider.modalTitle;
-    delete legacyProvider.modalBody;
-    delete legacyProvider.modalContinueText;
-    delete legacyProvider.modalMoreInfoLabel;
-    delete legacyProvider.modalMoreInfoUrl;
-
-    Object.keys(legacyProvider)
-      .filter((key) => typeof legacyProvider[key] === 'undefined')
-      .map((key) => {
-        delete legacyProvider[key];
-      });
-    return legacyProvider;
   }
 
   private tranformFromLegacy(
