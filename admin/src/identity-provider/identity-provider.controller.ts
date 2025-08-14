@@ -68,7 +68,7 @@ export class IdentityProviderController {
 
     const identityProvidersWithFqdns =
       await this.fqdnToProviderService.getProvidersWithFqdns(
-        paginatedIdentityProviders as any,
+        paginatedIdentityProviders,
       );
 
     return {
