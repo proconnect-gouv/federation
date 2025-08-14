@@ -366,10 +366,7 @@ export class IdentityProviderService {
   ): Promise<IdentityProviderDTO> {
     const { defaultValues } = this.config.get('identity-provider');
 
-    const uid = uuidv4();
-
     return {
-      uid,
       ...defaultValues,
       ...provider,
     };
