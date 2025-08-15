@@ -1,5 +1,5 @@
 import { chain } from 'lodash';
-import QuickLRU from 'quick-lru';
+import QuickLRU = require('quick-lru');
 
 const defaultUser = {
   sub: '1',
