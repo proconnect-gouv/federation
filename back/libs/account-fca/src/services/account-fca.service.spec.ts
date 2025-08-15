@@ -168,5 +168,28 @@ describe('AccountFcaService', () => {
         idpSub: 'new-sub',
       });
     });
+
+    it('should leave keys alone if already present', async () => {
+      const existingAccount = {
+        sub: '12345',
+        active: true,
+        idpIdentityKeys: [{ idpUid: 'existing-uid', idpSub: 'existing-sub' }],
+      };
+
+      modelMock.findOne.mockResolvedValue(existingAccount);
+      modelMock.findOneAndUpdate.mockResolvedValue({});
+
+      const result = await service.getOrCreateAccount(
+        'existing-uid',
+        'existing-sub',
+      );
+
+      expect(result.idpIdentityKeys).toStrictEqual([
+        {
+          idpUid: 'existing-uid',
+          idpSub: 'existing-sub',
+        },
+      ]);
+    });
   });
 });

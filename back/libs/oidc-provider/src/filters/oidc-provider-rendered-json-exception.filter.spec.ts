@@ -103,6 +103,20 @@ describe('OidcProviderRenderedJsonExceptionFilter', () => {
     });
 
     it('should call parent method', () => {
+      // Given
+      exceptionMock.originalError = null;
+
+      // When
+      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
+
+      // Then
+      expect(spyParent).toHaveBeenCalledExactlyOnceWith(
+        exceptionMock,
+        hostMock,
+      );
+    });
+
+    it('should call parent method even if there is no wrapped exception', () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
