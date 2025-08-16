@@ -2,7 +2,7 @@ const LOCAL_STORAGE_MAIL = 'proConnectEmail';
 
 function init() {
   const localStorageEmail = localStorage.getItem('proConnectEmail');
-  const checkbox = document.getElementById('remember-me');
+  const checkbox = document.getElementById('should_remember_me');
   if (localStorageEmail) {
     checkbox.checked = true;
   } else {
