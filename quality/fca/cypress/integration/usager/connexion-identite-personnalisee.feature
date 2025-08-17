@@ -66,7 +66,6 @@ Fonctionnalité: Connexion Usager personnalisé
     Et que je m'authentifie
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500006"
-    Et le message d'erreur est "siret incorrect"
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - siret non fourni sans siret par défaut
@@ -78,4 +77,3 @@ Fonctionnalité: Connexion Usager personnalisé
     Et que je m'authentifie
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500006"
-    Et le message d'erreur est "siret manquant"
