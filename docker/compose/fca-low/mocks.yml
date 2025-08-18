@@ -1,5 +1,3 @@
-####################
-####################
 services:
   ####################
   # SP Mocks
@@ -32,7 +30,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-service-provider-fca-low'
 
   fsa2-low:
     hostname: fsa2-low
@@ -61,7 +59,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-service-provider-fca-low'
 
   fsa3-low:
     hostname: fsa3-low
@@ -90,7 +88,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-service-provider-fca-low'
 
   fsa4-low:
     hostname: fsa4-low
@@ -118,7 +116,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-service-provider-fca-low'
 
   ####################
   # IDP Mocks
@@ -152,7 +150,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-identity-provider-fca-low'
 
   fia2-low:
     hostname: fia2-low
@@ -182,7 +180,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-identity-provider-fca-low'
 
   moncomptepro:
     hostname: moncomptepro
@@ -212,7 +210,7 @@ services:
       - public
       - data
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-identity-provider-fca-low'
 
   ####################
   # DP Mocks
@@ -240,7 +238,7 @@ services:
     networks:
       - public
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-data-provider'
 
   dpa2-low:
     hostname: dpa2-low
@@ -264,4 +262,4 @@ services:
     networks:
       - public
     init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev mock-data-provider'
