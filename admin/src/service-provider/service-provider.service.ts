@@ -31,21 +31,21 @@ export class ServiceProviderService {
   }
 
   async createServiceProvider(
-    serviceProviderCreation: ServiceProviderDto,
+    serviceProviderDto: ServiceProviderDto,
     user: string,
   ) {
     const key: string = this.secretAdapter.generateKey();
 
     const entityId =
-      serviceProviderCreation.entityId || this.secretAdapter.generateKey();
+      serviceProviderDto.entityId || this.secretAdapter.generateKey();
 
-    const transformToLegacy = this.transformIntoLegacy(serviceProviderCreation);
+    const transformToLegacy = this.transformIntoLegacy(serviceProviderDto);
     const now = new Date();
 
     const saveOperation = await this.serviceProviderRepository.insert({
       ...transformToLegacy,
       // Set by default
-      active: serviceProviderCreation.active,
+      active: serviceProviderDto.active,
       client_secret: this.secretManager.encrypt(
         this.secretAdapter.generateSecret(),
       ),
