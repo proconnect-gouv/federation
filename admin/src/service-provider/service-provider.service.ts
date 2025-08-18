@@ -9,7 +9,7 @@ import { ICrudTrack } from '../interfaces';
 import { SecretManagerService } from '../utils/secret-manager.service';
 import { SecretAdapter } from '../utils/secret.adapter';
 
-import { ServiceProvider } from './service-provider.mongodb.entity';
+import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { IServiceProvider } from './interface/service-provider.interface';
 import { IServiceProviderOutput } from './interface/service-provider-output-interface';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
@@ -18,8 +18,8 @@ import { PaginationOptions, PaginationService } from '../pagination';
 @Injectable()
 export class ServiceProviderService {
   constructor(
-    @InjectRepository(ServiceProvider, 'fc-mongo')
-    private readonly serviceProviderRepository: Repository<ServiceProvider>,
+    @InjectRepository(ServiceProviderFromDb, 'fc-mongo')
+    private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
     private readonly secretManager: SecretManagerService,
     private readonly secretAdapter: SecretAdapter,
     private readonly logger: LoggerService,
@@ -70,7 +70,7 @@ export class ServiceProviderService {
     return saveOperation;
   }
 
-  async findById(id: string): Promise<ServiceProvider> {
+  async findById(id: string): Promise<ServiceProviderFromDb> {
     const serviceProvider =
       await this.serviceProviderRepository.findOneByOrFail({
         _id: new ObjectId(id),
@@ -175,7 +175,7 @@ export class ServiceProviderService {
   async generateNewSecret(
     serviceProviderID: string,
     currentUser: string,
-  ): Promise<ServiceProvider> {
+  ): Promise<ServiceProviderFromDb> {
     const serviceProvider =
       await this.serviceProviderRepository.findOneByOrFail({
         _id: new ObjectId(serviceProviderID),

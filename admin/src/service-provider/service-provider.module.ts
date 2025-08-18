@@ -12,11 +12,11 @@ import { ClaimsModule } from '../claims';
 
 import { ServiceProviderService } from './service-provider.service';
 import { ServiceProviderController } from './service-provider.controller';
-import { ServiceProvider } from './service-provider.mongodb.entity';
+import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ServiceProvider, FileStorage], 'fc-mongo'),
+    TypeOrmModule.forFeature([ServiceProviderFromDb, FileStorage], 'fc-mongo'),
     ScopesModule,
     ClaimsModule,
     IdentityProviderModule,

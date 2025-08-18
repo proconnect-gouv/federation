@@ -11,7 +11,7 @@ import { ScopesService } from '../scopes';
 import { claimsListMock, ClaimsService } from '../claims';
 
 import { ServiceProviderController } from './service-provider.controller';
-import { ServiceProvider } from './service-provider.mongodb.entity';
+import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ServiceProviderService } from './service-provider.service';
 
 const id: ObjectId = new ObjectId('5d9c677da8bb151b00720451');
@@ -117,7 +117,7 @@ describe('ServiceProviderController', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([ServiceProvider], 'fc-mongo')],
+      imports: [TypeOrmModule.forFeature([ServiceProviderFromDb], 'fc-mongo')],
       providers: [
         ServiceProviderController,
         ServiceProviderService,
@@ -126,7 +126,7 @@ describe('ServiceProviderController', () => {
         IdentityProviderService,
       ],
     })
-      .overrideProvider(getRepositoryToken(ServiceProvider, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(ServiceProviderFromDb, 'fc-mongo'))
       .useValue(serviceProviderRepository)
       .overrideProvider(ServiceProviderService)
       .useValue(serviceProviderServiceMock)
@@ -168,7 +168,7 @@ describe('ServiceProviderController', () => {
       const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
 
       // Mocking Items
-      const itemTest1: ServiceProvider = {
+      const itemTest1: ServiceProviderFromDb = {
         _id: itemId,
         name: 'Site Usagers',
         redirect_uris: ['https://url.com'],
@@ -190,7 +190,7 @@ describe('ServiceProviderController', () => {
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       };
 
-      const itemTest2: ServiceProvider = {
+      const itemTest2: ServiceProviderFromDb = {
         _id: itemId,
         name: 'Site Usagers',
         redirect_uris: ['https://url.com'],
@@ -213,7 +213,7 @@ describe('ServiceProviderController', () => {
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       };
 
-      const itemTest3: ServiceProvider = {
+      const itemTest3: ServiceProviderFromDb = {
         _id: itemId,
         name: 'Site Usagers',
         redirect_uris: ['https://url.com'],
@@ -281,7 +281,7 @@ describe('ServiceProviderController', () => {
       const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
 
       // Mocking Items
-      const itemTest1: ServiceProvider = {
+      const itemTest1: ServiceProviderFromDb = {
         _id: itemId,
         name: 'Site Usagers',
         signup_id: '123456',
@@ -306,7 +306,7 @@ describe('ServiceProviderController', () => {
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       };
 
-      const itemTest2: ServiceProvider = {
+      const itemTest2: ServiceProviderFromDb = {
         _id: itemId,
         name: 'Site Usagers',
         signup_id: '123456',
@@ -331,7 +331,7 @@ describe('ServiceProviderController', () => {
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       };
 
-      const itemTest3: ServiceProvider = {
+      const itemTest3: ServiceProviderFromDb = {
         _id: itemId,
         name: 'Site Usagers',
         signup_id: '123456',
@@ -920,12 +920,12 @@ describe('ServiceProviderController', () => {
       const sortDirection = 'asc';
 
       // Mocking Items
-      const itemTest1: ServiceProvider = {
+      const itemTest1: ServiceProviderFromDb = {
         name: 'joker',
         ...defaultSpMock,
       };
 
-      const itemTest2: ServiceProvider = {
+      const itemTest2: ServiceProviderFromDb = {
         name: 'Batman',
         ...defaultSpMock,
       };
@@ -970,12 +970,12 @@ describe('ServiceProviderController', () => {
       const sortDirection = 'desc';
 
       // Mocking Items
-      const itemTest1: ServiceProvider = {
+      const itemTest1: ServiceProviderFromDb = {
         name: 'Batman',
         ...defaultSpMock,
       };
 
-      const itemTest2: ServiceProvider = {
+      const itemTest2: ServiceProviderFromDb = {
         name: 'joker',
         ...defaultSpMock,
       };

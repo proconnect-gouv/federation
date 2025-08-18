@@ -24,7 +24,7 @@ import {
 } from '../utils/transforms/string.transform';
 import { ScopesService } from '../scopes';
 import { Claims, ClaimsService } from '../claims';
-import { ServiceProvider } from './service-provider.mongodb.entity';
+import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ServiceProviderService } from './service-provider.service';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { DeleteServiceProviderDto } from './dto/delete-service-provider.dto';
@@ -34,8 +34,8 @@ import { PaginationSortDirectionType } from '../pagination';
 @Controller('service-provider')
 export class ServiceProviderController {
   constructor(
-    @InjectRepository(ServiceProvider, 'fc-mongo')
-    private readonly serviceProviderRepository: Repository<ServiceProvider>,
+    @InjectRepository(ServiceProviderFromDb, 'fc-mongo')
+    private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
     private readonly serviceProviderService: ServiceProviderService,
     private readonly scopesService: ScopesService,
     private readonly claimsService: ClaimsService,

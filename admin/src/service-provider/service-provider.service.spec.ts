@@ -9,7 +9,7 @@ import { SecretManagerService } from '../utils/secret-manager.service';
 import { SecretAdapter } from '../utils/secret.adapter';
 
 import { ServiceProviderService } from './service-provider.service';
-import { ServiceProvider } from './service-provider.mongodb.entity';
+import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ICrudTrack } from '../interfaces';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { PaginationService } from '../pagination';
@@ -102,7 +102,7 @@ describe('ServiceProviderService', () => {
     jest.resetAllMocks();
 
     module = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([ServiceProvider], 'fc-mongo')],
+      imports: [TypeOrmModule.forFeature([ServiceProviderFromDb], 'fc-mongo')],
       providers: [
         ServiceProviderService,
         Repository,
@@ -112,7 +112,7 @@ describe('ServiceProviderService', () => {
         PaginationService,
       ],
     })
-      .overrideProvider(getRepositoryToken(ServiceProvider, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(ServiceProviderFromDb, 'fc-mongo'))
       .useValue(serviceProviderRepository)
       .overrideProvider(SecretManagerService)
       .useValue(secretManagerMocked)
