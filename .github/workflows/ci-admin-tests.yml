@@ -76,7 +76,6 @@ jobs:
         run: |
           ./docker-stack prune-ci
           ./docker-stack up exploitation-fca-low
-          ./docker-stack start-all-ci
           ./docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests
