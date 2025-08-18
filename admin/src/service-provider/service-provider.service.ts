@@ -39,7 +39,7 @@ export class ServiceProviderService {
     const entityId =
       serviceProviderDto.entityId || this.secretAdapter.generateKey();
 
-    const transformToLegacy = this.transformIntoLegacy(serviceProviderDto);
+    const transformToLegacy = this.transformDtoIntoEntity(serviceProviderDto);
     const now = new Date();
 
     const saveOperation = await this.serviceProviderRepository.insert({
@@ -207,7 +207,7 @@ export class ServiceProviderService {
     return { items, total };
   }
 
-  private transformIntoLegacy(
+  private transformDtoIntoEntity(
     serviceProviderCreation: IServiceProvider,
   ): IServiceProviderOutput {
     return {
