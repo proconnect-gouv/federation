@@ -5,7 +5,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 
 import {
   IdentityProviderService,
-  identityProvidersMock,
+  identityProviderFactory,
 } from '../identity-provider';
 import { ScopesService } from '../scopes';
 import { claimsListMock, ClaimsService } from '../claims';
@@ -148,6 +148,10 @@ describe('ServiceProviderController', () => {
 
     renderMock.render.mockReturnValueOnce(true);
     res.status.mockReturnValueOnce(renderMock);
+    const identityProvidersMock = [
+      identityProviderFactory.createIdentityProviderFromDb({}),
+      identityProviderFactory.createIdentityProviderFromDb({}),
+    ];
     identityProviderServiceMock.getAll.mockResolvedValue(identityProvidersMock);
   });
 
