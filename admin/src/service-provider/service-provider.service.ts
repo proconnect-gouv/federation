@@ -33,36 +33,19 @@ export class ServiceProviderService {
     serviceProviderDto: ServiceProviderDto,
     user: string,
   ) {
-    const key: string = this.secretAdapter.generateKey();
+    const transformToLegacy = this.transformDtoIntoEntity(
+      serviceProviderDto,
+      user,
+    );
 
-    const entityId =
-      serviceProviderDto.entityId || this.secretAdapter.generateKey();
-
-    const transformToLegacy = this.transformDtoIntoEntity(serviceProviderDto);
-    const now = new Date();
-
-    const saveOperation = await this.serviceProviderRepository.insert({
-      ...transformToLegacy,
-      // Set by default
-      active: serviceProviderDto.active,
-      client_secret: this.secretManager.encrypt(
-        this.secretAdapter.generateSecret(),
-      ),
-      secretCreatedAt: now,
-      createdAt: now,
-      updatedAt: now,
-      secretUpdatedAt: now,
-      updatedBy: user,
-      secretUpdatedBy: user,
-      key,
-      entityId,
-    });
+    const saveOperation =
+      await this.serviceProviderRepository.insert(transformToLegacy);
 
     this.track({
       entity: 'service-provider',
       action: 'create',
       user,
-      name: key,
+      name: transformToLegacy.key,
       id: saveOperation.identifiers[0].id,
     });
 
@@ -208,9 +191,14 @@ export class ServiceProviderService {
 
   private transformDtoIntoEntity(
     serviceProviderDto: ServiceProviderDto,
-  ): IServiceProviderOutput {
+    user: string,
+  ): Omit<ServiceProviderFromDb, '_id'> {
+    const now = new Date();
+    const entityId =
+      serviceProviderDto.entityId || this.secretAdapter.generateKey();
+    const key = this.secretAdapter.generateKey();
+
     return {
-      title: serviceProviderDto.name,
       name: serviceProviderDto.name,
       redirect_uris: serviceProviderDto.redirectUri,
       post_logout_redirect_uris: serviceProviderDto.redirectUriLogout,
@@ -233,6 +221,19 @@ export class ServiceProviderService {
       response_types: serviceProviderDto.response_types,
       grant_types: serviceProviderDto.grant_types,
       jwks_uri: serviceProviderDto.jwks_uri,
+      active: serviceProviderDto.active,
+      client_secret: this.secretManager.encrypt(
+        this.secretAdapter.generateSecret(),
+      ),
+      secretCreatedAt: now,
+      createdAt: now,
+      updatedAt: now,
+      secretUpdatedAt: now,
+      updatedBy: user,
+      secretUpdatedBy: user,
+      key,
+      entityId,
+      trustedIdentity: false, // unused value, TODO needs to be deleted
     };
   }
 }
