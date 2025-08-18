@@ -49,7 +49,7 @@ export class IdentityProviderService {
   }
 
   async create(identityProviderDto: IdentityProviderDTO, username: string) {
-    const defaultValues = await this.getDefaultValues();
+    const defaultValues = this.getDefaultValues();
     const identityProviderDtoWithDefaultValues = {
       ...defaultValues,
       ...identityProviderDto,
