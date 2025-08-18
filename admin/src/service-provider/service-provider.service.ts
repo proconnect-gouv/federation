@@ -208,7 +208,7 @@ export class ServiceProviderService {
   }
 
   private transformDtoIntoEntity(
-    serviceProviderDto: IServiceProvider,
+    serviceProviderDto: ServiceProviderDto,
   ): IServiceProviderOutput {
     return {
       title: serviceProviderDto.name,
