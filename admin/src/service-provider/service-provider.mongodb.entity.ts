@@ -12,6 +12,9 @@ export class ServiceProviderFromDb {
   _id: ObjectId;
 
   @Column()
+  title: string;
+
+  @Column()
   name: string;
 
   @Column()
