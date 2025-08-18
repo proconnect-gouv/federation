@@ -20,7 +20,6 @@ services:
 
   bridge-proxy-rie:
     hostname: bridge-proxy-rie
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
@@ -52,7 +51,6 @@ services:
   ####################
   csmr-rie:
     hostname: csmr-rie
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
@@ -92,7 +90,6 @@ services:
 
   fia-rie-low:
     hostname: fia-rie-low
-    image: pc-nodejs
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
