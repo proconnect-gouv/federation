@@ -208,32 +208,32 @@ export class ServiceProviderService {
   }
 
   private transformDtoIntoEntity(
-    serviceProviderCreation: IServiceProvider,
+    serviceProviderDto: IServiceProvider,
   ): IServiceProviderOutput {
     return {
-      title: serviceProviderCreation.name,
-      name: serviceProviderCreation.name,
-      redirect_uris: serviceProviderCreation.redirectUri,
-      post_logout_redirect_uris: serviceProviderCreation.redirectUriLogout,
-      site: serviceProviderCreation.site,
-      type: serviceProviderCreation.type,
-      email: serviceProviderCreation.emails.join('\n'),
-      IPServerAddressesAndRanges: serviceProviderCreation.ipAddresses,
-      scopes: serviceProviderCreation.scopes,
-      claims: serviceProviderCreation.claims || [],
+      title: serviceProviderDto.name,
+      name: serviceProviderDto.name,
+      redirect_uris: serviceProviderDto.redirectUri,
+      post_logout_redirect_uris: serviceProviderDto.redirectUriLogout,
+      site: serviceProviderDto.site,
+      type: serviceProviderDto.type,
+      email: serviceProviderDto.emails.join('\n'),
+      IPServerAddressesAndRanges: serviceProviderDto.ipAddresses,
+      scopes: serviceProviderDto.scopes,
+      claims: serviceProviderDto.claims || [],
       userinfo_signed_response_alg:
-        serviceProviderCreation.userinfo_signed_response_alg,
+        serviceProviderDto.userinfo_signed_response_alg,
       id_token_signed_response_alg:
-        serviceProviderCreation.id_token_signed_response_alg,
+        serviceProviderDto.id_token_signed_response_alg,
       introspection_signed_response_alg:
-        serviceProviderCreation.introspection_signed_response_alg,
+        serviceProviderDto.introspection_signed_response_alg,
       introspection_encrypted_response_alg:
-        serviceProviderCreation.introspection_encrypted_response_alg,
+        serviceProviderDto.introspection_encrypted_response_alg,
       introspection_encrypted_response_enc:
-        serviceProviderCreation.introspection_encrypted_response_enc,
-      response_types: serviceProviderCreation.response_types,
-      grant_types: serviceProviderCreation.grant_types,
-      jwks_uri: serviceProviderCreation.jwks_uri,
+        serviceProviderDto.introspection_encrypted_response_enc,
+      response_types: serviceProviderDto.response_types,
+      grant_types: serviceProviderDto.grant_types,
+      jwks_uri: serviceProviderDto.jwks_uri,
     };
   }
 }
