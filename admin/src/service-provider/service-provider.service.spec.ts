@@ -230,9 +230,9 @@ describe('ServiceProviderService', () => {
     });
 
     // todo: remove this ref to legacy
-    it('should call transformIntoLegacy method', async () => {
+    it('should call transformDtoIntoEntity method', async () => {
       // Given
-      serviceProviderService['transformIntoLegacy'] = jest
+      serviceProviderService['transformDtoIntoEntity'] = jest
         .fn()
         .mockReturnValue({});
 
@@ -244,10 +244,10 @@ describe('ServiceProviderService', () => {
 
       // Then
       expect(
-        serviceProviderService['transformIntoLegacy'],
+        serviceProviderService['transformDtoIntoEntity'],
       ).toHaveBeenCalledTimes(1);
       expect(
-        serviceProviderService['transformIntoLegacy'],
+        serviceProviderService['transformDtoIntoEntity'],
       ).toHaveBeenCalledWith({
         key: 'keyMock',
         active: true,
@@ -265,7 +265,7 @@ describe('ServiceProviderService', () => {
 
     it('should call insert method', async () => {
       // Given
-      serviceProviderService['transformIntoLegacy'] = jest
+      serviceProviderService['transformDtoIntoEntity'] = jest
         .fn()
         .mockReturnValue(serviceProviderMock);
 
