@@ -181,9 +181,9 @@ export class ServiceProviderService {
         _id: new ObjectId(serviceProviderID),
       });
 
-    const unEncryptedSecret = await this.secretAdapter.generateSecret();
+    const unEncryptedSecret = this.secretAdapter.generateSecret();
 
-    const newClientSecret = await this.secretManager.encrypt(unEncryptedSecret);
+    const newClientSecret = this.secretManager.encrypt(unEncryptedSecret);
 
     const pastClientSecret = serviceProvider.client_secret;
     const now = new Date();
