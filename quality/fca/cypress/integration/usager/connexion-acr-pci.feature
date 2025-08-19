@@ -27,6 +27,7 @@ Fonctionnalité: Connexion Usager - ACR with PCI
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "user-mfa-proconnect-ci3@yopmail.com"
+    Et que je clique sur la checkbox "se souvenir de moi"
     Quand je clique sur le bouton de connexion
     Et que je rentre un mot de passe valide sur ProConnect Identité
     Alors je suis redirigé vers la page fournisseur de service "par défaut"
