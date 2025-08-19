@@ -6,53 +6,6 @@ _log() {
   $DOCKER_COMPOSE exec ${NO_TTY} ${app} pm2 logs
 }
 
-_start() {
-  local apps="${@:-no-container}"
-  _clean_pc_dist "${apps}"
-
-  for app in ${apps}; do
-    echo "   * Starting app ${app}"
-      _do_start "${app}"
-  done
-
-  # Reload RP in case the app took to long and was considered down by Nginx
-  _reload_rp
-}
-
-_start_prod() {
-  local apps="${@:-no-container}"
-  _clean_pc_dist "${apps}"
-
-  for app in ${apps}; do
-    task "   * Starting app \e[3m${app}\e[0m" \
-      "_do_start_prod" "${app}"
-  done
-
-  # Reload RP in case the app took to long and was considered down by Nginx
-  _reload_rp
-}
-
-_start_dev() {
-  local apps="${@:-no-container}"
-  for app in ${apps}; do
-    task "   * Starting app \e[3m${app}\e[0m" \
-      "_do_start_dev" "${app}"
-  done
-
-  # Reload RP in case the app took to long and was considered down by Nginx
-  _reload_rp
-}
-
-_start_ci() {
-  local apps="${@:-no-container}"
-  for app in ${apps}; do
-      _do_start_ci "${app}"
-  done
-
-  # Reload RP in case the app took to long and was considered down by Nginx
-  _reload_rp
-}
-
 _detect_instances() {
   local apps="${@:-no-container}"
   local instances=$(
@@ -74,48 +27,6 @@ _clean_pc_dist() {
     echo "    * Purging build dir for ${instance}"
     rm -rf "src/fc/back/dist/instances/${instance}"
   done
-}
-
-_do_start() {
-  local app=$1
-
-  cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "/opt/scripts/start.sh"
-}
-
-_do_start_ci() {
-  local app=$1
-
-  cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "/opt/scripts/start-ci.sh"
-}
-
-_do_start_dev() {
-  local app=$1
-
-  cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "/opt/scripts/start-dev.sh"
-}
-
-_do_start_prod() {
-  local app=$1
-
-  cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec ${NO_TTY} "${app}" "/opt/scripts/start-prod.sh"
-}
-
-_start_all() {
-
-  local containers=$(_get_node_containers_to_start)
-  echo " * Automatically start apps for started nodejs containers"
-  echo "   * Found containers to start: ${containers}"
-  _start "${containers}"
-}
-
-_start_all_ci() {
-  local containers=$(_get_node_containers_to_start)
-  echo " * Automatically start apps for started nodejs containers"
-  _start_ci "${containers}"
 }
 
 _stop() {
