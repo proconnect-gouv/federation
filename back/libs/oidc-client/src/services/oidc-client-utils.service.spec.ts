@@ -5,7 +5,7 @@
  */
 import { isURL } from 'class-validator';
 import { JWK } from 'jose-v2';
-import { CallbackParamsType, errors } from 'openid-client';
+import { ClientError } from 'openid-client-v6';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -332,7 +332,7 @@ describe('OidcClientUtilsService', () => {
       state: 'callbackParamsState',
       nonce: 'callbackParamsNonce',
     };
-    const callbackParams: CallbackParamsType = {
+    const callbackParams: Record<string, string> = {
       state: 'callbackParamsState',
       code: 'callbackParamsCode',
     };
@@ -386,19 +386,7 @@ describe('OidcClientUtilsService', () => {
 
     it('should throw FcException if oidc-client throws OPError', async () => {
       // Given
-      const exception = new errors.OPError({ error: 'invalid_scope' });
-      callbackMock.mockRejectedValueOnce(exception);
-      // Then
-      await expect(
-        service.getTokenSet(req, providerId, params),
-      ).rejects.toThrow(FcException);
-    });
-
-    it('should throw FcException if oidc-client throws RPError', async () => {
-      // Given
-      const exception = new errors.RPError({
-        message: 'state missing from the response',
-      });
+      const exception = new ClientError('invalid_scope');
       callbackMock.mockRejectedValueOnce(exception);
       // Then
       await expect(
@@ -411,7 +399,7 @@ describe('OidcClientUtilsService', () => {
     const params = {
       state: Symbol('state'),
       code: Symbol('code'),
-    } as unknown as CallbackParamsType;
+    } as unknown as Record<string, string>;
     const state = params.state;
 
     it('should throw if state is not provided in url', () => {

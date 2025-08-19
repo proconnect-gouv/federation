@@ -1,7 +1,16 @@
 import { IsArray, IsBoolean, IsIn, IsNumber, IsString } from 'class-validator';
-import { ClientAuthMethod, ResponseType } from 'openid-client';
 
 import { SUPPORTED_SIG_ALG } from '@fc/cryptography';
+
+export type ResponseType = 'code' | 'id_token' | 'code id_token' | 'none' | string;
+export type ClientAuthMethod =
+  | 'client_secret_basic'
+  | 'client_secret_post'
+  | 'client_secret_jwt'
+  | 'private_key_jwt'
+  | 'tls_client_auth'
+  | 'self_signed_tls_client_auth'
+  | 'none';
 
 export class ClientMetadata {
   @IsString()

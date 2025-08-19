@@ -4,7 +4,6 @@ import {
   KoaContextWithOIDC,
   Provider,
 } from 'oidc-provider';
-import { HttpOptions } from 'openid-client';
 
 import { Global, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
@@ -102,7 +101,7 @@ export class OidcProviderService {
    *
    * @param {HttpOptions} options
    */
-  private getHttpOptions(options: HttpOptions): HttpOptions {
+  private getHttpOptions(options: Record<string, any>): Record<string, any> {
     options.timeout = this.configuration.timeout;
     return options;
   }

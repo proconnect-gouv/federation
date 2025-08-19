@@ -15,6 +15,8 @@ services:
         condition: service_healthy
       redis-pwd:
         condition: service_healthy
+    ports:
+      - 9229:9229
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '/var/www/app/node_modules'

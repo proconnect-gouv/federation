@@ -1,7 +1,7 @@
 import { JWK } from 'jose-v4';
-import { Client, custom, Issuer } from 'openid-client';
+import { ClientMetadata, Configuration, discovery } from 'openid-client-v6';
 
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { IdentityProviderMetadata } from '@fc/oidc';
 
@@ -13,16 +13,10 @@ import {
 import { OidcClientConfigService } from './oidc-client-config.service';
 
 @Injectable()
-export class OidcClientIssuerService implements OnModuleInit {
-  private IssuerProxy = Issuer;
+export class OidcClientIssuerService {
+  private IssuerProxy = { discover: discovery };
 
   constructor(private readonly config: OidcClientConfigService) {}
-
-  async onModuleInit() {
-    const { httpOptions } = await this.config.get();
-
-    custom.setHttpOptionsDefaults(httpOptions);
-  }
 
   /**
    * Get Idp data in idp list.
@@ -65,20 +59,15 @@ export class OidcClientIssuerService implements OnModuleInit {
    * @returns providers metadata
    * @throws Error
    */
-  private async getIssuer(issuerId: string): Promise<Issuer<Client>> {
+  private async getIssuer(issuerId: string): Promise<Configuration> {
     const idpMetadata = await this.getIdpMetadata(issuerId);
+    const clientMeta = idpMetadata.client as ClientMetadata;
 
     if (idpMetadata.discovery) {
-      /**
-       * @TODO #142 handle network failure with specific Exception / error code
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/142
-       */
-      const issuer = await this.IssuerProxy.discover(idpMetadata.discoveryUrl);
-
-      return issuer;
+      return discovery(new URL(idpMetadata.discoveryUrl), idpMetadata.client.client_id, clientMeta);
     }
 
-    return new this.IssuerProxy(idpMetadata.issuer);
+    throw Error("discovery required");
   }
 
   private async getClientClass(): Promise<OidcClientClass> {
@@ -88,18 +77,18 @@ export class OidcClientIssuerService implements OnModuleInit {
     return clientClass;
   }
 
-  public async getClient(issuerId: string): Promise<Client> {
+  public async getClient(issuerId: string): Promise<Configuration> {
     const idpMetadata = await this.getIdpMetadata(issuerId);
 
     const issuer = await this.getIssuer(issuerId);
     const { jwks } = await this.config.get();
     const clientClass = await this.getClientClass();
 
+    return issuer;
+
     const client = new issuer[clientClass](
       idpMetadata.client,
       jwks as { keys: JWK[] },
     );
-
-    return client;
   }
 }

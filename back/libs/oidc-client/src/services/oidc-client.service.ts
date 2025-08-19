@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { IdTokenClaims, TokenSet } from 'openid-client';
+import { TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client-v6';
 
 import { Injectable } from '@nestjs/common';
 
@@ -40,7 +40,7 @@ export class OidcClientService {
      * - voir commit original : 440d0a1734e0e1206b7e21781cbb0f186a93dd82
      */
     // OIDC: call idp's /token endpoint
-    const tokenSet: TokenSet = await this.utils.getTokenSet(
+    const tokenSet: (TokenEndpointResponseHelpers & TokenEndpointResponse) = await this.utils.getTokenSet(
       req,
       idpId,
       params,
@@ -52,7 +52,7 @@ export class OidcClientService {
       id_token: idToken,
       refresh_token: refreshToken,
     } = tokenSet;
-    const { acr, amr = [] }: IdTokenClaims = tokenSet.claims();
+    const { acr, amr = [] }: Record<string,any> = tokenSet.claims();
 
     const tokenResult = plainToInstance(TokenResultDto, {
       acr,
@@ -87,7 +87,7 @@ export class OidcClientService {
   async getEndSessionUrl(
     ipdId: string,
     stateFromSession: string,
-    idTokenHint?: TokenSet | string,
+    idTokenHint?: string,
     postLogoutRedirectUri?: string,
   ) {
     return await this.utils.getEndSessionUrl(

@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { isEmpty } from 'lodash';
-import { AuthorizationParameters } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';
 
@@ -59,7 +58,7 @@ export class CoreFcaService {
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizeParams: AuthorizationParameters = {
+    const authorizeParams: Record<string, any> = {
       state,
       nonce,
       scope,
@@ -94,6 +93,7 @@ export class CoreFcaService {
       authorizeParams['acr_values'] = 'eidas1';
     }
 
+    authorizeParams['claims'] = JSON.stringify(authorizeParams['claims']);
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
       idpId,
       authorizeParams,
@@ -113,7 +113,7 @@ export class CoreFcaService {
 
     this.session.set('User', sessionPayload);
 
-    res.redirect(authorizationUrl);
+    res.redirect(authorizationUrl.toString());
   }
 
   /**
