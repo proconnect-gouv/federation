@@ -41,8 +41,9 @@ describe('ServiceProviderService', () => {
 
   const userMock = 'userMockValue';
 
-  const serviceProviderMock = serviceProviderFactory.createServiceProviderDto({})
-
+  const serviceProviderMock = serviceProviderFactory.createServiceProviderDto(
+    {},
+  );
 
   const insertResultMock = {
     identifiers: [{ id: 'insertedIdMock' }],
@@ -104,12 +105,12 @@ describe('ServiceProviderService', () => {
   });
 
   describe('createServiceProvider', () => {
-    const expectedServiceProviderCreated = serviceProviderFactory.createServiceProviderFromDb({
-      client_secret: 'FE1CE803iuyiuyiy',
-      IPServerAddressesAndRanges: ['192.0.0.0'],
-      key: 'secretKeyMocked',
-
-    });
+    const expectedServiceProviderCreated =
+      serviceProviderFactory.createServiceProviderFromDb({
+        client_secret: 'FE1CE803iuyiuyiy',
+        IPServerAddressesAndRanges: ['192.0.0.0'],
+        key: 'secretKeyMocked',
+      });
     beforeEach(() => {
       // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
@@ -161,7 +162,6 @@ describe('ServiceProviderService', () => {
       expect(secretManagerMocked.encrypt).toHaveBeenCalledWith('FE1CE803');
     });
 
-    // todo: remove this ref to legacy
     it('should call transformDtoIntoEntity method', async () => {
       // Given
       serviceProviderService['transformDtoIntoEntity'] = jest
@@ -180,26 +180,14 @@ describe('ServiceProviderService', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         serviceProviderService['transformDtoIntoEntity'],
-      ).toHaveBeenCalledWith({
-        key: 'keyMock',
-        active: true,
-        emails: ['v@b.com'],
-        ipAddresses: ['192.0.0.0'],
-        name: 'monfs',
-        redirectUri: ['https://monfs.com'],
-        redirectUriLogout: ['https://monfs.com/logout'],
-        scopes: [],
-        site: ['https://monfs.com'],
-        trustedIdentity: false,
-        type: 'private',
-      });
+      ).toHaveBeenCalledWith(serviceProviderMock, 'user');
     });
 
     it('should call insert method', async () => {
       // Given
       serviceProviderService['transformDtoIntoEntity'] = jest
         .fn()
-        .mockReturnValue(serviceProviderMock);
+        .mockReturnValue(expectedServiceProviderCreated);
 
       // When
       await serviceProviderService.createServiceProvider(
