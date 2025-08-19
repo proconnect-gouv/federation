@@ -54,41 +54,6 @@ describe('ServiceProviderService', () => {
     trustedIdentity: false,
   } as unknown as ServiceProviderDto;
 
-  const expectedServiceProviderCreated = {
-    active: true,
-    name: 'monfs',
-    site: ['https://monfs.com'],
-    client_secret: 'FE1CE803iuyiuyiy',
-    createdAt: expect.any(Date),
-    emails: ['v@b.com'],
-    entityId: 'secretKeyMocked',
-    ipAddresses: ['192.0.0.0'],
-    key: 'secretKeyMocked',
-    redirectUri: ['https://monfs.com'],
-    redirectUriLogout: ['https://monfs.com/logout'],
-    scopes: [],
-    secretCreatedAt: expect.any(Date),
-    secretUpdatedAt: expect.any(Date),
-    secretUpdatedBy: 'user',
-    trustedIdentity: false,
-    type: 'private',
-    updatedAt: expect.any(Date),
-    updatedBy: 'user',
-  };
-
-  const expectedServiceProviderUpdated = {
-    active: true,
-    name: 'monfs',
-    site: ['https://monfs.com'],
-    email: 'v@b.com',
-    IPServerAddressesAndRanges: ['192.0.0.0'],
-    redirect_uris: ['https://monfs.com'],
-    post_logout_redirect_uris: ['https://monfs.com/logout'],
-    scopes: ['openid'],
-    type: 'private',
-    updatedAt: expect.any(Date),
-    updatedBy: 'userMockValue',
-  };
 
   const insertResultMock = {
     identifiers: [{ id: 'insertedIdMock' }],
@@ -150,6 +115,27 @@ describe('ServiceProviderService', () => {
   });
 
   describe('createServiceProvider', () => {
+    const expectedServiceProviderCreated = {
+      active: true,
+      name: 'monfs',
+      site: ['https://monfs.com'],
+      client_secret: 'FE1CE803iuyiuyiy',
+      createdAt: expect.any(Date),
+      emails: ['v@b.com'],
+      entityId: 'secretKeyMocked',
+      ipAddresses: ['192.0.0.0'],
+      key: 'secretKeyMocked',
+      redirectUri: ['https://monfs.com'],
+      redirectUriLogout: ['https://monfs.com/logout'],
+      scopes: [],
+      secretCreatedAt: expect.any(Date),
+      secretUpdatedAt: expect.any(Date),
+      secretUpdatedBy: 'user',
+      trustedIdentity: false,
+      type: 'private',
+      updatedAt: expect.any(Date),
+      updatedBy: 'user',
+    };
     beforeEach(() => {
       // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
@@ -316,6 +302,19 @@ describe('ServiceProviderService', () => {
 
   describe('update()', () => {
     const id = '5d4d6d29bbdfbd203da312f2';
+    const expectedServiceProviderUpdated = {
+      active: true,
+      name: 'monfs',
+      site: ['https://monfs.com'],
+      email: 'v@b.com',
+      IPServerAddressesAndRanges: ['192.0.0.0'],
+      redirect_uris: ['https://monfs.com'],
+      post_logout_redirect_uris: ['https://monfs.com/logout'],
+      scopes: ['openid'],
+      type: 'private',
+      updatedAt: expect.any(Date),
+      updatedBy: 'userMockValue',
+    };
 
     beforeEach(() => {
       // tslint:disable-next-line:no-string-literal
