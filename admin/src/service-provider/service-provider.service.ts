@@ -10,7 +10,6 @@ import { SecretManagerService } from '../utils/secret-manager.service';
 import { SecretAdapter } from '../utils/secret.adapter';
 
 import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
-import { IServiceProviderOutput } from './interface/service-provider-output-interface';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { PaginationOptions, PaginationService } from '../pagination';
 
