@@ -8,6 +8,7 @@ Fonctionnalité: Connexion avec LocalStorage
     Et que je clique sur la checkbox "se souvenir de moi"
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité "<idpDescription>"
+    Alors la page du FI affiche remember_me "true"
     Quand je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
@@ -15,6 +16,7 @@ Fonctionnalité: Connexion avec LocalStorage
     Et je clique sur la checkbox "se souvenir de moi"
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité "<idpDescription>"
+    Alors la page du FI affiche remember_me "false"
     Quand je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
@@ -31,6 +33,7 @@ Fonctionnalité: Connexion avec LocalStorage
     Et que j'entre l'email "albus.dumbledore@hogwarts.uk"
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité "moncomptepro"
+    Alors la page du FI affiche remember_me "false"
     Quand je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction

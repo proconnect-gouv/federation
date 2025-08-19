@@ -89,6 +89,13 @@ Then(
   },
 );
 
+Then(
+  /la page du FI affiche remember_me "([^"]*)"/,
+  function (expectedValue: string) {
+    cy.contains(`"remember_me": "${expectedValue}"`);
+  },
+);
+
 Then('le champ identifiant correspond à {string}', function (email: string) {
   cy.get('input[name="email"]').should('have.value', email);
 });

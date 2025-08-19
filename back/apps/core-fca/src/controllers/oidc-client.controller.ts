@@ -133,13 +133,15 @@ export class OidcClientController {
   ): Promise<void> {
     // if email is set, this controller is called from the interaction page
     // if identityProviderUid is set, this controller is called directly from the sp page via idp_hint or from the select-idp page
-    const { email, identityProviderUid } = body;
+    const { email, identityProviderUid, rememberMe } = body;
 
     // TODO(douglasduteil): temporary solution to avoid blocking the user
     // We are testing the email validity without breaking the flow here
     await this.emailValidatorService.validate(email);
 
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
+
+    userSession.set('rememberMe', rememberMe);
 
     userSession.set('login_hint', email);
 
