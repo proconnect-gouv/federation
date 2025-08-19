@@ -302,9 +302,15 @@ describe('ServiceProviderService', () => {
   });
 
   describe('delete service provider by id', () => {
+    const existingServiceProviderFromDb =
+      serviceProviderFactory.createServiceProviderFromDb({
+        key: 'secretKeyMocked',
+      });
     beforeEach(() => {
       serviceProviderRepository.delete.mockResolvedValue({ affected: 1 });
-
+      serviceProviderRepository.findOneByOrFail.mockResolvedValue(
+        existingServiceProviderFromDb,
+      );
       // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
     });
@@ -336,7 +342,7 @@ describe('ServiceProviderService', () => {
         entity: 'service-provider',
         id: idMock,
         user: userMock,
-        name: 'keyMock',
+        name: 'secretKeyMocked',
       });
     });
   });
