@@ -39,6 +39,7 @@ function createServiceProviderFromDb(
 ): ServiceProviderFromDb {
   return {
     _id: new ObjectId(),
+    title: 'monfs',
     name: 'monfs',
     redirect_uris: ['https://monfs.com'],
     post_logout_redirect_uris: ['https://monfs.com/logout'],
