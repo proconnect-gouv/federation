@@ -2,8 +2,6 @@
 
 # Find which nodejs containers to start
 _get_node_containers_to_start() {
-  local ancestor_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
-
   local raw_nodejs_containers=$(
     for container in $ancestor_containers $pattern_containers; do
       _container_to_compose_name "$container"
@@ -92,5 +90,4 @@ _switch() {
   _prune
   _logs "--bg"
   _up "${@}"
-  _start_all
 }

@@ -99,12 +99,9 @@ services:
 
   log-hub:
     hostname: log-hub
-    image: pc-nodejs
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '${FEDERATION_DIR}/back'
+      target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
