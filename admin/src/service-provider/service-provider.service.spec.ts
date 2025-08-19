@@ -138,34 +138,6 @@ describe('ServiceProviderService', () => {
       });
     });
 
-    it('should call generateKey once if entityId is provide in params', async () => {
-      // Given
-      const spMock = {
-        ...serviceProviderMock,
-        entityId: '12aze3',
-      };
-
-      // When
-      const _result = await serviceProviderService.createServiceProvider(
-        spMock,
-        'user',
-      );
-
-      // Then
-      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call generateKey twice if entityId is not provide in params', async () => {
-      // When
-      const _result = await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
-        'user',
-      );
-
-      // Then
-      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(2);
-    });
-
     it('should call generateSecret method', async () => {
       // When
       await serviceProviderService.createServiceProvider(
@@ -476,6 +448,36 @@ describe('ServiceProviderService', () => {
         1,
       );
       expect(serviceProviderRepository.save).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('transformDtoIntoEntity', () => {
+    it('should call generateKey once if entityId is provided in params', async () => {
+      // Given
+      const spMock = {
+        ...serviceProviderMock,
+        entityId: '12aze3',
+      };
+
+      // When
+      serviceProviderService['transformDtoIntoEntity'](spMock, 'user');
+
+      // Then
+      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call generateKey twice if entityId is not provided in params', async () => {
+      // Given
+      const spMock = {
+        ...serviceProviderMock,
+        entityId: undefined,
+      };
+
+      // When
+      serviceProviderService['transformDtoIntoEntity'](spMock, 'user');
+
+      // Then
+      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(2);
     });
   });
 });
