@@ -41,10 +41,6 @@ describe('ServiceProviderService', () => {
 
   const userMock = 'userMockValue';
 
-  const serviceProviderMock = serviceProviderFactory.createServiceProviderDto(
-    {},
-  );
-
   const insertResultMock = {
     identifiers: [{ id: 'insertedIdMock' }],
   };
@@ -81,9 +77,6 @@ describe('ServiceProviderService', () => {
       ServiceProviderService,
     );
 
-    serviceProviderRepository.findOneByOrFail.mockResolvedValue(
-      serviceProviderMock,
-    );
     serviceProviderRepository.insert.mockResolvedValue(insertResultMock);
   });
 
@@ -105,6 +98,12 @@ describe('ServiceProviderService', () => {
   });
 
   describe('createServiceProvider', () => {
+    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto(
+      {},
+    );
+    const serviceProviderFromDb =
+      serviceProviderFactory.createServiceProviderFromDb({});
+
     const expectedServiceProviderCreated =
       serviceProviderFactory.createServiceProviderFromDb({
         client_secret: 'FE1CE803iuyiuyiy',
@@ -112,17 +111,19 @@ describe('ServiceProviderService', () => {
         key: 'secretKeyMocked',
       });
     beforeEach(() => {
-      // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
       secretAdapterMock.generateKey.mockReturnValue('secretKeyMocked');
       secretAdapterMock.generateSecret.mockReturnValueOnce('FE1CE803');
       secretManagerMocked.encrypt.mockReturnValueOnce('FE1CE803iuyiuyiy');
+      serviceProviderRepository.findOneByOrFail.mockResolvedValue(
+        serviceProviderFromDb,
+      );
     });
 
     it('should call the tracking method', async () => {
       // When
       await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         userMock,
       );
 
@@ -142,7 +143,7 @@ describe('ServiceProviderService', () => {
     it('should call generateSecret method', async () => {
       // When
       await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         'user',
       );
 
@@ -153,7 +154,7 @@ describe('ServiceProviderService', () => {
     it('should call encrypt method', async () => {
       // When
       const _result = await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         'user',
       );
 
@@ -170,7 +171,7 @@ describe('ServiceProviderService', () => {
 
       // When
       await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         'user',
       );
 
@@ -180,7 +181,7 @@ describe('ServiceProviderService', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         serviceProviderService['transformDtoIntoEntity'],
-      ).toHaveBeenCalledWith(serviceProviderMock, 'user');
+      ).toHaveBeenCalledWith(serviceProviderDto, 'user');
     });
 
     it('should call insert method', async () => {
@@ -191,7 +192,7 @@ describe('ServiceProviderService', () => {
 
       // When
       await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         'user',
       );
 
@@ -235,6 +236,12 @@ describe('ServiceProviderService', () => {
   });
 
   describe('update()', () => {
+    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto(
+      {},
+    );
+    const existingServiceProviderFromDb =
+      serviceProviderFactory.createServiceProviderFromDb({});
+
     const id = '5d4d6d29bbdfbd203da312f2';
     const expectedServiceProviderUpdated = {
       active: true,
@@ -251,13 +258,15 @@ describe('ServiceProviderService', () => {
     };
 
     beforeEach(() => {
-      // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
+      serviceProviderRepository.findOneByOrFail.mockResolvedValue(
+        existingServiceProviderFromDb,
+      );
     });
 
     it('should call findOneByOrFail method to retrieve service provider', async () => {
       // action
-      await serviceProviderService.update(id, serviceProviderMock, userMock);
+      await serviceProviderService.update(id, serviceProviderDto, userMock);
 
       // expect
       expect(serviceProviderRepository.findOneByOrFail).toHaveBeenCalledTimes(
@@ -286,7 +295,7 @@ describe('ServiceProviderService', () => {
       );
 
       // action
-      await serviceProviderService.update(id, serviceProviderMock, userMock);
+      await serviceProviderService.update(id, serviceProviderDto, userMock);
       // assertion
       // tslint:disable-next-line:no-string-literal
       expect(serviceProviderService['track']).toHaveBeenCalledTimes(1);
@@ -302,7 +311,7 @@ describe('ServiceProviderService', () => {
     it('should update service provider', async () => {
       // Given
       const dataToUpdate = {
-        ...serviceProviderMock,
+        ...serviceProviderDto,
         id_token_signed_response_alg: 'id_token_signed_response_alg',
         userinfo_signed_response_alg: 'userinfo_signed_response_alg',
       } as unknown as ServiceProviderDto;
@@ -440,10 +449,13 @@ describe('ServiceProviderService', () => {
   });
 
   describe('transformDtoIntoEntity', () => {
+    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto(
+      {},
+    );
     it('should call generateKey once if entityId is provided in params', async () => {
       // Given
       const spMock = {
-        ...serviceProviderMock,
+        ...serviceProviderDto,
         entityId: '12aze3',
       };
 
@@ -457,7 +469,7 @@ describe('ServiceProviderService', () => {
     it('should call generateKey twice if entityId is not provided in params', async () => {
       // Given
       const spMock = {
-        ...serviceProviderMock,
+        ...serviceProviderDto,
         entityId: undefined,
       };
 
