@@ -13,6 +13,7 @@ import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ICrudTrack } from '../interfaces';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { PaginationService } from '../pagination';
+import { serviceProviderFactory } from './fixtures';
 
 describe('ServiceProviderService', () => {
   let module: TestingModule;
@@ -40,19 +41,7 @@ describe('ServiceProviderService', () => {
 
   const userMock = 'userMockValue';
 
-  const serviceProviderMock = {
-    key: 'keyMock',
-    name: 'monfs',
-    redirectUri: ['https://monfs.com'],
-    redirectUriLogout: ['https://monfs.com/logout'],
-    site: ['https://monfs.com'],
-    ipAddresses: ['192.0.0.0'],
-    emails: ['v@b.com'],
-    active: true,
-    type: 'private',
-    scopes: [],
-    trustedIdentity: false,
-  } as unknown as ServiceProviderDto;
+  const serviceProviderMock = serviceProviderFactory.createServiceProviderDto({})
 
 
   const insertResultMock = {
@@ -115,27 +104,12 @@ describe('ServiceProviderService', () => {
   });
 
   describe('createServiceProvider', () => {
-    const expectedServiceProviderCreated = {
-      active: true,
-      name: 'monfs',
-      site: ['https://monfs.com'],
+    const expectedServiceProviderCreated = serviceProviderFactory.createServiceProviderFromDb({
       client_secret: 'FE1CE803iuyiuyiy',
-      createdAt: expect.any(Date),
-      emails: ['v@b.com'],
-      entityId: 'secretKeyMocked',
-      ipAddresses: ['192.0.0.0'],
+      IPServerAddressesAndRanges: ['192.0.0.0'],
       key: 'secretKeyMocked',
-      redirectUri: ['https://monfs.com'],
-      redirectUriLogout: ['https://monfs.com/logout'],
-      scopes: [],
-      secretCreatedAt: expect.any(Date),
-      secretUpdatedAt: expect.any(Date),
-      secretUpdatedBy: 'user',
-      trustedIdentity: false,
-      type: 'private',
-      updatedAt: expect.any(Date),
-      updatedBy: 'user',
-    };
+
+    });
     beforeEach(() => {
       // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
