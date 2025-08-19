@@ -236,26 +236,17 @@ describe('ServiceProviderService', () => {
   });
 
   describe('update()', () => {
-    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto(
-      {},
-    );
+    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto({
+      id_token_signed_response_alg: 'id_token_signed_response_alg',
+      userinfo_signed_response_alg: 'userinfo_signed_response_alg',
+      scopes: ['openid'],
+    });
     const existingServiceProviderFromDb =
-      serviceProviderFactory.createServiceProviderFromDb({});
+      serviceProviderFactory.createServiceProviderFromDb({
+        key: 'secretKeyMocked',
+      });
 
     const id = '5d4d6d29bbdfbd203da312f2';
-    const expectedServiceProviderUpdated = {
-      active: true,
-      name: 'monfs',
-      site: ['https://monfs.com'],
-      email: 'v@b.com',
-      IPServerAddressesAndRanges: ['192.0.0.0'],
-      redirect_uris: ['https://monfs.com'],
-      post_logout_redirect_uris: ['https://monfs.com/logout'],
-      scopes: ['openid'],
-      type: 'private',
-      updatedAt: expect.any(Date),
-      updatedBy: 'userMockValue',
-    };
 
     beforeEach(() => {
       serviceProviderService['track'] = jest.fn();
@@ -278,22 +269,6 @@ describe('ServiceProviderService', () => {
     });
 
     it('should calls the tracking method', async () => {
-      // setup
-      serviceProviderRepository.findOneByOrFail.mockImplementationOnce(() =>
-        Promise.resolve({
-          name: 'franceConnect',
-          redirectUri: ['https://franceConnect.com'],
-          redirectUriLogout: ['https://franceConnect.com/logout'],
-          site: 'https://franceConnect.com',
-          ipAddresses: ['192.0.0.0'],
-          emails: ['v@b2.com'],
-          active: true,
-          type: 'private',
-          scopes: ['toto', 'tutu'],
-          trustedIdentity: false,
-        }),
-      );
-
       // action
       await serviceProviderService.update(id, serviceProviderDto, userMock);
       // assertion
@@ -305,41 +280,20 @@ describe('ServiceProviderService', () => {
         action: 'update',
         id,
         user: userMock,
+        name: 'secretKeyMocked',
       });
     });
 
     it('should update service provider', async () => {
-      // Given
-      const dataToUpdate = {
-        ...serviceProviderDto,
-        id_token_signed_response_alg: 'id_token_signed_response_alg',
-        userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-      } as unknown as ServiceProviderDto;
-
-      serviceProviderRepository.findOneByOrFail.mockImplementationOnce(() =>
-        Promise.resolve({
-          name: 'proConnect',
-          redirect_uris: ['https://proConnect.fr'],
-          post_logout_redirect_uris: ['https://proConnect.fr/logout'],
-          site: 'https://proConnect.fr',
-          IPServerAddressesAndRanges: ['192.0.0.0'],
-          email: ['v@b2.com'],
-          active: false,
-          type: 'private',
-          scopes: ['toto', 'tutu'],
-          id_token_signed_response_alg: 'id_token_signed_response_alg',
-          userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-        }),
-      );
-
       const expected = {
-        ...expectedServiceProviderUpdated,
+        ...existingServiceProviderFromDb,
         id_token_signed_response_alg: 'id_token_signed_response_alg',
         userinfo_signed_response_alg: 'userinfo_signed_response_alg',
+        updatedAt: expect.any(Date),
       };
 
       // When
-      await serviceProviderService.update(id, dataToUpdate, userMock);
+      await serviceProviderService.update(id, serviceProviderDto, userMock);
 
       // Then
       expect(serviceProviderRepository.save).toHaveBeenCalledTimes(1);
