@@ -30,6 +30,13 @@ services:
       - public
       - data
     init: true
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -O /dev/null -S http://127.0.0.1:3000/ 2>&1|grep '200 OK'"]
+      interval: 30s
+      timeout: 10s
+      start_period: 120s
+      start_interval: 2s
+      retries: 5
 
   fsa2-low:
     hostname: fsa2-low

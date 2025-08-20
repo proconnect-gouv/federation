@@ -109,27 +109,6 @@ The init functions should be placed in a dedicated file in the [/hooks](./hooks)
 
 ## Other features
 
-### Wait
-
-Wait for a nodejs app to be up (useful mostly for CI)
-
-Usage in script:
-
-```bash
-wait_for_nodejs container-name, URL [max_time, delay_between_retries, max_retries]
-```
-
-Usage is shell / CI:
-
-```bash
-> dks wait "fc-exploitation" "https://fc-exploitation.docker.dev-franceconnect.fr"
-```
-
-This will print PM2 logs on case of failure to reach the app.  
-See source for more information.
-
-> :pencil: Source code is in [./utils/wait.sh](./utils/wait.sh).
-
 ### Format
 
 Helpers to format string printed by utilities.

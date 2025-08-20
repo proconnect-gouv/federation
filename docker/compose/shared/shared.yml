@@ -95,7 +95,7 @@ services:
       interval: 1s
       timeout: 1s
       retries: 2
-      start_period: 1s
+      start_period: 10s
 
   log-hub:
     hostname: log-hub

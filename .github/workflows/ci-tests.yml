@@ -136,7 +136,7 @@ jobs:
         if: failure()
         working-directory: ./docker
         run: |
-          ./docker-stack compose logs --no-color > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
+          ./docker-stack compose logs --no-color --timestamps > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
           docker ps -a > ../quality/fca/artifacts-logs/docker-ps.log 2>&1
 
       - name: Upload Cypress Artifacts

@@ -39,7 +39,7 @@ services:
       redis-pwd:
         condition: service_healthy
       squid:
-        condition: service_started
+        condition: service_healthy
     environment:
       # Proxy Configuration for Hybridge
       GLOBAL_AGENT_HTTP_PROXY: http://squid:3128
