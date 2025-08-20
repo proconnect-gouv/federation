@@ -123,12 +123,12 @@ services:
     depends_on:
       - <...any_required_service...>
     volumes:
-      - '${VOLUMES_DIR}/src/fc/back:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/.home:/home'
+      - '../../volumes/src/fc/back:/var/www/app'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/.home:/home'
       - <...others_required_volumes...>
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '../shared/.env/base-app.env'
     networks:
       - public
     init: true

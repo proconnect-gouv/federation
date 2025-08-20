@@ -2,7 +2,7 @@ services:
   core-fca-rie:
     hostname: core-fca-rie
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -12,15 +12,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/core-fca-rie.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core-fca-rie.env'
     tty: true
     networks:
       - fc

@@ -6,7 +6,7 @@ services:
   fsa1-low:
     hostname: fsa1-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -14,15 +14,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fsa1-low.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/fsa1-low.env'
     tty: true
     networks:
       - public
@@ -32,7 +32,7 @@ services:
   fsa2-low:
     hostname: fsa2-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -40,15 +40,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fsa2-low.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/fsa2-low.env'
     tty: true
     networks:
       - public
@@ -58,7 +58,7 @@ services:
   fsa3-low:
     hostname: fsa3-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -66,15 +66,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fsa3-low.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/fsa3-low.env'
     tty: true
     networks:
       - public
@@ -84,22 +84,22 @@ services:
   fsa4-low:
     hostname: fsa4-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     working_dir: /var/www/app
     depends_on:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fsa4-low.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/fsa4-low.env'
     tty: true
     networks:
       - public
@@ -113,7 +113,7 @@ services:
   fia1-low:
     hostname: fia1-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -121,16 +121,16 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fia1-low.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/fia1-low.env'
     tty: true
     networks:
       - public
@@ -140,7 +140,7 @@ services:
   fia2-low:
     hostname: fia2-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -148,16 +148,16 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fia2-low.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/fia2-low.env'
     tty: true
     networks:
       - public
@@ -167,7 +167,7 @@ services:
   moncomptepro:
     hostname: moncomptepro
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -175,16 +175,16 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/moncomptepro.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/moncomptepro.env'
     tty: true
     networks:
       - public
@@ -198,20 +198,20 @@ services:
   dpa1-low:
     hostname: dpa1-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/dpa1-low.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/dpa1-low.env'
     networks:
       - public
     init: true
@@ -219,20 +219,20 @@ services:
   dpa2-low:
     hostname: dpa2-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/dpa2-low.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/dpa2-low.env'
     networks:
       - public
     init: true
