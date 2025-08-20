@@ -33,4 +33,3 @@ services:
       - exploitation
       - data
     init: true
-    command: 'yarn start:dev'
