@@ -42,7 +42,6 @@ services:
       - public
       - data
     init: true
-    command: 'yarn start:dev bridge-http-proxy-rie'
 
   ####################
   ##
@@ -74,7 +73,6 @@ services:
     networks:
       - rie
     init: true
-    command: 'yarn start:dev csmr-rie'
 
   fia-llng-low:
     build:
@@ -115,4 +113,3 @@ services:
     networks:
       - rie
     init: true
-    command: 'yarn start:dev mock-identity-provider-fca-low'

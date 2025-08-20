@@ -29,7 +29,6 @@ services:
       - public
       - data
     init: true
-    command: 'yarn start:dev core-fca-low'
 
   core-fca-low-squid:
     extends: core-fca-low

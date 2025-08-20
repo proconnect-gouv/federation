@@ -29,4 +29,3 @@ services:
       - data
       - public
     init: true
-    command: 'yarn start:dev core-fca-low'
