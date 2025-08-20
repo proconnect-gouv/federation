@@ -4,13 +4,8 @@
 [ $CI ] && NO_TTY=" -T" || NO_TTY=""
 
 #### Global Variables:
-COMPOSE_PROJECT_NAME=pc
-COMPOSE_FILE="${DOCKER_DIR}/compose/fca-low/stack.yml"
-
 WORKING_DIR="${DOCKER_DIR}"
 
-export COMPOSE_FILE
-export COMPOSE_PROJECT_NAME
 export WORKING_DIR
 
 # Get current uid/gid to use it within docker-compose:
