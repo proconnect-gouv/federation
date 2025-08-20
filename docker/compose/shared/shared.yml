@@ -15,7 +15,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     tty: true
     networks:
       - fc
@@ -52,7 +51,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     depends_on:
       rp-all:
         condition: service_started
@@ -222,7 +220,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     volumes:
       - '../../../docker/log-hub:/var/www/app'
       - '../../volumes/app:/opt/scripts'
