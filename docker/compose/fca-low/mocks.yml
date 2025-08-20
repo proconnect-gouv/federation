@@ -14,12 +14,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fsa1-low.env'
@@ -40,12 +43,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fsa2-low.env'
@@ -66,12 +72,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fsa3-low.env'
@@ -91,12 +100,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fsa4-low.env'
@@ -121,13 +133,16 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fia1-low.env'
@@ -148,13 +163,16 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fia2-low.env'
@@ -175,13 +193,16 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/moncomptepro.env'
@@ -203,12 +224,15 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/dpa1-low.env'
@@ -224,12 +248,15 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/instances:/var/www/app/instances:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/dpa2-low.env'
