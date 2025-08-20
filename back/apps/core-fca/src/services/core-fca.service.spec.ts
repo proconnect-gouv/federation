@@ -63,8 +63,8 @@ describe('CoreFcaService', () => {
   };
 
   const identityProviderMockResponse = {
-    name: Symbol('nameMockValue'),
-    title: Symbol('titleMockValue'),
+    name: 'nameMockValue',
+    title: 'titleMockValue',
     featureHandlers: Symbol('featureHandlersMockValue'),
   };
 
@@ -285,6 +285,11 @@ describe('CoreFcaService', () => {
   });
 
   describe('getIdentityProvidersByIds', () => {
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValue({
+        defaultIdpId: 'luciusIdp',
+      });
+    });
     it('should return the identity providers for the given ids', async () => {
       // Given
       identityProviderMock.getList.mockResolvedValue([
@@ -294,8 +299,7 @@ describe('CoreFcaService', () => {
         { ...identityProviderMockResponse, uid: 'snapeIdp' },
       ]);
 
-      const { name, title } = identityProviderMockResponse;
-      const identityProviderNameTitle = { name, title };
+      const { name } = identityProviderMockResponse;
       const idpIds = ['snapeIdp', 'luciusIdp', 'dobbyIdp'];
 
       // When
@@ -303,18 +307,29 @@ describe('CoreFcaService', () => {
 
       // Then
       expect(providers).toEqual([
-        {
-          ...identityProviderNameTitle,
-          uid: 'dobbyIdp',
-        },
-        {
-          ...identityProviderNameTitle,
-          uid: 'luciusIdp',
-        },
-        {
-          ...identityProviderNameTitle,
-          uid: 'snapeIdp',
-        },
+        { name, title: 'titleMockValue', uid: 'dobbyIdp' },
+        { name, title: 'titleMockValue', uid: 'snapeIdp' },
+        { name, title: 'Autre', uid: 'luciusIdp' },
+      ]);
+    });
+
+    it('should rename the title to "Autre" for the default idp and sort the results', async () => {
+      // Given
+      identityProviderMock.getList.mockResolvedValue([
+        { name: 'Dobby', title: 'Elf', uid: 'dobbyIdp' },
+        { name: 'Lucius', title: 'Human', uid: 'luciusIdp' },
+        { name: 'Snape', title: 'Wizard', uid: 'snapeIdp' },
+      ]);
+      const idpIds = ['snapeIdp', 'luciusIdp', 'dobbyIdp'];
+
+      // When
+      const providers = await service.getIdentityProvidersByIds(idpIds);
+
+      // Then
+      expect(providers).toEqual([
+        { name: 'Dobby', title: 'Elf', uid: 'dobbyIdp' },
+        { name: 'Snape', title: 'Wizard', uid: 'snapeIdp' },
+        { name: 'Lucius', title: 'Autre', uid: 'luciusIdp' },
       ]);
     });
   });

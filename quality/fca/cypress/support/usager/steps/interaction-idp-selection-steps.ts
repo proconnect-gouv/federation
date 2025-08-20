@@ -51,3 +51,16 @@ Then(
     });
   },
 );
+
+Then(
+  'le fournisseur d\'identité "Autre" est positionné en dernier dans la liste des fournisseurs d\'identité',
+  function () {
+    cy.get('#radio-hint label').then((labels) => {
+      const texts = Array.from(labels).map((label) =>
+        label.textContent?.trim(),
+      );
+      const autreIndex = texts.indexOf('Autre');
+      expect(autreIndex).to.equal(texts.length - 1);
+    });
+  },
+);

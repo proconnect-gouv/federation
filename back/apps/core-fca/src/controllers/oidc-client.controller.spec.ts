@@ -166,7 +166,7 @@ describe('OidcClientController', () => {
 
       const providers = [
         { title: 'Provider One', uid: 'idp1' },
-        { title: 'Provider Two', uid: 'default-idp' },
+        { title: 'Autre', uid: 'default-idp' },
       ];
       coreFca.getIdentityProvidersByIds.mockResolvedValue(providers);
 

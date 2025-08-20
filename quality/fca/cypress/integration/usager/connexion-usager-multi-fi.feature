@@ -67,3 +67,12 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Alors le fournisseur d'identité "Autre" n'est pas affiché
+  
+  @ignoreInteg01
+  Scénario: Le FI "Autre" est toujours positionné en dernier
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "many@polyfi.fr"
+    Et que je clique sur le bouton de connexion
+    Quand je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
+    Alors le fournisseur d'identité "Autre" est positionné en dernier dans la liste des fournisseurs d'identité
