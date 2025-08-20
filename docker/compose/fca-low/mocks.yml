@@ -8,8 +8,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-service-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -36,8 +34,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-service-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -64,8 +60,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-service-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -92,8 +86,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-service-provider-fca-low
     working_dir: /var/www/app
     depends_on:
       redis-pwd:
@@ -123,8 +115,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-identity-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -152,8 +142,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-identity-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -181,8 +169,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-identity-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -214,8 +200,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-data-provider
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -237,8 +221,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-data-provider
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:

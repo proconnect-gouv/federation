@@ -23,8 +23,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: bridge-http-proxy-rie
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -53,8 +51,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: csmr-rie
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -91,8 +87,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: mock-identity-provider-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:

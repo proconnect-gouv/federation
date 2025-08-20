@@ -4,8 +4,6 @@ services:
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: core-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
