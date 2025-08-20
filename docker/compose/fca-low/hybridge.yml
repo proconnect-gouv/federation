@@ -24,7 +24,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     volumes:
       - '../../../back/apps:/var/www/app/apps:ro'
       - '../../../back/instances:/var/www/app/instances:ro'
@@ -55,7 +54,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     depends_on:
       - broker
     volumes:
@@ -94,7 +92,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     depends_on:
       redis-pwd:
         condition: service_healthy

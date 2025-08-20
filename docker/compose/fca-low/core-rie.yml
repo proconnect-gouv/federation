@@ -5,7 +5,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     depends_on:
       mongo-fca-low:
         condition: service_healthy
