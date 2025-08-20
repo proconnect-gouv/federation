@@ -12,6 +12,7 @@ services:
   small:
     image: alpine
     depends_on:
+      - 'rp-all'
       - 'core-fca-low'
       - 'fsa1-low'
       - 'fia1-low'
@@ -20,6 +21,7 @@ services:
   medium:
     image: alpine
     depends_on:
+      - 'rp-all'
       - 'core-fca-low'
       - 'exploitation-fca-low'
       # -- SP
@@ -37,6 +39,7 @@ services:
   large:
     image: alpine
     depends_on:
+      - 'rp-all'
       - 'core-fca-low'
       - 'fsa1-low'
       - 'fsa2-low'
@@ -61,6 +64,7 @@ services:
   hybridge:
     image: alpine
     depends_on:
+      - 'rp-all'
       - 'core-fca-low-squid'
       - 'fsa1-low'
       - 'fia1-low'
