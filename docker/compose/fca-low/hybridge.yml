@@ -28,12 +28,14 @@ services:
       rp-all:
         condition: service_started
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log:/var/log/app'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/bridge-proxy-rie.env'
@@ -57,12 +59,14 @@ services:
     depends_on:
       - broker
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
       - ../../volumes/ssl:/etc/ssl/docker_host:ro
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/csmr-rie.env'

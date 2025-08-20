@@ -12,6 +12,8 @@ RUN --mount=type=cache,target=/usr/local/share/.cache,id=admin-yarn-cache,sharin
     --mount=type=tmpfs,target=/tmp \
     yarn install --ignore-engines
 
+COPY . ./
+
 CMD yarn start:dev
 
 

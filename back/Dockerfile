@@ -12,6 +12,8 @@ RUN --mount=type=cache,target=/usr/local/share/.cache,id=back-yarn-cache,sharing
     --mount=type=tmpfs,target=/tmp \
     yarn install --ignore-engines
 
+COPY . ./
+
 CMD yarn start:dev ${NESTJS_INSTANCE}
 
 
