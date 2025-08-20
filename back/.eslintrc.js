@@ -115,7 +115,6 @@ module.exports = {
     '@typescript-eslint/eslint-plugin',
     'simple-import-sort',
     'import',
-    'jest-extended',
   ],
   root: true,
   rules: {
