@@ -1,0 +1,36 @@
+{
+  "name": "fc-mock-sp",
+  "version": "0.0.2",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "build:mock-service-provider-fca-low": "nest build mock-service-provider-fca-low",
+    "format": "prettier --write src/**/*.ts",
+    "start": "node dist/main.js",
+    "lint": "eslint src/**/*.ts",
+    "prettier": "prettier -c src/**/*.ts\""
+  },
+  "main": "dist/main.js",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "crypto": "^1.0.1",
+    "dotenv-flow": "^4.1.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "lodash-es": "^4.17.21",
+    "morgan": "^1.10.1",
+    "openid-client": "^6.6.2"
+  },
+  "devDependencies": {
+    "@types/express-session": "^1.18.2",
+    "@types/node": "^24.3.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": "22.13.0"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

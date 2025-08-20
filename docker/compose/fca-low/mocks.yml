@@ -6,7 +6,7 @@ services:
   fsa1-low:
     hostname: fsa1-low
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '${FEDERATION_DIR}/sp-mock'
       target: dev
       args:
         INSTANCE: mock-service-provider-fca-low

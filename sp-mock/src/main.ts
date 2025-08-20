@@ -1,10 +1,10 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as session from 'express-session';
-import { chain, isObject } from 'lodash';
+import { chain, isObject } from 'lodash-es';
 import * as path from 'node:path';
 import * as process from 'node:process';
-import * as client from 'openid-client-v6';
+import * as client from 'openid-client';
 
 import { decrypt } from './decrypt';
 
