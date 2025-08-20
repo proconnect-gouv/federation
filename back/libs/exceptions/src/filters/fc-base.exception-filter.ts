@@ -75,7 +75,8 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
 
     if (exception instanceof HttpException) {
       errorCode = getCode(0, exception.getStatus(), prefix);
-    } else if (exception instanceof RpcException) {
+    }
+    if (exception instanceof RpcException) {
       errorCode = getCode(0, 0, prefix);
     }
 
