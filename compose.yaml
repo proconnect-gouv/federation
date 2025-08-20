@@ -1,0 +1,4 @@
+name: pc
+
+include:
+    - docker/compose/fca-low/stack.yml
