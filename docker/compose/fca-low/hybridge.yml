@@ -8,10 +8,10 @@ services:
   rp-hybridge:
     image: nginx:1.14.2
     volumes:
-      - ${VOLUMES_DIR}/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ${VOLUMES_DIR}/nginx-proxy/includes:/etc/nginx/includes:ro
-      - ${VOLUMES_DIR}/rp-bridge-proxy/:/etc/nginx/conf.d:ro
-      - ${VOLUMES_DIR}/ssl:/etc/nginx/docker_host:ro
+      - ../../volumes/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../../volumes/nginx-proxy/includes:/etc/nginx/includes:ro
+      - ../../volumes/rp-bridge-proxy/:/etc/nginx/conf.d:ro
+      - ../../volumes/ssl:/etc/nginx/docker_host:ro
     networks:
       public:
         ipv4_address: 172.16.1.254
@@ -21,7 +21,7 @@ services:
   hybridge-internet:
     hostname: hybridge-internet
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -29,15 +29,15 @@ services:
       rp-all:
         condition: service_started
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/bridge-proxy-rie.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/bridge-proxy-rie.env'
     tty: true
     networks:
       - public
@@ -52,22 +52,22 @@ services:
   hybridge-rie:
     hostname: hybridge-rie
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
       - broker
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - ${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - ../../volumes/ssl:/etc/ssl/docker_host:ro
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/csmr-rie.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/csmr-rie.env'
     tty: true
     networks:
       - rie
