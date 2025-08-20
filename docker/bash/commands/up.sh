@@ -19,7 +19,7 @@ _up() {
   echo " * Get required services"
   # get asked services
   local apps=${@:-none}
-  local services=rp-all
+  local services=""
 
   for app in $apps; do
     services="$services $app"

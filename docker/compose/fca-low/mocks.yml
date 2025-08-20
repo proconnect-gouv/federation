@@ -13,6 +13,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       redis-pwd:
         condition: service_healthy
     volumes:
@@ -42,6 +44,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       redis-pwd:
         condition: service_healthy
     volumes:
@@ -71,6 +75,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       redis-pwd:
         condition: service_healthy
     volumes:
@@ -99,6 +105,8 @@ services:
         INSTANCE: mock-service-provider-fca-low
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       redis-pwd:
         condition: service_healthy
     volumes:
@@ -132,6 +140,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       redis-pwd:
         condition: service_healthy
     volumes:
@@ -162,6 +172,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       redis-pwd:
         condition: service_healthy
     volumes:
@@ -192,6 +204,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       redis-pwd:
         condition: service_healthy
     volumes:
