@@ -16,7 +16,7 @@ FROM ${NODE_IMAGE} AS builder
 
 COPY . /tmp/admin
 
-RUN apk add python3 make g++ lscpu
+RUN apk add --no-cache python3 make g++ lscpu
 
 WORKDIR /tmp/admin
 RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
