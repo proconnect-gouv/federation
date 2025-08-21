@@ -1,6 +1,6 @@
 {
   "name": "exploitation",
-  "script": "./dist/src/main.js",
+  "script": "./dist/main.js",
   "error_file": "/data/log/fc-apps/federation-admin-err.log",
   "out_file": "/data/log/fc-apps/federation-admin-out.log",
   "watch": false,
