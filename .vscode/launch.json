@@ -53,9 +53,7 @@
       "protocol": "inspector",
       "localRoot": "${workspaceFolder}/back",
       "remoteRoot": "/var/www/app",
-      "outFiles": ["${workspaceFolder}/back/dist/apps/core-fca/**/*.js"],
       "skipFiles": [
-        "${workspaceFolder}/back/node_modules/**/*.js",
         "<node_internals>/**/*.js"
       ],
       "cwd": "${workspaceFolder}/back",

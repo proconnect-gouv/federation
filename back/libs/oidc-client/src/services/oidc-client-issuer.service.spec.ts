@@ -1,7 +1,5 @@
-import { ClientMetadata } from 'oidc-provider';
-import { Client, custom, Issuer } from 'openid-client';
-
 import { Test, TestingModule } from '@nestjs/testing';
+import { ClientMetadata } from 'oidc-provider';
 
 import {
   OidcClientIdpDisabledException,
@@ -15,16 +13,9 @@ jest.mock('openid-client');
 describe('OidcClientIssuerService', () => {
   let service: OidcClientIssuerService;
 
-  const customMock = jest.mocked(custom);
-
-  customMock.setHttpOptionsDefaults = jest.fn();
-
   const oidcClientConfigServiceMock = {
     get: jest.fn(),
   };
-
-  const issuerProxyMock = jest.fn() as unknown as Issuer<Client>;
-  issuerProxyMock['discover'] = jest.fn();
 
   const idpMetadataIssuerMock = {
     issuer: 'https://corev2.docker.dev-franceconnect.fr',
@@ -54,7 +45,6 @@ describe('OidcClientIssuerService', () => {
 
   const idpMetadataMock = {
     jwks: [],
-    httpOptions: {},
     providers: [
       {
         uid: 'idpUidMock',
@@ -84,26 +74,12 @@ describe('OidcClientIssuerService', () => {
 
     jest.resetAllMocks();
 
-    service['IssuerProxy'] = issuerProxyMock as any;
     oidcClientConfigServiceMock.get.mockResolvedValue(idpMetadataMock);
   });
 
   describe('constructor', () => {
     it('should be defined', () => {
       expect(service).toBeDefined();
-    });
-  });
-
-  describe('onModuleInit', () => {
-    it('should set httpOptions on client', async () => {
-      // When
-      await service.onModuleInit();
-
-      // Then
-      expect(customMock.setHttpOptionsDefaults).toHaveBeenCalledTimes(1);
-      expect(customMock.setHttpOptionsDefaults).toHaveBeenCalledWith(
-        idpMetadataMock.httpOptions,
-      );
     });
   });
 
@@ -200,36 +176,6 @@ describe('OidcClientIssuerService', () => {
       // Then
       expect(service['getIdpMetadata']).toHaveBeenCalledTimes(1);
       expect(service['getIdpMetadata']).toHaveBeenCalledWith(issuerId);
-    });
-    it('should call IssuerProxy.discover', async () => {
-      // Given
-      const issuerId = 'foo';
-      // When
-      await service['getIssuer'](issuerId);
-      // Then
-      expect(issuerProxyMock.discover).toHaveBeenCalledTimes(1);
-      expect(issuerProxyMock.discover).toHaveBeenCalledWith(
-        idpMetadataMock.discoveryUrl,
-      );
-    });
-
-    it('should instantiate IssuerProxy', async () => {
-      // Given
-      const issuerId = 'foo';
-      const noDiscoveryMetadata = {
-        ...idpMetadataMock,
-        discovery: false,
-      };
-      service['getIdpMetadata'] = jest
-        .fn()
-        .mockResolvedValue(noDiscoveryMetadata);
-      // When
-      await service['getIssuer'](issuerId);
-      // Then
-      expect(service['IssuerProxy']).toHaveBeenCalledTimes(1);
-      expect(service['IssuerProxy']).toHaveBeenCalledWith(
-        idpMetadataIssuerMock,
-      );
     });
   });
 

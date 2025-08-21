@@ -1,6 +1,5 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { AuthorizationParameters } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';
 
@@ -87,7 +86,7 @@ export class CoreFcaMiddlewareService {
   protected getAuthorizationParameters({
     method,
     req,
-  }: OidcCtx): AuthorizationParameters {
+  }: OidcCtx): Record<string, any> {
     const isPostMethod = method === 'POST';
     return isPostMethod ? req.body : req.query;
   }

@@ -1,5 +1,8 @@
 import { ValidationError } from 'class-validator';
-import { TokenSet } from 'openid-client';
+import {
+  TokenEndpointResponse,
+  TokenEndpointResponseHelpers
+} from 'openid-client-v6';
 
 import { LoggerService } from '@fc/logger';
 
@@ -44,7 +47,7 @@ describe('OidcClientService', () => {
         claims: jest.fn().mockReturnValue({
           acr: 'acrMock',
         }),
-      } as unknown as TokenSet;
+      } as unknown as TokenEndpointResponse & TokenEndpointResponseHelpers;
       utilsMock.getTokenSet.mockResolvedValueOnce(tokenSetMock);
 
       const result = await service.getToken(
@@ -70,7 +73,7 @@ describe('OidcClientService', () => {
           acr: 'acrMock',
           amr: 'amrMock', // amr should be an array, this should trigger a validation error
         }),
-      } as unknown as TokenSet);
+      } as unknown as TokenEndpointResponse & TokenEndpointResponseHelpers);
 
       await expect(
         service.getToken(

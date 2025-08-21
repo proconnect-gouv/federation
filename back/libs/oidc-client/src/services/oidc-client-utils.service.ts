@@ -6,13 +6,18 @@
 import { isURL } from 'class-validator';
 import { JWK } from 'jose-v2';
 import {
-  AuthorizationParameters,
-  CallbackExtras,
-  CallbackParamsType,
-  Client,
-  errors,
-  TokenSet,
-} from 'openid-client';
+  authorizationCodeGrant,
+  buildEndSessionUrl,
+  buildAuthorizationUrl,
+  fetchUserInfo,
+  refreshTokenGrant,
+  tokenRevocation,
+  ClientError,
+  Configuration,
+  TokenEndpointResponse,
+  TokenEndpointResponseHelpers,
+  skipSubjectCheck
+} from 'openid-client-v6';
 
 import { Inject, Injectable } from '@nestjs/common';
 
@@ -69,11 +74,11 @@ export class OidcClientUtilsService {
 
   async getAuthorizeUrl(
     idpId: string,
-    authorizationParams: AuthorizationParameters,
-  ): Promise<string> {
-    const client: Client = await this.issuer.getClient(idpId);
+    authorizationParams: Record<string, any>,
+  ): Promise<URL> {
+    const client: Configuration = await this. issuer.getClient(idpId);
 
-    return client.authorizationUrl(authorizationParams);
+    return buildAuthorizationUrl(client, authorizationParams);
   }
 
   async wellKnownKeys() {
@@ -103,7 +108,7 @@ export class OidcClientUtilsService {
   }
 
   private extractParams(
-    callbackParams: CallbackParamsType,
+    callbackParams: Record<string, any>,
     stateFromSession: string,
   ): any {
     this.checkState(callbackParams, stateFromSession);
@@ -111,7 +116,7 @@ export class OidcClientUtilsService {
     return callbackParams;
   }
 
-  private buildExtraParameters(extraParams: ExtraTokenParams): CallbackExtras {
+  private buildExtraParameters(extraParams: ExtraTokenParams): Record<string,any> {
     if (extraParams) {
       return { exchangeBody: extraParams };
     }
@@ -124,40 +129,32 @@ export class OidcClientUtilsService {
     ipdId: string,
     params: TokenParams,
     extraParams?: ExtraTokenParams,
-  ): Promise<TokenSet> {
+  ): Promise<TokenEndpointResponseHelpers & TokenEndpointResponse> {
     const client = await this.issuer.getClient(ipdId);
     const { state } = params;
 
-    const callbackParams = client.callbackParams(req);
+    const callbackParams = req.query;
     const receivedParams = this.extractParams(callbackParams, state);
 
-    let tokenSet: TokenSet;
+    let tokenSet: TokenEndpointResponseHelpers & TokenEndpointResponse;
 
     try {
       // Invoke `openid-client` handler
-      tokenSet = await client.callback(
-        client.metadata.redirect_uris.join(','),
-        receivedParams,
+      tokenSet = await authorizationCodeGrant(
+        client,
+        new URL(req.protocol + '://' + req.get('host') + req.url),
         {
-          ...params,
-          response_type: client.metadata.response_types.join(','),
+          expectedNonce: params.nonce,
+          expectedState: params.state
         },
         this.buildExtraParameters(extraParams),
       );
     } catch (error) {
-      if (error instanceof errors.RPError) {
+      if (error instanceof ClientError) {
         const exception = new FcException();
         exception.generic = true;
-        exception.error = error.name;
+        exception.error = error.code;
         exception.error_description = error.message;
-        exception.http_status_code = 400;
-        throw exception;
-      }
-      if (error instanceof errors.OPError) {
-        const exception = new FcException();
-        exception.generic = true;
-        exception.error = error.error;
-        exception.error_description = error.error_description;
         exception.http_status_code = 400;
         throw exception;
       } else {
@@ -178,13 +175,13 @@ export class OidcClientUtilsService {
   async revokeToken(accessToken: string, idpId: string): Promise<void> {
     const client = await this.issuer.getClient(idpId);
 
-    await client.revoke(accessToken);
+    await tokenRevocation(client, accessToken);
   }
 
   async getUserInfo<T>(accessToken: string, idpId: string): Promise<T> {
     const client = await this.issuer.getClient(idpId);
 
-    const userInfo = await client.userinfo<T>(accessToken);
+    const userInfo = await fetchUserInfo(client, accessToken, skipSubjectCheck) as T;
 
     return userInfo;
   }
@@ -196,12 +193,12 @@ export class OidcClientUtilsService {
    *
    * @param {string} refreshToken A currently valid refresh token
    * @param {string} idpId The current idp id
-   * @returns {Promise<TokenSet>} If successful, the token set from the refresh response
+   * @returns {Promise<TokenEndpointResponse & TokenEndpointResponseHelpers>} If successful, the token set from the refresh response
    */
-  async refreshTokens(refreshToken: string, idpId: string): Promise<TokenSet> {
+  async refreshTokens(refreshToken: string, idpId: string): Promise<TokenEndpointResponse & TokenEndpointResponseHelpers> {
     const client = await this.issuer.getClient(idpId);
 
-    const tokenSet = await client.refresh(refreshToken);
+    const tokenSet = await refreshTokenGrant(client, refreshToken);
 
     return tokenSet;
   }
@@ -211,14 +208,14 @@ export class OidcClientUtilsService {
    *
    * @param {string} idpId The current idp id
    * @param {string} stateFromSession The current state
-   * @param {TokenSet | string} idTokenHint The last idToken retrieved
+   * @param {string} idTokenHint The last idToken retrieved
    * @param {string} postLogoutRedirectUri The url to redirect after logout
    * @returns {Promise<string>} The endSessionUrl with all parameters (state, postLogoutRedirectUri, ...)
    */
   async getEndSessionUrl(
     idpId: string,
     stateFromSession: string,
-    idTokenHint?: TokenSet | string,
+    idTokenHint?: string,
     postLogoutRedirectUri?: string,
   ): Promise<string> {
     const client = await this.issuer.getClient(idpId);
@@ -226,7 +223,7 @@ export class OidcClientUtilsService {
     let endSessionUrl;
 
     try {
-      endSessionUrl = client.endSessionUrl({
+      endSessionUrl = buildEndSessionUrl(client, {
         id_token_hint: idTokenHint,
         post_logout_redirect_uri: postLogoutRedirectUri,
         state: stateFromSession,
@@ -257,7 +254,7 @@ export class OidcClientUtilsService {
     let endSessionUrl;
 
     try {
-      endSessionUrl = client.endSessionUrl();
+      endSessionUrl = buildEndSessionUrl(client);
       return isURL(endSessionUrl, {
         protocols: ['https'],
         // Validator.js defined property
