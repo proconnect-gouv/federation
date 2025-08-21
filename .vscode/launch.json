@@ -64,6 +64,22 @@
       "sourceMaps": true,
     },
     {
+      "name": "ADMIN FCA - CORE-LOW",
+      "type": "node",
+      "request": "attach",
+      "port": 9329,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/admin",
+      "remoteRoot": "/var/www/app",
+      "skipFiles": [
+        "<node_internals>/**/*.js"
+      ],
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
       "name": "FCA - FIA1-LOW",
       "type": "node",
       "request": "attach",
