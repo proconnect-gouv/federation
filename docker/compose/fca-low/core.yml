@@ -9,6 +9,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       mongo-fca-low:
         condition: service_healthy
       redis-pwd:
@@ -35,6 +37,8 @@ services:
     extends: core-fca-low
     hostname: core-fca-low-squid
     depends_on:
+      rp-all:
+        condition: service_started
       mongo-fca-low:
         condition: service_healthy
       redis-pwd:

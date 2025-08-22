@@ -16,30 +16,18 @@ function _hook_admin() {
 }
 
 _up() {
-  echo " * Get required services"
   # get asked services
-  local apps=${@:-none}
-  local services=rp-all
-
-  for app in $apps; do
-    services="$services $app"
-  done
-  echo " * Required services are: ${services}"
+  local services=${@}
 
   # docker compose up services
   echo " * Docker compose up services: ${services}"
   cd ${WORKING_DIR}
   $DOCKER_COMPOSE up --build -d $services
 
-  # Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
-  echo " * Populate global variables"
-  local raw_all_containers=$(docker ps --format '{{.Names}}')
-  
-  # Find all containers and store it into $PC_CONTAINERS
-  PC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
-
-  echo " * Automatically run init scripts for started containers"
-  for app in ${PC_CONTAINERS}; do
+  # Find which containers are running and run their hooks
+  echo " * Running hooks for started containers"
+  local started_services=$($DOCKER_COMPOSE ps --format '{{.Service}}')
+  for app in ${started_services}; do
     # Container initialization hooks
     #
     # This runs arbitrary code if a container is started

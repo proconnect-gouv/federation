@@ -27,6 +27,9 @@ services:
         INSTANCE: bridge-http-proxy-rie
     user: ${CURRENT_UID}
     working_dir: /var/www/app
+    depends_on:
+      rp-all:
+        condition: service_started
     volumes:
       - '${FEDERATION_DIR}/back:/var/www/app'
       - '/var/www/app/node_modules'
@@ -98,6 +101,8 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
+      rp-all:
+        condition: service_started
       redis-pwd:
         condition: service_healthy
     volumes:
