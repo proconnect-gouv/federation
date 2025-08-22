@@ -6,7 +6,6 @@ include:
   - mocks.yml
   - exploitation-fca-low.yml
   - hybridge.yml
-  - core-rie.yml
 
 services:
   small:
