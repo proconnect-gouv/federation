@@ -1,17 +1,15 @@
 services:
-  exploitation-fca-low:
-    hostname: exploitation-fca-low
+  admin:
+    hostname: admin
     build:
       context: '${FEDERATION_DIR}/admin'
       target: dev
-      args:
-        INSTANCE: exploitation-fca-low
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
       rp-all:
         condition: service_started
-      pg-exploitation-fca-low:
+      pg-admin:
         condition: service_started
       mongo-fca-low:
         condition: service_healthy

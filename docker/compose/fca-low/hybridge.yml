@@ -5,7 +5,7 @@ services:
   ##
   ####################
 
-  rp-bridge-proxy:
+  rp-hybridge:
     image: nginx:1.14.2
     volumes:
       - ${VOLUMES_DIR}/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -16,15 +16,13 @@ services:
       public:
         ipv4_address: 172.16.1.254
     depends_on:
-      - bridge-proxy-rie
+      - hybridge-internet
 
-  bridge-proxy-rie:
-    hostname: bridge-proxy-rie
+  hybridge-internet:
+    hostname: hybridge-internet
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: bridge-http-proxy-rie
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -52,13 +50,11 @@ services:
   ##   RIE network
   ##
   ####################
-  csmr-rie:
-    hostname: csmr-rie
+  hybridge-rie:
+    hostname: hybridge-rie
     build:
       context: '${FEDERATION_DIR}/back'
       target: dev
-      args:
-        INSTANCE: csmr-rie
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -78,15 +74,3 @@ services:
       - rie
     init: true
     command: 'yarn start:dev csmr-rie'
-
-  fia-llng-low:
-    build:
-      context: '${WORKING_DIR}'
-      dockerfile: '${WORKING_DIR}/builds/lemonldap/Dockerfile'
-    volumes:
-      - '${VOLUMES_DIR}/llng/scripts/:/scripts:ro'
-      - '${VOLUMES_DIR}/llng/llng-conf.json:/llng-conf.json:ro'
-    env_file:
-      - '${COMPOSE_DIR}/fca-low/.env/fia-llng-low.env'
-    networks:
-      - rie

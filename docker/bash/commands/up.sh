@@ -5,7 +5,7 @@ export  NODE_VERSION
 DOCKER_COMPOSE="docker compose"
 
 function _hook_admin() {
-  local app="exploitation-fca-low"
+  local app=$1
   echo "  Fixtures for ${app} app..."
   cd ${WORKING_DIR}
   ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
@@ -40,14 +40,14 @@ _up() {
     *"lemon-ldap"*)
       echo "Restore LemonLDAP configuration"
       cd ${WORKING_DIR}
-      ${DOCKER_COMPOSE} exec fia-llng-low bash /scripts/init.sh
+      ${DOCKER_COMPOSE} exec identity-provider-llng bash /scripts/init.sh
       echo "Loaded !"
       ;;
     *"mongo-fca-low"*)
       _reset_mongodb "$app"
       ;;
-    *"pg-exploitation-fca-low")
-       _hook_admin "exploitation-fca-low"
+    *"pg-admin")
+       _hook_admin "admin"
       ;;
     *)
       ;;

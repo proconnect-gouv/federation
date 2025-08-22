@@ -3,8 +3,8 @@ services:
   # SP Mocks
   ####################
 
-  fsa1-low:
-    hostname: fsa1-low
+  service-provider-1:
+    hostname: service-provider-1
     extends:
       file: ../shared/shared.yml
       service: base-sp-mock
@@ -12,8 +12,8 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/fsa1-low.env'
 
-  fsa2-low:
-    hostname: fsa2-low
+  service-provider-2:
+    hostname: service-provider-2
     extends:
       file: ../shared/shared.yml
       service: base-sp-mock
@@ -21,8 +21,8 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/fsa2-low.env'
 
-  fsa3-low:
-    hostname: fsa3-low
+  service-provider-3:
+    hostname: service-provider-3
     extends:
       file: ../shared/shared.yml
       service: base-sp-mock
@@ -30,8 +30,8 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/fsa3-low.env'
 
-  fsa4-low:
-    hostname: fsa4-low
+  service-provider-4:
+    hostname: service-provider-4
     extends:
       file: ../shared/shared.yml
       service: base-sp-mock
@@ -43,8 +43,8 @@ services:
   # IDP Mocks
   ####################
 
-  fia1-low:
-    hostname: fia1-low
+  identity-provider-1:
+    hostname: identity-provider-1
     extends:
       file: ../shared/shared.yml
       service: base-idp-mock
@@ -52,8 +52,8 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/fia1-low.env'
 
-  fia2-low:
-    hostname: fia2-low
+  identity-provider-2:
+    hostname: identity-provider-2
     extends:
       file: ../shared/shared.yml
       service: base-idp-mock
@@ -61,8 +61,8 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/fia2-low.env'
 
-  moncomptepro:
-    hostname: moncomptepro
+  proconnect-identite:
+    hostname: proconnect-identite
     extends:
       file: ../shared/shared.yml
       service: base-idp-mock
@@ -70,8 +70,8 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/moncomptepro.env'
 
-  fia-rie-low:
-    hostname: fia-rie-low
+  identity-provider-rie:
+    hostname: identity-provider-rie
     extends:
       file: ../shared/shared.yml
       service: base-idp-mock
@@ -81,12 +81,24 @@ services:
     networks:
       - rie
 
+  identity-provider-llng:
+    build:
+      context: '${WORKING_DIR}'
+      dockerfile: '${WORKING_DIR}/builds/lemonldap/Dockerfile'
+    volumes:
+      - '${VOLUMES_DIR}/llng/scripts/:/scripts:ro'
+      - '${VOLUMES_DIR}/llng/llng-conf.json:/llng-conf.json:ro'
+    env_file:
+      - '${COMPOSE_DIR}/fca-low/.env/fia-llng-low.env'
+    networks:
+      - rie
+
   ####################
   # DP Mocks
   ####################
 
-  dpa1-low:
-    hostname: dpa1-low
+  resource-server-1:
+    hostname: resource-server-1
     extends:
       file: ../shared/shared.yml
       service: base-dp-mock
@@ -94,8 +106,8 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/dpa1-low.env'
 
-  dpa2-low:
-    hostname: dpa1-low
+  resource-server-2:
+    hostname: resource-server-2
     extends:
       file: ../shared/shared.yml
       service: base-dp-mock
