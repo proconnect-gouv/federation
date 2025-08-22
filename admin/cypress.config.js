@@ -25,7 +25,7 @@ module.exports = defineConfig({
     'https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider',
     APP_HOME_ROLE_SECURITY:
     'https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider',
-    APP_NAME: 'exploitation-fca-low',
+    APP_NAME: 'admin',
     FEDERATION_DIR: `${process.env.PC_ROOT}/federation`,
     LOG_FILE_PATH: `${process.env.PC_ROOT}/federation/docker/volumes/log/fcexploitation.log`,
     TOTP_WINDOW: 'loose',

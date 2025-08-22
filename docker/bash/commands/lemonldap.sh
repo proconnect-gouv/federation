@@ -2,5 +2,5 @@
 
 function _llng_configure() {
   cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec fia-llng-low bash /scripts/init.sh
+  $DOCKER_COMPOSE exec identity-provider-llng bash /scripts/init.sh
 }

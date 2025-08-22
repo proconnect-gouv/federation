@@ -1,6 +1,6 @@
 services:
-  core-fca-low:
-    hostname: core-fca-low
+  core:
+    hostname: core
     extends:
       file: ../shared/shared.yml
       service: base-core
@@ -8,8 +8,8 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/core-fca-low.env'
 
-  core-fca-low-squid:
-    extends: core-fca-low
+  core-squid:
+    extends: core
     hostname: core-fca-low-squid
     depends_on:
       squid:
@@ -19,9 +19,9 @@ services:
       GLOBAL_AGENT_HTTP_PROXY: http://squid:3128
       GLOBAL_AGENT_HTTPS_PROXY: http://squid:3128
 
-  core-fca-rie:
-    extends: core-fca-low
-    hostname: core-fca-rie
+  core-rie:
+    extends: core
+    hostname: core-rie
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fca-low/.env/core-fca-rie.env'

@@ -1,5 +1,5 @@
 services:
-  pg-exploitation-fca-low:
+  pg-admin:
     image: postgres:11
     environment:
       - 'POSTGRES_DB=pg-db'
