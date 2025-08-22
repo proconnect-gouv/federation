@@ -21,9 +21,6 @@ _command_register "reset-db" "_reset_db_core_fca_low" "Alias to reset-db-core-fc
 _command_register "reset-mongo" "_reset_mongodb" "reset-mongo <mongo-service-name> : Reset given mongodb container"
 _command_register "reset-mongo-as-prod" "_reset_mongodb_as_prod" "reset-mongo-as-prod <mongo-service-name> : Reset given mongodb container with production IDPs"
 
-### Redis
-_command_register "redis" "_redis_cli" "Connect to redis cli: redis <db>"
-
 ## Nodejs apps
 _command_register "stop" "_stop" "stop application"
 _command_register "stop-all" "_stop_all" "Stop all application for wich containers are up"
