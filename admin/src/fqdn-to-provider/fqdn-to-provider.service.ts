@@ -4,8 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { FqdnToProvider } from './fqdn-to-provider.mongodb.entity';
-import { IIdentityProvider, IIdentityProviderDTO } from '../identity-provider';
-import { IFqdnToProvider } from './interface/fqdn.interface';
+import {
+  IdentityProviderFromDb,
+  IdentityProviderWithFqdn,
+} from '../identity-provider';
 
 @Injectable()
 export class FqdnToProviderService {
@@ -35,71 +37,51 @@ export class FqdnToProviderService {
       },
     });
 
-    if (!fqdnToProvider) {
-      return [];
-    }
-
     return fqdnToProvider;
   }
 
-  async getProviderWithFqdns(
-    identityProvider: IIdentityProviderDTO,
-  ): Promise<IIdentityProviderDTO> {
-    const fqdnToProviders = await this.findFqdnsForOneProvider(
-      identityProvider.uid,
-    );
+  async getFqdnsForIdentityProviderUid(idpUid: string): Promise<string[]> {
+    const fqdnToProviders = await this.findFqdnsForOneProvider(idpUid);
 
-    const idpWithFqdns = { ...identityProvider, fqdns: [] };
-    fqdnToProviders.forEach(({ fqdn }) => {
-      idpWithFqdns.fqdns.push(fqdn);
-    });
-
-    return idpWithFqdns;
+    return fqdnToProviders.map(({ fqdn }) => fqdn);
   }
 
   async getProvidersWithFqdns(
-    identityProviders: IIdentityProvider[],
-  ): Promise<IIdentityProviderDTO[]> {
+    identityProviders: IdentityProviderFromDb[],
+  ): Promise<IdentityProviderWithFqdn[]> {
     const identityProvidersUids = identityProviders.map(
-      (idp: IIdentityProvider) => idp.uid,
+      (identityProviderFromDb) => identityProviderFromDb.uid,
     );
 
     const fqdnToProviders = await this.findFqdnsForProviders(
       identityProvidersUids,
     );
 
-    return this.getIdentityProvidersDTO(identityProviders, fqdnToProviders);
-  }
-
-  createFqdnsWithAcceptance(
-    fqdns: string[],
-  ): Array<Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>> {
-    return fqdns.map((fqdn) => {
-      return {
-        fqdn,
-        // by default, for now, the fqdn is accepted
-        acceptsDefaultIdp: true,
-      };
-    });
+    return this.aggregateFqdnToProviderWithIdentityProvider(
+      identityProviders,
+      fqdnToProviders,
+    );
   }
 
   async saveFqdnsProvider(
     identityProviderUid: string,
-    fqdns: Array<Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>>,
+    fqdns: string[],
   ): Promise<void> {
-    fqdns.filter(Boolean).forEach(async (fqdn) => {
+    const filteredFqdns = fqdns.filter(Boolean);
+    for (let index = 0; index < filteredFqdns.length; index++) {
+      const fqdn = filteredFqdns[index];
       await this.fqdnToProviderRepository.save({
-        fqdn: fqdn.fqdn,
+        fqdn,
         identityProvider: identityProviderUid,
-        acceptsDefaultIdp: fqdn.acceptsDefaultIdp,
+        acceptsDefaultIdp: true,
       });
-    });
+    }
   }
 
   async updateFqdnsProvider(
     identityProviderUid: string,
     fqdns: string[],
-    providerId: string,
+    identityProviderId: string,
   ): Promise<void> {
     /**
      * We currently don't have a fqdn interface where we can handle acceptance.
@@ -107,47 +89,43 @@ export class FqdnToProviderService {
      * and must fetch it in db.
      * We only fetch the fqdns of the idp that match the input fqdns.
      */
-    const providerFqdns: Array<
-      Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>
-    > = await this.fqdnToProviderRepository.find({
-      select: {
-        fqdn: true,
-        acceptsDefaultIdp: true,
-      },
+    const existingFqdnToProviders = await this.fqdnToProviderRepository.find({
       where: {
-        _id: ObjectID(providerId),
+        _id: ObjectID(identityProviderId),
         // we only keep the fqdns that are in the new list
         // we will delete the others
-        fqdn: { $in: fqdns } as any,
+        fqdn: { $in: fqdns },
       },
     });
+    const existingFqdnToProvidersFqdns = existingFqdnToProviders.map(
+      (fqdnToProvider) => fqdnToProvider.fqdn,
+    );
 
     /**
      * Then we filter the new fqdns to create:
      * new fqdns are the fqdn from input that are not already in the collection.
      * We gave them a true default acceptance value.
      */
-    const fqdnsToAdd: Array<
-      Pick<IFqdnToProvider, 'fqdn' | 'acceptsDefaultIdp'>
-    > = fqdns
-      .filter(
-        (fqdn) =>
-          !providerFqdns.find((fqdnToProvider) => fqdnToProvider.fqdn === fqdn),
-      )
-      .map((fqdn) => ({ fqdn, acceptsDefaultIdp: true }));
+    const fqdnsToAdd = fqdns.filter(
+      (fqdnToAddFqdn) =>
+        !existingFqdnToProvidersFqdns.some(
+          (existingFqdnToProvidersFqdn) =>
+            existingFqdnToProvidersFqdn === fqdnToAddFqdn,
+        ),
+    );
 
     // Eventually we merge the new fqdns with the fetched fqdnToProvider
-    providerFqdns.push(...fqdnsToAdd);
+    const newFqdnToProviders = [...existingFqdnToProvidersFqdns, ...fqdnsToAdd];
 
     // delete all previous relations for this identityProvider
     await this.deleteFqdnsProvider(identityProviderUid);
 
-    if (providerFqdns.length === 0) {
+    if (newFqdnToProviders.length === 0) {
       return;
     }
 
     // create new relations
-    await this.saveFqdnsProvider(identityProviderUid, providerFqdns);
+    await this.saveFqdnsProvider(identityProviderUid, newFqdnToProviders);
   }
 
   async deleteFqdnsProvider(identityProviderUid: string): Promise<void> {
@@ -156,17 +134,19 @@ export class FqdnToProviderService {
         identityProvider: identityProviderUid,
       },
     });
-    if (existingFqdns?.length > 0) {
+    if (existingFqdns.length > 0) {
       await this.fqdnToProviderRepository.delete({
-        _id: { $in: existingFqdns.map((fqdn) => fqdn._id) } as any,
+        _id: {
+          $in: existingFqdns.map((existingFqdn) => existingFqdn._id),
+        } as any,
       });
     }
   }
 
-  private getIdentityProvidersDTO(
-    identityPoviders: IIdentityProvider[],
-    fqdnToProviders: IFqdnToProvider[],
-  ): IIdentityProviderDTO[] {
+  private aggregateFqdnToProviderWithIdentityProvider(
+    identityProviders: IdentityProviderFromDb[],
+    fqdnToProviders: FqdnToProvider[],
+  ): IdentityProviderWithFqdn[] {
     const fqdnToProvidersHashMap: Record<string, string[]> = {};
 
     fqdnToProviders.forEach(({ identityProvider: uid, fqdn }) => {
@@ -177,7 +157,7 @@ export class FqdnToProviderService {
       }
     });
 
-    return identityPoviders.map((identityProvider) => {
+    return identityProviders.map((identityProvider) => {
       const idpWithFqdns = {
         ...identityProvider,
         fqdns: fqdnToProvidersHashMap[identityProvider.uid] || [],

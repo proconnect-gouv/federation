@@ -507,7 +507,7 @@
             <div class="form-group row">
               <label class="col-2 col-form-label" for="order">Ordre d'affichage dans la mire :</label>
               <div class="col-10">
-                <input id="order" type="number" class="form-control <%= locals.messages.errors && messages.errors[0].order && 'is-invalid' %>" name="order" value="<%= locals.messages.values && messages.values[0].order %>" placeholder="<%= locals.nbrProviders %> FI actuellement enregistrés">
+                <input id="order" type="number" class="form-control <%= locals.messages.errors && messages.errors[0].order && 'is-invalid' %>" name="order" value="<%= locals.messages.values && messages.values[0].order %>" placeholder="<%= locals.identityProvidersCount %> FI actuellement enregistrés">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].order) { %>
                   <p>
