@@ -45,6 +45,73 @@ services:
       - data
     command: 'yarn start:dev core-fca-low'
 
+  base-mock:
+    build:
+      context: '${FEDERATION_DIR}/back'
+      target: dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      rp-all:
+        condition: service_started
+    tty: true
+    init: true
+
+  base-sp-mock:
+    extends: base-mock
+    volumes:
+      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '/var/www/app/node_modules'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    depends_on:
+      rp-all:
+        condition: service_started
+      redis-pwd:
+        condition: service_healthy
+    networks:
+      - public
+      - data
+    command: 'yarn start:dev mock-service-provider-fca-low'
+
+  base-idp-mock:
+    extends: base-mock
+    volumes:
+      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '/var/www/app/node_modules'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    depends_on:
+      rp-all:
+        condition: service_started
+      redis-pwd:
+        condition: service_healthy
+    networks:
+      - public
+      - data
+    command: 'yarn start:dev mock-identity-provider-fca-low'
+
+  base-dp-mock:
+    extends: base-mock
+    volumes:
+      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '/var/www/app/node_modules'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/log:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    depends_on:
+      rp-all:
+        condition: service_started
+    networks:
+      - public
+    command: 'yarn start:dev mock-data-provider'
+
   ####################
   # Shared Services
   ####################
