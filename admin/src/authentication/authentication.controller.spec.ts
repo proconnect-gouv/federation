@@ -123,7 +123,7 @@ describe('AuthenticationController', () => {
        */
       const promisiableImplementation = (cb: () => void) => cb();
       const req = {
-        logout: jest.fn(),
+        logout: jest.fn().mockImplementation(promisiableImplementation),
         user: {
           username: 'foo',
         },

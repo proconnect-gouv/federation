@@ -77,7 +77,8 @@ export class AuthenticationController {
 
     await sessionDestroy();
     await sessionRegenerate();
-    req.logout();
-    return res.redirect(`${res.locals.APP_ROOT}/login`);
+    return req.logout((_err) => {
+      res.redirect(`${res.locals.APP_ROOT}/login`);
+    });
   }
 }
