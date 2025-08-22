@@ -112,6 +112,18 @@ services:
       - public
     command: 'yarn start:dev mock-data-provider'
 
+  base-redis:
+    image: 'bitnami/redis:6.2.16'
+    env_file:
+      - ${COMPOSE_DIR}/shared/.env/redis.env
+    volumes:
+      - '${VOLUMES_DIR}/ssl:/bitnami/redis/data/ssl'
+    healthcheck:
+      interval: 2s
+      start_period: 5s
+    networks:
+      - data
+
   ####################
   # Shared Services
   ####################
@@ -241,53 +253,35 @@ services:
   ####################
 
   redis-pwd:
-    image: 'bitnami/redis:6.2.16'
-    env_file:
-      - ${COMPOSE_DIR}/shared/.env/redis.env
+    extends: base-redis
     environment:
       - REDIS_TLS_CERT_FILE=/bitnami/redis/data/ssl/redis-pwd.crt
       - REDIS_TLS_KEY_FILE=/bitnami/redis/data/ssl/redis-pwd.key
-    volumes:
-      - '${VOLUMES_DIR}/ssl:/bitnami/redis/data/ssl'
     healthcheck:
       test: redis-cli -a $${REDIS_PASSWORD} --tls --cacert $${REDIS_TLS_CA_FILE} role | grep master
-      interval: 2s
-      start_period: 5s
     networks:
       rie:
       data:
         ipv4_address: 172.16.4.105
 
   redis-cluster-master:
-    image: 'bitnami/redis:6.2.16'
-    env_file:
-      - ${COMPOSE_DIR}/shared/.env/redis.env
+    extends: base-redis
     environment:
       - REDIS_REPLICATION_MODE=master
-    volumes:
-      - '${VOLUMES_DIR}/ssl:/bitnami/redis/data/ssl'
     healthcheck:
       test: redis-cli -a $${REDIS_PASSWORD} --tls --cacert $${REDIS_TLS_CA_FILE} role | grep master
-      interval: 2s
-      start_period: 5s
     networks:
       data:
         ipv4_address: 172.16.4.100
 
   redis-cluster-replica:
-    image: 'bitnami/redis:6.2.16'
-    env_file:
-      - ${COMPOSE_DIR}/shared/.env/redis.env
+    extends: base-redis
     environment:
       - REDIS_REPLICATION_MODE=slave
       - REDIS_MASTER_HOST=redis-cluster-master
       - REDIS_MASTER_PORT_NUMBER=6379
-    volumes:
-      - '${VOLUMES_DIR}/ssl:/bitnami/redis/data/ssl'
     healthcheck:
       test: redis-cli -a $${REDIS_PASSWORD} --tls --cacert $${REDIS_TLS_CA_FILE} role | grep slave
-      interval: 2s
-      start_period: 5s
     depends_on:
       - redis-cluster-master
     networks:
