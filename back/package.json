@@ -12,7 +12,6 @@
     "build:mock-identity-provider-fca-low": "nest build mock-identity-provider-fca-low",
     "build:mock-service-provider-fca-low": "nest build mock-service-provider-fca-low",
     "build:mock-data-provider": "nest build mock-data-provider",
-    "build:partners": "nest build partners-instance",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\" \"instances/**/*.ts\"",
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch --watchAssets",
@@ -35,9 +34,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/exceptions/src/cli/export-exceptions",
     "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env",
-    "doc": "yarn doc:exceptions && yarn doc:env",
-    "generate-insee:country": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-country",
-    "generate-insee:city": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-city"
+    "doc": "yarn doc:exceptions && yarn doc:env"
   },
   "resolutions": {
     "cookie-signature": "1.2.0",
