@@ -32,7 +32,7 @@ export class AuthenticationController {
   }
 
   @Post('first-login/:token')
-  @UseGuards(new LocalAuthGuard())
+  @UseGuards(LocalAuthGuard)
   public firstLogin(@Req() req, @Res() res) {
     this.track({
       action: AuthenticationActions.TOKEN_SIGNUP,
@@ -51,7 +51,7 @@ export class AuthenticationController {
   }
 
   @Post('login')
-  @UseGuards(new LocalAuthGuard())
+  @UseGuards(LocalAuthGuard)
   public login(@Req() req, @Res() res) {
     this.track({
       action: AuthenticationActions.SIGNIN,
