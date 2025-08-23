@@ -28,7 +28,6 @@ module.exports = defineConfig({
     APP_NAME: 'admin',
     FEDERATION_DIR: `${process.env.PC_ROOT}/federation`,
     LOG_FILE_PATH: `${process.env.PC_ROOT}/federation/docker/volumes/log/fcexploitation.log`,
-    TOTP_WINDOW: 'loose',
   },
   pageLoadTimeout: 30000,
   viewportHeight: 1800,
