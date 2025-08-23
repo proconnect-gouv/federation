@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -7,27 +7,23 @@ import { ScopesService } from './scopes.service';
 import { IScopes } from './interface';
 import { LoggerService } from '../logger/logger.service';
 import { ICrudTrack } from '../interfaces';
-import {
-  scopesMock,
-  scopesListMock,
-  scopesListGroupedByFdMock,
-} from './fixture';
+import { scopesMock, scopesListMock } from './fixture';
 
-const id: ObjectID = new ObjectID('5d9c677da8bb151b00720451');
+const id: ObjectId = new ObjectId('5d9c677da8bb151b00720451');
 
 const scopesRepositoryMock = {
   find: jest.fn(),
   count: jest.fn(),
-  findOne: jest.fn(),
+  findOneById: jest.fn(),
   findAndCount: jest.fn(),
   save: jest.fn(),
-  insertOne: jest.fn(),
+  insert: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
 };
 
 const insertResultMock = {
-  insertedId: 'insertedIdValueMock',
+  raw: { insertedId: 'insertedIdValueMock' },
 };
 
 const loggerMock = {
@@ -53,8 +49,9 @@ describe('ScopesService', () => {
     jest.resetAllMocks();
 
     scopesRepositoryMock.find.mockResolvedValueOnce(scopesListMock);
-    scopesRepositoryMock.findOne.mockResolvedValueOnce(scopesMock);
-    scopesRepositoryMock.insertOne.mockResolvedValueOnce(insertResultMock);
+    scopesRepositoryMock.findOneById.mockResolvedValueOnce(scopesMock);
+    scopesRepositoryMock.save.mockResolvedValueOnce(insertResultMock);
+    scopesRepositoryMock.insert.mockResolvedValueOnce(insertResultMock);
   });
 
   it('should be defined', () => {
@@ -130,7 +127,7 @@ describe('ScopesService', () => {
       const result: Scopes = await service.create(scopeAndLabel, userMock);
 
       // Expected
-      expect(scopesRepositoryMock.insertOne).toHaveBeenCalledTimes(1);
+      expect(scopesRepositoryMock.insert).toHaveBeenCalledTimes(1);
       /**
        * @todo enhance UT
        *
@@ -161,7 +158,7 @@ describe('ScopesService', () => {
         entity: 'scope',
         action: 'create',
         user: userMock,
-        id: insertResultMock.insertedId,
+        id: insertResultMock.raw.insertedId,
         name: scopeAndLabel.scope,
       });
     });
@@ -212,7 +209,7 @@ describe('ScopesService', () => {
         action: 'update',
         user: userMock,
         name: 'Seldon',
-        id,
+        id: id.toString(),
       });
     });
   });
@@ -254,7 +251,7 @@ describe('ScopesService', () => {
         action: 'delete',
         user: userMock,
         name: 'Seldon',
-        id,
+        id: id.toString(),
       });
     });
   });

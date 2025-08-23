@@ -1,4 +1,3 @@
-import { ObjectID } from 'mongodb';
 import { MongoRepository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -115,7 +114,7 @@ export class FqdnToProviderService {
         acceptsDefaultIdp: true,
       },
       where: {
-        _id: ObjectID(providerId),
+        _id: providerId,
         // we only keep the fqdns that are in the new list
         // we will delete the others
         fqdn: { $in: fqdns } as any,

@@ -17,11 +17,7 @@ export = {
     resolve(__dirname, '../../../!(node_modules)/**/*.mongodb.entity{.ts,.js}'),
   ],
   ssl: parseBoolean(process.env.FC_DB_TLS),
-  sslValidate: parseBoolean(process.env.FC_DB_TLS),
-  sslCA: process.env.FC_DB_TLS_CA_FILE
-    ? fs.readFileSync(process.env.FC_DB_TLS_CA_FILE)
-    : undefined,
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
+  tlsAllowInvalidCertificates: parseBoolean(process.env.FC_DB_TLS),
+  tlsCAFile: process.env.FC_DB_TLS_CA_FILE,
   dbName: process.env.FC_DB_DATABASE,
 };

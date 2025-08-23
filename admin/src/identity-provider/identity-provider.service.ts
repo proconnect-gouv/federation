@@ -95,7 +95,7 @@ export class IdentityProviderService {
   async findById(id: string): Promise<IIdentityProvider> {
     const identityProviderLegacy: IdentityProvider =
       await this.identityProviderRepository.findOneByOrFail({
-        _id: ObjectId(id),
+        _id: new ObjectId(id),
       });
 
     if (!identityProviderLegacy) {
@@ -149,7 +149,7 @@ export class IdentityProviderService {
     // Find the existing provider
     const existingProvider =
       await this.identityProviderRepository.findOneByOrFail({
-        _id: ObjectId(id),
+        _id: new ObjectId(id),
       });
 
     // Apply the updates from providerToSave

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { DeleteResult, ObjectID, Repository } from 'mongodb';
-
+import { DeleteResult, Repository } from 'typeorm';
+import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -32,42 +32,40 @@ export class ScopesService {
    * @returns {Promise<Scopes>}
    */
   async create(newScope: IScopes, user: string): Promise<Scopes> {
-    const id = uuidv4().substring(0, 12);
-
     const scopeToSave: Scopes = {
-      id: new ObjectID(id),
+      id: new ObjectId(),
       scope: newScope.scope,
       label: `${newScope.label} (${newScope.fd})`,
       updatedBy: user,
       fd: newScope.fd,
     };
 
-    const result = await this.scopesRepository.insertOne(scopeToSave);
+    const result = await this.scopesRepository.insert(scopeToSave);
 
     this.track({
       entity: 'scope',
       action: 'create',
       user,
-      id: result.insertedId,
+      id: result.raw.insertedId,
       name: newScope.scope,
     });
 
-    return result;
+    return result[0];
   }
 
   /**
    * Update scopes.
    *
-   * @param {ObjectID} id
+   * @param {ObjectId} id
    * @param {IScopes} newScopes
    * @returns {Promise<Scopes>}
    */
-  async update(id: ObjectID, user: string, newScope: IScopes): Promise<Scopes> {
+  async update(id: ObjectId, user: string, newScope: IScopes): Promise<Scopes> {
     this.track({
       entity: 'scope',
       action: 'update',
       user,
-      id,
+      id: id.toString(),
       name: newScope.scope,
     });
 
@@ -96,20 +94,20 @@ export class ScopesService {
     return result;
   }
 
-  async remove(id: ObjectID, user: string): Promise<DeleteResult> {
-    const scope = await this.scopesRepository.findOne(id);
+  async remove(id: ObjectId, user: string): Promise<DeleteResult> {
+    const scope = await this.scopesRepository.findOneById(id);
 
-    await this.scopesRepository.delete(id);
+    const result = await this.scopesRepository.delete(id);
 
     this.track({
       entity: 'scope',
       action: 'delete',
       user,
-      id,
+      id: id.toString(),
       name: scope.scope,
     });
 
-    return scope;
+    return result;
   }
 
   /**
@@ -137,11 +135,11 @@ export class ScopesService {
   /**
    * Get a scope by its ID.
    *
-   * @param {ObjectID} id Unic ID for a specific scope to retreive.
+   * @param {ObjectId} id Unic ID for a specific scope to retreive.
    * @returns {Promise<IScopes>}
    */
-  async getById(id: ObjectID): Promise<IScopes> {
-    const scope = await this.scopesRepository.findOne(id);
+  async getById(id: ObjectId): Promise<IScopes> {
+    const scope = await this.scopesRepository.findOneById(id);
     return scope;
   }
 

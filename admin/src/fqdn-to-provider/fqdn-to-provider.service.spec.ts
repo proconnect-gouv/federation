@@ -5,7 +5,6 @@ import { FqdnToProvider } from './fqdn-to-provider.mongodb.entity';
 import { MongoRepository } from 'typeorm';
 import { IFqdnToProvider } from './interface/fqdn.interface';
 import { IIdentityProvider } from '../identity-provider';
-import { ObjectId } from 'mongodb';
 
 jest.mock('uuid');
 
@@ -290,8 +289,8 @@ describe('FqdnToProviderService', () => {
   });
 
   describe('deleteFqdnsProvider', () => {
-    const objectId1 = new ObjectId('648c1742c74d6a3d84b31943');
-    const objectId2 = new ObjectId('abcc1742c74d6fad84b31943');
+    const objectId1 = '648c1742c74d6a3d84b31943';
+    const objectId2 = 'abcc1742c74d6fad84b31943';
     it('should delete fqdns for an identity provider', async () => {
       // Given
       const identityProviderUid = 'mock-id-1';
@@ -352,7 +351,7 @@ describe('FqdnToProviderService', () => {
   describe('updateFqdnsProvider', () => {
     it('should update fqdns for an identity provider', async () => {
       // Given
-      const providerId = new ObjectId('648c1742c74d6a3d84b31943');
+      const providerId = '648c1742c74d6a3d84b31943';
       const identityProviderUid = 'mock-id-1';
 
       const newFqdns = ['stendhal.fr', 'balzac.fr'];
@@ -394,7 +393,7 @@ describe('FqdnToProviderService', () => {
 
     it('should not update fqdns acceptance for an existing fqdn when another fqdn is updated', async () => {
       // Given
-      const providerId = new ObjectId('648c1742c74d6a3d84b31943');
+      const providerId = '648c1742c74d6a3d84b31943';
       const identityProviderUid = 'mock-id-1';
       const existingFqdns = [
         {
@@ -446,7 +445,7 @@ describe('FqdnToProviderService', () => {
 
     it('should update even when there is no existing fqdn for a provider', async () => {
       // Given
-      const providerId = new ObjectId('648c1742c74d6a3d84b31943');
+      const providerId = '648c1742c74d6a3d84b31943';
       const identityProviderUid = 'mock-id-1';
       const existingFqdns = [];
       const newFqdns = ['duras.fr', 'balzac.fr'];
@@ -478,7 +477,7 @@ describe('FqdnToProviderService', () => {
 
     it('should should not call save() but call deleteFqdnSProvider()  when there is no fqdn to update', async () => {
       // Given
-      const providerId = new ObjectId('648c1742c74d6a3d84b31943');
+      const providerId = '648c1742c74d6a3d84b31943';
       const identityProviderUid = 'mock-id-1';
       const newFqdns = [];
       const deleteFqdnsProviderSpy = jest

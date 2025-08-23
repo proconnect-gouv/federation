@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import {
   Controller,
   Get,
@@ -76,7 +76,10 @@ export class ScopesController {
     try {
       await this.scopesService.create(scope, req.user.username);
     } catch (error) {
-      req.flash('globalError', "Impossible d'enregistrer le label");
+      req.flash(
+        'globalError',
+        "Impossible d'enregistrer le label (" + error + ')',
+      );
       req.flash('values', scope);
 
       return res.redirect(`${res.locals.APP_ROOT}/scopes/label/create`);
@@ -95,7 +98,7 @@ export class ScopesController {
   @Roles(UserRole.OPERATOR)
   @Render('scopes/label/update')
   async showUpdateScopeForm(@Param('id') id: string, @Req() req) {
-    const idMongo: ObjectID = new ObjectID(id);
+    const idMongo: ObjectId = new ObjectId(id);
     const csrfToken = req.csrfToken();
     const { scope, label, fd } = await this.scopesService.getById(idMongo);
     const scopesGroupedByFd = await this.scopesService.getScopesGroupedByFd();
@@ -116,7 +119,7 @@ export class ScopesController {
     @Res() res,
   ) {
     try {
-      const idMongo: ObjectID = new ObjectID(id);
+      const idMongo: ObjectId = new ObjectId(id);
       await this.scopesService.update(
         idMongo,
         req.user.username,
@@ -148,7 +151,7 @@ export class ScopesController {
     @Body() body,
   ) {
     try {
-      const idMongo: ObjectID = new ObjectID(id);
+      const idMongo: ObjectId = new ObjectId(id);
       await this.scopesService.remove(idMongo, req.user.username);
     } catch (error) {
       req.flash('globalError', error.message);
@@ -201,9 +204,8 @@ export class ScopesController {
   @Roles(UserRole.OPERATOR)
   @Render('scopes/claim/form')
   async showUpdateClaimForm(@Param('id') id: string, @Req() req) {
-    const idMongo: ObjectID = new ObjectID(id);
     const csrfToken = req.csrfToken();
-    const { name } = await this.claimsService.getById(idMongo);
+    const { name } = await this.claimsService.getById(id);
 
     return { csrfToken, name, id, action: ACTION_UPDATE };
   }
@@ -221,8 +223,7 @@ export class ScopesController {
     @Res() res,
   ) {
     try {
-      const idMongo: ObjectID = new ObjectID(id);
-      await this.claimsService.update(idMongo, body);
+      await this.claimsService.update(id, body);
     } catch (error) {
       req.flash('globalError', 'Impossible de modifier le claim');
       req.flash('values', body);
@@ -248,8 +249,7 @@ export class ScopesController {
     @Body() body: IClaims,
   ) {
     try {
-      const idMongo: ObjectID = new ObjectID(id);
-      await this.claimsService.remove(idMongo);
+      await this.claimsService.remove(id);
     } catch (error) {
       req.flash('globalError', error.message);
       return res.redirect(`${res.locals.APP_ROOT}/scopes/label`);
