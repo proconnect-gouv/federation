@@ -102,7 +102,7 @@ describe('Delete service provider', () => {
       cy.contains(
         `Le fournisseur de service ${fs.name} a été supprimé avec succès !`,
       ).should('be.visible');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
       cy.get('table').contains(fs.name).should('not.exist');
 
       cy.hasBusinessLog({
@@ -127,7 +127,7 @@ describe('Delete service provider', () => {
       );
       cy.contains('Confirmer').click();
 
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
       cy.contains(fs.name).should('not.exist');
     });
 
@@ -143,7 +143,7 @@ describe('Delete service provider', () => {
       );
       cy.contains('Confirmer').click();
 
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
       cy.contains(fs.name).should('not.exist');
     });
   });

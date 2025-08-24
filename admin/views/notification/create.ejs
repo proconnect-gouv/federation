@@ -11,7 +11,7 @@
       <h2 class="mb-4">Configuration d'une notification FC</h2>
       <form method="post" name="notification" action="<%= APP_ROOT %>/notification/create" data-init="validForm" novalidate>
         <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
-        <div class="form-group">
+        <div class="mb-3">
           <label for="message" class="mb-3">Contenu de la notification (200 caractères maximum)</label>
           <textarea class="form-control" 
             name="message" 
@@ -26,14 +26,14 @@
         <div class="row">
           <div class="col-sm my-1">
             <p class="mx-3">Début de la notification</p>
-            <div class="form-inline">
+            <div class="d-flex align-items-center">
               <div class="row">
                   <div class="col-sm">
                       <div class="row">
                         <div class="col-sm">
                           <label for="startDate" class="m-1">Date</label>
                           <input type="date" 
-                            class="form-control mb-2 mr-sm-2" 
+                            class="form-control mb-2 me-sm-2"
                             id="dateDebut" 
                             placeholder="YYYY-MM-DD" 
                             name="startDate"
@@ -44,7 +44,7 @@
                         <div class="col-sm">
                           <label for="startHour" class="m-1"> Heure</label>
                           <input type="time" 
-                            class="form-control mb-2 mr-sm-2" 
+                            class="form-control mb-2 me-sm-2"
                             id="startHour" 
                             placeholder="HH:mm" 
                             name="startHour"
@@ -60,14 +60,14 @@
           </div>
           <div class="col-sm my-1">
             <p class="mx-3">Fin de la notification</p>
-            <div class="form-inline">
+            <div class="d-flex align-items-center">
               <div class="row">
                 <div class="col-sm">
                   <div class="row">
                     <div class="col-sm">
                       <label for="stopDate" class="m-1">Date</label>
                       <input type="date" 
-                        class="form-control mb-2 mr-sm-2" 
+                        class="form-control mb-2 me-sm-2"
                         id="dateFin"
                         placeholder="YYYY-MM-DD"
                         name="stopDate"
@@ -78,7 +78,7 @@
                     <div class="col-sm">
                       <label for="stopHour" class="m-1"> Heure</label>
                       <input type="time" 
-                        class="form-control mb-2 mr-sm-2" 
+                        class="form-control mb-2 me-sm-2"
                         id="stopHour" 
                         placeholder="HH:mm" 
                         name="stopHour"
@@ -97,24 +97,24 @@
         <div class="col-xs-6 my-4">
           <p class="d-flex justify-content-center">Activer la notification</p>
           <div class="d-flex justify-content-center">
-            <div class="custom-control custom-radio custom-control-inline">
+            <div class="form-check form-check-inline">
                 <input type="radio" 
-                  class="custom-control-input is-valid" 
+                  class="form-check-input is-valid" 
                   id="activated" 
                   name="isActive" 
                   value="true"
                   checked 
                   required>
-                <label class="custom-control-label" for="activated">oui</label>
+                <label class="form-check-label" for="activated">oui</label>
               </div>
-              <div class="custom-control custom-radio custom-control-inline">
+              <div class="form-check form-check-inline">
                 <input type="radio" 
-                  class="custom-control-input is-valid" 
+                  class="form-check-input is-valid" 
                   id="unactivated" 
                   name="isActive" 
                   value="false" 
                   required>
-                <label class="custom-control-label" for="unactivated">non</label>
+                <label class="form-check-label" for="unactivated">non</label>
               </div>
           </div>   
         </div>

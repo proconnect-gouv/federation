@@ -92,7 +92,7 @@ describe('update a service-provider', () => {
       cy.contains(
         `Le nouveau client secret du fournisseur de service GenerateClientSecretFS a été généré avec succés !`,
       ).should('be.visible');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('Should not be able to update a fs with a false totp', () => {

@@ -36,7 +36,7 @@
                 <td class="roles">
                   <% user.roles.forEach(function (role) { %>
                     <span
-                      class="badge badge-secondary p-1"><%= USER_ROLES_OPTIONS.find(({value}) => value === role).label %></span>
+                      class="badge text-bg-secondary p-1"><%= USER_ROLES_OPTIONS.find(({value}) => value === role).label %></span>
                   <% }) %>
                 </td>
                 <% if(CURRENT_USER.roles.find((role) => role === 'admin' && user.id !== CURRENT_USER.id)) { %>
