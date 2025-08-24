@@ -11,7 +11,7 @@
       <h2 class="mb-4">Configuration indisponibilité FC</h2>
       <form method="post" id="indisponibilite" action="<%= APP_ROOT %>/configuration/indisponibilite" data-init="validForm" novalidate>
         <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
-        <div class="form-group">
+        <div class="mb-3">
           <label for="message" class="mb-3">Message d'indisponibilité</label>
           <textarea class="form-control" 
             name="message" 
@@ -25,14 +25,14 @@
         <div class="row">
           <div class="col-sm my-1">
             <p class="mx-3">Début de l'indisponibilité</p>
-            <div class="form-inline">
+            <div class="d-flex align-items-center">
               <div class="row">
                   <div class="col-sm">
                       <div class="row">
                         <div class="col-sm">
                           <label for="dateDebut" class="m-1">Date</label>
                           <input type="date" 
-                            class="form-control mb-2 mr-sm-2" 
+                            class="form-control mb-2 me-sm-2"
                             id="dateDebut" 
                             placeholder="YYYY-MM-DD" 
                             name="dateDebut"
@@ -45,7 +45,7 @@
                   <div class="col-sm">
                     <label for="heureDebut" class="m-1"> Heure</label>
                     <input type="time" 
-                      class="form-control mb-2 mr-sm-2" 
+                      class="form-control mb-2 me-sm-2"
                       id="heureDebut" 
                       placeholder="HH:mm" 
                       name="heureDebut"
@@ -64,14 +64,14 @@
           </div>
           <div class="col-sm my-1">
             <p class="mx-3">Fin de l'indisponibilité</p>
-            <div class="form-inline">
+            <div class="d-flex align-items-center">
               <div class="row">
                 <div class="col-sm">
                   <div class="row">
                     <div class="col-sm">
                       <label for="dateFin" class="m-1">Date</label>
                       <input type="date" 
-                        class="form-control mb-2 mr-sm-2" 
+                        class="form-control mb-2 me-sm-2"
                         id="dateFin"
                         placeholder="YYYY-MM-DD"
                         name="dateFin"
@@ -84,7 +84,7 @@
                 <div class="col-sm">
                   <label for="heureFin" class="m-1"> Heure</label>
                   <input type="time" 
-                    class="form-control mb-2 mr-sm-2" 
+                    class="form-control mb-2 me-sm-2"
                     id="heureFin" 
                     placeholder="HH:mm" 
                     name="heureFin"
@@ -114,17 +114,17 @@
           </p>
           <p class="d-flex justify-content-center">Activer le message</p>
           <div class="d-flex justify-content-center">
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" class="custom-control-input is-valid" id="activated" name="activateMessage" value="true"
+            <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input is-valid" id="activated" name="activateMessage" value="true"
                   <% if(locals.data && (locals.data.activateMessage === true || (locals.data.features && locals.data.features.displayMessageOnLogin === true))) { %> checked <% } %>
                   required>
-                <label class="custom-control-label" for="activated">oui</label>
+                <label class="form-check-label" for="activated">oui</label>
               </div>
-              <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" class="custom-control-input is-valid" id="unactivated" name="activateMessage" value="false"
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input is-valid" id="unactivated" name="activateMessage" value="false"
                   <%if(locals.data && (locals.data.activateMessage === false || (locals.data.features && locals.data.features.displayMessageOnLogin === false))) { %> checked <% } %>
                     required>
-                <label class="custom-control-label" for="unactivated">non</label>
+                <label class="form-check-label" for="unactivated">non</label>
               </div>
           </div>   
         </div>

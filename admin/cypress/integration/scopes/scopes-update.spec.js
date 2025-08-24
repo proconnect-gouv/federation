@@ -42,7 +42,7 @@ describe('Update a scope label', () => {
       cy.contains(
         `Le label ${scopeLabelsInfo.label} pour le scope ${scopeLabelsInfo.scope} a été créé avec succès !`,
       ).scrollIntoView();
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       updateScopeLabel(
         scopeLabelsInfo.scope,
@@ -81,7 +81,7 @@ describe('Update a scope label', () => {
 
       createScopeLabels(scopeLabelsInfo, configuration);
       cy.get('button[type="submit"]').click();
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       updateScopeLabel(scopeLabelsInfo.scope, scopeLabelsUpdatedInfo, {
         ...configuration,

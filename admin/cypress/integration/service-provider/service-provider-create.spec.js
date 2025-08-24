@@ -58,7 +58,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service MyFirstSP a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       cy.hasBusinessLog({
         entity: 'service-provider',
@@ -83,7 +83,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service MyFirstSP localhost a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider even with localhost as redirectUriLogout ( integration ) ', () => {
@@ -102,7 +102,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service MyFirstSP localhost logout a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider with two logout redirections', () => {
@@ -121,7 +121,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service 2 logout uris a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider with two redirect uris', () => {
@@ -140,7 +140,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service 2 redirect uris a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider even with a mobile URI scheme as redirectUri ( integration ) ', () => {
@@ -160,7 +160,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service MyFirstSP mobile URI scheme a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider even with a mobile URI scheme as redirectUriLogout ( integration ) ', () => {
@@ -180,7 +180,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service MyFirstSP mobile URI scheme logout a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider with two emails', () => {
@@ -199,7 +199,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service 2 emails a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider with two ipAddresses', () => {
@@ -218,7 +218,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service 2 ipAddresses a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider with two websites', () => {
@@ -237,7 +237,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service 2 websites a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a service provider with no email', () => {
@@ -252,7 +252,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service no email a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('should have client secret in hexadecimal form', () => {
@@ -270,7 +270,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service check hexa a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
       cy.contains('check hexa');
       cy.get('#list-table > tbody > tr > td').eq(0).click();
       cy.get('#client_secret')
@@ -512,7 +512,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service MyFirstSP URIScheme a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a URIScheme in redirectUriLogout field', () => {
@@ -552,7 +552,7 @@ describe('Service provider creation', () => {
       cy.contains(
         `Le fournisseur de service champs optionnels a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if we add a name containing all kind of authorized chars', () => {

@@ -17,7 +17,7 @@
               <input type="hidden" name="_csrf" value="<%= locals.csrfToken  %>">
               <input id="password" type="hidden" required name="password" value="<%= locals.tmpPassword%>">
               <input type="hidden" name="secret" id="secret" value="fakeSecret">
-              <section class="form-group row">
+              <section class="mb-3 row">
                 <label class="col-2 col-form-label" for="username">Nom d'utilisateur</label>
                 <div class="col-10">
                   <input id="username" type="text" required
@@ -35,7 +35,7 @@
                   </div>
                 </div>
               </section>
-              <section class="form-group row">
+              <section class="mb-3 row">
                 <label class="col-2 col-form-label" for="email">Email</label>
                 <div class="col-10">
                   <input id="email" type="text" required
@@ -54,7 +54,7 @@
                   </div>
                 </div>
               </section>
-              <section class="form-group row">
+              <section class="mb-3 row">
                 <label class="col-2 col-form-label" for="roles">Rôles</label>
                 <div class="col-10">
                   <% USER_ROLES_OPTIONS.filter(({value}) => !['new_account','blocked_user','inactive_'].some(role => value.startsWith(role))).forEach((roleOption, index) => { %>
@@ -80,10 +80,10 @@
 
               <div class="my-4 text-center">
                 <p>MOT DE PASSE TEMPORAIRE :</p>
-                <p class="font-weight-bold display-4 my-3" id="tmpPassword"><%= locals.tmpPassword%></p>
+                <p class="fw-bold display-4 my-3" id="tmpPassword"><%= locals.tmpPassword%></p>
               </div>
 
-              <section class="form-group row">
+              <section class="mb-3 row">
                 <label class="col-2 col-form-label" for="confirm-2FAuthentication">Code TOTP</label>
                 <div class="col-10">
                   <input id="_totp" type="text" required value="<%= locals.totp %>" placeholder="123456"

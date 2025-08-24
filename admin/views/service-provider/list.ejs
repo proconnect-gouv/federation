@@ -25,7 +25,7 @@
         <% } %>
         <%- include('partials/search', {userSearch: querySearch}); %>
         <% if (CURRENT_USER.roles.includes('operator')) { %>
-        <div id="delete-button" class="ml-2">
+        <div id="delete-button" class="ms-2">
           <input id="csrf" type="hidden" name="_csrf" value="<%= locals.csrfToken  %>">
           <input id="app" type="hidden" name="_app" value="<%= APP_ROOT %>">
           <button id="submit-action" class="btn btn-danger" data-init="submitDeletion" type="button">Supprimer</button>
@@ -40,29 +40,29 @@
           <thead class="thead-light">
 
             <tr class="d-flex">
-              <th scope="col" class="col-3 border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <th scope="col" class="col-3 border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "name", fieldName: "Nom du service (mire)" }); %>
               </th>
-              <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Client ID</th>
-              <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Client ID</th>
+              <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "createdAt", fieldName: "Date de création de la clé de production" }); %>
               </th>
-              <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "secretUpdatedAt", fieldName: "Date de génération du secret" }); %>
               </th>
-              <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <%- include('partials/sort-table', { uri: "/service-provider", fieldToSortOn: "active", fieldName: "Activé" }); %>
               </th>
-              <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-right-0 border-secondary">Actions</th>
+              <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">Actions</th>
             </tr>
           </thead>
           <tbody>
             <% serviceProviders.forEach(function(serviceProvider, index){ %>
             <tr class="fs d-flex">
               <th scope="row"
-                class="col-3 text-truncate d-inline-flex border-bottom-0 border-top-0 border-right-0 border-secondary">
+                class="col-3 text-truncate d-inline-flex border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
-                <div id="multiple-delete-<%= serviceProvider.id %>" class="d-flex align-items-center mr-2">
+                <div id="multiple-delete-<%= serviceProvider.id %>" class="d-flex align-items-center mr-2 form-check-inline">
                   <input data-init="displayRemoveButtonEvent" data-element-title="<%= serviceProvider.name %>" class="delete-items"
                     type="checkbox" name="deleteItems" value="<%= serviceProvider._id %>" />
                 </div>
@@ -73,7 +73,7 @@
                   <%= serviceProvider.name %>
                 <% } %>
               </th>
-              <td class="col-3 text-truncate border border-bottom-0 border-top-0 border-right-0 border-secondary"
+              <td class="col-3 text-truncate border border-bottom-0 border-top-0 border-end-0 border-secondary"
                 title="<%= serviceProvider.key %>">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
                   <a id='key-<%= serviceProvider.key %>' class="key text-dark" href="<%= APP_ROOT %>/service-provider/update/<%= serviceProvider._id %>/secret"><%= serviceProvider.key %></a>
@@ -81,15 +81,15 @@
                   <%= serviceProvider.key %>
                 <% } %>
               </td>
-              <td class="col-2 d-inline-flex d-flex justify-content-center time-client-id border border-bottom-0 border-top-0 border-right-0 border-secondary"><%= serviceProvider.createdAt && moment(new Date(serviceProvider.createdAt)).format('DD/MM/YYYY') %></td>
-              <td class="col-2 d-inline-flex d-flex justify-content-center time-secret border border-bottom-0 border-top-0 border-right-0 border-secondary"><%= serviceProvider.secretUpdatedAt && moment(new Date(serviceProvider.secretUpdatedAt)).format('DD/MM/YYYY') %></td>
+              <td class="col-2 d-inline-flex d-flex justify-content-center time-client-id border border-bottom-0 border-top-0 border-end-0 border-secondary"><%= serviceProvider.createdAt && moment(new Date(serviceProvider.createdAt)).format('DD/MM/YYYY') %></td>
+              <td class="col-2 d-inline-flex d-flex justify-content-center time-secret border border-bottom-0 border-top-0 border-end-0 border-secondary"><%= serviceProvider.secretUpdatedAt && moment(new Date(serviceProvider.secretUpdatedAt)).format('DD/MM/YYYY') %></td>
 
-              <td class="text-center col-1 border border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <td class="text-center col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <i class="fa fa-toggle-<%= serviceProvider.active ? 'on' : 'off' %>"></i>
               </td>
 
               <td
-                class="col-1 d-inline-flex d-flex justify-content-center quick-action border border-bottom-0 border-top-0 border-right-0 border-secondary">
+                class="col-1 d-inline-flex d-flex justify-content-center quick-action border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
                 <a href="<%= APP_ROOT %>/service-provider/<%= serviceProvider._id %>"
                   class="d-flex align-items-center mr-2 btn-action-update">
