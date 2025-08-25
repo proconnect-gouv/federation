@@ -76,6 +76,7 @@ jobs:
         run: |
           ./docker-stack prune-ci
           ./docker-stack up admin
+          ./docker-stack compose run --rm base-docker-gen
           ./docker-stack wait "admin" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests

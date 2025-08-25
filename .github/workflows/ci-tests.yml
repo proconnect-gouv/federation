@@ -119,6 +119,7 @@ jobs:
           set -x
           ./docker-stack prune-ci
           ./docker-stack up small
+          ./docker-stack compose run --rm base-docker-gen
 
       - name: Install quality dependencies
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
@@ -184,6 +185,7 @@ jobs:
           set -x
           ./docker-stack prune-ci
           ./docker-stack up "${{ matrix.stack }}"
+          ./docker-stack compose run --rm base-docker-gen
 
       - name: Install quality dependencies
         run: yarn install --ignore-engines --frozen-lockfile --no-progress

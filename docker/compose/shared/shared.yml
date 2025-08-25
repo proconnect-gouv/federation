@@ -177,7 +177,7 @@ services:
           - fia-rie-low.docker.dev-franceconnect.fr
       exploitation:
 
-  docker-gen:
+  base-docker-gen:
     user: ${CURRENT_UID}
     image: jwilder/docker-gen
     volumes:
@@ -185,6 +185,7 @@ services:
       - ${VOLUMES_DIR}/nginx-proxy/default-vhost:/etc/nginx/html
       - ${VOLUMES_DIR}/nginx-proxy/etc:/etc/nginx/conf.d
       - ${VOLUMES_DIR}/docker-gen/config:/etc/docker-gen/config:ro
+      - ${VOLUMES_DIR}/docker-gen/watch:/etc/docker-gen/watch:ro
       - ${VOLUMES_DIR}/nginx-proxy/templates:/etc/docker-gen/templates:ro
     networks:
       - public
@@ -192,6 +193,10 @@ services:
       - exploitation
       - rie
     command: -config /etc/docker-gen/config
+
+  docker-gen:
+    extends: base-docker-gen
+    command: -config /etc/docker-gen/config -config /etc/docker-gen/watch
 
   squid:
     image: ubuntu/squid:6.6-24.04_beta
