@@ -14,7 +14,7 @@
     "build:mock-data-provider": "nest build mock-data-provider",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\" \"instances/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "NODE_ENV=development nest start --watch --watchAssets",
+    "start:dev": "NODE_ENV=development nest start --watch --watchAssets --debug 0.0.0.0:9229",
     "start:ci": "NODE_ENV=development nest start",
     "start:prod:core-fca-low": "node dist/instances/core-fca-low/main.js > /tmp/.pm2/logs/fca-out-0.log 2> /tmp/.pm2/logs/fca-error-0.log",
     "start:prod:csmr-rie": "node dist/instances/csmr-rie/main.js > /tmp/.pm2/logs/csmr-rie-out-0.log 2> /tmp/.pm2/csmr-rie-error-0.log",
