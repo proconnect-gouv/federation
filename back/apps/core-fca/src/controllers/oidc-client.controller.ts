@@ -90,14 +90,6 @@ export class OidcClientController {
     const providers: { title: string; uid: string }[] =
       await this.coreFca.getIdentityProvidersByIds(identityProviders);
 
-    // replace default idp title by "Autre"
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
-    providers.map((provider) => {
-      if (provider.uid === defaultIdpId) {
-        provider.title = 'Autre';
-      }
-    });
-
     const csrfToken = this.csrfService.renew();
     this.sessionService.set('Csrf', { csrfToken });
 
