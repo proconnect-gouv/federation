@@ -6,6 +6,8 @@ services:
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
+    ports:
+      - 9329:9329
     depends_on:
       rp-all:
         condition: service_started
