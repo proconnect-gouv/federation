@@ -77,15 +77,6 @@ _prune_ci() {
   $DOCKER_COMPOSE down --volumes --remove-orphans
 }
 
-_get_env() {
-  local app=${1}
-  local varName=${2}
-  local containerName="${COMPOSE_PROJECT_NAME}-${app}-1"
-  local expression='${'${varName}'}'
-
-  docker exec ${containerName} bash -c "echo ${expression}"
-}
-
 _switch() {
   _prune
   _logs "--bg"

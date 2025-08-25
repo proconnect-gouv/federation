@@ -12,7 +12,7 @@ services:
 
   base-nodejs:
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -33,12 +33,12 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     networks:
       - fc
       - public
@@ -46,7 +46,7 @@ services:
 
   base-mock:
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -59,12 +59,12 @@ services:
   base-sp-mock:
     extends: base-mock
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     depends_on:
       rp-all:
         condition: service_started
@@ -78,13 +78,13 @@ services:
   base-idp-mock:
     extends: base-mock
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     depends_on:
       rp-all:
         condition: service_started
@@ -98,12 +98,12 @@ services:
   base-dp-mock:
     extends: base-mock
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
+      - '../../../back:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     depends_on:
       rp-all:
         condition: service_started
@@ -114,9 +114,9 @@ services:
   base-redis:
     image: 'bitnami/redis:6.2.16'
     env_file:
-      - ${COMPOSE_DIR}/shared/.env/redis.env
+      - ../shared/.env/redis.env
     volumes:
-      - '${VOLUMES_DIR}/ssl:/bitnami/redis/data/ssl'
+      - '../../volumes/ssl:/bitnami/redis/data/ssl'
     healthcheck:
       interval: 2s
       start_period: 5s
@@ -138,14 +138,14 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - ${VOLUMES_DIR}/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ${VOLUMES_DIR}/nginx-proxy/etc:/etc/nginx/conf.d:ro
-      - ${VOLUMES_DIR}/nginx-proxy/includes:/etc/nginx/includes:ro
-      - ${VOLUMES_DIR}/nginx-proxy/public:/var/www:ro
-      - ${VOLUMES_DIR}/nginx-proxy/default-vhost:/etc/nginx/html:ro
-      - ${VOLUMES_DIR}/ssl:/etc/nginx/docker_host:ro
-      - ${VOLUMES_DIR}/ssl:/etc/nginx/client_certs:ro
-      - ${VOLUMES_DIR}/log/nginx:/var/log/nginx
+      - ../../volumes/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../../volumes/nginx-proxy/etc:/etc/nginx/conf.d:ro
+      - ../../volumes/nginx-proxy/includes:/etc/nginx/includes:ro
+      - ../../volumes/nginx-proxy/public:/var/www:ro
+      - ../../volumes/nginx-proxy/default-vhost:/etc/nginx/html:ro
+      - ../../volumes/ssl:/etc/nginx/docker_host:ro
+      - ../../volumes/ssl:/etc/nginx/client_certs:ro
+      - ../../volumes/log/nginx:/var/log/nginx
     networks:
       public:
         aliases:
@@ -181,10 +181,10 @@ services:
     image: jwilder/docker-gen
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ${VOLUMES_DIR}/nginx-proxy/default-vhost:/etc/nginx/html
-      - ${VOLUMES_DIR}/nginx-proxy/etc:/etc/nginx/conf.d
-      - ${VOLUMES_DIR}/docker-gen/config:/etc/docker-gen/config:ro
-      - ${VOLUMES_DIR}/nginx-proxy/templates:/etc/docker-gen/templates:ro
+      - ../../volumes/nginx-proxy/default-vhost:/etc/nginx/html
+      - ../../volumes/nginx-proxy/etc:/etc/nginx/conf.d
+      - ../../volumes/docker-gen/config:/etc/docker-gen/config:ro
+      - ../../volumes/nginx-proxy/templates:/etc/docker-gen/templates:ro
     networks:
       - public
       - fc
@@ -216,20 +216,20 @@ services:
   log-hub:
     hostname: log-hub
     build:
-      context: '${FEDERATION_DIR}/back'
+      context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${FEDERATION_DIR}/docker/log-hub:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../../docker/log-hub:/var/www/app'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     environment:
       - 'DEFAULT_MODE=dev'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '../shared/.env/base-app.env'
     ports:
       - 6666:6666
     tty: true
@@ -237,8 +237,8 @@ services:
 
   broker:
     build:
-      context: '${WORKING_DIR}'
-      dockerfile: '${WORKING_DIR}/builds/broker/Dockerfile'
+      context: '../..'
+      dockerfile: 'builds/broker/Dockerfile'
     # Specify hostname to fix cluster name
     hostname: broker
     networks:
@@ -291,7 +291,7 @@ services:
     image: 'bitnami/redis-sentinel:6.2.16'
     scale: 3
     env_file:
-      - ${COMPOSE_DIR}/shared/.env/redis.env
+      - ../shared/.env/redis.env
     environment:
       - REDIS_SENTINEL_QUORUM=2
       - REDIS_MASTER_SET=fc_core_v2
@@ -305,7 +305,7 @@ services:
       - REDIS_SENTINEL_TLS_CA_FILE=/bitnami/redis/data/ssl/docker-stack-ca.crt
       - REDIS_SENTINEL_TLS_AUTH_CLIENTS=no
     volumes:
-      - '${VOLUMES_DIR}/ssl:/bitnami/redis/data/ssl'
+      - '../../volumes/ssl:/bitnami/redis/data/ssl'
     healthcheck:
       test: redis-cli -p 26379 --tls --cacert $${REDIS_SENTINEL_TLS_CA_FILE} ping
       interval: 2s
@@ -319,14 +319,14 @@ services:
   postgres:
     image: postgres:13-bullseye
     volumes:
-      - '${VOLUMES_DIR}/postgres/init-multiple-postgresql-databases.sh:/docker-entrypoint-initdb.d/init-multiple-postgresql-databases.sh:ro'
-      - '${VOLUMES_DIR}/postgres/start.sh:/usr/bin/start.sh:ro'
-      - '${VOLUMES_DIR}/postgres/postgresql.conf:/etc/postgresql/postgresql.conf'
-      - '${VOLUMES_DIR}/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf'
-      - ${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro
+      - '../../volumes/postgres/init-multiple-postgresql-databases.sh:/docker-entrypoint-initdb.d/init-multiple-postgresql-databases.sh:ro'
+      - '../../volumes/postgres/start.sh:/usr/bin/start.sh:ro'
+      - '../../volumes/postgres/postgresql.conf:/etc/postgresql/postgresql.conf'
+      - '../../volumes/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf'
+      - ../../volumes/ssl:/etc/ssl/docker_host:ro
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/postgres/base.env'
-      - '${COMPOSE_DIR}/shared/.env/postgres/databases.env'
+      - '../shared/.env/postgres/base.env'
+      - '../shared/.env/postgres/databases.env'
     command: ['start.sh']
     ports:
       - '5432:5432'
