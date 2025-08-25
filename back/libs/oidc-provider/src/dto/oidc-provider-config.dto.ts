@@ -20,6 +20,7 @@ import {
   EncryptionAlgValues,
   EncryptionEncValues,
   ErrorOut,
+  interactionPolicy,
   JWK,
   KoaContextWithOIDC,
   PKCEMethods,
@@ -31,6 +32,7 @@ import {
 } from 'oidc-provider';
 
 import { OidcProviderPrompt, OidcProviderRoutes } from '../enums';
+import DefaultPolicy = interactionPolicy.DefaultPolicy;
 
 /**
  * Since oidc-provider does not expose some callbacks signatures
@@ -364,6 +366,9 @@ class OidcProviderInteractionConfig {
    */
   @IsOptional()
   readonly url: InteractionUrlCallback;
+
+  @IsOptional()
+  readonly policy?: DefaultPolicy;
 }
 
 class AllClientMetadataValidator implements AllClientMetadata {
