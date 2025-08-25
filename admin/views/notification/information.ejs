@@ -22,18 +22,18 @@
       <table class="table table-hover table-light shadow-sm" id="list-table">
         <thead class="thead-light">
           <tr class="d-flex">
-            <th scope="col" class="col-4 border-bottom-0 border-top-0 border-right-0 border-secondary">Message d'information</th>
-            <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-right-0 border-secondary">Début</th>
-            <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-right-0 border-secondary">Fin</th>
-            <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-right-0 border-secondary">Date de création</th>
-            <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-right-0 border-secondary">Actif</th>
-            <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-right-0 border-secondary">Actions</th>
+            <th scope="col" class="col-4 border-bottom-0 border-top-0 border-end-0 border-secondary">Message d'information</th>
+            <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-end-0 border-secondary">Début</th>
+            <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-end-0 border-secondary">Fin</th>
+            <th scope="col" class="col-2 border border-bottom-0 border-top-0 border-end-0 border-secondary">Date de création</th>
+            <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">Actif</th>
+            <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">Actions</th>
           </tr>
         </thead>
         <tbody id="messages">
           <% notifications.forEach(function(notification, index){ %>
             <tr id="line<%= index %>" class="fs d-flex">
-              <td class="col-4 text-truncate border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <td class="col-4 text-truncate border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
                   <a href="<%= APP_ROOT %>/notification/<%= notification._id %>"
                     class="text-dark">
@@ -41,7 +41,7 @@
                   </a>
                 <% } %>
               </td>
-              <td class="col-2 text-truncate border border-bottom-0 border-top-0 border-right-0 border-secondary time-client-id">
+              <td class="col-2 text-truncate border border-bottom-0 border-top-0 border-end-0 border-secondary time-client-id">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
                   <%= notification.startDate && moment(notification.startDate)
                     .locale('fr')
@@ -50,7 +50,7 @@
                   %>
                 <% } %>
               </td>
-              <td class="col-2 text-truncate border border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <td class="col-2 text-truncate border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
                   <%= notification.stopDate && moment(notification.stopDate)
                     .locale('fr')
@@ -68,12 +68,12 @@
                   %>
                 <% } %>
               </td>
-              <td class="col-1 text-truncate border border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <td class="col-1 text-truncate border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
                   <%= notification.isActive ? 'Oui' : 'Non' %>
                 <% } %>
               </td>
-              <td class="col-1 text-truncate border border-bottom-0 border-top-0 border-right-0 border-secondary">
+              <td class="col-1 text-truncate border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
                   <a href="<%= APP_ROOT %>/notification/<%= notification._id %>"
                     class="d-flex align-items-center mr-2 btn-action-update">

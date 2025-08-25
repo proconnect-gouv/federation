@@ -3,7 +3,7 @@ export function toggleByRadio(enableRadio) {
   const disableRadio = document.getElementById(disableRadioId);
 
   const target = document.getElementById(
-    enableRadio.getAttribute('data-target'),
+    enableRadio.getAttribute('data-bs-target'),
   );
 
   // Initial render

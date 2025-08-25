@@ -41,7 +41,7 @@ describe('Delete a scope label', () => {
     cy.contains(
       `Le label ${scopeLabelsInfo.label} pour le scope ${scopeLabelsInfo.scope} a été créé avec succès !`,
     );
-    cy.get('.alert-success > .close').click();
+    cy.closeBanner('.alert-success');
 
     cy.contains(scopeLabelsInfo.scope).scrollIntoView().should('be.visible');
     cy.contains(scopeLabelsInfo.scope)
@@ -72,7 +72,7 @@ describe('Delete a scope label', () => {
       cy.contains(
         `Le label ${scopeLabelsInfo.label} pour le scope ${scopeLabelsInfo.scope} a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       deleteScopeLabel(scopeLabelsInfo.scope, configuration);
       cy.get('button[class="btn btn-success btn-yes"]').click();
@@ -103,7 +103,7 @@ describe('Delete a scope label', () => {
       cy.contains(
         `Le label ${scopeLabelsInfo.label} pour le scope ${scopeLabelsInfo.scope} a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       deleteScopeLabel(scopeLabelsInfo.scope, configuration);
       cy.wait(800);
@@ -141,7 +141,7 @@ describe('Delete a scope label', () => {
       cy.contains(
         `Le label ${scopeLabelsInfo.label} pour le scope ${scopeLabelsInfo.scope} a été créé avec succès !`,
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       deleteScopeLabel(scopeLabelsInfo.scope, {
         ...configuration,
