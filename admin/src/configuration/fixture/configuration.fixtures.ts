@@ -1,8 +1,6 @@
-import { ObjectID } from 'mongodb';
-
 export const configuration: any = [
   {
-    id: new ObjectID('5d7a1f9242026edfc3e8a91e'),
+    id: '5d7a1f9242026edfc3e8a91e',
     env: 'development',
     mode: 'particuliers',
     cookieSigningSecret:
@@ -126,7 +124,7 @@ export const configuration: any = [
     },
   },
   {
-    id: new ObjectID('5d7a1f9242026edfc3e8a91d'),
+    id: '5d7a1f9242026edfc3e8a91d',
     env: 'development',
     mode: 'particuliers',
     cookieSigningSecret:

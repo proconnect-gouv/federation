@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { ConfigService } from 'nestjs-config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ScopesService } from './scopes.service';
@@ -11,7 +11,8 @@ import {
   scopesListGroupedByFdMock,
 } from './fixture';
 
-const id: ObjectID = new ObjectID('5d9c677da8bb151b00720451');
+const id: string = '5d9c677da8bb151b00720451';
+const oid: ObjectId = new ObjectId(id);
 
 export const reqMock = {
   flash: jest.fn(),
@@ -126,7 +127,7 @@ describe('Scopes Controller', () => {
         scopesAndLabelsList: scopesListMock,
         claimsList: [
           {
-            id: new ObjectID('5d9c677da8bb151b00720451'),
+            id,
             name: 'amr',
           },
         ],
@@ -183,7 +184,7 @@ describe('Scopes Controller', () => {
       );
       expect(reqMock.flash).toHaveBeenCalledWith(
         'globalError',
-        "Impossible d'enregistrer le label",
+        "Impossible d'enregistrer le label (Error: something)",
       );
     });
   });
@@ -209,7 +210,7 @@ describe('Scopes Controller', () => {
 
       // Assertion
       expect(ScopesServiceMock.getById).toHaveBeenCalledTimes(1);
-      expect(ScopesServiceMock.getById).toHaveBeenCalledWith(id);
+      expect(ScopesServiceMock.getById).toHaveBeenCalledWith(oid);
       expect(result).toEqual({
         csrfToken: 'foundationCsrfToken',
         scope: 'myGreatScope',
@@ -228,7 +229,7 @@ describe('Scopes Controller', () => {
 
     it('should update the scope label entry corresponding to the id param', async () => {
       const updatedScopeLabel: IScopes = {
-        id: new ObjectID('5d9c677da8bb151b00720451'),
+        id: new ObjectId('5d9c677da8bb151b00720451'),
         fd: 'DGFIP',
         scope: 'Seldon2222',
         label: 'Seldon222 Label (dgfip)',
@@ -254,7 +255,7 @@ describe('Scopes Controller', () => {
     it('should throw an error if scope label entry can not be update', async () => {
       // Setup
       const updatedScopeLabel: IScopes = {
-        id: new ObjectID('5d9c677da8bb151b00720451'),
+        id: new ObjectId('5d9c677da8bb151b00720451'),
         fd: 'DGFIP',
         scope: 'Seldon2222',
         label: 'Seldon222 Label (dgfip)',
@@ -406,7 +407,7 @@ describe('Scopes Controller', () => {
 
   describe('updateClaim()', () => {
     const updatedClaim: IClaims = {
-      id: new ObjectID('5d9c677da8bb151b00720451'),
+      id: new ObjectId('5d9c677da8bb151b00720451'),
       name: 'foo',
     };
 
@@ -449,7 +450,7 @@ describe('Scopes Controller', () => {
 
   describe('removeClaim()', () => {
     const body = {
-      id: new ObjectID('5d9c677da8bb151b00720451'),
+      id: new ObjectId('5d9c677da8bb151b00720451'),
       name: 'bar',
     };
 
@@ -502,6 +503,9 @@ describe('Scopes Controller', () => {
 
     // Expected
     expect(scopeService.remove).toHaveBeenCalledTimes(1);
-    expect(scopeService.remove).toHaveBeenCalledWith(id, reqMock.user.username);
+    expect(scopeService.remove).toHaveBeenCalledWith(
+      oid,
+      reqMock.user.username,
+    );
   });
 });
