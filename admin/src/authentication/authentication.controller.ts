@@ -32,7 +32,7 @@ export class AuthenticationController {
   }
 
   @Post('first-login/:token')
-  @UseGuards(new LocalAuthGuard())
+  @UseGuards(LocalAuthGuard)
   public firstLogin(@Req() req, @Res() res) {
     this.track({
       action: AuthenticationActions.TOKEN_SIGNUP,
@@ -51,7 +51,7 @@ export class AuthenticationController {
   }
 
   @Post('login')
-  @UseGuards(new LocalAuthGuard())
+  @UseGuards(LocalAuthGuard)
   public login(@Req() req, @Res() res) {
     this.track({
       action: AuthenticationActions.SIGNIN,
@@ -77,7 +77,8 @@ export class AuthenticationController {
 
     await sessionDestroy();
     await sessionRegenerate();
-    req.logout();
-    return res.redirect(`${res.locals.APP_ROOT}/login`);
+    return req.logout((_err) => {
+      res.redirect(`${res.locals.APP_ROOT}/login`);
+    });
   }
 }
