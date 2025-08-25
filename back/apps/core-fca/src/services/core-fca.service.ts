@@ -156,10 +156,25 @@ export class CoreFcaService {
     }
   }
 
-  async getIdentityProvidersByIds(idpIds: string[]) {
-    const idpList = await this.identityProvider.getList();
-    return idpList
-      .filter(({ uid }) => idpIds.includes(uid))
-      .map(({ name, title, uid }) => ({ name, title, uid }));
+  async getIdentityProvidersByIds(
+    idpIds: string[],
+  ): Promise<{ name: string; title: string; uid: string }[]> {
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+    const providers = await this.identityProvider.getList();
+    const uidsSet = new Set(idpIds.map((id) => id));
+
+    const filteredProviders = providers
+      .filter(({ uid }) => uidsSet.has(uid))
+      .map(({ name, title, uid }) => ({
+        name,
+        title: uid === defaultIdpId ? 'Autre' : title,
+        uid,
+      }));
+
+    return filteredProviders.sort((a, b) => {
+      if (a.title === 'Autre') return 1;
+      if (b.title === 'Autre') return -1;
+      return a.title.localeCompare(b.title, 'fr');
+    });
   }
 }
