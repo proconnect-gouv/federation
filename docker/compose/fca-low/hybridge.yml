@@ -43,7 +43,6 @@ services:
       - public
       - data
     init: true
-    command: 'yarn start:dev bridge-http-proxy-rie'
 
   ####################
   ##

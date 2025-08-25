@@ -11,6 +11,8 @@ WORKDIR /var/www/app
 COPY package.json yarn.lock ./
 RUN yarn install --ignore-engines
 
+CMD yarn start:dev ${NESTJS_INSTANCE}
+
 
 FROM ${NODE_IMAGE} AS builder
 

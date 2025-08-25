@@ -43,7 +43,6 @@ services:
       - fc
       - public
       - data
-    command: 'yarn start:dev core-fca-low'
 
   base-mock:
     build:
