@@ -60,7 +60,7 @@
     "body-parser": "^2.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-    "cookie-parser": "^1.4.6",
+    "cookie-parser": "^1.4.7",
     "deep-freeze": "^0.0.1",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
