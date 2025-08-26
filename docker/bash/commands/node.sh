@@ -6,29 +6,6 @@ _log() {
   $DOCKER_COMPOSE exec ${NO_TTY} ${app} pm2 logs
 }
 
-_detect_instances() {
-  local apps="${@:-no-container}"
-  local instances=$(
-    for app in ${apps}; do
-      _get_env "${app}" "NESTJS_INSTANCE"
-    done
-  )
-
-  echo "${instances}" | sort | uniq | grep -oE "[a-zA-Z0-9-]+"
-}
-
-_clean_pc_dist() {
-  local apps="${@:-no-container}"
-  local instances=$(_detect_instances "${apps}")
-
-  cd ${VOLUMES_DIR}
-
-  for instance in ${instances}; do
-    echo "    * Purging build dir for ${instance}"
-    rm -rf "src/fc/back/dist/instances/${instance}"
-  done
-}
-
 _stop() {
   apps=${@:-no-container}
   for app in $apps; do

@@ -5,15 +5,11 @@
 
 #### Global Variables:
 COMPOSE_PROJECT_NAME=pc
-COMPOSE_DIR="${DOCKER_DIR}/compose"
-COMPOSE_FILE="${COMPOSE_DIR}/fca-low/stack.yml"
+COMPOSE_FILE="${DOCKER_DIR}/compose/fca-low/stack.yml"
 
-VOLUMES_DIR="${DOCKER_DIR}/volumes"
 WORKING_DIR="${DOCKER_DIR}"
 
 export COMPOSE_FILE
-export COMPOSE_DIR
-export VOLUMES_DIR
 export COMPOSE_PROJECT_NAME
 export WORKING_DIR
 

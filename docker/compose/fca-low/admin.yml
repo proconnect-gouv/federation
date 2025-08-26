@@ -2,7 +2,7 @@ services:
   admin:
     hostname: admin
     build:
-      context: '${FEDERATION_DIR}/admin'
+      context: '../../../admin'
       target: dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -18,17 +18,17 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '${FEDERATION_DIR}/admin:/var/www/app'
+      - '../../../admin:/var/www/app'
       - '/var/www/app/node_modules'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-      - '${VOLUMES_DIR}/log:/var/log/app'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/log:/var/log/app'
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/shared/.env/postgres.env'
-      - '${COMPOSE_DIR}/shared/.env/pc-mongo.env'
-      - '${COMPOSE_DIR}/fca-low/.env/exploitation-fca-low.env'
+      - '../shared/.env/base-app.env'
+      - '../shared/.env/postgres.env'
+      - '../shared/.env/pc-mongo.env'
+      - '../fca-low/.env/exploitation-fca-low.env'
     networks:
       - exploitation
       - data
