@@ -124,12 +124,10 @@ services:
   ####################
 
   rp-all:
-    image: nginx:1.14.2
+    image: nginx:1.27.3
     container_name: pc-rp-all
     environment:
       DHPARAM_GENERATION: 'false'
-    depends_on:
-      - docker-gen
     ports:
       - '80:80'
       - '443:443'
@@ -171,22 +169,6 @@ services:
           - auth.llng.docker.dev-franceconnect.fr
           - fia-rie-low.docker.dev-franceconnect.fr
       exploitation:
-
-  docker-gen:
-    user: ${CURRENT_UID}
-    image: jwilder/docker-gen
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ../../volumes/nginx-proxy/default-vhost:/etc/nginx/html
-      - ../../volumes/nginx-proxy/etc:/etc/nginx/conf.d
-      - ../../volumes/docker-gen/config:/etc/docker-gen/config:ro
-      - ../../volumes/nginx-proxy/templates:/etc/docker-gen/templates:ro
-    networks:
-      - public
-      - fc
-      - exploitation
-      - rie
-    command: -config /etc/docker-gen/config
 
   squid:
     image: ubuntu/squid:6.6-24.04_beta
@@ -289,9 +271,6 @@ services:
   maildev:
     hostname: maildev
     image: maildev/maildev:2.0.5
-    environment:
-      - 'VIRTUAL_HOST=maildev.docker.dev-franceconnect.fr'
-      - 'VIRTUAL_PORT=1080'
     networks:
       - data
       - public

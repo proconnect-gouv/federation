@@ -6,7 +6,7 @@ services:
   ####################
 
   rp-hybridge:
-    image: nginx:1.14.2
+    image: nginx:1.27.3
     volumes:
       - ../../volumes/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../../volumes/nginx-proxy/includes:/etc/nginx/includes:ro

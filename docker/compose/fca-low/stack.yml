@@ -60,7 +60,7 @@ services:
   hybridge:
     image: alpine
     depends_on:
-      - 'core-squid'
+      - 'core'
       - 'fsa1-low'
       - 'fia1-low'
       ### RIE
