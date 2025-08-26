@@ -69,3 +69,10 @@ services:
       - 'hybridge-rie'
       - 'identity-provider-rie'
       - 'rp-hybridge'
+
+  rie:
+    image: alpine
+    depends_on:
+      - 'core-rie'
+      - 'service-provider-1'
+      - 'identity-provider-rie'
