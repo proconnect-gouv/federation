@@ -11,10 +11,6 @@ _get_node_containers_to_start() {
   echo ${raw_nodejs_containers}
 }
 
-_reload_rp() {
-  docker exec pc-rp-all service nginx reload
-}
-
 _container_to_compose_name() {
   local input=$1
   local output=""
