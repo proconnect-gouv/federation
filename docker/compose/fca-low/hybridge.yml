@@ -24,7 +24,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     depends_on:
       rp-all:
         condition: service_started
@@ -55,7 +54,6 @@ services:
       context: '../../../back'
       target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     depends_on:
       - broker
     volumes:

@@ -119,7 +119,6 @@ services:
     hostname: <my_application>-<back>
     image: ${PC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     depends_on:
       - <...any_required_service...>
     volumes:
