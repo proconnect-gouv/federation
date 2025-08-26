@@ -10,10 +10,18 @@ Then(
   },
 );
 
-Then("je choisis le fournisseur d'identité {string}", function (text: string) {
-  cy.contains('label', text).click();
-  cy.contains('button', 'Continue').click();
-});
+Then(
+  "je choisis le fournisseur d'identité {string} et le bouton {string} est activé",
+  function (text: string, buttonText: string) {
+    cy.contains('label', text).click();
+    cy.contains('button', buttonText).should(
+      'have.css',
+      'pointer-events',
+      'auto',
+    );
+    cy.contains('button', 'Continue').click();
+  },
+);
 
 Then(
   "je suis redirigé vers la page permettant la selection d'un fournisseur d'identité",
