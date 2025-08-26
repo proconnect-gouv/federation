@@ -3,7 +3,6 @@ ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
 FROM ${NODE_IMAGE} AS dev
 
-RUN yarn global add pm2@6.0.8
 RUN apk add --no-cache bash
 
 WORKDIR /var/www/app
