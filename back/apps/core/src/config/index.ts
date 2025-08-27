@@ -1,4 +1,4 @@
-import { CoreFcaConfig } from 'apps/core/src';
+import { CoreFcaConfig } from '@fc/core';
 
 import App from './app';
 import EmailValidator from './email-validator';

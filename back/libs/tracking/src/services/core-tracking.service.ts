@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { overrideWithSourceIfNotNull } from '@fc/common';
-import { UserSession } from 'apps/core/src';
+import { UserSession } from '@fc/core';
 import { SessionService } from '@fc/session';
 import { extractNetworkInfoFromHeaders } from '@fc/tracking-context';
 

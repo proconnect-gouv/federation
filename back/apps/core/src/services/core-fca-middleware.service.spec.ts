@@ -3,7 +3,7 @@ import { validate } from 'class-validator';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CoreNoSessionIdException } from 'apps/core/src/exceptions';
+import { CoreNoSessionIdException } from '@fc/core/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcCtx, OidcProviderService } from '@fc/oidc-provider';

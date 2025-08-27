@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
-import { UserSession } from 'apps/core/src';
+import { UserSession } from '@fc/core';
 import { LoggerPluginServiceInterface } from '@fc/logger';
 import { SessionService } from '@fc/session';
 

@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from 'apps/core/src/enums';
-import { CoreFcaBaseException } from 'apps/core/src/exceptions/core-fca-base.exception';
+import { ErrorCode } from '@fc/core/enums';
+import { CoreFcaBaseException } from '@fc/core/exceptions/core-fca-base.exception';
 
 export class CoreFcaAgentAccountBlockedException extends CoreFcaBaseException {
   public documentation = "Le compte de l’agent.e n'est plus actif.";

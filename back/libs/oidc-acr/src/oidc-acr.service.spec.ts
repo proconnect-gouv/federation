@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { UserSession } from 'apps/core/src';
+import { UserSession } from '@fc/core';
 
 import { getConfigMock } from '@mocks/config';
 

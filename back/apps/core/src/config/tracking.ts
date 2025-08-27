@@ -1,4 +1,4 @@
-import { EventsCategories } from 'apps/core/src';
+import { EventsCategories } from '@fc/core';
 import { TrackingConfig } from '@fc/tracking';
 
 export default {

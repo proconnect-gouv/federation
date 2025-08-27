@@ -5,8 +5,8 @@ import { AuthorizationParameters } from 'openid-client';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { ActiveUserSessionDto, UserSession } from 'apps/core/src/dto';
-import { CoreNoSessionIdException } from 'apps/core/src/exceptions';
+import { ActiveUserSessionDto, UserSession } from '@fc/core/dto';
+import { CoreNoSessionIdException } from '@fc/core/exceptions';
 import { throwException } from '@fc/exceptions/helpers';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
