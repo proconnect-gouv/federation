@@ -13,7 +13,7 @@ jest.mock('./markdown-generator');
 describe('Runner', () => {
   console.log = jest.fn();
 
-  const FILE_SEARCH_PATTERN = 'instances/*/src/config/*.ts';
+  const FILE_SEARCH_PATTERN = '{instances,apps}/*/src/config/*.ts';
 
   beforeEach(() => {
     jest.resetAllMocks();
