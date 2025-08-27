@@ -7,7 +7,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { BaseException } from '@fc/base-exception';
 
-import { messageDictionary } from '../../../../../apps/core-fca/src/exceptions/error-messages';
+import { messageDictionary } from '../../../../../apps/core/src/exceptions/error-messages';
 import { getCode } from '../../helpers';
 import {
   ExceptionClass,

@@ -10,12 +10,12 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { AppConfig, CoreFcaConfig } from '@fc/core-fca';
+import { AppConfig, CoreFcaConfig } from 'apps/core/src';
 import { NestLoggerService } from '@fc/logger';
 import { SessionConfig } from '@fc/session';
 
-import { AppModule } from './app.module';
 import config from './config';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const configService = new ConfigService({

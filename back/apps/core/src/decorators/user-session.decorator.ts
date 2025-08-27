@@ -5,7 +5,7 @@ import { Class } from 'type-fest';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import { CoreFcaSession, UserSession } from '@fc/core-fca/dto';
+import { CoreFcaSession, UserSession } from 'apps/core/src/dto';
 import { SessionInvalidSessionException } from '@fc/session';
 import { ISessionService } from '@fc/session/interfaces';
 import { SessionService } from '@fc/session/services';

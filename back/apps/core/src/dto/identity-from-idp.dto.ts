@@ -2,7 +2,7 @@ import { Transform } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 import { isString } from 'lodash';
 
-import { BaseIdentityDto } from '@fc/core-fca/dto/base-identity.dto';
+import { BaseIdentityDto } from 'apps/core/src/dto/base-identity.dto';
 
 export class IdentityFromIdpDto extends BaseIdentityDto {
   @IsOptional()

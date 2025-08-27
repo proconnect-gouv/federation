@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { overrideWithSourceIfNotNull } from '@fc/common/helpers';
 import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core-fca';
+import { UserSession } from 'apps/core/src';
 import { SessionService } from '@fc/session';
 import { extractNetworkInfoFromHeaders } from '@fc/tracking-context';
 

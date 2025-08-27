@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { ErrorCode } from '../enums';
-import { CoreFcaBaseException } from '../exceptions/core-fca-base.exception';
+import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreNoSessionIdException extends CoreFcaBaseException {
   public code = ErrorCode.NO_SESSION_ID;

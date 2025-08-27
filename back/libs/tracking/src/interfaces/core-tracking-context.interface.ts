@@ -1,4 +1,4 @@
-import { IdentityFromIdpDto } from '@fc/core-fca';
+import { IdentityFromIdpDto } from 'apps/core/src';
 import { NetworkContextInterface } from '@fc/tracking-context';
 
 export interface ICoreTrackingContext {

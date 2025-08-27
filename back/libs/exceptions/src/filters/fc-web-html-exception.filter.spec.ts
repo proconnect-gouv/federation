@@ -7,7 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ApiErrorParams } from '@fc/app';
 import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
-import { CoreFcaInvalidIdentityException } from '@fc/core-fca';
+import { CoreFcaInvalidIdentityException } from 'apps/core/src';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
