@@ -31,9 +31,8 @@ RUN yarn run build
 WORKDIR /federation-admin
 RUN mv /tmp/admin/package.json ./ && \
     mv /tmp/admin/dist ./ && \
-    mv /tmp/admin/views ./dist
+    mv /tmp/admin/views ./
 
-WORKDIR /federation-admin
 RUN mv /tmp/admin/yarn.lock ./ && \
     yarn install --ignore-engines --immutable --immutable-cache --check-cache --production && \
     rm -f package.json */package.json yarn.lock
