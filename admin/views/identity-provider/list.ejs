@@ -77,25 +77,27 @@
             </td>
             <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary"><%= identityProvider.eidas %></td>
             <td class="border border-bottom-0 border-top-0 border-secondary"><%= identityProvider.order %></td>
-            <td class=" d-flex">
+            <td class="border">
               <% if (CURRENT_USER.roles.includes('operator')) { %>
-                <a href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"
-                  class="d-flex align-items-center mr-2 btn-action-update">
-                  <i class="fa fa-pencil-square-o text-dark" aria-hidden="true"
-                  title="Editer le fournisseur d'identité"></i>
-                </a>
-                <form name="deleteForm" method="POST" id="delete-<%= identityProvider._id %>"
-                  action="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>?_method=DELETE"
-                  class="d-flex align-items-center mr-2" data-init="removeItem" data-element-type="le fournisseur d'identité"
-                  data-element-title="<%= identityProvider.title %>" data-element-id="<%= identityProvider._id %>"
-                  novalidate>
-                  <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
-                  <input type="hidden" name="_totp">
-                  <input type="hidden" name="name" value="<%= identityProvider.name %>">
-                  <button type="submit" class="btn-action-delete">
-                    <i class="fa fa-trash" aria-hidden="true" title="Supprimer"></i>
-                  </button>
-                </form>
+                <div class="d-inline-flex">
+                  <a href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"
+                    class="d-flex align-items-center mr-2 btn-action-update btn btn-sm">
+                    <i class="fa fa-pencil-square-o text-dark" aria-hidden="true"
+                    title="Editer le fournisseur d'identité"></i>
+                  </a>
+                  <form name="deleteForm" method="POST" id="delete-<%= identityProvider._id %>"
+                    action="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>?_method=DELETE"
+                    class="d-flex align-items-center mr-2" data-init="removeItem" data-element-type="le fournisseur d'identité"
+                    data-element-title="<%= identityProvider.title %>" data-element-id="<%= identityProvider._id %>"
+                    novalidate>
+                    <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
+                    <input type="hidden" name="_totp">
+                    <input type="hidden" name="name" value="<%= identityProvider.name %>">
+                    <button type="submit" class="btn-action-delete btn btn-sm">
+                      <i class="fa fa-trash" aria-hidden="true" title="Supprimer"></i>
+                    </button>
+                  </form>
+                </div>
             <% } %>
           </td>
           </tr>
