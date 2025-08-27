@@ -92,12 +92,12 @@
                 class="col-1 d-inline-flex d-flex justify-content-center quick-action border border-bottom-0 border-top-0 border-end-0 border-secondary">
                 <% if (CURRENT_USER.roles.includes('operator')) { %>
                 <a href="<%= APP_ROOT %>/service-provider/<%= serviceProvider._id %>"
-                  class="d-flex align-items-center mr-2 btn-action-update">
+                  class="d-flex align-items-center mr-2 btn-action-update btn btn-sm">
                   <i class="fa fa-pencil-square-o text-dark" aria-hidden="true"
                     title="Editer le fournisseur de services"></i>
                 </a>
                 <a href="<%= APP_ROOT %>/service-provider/update/<%= serviceProvider._id %>/secret"
-                  class="d-flex align-items-center mr-2 btn-action-generate-client-secret">
+                  class="d-flex align-items-center mr-2 btn-action-generate-client-secret btn btn-sm">
                   <i class="fa fa-refresh text-dark" aria-hidden="true" title="Générer un nouveau secret"></i>
                 </a>
                 <form name="deleteForm" method="POST" id="delete-<%= serviceProvider._id %>"
@@ -108,7 +108,7 @@
                   <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
                   <input type="hidden" name="_totp">
                   <input type="hidden" name="name" value="<%= serviceProvider.name %>">
-                  <button type="submit" class="btn-action-delete">
+                  <button type="submit" class="btn-action-delete btn btn-sm">
                     <i class="fa fa-trash" aria-hidden="true" title="Supprimer"></i>
                   </button>
                 </form>
