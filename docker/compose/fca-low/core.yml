@@ -27,3 +27,29 @@ services:
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/core-fca-rie.env'
+
+  core-prod:
+    hostname: core-prod
+    image: ghcr.io/proconnect-gouv/federation/core-fca-low:${GITHUB_PACKAGE_VERSION:-latest}
+    env_file:
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core-fca-prod.env'
+    depends_on:
+      rp-all:
+        condition: service_started
+      mongo-fca-low:
+        condition: service_healthy
+      redis-pwd:
+        condition: service_healthy
+    tty: true
+    networks:
+      - fc
+      - public
+      - data
+    init: true
+    volumes:
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    command: pm2-runtime /etc/pm2/app.json
