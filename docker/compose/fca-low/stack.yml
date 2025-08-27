@@ -76,4 +76,4 @@ services:
       - 'core-prod'
       - 'service-provider-1'
       - 'identity-provider-1'
-      - 'admin'
+      - 'admin-prod'

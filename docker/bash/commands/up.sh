@@ -6,13 +6,22 @@ DOCKER_COMPOSE="docker compose"
 
 function _hook_admin() {
   local app=$1
+
   echo "  Fixtures for ${app} app..."
   cd ${WORKING_DIR}
-  ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
-  ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
-  ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
 
-  (cd ${FEDERATION_DIR}/admin/cypress/support/ && ./db.sh ${app} create)
+  if [[ "$app" == "admin-prod" ]]; then
+    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm:prod schema:drop
+    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm:prod migration:run
+   ## todo: fix the fixtures loading and uncomment this line
+   # ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:prod:load
+  else
+    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn typeorm schema:drop
+    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn migrations:run
+    ${DOCKER_COMPOSE} exec ${NO_TTY} "${app}" yarn fixtures:load
+  fi
+
+  (cd ${FEDERATION_DIR}/admin/cypress/support/ && ./db.sh admin create)
 }
 
 _up() {
@@ -46,8 +55,11 @@ _up() {
     *"mongo-fca-low"*)
       _reset_mongodb "$app"
       ;;
-    *"pg-admin")
+    *"admin")
        _hook_admin "admin"
+      ;;
+    *"admin-prod")
+       _hook_admin "admin-prod"
       ;;
     *)
       ;;
