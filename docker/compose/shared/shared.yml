@@ -260,59 +260,6 @@ services:
       data:
         ipv4_address: 172.16.4.105
 
-  redis-cluster-master:
-    extends: base-redis
-    environment:
-      - REDIS_REPLICATION_MODE=master
-    healthcheck:
-      test: redis-cli -a $${REDIS_PASSWORD} --tls --cacert $${REDIS_TLS_CA_FILE} role | grep master
-    networks:
-      data:
-        ipv4_address: 172.16.4.100
-
-  redis-cluster-replica:
-    extends: base-redis
-    environment:
-      - REDIS_REPLICATION_MODE=slave
-      - REDIS_MASTER_HOST=redis-cluster-master
-      - REDIS_MASTER_PORT_NUMBER=6379
-    healthcheck:
-      test: redis-cli -a $${REDIS_PASSWORD} --tls --cacert $${REDIS_TLS_CA_FILE} role | grep slave
-    depends_on:
-      - redis-cluster-master
-    networks:
-      data:
-        ipv4_address: 172.16.4.101
-
-  redis-sentinel:
-    image: 'bitnami/redis-sentinel:6.2.16'
-    scale: 3
-    env_file:
-      - ../shared/.env/redis.env
-    environment:
-      - REDIS_SENTINEL_QUORUM=2
-      - REDIS_MASTER_SET=fc_core_v2
-      - REDIS_MASTER_HOST=redis-cluster-master
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=1000
-      - REDIS_SENTINEL_FAILOVER_TIMEOUT=2000
-      - REDIS_SENTINEL_TLS_ENABLED=true
-      - REDIS_SENTINEL_TLS_PORT=26379
-      - REDIS_SENTINEL_TLS_CERT_FILE=/bitnami/redis/data/ssl/redis.crt
-      - REDIS_SENTINEL_TLS_KEY_FILE=/bitnami/redis/data/ssl/redis.key
-      - REDIS_SENTINEL_TLS_CA_FILE=/bitnami/redis/data/ssl/docker-stack-ca.crt
-      - REDIS_SENTINEL_TLS_AUTH_CLIENTS=no
-    volumes:
-      - '../../volumes/ssl:/bitnami/redis/data/ssl'
-    healthcheck:
-      test: redis-cli -p 26379 --tls --cacert $${REDIS_SENTINEL_TLS_CA_FILE} ping
-      interval: 2s
-      start_period: 5s
-    depends_on:
-      - redis-cluster-master
-      - redis-cluster-replica
-    networks:
-      - data
-
   postgres:
     image: postgres:13-bullseye
     volumes:
