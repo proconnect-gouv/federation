@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "nest build",
-    "build:core-fca-low": "nest build core-fca-low",
+    "build:core-fca-low": "nest build core",
     "build:csmr-rie": "nest build csmr-rie",
     "build:bridge-http-proxy-rie": "nest build bridge-http-proxy-rie",
     "build:mock-identity-provider-fca-low": "nest build mock-identity-provider-fca-low",

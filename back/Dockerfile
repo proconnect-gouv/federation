@@ -27,6 +27,9 @@ RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
 
 RUN yarn run build:${INSTANCE}
 
+## A temporary solution until all instances have been migrated to apps
+RUN mv /build/back/dist/apps/core /build/back/dist/instances/core-fca-low || true
+
 RUN rm -rf node_modules && yarn install --ignore-engines --immutable --immutable-cache --check-cache --production
 
 
