@@ -2,10 +2,9 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { cloneDeep } from 'lodash';
 
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { UnknownException } from '@fc/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
@@ -29,31 +28,15 @@ export class IdentitySanitizer {
       plainIdentityFromIdp,
     );
     const userinfoValidationErrors = await validate(identityFromIdp);
-    const identityProvider = await this.identityProvider.getById(idpId);
-
-    if (userinfoValidationErrors.length > 0) {
-      this.logger.alert({
-        msg: `Identity from "${idpId}" is invalid`,
-        validationErrors: userinfoValidationErrors,
-      });
-
-      const contact =
-        identityProvider.supportEmail ||
-        this.config.get<AppConfig>('App').supportEmail;
-
-      throw new CoreFcaInvalidIdentityException(
-        contact,
-        JSON.stringify(
-          userinfoValidationErrors.map((error) => error?.constraints),
-        ),
-        JSON.stringify(userinfoValidationErrors[0]?.target), // same target for all validation errors
-      );
-    }
+    await this.throwIfInvalid(
+      userinfoValidationErrors,
+      idpId,
+      HttpStatus.BAD_REQUEST,
+    );
 
     return identityFromIdp;
   }
 
-  // eslint-disable-next-line complexity
   async transformIdentity(
     identityFromIdp: IdentityFromIdpDto,
     idpId: string,
@@ -112,16 +95,43 @@ export class IdentitySanitizer {
 
     // Now the identity should be valid
     const identityValidationErrors = await validate(identityForSp);
-    // Defensive programming: this should never happen
+    // But we may yet throw if the IdP has no default value
+    // to substitute for an incorrect siret
     /* istanbul ignore next */
-    if (identityValidationErrors.length > 0) {
-      this.logger.alert({
-        msg: 'transformIdentity final validation error',
-        validationErrors: identityValidationErrors,
-      });
-      throw new UnknownException();
-    }
+    await this.throwIfInvalid(
+      identityValidationErrors,
+      idpId,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
 
     return identityForSp;
+  }
+
+  private async throwIfInvalid(
+    validationErrors,
+    idpId: string,
+    statusCode: HttpStatus,
+  ) {
+    if (validationErrors.length > 0) {
+      const identityProvider = await this.identityProvider.getById(idpId);
+
+      this.logger.alert({
+        msg: `Identity from "${idpId}" is invalid`,
+        validationErrors: validationErrors,
+      });
+
+      const contact =
+        identityProvider.supportEmail ||
+        this.config.get<AppConfig>('App').supportEmail;
+
+      const exception = new CoreFcaInvalidIdentityException(
+        contact,
+        JSON.stringify(validationErrors.map((error) => error?.constraints)),
+        JSON.stringify(validationErrors[0]?.target),
+      );
+
+      exception.http_status_code = statusCode;
+      throw exception;
+    }
   }
 }

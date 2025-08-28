@@ -64,6 +64,13 @@ When("j'utilise un compte usager avec siret incorrect", function () {
 });
 
 When(
+  "j'utilise un compte usager dont le FI ne fournit pas le siret",
+  function () {
+    cy.get('input[name="siret"]').clear({ force: true });
+  },
+);
+
+When(
   "le fournisseur d'identité renvoie l'erreur {string} avec {string}",
   function (error: string, error_description: string) {
     cy.get('input[name="error"]').type(error, { force: true });
