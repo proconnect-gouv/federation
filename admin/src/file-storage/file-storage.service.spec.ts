@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { ConfigService } from 'nestjs-config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
@@ -19,7 +19,7 @@ describe('FileStorageService', () => {
   };
 
   const file = {
-    id: new ObjectID('5d662c66b8e03e2912315da4'),
+    id: new ObjectId('5d662c66b8e03e2912315da4'),
     fieldname: 'logo',
     originalname: '   Logo    with some     spaces   .png',
     encoding: '7bits',

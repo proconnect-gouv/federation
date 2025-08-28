@@ -14,7 +14,7 @@ import { ServiceProviderController } from './service-provider.controller';
 import { ServiceProvider } from './service-provider.mongodb.entity';
 import { ServiceProviderService } from './service-provider.service';
 
-const id: ObjectId = new ObjectId('5d9c677da8bb151b00720451');
+const id: string = '5d9c677da8bb151b00720451';
 
 const scopeList = ['openid', 'given_name', 'family_name', 'email'];
 

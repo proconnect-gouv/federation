@@ -1,4 +1,3 @@
-import { ObjectID } from 'mongodb';
 import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -6,13 +5,13 @@ import { Claims } from './claims.mongodb.entity';
 import { ClaimsService } from './claims.service';
 import { IClaims } from './interface';
 
-const id: string = new ObjectID('5d9c677da8bb151b00720451');
-const id2: string = new ObjectID('5d9c677da8bb151b00720452');
+const id: string = '5d9c677da8bb151b00720451';
+const id2: string = '5d9c677da8bb151b00720452';
 
 const claimsRepositoryMock = {
   find: jest.fn(),
   count: jest.fn(),
-  findOne: jest.fn(),
+  findOneBy: jest.fn(),
   save: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
@@ -84,7 +83,7 @@ describe('ClaimsService', () => {
   describe('getById()', () => {
     it('shoud return a claim for a specific ID', async () => {
       // Given
-      claimsRepositoryMock.findOne.mockResolvedValueOnce(claimMock);
+      claimsRepositoryMock.findOneBy.mockResolvedValueOnce(claimMock);
       const expectedResult: IClaims = {
         id,
         name: 'Foo',
@@ -94,7 +93,7 @@ describe('ClaimsService', () => {
       const result = await service.getById(id);
 
       // Then
-      expect(claimsRepositoryMock.findOne).toHaveBeenCalledTimes(1);
+      expect(claimsRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual(expectedResult);
     });
   });
