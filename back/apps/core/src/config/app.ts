@@ -1,5 +1,5 @@
 import { ConfigParser } from '@fc/config';
-import { AppConfig } from '@fc/core-fca';
+import { AppConfig } from '@fc/core';
 
 const env = new ConfigParser(process.env, 'App');
 

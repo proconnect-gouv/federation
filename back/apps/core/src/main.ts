@@ -10,7 +10,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { AppConfig, CoreFcaConfig } from '@fc/core-fca';
+import { AppConfig, CoreFcaConfig } from '@fc/core';
 import { NestLoggerService } from '@fc/logger';
 import { SessionConfig } from '@fc/session';
 

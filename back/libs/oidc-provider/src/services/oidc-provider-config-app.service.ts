@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core-fca';
+import { UserSession } from '@fc/core';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcClientRoutes, OidcClientService } from '@fc/oidc-client';

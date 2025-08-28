@@ -5,7 +5,7 @@ import { AuthorizationParameters } from 'openid-client';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { AppConfig, UserSession } from '@fc/core-fca/dto';
+import { AppConfig, UserSession } from '@fc/core/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';

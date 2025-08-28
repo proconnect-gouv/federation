@@ -6,8 +6,8 @@ import * as glob from 'glob';
 import { HttpStatus } from '@nestjs/common';
 
 import { BaseException } from '@fc/base-exception';
+import { messageDictionary } from '@fc/core/exceptions/error-messages';
 
-import { messageDictionary } from '../../../../../apps/core-fca/src/exceptions/error-messages';
 import { getCode } from '../../helpers';
 import {
   ExceptionClass,

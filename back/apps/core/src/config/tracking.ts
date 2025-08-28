@@ -1,4 +1,4 @@
-import { EventsCategories } from '@fc/core-fca';
+import { EventsCategories } from '@fc/core';
 import { TrackingConfig } from '@fc/tracking';
 
 export default {

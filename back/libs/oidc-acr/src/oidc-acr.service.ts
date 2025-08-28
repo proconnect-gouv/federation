@@ -3,7 +3,7 @@ import { get, intersection, isArray, isEmpty, isString } from 'lodash';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core-fca';
+import { UserSession } from '@fc/core';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 
 import { AcrClaims, AcrValues, SimplifiedInteraction } from './oidc-acr.type';

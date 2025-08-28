@@ -5,8 +5,9 @@
 ## Instances index
 
 1. [bridge-http-proxy-rie](#bridge-http-proxy-rie)
-2. [core-fca-low](#core-fca-low)
-3. [csmr-rie](#csmr-rie)
+2. [core](#core)
+3. [csmr-http-proxy](#csmr-http-proxy)
+4. [csmr-rie](#csmr-rie)
 
 ## Variables
 
@@ -23,7 +24,7 @@
 | Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 
-### core-fca-low
+### core
 
 | Var Name | Inferred type |
 |---|---|
@@ -76,6 +77,12 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
+### csmr-http-proxy
+
+| Var Name | Inferred type |
+|---|---|
+
 
 ### csmr-rie
 

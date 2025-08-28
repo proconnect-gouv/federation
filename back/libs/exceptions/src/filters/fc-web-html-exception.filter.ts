@@ -9,11 +9,11 @@ import { EventBus } from '@nestjs/cqrs';
 import { ApiErrorParams } from '@fc/app';
 import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
+import { messageDictionary } from '@fc/core/exceptions/error-messages';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 import { SessionService } from '@fc/session';
 
-import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { ExceptionCaughtEvent } from '../events';
 import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';

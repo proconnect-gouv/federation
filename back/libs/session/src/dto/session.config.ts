@@ -17,7 +17,7 @@ import {
 import { RouteInfo, Type as Class } from '@nestjs/common/interfaces';
 
 import { IsStringOrRegExp } from '@fc/common';
-import { CoreFcaSession } from '@fc/core-fca';
+import { CoreFcaSession } from '@fc/core';
 
 import { SameSiteType, TemplateExposedType } from '../types';
 

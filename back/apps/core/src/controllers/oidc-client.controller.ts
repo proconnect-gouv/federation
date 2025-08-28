@@ -16,7 +16,7 @@ import {
 
 import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
-import { UserSessionDecorator } from '@fc/core-fca/decorators';
+import { UserSessionDecorator } from '@fc/core/decorators';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';

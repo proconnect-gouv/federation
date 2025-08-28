@@ -1,6 +1,6 @@
 import { IsObject, IsString } from 'class-validator';
 
-import { BaseIdentityDto } from '@fc/core-fca/dto/base-identity.dto';
+import { BaseIdentityDto } from '@fc/core/dto/base-identity.dto';
 
 import { IsPhoneNumberSimpleValidator } from '../validators/is-phone-number-simple-validator.validator';
 import { IsSiret } from '../validators/is-siret-validator';

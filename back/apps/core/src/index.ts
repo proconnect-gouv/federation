@@ -1,5 +1,5 @@
+export * from './app.module';
 export * from './controllers';
-export * from './core-fca.module';
 export * from './decorators';
 export * from './dto';
 export * from './enums';

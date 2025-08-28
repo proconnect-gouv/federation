@@ -1,5 +1,5 @@
 import { ConfigParser } from '@fc/config';
-import { CoreFcaRoutes, CoreFcaSession } from '@fc/core-fca';
+import { CoreFcaRoutes, CoreFcaSession } from '@fc/core';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 import { SessionConfig, SessionCookieOptionsInterface } from '@fc/session';
