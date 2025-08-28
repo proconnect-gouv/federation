@@ -12,6 +12,7 @@
     "console": "node dist/console.js",
     "console:dev": "ts-node -r tsconfig-paths/register src/console.ts",
     "fixtures:load": "fixtures load fixtures --dataSource src/dataSource.ts --require=ts-node/register --require=tsconfig-paths/register",
+    "fixtures:prod:load": "fixtures load ./fixtures --dataSource /var/www/app/dist/dataSource.js",
     "format": "prettier --write \"src/**/*.ts\" \"cypress/**/*.js\" \"public/**/*.js\" ",
     "lint": "eslint",
     "migrations:run": "yarn typeorm migration:run && echo '\n\n ***Make sure to load fixtures and create backup DB for E2E***\n from you host run:\n > ./cypress/support/db.sh exploitation create'",
@@ -26,6 +27,7 @@
     "test:e2e:open": "cypress open --e2e",
     "test:watch": "jest --watch",
     "typeorm": "ts-node node_modules/typeorm/cli.js --dataSource src/dataSource.ts",
+    "typeorm:prod": "node node_modules/typeorm/cli.js --dataSource /var/www/app/dist/dataSource.js",
     "watch:front": "parcel watch entry ./public/javascript/main.js -d ./dist/client/"
   },
   "jest": {
@@ -89,7 +91,8 @@
     "rxjs": "^7.8.2",
     "typeorm": "~0.3.26",
     "uuid": "^11.1.0",
-    "validator": "^13.15.15"
+    "validator": "^13.15.15",
+    "typeorm-fixtures-cli": "^4.1.0"
   },
   "devDependencies": {
     "@nestjs/testing": "^11.1.6",
@@ -111,7 +114,6 @@
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
-    "typeorm-fixtures-cli": "^4.1.0",
     "typescript": "^5.9.2"
   },
   "engines": {
