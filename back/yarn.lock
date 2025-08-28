@@ -1477,10 +1477,10 @@
   dependencies:
     undici-types "~6.19.2"
 
-"@types/oidc-provider@7.8.2":
-  version "7.8.2"
-  resolved "https://registry.npmjs.org/@types/oidc-provider/-/oidc-provider-7.8.2.tgz"
-  integrity sha512-n//6fAayvlOD3sKAUo5/LjI41tS3E4nfqRefckpcqh2nsyc4PbAEmhDVlE55PNSZonO9k4fW7mmHbsMNU28v3g==
+"@types/oidc-provider@7.14.0":
+  version "7.14.0"
+  resolved "https://registry.yarnpkg.com/@types/oidc-provider/-/oidc-provider-7.14.0.tgz#5ca627e0b748f2a1a78a2aabbba7d57ce4c46f8e"
+  integrity sha512-zIoedB25LuuiNb0tqRQYI3BzdHXVCsZrCHm38apiLe1p6TmbZA7dCSv8rH3AR8xyBk7eNiE+iIBDEHlBx4UzPA==
   dependencies:
     "@types/koa" "*"
 
