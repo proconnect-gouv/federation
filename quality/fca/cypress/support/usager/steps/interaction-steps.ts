@@ -37,3 +37,13 @@ Given(
       });
   },
 );
+
+Then('le bouton {string} est {string}', (buttonText, state) => {
+  const expectedPointer = state === 'désactivé' ? 'none' : 'auto';
+
+  cy.contains('button', buttonText).should(
+    'have.css',
+    'pointer-events',
+    expectedPointer,
+  );
+});
