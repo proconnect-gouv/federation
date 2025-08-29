@@ -1,8 +1,10 @@
+import { BridgeHttpProxyModule } from 'apps/bridge-http-proxy-rie/src';
+
 import { DynamicModule, Module } from '@nestjs/common';
 
 import { ConfigModule, ConfigService } from '@fc/config';
-import { CsmrHttpProxyModule } from '@fc/csmr-http-proxy';
 import { LoggerModule } from '@fc/logger';
+import { LoggerRequestPlugin } from '@fc/logger-plugins';
 
 @Module({})
 export class AppModule {
@@ -13,9 +15,9 @@ export class AppModule {
         // 1. Load config module first
         ConfigModule.forRoot(configService),
         // 2. Load logger module next
-        LoggerModule.forRoot(),
+        LoggerModule.forRoot([LoggerRequestPlugin]),
         // 3. Load other modules
-        CsmrHttpProxyModule,
+        BridgeHttpProxyModule,
       ],
     };
   }

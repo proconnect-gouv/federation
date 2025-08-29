@@ -1,4 +1,4 @@
-import { BridgeHttpProxyConfig } from '@fc/bridge-http-proxy';
+import { BridgeHttpProxyConfig } from 'apps/bridge-http-proxy-rie/src';
 
 import App from './app';
 import Logger from './logger';

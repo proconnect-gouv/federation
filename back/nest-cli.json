@@ -50,20 +50,20 @@
     },
     "bridge-http-proxy-rie": {
       "type": "application",
-      "root": "instances/bridge-http-proxy-rie",
+      "root": "apps/bridge-http-proxy-rie",
       "entryFile": "main",
-      "sourceRoot": "instances/bridge-http-proxy-rie/src",
+      "sourceRoot": "apps/bridge-http-proxy-rie/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/bridge-http-proxy-rie/tsconfig.app.json"
+        "tsConfigPath": "apps/bridge-http-proxy-rie/tsconfig.app.json"
       }
     },
     "csmr-rie": {
       "type": "application",
-      "root": "instances/csmr-rie",
+      "root": "apps/csmr-rie",
       "entryFile": "main",
-      "sourceRoot": "instances/csmr-rie/src",
+      "sourceRoot": "apps/csmr-rie/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/csmr-rie/tsconfig.app.json"
+        "tsConfigPath": "apps/csmr-rie/tsconfig.app.json"
       }
     },
     "mock-data-provider": {
@@ -280,24 +280,6 @@
       "sourceRoot": "libs/csv/src",
       "compilerOptions": {
         "tsConfigPath": "libs/csv/tsconfig.lib.json"
-      }
-    },
-    "bridge-http-proxy": {
-      "type": "library",
-      "root": "apps/bridge-http-proxy",
-      "entryFile": "index",
-      "sourceRoot": "apps/bridge-http-proxy/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/bridge-http-proxy/tsconfig.lib.json"
-      }
-    },
-    "csmr-http-proxy": {
-      "type": "library",
-      "root": "apps/csmr-http-proxy",
-      "entryFile": "index",
-      "sourceRoot": "apps/csmr-http-proxy/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/csmr-http-proxy/tsconfig.app.json"
       }
     },
     "hybridge-http-proxy": {

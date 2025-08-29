@@ -39,8 +39,8 @@
       "@fc/cryptography/*": ["libs/cryptography/src/*"],
       "@fc/core": ["apps/core/src"],
       "@fc/core/*": ["apps/core/src/*"],
-      "@fc/csmr-http-proxy": ["apps/csmr-http-proxy/src"],
-      "@fc/csmr-http-proxy/*": ["apps/csmr-http-proxy/src/*"],
+      "@fc/csmr-http-proxy": ["apps/csmr-rie/src"],
+      "@fc/csmr-http-proxy/*": ["apps/csmr-rie/src/*"],
       "@fc/common": ["libs/common/src"],
       "@fc/common/*": ["libs/common/src/*"],
       "@fc/config": ["libs/config/src"],
@@ -76,8 +76,8 @@
       "@fc/notifications/*": ["libs/notifications/src/*"],
       "@fc/csv": ["libs/csv/src"],
       "@fc/csv/*": ["libs/csv/src/*"],
-      "@fc/bridge-http-proxy": ["apps/bridge-http-proxy/src"],
-      "@fc/bridge-http-proxy/*": ["apps/bridge-http-proxy/src/*"],
+      "@fc/bridge-http-proxy": ["apps/bridge-http-proxy-rie/src"],
+      "@fc/bridge-http-proxy/*": ["apps/bridge-http-proxy-rie/src/*"],
       "@fc/hybridge-http-proxy": ["libs/hybridge-http-proxy/src"],
       "@fc/hybridge-http-proxy/*": ["libs/hybridge-http-proxy/src/*"],
       "@fc/oidc-acr": ["libs/oidc-acr/src"],
@@ -109,12 +109,6 @@
     }
   },
   "files": ["global.d.ts"],
-  "include": [
-    "*.js",
-    "*.ts",
-    "libs/**/*.ts",
-    "apps/**/*.ts",
-    "instances/**/*.ts"
-  ],
+  "include": ["*.js", "*.ts", "libs/**/*.ts", "apps/**/*.ts"],
   "exclude": ["node_modules", "dist", "coverage", "scripts"]
 }

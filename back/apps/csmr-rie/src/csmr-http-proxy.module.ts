@@ -6,8 +6,8 @@ import { ConfigModule, ConfigService } from '@fc/config';
 import { HttpProxyModule } from '@fc/http-proxy';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 
-import { rawTransform, validateStatus } from './config';
 import { CsmrHttpProxyController } from './controllers';
+import { rawTransform, validateStatus } from './http';
 import { CsmrHttpProxyService } from './services';
 
 @Module({
