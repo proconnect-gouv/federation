@@ -79,7 +79,7 @@ describe('Delete identity provider normal', () => {
     cy.contains(
       `Le fournisseur d'identité ${fi.name} a été supprimé avec succès !`,
     ).should('exist');
-    cy.get('.alert-success > .close').click();
+    cy.closeBanner('.alert-success');
     cy.get('#list-table').should('not.contain', `${fi.name}`);
     cy.hasBusinessLog({
       entity: 'identity-provider',
@@ -136,7 +136,7 @@ describe('Delete identity provider non latin', () => {
     cy.contains(
       `Le fournisseur d'identité ${fiNonLatinChar.name} a été supprimé avec succès !`,
     ).should('exist');
-    cy.get('.alert-success > .close').click();
+    cy.closeBanner('.alert-success');
     cy.get('#list-table').should('not.contain', `${fiNonLatinChar.name}`);
   });
 });

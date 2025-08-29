@@ -23,41 +23,41 @@
       <table class="table table-hover table-light shadow-sm" id="list-table">
         <thead class="thead-light">
         <tr class="align-top">
-          <th scope="col" class="col-3 border-bottom-0 border-top-0 border-right-0 border-secondary">
+          <th scope="col" class="col-3 border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "name", fieldName: "Nom du FI (mire)" }); %>
           </th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Nom technique</th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Fqdns</th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Email de contact</th>
-          <th scope="col" class="col-4 border border-bottom-0 border-top-0 border-right-0 border-secondary">
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Nom technique</th>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Fqdns</th>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Email de contact</th>
+          <th scope="col" class="col-4 border border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "active", fieldName: "Activé" }); %>
           </th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Affiché</th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Eidas</th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Affiché</th>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Eidas</th>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "order", fieldName: "Ordre d'affichage" }); %>
           </th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-right-0 border-secondary">Actions</th>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Actions</th>
         </tr>
         </thead>
         <tbody>
         <% identityProviders.forEach(function(identityProvider){ %>
           <tr data-idp-name="<%= identityProvider.name %>" id="<%= identityProvider.uid %>">
-            <th scope="row" class="border-bottom-0 border-top-0 border-right-0 border-secondary">
+            <th scope="row" class="border-bottom-0 border-top-0 border-end-0 border-secondary">
               <% if (CURRENT_USER.roles.includes('operator')) { %>
                 <a id='provider-<%= identityProvider._id %>' class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"><%= identityProvider.title %></a>
               <% } else { %>
                 <%= identityProvider.title %>
               <% } %>
             </th>
-            <td class="border border-bottom-0 border-top-0 border-right-0 border-secondary">
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <% if (CURRENT_USER.roles.includes('operator')) { %>
                 <a id='technic-<%= identityProvider._id %>' class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"><%= identityProvider.name %></a>
               <% } else { %>
                 <%= identityProvider.name %>
               <% } %>
             </td>
-            <td class="border border-bottom-0 border-top-0 border-right-0 border-secondary">
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <% if (identityProvider.fqdns) { %>
                 <a class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>">
                   <% identityProvider.fqdns.forEach((fqdn) => { %>
@@ -68,34 +68,36 @@
                 </a>
               <% } %>
             </td>
-            <td class="border border-bottom-0 border-top-0 border-right-0 border-secondary"><%= identityProvider.mailto %></td>
-            <td class="text-center border border-bottom-0 border-top-0 border-right-0 border-secondary">
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary"><%= identityProvider.mailto %></td>
+            <td class="text-center border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <i class="fa fa-toggle-<%= identityProvider.active ? "on" : "off" %>"></i>
             </td>
-            <td class="text-center border border-bottom-0 border-top-0 border-right-0 border-secondary">
+            <td class="text-center border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <i class="fa fa-toggle-<%= identityProvider.display ? "on" : "off" %>"></i>
             </td>
-            <td class="border border-bottom-0 border-top-0 border-right-0 border-secondary"><%= identityProvider.eidas %></td>
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary"><%= identityProvider.eidas %></td>
             <td class="border border-bottom-0 border-top-0 border-secondary"><%= identityProvider.order %></td>
-            <td class=" d-flex">
+            <td class="border">
               <% if (CURRENT_USER.roles.includes('operator')) { %>
-                <a href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"
-                  class="d-flex align-items-center mr-2 btn-action-update">
-                  <i class="fa fa-pencil-square-o text-dark" aria-hidden="true"
-                  title="Editer le fournisseur d'identité"></i>
-                </a>
-                <form name="deleteForm" method="POST" id="delete-<%= identityProvider._id %>"
-                  action="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>?_method=DELETE"
-                  class="d-flex align-items-center mr-2" data-init="removeItem" data-element-type="le fournisseur d'identité"
-                  data-element-title="<%= identityProvider.title %>" data-element-id="<%= identityProvider._id %>"
-                  novalidate>
-                  <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
-                  <input type="hidden" name="_totp">
-                  <input type="hidden" name="name" value="<%= identityProvider.name %>">
-                  <button type="submit" class="btn-action-delete">
-                    <i class="fa fa-trash" aria-hidden="true" title="Supprimer"></i>
-                  </button>
-                </form>
+                <div class="d-inline-flex">
+                  <a href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"
+                    class="d-flex align-items-center mr-2 btn-action-update btn btn-sm">
+                    <i class="fa fa-pencil-square-o text-dark" aria-hidden="true"
+                    title="Editer le fournisseur d'identité"></i>
+                  </a>
+                  <form name="deleteForm" method="POST" id="delete-<%= identityProvider._id %>"
+                    action="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>?_method=DELETE"
+                    class="d-flex align-items-center mr-2" data-init="removeItem" data-element-type="le fournisseur d'identité"
+                    data-element-title="<%= identityProvider.title %>" data-element-id="<%= identityProvider._id %>"
+                    novalidate>
+                    <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
+                    <input type="hidden" name="_totp">
+                    <input type="hidden" name="name" value="<%= identityProvider.name %>">
+                    <button type="submit" class="btn-action-delete btn btn-sm">
+                      <i class="fa fa-trash" aria-hidden="true" title="Supprimer"></i>
+                    </button>
+                  </form>
+                </div>
             <% } %>
           </td>
           </tr>

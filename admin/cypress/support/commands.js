@@ -1,4 +1,4 @@
-import { formType, formFill, formControl, totp } from './forms';
+import { closeBanner, formType, formFill, formControl, totp } from './forms';
 import {
   resetMongo,
   resetPostgres,
@@ -34,6 +34,7 @@ Cypress.Commands.add('getUserActivationToken', getUserActivationToken);
 Cypress.Commands.add('formFill', formFill);
 Cypress.Commands.add('formControl', formControl);
 Cypress.Commands.add('formType', formType);
+Cypress.Commands.add('closeBanner', closeBanner);
 Cypress.Commands.add('totp', { prevSubject: 'optional' }, totp);
 Cypress.Commands.add('login', login);
 Cypress.Commands.add('firstLogin', firstLogin);

@@ -66,7 +66,7 @@ describe('Identity provider creation', () => {
       cy.contains(
         `Le fournisseur d'identité MonSuperFI a été créé avec succès !`,
       ).should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       cy.hasBusinessLog({
         entity: 'identity-provider',
@@ -98,7 +98,7 @@ describe('Identity provider creation', () => {
       cy.contains(
         `Le fournisseur d'identité MonSuperFI-2 a été créé avec succès !`,
       ).should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if there is a valid supportEmail', () => {
@@ -124,7 +124,7 @@ describe('Identity provider creation', () => {
       cy.contains(
         `Le fournisseur d'identité MonSuperFI-2 a été créé avec succès !`,
       ).should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if title contains authorized special chars', () => {
@@ -151,7 +151,7 @@ describe('Identity provider creation', () => {
       cy.contains(
         `Le fournisseur d'identité MonSuperFI-3 a été créé avec succès !`,
       ).should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if all fields are provided with algo fields ', () => {
@@ -192,7 +192,7 @@ describe('Identity provider creation', () => {
       cy.contains(
         `Le fournisseur d'identité MonFIWithAlgoFields a été créé avec succès !`,
       ).should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
 
     it('if discovery is set to true', () => {
@@ -216,7 +216,7 @@ describe('Identity provider creation', () => {
       cy.contains(
         `Le fournisseur d'identité MonSuperFI-Discovery-True a été créé avec succès !`,
       ).should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
   });
 
