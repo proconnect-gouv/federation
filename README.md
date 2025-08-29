@@ -224,7 +224,7 @@ yarn test:low:chrome-desktop --env TAGS='@hybridge'
 ## Visualization Tests
 
 ```bash
-dks switch medium
+dks switch small
 cd $PC_ROOT/federation/quality/fca
 yarn test:low:snapshot
 ```
