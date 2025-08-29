@@ -68,8 +68,7 @@ export class FqdnToProviderService {
     fqdns: string[],
   ): Promise<void> {
     const filteredFqdns = fqdns.filter(Boolean);
-    for (let index = 0; index < filteredFqdns.length; index++) {
-      const fqdn = filteredFqdns[index];
+    for (const fqdn of filteredFqdns) {
       await this.fqdnToProviderRepository.save({
         fqdn,
         identityProvider: identityProviderUid,
@@ -107,10 +106,10 @@ export class FqdnToProviderService {
      * We gave them a true default acceptance value.
      */
     const fqdnsToAdd = fqdns.filter(
-      (fqdnToAddFqdn) =>
+      (fqdnToAdd) =>
         !existingFqdnToProvidersFqdns.some(
           (existingFqdnToProvidersFqdn) =>
-            existingFqdnToProvidersFqdn === fqdnToAddFqdn,
+            existingFqdnToProvidersFqdn === fqdnToAdd,
         ),
     );
 
