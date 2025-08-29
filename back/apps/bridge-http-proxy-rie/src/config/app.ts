@@ -1,5 +1,6 @@
-import { AppConfig } from '@fc/bridge-http-proxy';
 import { ConfigParser } from '@fc/config';
+
+import { AppConfig } from '../dto';
 
 const env = new ConfigParser(process.env, 'App');
 

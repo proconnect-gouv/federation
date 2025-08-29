@@ -6,12 +6,12 @@ import { compilerOptions } from './tsconfig.json';
 const config: Config = {
   setupFiles: ['./jest-setup-file.ts'],
   setupFilesAfterEnv: ['jest-extended/all'],
-  collectCoverageFrom: ['libs/**/*.ts', 'apps/**/*.ts', 'instances/**/*.ts'],
+  collectCoverageFrom: ['libs/**/*.ts', 'apps/**/*.ts'],
   coveragePathIgnorePatterns: [
-    '(apps|instances)/.*/src/config/.*\\.ts',
-    '(apps|instances)/.*/src/main.ts',
-    'instances/mock-service-provider-fca-low/.+.ts',
-    'instances/mock-identity-provider-fca-low/.+.ts',
+    'apps/.*/src/config/.*\\.ts',
+    'apps/.*/src/main.ts',
+    'apps/mock-service-provider-fca-low/.+.ts',
+    'apps/mock-identity-provider-fca-low/.+.ts',
     '.mocks/',
     '.+/index.ts',
     '.+.(config|descriptor|dto|enum|fixture|interface|module|plugin|schema|type|token).ts',
@@ -33,7 +33,7 @@ const config: Config = {
     },
   },
   testEnvironment: 'node',
-  roots: ['<rootDir>/apps/', '<rootDir>/libs/', '<rootDir>/instances/'],
+  roots: ['<rootDir>/apps/', '<rootDir>/libs/'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
   preset: 'ts-jest',
 };

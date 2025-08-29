@@ -1,3 +1,4 @@
+import { BridgeHttpProxyConfig } from 'apps/bridge-http-proxy-rie/src';
 import { text } from 'express';
 import helmet from 'helmet';
 
@@ -5,7 +6,6 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppConfig } from '@fc/app';
-import { BridgeHttpProxyConfig } from '@fc/bridge-http-proxy';
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { NestLoggerService } from '@fc/logger';

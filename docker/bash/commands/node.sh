@@ -26,13 +26,6 @@ _stop_all() {
   _stop $containers
 }
 
-_log_rotate() {
-  echo "Send SIGUSR2 to core-fcp-high app..."
-  cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec core-fcp-high pkill -SIGUSR2 -f '/usr/bin/node -r source-map-support/register --inspect=0.0.0.0:9235 /var/www/app/dist/instances/core-fcp-high/main'
-  echo "... Signal done"
-}
-
 _clean() {
   echo "Cleaning node_modules and dist directories"
   cd ${FEDERATION_DIR}
