@@ -27,10 +27,6 @@ RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
 
 RUN yarn run build:${INSTANCE}
 
-## A temporary solution until all instances have been migrated to apps
-RUN mkdir -p /build/back/dist/instances/core-fca-low && \
-    mv /build/back/dist/apps/core /build/back/dist/instances/core-fca-low || true
-
 RUN rm -rf node_modules && yarn install --ignore-engines --immutable --immutable-cache --check-cache --production
 
 
@@ -49,7 +45,7 @@ COPY deploy/pm2/app.json /etc/pm2/
 VOLUME ["/data/log", "/etc/ssl/client_certs"]
 
 COPY --from=builder /build/back/node_modules /var/www/app/node_modules
-COPY --from=builder /build/back/dist/instances/${INSTANCE} /var/www/app/dist/instances/app
+COPY --from=builder /build/back/dist/apps/${INSTANCE} /var/www/app/dist/instances/app
 
 WORKDIR /var/www/app
 
