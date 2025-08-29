@@ -16,7 +16,7 @@
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch --watchAssets --debug 0.0.0.0:9229",
     "start:ci": "NODE_ENV=development nest start",
-    "start:prod:core-fca-low": "node dist/apps/core/main.js > /tmp/.pm2/logs/fca-out-0.log 2> /tmp/.pm2/logs/fca-error-0.log",
+    "start:prod:core-fca-low": "node dist/apps/core-fca-low/main.js > /tmp/.pm2/logs/fca-out-0.log 2> /tmp/.pm2/logs/fca-error-0.log",
     "start:prod:csmr-rie": "node dist/instances/csmr-rie/main.js > /tmp/.pm2/logs/csmr-rie-out-0.log 2> /tmp/.pm2/csmr-rie-error-0.log",
     "start:prod:mock-service-provider-fca-low": "node dist/instances/mock-service-provider-fca-low/main.js > /tmp/.pm2/logs/mock-service-provider-fca-low-out-0.log 2> /tmp/.pm2/mock-service-provider-fca-low-error-0.log",
     "start:prod:mock-identity-provider-fca-low": "node dist/instances/mock-identity-provider-fca-low/main.js > /tmp/.pm2/logs/mock-identity-provider-fca-low-out-0.log 2> /tmp/.pm2/mock-identity-provider-fca-low-error-0.log",

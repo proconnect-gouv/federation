@@ -1,30 +1,30 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/core/src",
+  "sourceRoot": "apps/core-fca-low/src",
   "monorepo": true,
-  "root": "apps/core",
+  "root": "apps/core-fca-low",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/core/tsconfig.app.json"
+    "tsConfigPath": "apps/core-fca-low/tsconfig.app.json"
   },
   "projects": {
-    "core-fca": {
+    "core-fca-low": {
       "type": "application",
-      "root": "apps/core",
+      "root": "apps/core-fca-low",
       "entryFile": "main",
-      "sourceRoot": "apps/core/src",
+      "sourceRoot": "apps/core-fca-low/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/core/tsconfig.app.json",
+        "tsConfigPath": "apps/core-fca-low/tsconfig.app.json",
         "assets": [
-          "../../../apps/core/**/*.ejs",
-          "../../../apps/core/**/*.css",
-          "../../../apps/core/**/*.js",
-          "../../../apps/core/**/*.svg",
-          "../../../apps/core/**/*.png",
-          "../../../apps/core/**/*.ico",
-          "../../../apps/core/**/*.woff2",
-          "../../../apps/core/**/*.webmanifest",
-          "../../../apps/core/**/robots.txt"
+          "../../../apps/core-fca-low/**/*.ejs",
+          "../../../apps/core-fca-low/**/*.css",
+          "../../../apps/core-fca-low/**/*.js",
+          "../../../apps/core-fca-low/**/*.svg",
+          "../../../apps/core-fca-low/**/*.png",
+          "../../../apps/core-fca-low/**/*.ico",
+          "../../../apps/core-fca-low/**/*.woff2",
+          "../../../apps/core-fca-low/**/*.webmanifest",
+          "../../../apps/core-fca-low/**/robots.txt"
         ]
       }
     },
