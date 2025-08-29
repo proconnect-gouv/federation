@@ -30,22 +30,22 @@
     },
     "mock-service-provider-fca-low": {
       "type": "application",
-      "root": "instances/mock-service-provider-fca-low",
+      "root": "apps/mock-service-provider-fca-low",
       "entryFile": "main",
-      "sourceRoot": "instances/mock-service-provider-fca-low/src",
+      "sourceRoot": "apps/mock-service-provider-fca-low/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/mock-service-provider-fca-low/tsconfig.app.json",
-        "assets": ["../../../instances/mock-service-provider-fca-low/**/*.ejs"]
+        "tsConfigPath": "apps/mock-service-provider-fca-low/tsconfig.app.json",
+        "assets": ["../../../apps/mock-service-provider-fca-low/**/*.ejs"]
       }
     },
     "mock-identity-provider-fca-low": {
       "type": "application",
-      "root": "instances/mock-identity-provider-fca-low",
+      "root": "apps/mock-identity-provider-fca-low",
       "entryFile": "main",
-      "sourceRoot": "instances/mock-identity-provider-fca-low/src",
+      "sourceRoot": "apps/mock-identity-provider-fca-low/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/mock-identity-provider-fca-low/tsconfig.app.json",
-        "assets": ["../../../instances/mock-identity-provider-fca-low/**/*.ejs"]
+        "tsConfigPath": "apps/mock-identity-provider-fca-low/tsconfig.app.json",
+        "assets": ["../../../apps/mock-identity-provider-fca-low/**/*.ejs"]
       }
     },
     "bridge-http-proxy-rie": {
@@ -68,11 +68,11 @@
     },
     "mock-data-provider": {
       "type": "application",
-      "root": "instances/mock-data-provider",
+      "root": "apps/mock-data-provider",
       "entryFile": "main",
-      "sourceRoot": "instances/mock-data-provider/src",
+      "sourceRoot": "apps/mock-data-provider/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/mock-data-provider/tsconfig.app.json"
+        "tsConfigPath": "apps/mock-data-provider/tsconfig.app.json"
       }
     },
     "identity": {
