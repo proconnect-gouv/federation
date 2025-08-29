@@ -3,9 +3,9 @@ import { FqdnToProviderService } from './fqdn-to-provider.service';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { FqdnToProvider } from './fqdn-to-provider.mongodb.entity';
 import { MongoRepository } from 'typeorm';
-import { IFqdnToProvider } from './interface/fqdn.interface';
-import { IIdentityProvider } from '../identity-provider';
 import { ObjectId } from 'mongodb';
+import { fqdnToProviderFactory } from './fixture';
+import { identityProviderFactory } from '../identity-provider';
 
 jest.mock('uuid');
 
@@ -29,7 +29,7 @@ describe('FqdnToProviderService', () => {
 
       .compile();
 
-    fqdnToProviderService = await module.get<FqdnToProviderService>(
+    fqdnToProviderService = module.get<FqdnToProviderService>(
       FqdnToProviderService,
     );
 
@@ -43,24 +43,24 @@ describe('FqdnToProviderService', () => {
   describe('findFqdnsForOneProvider', () => {
     it('should return all fqdns for one identity provider', async () => {
       // Given
-      const expectedResult = [
+      const fqdnToProviders = [
         {
           identityProvider: 'mock-id-1',
           fqdn: 'stendhal.fr',
-        } as IFqdnToProvider,
+        },
         {
           identityProvider: 'mock-id-1',
           fqdn: 'flaubert.fr',
-        } as IFqdnToProvider,
-      ];
-      fqdnToProviderRepository.find.mockReturnValueOnce(expectedResult);
+        },
+      ].map(fqdnToProviderFactory.createFqdnToProvider);
+      fqdnToProviderRepository.find.mockReturnValueOnce(fqdnToProviders);
 
       // When
       const result =
         await fqdnToProviderService['findFqdnsForOneProvider']('mock-id-1');
 
       // Then
-      expect(result).toStrictEqual(expectedResult);
+      expect(result).toStrictEqual(fqdnToProviders);
     });
 
     it('should return an empty array if no fqdn has been found', async () => {
@@ -78,21 +78,21 @@ describe('FqdnToProviderService', () => {
   describe('findFqdnsForProviders', () => {
     it('should return all fqdns for a list of identity providers', async () => {
       // Given
-      const expectedResult = [
+      const fqdnToProviders = [
         {
           identityProvider: 'mock-id-1',
           fqdn: 'stendhal.fr',
-        } as IFqdnToProvider,
+        },
         {
           identityProvider: 'mock-id-1',
           fqdn: 'flaubert.fr',
-        } as IFqdnToProvider,
+        },
         {
           identityProvider: 'mock-id-2',
           fqdn: 'duras.fr',
-        } as IFqdnToProvider,
-      ];
-      fqdnToProviderRepository.find.mockReturnValueOnce(expectedResult);
+        },
+      ].map(fqdnToProviderFactory.createFqdnToProvider);
+      fqdnToProviderRepository.find.mockReturnValueOnce(fqdnToProviders);
 
       // When
       const result = await fqdnToProviderService['findFqdnsForProviders']([
@@ -101,124 +101,84 @@ describe('FqdnToProviderService', () => {
       ]);
 
       // Then
-      expect(result).toStrictEqual(expectedResult);
+      expect(result).toStrictEqual(fqdnToProviders);
     });
   });
 
-  describe('getProviderWithFqdns', () => {
+  describe('getFqdnsForIdentityProviderUid', () => {
+    const uid = 'mock-id-1';
+
     it('should return an identity provider with its fqdns', async () => {
       // Given
-      const identityProvider = {
-        uid: 'mock-id-1',
-        active: true,
-        display: true,
-        name: 'mock-identity-provider-name-1',
-        title: 'mock-identity-provider-title-1',
-      } as IIdentityProvider;
-
-      const fqdns = [
+      const fqdnToProviders = [
         {
-          identityProvider: 'mock-id-1',
+          identityProvider: uid,
           fqdn: 'stendhal.fr',
-        } as IFqdnToProvider,
+        },
         {
-          identityProvider: 'mock-id-1',
+          identityProvider: uid,
           fqdn: 'flaubert.fr',
-        } as IFqdnToProvider,
-      ];
-
-      const expectedResult = {
-        ...identityProvider,
-        fqdns: ['stendhal.fr', 'flaubert.fr'],
-      };
-      fqdnToProviderRepository.find.mockReturnValueOnce(fqdns);
+        },
+      ].map(fqdnToProviderFactory.createFqdnToProvider);
+      fqdnToProviderRepository.find.mockReturnValueOnce(fqdnToProviders);
 
       // When
       const result =
-        await fqdnToProviderService['getProviderWithFqdns'](identityProvider);
+        await fqdnToProviderService.getFqdnsForIdentityProviderUid(uid);
 
       // Then
-      expect(result).toStrictEqual(expectedResult);
+      expect(result).toStrictEqual(['stendhal.fr', 'flaubert.fr']);
     });
 
     it('should return an identity provider without fqdns if there is no associations', async () => {
       // Given
-      const identityProvider = {
-        uid: 'mock-id-1',
-        active: true,
-        display: true,
-        name: 'mock-identity-provider-name-1',
-        title: 'mock-identity-provider-title-1',
-      } as IIdentityProvider;
-
-      const expectedResult = {
-        uid: 'mock-id-1',
-        active: true,
-        display: true,
-        name: 'mock-identity-provider-name-1',
-        title: 'mock-identity-provider-title-1',
-        fqdns: [],
-      };
+      fqdnToProviderRepository.find.mockReturnValueOnce([]);
 
       // When
       const result =
-        await fqdnToProviderService['getProviderWithFqdns'](identityProvider);
+        await fqdnToProviderService.getFqdnsForIdentityProviderUid(uid);
 
       // Then
-      expect(result).toStrictEqual(expectedResult);
+      expect(result).toStrictEqual([]);
     });
   });
 
   describe('getProvidersWithFqdns', () => {
     it('should returns idps with fqdns', async () => {
       // Given
-      const identityProviders = [
-        {
+      const identityProvider1 =
+        identityProviderFactory.createIdentityProviderFromDb({
           uid: 'mock-id-1',
-          active: true,
-          display: true,
-          name: 'mock-identity-provider-name-1',
-          title: 'mock-identity-provider-title-1',
-        } as IIdentityProvider,
-        {
+        });
+      const identityProvider2 =
+        identityProviderFactory.createIdentityProviderFromDb({
           uid: 'mock-id-2',
-          active: false,
-          display: false,
-          name: 'mock-identity-provider-name-2',
-          title: 'mock-identity-provider-title-2',
-        } as IIdentityProvider,
-      ];
+        });
+      const identityProviders = [identityProvider1, identityProvider2];
 
       const fqdns = [
         {
           identityProvider: 'mock-id-1',
           fqdn: 'stendhal.fr',
-        } as IFqdnToProvider,
+        },
         {
           identityProvider: 'mock-id-1',
           fqdn: 'flaubert.fr',
-        } as IFqdnToProvider,
+        },
         {
           identityProvider: 'mock-id-2',
           fqdn: 'duras.fr',
-        } as IFqdnToProvider,
-      ];
+        },
+      ].map(fqdnToProviderFactory.createFqdnToProvider);
 
       const expectedResult = [
         {
-          uid: 'mock-id-1',
-          active: true,
-          display: true,
-          name: 'mock-identity-provider-name-1',
-          title: 'mock-identity-provider-title-1',
+          ...identityProvider1,
           fqdns: ['stendhal.fr', 'flaubert.fr'],
         },
         {
-          uid: 'mock-id-2',
-          active: false,
-          display: false,
-          name: 'mock-identity-provider-name-2',
-          title: 'mock-identity-provider-title-2',
+          ...identityProvider2,
+
           fqdns: ['duras.fr'],
         },
       ];
@@ -227,7 +187,7 @@ describe('FqdnToProviderService', () => {
 
       // When
       const result =
-        await fqdnToProviderService['getProvidersWithFqdns'](identityProviders);
+        await fqdnToProviderService.getProvidersWithFqdns(identityProviders);
 
       // Then
       expect(result).toStrictEqual(expectedResult);
@@ -238,27 +198,21 @@ describe('FqdnToProviderService', () => {
     it('should save fqdns for an identity provider', async () => {
       // Given
       const identityProviderUid = 'mock-id-1';
-      const fqdns = [
-        { fqdn: 'stendhal.fr', acceptsDefaultIdp: true },
-        { fqdn: 'flaubert.fr', acceptsDefaultIdp: true },
-      ];
+      const fqdns = ['stendhal.fr', 'flaubert.fr'];
 
       // When
-      await fqdnToProviderService['saveFqdnsProvider'](
-        identityProviderUid,
-        fqdns,
-      );
+      await fqdnToProviderService.saveFqdnsProvider(identityProviderUid, fqdns);
 
       // Then
       expect(fqdnToProviderRepository.save).toHaveBeenCalledTimes(2);
       expect(fqdnToProviderRepository.save).toHaveBeenNthCalledWith(1, {
         identityProvider: identityProviderUid,
-        fqdn: fqdns[0].fqdn,
+        fqdn: fqdns[0],
         acceptsDefaultIdp: true,
       });
       expect(fqdnToProviderRepository.save).toHaveBeenNthCalledWith(2, {
         identityProvider: identityProviderUid,
-        fqdn: fqdns[1].fqdn,
+        fqdn: fqdns[1],
         acceptsDefaultIdp: true,
       });
     });
@@ -266,24 +220,18 @@ describe('FqdnToProviderService', () => {
     it('should not save an empty fqdn', async () => {
       // Given
       const identityProviderUid = 'mock-id-1';
-      const fqdns = [
-        { fqdn: 'stendhal.fr', acceptsDefaultIdp: true },
-        { fqdn: '', acceptsDefaultIdp: true },
-      ];
+      const fqdns = ['stendhal.fr', ''];
 
       // When
       fqdnToProviderRepository.save.mockReturnValueOnce(null);
 
-      await fqdnToProviderService['saveFqdnsProvider'](
-        identityProviderUid,
-        fqdns,
-      );
+      await fqdnToProviderService.saveFqdnsProvider(identityProviderUid, fqdns);
 
       // Then
-      expect(fqdnToProviderRepository.save).toHaveBeenCalledTimes(2);
-      expect(fqdnToProviderRepository.save).toHaveBeenNthCalledWith(1, {
+      expect(fqdnToProviderRepository.save).toHaveBeenCalledTimes(1);
+      expect(fqdnToProviderRepository.save).toHaveBeenCalledWith({
         identityProvider: identityProviderUid,
-        fqdn: fqdns[0].fqdn,
+        fqdn: fqdns[0],
         acceptsDefaultIdp: true,
       });
     });
@@ -298,15 +246,15 @@ describe('FqdnToProviderService', () => {
       const existingFqdns = [
         {
           _id: objectId1,
-          identityProvider: 'mock-id-1',
+          identityProvider: identityProviderUid,
           fqdn: 'stendhal.fr',
         },
         {
           _id: objectId2,
-          identityProvider: 'mock-id-1',
+          identityProvider: identityProviderUid,
           fqdn: 'flaubert.fr',
         },
-      ];
+      ].map(fqdnToProviderFactory.createFqdnToProvider);
 
       // When
       fqdnToProviderRepository.find.mockReturnValueOnce(existingFqdns);
@@ -365,11 +313,11 @@ describe('FqdnToProviderService', () => {
         {
           fqdn: 'stendhal.fr',
           acceptsDefaultIdp: true,
-        } as IFqdnToProvider,
+        },
       ]);
 
       // When
-      await fqdnToProviderService['updateFqdnsProvider'](
+      await fqdnToProviderService.updateFqdnsProvider(
         identityProviderUid,
         newFqdns,
         providerId,
@@ -400,14 +348,12 @@ describe('FqdnToProviderService', () => {
         {
           identityProvider: identityProviderUid,
           fqdn: 'balzac.fr',
-          acceptsDefaultIdp: true,
-        } as IFqdnToProvider,
+        },
         {
           identityProvider: identityProviderUid,
           fqdn: 'flaubert.fr',
-          acceptsDefaultIdp: false,
-        } as IFqdnToProvider,
-      ];
+        },
+      ].map(fqdnToProviderFactory.createFqdnToProvider);
       const newFqdns = ['balzac.fr', 'flaubert.fr', 'yourcenar.fr'];
       const deleteFqdnsProviderSpy = jest
         .spyOn(fqdnToProviderService, 'deleteFqdnsProvider')
@@ -435,7 +381,7 @@ describe('FqdnToProviderService', () => {
       expect(fqdnToProviderRepository.save).toHaveBeenNthCalledWith(2, {
         identityProvider: identityProviderUid,
         fqdn: newFqdns[1],
-        acceptsDefaultIdp: false,
+        acceptsDefaultIdp: true,
       });
       expect(fqdnToProviderRepository.save).toHaveBeenNthCalledWith(3, {
         identityProvider: identityProviderUid,
@@ -452,9 +398,9 @@ describe('FqdnToProviderService', () => {
       const newFqdns = ['duras.fr', 'balzac.fr'];
 
       // When
-      fqdnToProviderRepository.find.mockReturnValueOnce(existingFqdns);
+      fqdnToProviderRepository.find.mockReturnValue(existingFqdns);
 
-      await fqdnToProviderService['updateFqdnsProvider'](
+      await fqdnToProviderService.updateFqdnsProvider(
         identityProviderUid,
         newFqdns,
         providerId,
@@ -502,65 +448,51 @@ describe('FqdnToProviderService', () => {
     });
   });
 
-  describe('getIdentityProvidersDTO', () => {
+  describe('aggregateFqdnToProviderWithIdentityProvider', () => {
     it('should add fqdns to identity providers', async () => {
       // Given
-      const identityProviders = [
-        {
+      const identityProvider1 =
+        identityProviderFactory.createIdentityProviderFromDb({
           uid: 'mock-id-1',
-          active: true,
-          display: true,
           name: 'mock-identity-provider-name-1',
-          title: 'mock-identity-provider-title-1',
-        } as IIdentityProvider,
-        {
+        });
+      const identityProvider2 =
+        identityProviderFactory.createIdentityProviderFromDb({
           uid: 'mock-id-2',
-          active: false,
-          display: false,
           name: 'mock-identity-provider-name-2',
-          title: 'mock-identity-provider-title-2',
-        } as IIdentityProvider,
-      ];
+        });
+      const identityProviders = [identityProvider1, identityProvider2];
 
       const fqdns = [
         {
           identityProvider: 'mock-id-1',
           fqdn: 'stendhal.fr',
-        } as IFqdnToProvider,
+        },
         {
           identityProvider: 'mock-id-1',
           fqdn: 'flaubert.fr',
-        } as IFqdnToProvider,
+        },
         {
           identityProvider: 'mock-id-2',
           fqdn: 'duras.fr',
-        } as IFqdnToProvider,
-      ];
+        },
+      ].map(fqdnToProviderFactory.createFqdnToProvider);
 
       const expectedResult = [
         {
-          uid: 'mock-id-1',
-          active: true,
-          display: true,
-          name: 'mock-identity-provider-name-1',
-          title: 'mock-identity-provider-title-1',
+          ...identityProvider1,
           fqdns: ['stendhal.fr', 'flaubert.fr'],
         },
         {
-          uid: 'mock-id-2',
-          active: false,
-          display: false,
-          name: 'mock-identity-provider-name-2',
-          title: 'mock-identity-provider-title-2',
+          ...identityProvider2,
           fqdns: ['duras.fr'],
         },
       ];
 
       // When
-      const result = fqdnToProviderService['getIdentityProvidersDTO'](
-        identityProviders,
-        fqdns,
-      );
+      const result = fqdnToProviderService[
+        'aggregateFqdnToProviderWithIdentityProvider'
+      ](identityProviders, fqdns);
 
       // Then
       expect(result).toStrictEqual(expectedResult);

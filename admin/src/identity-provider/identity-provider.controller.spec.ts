@@ -3,13 +3,13 @@ import { Test } from '@nestjs/testing';
 import { Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { IdentityProvider } from './identity-provider.mongodb.entity';
+import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
 import { IdentityProviderController } from './identity-provider.controller';
 import { IdentityProviderService } from './identity-provider.service';
 
 import * as classTransformer from 'class-transformer';
 import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
-import { IIdentityProvider } from './interface';
+import { identityProviderFactory } from './fixture';
 
 describe('IdentityProviderController', () => {
   let identityProviderController;
@@ -19,40 +19,18 @@ describe('IdentityProviderController', () => {
 
   const serviceMock = {
     paginate: jest.fn(),
-    countProviders: jest.fn(),
+    countIdentityProviders: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     deleteIdentityProvider: jest.fn(),
     findById: jest.fn(),
   };
 
-  const identityProviderDTO = {
-    name: 'trotro',
-    url: 'www.landingPage.com',
-    messageToDisplayWhenInactive: '',
-    redirectionTargetWhenInactive: '',
-    active: false,
-    display: false,
-    title: 'title',
-    image: '',
-    alt: '',
-    imageFocus: '',
-    eidas: 3,
-    emails: ['trotro@trotro.com'],
-    statusURL: 'www.status-url.com',
-    aythorizationUrl: 'www.auth-url.com',
-    tokenUrl: 'www.token-url.com',
-    userInfoUrl: 'www.user-info-url.com',
-    logoutUrl: 'https://issuer.fr/logout',
-    clientId: 'hkjhkjhkhkjhjk',
-    client_secret: 'jhkjhkjhkh',
-    order: 2,
-    jwksUrl: 'www.jwks-url.com',
-    trustedIdentity: false,
-    specificText: '',
-    token_endpoint_auth_method: 'client_secret_post',
-    supportEmail: 'idp@mail.fr',
-  };
+  const identityProviderDTO = identityProviderFactory.createIdentityProviderDto(
+    {
+      name: 'trotro',
+    },
+  );
 
   const params = {
     id: '648c1742c74d6a3d84b31943',
@@ -82,7 +60,7 @@ describe('IdentityProviderController', () => {
 
   const fqdnToProviderServiceMock = {
     getProvidersWithFqdns: jest.fn(),
-    getProviderWithFqdns: jest.fn(),
+    getFqdnsForIdentityProviderUid: jest.fn(),
     saveFqdnsProvider: jest.fn(),
     updateFqdnsProvider: jest.fn(),
     deleteFqdnsProvider: jest.fn(),
@@ -108,7 +86,7 @@ describe('IdentityProviderController', () => {
         ConfigService,
       ],
     })
-      .overrideProvider(getRepositoryToken(IdentityProvider, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(IdentityProviderFromDb, 'fc-mongo'))
       .useValue(mockedIdentityProviderRepository)
       .overrideProvider(IdentityProviderService)
       .useValue(serviceMock)
@@ -133,52 +111,13 @@ describe('IdentityProviderController', () => {
       const page = 0;
       const limit = 10;
 
-      const now = new Date();
-
       // //Mocking item id
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
+      const itemId = new ObjectId();
       //
       // //Mocking Items
-      const itemTest1: IdentityProvider = {
+      const itemTest1 = identityProviderFactory.createIdentityProviderFromDb({
         _id: itemId,
-        uid: 'fip1',
-        name: 'fip1',
-        active: true,
-        order: 2,
-        hoverMsg: 'Message to display',
-        hoverRedirectLink: 'Message to display',
-        blacklistByIdentityProviderActivated: true,
-        WhitelistByServiceProviderActivated: true,
-        display: true,
-        isBeta: false,
-        title: 'Identity Provider Example',
-        image: '',
-        imageFocus: '',
-        alt: 'impots',
-        eidas: 2,
-        allowedAcr: ['eidas2'],
-        mailto: '',
-        specificText: 'specific text fip1',
-        url: 'https://fip1.docker.dev-franceconnect.fr/',
-        statusURL: 'https://fip1.docker.dev-franceconnect.fr/',
-        authzURL: 'https://fip1.docker.dev-franceconnect.fr/user/authorize',
-        tokenURL: 'https://fip1.docker.dev-franceconnect.fr/user/token',
-        userInfoURL: 'https://fip1.docker.dev-franceconnect.fr/api/user',
-        endSessionURL: 'https://issuer.fr/logout',
-        discoveryUrl: 'https://issuer/.well-known/openid-configuration',
-        discovery: true,
-        clientID: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: 'bbe8f1b2a1415d6942b653689a51ba16f22b41e57a4e44b40799d',
-        jwksURL: 'toto',
-        jwtAlgorithm: [],
-        trustedIdentity: false,
-        createdAt: now,
-        updatedAt: now,
-        updatedBy: 'admin',
-        token_endpoint_auth_method: 'client_secret_post',
-        amr: ['pop'],
-        siret: '12345678910001',
-      };
+      });
 
       const itemTest2 = { ...itemTest1 };
       const itemTest3 = { ...itemTest1 };
@@ -189,11 +128,14 @@ describe('IdentityProviderController', () => {
         total: 3,
       };
 
+      const mockFqdns = ['fqdn1.fr', 'fqdn2.fr'];
+
       // Actions
       // Mocking the return of service paginate function
       serviceMock.paginate.mockResolvedValueOnce(identityProviders);
-      fqdnToProviderServiceMock.getProvidersWithFqdns.mockResolvedValueOnce(
-        identityProviders.items,
+      fqdnToProviderServiceMock.getProvidersWithFqdns.mockImplementationOnce(
+        (identityProviders) =>
+          identityProviders.map((idp) => ({ ...idp, fqdn: mockFqdns })),
       );
 
       // Calling the list function
@@ -206,6 +148,7 @@ describe('IdentityProviderController', () => {
       // Expected
       expect(listResult.totalItems).toEqual(3);
       expect(listResult.identityProviders.length).toEqual(3);
+      expect(listResult.identityProviders[0].fqdn).toEqual(mockFqdns);
     });
 
     it('should call fqdnToProviderService.saveFqdnsProvider', async () => {
@@ -213,12 +156,7 @@ describe('IdentityProviderController', () => {
       // Mocking return value of serviceProviderController.list(page, limit)
       const paginatedIdentityProviders = {
         items: [],
-        totalProvider: 0,
         total: 0,
-        itemCount: 0,
-        pageCount: 1,
-        next: '',
-        previous: '',
       };
 
       // Mocking the return of service paginate function
@@ -241,54 +179,30 @@ describe('IdentityProviderController', () => {
     it('should get identity provider creation form', async () => {
       // setup
       const spy = jest
-        .spyOn(serviceMock, 'countProviders')
-        .mockImplementation(() => Promise.resolve('3'));
+        .spyOn(serviceMock, 'countIdentityProviders')
+        .mockResolvedValue(3);
       // action
-      const resultat = await identityProviderController.showCreationForm(req);
+      await identityProviderController.showCreationForm(req);
       // expectation
       expect(spy).toHaveBeenCalled();
-      expect(serviceMock.countProviders).toHaveBeenCalledTimes(1);
+      expect(serviceMock.countIdentityProviders).toHaveBeenCalledTimes(1);
     });
 
     it('should keep filled data if the app flashes an error because the totp failed', async () => {
       // Setup
-      const valuesMock = {
-        name: 'MonSuperFI',
-        title: 'Mon Super FI mais mieux écrit',
-        issuer: 'https://issuer.fr',
-        authorizationUrl: 'https://issuer.fr/auth',
-        tokenUrl: 'https://issuer.fr/token',
-        userInfoUrl: 'https://issuer.fr/me',
-        statusUrl: 'https://issuer.fr/state',
-        jwksUrl: 'https://issuer.fr/jwks',
-        clientId: '09a1a257648c1742c74d6a3d84b31943',
-        clientSecret: '1234567890AZERTYUIOP',
-        messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
-        redirectionTargetWhenInactive: 'https://issuer.fr/promo',
-        trustedIdentity: 'false',
-        active: 'true',
-        display: 'true',
-        discovery: 'true',
-        alt: 'MonFI Image',
-        image: 'AliceM.svg',
-        imageFocus: 'AliceM.svg',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        eidas: 2,
-        order: 1,
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
-        userinfo_encrypted_response_enc: 'ES256',
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_signed_response_alg: 'ES256',
-        id_token_signed_response_alg: 'ES256',
-        id_token_encrypted_response_alg: 'RSA-OAEP',
-        id_token_encrypted_response_enc: 'A256GCM',
-        token_endpoint_auth_method: 'client_secret_post',
-        supportEmail: 'idp@email.fr',
-      };
+      const idpDtoMock = identityProviderFactory.createIdentityProviderDto({});
+      const uid = 'mock-uid';
+      const idpMock = identityProviderFactory.createIdentityProviderDto({
+        name: 'fip1',
+      });
+
+      serviceMock.findById.mockResolvedValueOnce({
+        uid: uid,
+        identityProviderDto: idpMock,
+      });
 
       const resultMock = {
-        ...valuesMock,
+        ...idpDtoMock,
         trustedIdentity: false,
         active: true,
         display: true,
@@ -304,7 +218,7 @@ describe('IdentityProviderController', () => {
         session: {
           flash: {
             errors: [{ _totp: [] }],
-            values: [valuesMock],
+            values: [idpDtoMock],
           },
         },
         user: {
@@ -380,6 +294,13 @@ describe('IdentityProviderController', () => {
 
   describe('get update', () => {
     it('should get the identity provider from its id and render the update form', async () => {
+      const uid = 'mock-uid';
+      const idpMock = identityProviderFactory.createIdentityProviderDto({});
+      serviceMock.findById.mockResolvedValueOnce({
+        uid: uid,
+        identityProviderDto: idpMock,
+      });
+
       // When
       await identityProviderController.findOne(params.id, req, res);
 
@@ -391,36 +312,13 @@ describe('IdentityProviderController', () => {
 
     it('should keep filled data if the app flashes an error because the totp failed', async () => {
       // Setup
-      const valuesMock = {
-        name: 'MonSuperFI',
-        title: 'Mon Super FI mais mieux écrit',
-        issuer: 'https://issuer.fr',
-        authorizationUrl: 'https://issuer.fr/auth',
-        tokenUrl: 'https://issuer.fr/token',
-        userInfoUrl: 'https://issuer.fr/me',
-        statusUrl: 'https://issuer.fr/state',
-        jwksUrl: 'https://issuer.fr/jwks',
-        clientId: '09a1a257648c1742c74d6a3d84b31943',
-        clientSecret: '1234567890AZERTYUIOP',
-        messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
-        redirectionTargetWhenInactive: 'https://issuer.fr/promo',
-        trustedIdentity: 'false',
-        alt: 'MonFI Image',
-        image: 'AliceM.svg',
-        imageFocus: 'AliceM.svg',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        eidas: 2,
-        order: 1,
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
-        token_endpoint_auth_method: 'client_secret_post',
-      };
-
-      const resultMock = {
-        ...valuesMock,
-        trustedIdentity: false,
-        emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
-      };
+      const identityProviderDto =
+        identityProviderFactory.createIdentityProviderDto({});
+      const uid = 'mock-uid';
+      serviceMock.findById.mockResolvedValueOnce({
+        uid: uid,
+        identityProviderDto: identityProviderDto,
+      });
 
       const reqMock = {
         flash: jest.fn(),
@@ -430,7 +328,7 @@ describe('IdentityProviderController', () => {
         session: {
           flash: {
             errors: [{ _totp: [] }],
-            values: [valuesMock],
+            values: [identityProviderDto],
           },
         },
         user: {
@@ -441,73 +339,38 @@ describe('IdentityProviderController', () => {
 
       jest
         .spyOn(classTransformer, 'plainToInstance')
-        .mockReturnValueOnce(resultMock);
+        .mockReturnValueOnce(identityProviderDto);
 
       // Action
       await identityProviderController.findOne(params.id, reqMock, res);
 
       // Assertion
       expect(classTransformer.plainToInstance).toHaveBeenCalledTimes(1);
-      expect(reqMock.session.flash.values[0]).toStrictEqual(resultMock);
+      expect(reqMock.session.flash.values[0]).toEqual(identityProviderDto);
     });
 
     it('should call fqdnToProviderService.getProviderWithFqdns if the instance is FCA low', async () => {
       // Given
-      const now = new Date();
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
-
-      const idpMock: IIdentityProvider = {
-        id: itemId,
-        uid: 'fip1',
+      const uid = 'mock-uid';
+      const idpMock = identityProviderFactory.createIdentityProviderDto({
         name: 'fip1',
-        active: true,
-        order: 2,
-        blacklistByIdentityProviderActivated: true,
-        display: true,
-        isBeta: false,
-        title: 'Identity Provider Example',
-        image: '',
-        imageFocus: '',
-        alt: 'impots',
-        eidas: 2,
-        specificText: 'specific text fip1',
-        discoveryUrl: 'https://issuer/.well-known/openid-configuration',
-        discovery: true,
-        client_secret: 'bbe8f1b2a1415d6942b653689a51ba16f22b41e57a4e44b40799d',
-        jwtAlgorithm: [],
-        trustedIdentity: false,
-        createdAt: now,
-        updatedAt: now,
-        updatedBy: 'admin',
-        token_endpoint_auth_method: 'client_secret_post',
-        amr: ['pop'],
-        issuer: '',
-        messageToDisplayWhenInactive: '',
-        redirectionTargetWhenInactive: '',
-        statusUrl: '',
-        logoutUrl: '',
-        clientId: '',
-        whitelistByServiceProviderActivated: false,
-        modalActive: false,
-        modalTitle: 'title',
-        modalBody: 'body',
-        modalContinueText: 'continueText',
-        modalMoreInfoLabel: 'moreInfoLabel',
-        modalMoreInfoUrl: 'moreInfoUrl',
-      };
+      });
 
-      serviceMock.findById.mockResolvedValueOnce(idpMock);
+      serviceMock.findById.mockResolvedValueOnce({
+        uid: uid,
+        identityProviderDto: idpMock,
+      });
 
       // When
       await identityProviderController.findOne(params.id, req, res);
 
       // Then
       expect(
-        fqdnToProviderServiceMock.getProviderWithFqdns,
+        fqdnToProviderServiceMock.getFqdnsForIdentityProviderUid,
       ).toHaveBeenCalledTimes(1);
       expect(
-        fqdnToProviderServiceMock.getProviderWithFqdns,
-      ).toHaveBeenCalledWith(idpMock);
+        fqdnToProviderServiceMock.getFqdnsForIdentityProviderUid,
+      ).toHaveBeenCalledWith(uid);
     });
   });
 

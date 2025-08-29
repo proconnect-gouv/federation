@@ -28,9 +28,6 @@ const FQDN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 const IMG_REGEX = /\.(png|svg|jpg|gif)$/;
 
 export class IdentityProviderDTO {
-  @IsValidInputString()
-  readonly uid: string;
-
   @IsValidInputString({
     message: `Veuillez mettre un nom valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
   })
