@@ -33,7 +33,6 @@ services:
         condition: service_healthy
     volumes:
       - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log:/var/log/app'
       - '../../volumes/.home:/home'
@@ -58,7 +57,6 @@ services:
     extends: base-mock
     volumes:
       - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
@@ -77,7 +75,6 @@ services:
     extends: base-mock
     volumes:
       - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
       - '../../volumes/log/:/var/log/app'
@@ -97,7 +94,6 @@ services:
     extends: base-mock
     volumes:
       - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log:/var/log/app'
       - '../../volumes/.home:/home'

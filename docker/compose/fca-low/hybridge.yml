@@ -29,7 +29,6 @@ services:
         condition: service_started
     volumes:
       - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log:/var/log/app'
       - '../../volumes/.home:/home'
@@ -58,7 +57,6 @@ services:
       - broker
     volumes:
       - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
