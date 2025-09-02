@@ -76,7 +76,6 @@ services:
     networks:
       - public
       - data
-    command: 'yarn start:dev mock-service-provider-fca-low'
 
   base-idp-mock:
     extends: base-mock
@@ -94,7 +93,6 @@ services:
     networks:
       - public
       - data
-    command: 'yarn start:dev mock-identity-provider-fca-low'
 
   base-dp-mock:
     extends: base-mock
@@ -108,7 +106,6 @@ services:
         condition: service_started
     networks:
       - public
-    command: 'yarn start:dev mock-data-provider'
 
   base-redis:
     image: 'bitnami/redis:6.2.16'
