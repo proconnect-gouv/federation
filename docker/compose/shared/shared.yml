@@ -55,12 +55,15 @@ services:
         condition: service_started
     tty: true
     init: true
+    volumes:
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
 
   base-sp-mock:
     extends: base-mock
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log/:/var/log/app'
       - '../../volumes/.home:/home'
@@ -78,8 +81,6 @@ services:
   base-idp-mock:
     extends: base-mock
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/fca-low/mocks/idp/databases:/var/databases'
       - '../../volumes/log/:/var/log/app'
@@ -98,8 +99,6 @@ services:
   base-dp-mock:
     extends: base-mock
     volumes:
-      - '../../../back:/var/www/app'
-      - '/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log:/var/log/app'
       - '../../volumes/.home:/home'
