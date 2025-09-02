@@ -25,17 +25,3 @@ _stop_all() {
   local containers=$(_get_node_containers_to_start)
   _stop $containers
 }
-
-_clean() {
-  echo "Cleaning node_modules and dist directories"
-  cd ${FEDERATION_DIR}
-
-  rm -rf back/node_modules
-  rm -rf admin/node_modules
-  rm -rf admin/node_modules
-
-  rm -rf admin/dist
-  rm -rf back/dist
-
-  echo "Done cleaning"
-}

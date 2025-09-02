@@ -17,12 +17,15 @@ services:
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../admin:/var/www/app'
-      - '/var/www/app/node_modules'
+      - '../../../admin/src:/var/www/app/src:ro'
+      - '../../../admin/views:/var/www/app/views:ro'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/.home:/home'
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
       - '../../volumes/log:/var/log/app'
+    tmpfs:
+      - /var/www/app/dist:mode=777
+      - /var/www/app/.cache:mode=777
     env_file:
       - '../shared/.env/base-app.env'
       - '../shared/.env/postgres.env'
