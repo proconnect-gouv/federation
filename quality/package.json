@@ -30,7 +30,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cypress": "14.5.4",
-    "cypress-axe": "^1.6.0",
+    "cypress-axe": "^1.7.0",
     "cypress-on-fix": "^1.1.0",
     "cypress-plugin-api": "^2.11.2",
     "ejs": "^3.1.10",
