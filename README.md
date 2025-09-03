@@ -117,7 +117,7 @@ You can read them with:
 tail -F $PC_ROOT/federation/docker/volumes/log/* | npx pino-pretty
 ```
 
-Other logs are outputted in stdout. You can read them with:
+Other logs are outputted in stdout. You can read them with, for example:
 
 ```bash
 docker compose logs core -f --no-log-prefix | npx pino-pretty
