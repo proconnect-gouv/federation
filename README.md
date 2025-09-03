@@ -105,16 +105,22 @@ On any URL, if you got a 502, it might still be booting, wait one minute, then r
 
 ## Get the logs
 
-Logs are stored here:
+File based logs are stored here:
 
 ```
 federation/docker/volumes/log
 ```
 
-You can output them with:
+You can read them with:
 
-```
+```bash
 tail -F $PC_ROOT/federation/docker/volumes/log/* | npx pino-pretty
+```
+
+Other logs are outputted in stdout. You can read them with, for example:
+
+```bash
+docker compose logs core -f --no-log-prefix | npx pino-pretty
 ```
 
 ### Restart a single container
@@ -142,7 +148,6 @@ dks halt
 
 ```bash
 dks compose down --volumes --remove-orphans --rmi all
-dks clean
 ```
 
 ### See Usages
