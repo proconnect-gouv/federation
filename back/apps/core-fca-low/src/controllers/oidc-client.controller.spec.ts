@@ -15,7 +15,7 @@ import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { CoreFcaRoutes } from '../enums';
+import { Routes } from '../enums';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaFqdnService,
@@ -262,7 +262,7 @@ describe('OidcClientController', () => {
         '2 identity providers matching for "****@fqdn.com"',
       );
       expect(res.redirect).toHaveBeenCalledWith(
-        '/app' + CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
+        '/app' + Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
       );
     });
 

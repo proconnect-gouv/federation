@@ -9,9 +9,10 @@ import { Injectable } from '@nestjs/common';
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
+import { Routes } from '@fc/core/enums';
 import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { OidcClientRoutes, OidcClientService } from '@fc/oidc-client';
+import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
@@ -125,14 +126,14 @@ export class OidcProviderConfigAppService {
     if (hasIdpLogoutUrl) {
       return {
         method: 'POST',
-        uri: `${urlPrefix}${OidcClientRoutes.DISCONNECT_FROM_IDP}`,
+        uri: `${urlPrefix}${Routes.DISCONNECT_FROM_IDP}`,
         title: 'Déconnexion du FI',
       };
     }
 
     return {
       method: 'GET',
-      uri: `${urlPrefix}${OidcClientRoutes.CLIENT_LOGOUT_CALLBACK}`,
+      uri: `${urlPrefix}${Routes.CLIENT_LOGOUT_CALLBACK}`,
       title: 'Déconnexion FC',
     };
   }

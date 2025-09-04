@@ -21,7 +21,6 @@ import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { NotificationsService } from '@fc/notifications';
 import { OidcAcrService, SimplifiedInteraction } from '@fc/oidc-acr';
-import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
@@ -39,7 +38,7 @@ import {
   Interaction,
   UserSession,
 } from '../dto';
-import { CoreFcaRoutes } from '../enums';
+import { Routes } from '../enums';
 import {
   CoreAcrNotSatisfiedException,
   CoreFcaAgentNotFromPublicServiceException,
@@ -66,23 +65,23 @@ export class InteractionController {
     private readonly csrfService: CsrfService,
   ) {}
 
-  @Get(CoreFcaRoutes.DEFAULT)
+  @Get(Routes.DEFAULT)
   @Header('cache-control', 'no-store')
   getDefault(@Res() res) {
     const { defaultRedirectUri } = this.config.get<AppConfig>('App');
     res.redirect(301, defaultRedirectUri);
   }
 
-  @Get(CoreFcaRoutes.INTERACTION)
+  @Get(Routes.INTERACTION)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @AuthorizeStepFrom([
     OidcProviderRoutes.AUTHORIZATION, // Standard flow
-    CoreFcaRoutes.INTERACTION, // Refresh
-    OidcClientRoutes.OIDC_CALLBACK, // Back on error
-    CoreFcaRoutes.INTERACTION_VERIFY, // Back on error
-    CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Client is choosing an identity provider
-    OidcClientRoutes.REDIRECT_TO_IDP, // Browser back button
+    Routes.INTERACTION, // Refresh
+    Routes.OIDC_CALLBACK, // Back on error
+    Routes.INTERACTION_VERIFY, // Back on error
+    Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Client is choosing an identity provider
+    Routes.REDIRECT_TO_IDP, // Browser back button
   ])
   @SetStep()
   // eslint-disable-next-line complexity
@@ -174,7 +173,7 @@ export class InteractionController {
       await this.tracking.track(FC_SSO_INITIATED, eventContext);
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
-      const url = `${urlPrefix}${CoreFcaRoutes.INTERACTION_VERIFY.replace(
+      const url = `${urlPrefix}${Routes.INTERACTION_VERIFY.replace(
         ':uid',
         interactionId,
       )}`;
@@ -208,12 +207,12 @@ export class InteractionController {
     });
   }
 
-  @Get(CoreFcaRoutes.INTERACTION_VERIFY)
+  @Get(Routes.INTERACTION_VERIFY)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @AuthorizeStepFrom([
-    OidcClientRoutes.OIDC_CALLBACK, // Standard cinematic
-    CoreFcaRoutes.INTERACTION, // Reuse of an existing session
+    Routes.OIDC_CALLBACK, // Standard cinematic
+    Routes.INTERACTION, // Reuse of an existing session
   ])
   @SetStep()
   // Note: The FC_REDIRECTED_TO_SP event is logged regardless of whether Panva's oidc-provider
@@ -248,7 +247,7 @@ export class InteractionController {
 
       await this.trackIdpDisabled(req);
 
-      const url = `${urlPrefix}${CoreFcaRoutes.INTERACTION.replace(
+      const url = `${urlPrefix}${Routes.INTERACTION.replace(
         ':uid',
         interactionId,
       )}`;
