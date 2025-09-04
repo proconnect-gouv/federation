@@ -3,8 +3,8 @@ services:
   # SP Mocks
   ####################
 
-  service-provider-1:
-    hostname: service-provider-1
+  fsa1-low:
+    hostname: fsa1-low
     extends:
       file: ../shared/shared.yml
       service: base-sp-mock
@@ -12,8 +12,8 @@ services:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fsa1-low.env'
 
-  service-provider-2:
-    hostname: service-provider-2
+  fsa2-low:
+    hostname: fsa2-low
     extends:
       file: ../shared/shared.yml
       service: base-sp-mock
@@ -21,8 +21,8 @@ services:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fsa2-low.env'
 
-  service-provider-3:
-    hostname: service-provider-3
+  fsa3-low:
+    hostname: fsa3-low
     extends:
       file: ../shared/shared.yml
       service: base-sp-mock
@@ -30,8 +30,8 @@ services:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fsa3-low.env'
 
-  service-provider-4:
-    hostname: service-provider-4
+  fsa4-low:
+    hostname: fsa4-low
     extends:
       file: ../shared/shared.yml
       service: base-sp-mock
@@ -43,8 +43,8 @@ services:
   # IDP Mocks
   ####################
 
-  identity-provider-1:
-    hostname: identity-provider-1
+  fia1-low:
+    hostname: fia1-low
     extends:
       file: ../shared/shared.yml
       service: base-idp-mock
@@ -52,8 +52,8 @@ services:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fia1-low.env'
 
-  identity-provider-2:
-    hostname: identity-provider-2
+  fia2-low:
+    hostname: fia2-low
     extends:
       file: ../shared/shared.yml
       service: base-idp-mock
@@ -61,8 +61,8 @@ services:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fia2-low.env'
 
-  proconnect-identite:
-    hostname: proconnect-identite
+  moncomptepro:
+    hostname: moncomptepro
     extends:
       file: ../shared/shared.yml
       service: base-idp-mock
@@ -70,8 +70,8 @@ services:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/moncomptepro.env'
 
-  identity-provider-rie:
-    hostname: identity-provider-rie
+  fia-rie-low:
+    hostname: fia-rie-low
     extends:
       file: ../shared/shared.yml
       service: base-idp-mock
@@ -97,8 +97,8 @@ services:
   # DP Mocks
   ####################
 
-  resource-server-1:
-    hostname: resource-server-1
+  dpa1-low:
+    hostname: dpa1-low
     extends:
       file: ../shared/shared.yml
       service: base-dp-mock
@@ -106,8 +106,8 @@ services:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/dpa1-low.env'
 
-  resource-server-2:
-    hostname: resource-server-2
+  dpa2-low:
+    hostname: dpa2-low
     extends:
       file: ../shared/shared.yml
       service: base-dp-mock
