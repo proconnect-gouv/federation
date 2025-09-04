@@ -31,7 +31,7 @@ export default {
     Routes.OIDC_CALLBACK,
     Routes.INTERACTION_VERIFY,
     OidcProviderRoutes.REDIRECT_TO_SP,
-    Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
+    Routes.IDENTITY_PROVIDER_SELECTION,
 
     // Disconnect flow
     Routes.DISCONNECT_FROM_IDP,

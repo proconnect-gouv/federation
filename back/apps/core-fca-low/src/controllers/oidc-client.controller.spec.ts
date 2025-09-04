@@ -178,8 +178,7 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      // The provider with uid equal to defaultIdpId should have its title changed to "Autre"
-      expect(providers[1].title).toBe('Autre');
+      // Should set Csrf token in session and render with data
       expect(sessionService.set).toHaveBeenCalledWith('Csrf', {
         csrfToken: 'csrf-token',
       });
@@ -192,7 +191,7 @@ describe('OidcClientController', () => {
     });
   });
 
-  describe('redirectToIdp', () => {
+  describe('postIdentityProviderSelection', () => {
     let req: any;
     let res: Partial<Response>;
     let userSession: any;
@@ -206,20 +205,25 @@ describe('OidcClientController', () => {
       } as unknown as ISessionService<UserSession>;
     });
 
-    it('should process redirection when identityProviderUid is provided', async () => {
-      const body = { email, identityProviderUid: 'idp123' } as any;
-      emailValidatorService.validate.mockResolvedValue(undefined);
+    it('should track and redirect to selected idp when identityProviderUid is provided', async () => {
+      const body = { identityProviderUid: 'idp123' } as any;
+      const sessionWithEmail = {
+        get: jest.fn().mockReturnValue({ login_hint: email }),
+      } as any;
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       identityProvider.getById.mockResolvedValue({
         name: 'Idp Name',
         title: 'Idp Title',
       });
 
-      await controller.redirectToIdp(req, res as Response, body, userSession);
+      await controller.postIdentityProviderSelection(
+        req as Request,
+        res as Response,
+        body,
+        sessionWithEmail,
+      );
 
-      expect(emailValidatorService.validate).toHaveBeenCalledWith(email);
       expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(email);
-      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
       expect(identityProvider.getById).toHaveBeenCalledWith('idp123');
       expect(logger.debug).toHaveBeenCalledWith(
         `Redirect "****@fqdn.com" to selected idp "Idp Title" (idp123)`,
@@ -235,7 +239,7 @@ describe('OidcClientController', () => {
     });
 
     it('should throw an exception when no identity providers are available', async () => {
-      const body = { email, identityProviderUid: undefined } as any;
+      const body = { email, rememberMe: true } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
@@ -243,12 +247,19 @@ describe('OidcClientController', () => {
       });
 
       await expect(
-        controller.redirectToIdp(req, res as Response, body, userSession),
+        controller.redirectToIdp(
+          req as Request,
+          res as Response,
+          body,
+          userSession,
+        ),
       ).rejects.toThrow(CoreFcaAgentNoIdpException);
+      expect(userSession.set).toHaveBeenCalledWith('rememberMe', true);
+      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
     });
 
     it('should redirect to identity provider selection when multiple providers are available', async () => {
-      const body = { email, identityProviderUid: undefined } as any;
+      const body = { email } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
@@ -256,18 +267,25 @@ describe('OidcClientController', () => {
       });
       configService.get.mockReturnValue({ urlPrefix: '/app' });
 
-      await controller.redirectToIdp(req, res as Response, body, userSession);
+      await controller.redirectToIdp(
+        req as Request,
+        res as Response,
+        body,
+        userSession,
+      );
 
+      expect(userSession.set).toHaveBeenCalledWith('rememberMe', false);
+      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
       expect(logger.debug).toHaveBeenCalledWith(
         '2 identity providers matching for "****@fqdn.com"',
       );
       expect(res.redirect).toHaveBeenCalledWith(
-        '/app' + Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
+        '/app' + Routes.IDENTITY_PROVIDER_SELECTION,
       );
     });
 
-    it('should process redirection when a single identity provider is available and no identityProviderUid is provided', async () => {
-      const body = { email, identityProviderUid: undefined } as any;
+    it('should process redirection when a single identity provider is available', async () => {
+      const body = { email, rememberMe: true } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
@@ -278,8 +296,15 @@ describe('OidcClientController', () => {
         title: 'Single Title',
       });
 
-      await controller.redirectToIdp(req, res as Response, body, userSession);
+      await controller.redirectToIdp(
+        req as Request,
+        res as Response,
+        body,
+        userSession,
+      );
 
+      expect(userSession.set).toHaveBeenCalledWith('rememberMe', true);
+      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
       expect(identityProvider.getById).toHaveBeenCalledWith('idp-single');
       expect(logger.debug).toHaveBeenCalledWith(
         'Redirect "****@fqdn.com" to unique idp "Single Title" (idp-single)',
@@ -365,6 +390,7 @@ describe('OidcClientController', () => {
       idpState: 'state123',
       interactionId: 'interaction123',
       spId: 'sp123',
+      spName: 'SP Name',
       login_hint: 'user@example.com',
     };
 
@@ -396,8 +422,13 @@ describe('OidcClientController', () => {
       (validateDto as jest.Mock).mockResolvedValue([]);
       fqdnService.isAllowedIdpForEmail.mockResolvedValue(true);
       configService.get.mockReturnValue({ urlPrefix: '/app' });
-      sanitizer.getValidatedIdentityFromIdp.mockReturnValue({
+      sanitizer.getValidatedIdentityFromIdp.mockResolvedValue({
         email: 'user@example.com',
+        sub: 'sub123',
+      });
+      sanitizer.transformIdentity.mockResolvedValue({ given_name: 'John' });
+      accountService.getOrCreateAccount.mockResolvedValue({
+        sub: 'accountSub',
       });
     });
 
@@ -427,7 +458,7 @@ describe('OidcClientController', () => {
         'idp123',
         { state: 'state123', nonce: 'nonce123' },
         req,
-        { sp_id: 'sp123' },
+        { sp_id: 'sp123', sp_name: 'SP Name' },
       );
       expect(tracking.track).toHaveBeenCalledWith('FC_REQUESTED_IDP_TOKEN', {
         req,
@@ -463,7 +494,7 @@ describe('OidcClientController', () => {
           req,
           fqdn: 'fqdn.com',
           email: 'user@example.com',
-          idpSub: undefined,
+          idpSub: 'sub123',
         },
       );
       expect(fqdnService.isAllowedIdpForEmail).toHaveBeenCalledWith(
@@ -478,8 +509,8 @@ describe('OidcClientController', () => {
         amr: 'amr-value',
         idpIdToken: 'id-token',
         idpAcr: 'acr-value',
-        idpIdentity: { email: 'user@example.com' },
-        spIdentity: undefined,
+        idpIdentity: { email: 'user@example.com', sub: 'sub123' },
+        spIdentity: { given_name: 'John' },
       });
       expect(configService.get).toHaveBeenCalledWith('App');
       expect(res.redirect).toHaveBeenCalledWith(
@@ -489,7 +520,6 @@ describe('OidcClientController', () => {
 
     it('should process OIDC callback when identity validation errors occur (sanitization branch and FQDN mismatch)', async () => {
       // Simulate errors so that the sanitizer is called
-      (validateDto as jest.Mock).mockResolvedValue(['error']);
       const sanitizedIdentity = {
         email: 'sanitized@example.com',
         sub: 'sub-sanitized',
@@ -521,6 +551,7 @@ describe('OidcClientController', () => {
         idpIdToken: 'id-token',
         idpAcr: 'acr-value',
         idpIdentity: sanitizedIdentity,
+        spIdentity: expect.anything(),
       });
       expect(res.redirect).toHaveBeenCalledWith(
         '/app/interaction/interaction123/verify',
