@@ -41,7 +41,7 @@
     "string-width": "4.2.0"
   },
   "dependencies": {
-    "@fast-csv/parse": "^5.0.2",
+    "@fast-csv/parse": "^5.0.5",
     "@gouvfr-lasuite/proconnect.debounce": "^0.4.3",
     "@gouvfr/dsfr": "^1.14.0",
     "@nestjs/axios": "^4.0.1",
