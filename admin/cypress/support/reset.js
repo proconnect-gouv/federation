@@ -13,7 +13,7 @@ export function resetMongo() {
 
   return cy
     .exec(command, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('code')
+    .its('exitCode')
     .should('eq', 0);
 }
 
@@ -27,7 +27,7 @@ export function resetPostgres() {
 
   return cy
     .exec(command, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('code')
+    .its('exitCode')
     .should('eq', 0);
 }
 
@@ -40,7 +40,7 @@ export function resetEventsStats() {
     `);
 
   cy.exec(command1, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('code')
+    .its('exitCode')
     .should('eq', 0);
 
   const command2 = `${DOCKER_DIR} && CI=1 ./docker-stack generate-events`;
@@ -55,7 +55,7 @@ export function resetEventsStats() {
    */
   return cy
     .exec(command2, { timeout: LONG_EXEC_TIMEOUT })
-    .its('code')
+    .its('exitCode')
     .should('eq', 0);
 }
 
@@ -68,7 +68,7 @@ export function resetMetricsStats() {
   `);
 
   cy.exec(command1, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('code')
+    .its('exitCode')
     .should('eq', 0);
 
   const command2 = `${DOCKER_DIR} && CI=1 ./docker-stack generate-metrics`;
@@ -80,6 +80,6 @@ export function resetMetricsStats() {
 
   return cy
     .exec(command2, { timeout: SAFETY_EXEC_TIMEOUT * 3 })
-    .its('code')
+    .its('exitCode')
     .should('eq', 0);
 }
