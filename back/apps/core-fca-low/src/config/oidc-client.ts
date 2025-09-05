@@ -1,6 +1,7 @@
 import { ConfigParser } from '@fc/config';
-import { OidcClientConfig, OidcClientRoutes } from '@fc/oidc-client';
+import { OidcClientConfig } from '@fc/oidc-client';
 
+import { Routes } from '../enums';
 import app from './app';
 
 const env = new ConfigParser(process.env, 'OidcClient');
@@ -22,6 +23,6 @@ export default {
   scope: env.string('SCOPE'),
   // Toggle Financial Grade API
   fapi: env.boolean('FAPI'),
-  postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${OidcClientRoutes.CLIENT_LOGOUT_CALLBACK}`,
-  redirectUri: `https://${app.fqdn}${app.urlPrefix}${OidcClientRoutes.OIDC_CALLBACK}`,
+  postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.CLIENT_LOGOUT_CALLBACK}`,
+  redirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_CALLBACK}`,
 } as OidcClientConfig;

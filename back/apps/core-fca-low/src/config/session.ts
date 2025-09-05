@@ -1,6 +1,5 @@
 import { ConfigParser } from '@fc/config';
-import { CoreFcaRoutes, CoreFcaSession } from '@fc/core';
-import { OidcClientRoutes } from '@fc/oidc-client';
+import { CoreFcaSession, Routes } from '@fc/core';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 import { SessionConfig, SessionCookieOptionsInterface } from '@fc/session';
 
@@ -27,16 +26,16 @@ export default {
   middlewareIncludedRoutes: [
     // Connect flow
     OidcProviderRoutes.AUTHORIZATION,
-    `${CoreFcaRoutes.INTERACTION}$`,
-    OidcClientRoutes.REDIRECT_TO_IDP,
-    OidcClientRoutes.OIDC_CALLBACK,
-    CoreFcaRoutes.INTERACTION_VERIFY,
+    `${Routes.INTERACTION}$`,
+    Routes.REDIRECT_TO_IDP,
+    Routes.OIDC_CALLBACK,
+    Routes.INTERACTION_VERIFY,
     OidcProviderRoutes.REDIRECT_TO_SP,
-    CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
+    Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION,
 
     // Disconnect flow
-    OidcClientRoutes.DISCONNECT_FROM_IDP,
-    OidcClientRoutes.CLIENT_LOGOUT_CALLBACK,
+    Routes.DISCONNECT_FROM_IDP,
+    Routes.CLIENT_LOGOUT_CALLBACK,
   ],
   templateExposed: {
     User: { spName: true, idpName: true },
