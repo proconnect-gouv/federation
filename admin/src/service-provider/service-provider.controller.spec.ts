@@ -13,6 +13,7 @@ import { claimsListMock, ClaimsService } from '../claims';
 import { ServiceProviderController } from './service-provider.controller';
 import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ServiceProviderService } from './service-provider.service';
+import { serviceProviderFactory } from './fixtures';
 
 const id: ObjectId = new ObjectId('5d9c677da8bb151b00720451');
 
@@ -168,7 +169,7 @@ describe('ServiceProviderController', () => {
       const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
 
       // Mocking Items
-      const itemTest1: ServiceProviderFromDb = {
+      const itemTest1 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
         redirect_uris: ['https://url.com'],
@@ -188,9 +189,9 @@ describe('ServiceProviderController', () => {
         trustedIdentity: false,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-      };
+      });
 
-      const itemTest2: ServiceProviderFromDb = {
+      const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
         redirect_uris: ['https://url.com'],
@@ -211,9 +212,9 @@ describe('ServiceProviderController', () => {
         eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-      };
+      });
 
-      const itemTest3: ServiceProviderFromDb = {
+      const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
         redirect_uris: ['https://url.com'],
@@ -235,7 +236,7 @@ describe('ServiceProviderController', () => {
         id_token_signed_response_alg: 'ES256',
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-      };
+      });
 
       // Mocking return value of serviceProviderController.list(page, limit)
       const serviceProvidersResult = {
@@ -281,7 +282,7 @@ describe('ServiceProviderController', () => {
       const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
 
       // Mocking Items
-      const itemTest1: ServiceProviderFromDb = {
+      const itemTest1 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
         signup_id: '123456',
@@ -304,9 +305,9 @@ describe('ServiceProviderController', () => {
         eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-      };
+      });
 
-      const itemTest2: ServiceProviderFromDb = {
+      const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
         signup_id: '123456',
@@ -329,9 +330,9 @@ describe('ServiceProviderController', () => {
         eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-      };
+      });
 
-      const itemTest3: ServiceProviderFromDb = {
+      const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
         signup_id: '123456',
@@ -354,7 +355,7 @@ describe('ServiceProviderController', () => {
         eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-      };
+      });
 
       // Mocking return value of serviceProviderController.list(page, limit)
       const serviceProvidersResult = {
@@ -920,15 +921,15 @@ describe('ServiceProviderController', () => {
       const sortDirection = 'asc';
 
       // Mocking Items
-      const itemTest1: ServiceProviderFromDb = {
+      const itemTest1 = serviceProviderFactory.createServiceProviderFromDb({
         name: 'joker',
         ...defaultSpMock,
-      };
+      });
 
-      const itemTest2: ServiceProviderFromDb = {
+      const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
         name: 'Batman',
         ...defaultSpMock,
-      };
+      });
 
       // Mocking return value of serviceProviderController.list(page, limit)
       const serviceProvidersResult = {
@@ -970,15 +971,15 @@ describe('ServiceProviderController', () => {
       const sortDirection = 'desc';
 
       // Mocking Items
-      const itemTest1: ServiceProviderFromDb = {
+      const itemTest1 = serviceProviderFactory.createServiceProviderFromDb({
         name: 'Batman',
         ...defaultSpMock,
-      };
+      });
 
-      const itemTest2: ServiceProviderFromDb = {
+      const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
         name: 'joker',
         ...defaultSpMock,
-      };
+      });
 
       // Mocking return value of serviceProviderController.list(page, limit)
       const serviceProvidersResult = {
