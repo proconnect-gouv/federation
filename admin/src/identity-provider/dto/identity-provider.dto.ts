@@ -320,7 +320,7 @@ export class IdentityProviderDTO {
   readonly modalMoreInfoUrl?: string;
 
   // only for proconnect
-  @IsOptional()
+  @IsOptionalExtended()
   @IsString()
   @Length(14, 14)
   readonly siret?: string;
