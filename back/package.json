@@ -98,7 +98,7 @@
     "@types/jest": "^29.5.4",
     "@types/lodash": "^4.17.20",
     "@types/node": "^22.5.5",
-    "@types/oidc-provider": "7.8.2",
+    "@types/oidc-provider": "7.14.0",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "eslint": "^8.48.0",

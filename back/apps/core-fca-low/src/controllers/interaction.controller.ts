@@ -106,42 +106,18 @@ export class InteractionController {
       },
     } = interaction;
 
-    const activeUserSession = plainToInstance(
-      ActiveUserSessionDto,
-      userSession.get(),
-    );
-    const activeSessionValidationErrors = await validate(activeUserSession);
+    // TODO session is not duplicated anymore ; We can delete this ; Session must be duplicated when session is open with an idp
+    // The session is duplicated here to mitigate cookie-theft-based attacks.
+    // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
+    // await userSession.duplicate();
 
-    const isUserConnectedAlready = isEmpty(activeSessionValidationErrors);
-
-    const isSessionOpenedWithHintedLogin =
-      !loginHint || userSession.get('idpIdentity')?.email === loginHint;
-
-    if (isUserConnectedAlready && isSessionOpenedWithHintedLogin) {
-      // The session is duplicated here to mitigate cookie-theft-based attacks.
-      // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
-      await userSession.duplicate();
-    } else {
-      await userSession.reset();
-      userSession.set({ browsingSessionId: uuid() });
-    }
+    await userSession.reset();
+    userSession.set({ browsingSessionId: uuid() });
 
     const hintedIdp = await this.identityProvider.getById(idpHint);
     if (idpHint && isEmpty(hintedIdp)) {
       throw new CoreIdpHintException();
     }
-
-    const isSessionOpenedWithHintedIdp =
-      !idpHint || userSession.get('idpId') === hintedIdp.uid;
-
-    const isEssentialAcrSatisfied =
-      this.oidcAcr.isEssentialAcrSatisfied(interaction);
-
-    const canReuseActiveSession =
-      isUserConnectedAlready &&
-      isSessionOpenedWithHintedIdp &&
-      isEssentialAcrSatisfied &&
-      isSessionOpenedWithHintedLogin;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
 
@@ -156,7 +132,8 @@ export class InteractionController {
       spId,
       spName,
       spState,
-      reusesActiveSession: canReuseActiveSession,
+      // TODO the session is not amended anymore ; we can delete this unused value
+      reusesActiveSession: false,
     });
     await userSession.commit();
 
@@ -169,18 +146,12 @@ export class InteractionController {
     const { FC_AUTHORIZE_INITIATED } = this.tracking.TrackedEventsMap;
     await this.tracking.track(FC_AUTHORIZE_INITIATED, eventContext);
 
-    if (canReuseActiveSession) {
-      const { FC_SSO_INITIATED } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(FC_SSO_INITIATED, eventContext);
-
-      const { urlPrefix } = this.config.get<AppConfig>('App');
-      const url = `${urlPrefix}${CoreFcaRoutes.INTERACTION_VERIFY.replace(
-        ':uid',
-        interactionId,
-      )}`;
-
-      return res.redirect(url);
-    }
+    // if (canReuseActiveSession) {
+    // TODO SSO is not tracked anymore ; we should put this in the after the authorization issued controller
+    // const { FC_SSO_INITIATED } = this.tracking.TrackedEventsMap;
+    // await this.tracking.track(FC_SSO_INITIATED, eventContext);
+    //
+    // const { urlPrefix } = this.config.get<AppConfig>('App');
 
     if (idpHint) {
       const { FC_REDIRECTED_TO_HINTED_IDP } = this.tracking.TrackedEventsMap;
