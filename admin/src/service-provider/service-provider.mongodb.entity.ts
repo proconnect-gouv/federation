@@ -7,9 +7,12 @@ import {
 } from 'typeorm';
 
 @Entity('client')
-export class ServiceProvider {
+export class ServiceProviderFromDb {
   @ObjectIdColumn()
   _id: ObjectId;
+
+  @Column()
+  title: string;
 
   @Column()
   name: string;

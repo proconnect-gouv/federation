@@ -9,17 +9,15 @@ import { ICrudTrack } from '../interfaces';
 import { SecretManagerService } from '../utils/secret-manager.service';
 import { SecretAdapter } from '../utils/secret.adapter';
 
-import { ServiceProvider } from './service-provider.mongodb.entity';
-import { IServiceProvider } from './interface/service-provider.interface';
-import { IServiceProviderOutput } from './interface/service-provider-output-interface';
+import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { PaginationOptions, PaginationService } from '../pagination';
 
 @Injectable()
 export class ServiceProviderService {
   constructor(
-    @InjectRepository(ServiceProvider, 'fc-mongo')
-    private readonly serviceProviderRepository: Repository<ServiceProvider>,
+    @InjectRepository(ServiceProviderFromDb, 'fc-mongo')
+    private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
     private readonly secretManager: SecretManagerService,
     private readonly secretAdapter: SecretAdapter,
     private readonly logger: LoggerService,
@@ -31,46 +29,30 @@ export class ServiceProviderService {
   }
 
   async createServiceProvider(
-    serviceProviderCreation: ServiceProviderDto,
+    serviceProviderDto: ServiceProviderDto,
     user: string,
   ) {
-    const key: string = this.secretAdapter.generateKey();
+    const serviceProviderDBEntity = this.transformDtoIntoEntity(
+      serviceProviderDto,
+      user,
+    );
 
-    const entityId =
-      serviceProviderCreation.entityId || this.secretAdapter.generateKey();
-
-    const transformToLegacy = this.transformIntoLegacy(serviceProviderCreation);
-    const now = new Date();
-
-    const saveOperation = await this.serviceProviderRepository.insert({
-      ...transformToLegacy,
-      // Set by default
-      active: serviceProviderCreation.active,
-      client_secret: this.secretManager.encrypt(
-        this.secretAdapter.generateSecret(),
-      ),
-      secretCreatedAt: now,
-      createdAt: now,
-      updatedAt: now,
-      secretUpdatedAt: now,
-      updatedBy: user,
-      secretUpdatedBy: user,
-      key,
-      entityId,
-    });
+    const saveOperation = await this.serviceProviderRepository.insert(
+      serviceProviderDBEntity,
+    );
 
     this.track({
       entity: 'service-provider',
       action: 'create',
       user,
-      name: key,
+      name: serviceProviderDBEntity.key,
       id: saveOperation.identifiers[0].id,
     });
 
     return saveOperation;
   }
 
-  async findById(id: string): Promise<ServiceProvider> {
+  async findById(id: string): Promise<ServiceProviderFromDb> {
     const serviceProvider =
       await this.serviceProviderRepository.findOneByOrFail({
         _id: new ObjectId(id),
@@ -175,15 +157,15 @@ export class ServiceProviderService {
   async generateNewSecret(
     serviceProviderID: string,
     currentUser: string,
-  ): Promise<ServiceProvider> {
+  ): Promise<ServiceProviderFromDb> {
     const serviceProvider =
       await this.serviceProviderRepository.findOneByOrFail({
         _id: new ObjectId(serviceProviderID),
       });
 
-    const unEncryptedSecret = await this.secretAdapter.generateSecret();
+    const unEncryptedSecret = this.secretAdapter.generateSecret();
 
-    const newClientSecret = await this.secretManager.encrypt(unEncryptedSecret);
+    const newClientSecret = this.secretManager.encrypt(unEncryptedSecret);
 
     const pastClientSecret = serviceProvider.client_secret;
     const now = new Date();
@@ -207,33 +189,52 @@ export class ServiceProviderService {
     return { items, total };
   }
 
-  private transformIntoLegacy(
-    serviceProviderCreation: IServiceProvider,
-  ): IServiceProviderOutput {
+  private transformDtoIntoEntity(
+    serviceProviderDto: ServiceProviderDto,
+    user: string,
+  ): Omit<ServiceProviderFromDb, '_id'> {
+    const now = new Date();
+    const entityId =
+      serviceProviderDto.entityId || this.secretAdapter.generateKey();
+    const key = this.secretAdapter.generateKey();
+
     return {
-      title: serviceProviderCreation.name,
-      name: serviceProviderCreation.name,
-      redirect_uris: serviceProviderCreation.redirectUri,
-      post_logout_redirect_uris: serviceProviderCreation.redirectUriLogout,
-      site: serviceProviderCreation.site,
-      type: serviceProviderCreation.type,
-      email: serviceProviderCreation.emails.join('\n'),
-      IPServerAddressesAndRanges: serviceProviderCreation.ipAddresses,
-      scopes: serviceProviderCreation.scopes,
-      claims: serviceProviderCreation.claims || [],
+      title: serviceProviderDto.name,
+      name: serviceProviderDto.name,
+      redirect_uris: serviceProviderDto.redirectUri,
+      post_logout_redirect_uris: serviceProviderDto.redirectUriLogout,
+      site: serviceProviderDto.site,
+      type: serviceProviderDto.type,
+      email: serviceProviderDto.emails.join('\n'),
+      IPServerAddressesAndRanges: serviceProviderDto.ipAddresses,
+      scopes: serviceProviderDto.scopes,
+      claims: serviceProviderDto.claims || [],
       userinfo_signed_response_alg:
-        serviceProviderCreation.userinfo_signed_response_alg,
+        serviceProviderDto.userinfo_signed_response_alg,
       id_token_signed_response_alg:
-        serviceProviderCreation.id_token_signed_response_alg,
+        serviceProviderDto.id_token_signed_response_alg,
       introspection_signed_response_alg:
-        serviceProviderCreation.introspection_signed_response_alg,
+        serviceProviderDto.introspection_signed_response_alg,
       introspection_encrypted_response_alg:
-        serviceProviderCreation.introspection_encrypted_response_alg,
+        serviceProviderDto.introspection_encrypted_response_alg,
       introspection_encrypted_response_enc:
-        serviceProviderCreation.introspection_encrypted_response_enc,
-      response_types: serviceProviderCreation.response_types,
-      grant_types: serviceProviderCreation.grant_types,
-      jwks_uri: serviceProviderCreation.jwks_uri,
+        serviceProviderDto.introspection_encrypted_response_enc,
+      response_types: serviceProviderDto.response_types,
+      grant_types: serviceProviderDto.grant_types,
+      jwks_uri: serviceProviderDto.jwks_uri,
+      active: serviceProviderDto.active,
+      client_secret: this.secretManager.encrypt(
+        this.secretAdapter.generateSecret(),
+      ),
+      secretCreatedAt: now,
+      createdAt: now,
+      updatedAt: now,
+      secretUpdatedAt: now,
+      updatedBy: user,
+      secretUpdatedBy: user,
+      key,
+      entityId,
+      trustedIdentity: false, // unused value, TODO needs to be deleted
     };
   }
 }

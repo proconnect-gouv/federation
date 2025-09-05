@@ -9,10 +9,11 @@ import { SecretManagerService } from '../utils/secret-manager.service';
 import { SecretAdapter } from '../utils/secret.adapter';
 
 import { ServiceProviderService } from './service-provider.service';
-import { ServiceProvider } from './service-provider.mongodb.entity';
+import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ICrudTrack } from '../interfaces';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { PaginationService } from '../pagination';
+import { serviceProviderFactory } from './fixtures';
 
 describe('ServiceProviderService', () => {
   let module: TestingModule;
@@ -40,56 +41,6 @@ describe('ServiceProviderService', () => {
 
   const userMock = 'userMockValue';
 
-  const serviceProviderMock = {
-    key: 'keyMock',
-    name: 'monfs',
-    redirectUri: ['https://monfs.com'],
-    redirectUriLogout: ['https://monfs.com/logout'],
-    site: ['https://monfs.com'],
-    ipAddresses: ['192.0.0.0'],
-    emails: ['v@b.com'],
-    active: true,
-    type: 'private',
-    scopes: [],
-    trustedIdentity: false,
-  } as unknown as ServiceProviderDto;
-
-  const expectedServiceProviderCreated = {
-    active: true,
-    name: 'monfs',
-    site: ['https://monfs.com'],
-    client_secret: 'FE1CE803iuyiuyiy',
-    createdAt: expect.any(Date),
-    emails: ['v@b.com'],
-    entityId: 'secretKeyMocked',
-    ipAddresses: ['192.0.0.0'],
-    key: 'secretKeyMocked',
-    redirectUri: ['https://monfs.com'],
-    redirectUriLogout: ['https://monfs.com/logout'],
-    scopes: [],
-    secretCreatedAt: expect.any(Date),
-    secretUpdatedAt: expect.any(Date),
-    secretUpdatedBy: 'user',
-    trustedIdentity: false,
-    type: 'private',
-    updatedAt: expect.any(Date),
-    updatedBy: 'user',
-  };
-
-  const expectedServiceProviderUpdated = {
-    active: true,
-    name: 'monfs',
-    site: ['https://monfs.com'],
-    email: 'v@b.com',
-    IPServerAddressesAndRanges: ['192.0.0.0'],
-    redirect_uris: ['https://monfs.com'],
-    post_logout_redirect_uris: ['https://monfs.com/logout'],
-    scopes: ['openid'],
-    type: 'private',
-    updatedAt: expect.any(Date),
-    updatedBy: 'userMockValue',
-  };
-
   const insertResultMock = {
     identifiers: [{ id: 'insertedIdMock' }],
   };
@@ -102,7 +53,7 @@ describe('ServiceProviderService', () => {
     jest.resetAllMocks();
 
     module = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([ServiceProvider], 'fc-mongo')],
+      imports: [TypeOrmModule.forFeature([ServiceProviderFromDb], 'fc-mongo')],
       providers: [
         ServiceProviderService,
         Repository,
@@ -112,7 +63,7 @@ describe('ServiceProviderService', () => {
         PaginationService,
       ],
     })
-      .overrideProvider(getRepositoryToken(ServiceProvider, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(ServiceProviderFromDb, 'fc-mongo'))
       .useValue(serviceProviderRepository)
       .overrideProvider(SecretManagerService)
       .useValue(secretManagerMocked)
@@ -126,9 +77,6 @@ describe('ServiceProviderService', () => {
       ServiceProviderService,
     );
 
-    serviceProviderRepository.findOneByOrFail.mockResolvedValue(
-      serviceProviderMock,
-    );
     serviceProviderRepository.insert.mockResolvedValue(insertResultMock);
   });
 
@@ -150,18 +98,32 @@ describe('ServiceProviderService', () => {
   });
 
   describe('createServiceProvider', () => {
+    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto(
+      {},
+    );
+    const serviceProviderFromDb =
+      serviceProviderFactory.createServiceProviderFromDb({});
+
+    const expectedServiceProviderCreated =
+      serviceProviderFactory.createServiceProviderFromDb({
+        client_secret: 'FE1CE803iuyiuyiy',
+        IPServerAddressesAndRanges: ['192.0.0.0'],
+        key: 'secretKeyMocked',
+      });
     beforeEach(() => {
-      // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
       secretAdapterMock.generateKey.mockReturnValue('secretKeyMocked');
       secretAdapterMock.generateSecret.mockReturnValueOnce('FE1CE803');
       secretManagerMocked.encrypt.mockReturnValueOnce('FE1CE803iuyiuyiy');
+      serviceProviderRepository.findOneByOrFail.mockResolvedValue(
+        serviceProviderFromDb,
+      );
     });
 
     it('should call the tracking method', async () => {
       // When
       await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         userMock,
       );
 
@@ -178,38 +140,10 @@ describe('ServiceProviderService', () => {
       });
     });
 
-    it('should call generateKey once if entityId is provide in params', async () => {
-      // Given
-      const spMock = {
-        ...serviceProviderMock,
-        entityId: '12aze3',
-      };
-
-      // When
-      const _result = await serviceProviderService.createServiceProvider(
-        spMock,
-        'user',
-      );
-
-      // Then
-      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call generateKey twice if entityId is not provide in params', async () => {
-      // When
-      const _result = await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
-        'user',
-      );
-
-      // Then
-      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(2);
-    });
-
     it('should call generateSecret method', async () => {
       // When
       await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         'user',
       );
 
@@ -220,7 +154,7 @@ describe('ServiceProviderService', () => {
     it('should call encrypt method', async () => {
       // When
       const _result = await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         'user',
       );
 
@@ -229,49 +163,36 @@ describe('ServiceProviderService', () => {
       expect(secretManagerMocked.encrypt).toHaveBeenCalledWith('FE1CE803');
     });
 
-    // todo: remove this ref to legacy
-    it('should call transformIntoLegacy method', async () => {
+    it('should call transformDtoIntoEntity method', async () => {
       // Given
-      serviceProviderService['transformIntoLegacy'] = jest
+      serviceProviderService['transformDtoIntoEntity'] = jest
         .fn()
         .mockReturnValue({});
 
       // When
       await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         'user',
       );
 
       // Then
       expect(
-        serviceProviderService['transformIntoLegacy'],
+        serviceProviderService['transformDtoIntoEntity'],
       ).toHaveBeenCalledTimes(1);
       expect(
-        serviceProviderService['transformIntoLegacy'],
-      ).toHaveBeenCalledWith({
-        key: 'keyMock',
-        active: true,
-        emails: ['v@b.com'],
-        ipAddresses: ['192.0.0.0'],
-        name: 'monfs',
-        redirectUri: ['https://monfs.com'],
-        redirectUriLogout: ['https://monfs.com/logout'],
-        scopes: [],
-        site: ['https://monfs.com'],
-        trustedIdentity: false,
-        type: 'private',
-      });
+        serviceProviderService['transformDtoIntoEntity'],
+      ).toHaveBeenCalledWith(serviceProviderDto, 'user');
     });
 
     it('should call insert method', async () => {
       // Given
-      serviceProviderService['transformIntoLegacy'] = jest
+      serviceProviderService['transformDtoIntoEntity'] = jest
         .fn()
-        .mockReturnValue(serviceProviderMock);
+        .mockReturnValue(expectedServiceProviderCreated);
 
       // When
       await serviceProviderService.createServiceProvider(
-        serviceProviderMock,
+        serviceProviderDto,
         'user',
       );
 
@@ -315,16 +236,28 @@ describe('ServiceProviderService', () => {
   });
 
   describe('update()', () => {
+    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto({
+      id_token_signed_response_alg: 'id_token_signed_response_alg',
+      userinfo_signed_response_alg: 'userinfo_signed_response_alg',
+      scopes: ['openid'],
+    });
+    const existingServiceProviderFromDb =
+      serviceProviderFactory.createServiceProviderFromDb({
+        key: 'secretKeyMocked',
+      });
+
     const id = '5d4d6d29bbdfbd203da312f2';
 
     beforeEach(() => {
-      // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
+      serviceProviderRepository.findOneByOrFail.mockResolvedValue(
+        existingServiceProviderFromDb,
+      );
     });
 
     it('should call findOneByOrFail method to retrieve service provider', async () => {
       // action
-      await serviceProviderService.update(id, serviceProviderMock, userMock);
+      await serviceProviderService.update(id, serviceProviderDto, userMock);
 
       // expect
       expect(serviceProviderRepository.findOneByOrFail).toHaveBeenCalledTimes(
@@ -336,24 +269,8 @@ describe('ServiceProviderService', () => {
     });
 
     it('should calls the tracking method', async () => {
-      // setup
-      serviceProviderRepository.findOneByOrFail.mockImplementationOnce(() =>
-        Promise.resolve({
-          name: 'franceConnect',
-          redirectUri: ['https://franceConnect.com'],
-          redirectUriLogout: ['https://franceConnect.com/logout'],
-          site: 'https://franceConnect.com',
-          ipAddresses: ['192.0.0.0'],
-          emails: ['v@b2.com'],
-          active: true,
-          type: 'private',
-          scopes: ['toto', 'tutu'],
-          trustedIdentity: false,
-        }),
-      );
-
       // action
-      await serviceProviderService.update(id, serviceProviderMock, userMock);
+      await serviceProviderService.update(id, serviceProviderDto, userMock);
       // assertion
       // tslint:disable-next-line:no-string-literal
       expect(serviceProviderService['track']).toHaveBeenCalledTimes(1);
@@ -363,41 +280,20 @@ describe('ServiceProviderService', () => {
         action: 'update',
         id,
         user: userMock,
+        name: 'secretKeyMocked',
       });
     });
 
     it('should update service provider', async () => {
-      // Given
-      const dataToUpdate = {
-        ...serviceProviderMock,
-        id_token_signed_response_alg: 'id_token_signed_response_alg',
-        userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-      } as unknown as ServiceProviderDto;
-
-      serviceProviderRepository.findOneByOrFail.mockImplementationOnce(() =>
-        Promise.resolve({
-          name: 'proConnect',
-          redirect_uris: ['https://proConnect.fr'],
-          post_logout_redirect_uris: ['https://proConnect.fr/logout'],
-          site: 'https://proConnect.fr',
-          IPServerAddressesAndRanges: ['192.0.0.0'],
-          email: ['v@b2.com'],
-          active: false,
-          type: 'private',
-          scopes: ['toto', 'tutu'],
-          id_token_signed_response_alg: 'id_token_signed_response_alg',
-          userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-        }),
-      );
-
       const expected = {
-        ...expectedServiceProviderUpdated,
+        ...existingServiceProviderFromDb,
         id_token_signed_response_alg: 'id_token_signed_response_alg',
         userinfo_signed_response_alg: 'userinfo_signed_response_alg',
+        updatedAt: expect.any(Date),
       };
 
       // When
-      await serviceProviderService.update(id, dataToUpdate, userMock);
+      await serviceProviderService.update(id, serviceProviderDto, userMock);
 
       // Then
       expect(serviceProviderRepository.save).toHaveBeenCalledTimes(1);
@@ -406,9 +302,15 @@ describe('ServiceProviderService', () => {
   });
 
   describe('delete service provider by id', () => {
+    const existingServiceProviderFromDb =
+      serviceProviderFactory.createServiceProviderFromDb({
+        key: 'secretKeyMocked',
+      });
     beforeEach(() => {
       serviceProviderRepository.delete.mockResolvedValue({ affected: 1 });
-
+      serviceProviderRepository.findOneByOrFail.mockResolvedValue(
+        existingServiceProviderFromDb,
+      );
       // tslint:disable-next-line:no-string-literal
       serviceProviderService['track'] = jest.fn();
     });
@@ -440,7 +342,7 @@ describe('ServiceProviderService', () => {
         entity: 'service-provider',
         id: idMock,
         user: userMock,
-        name: 'keyMock',
+        name: 'secretKeyMocked',
       });
     });
   });
@@ -503,6 +405,39 @@ describe('ServiceProviderService', () => {
         1,
       );
       expect(serviceProviderRepository.save).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('transformDtoIntoEntity', () => {
+    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto(
+      {},
+    );
+    it('should call generateKey once if entityId is provided in params', async () => {
+      // Given
+      const spMock = {
+        ...serviceProviderDto,
+        entityId: '12aze3',
+      };
+
+      // When
+      serviceProviderService['transformDtoIntoEntity'](spMock, 'user');
+
+      // Then
+      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call generateKey twice if entityId is not provided in params', async () => {
+      // Given
+      const spMock = {
+        ...serviceProviderDto,
+        entityId: undefined,
+      };
+
+      // When
+      serviceProviderService['transformDtoIntoEntity'](spMock, 'user');
+
+      // Then
+      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(2);
     });
   });
 });
