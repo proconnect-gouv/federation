@@ -80,7 +80,7 @@ export class InteractionController {
     Routes.INTERACTION, // Refresh
     Routes.OIDC_CALLBACK, // Back on error
     Routes.INTERACTION_VERIFY, // Back on error
-    Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Client is choosing an identity provider
+    Routes.IDENTITY_PROVIDER_SELECTION, // Client is choosing an identity provider
     Routes.REDIRECT_TO_IDP, // Browser back button
   ])
   @SetStep()
