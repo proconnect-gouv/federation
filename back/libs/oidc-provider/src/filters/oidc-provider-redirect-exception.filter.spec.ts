@@ -146,7 +146,22 @@ describe('OidcProviderRedirectExceptionFilter', () => {
       expect(exceptionMock.originalError.caught).toBe(true);
     });
 
-    it('should log then exception', async () => {
+    it('should log the exception even with no wrapped error', async () => {
+      // Given
+      exceptionMock.originalError = null;
+
+      // When
+      await filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
+
+      // Then
+      expect(filter['logException']).toHaveBeenCalledExactlyOnceWith(
+        codeMock,
+        idMock,
+        exceptionMock,
+      );
+    });
+
+    it('should log the exception', async () => {
       // When
       await filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
