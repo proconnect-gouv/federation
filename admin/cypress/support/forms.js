@@ -152,3 +152,7 @@ export function totp(subject, arg1, arg2) {
     .then(() => cy.task('getTotp', { secret }))
     .then((token) => formType(input, token, configuration));
 }
+
+export function closeBanner(target) {
+  cy.get(target+' > .btn-close').click();
+}

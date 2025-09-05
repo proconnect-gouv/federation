@@ -16,9 +16,9 @@
     <% } %>
     <%- include('partials/global-errors-handler.ejs') -%>
     <input type="hidden" name="_csrf" value="<%= locals.csrfToken  %>">
-    <label for="username" class="sr-only">Username</label>
+    <label for="username" class="visually-hidden">Username</label>
     <input type="text" name="username" class="form-control" placeholder="Username" required autofocus="">
-    <label for="password" class="sr-only">Password</label>
+    <label for="password" class="visually-hidden">Password</label>
     <input type="password" name="password" class="form-control" placeholder="Password" required>
     <% if (showTotpField) {%>
     <label class="form-label" for="_totp">Code TOTP</label>

@@ -19,7 +19,7 @@
           name="scope-labels-form" 
           action="<%= APP_ROOT %>/scopes/label/update/<%= id%>?_method=PATCH" 
           novalidate>
-            <div class="form-group row mt-4">
+            <div class="mb-3 row mt-4">
               <label class="col-2 col-form-label" for="scope">Scope*</label>
               <div class="col-10">
                 <input type="text" 
@@ -32,7 +32,7 @@
                 required readonly>
               </div>
             </div>
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-2 col-form-label" for="exampleInputEmail1">Label*</label>
                 <div class="col-10">
                   <input type="text" 
@@ -45,11 +45,11 @@
                     required>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="mb-3 row">
               <label class="col-2 col-form-label" for="fd">Fournisseur de données*</label>
               <div class="col-10">
                 <select id="fd" 
-                  class="custom-select-sm custom-select item-number" 
+                  class="form-select-sm form-select item-number" 
                   name="fd"
                   style="width:15%;"
                   required>
@@ -60,7 +60,7 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row">
+            <div class="mb-3 row">
               <label class="my-2" for="confirm-2FAuthentication">Code TOTP</label>
               <div class="col-lg-10">
                 <input id="_totp" 

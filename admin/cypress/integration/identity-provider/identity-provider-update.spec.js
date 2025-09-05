@@ -60,7 +60,7 @@ describe('Identity provider update', () => {
       cy.contains(
         `Le fournisseur d'identité ${fiToUpdateName} a été créé avec succès !`,
       ).should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
     });
   });
 
@@ -99,7 +99,7 @@ describe('Identity provider update', () => {
       cy.get('#fi-subtitle')
         .contains(`Modifier le fournisseur d'identité: ${idp.title}`)
         .should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       cy.hasBusinessLog({
         entity: 'identity-provider',
@@ -145,7 +145,7 @@ describe('Identity provider update', () => {
       cy.get('#fi-subtitle')
         .contains(`Modifier le fournisseur d'identité: ${idp.title}`)
         .should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       assertFormValues(idp);
     });
@@ -180,7 +180,7 @@ describe('Identity provider update', () => {
       cy.contains(`Modifier le fournisseur d'identité: ${idp.title}`).should(
         'exist',
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       assertFormValues(idp);
     });
@@ -216,7 +216,7 @@ describe('Identity provider update', () => {
       cy.contains(`Modifier le fournisseur d'identité: ${idp.title}`).should(
         'exist',
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       assertFormValues(idp);
     });
@@ -262,7 +262,7 @@ describe('Identity provider update', () => {
       cy.get('#fi-subtitle')
         .contains(`Modifier le fournisseur d'identité: ${idp.title}`)
         .should('exist');
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       assertFormValues(idp);
     });
@@ -301,7 +301,7 @@ describe('Identity provider update', () => {
       cy.contains(`Modifier le fournisseur d'identité: ${idp.title}`).should(
         'exist',
       );
-      cy.get('.alert-success > .close').click();
+      cy.closeBanner('.alert-success');
 
       assertFormValues(idp);
     });

@@ -31,8 +31,8 @@
                 </div>
 
                 <div class="mx-4 d-flex justify-content-center flex-column">
-                  <p class="font-weight-bold">Saisie manuelle:</p>
-                  <table class="text-left table">
+                  <p class="fw-bold">Saisie manuelle:</p>
+                  <table class="text-start table">
                     <tr id="issuer">
                       <th scope="row">Issuer</th>
                       <td class="text-primary"><%= locals.issuer %></td>
@@ -73,7 +73,7 @@
             data-init="validateAccountUpdate" novalidate>
             <input type="hidden" name="_csrf" value="<%= locals.csrfToken  %>">
 
-            <div class="form-group row">
+            <div class="mb-3 row">
               <label class="col-lg-2 col-lg-form-label" for="password">Mot de passe actuel</label>
               <div class="col-lg-10">
                 <input id="currentPassword" type="password" required
@@ -91,7 +91,7 @@
                 <% } %>
               </div>
             </div>
-            <div class="form-group row">
+            <div class="mb-3 row">
               <label class="col-lg-2 col-lg-form-label" for="password">Votre nouveau mot de passe</label>
               <div class="col-lg-10">
                 <input id="password" type="password" required
@@ -123,7 +123,7 @@
               </div>
             </div>
 
-            <div class="form-group row">
+            <div class="mb-3 row">
               <label class="col-lg-2 col-lg-form-label" for="confirm-password">Confirmation de votre nouveau mot de passe</label>
               <div class="col-lg-10">
                 <input id="confirm-password" type="password" required
@@ -144,7 +144,7 @@
               </div>
             </div>
 
-            <div class="form-group row">
+            <div class="mb-3 row">
               <label class="col-lg-2 col-lg-form-label" for="confirm-2FAuthentication">Code TOTP</label>
               <div class="col-lg-10">
                 <input id="_totp" type="text" required
