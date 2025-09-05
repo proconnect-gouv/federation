@@ -12,8 +12,8 @@ services:
     image: alpine
     depends_on:
       - 'core'
-      - 'service-provider-1'
-      - 'identity-provider-1'
+      - 'fsa1-low'
+      - 'fia1-low'
 
   # -- used for e2e tests
   medium:
@@ -22,28 +22,28 @@ services:
       - 'core'
       - 'admin'
       # -- SP
-      - 'service-provider-1'
-      - 'service-provider-2'
-      - 'service-provider-4'
+      - 'fsa1-low'
+      - 'fsa2-low'
+      - 'fsa4-low'
       # -- IdP
-      - 'identity-provider-1'
-      - 'identity-provider-2'
-      - 'proconnect-identite'
+      - 'fia1-low'
+      - 'fia2-low'
+      - 'moncomptepro'
       # -- DP
-      - 'resource-server-1'
-      - 'resource-server-2'
+      - 'dpa1-low'
+      - 'dpa2-low'
 
   large:
     image: alpine
     depends_on:
       - 'core'
-      - 'service-provider-1'
-      - 'service-provider-2'
-      - 'service-provider-3'
-      - 'service-provider-4'
-      - 'identity-provider-1'
-      - 'identity-provider-2'
-      - 'proconnect-identite'
+      - 'fsa1-low'
+      - 'fsa2-low'
+      - 'fsa3-low'
+      - 'fsa4-low'
+      - 'fia1-low'
+      - 'fia2-low'
+      - 'moncomptepro'
       - 'admin'
       ### Hybridge
       - 'lemon-ldap'
@@ -61,11 +61,11 @@ services:
     image: alpine
     depends_on:
       - 'core-squid'
-      - 'service-provider-1'
-      - 'identity-provider-1'
+      - 'fsa1-low'
+      - 'fia1-low'
       ### RIE
       - 'squid'
       - 'hybridge-internet'
       - 'hybridge-rie'
-      - 'identity-provider-rie'
+      - 'fia-rie-low'
       - 'rp-hybridge'
