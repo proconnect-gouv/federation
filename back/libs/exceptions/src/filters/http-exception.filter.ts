@@ -34,7 +34,7 @@ export class HttpExceptionFilter
       res,
       error: { code, id, message },
       httpResponseCode: status,
-      errorDetail: '',
+      errorDetail: exception.response?.message?.join(', ') || '',
     };
 
     return this.errorOutput(exceptionParam);
