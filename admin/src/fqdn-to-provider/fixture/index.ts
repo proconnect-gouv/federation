@@ -1,1 +1,1 @@
-export * from "./fqdn-to-provider.factory"
+export * from './fqdn-to-provider.factory';

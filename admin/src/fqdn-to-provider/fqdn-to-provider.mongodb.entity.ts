@@ -1,5 +1,6 @@
 import { IsBoolean, IsString } from 'class-validator';
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 @Entity('fqdnToProvider')
 export class FqdnToProvider {

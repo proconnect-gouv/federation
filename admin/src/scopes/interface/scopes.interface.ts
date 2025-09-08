@@ -1,4 +1,4 @@
-import { ObjectId } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 export interface IScopes {
   id: ObjectId;

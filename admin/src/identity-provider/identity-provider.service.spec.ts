@@ -71,12 +71,12 @@ describe('IdentityProviderService', () => {
 
   const identityProvidersMock = [
     identityProviderFactory.createIdentityProviderFromDb({
-      _id: ObjectId(),
+      _id: new ObjectId(),
       name: 'mock-identity-provider-name-1',
       title: 'mock-identity-provider-title-1',
     }),
     identityProviderFactory.createIdentityProviderFromDb({
-      _id: ObjectId(),
+      _id: new ObjectId(),
       name: 'mock-identity-provider-name-2',
       title: 'mock-identity-provider-title-2',
     }),
@@ -206,7 +206,7 @@ describe('IdentityProviderService', () => {
 
     const transformedIntoEntity =
       identityProviderFactory.createIdentityProviderFromDb({
-        _id: ObjectId('68a30acf6cb39008b0015ab4'),
+        _id: new ObjectId('68a30acf6cb39008b0015ab4'),
         name: 'MonFI',
         mailto: 'authenticationEmail',
         jwtAlgorithm: [],
@@ -435,7 +435,7 @@ describe('IdentityProviderService', () => {
   });
 
   describe('update()', () => {
-    const idMock = objectId;
+    const idMock = objectId.toString();
     const userMock = 'userMockValue';
     const methodMock = 'update';
     const existingIdentityProviderMock =
@@ -514,7 +514,7 @@ describe('IdentityProviderService', () => {
     it('should call the tracking method of the service', async () => {
       // WHEN
       await identityProviderService.update(
-        objectId,
+        objectId.toString(),
         identityProviderToUpdate,
         userMock,
       );
@@ -528,7 +528,7 @@ describe('IdentityProviderService', () => {
         action: 'update',
         user: userMock,
         name: 'MonFI',
-        id: objectId,
+        id: objectId.toString(),
       });
     });
 
@@ -638,7 +638,10 @@ describe('IdentityProviderService', () => {
       const expectedRepositoryDeleteArguments = { _id: objectId };
       const user = 'mockUsername';
       // action
-      await identityProviderService.deleteIdentityProvider(objectId, user);
+      await identityProviderService.deleteIdentityProvider(
+        objectId.toString(),
+        user,
+      );
       // assertion
       expect(identityProviderRepository.delete).toHaveBeenCalledTimes(1);
       expect(identityProviderRepository.delete).toHaveBeenCalledWith(
@@ -652,7 +655,10 @@ describe('IdentityProviderService', () => {
       // tslint:disable-next-line:no-string-literal
       identityProviderService['track'] = jest.fn();
       // When
-      await identityProviderService.deleteIdentityProvider(objectId, user);
+      await identityProviderService.deleteIdentityProvider(
+        objectId.toString(),
+        user,
+      );
       // Then
       // tslint:disable-next-line:no-string-literal
       expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
@@ -662,7 +668,7 @@ describe('IdentityProviderService', () => {
         action: 'delete',
         name: 'MonFI',
         user,
-        id: objectId,
+        id: objectId.toString(),
       });
     });
 
@@ -777,7 +783,7 @@ describe('IdentityProviderService', () => {
 
     const transformedIntoEntity =
       identityProviderFactory.createIdentityProviderFromDb({
-        _id: ObjectId('68a30acf6cb39008b0015ab4'),
+        _id: new ObjectId('68a30acf6cb39008b0015ab4'),
         uid: mockUid,
         name: 'MonFI',
         mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',

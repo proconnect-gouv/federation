@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 // Declarative code
-import { Entity, ObjectIdColumn, ObjectId, Column, Unique } from 'typeorm';
-
+import { Entity, ObjectIdColumn, Column, Unique } from 'typeorm';
+import { ObjectId } from 'mongodb';
 @Entity('scopes')
 @Unique(['scope'])
 export class Scopes {
