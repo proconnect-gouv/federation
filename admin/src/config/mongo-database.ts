@@ -18,9 +18,7 @@ export = {
   ],
   ssl: parseBoolean(process.env.FC_DB_TLS),
   sslValidate: parseBoolean(process.env.FC_DB_TLS),
-  sslCA: process.env.FC_DB_TLS_CA_FILE
-    ? fs.readFileSync(process.env.FC_DB_TLS_CA_FILE)
-    : undefined,
+  sslCA: process.env.FC_DB_TLS_CA_FILE,
   useUnifiedTopology: true,
   useNewUrlParser: true,
   dbName: process.env.FC_DB_DATABASE,
