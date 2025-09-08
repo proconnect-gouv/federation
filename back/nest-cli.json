@@ -75,15 +75,6 @@
         "tsConfigPath": "apps/mock-data-provider/tsconfig.app.json"
       }
     },
-    "identity": {
-      "type": "library",
-      "root": "libs/identity",
-      "entryFile": "index",
-      "sourceRoot": "libs/identity/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/identity/tsconfig.lib.json"
-      }
-    },
     "identity-provider-adapter-mongo": {
       "type": "library",
       "root": "libs/identity-provider-adapter-mongo",
@@ -255,15 +246,6 @@
         "tsConfigPath": "libs/app/tsconfig.lib.json"
       }
     },
-    "feature-handler": {
-      "type": "library",
-      "root": "libs/feature-handler",
-      "entryFile": "index",
-      "sourceRoot": "libs/feature-handler/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/feature-handler/tsconfig.lib.json"
-      }
-    },
     "notifications": {
       "type": "library",
       "root": "libs/notifications",
@@ -289,15 +271,6 @@
       "sourceRoot": "libs/hybridge-http-proxy/src",
       "compilerOptions": {
         "tsConfigPath": "libs/hybridge-http-proxy/tsconfig.lib.json"
-      }
-    },
-    "roles": {
-      "type": "library",
-      "root": "libs/roles",
-      "entryFile": "index",
-      "sourceRoot": "libs/roles/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/roles/tsconfig.lib.json"
       }
     },
     "oidc-acr": {

@@ -27,7 +27,7 @@ WORKDIR /build/back
 
 RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
 
-RUN yarn run build:${INSTANCE}
+RUN yarn run build ${INSTANCE}
 
 RUN rm -rf node_modules && yarn install --ignore-engines --immutable --immutable-cache --check-cache --production
 
