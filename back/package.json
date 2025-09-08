@@ -6,12 +6,6 @@
   "license": "MIT",
   "scripts": {
     "build": "nest build",
-    "build:core-fca-low": "nest build core",
-    "build:csmr-rie": "nest build csmr-rie",
-    "build:bridge-http-proxy-rie": "nest build bridge-http-proxy-rie",
-    "build:mock-identity-provider-fca-low": "nest build mock-identity-provider-fca-low",
-    "build:mock-service-provider-fca-low": "nest build mock-service-provider-fca-low",
-    "build:mock-data-provider": "nest build mock-data-provider",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch --watchAssets --debug 0.0.0.0:9229",
