@@ -17,6 +17,7 @@ import {
 import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { UserSessionDecorator } from '@fc/core/decorators';
+import { PostIdentityProviderSelectionDto } from '@fc/core/dto/post-identity-provider-selection.dto';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
@@ -67,11 +68,11 @@ export class OidcClientController {
     private readonly csrfService: CsrfService,
   ) {}
 
-  @Get(Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION)
+  @Get(Routes.IDENTITY_PROVIDER_SELECTION)
   @Header('cache-control', 'no-store')
   @AuthorizeStepFrom([
-    Routes.INTERACTION, // Standard flow
-    Routes.REDIRECT_TO_IDP, // Navigation back
+    Routes.REDIRECT_TO_IDP, // Standard flow
+    Routes.IDENTITY_PROVIDER_SELECTION, // Navigation back
   ])
   @SetStep()
   async getIdentityProviderSelection(
@@ -99,15 +100,49 @@ export class OidcClientController {
     res.render('interaction-identity-provider', response);
   }
 
-  /**
-   * @todo #242 get configured parameters (scope and acr)
-   */
+  @Post(Routes.IDENTITY_PROVIDER_SELECTION)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Header('cache-control', 'no-store')
+  @AuthorizeStepFrom([
+    Routes.IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
+  ])
+  @Track('IDP_CHOSEN')
+  @UseGuards(CsrfTokenGuard)
+  async postIdentityProviderSelection(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() body: PostIdentityProviderSelectionDto,
+    @UserSessionDecorator()
+    userSession: ISessionService<UserSession>,
+  ) {
+    const { identityProviderUid: idpId } = body;
+    const { login_hint: email } = userSession.get();
+    const fqdn = this.fqdnService.getFqdnFromEmail(email);
+
+    const { name: idpName, title: idpLabel } =
+      await this.identityProvider.getById(idpId);
+    this.logger.debug(
+      `Redirect "****@${fqdn}" to selected idp "${idpLabel}" (${idpId})`,
+    );
+
+    const trackingContext: TrackedEventContextInterface = {
+      req,
+      fqdn,
+      idpId,
+      idpLabel,
+      idpName,
+    };
+    const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
+    await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);
+
+    return this.coreFca.redirectToIdp(req, res, idpId);
+  }
+
   @Post(Routes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
   @AuthorizeStepFrom([
     Routes.INTERACTION, // Standard flow
-    Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
   ])
   @SetStep()
   @Track('IDP_CHOSEN')
@@ -119,9 +154,7 @@ export class OidcClientController {
     @UserSessionDecorator()
     userSession: ISessionService<UserSession>,
   ): Promise<void> {
-    // if email is set, this controller is called from the interaction page
-    // if identityProviderUid is set, this controller is called directly from the sp page via idp_hint or from the select-idp page
-    const { email, identityProviderUid, rememberMe } = body;
+    const { email, rememberMe = false } = body;
 
     // TODO(douglasduteil): temporary solution to avoid blocking the user
     // We are testing the email validity without breaking the flow here
@@ -133,45 +166,32 @@ export class OidcClientController {
 
     userSession.set('login_hint', email);
 
-    let idpName: string;
-    let idpLabel: string;
-    let idpId: string;
-    if (identityProviderUid) {
-      const { name, title } =
-        await this.identityProvider.getById(identityProviderUid);
-      idpName = name;
-      idpLabel = title;
-      idpId = identityProviderUid;
-      this.logger.debug(
-        `Redirect "****@${fqdn}" to selected idp "${idpLabel}" (${idpId})`,
-      );
-    } else {
-      const { identityProviders } =
-        await this.fqdnService.getFqdnConfigFromEmail(email);
+    const { identityProviders } =
+      await this.fqdnService.getFqdnConfigFromEmail(email);
 
-      if (identityProviders.length === 0) {
-        throw new CoreFcaAgentNoIdpException();
-      }
-
-      if (identityProviders.length > 1) {
-        this.logger.debug(
-          `${identityProviders.length} identity providers matching for "****@${fqdn}"`,
-        );
-        const { urlPrefix } = this.config.get<AppConfig>('App');
-        const url = `${urlPrefix}${Routes.INTERACTION_IDENTITY_PROVIDER_SELECTION}`;
-
-        return res.redirect(url);
-      }
-
-      idpId = identityProviders[0];
-
-      const { name, title } = await this.identityProvider.getById(idpId);
-      idpName = name;
-      idpLabel = title;
-      this.logger.debug(
-        `Redirect "****@${fqdn}" to unique idp "${idpLabel}" (${idpId})`,
-      );
+    if (identityProviders.length === 0) {
+      throw new CoreFcaAgentNoIdpException();
     }
+
+    if (identityProviders.length > 1) {
+      this.logger.debug(
+        `${identityProviders.length} identity providers matching for "****@${fqdn}"`,
+      );
+      const { urlPrefix } = this.config.get<AppConfig>('App');
+      const url = `${urlPrefix}${Routes.IDENTITY_PROVIDER_SELECTION}`;
+
+      return res.redirect(url);
+    }
+
+    const idpId = identityProviders[0];
+
+    const { name, title } = await this.identityProvider.getById(idpId);
+    const idpName = name;
+    const idpLabel = title;
+
+    this.logger.debug(
+      `Redirect "****@${fqdn}" to unique idp "${idpLabel}" (${idpId})`,
+    );
 
     const trackingContext: TrackedEventContextInterface = {
       req,
@@ -251,6 +271,7 @@ export class OidcClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @AuthorizeStepFrom([
     Routes.REDIRECT_TO_IDP, // Standard flow
+    Routes.IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
     Routes.INTERACTION, // idp_hint flow
   ])
   @SetStep()

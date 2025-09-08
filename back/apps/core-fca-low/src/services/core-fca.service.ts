@@ -74,7 +74,7 @@ export class CoreFcaService {
       login_hint,
       sp_id: spId,
       sp_name: spName,
-      remember_me: rememberMe || false,
+      remember_me: rememberMe,
     };
 
     const interaction = await this.oidcProvider.getInteraction(req, res);
