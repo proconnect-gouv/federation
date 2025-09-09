@@ -135,15 +135,15 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
-"@badeball/cypress-cucumber-preprocessor@23.0.0":
-  version "23.0.0"
-  resolved "https://registry.yarnpkg.com/@badeball/cypress-cucumber-preprocessor/-/cypress-cucumber-preprocessor-23.0.0.tgz#11e62cc5eb319d3d4307a66b05d951ebaa90f090"
-  integrity sha512-kMev/m5Ty3BEmsgInebxBsNnmMHDEtPzoghLqWZZh+c4/m+FmZMGGI3+EXfwOMRZx0VfOLCeIQ+m93mQvPNdPA==
+"@badeball/cypress-cucumber-preprocessor@23.1.0":
+  version "23.1.0"
+  resolved "https://registry.yarnpkg.com/@badeball/cypress-cucumber-preprocessor/-/cypress-cucumber-preprocessor-23.1.0.tgz#50fabbcf09ed6e613cf7127866d7ad735cbef0b6"
+  integrity sha512-oIrmj7fs7+DS/6WBQEmzlBdyPAQeuiXyCisHgDnGRpE6nGntkIdRUnj75YvLhubPYiy0TNeMJvKZW6prSnSA4A==
   dependencies:
     "@cucumber/ci-environment" "^10.0.1"
     "@cucumber/cucumber" "^12.0.0"
     "@cucumber/cucumber-expressions" "^18.0.0"
-    "@cucumber/gherkin" "^33.0.0"
+    "@cucumber/gherkin" "^34.0.0"
     "@cucumber/html-formatter" "^21.7.0"
     "@cucumber/message-streams" "^4.0.1"
     "@cucumber/messages" "^28.0.0"
@@ -260,7 +260,7 @@
     commander "13.1.0"
     source-map-support "^0.5.21"
 
-"@cucumber/gherkin@34.0.0":
+"@cucumber/gherkin@34.0.0", "@cucumber/gherkin@^34.0.0":
   version "34.0.0"
   resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-34.0.0.tgz#891ec27a7c09a9fc3695aaf3c3a3c8a1c594102f"
   integrity sha512-659CCFsrsyvuBi/Eix1fnhSheMnojSfnBcqJ3IMPNawx7JlrNJDcXYSSdxcUw3n/nG05P+ptCjmiZY3i14p+tA==
@@ -273,13 +273,6 @@
   integrity sha512-wlZfdPif7JpBWJdqvHk1Mkr21L5vl4EfxVUOS4JinWGf3FLRV6IKUekBv5bb5VX79fkDcfDvESzcQ8WQc07Wgw==
   dependencies:
     "@cucumber/messages" ">=19.1.4 <=26"
-
-"@cucumber/gherkin@^33.0.0":
-  version "33.1.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-33.1.0.tgz#528e3f236749d4b87e02235e8f0c886b622e85cf"
-  integrity sha512-Jynz3s+LTB872nDTHTciYNa3uwbkCfP1rRTa91ntZJ6z2Ksf/nSHNyiXoVf0AQ/KD7epCgilqzVzkUmSsBYc+A==
-  dependencies:
-    "@cucumber/messages" ">=19.1.4 <29"
 
 "@cucumber/html-formatter@21.14.0", "@cucumber/html-formatter@^21.7.0":
   version "21.14.0"
