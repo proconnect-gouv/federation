@@ -300,7 +300,6 @@ describe('FqdnToProviderService', () => {
   describe('updateFqdnsProvider', () => {
     it('should update fqdns for an identity provider', async () => {
       // Given
-      const providerId = new ObjectId('648c1742c74d6a3d84b31943');
       const identityProviderUid = 'mock-id-1';
 
       const newFqdns = ['stendhal.fr', 'balzac.fr'];
@@ -320,7 +319,6 @@ describe('FqdnToProviderService', () => {
       await fqdnToProviderService.updateFqdnsProvider(
         identityProviderUid,
         newFqdns,
-        providerId,
       );
 
       // Then
@@ -342,7 +340,6 @@ describe('FqdnToProviderService', () => {
 
     it('should not update fqdns acceptance for an existing fqdn when another fqdn is updated', async () => {
       // Given
-      const providerId = new ObjectId('648c1742c74d6a3d84b31943');
       const identityProviderUid = 'mock-id-1';
       const existingFqdns = [
         {
@@ -365,7 +362,6 @@ describe('FqdnToProviderService', () => {
       await fqdnToProviderService['updateFqdnsProvider'](
         identityProviderUid,
         newFqdns,
-        providerId,
       );
 
       // Then
@@ -392,7 +388,6 @@ describe('FqdnToProviderService', () => {
 
     it('should update even when there is no existing fqdn for a provider', async () => {
       // Given
-      const providerId = new ObjectId('648c1742c74d6a3d84b31943');
       const identityProviderUid = 'mock-id-1';
       const existingFqdns = [];
       const newFqdns = ['duras.fr', 'balzac.fr'];
@@ -403,7 +398,6 @@ describe('FqdnToProviderService', () => {
       await fqdnToProviderService.updateFqdnsProvider(
         identityProviderUid,
         newFqdns,
-        providerId,
       );
 
       // Then
@@ -424,7 +418,6 @@ describe('FqdnToProviderService', () => {
 
     it('should should not call save() but call deleteFqdnSProvider()  when there is no fqdn to update', async () => {
       // Given
-      const providerId = new ObjectId('648c1742c74d6a3d84b31943');
       const identityProviderUid = 'mock-id-1';
       const newFqdns = [];
       const deleteFqdnsProviderSpy = jest
@@ -437,7 +430,6 @@ describe('FqdnToProviderService', () => {
       await fqdnToProviderService['updateFqdnsProvider'](
         identityProviderUid,
         newFqdns,
-        providerId,
       );
 
       // Then
