@@ -85,7 +85,7 @@ export class OidcClientController {
   ) {
     const { login_hint: email } = userSession.get();
     const fqdnConfig = await this.fqdnService.getFqdnConfigFromEmail(email);
-    const { acceptsDefaultIdp, identityProviderIds } = fqdnConfig;
+    const { identityProviderIds } = fqdnConfig;
 
     const providers: { title: string; uid: string }[] =
       await this.coreFca.getIdentityProvidersByIds(identityProviderIds);
@@ -94,7 +94,6 @@ export class OidcClientController {
     this.sessionService.set('Csrf', { csrfToken });
 
     const response = {
-      acceptsDefaultIdp,
       csrfToken,
       email,
       providers,

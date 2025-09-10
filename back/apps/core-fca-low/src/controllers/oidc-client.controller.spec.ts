@@ -159,7 +159,6 @@ describe('OidcClientController', () => {
       } as unknown as ISessionService<UserSession>;
 
       const fqdnConfig = {
-        acceptsDefaultIdp: true,
         identityProviderIds: ['idp1', 'idp2'],
       };
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue(fqdnConfig);
@@ -183,7 +182,6 @@ describe('OidcClientController', () => {
         csrfToken: 'csrf-token',
       });
       expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
-        acceptsDefaultIdp: fqdnConfig.acceptsDefaultIdp,
         csrfToken: 'csrf-token',
         email,
         providers,

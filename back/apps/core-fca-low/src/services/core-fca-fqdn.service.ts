@@ -1,3 +1,5 @@
+import { uniq } from 'lodash';
+
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
@@ -25,37 +27,16 @@ export class CoreFcaFqdnService {
       return {
         fqdn,
         identityProviderIds: defaultIdpId ? [defaultIdpId] : [],
-        acceptsDefaultIdp: !!defaultIdpId,
       };
     }
 
-    // create a Set to prevent duplicate identity providers
-    // e.g.: if adding mapping to default idp and default idp is accepted and set
-    const identityProvidersSet = new Set<string>();
-
-    // when there is at least one idp mapped for this fqdn
-    // we add all the idps mapped for this fqdn
-    // and we handle the default idp
-    let acceptsDefaultIdpConfig = true;
-
-    idpsByFqdn.forEach(({ identityProvider, acceptsDefaultIdp }) => {
-      if (acceptsDefaultIdp === false) {
-        acceptsDefaultIdpConfig = false;
-      }
-
-      identityProvidersSet.add(identityProvider);
-    });
-
-    const idpsWithDefaultIdpSet = this.addDefaultIdp(
-      acceptsDefaultIdpConfig,
-      identityProvidersSet,
-      defaultIdpId,
+    const uniqueDuplicateFreeIdpUids = uniq(
+      idpsByFqdn.map(({ identityProvider }) => identityProvider),
     );
 
     return {
       fqdn,
-      identityProviderIds: Array.from(idpsWithDefaultIdpSet),
-      acceptsDefaultIdp: acceptsDefaultIdpConfig,
+      identityProviderIds: uniqueDuplicateFreeIdpUids,
     };
   }
 
@@ -90,20 +71,5 @@ export class CoreFcaFqdnService {
     // if fqdnToProvider not exists, the only idp allowed is the default one
     const { defaultIdpId } = this.config.get<AppConfig>('App');
     return defaultIdpId === idpId;
-  }
-
-  private addDefaultIdp(
-    acceptsDefaultIdp: boolean,
-    identityProvidersSet: Set<string>,
-    defaultIdpId: string,
-  ): Set<string> {
-    // we only add default idp when
-    // there is more than one idp mapped for the fqdn
-    // we use set to prevent duplicate default idp
-    if (acceptsDefaultIdp && identityProvidersSet.size > 1) {
-      identityProvidersSet.add(defaultIdpId);
-    }
-
-    return identityProvidersSet;
   }
 }
