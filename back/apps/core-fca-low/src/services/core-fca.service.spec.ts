@@ -383,4 +383,60 @@ describe('CoreFcaService', () => {
       ).resolves.not.toThrow();
     });
   });
+
+  describe('hasDefaultIdp', () => {
+    it('should return true if defaultIdpId is configured and exists in the IdP list', () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        defaultIdpId: 'defaultIdp',
+      });
+
+      identityProviderMock.getList.mockResolvedValue([
+        { uid: 'idp1' },
+        { uid: 'defaultIdp' },
+        { uid: 'idp2' },
+      ]);
+
+      // When
+      const result = service.hasDefaultIdp(['idp1', 'defaultIdp', 'idp2']);
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it('should return false if defaultIdpId is not selected', () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        defaultIdpId: 'defaultIdp',
+      });
+
+      identityProviderMock.getList.mockResolvedValue([
+        { uid: 'idp1' },
+        { uid: 'defaultIdp' },
+        { uid: 'idp2' },
+      ]);
+
+      // When
+      const result = service.hasDefaultIdp(['idp1', 'idp2']);
+
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it('should return false if defaultIdpId is not configured', () => {
+      // Given
+      configServiceMock.get.mockReturnValue({});
+
+      identityProviderMock.getList.mockResolvedValue([
+        { uid: 'idp1' },
+        { uid: 'idp2' },
+      ]);
+
+      // When
+      const result = service.hasDefaultIdp(['idp1', 'idp2', 'defaultIdp']);
+
+      // Then
+      expect(result).toBe(false);
+    });
+  });
 });
