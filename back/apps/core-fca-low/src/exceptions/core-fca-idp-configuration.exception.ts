@@ -12,7 +12,7 @@ export class CoreFcaIdpConfigurationException extends CoreFcaBaseException {
   public illustration = 'temporary-restricted-error';
   public title = 'Accès impossible';
   public description =
-    'Un incident technique est en cours. Merci de revenir plus tard.';
+    'Un incident technique sur ce fournisseur d’identité est en cours. Merci de revenir plus tard.';
 
   public displayContact = false;
 }
