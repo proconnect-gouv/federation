@@ -14,7 +14,6 @@ db.provider.update(
     eidas: 3,
     allowedAcr: ["eidas3"],
     mailto: "",
-    featureHandlers: { coreVerify: "core-fca-default-verify" },
     specificText: "specific text FI 3",
     url: "https://fia2-low.docker.dev-franceconnect.fr/",
     statusURL: "https://fia2-low.docker.dev-franceconnect.fr/",
@@ -29,10 +28,8 @@ db.provider.update(
     updatedBy: "admin",
     endSessionURL:
       "https://fia2-low.docker.dev-franceconnect.fr/user/session/end",
-    response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
-    revocation_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "RSA-OAEP",
     id_token_encrypted_response_enc: "A256GCM",
     userinfo_signed_response_alg: "HS256",

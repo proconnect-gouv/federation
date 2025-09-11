@@ -81,45 +81,7 @@ export class IdentityProviderAdapterMongoService
 
   private async findAllIdentityProvider() {
     const rawIdentityProviders = await this.identityProviderModel
-      .find(
-        {},
-        {
-          _id: false,
-          amr: true,
-          active: true,
-          isBeta: true,
-          authzURL: true,
-          clientID: true,
-          client_secret: true,
-          discovery: true,
-          discoveryUrl: true,
-          display: true,
-          allowedAcr: true,
-          featureHandlers: true,
-          id_token_encrypted_response_alg: true,
-          id_token_encrypted_response_enc: true,
-          id_token_signed_response_alg: true,
-          image: true,
-          issuer: true,
-          jwksURL: true,
-          name: true,
-          response_types: true,
-          revocation_endpoint_auth_method: true,
-          siret: true,
-          title: true,
-          tokenURL: true,
-          token_endpoint_auth_method: true,
-          uid: true,
-          url: true,
-          userInfoURL: true,
-          userinfo_encrypted_response_alg: true,
-          userinfo_encrypted_response_enc: true,
-          userinfo_signed_response_alg: true,
-          endSessionURL: true,
-          modal: true,
-          supportEmail: true,
-        },
-      )
+      .find({})
       .sort({ order: 'asc', createdAt: 'asc' })
       .lean();
 
@@ -142,7 +104,6 @@ export class IdentityProviderAdapterMongoService
       const dto = this.getIdentityProviderDTO(rawIdentityProvider?.discovery);
       const identityProvider = plainToInstance(dto, rawIdentityProvider);
       const errors = await validate(identityProvider, {
-        forbidNonWhitelisted: true,
         whitelist: true,
       });
 
@@ -218,6 +179,10 @@ export class IdentityProviderAdapterMongoService
     });
 
     result.client_secret = this.decryptClientSecret(source.client_secret);
+
+    // default values
+    result.response_types = ['code'];
+    result.revocation_endpoint_auth_method = 'client_secret_post';
 
     /**
      * @TODO #326 Fix type issues between legacy model and `oidc-client` library

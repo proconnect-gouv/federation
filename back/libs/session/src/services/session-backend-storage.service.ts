@@ -53,7 +53,6 @@ export class SessionBackendStorageService {
 
     const session = plainToInstance(schema, rawSession);
     const errors = await validate(session, {
-      forbidNonWhitelisted: true,
       whitelist: true,
     });
 
