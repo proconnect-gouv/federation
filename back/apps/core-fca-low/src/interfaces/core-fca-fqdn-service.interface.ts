@@ -1,5 +1,5 @@
 export interface FqdnConfigInterface {
   fqdn: string;
-  identityProviders: string[];
+  identityProviderIds: string[];
   acceptsDefaultIdp: boolean;
 }

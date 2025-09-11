@@ -119,7 +119,7 @@ describe('CoreFcaFqdnService', () => {
       // Then
       const expectedConfig = {
         fqdn: 'hogwards.uk',
-        identityProviders: ['default-idp'],
+        identityProviderIds: ['default-idp'],
         acceptsDefaultIdp: true,
       };
 
@@ -143,7 +143,7 @@ describe('CoreFcaFqdnService', () => {
       // Then
       const expectedConfig = {
         fqdn: 'hogwards.uk',
-        identityProviders: [],
+        identityProviderIds: [],
         acceptsDefaultIdp: false,
       };
 
@@ -178,7 +178,7 @@ describe('CoreFcaFqdnService', () => {
       // Then
       const expectedConfig = {
         fqdn: 'hogwards.uk',
-        identityProviders: ['idp1', 'idp2', 'default-idp'],
+        identityProviderIds: ['idp1', 'idp2', 'default-idp'],
         acceptsDefaultIdp: true,
       };
 
@@ -213,7 +213,7 @@ describe('CoreFcaFqdnService', () => {
       // Then
       const expectedConfig = {
         fqdn: 'hogwards.uk',
-        identityProviders: ['idp1', 'idp2'],
+        identityProviderIds: ['idp1', 'idp2'],
         acceptsDefaultIdp: false,
       };
 
