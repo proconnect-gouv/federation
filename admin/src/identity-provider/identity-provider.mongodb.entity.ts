@@ -49,19 +49,19 @@ export class IdentityProviderFromDb {
   statusURL: string;
 
   @Column()
-  authzURL: string;
+  authzURL?: string;
 
   @Column()
-  tokenURL: string;
+  tokenURL?: string;
 
   @Column()
-  userInfoURL: string;
+  userInfoURL?: string;
 
   @Column()
   endSessionURL: string;
 
   @Column()
-  discoveryUrl: string;
+  discoveryUrl?: string;
 
   @Column()
   discovery: boolean;
@@ -70,7 +70,7 @@ export class IdentityProviderFromDb {
   isBeta: boolean;
 
   @Column()
-  jwksURL: string;
+  jwksURL?: string;
 
   @Column()
   jwtAlgorithm: string[];
@@ -163,4 +163,13 @@ export class IdentityProviderFromDb {
 
   @Column()
   supportEmail?: string;
+
+  @Column()
+  revocation_endpoint_auth_method: string;
+
+  @Column()
+  response_types: string[];
+
+  @Column()
+  featureHandlers?: any;
 }

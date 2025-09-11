@@ -21,11 +21,8 @@ function createIdentityProviderFromDb(
     allowedAcr: [],
     alt: '',
     amr: [],
-    authzURL: 'https://default.authorization-url.fr',
     clientID: 'default_client_id',
     client_secret: 'default_client_secret',
-    discoveryUrl: 'https://default.discovery-url.fr',
-    discovery: true,
     display: true,
     eidas: 1,
     image: '',
@@ -41,16 +38,27 @@ function createIdentityProviderFromDb(
     id_token_encrypted_response_alg: 'default_alg',
     id_token_encrypted_response_enc: 'default_enc',
     id_token_signed_response_alg: 'ES256',
-    jwksURL: 'https://default.jwks-url.fr',
     siret: '',
     supportEmail: 'support@email.fr',
     token_endpoint_auth_method: 'default_auth_method',
-    tokenURL: 'https://default.token-url.fr',
     userinfo_encrypted_response_alg: 'default_userinfo_alg',
     userinfo_encrypted_response_enc: 'default_userinfo_enc',
     userinfo_signed_response_alg: 'ES256',
-    userInfoURL: 'https://default.userinfo-url.fr',
     uid: 'default_uid',
+    response_types: [],
+    revocation_endpoint_auth_method: 'default_method',
+    ...(partial.discovery
+      ? {
+          discovery: true,
+          discoveryUrl: 'https://default.discovery-url.fr',
+        }
+      : {
+          discovery: false,
+          authzURL: 'https://default.authorization-url.fr',
+          userInfoURL: 'https://default.userinfo-url.fr',
+          tokenURL: 'https://default.token-url.fr',
+          jwksURL: 'https://default.jwks-url.fr',
+        }),
     ...partial,
   };
 }
@@ -84,7 +92,6 @@ function createIdentityProviderDto(
     messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
     redirectionTargetWhenInactive: 'https://issuer.fr/promo',
     order: 0,
-
     specificText:
       "Veuillez fournir une capture d'écran de votre page de profil !",
     title: 'Default Title',

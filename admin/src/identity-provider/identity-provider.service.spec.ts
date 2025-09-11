@@ -793,7 +793,6 @@ describe('IdentityProviderService', () => {
         allowedAcr: ['eidas2'],
         alt: 'MonFI Image',
         amr: ['pop'],
-        authzURL: 'https://issuer.fr/auth',
         clientID: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: encryptedSecret,
         discoveryUrl: 'https://default.discovery-url.fr',
@@ -814,15 +813,15 @@ describe('IdentityProviderService', () => {
         id_token_encrypted_response_alg: 'default_alg',
         id_token_encrypted_response_enc: 'default_enc',
         id_token_signed_response_alg: 'ES256',
-        jwksURL: 'https://issuer.fr/discovery',
         siret: '',
         supportEmail: 'support@email.fr',
         token_endpoint_auth_method: 'client_secret_post',
-        tokenURL: 'https://issuer.fr/token',
         userinfo_encrypted_response_alg: 'RSA-OAEP',
         userinfo_encrypted_response_enc: 'ES256',
         userinfo_signed_response_alg: 'ES256',
-        userInfoURL: 'https://issuer.fr/userinfo',
+        response_types: [],
+        revocation_endpoint_auth_method: 'default_method',
+        featureHandlers: {},
       });
 
     it('should call encrypt', async () => {

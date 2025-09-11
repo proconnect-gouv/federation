@@ -215,19 +215,14 @@ export class IdentityProviderService {
       order: identityProviderDto.order,
       trustedIdentity: identityProviderDto.trustedIdentity,
       siret: identityProviderDto.siret,
-      discoveryUrl: identityProviderDto.discoveryUrl,
       jwtAlgorithm: [],
       blacklistByIdentityProviderActivated: false,
       WhitelistByServiceProviderActivated: false,
       hoverMsg: identityProviderDto.messageToDisplayWhenInactive,
       hoverRedirectLink: identityProviderDto.redirectionTargetWhenInactive,
       clientID: identityProviderDto.clientId,
-      authzURL: identityProviderDto.authorizationUrl,
       statusURL: identityProviderDto.statusUrl,
-      tokenURL: identityProviderDto.tokenUrl,
-      userInfoURL: identityProviderDto.userInfoUrl,
       endSessionURL: identityProviderDto.logoutUrl,
-      jwksURL: identityProviderDto.jwksUrl,
       amr: identityProviderDto.amr,
       mailto: identityProviderDto.emails.join('\r\n'),
       url: identityProviderDto.issuer,
@@ -249,8 +244,24 @@ export class IdentityProviderService {
       specificText:
         identityProviderDto.specificText ||
         'Une erreur est survenue lors de la transmission de votre identité.',
+      featureHandlers: identityProviderDto.featureHandlers,
+      response_types: identityProviderDto.response_types,
+      revocation_endpoint_auth_method:
+        identityProviderDto.revocation_endpoint_auth_method,
     };
 
+    if (identityProviderDto.discovery) {
+      Object.assign(entity, {
+        discoveryUrl: identityProviderDto.discoveryUrl,
+      });
+    } else {
+      Object.assign(entity, {
+        authzURL: identityProviderDto.authorizationUrl,
+        tokenURL: identityProviderDto.tokenUrl,
+        userInfoURL: identityProviderDto.userInfoUrl,
+        jwksURL: identityProviderDto.jwksUrl,
+      });
+    }
     switch (mode) {
       case 'create':
         Object.assign(entity, {
@@ -329,6 +340,10 @@ export class IdentityProviderService {
       modalContinueText: inputProvider.modal?.continueText,
       modalMoreInfoLabel: inputProvider.modal?.moreInfoLabel,
       modalMoreInfoUrl: inputProvider.modal?.moreInfoUrl,
+      response_types: inputProvider.response_types,
+      revocation_endpoint_auth_method:
+        inputProvider.revocation_endpoint_auth_method,
+      token_endpoint_auth_method: inputProvider.token_endpoint_auth_method,
     };
   }
   private getDefaultValues(): {
