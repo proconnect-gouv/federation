@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { DeleteResult, ObjectID, Repository } from 'mongodb';
+import { DeleteResult, ObjectId } from 'mongodb';
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Claims } from './claims.mongodb.entity';
@@ -18,7 +19,7 @@ export class ClaimsService {
     const id = (uuidv4() as string).substr(0, 12);
 
     const claimToSave: IClaims = {
-      id: new ObjectID(id),
+      id: new ObjectId(id),
       name,
     };
 
@@ -26,7 +27,7 @@ export class ClaimsService {
     return result;
   }
 
-  async update(id: string, { name }: IClaims): Promise<Claims> {
+  async update(id: ObjectId, { name }: IClaims): Promise<Claims> {
     const claimToUpdate: IClaims = {
       name,
       id,
@@ -36,8 +37,8 @@ export class ClaimsService {
     return result;
   }
 
-  async remove(id: string): Promise<DeleteResult> {
-    const result = await this.claimsRepository.delete(id);
+  async remove(id: ObjectId) {
+    const result = await this.claimsRepository.delete({ id });
     return result;
   }
 
@@ -46,8 +47,8 @@ export class ClaimsService {
     return result;
   }
 
-  async getById(id: string): Promise<IClaims> {
-    const result = await this.claimsRepository.findOne(id);
+  async getById(id: ObjectId): Promise<IClaims> {
+    const result = await this.claimsRepository.findOneBy({ id });
     return result;
   }
 }

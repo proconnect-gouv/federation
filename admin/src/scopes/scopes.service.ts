@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { DeleteResult, ObjectID, Repository } from 'mongodb';
-
+import { DeleteResult, ObjectId } from 'mongodb';
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -31,48 +31,54 @@ export class ScopesService {
    * @param {IScopes} newScope
    * @returns {Promise<Scopes>}
    */
-  async create(newScope: IScopes, user: string): Promise<Scopes> {
+  async create(newScope: IScopes, user: string) {
     const id = uuidv4().substring(0, 12);
 
     const scopeToSave: Scopes = {
-      id: new ObjectID(id),
+      _id: new ObjectId(id),
       scope: newScope.scope,
       label: `${newScope.label} (${newScope.fd})`,
       updatedBy: user,
       fd: newScope.fd,
     };
 
-    const result = await this.scopesRepository.insertOne(scopeToSave);
+    const result = await this.scopesRepository.insert(scopeToSave);
+
+    const insertedId = result.identifiers[0].id;
 
     this.track({
       entity: 'scope',
       action: 'create',
       user,
-      id: result.insertedId,
+      id: insertedId,
       name: newScope.scope,
     });
 
-    return result;
+    return insertedId;
   }
 
   /**
    * Update scopes.
    *
-   * @param {ObjectID} id
+   * @param {ObjectId} id
    * @param {IScopes} newScopes
    * @returns {Promise<Scopes>}
    */
-  async update(id: ObjectID, user: string, newScope: IScopes): Promise<Scopes> {
+  async update(
+    _id: ObjectId,
+    user: string,
+    newScope: IScopes,
+  ): Promise<Scopes> {
     this.track({
       entity: 'scope',
       action: 'update',
       user,
-      id,
+      id: _id.toString(),
       name: newScope.scope,
     });
 
     const { fd, label, scope } = newScope;
-    const oldScope: IScopes = await this.getById(id);
+    const oldScope: IScopes = await this.getById(_id);
     const oldFd = ScopesService.getFdNameFromLabel(oldScope.label);
     const newLabel = newScope.label.replace(`(${oldFd})`, '').trim();
 
@@ -85,7 +91,7 @@ export class ScopesService {
      */
     const scopeToUpdate: Scopes = {
       scope,
-      id,
+      _id,
       updatedBy: user,
       label: `${newLabel} (${fd})`,
       fd,
@@ -96,16 +102,16 @@ export class ScopesService {
     return result;
   }
 
-  async remove(id: ObjectID, user: string): Promise<DeleteResult> {
-    const scope = await this.scopesRepository.findOne(id);
+  async remove(_id: ObjectId, user: string) {
+    const scope = await this.scopesRepository.findOneBy({ _id });
 
-    await this.scopesRepository.delete(id);
+    await this.scopesRepository.delete({ _id });
 
     this.track({
       entity: 'scope',
       action: 'delete',
       user,
-      id,
+      id: _id.toString(),
       name: scope.scope,
     });
 
@@ -137,11 +143,11 @@ export class ScopesService {
   /**
    * Get a scope by its ID.
    *
-   * @param {ObjectID} id Unic ID for a specific scope to retreive.
+   * @param {ObjectId} id Unic ID for a specific scope to retreive.
    * @returns {Promise<IScopes>}
    */
-  async getById(id: ObjectID): Promise<IScopes> {
-    const scope = await this.scopesRepository.findOne(id);
+  async getById(_id: ObjectId): Promise<IScopes> {
+    const scope = await this.scopesRepository.findOneBy({ _id });
     return scope;
   }
 

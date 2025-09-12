@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import {
   Controller,
   Get,
@@ -94,13 +94,13 @@ export class ScopesController {
   @Get('label/update/:id')
   @Roles(UserRole.OPERATOR)
   @Render('scopes/label/update')
-  async showUpdateScopeForm(@Param('id') id: string, @Req() req) {
-    const idMongo: ObjectID = new ObjectID(id);
+  async showUpdateScopeForm(@Param('id') _id: string, @Req() req) {
+    const idMongo = new ObjectId(_id);
     const csrfToken = req.csrfToken();
     const { scope, label, fd } = await this.scopesService.getById(idMongo);
     const scopesGroupedByFd = await this.scopesService.getScopesGroupedByFd();
 
-    return { csrfToken, scope, label, fd, id, scopesGroupedByFd };
+    return { csrfToken, scope, label, fd, _id, scopesGroupedByFd };
   }
 
   /**
@@ -116,7 +116,7 @@ export class ScopesController {
     @Res() res,
   ) {
     try {
-      const idMongo: ObjectID = new ObjectID(id);
+      const idMongo = new ObjectId(id);
       await this.scopesService.update(
         idMongo,
         req.user.username,
@@ -148,7 +148,7 @@ export class ScopesController {
     @Body() body,
   ) {
     try {
-      const idMongo: ObjectID = new ObjectID(id);
+      const idMongo = new ObjectId(id);
       await this.scopesService.remove(idMongo, req.user.username);
     } catch (error) {
       req.flash('globalError', error.message);
@@ -201,7 +201,7 @@ export class ScopesController {
   @Roles(UserRole.OPERATOR)
   @Render('scopes/claim/form')
   async showUpdateClaimForm(@Param('id') id: string, @Req() req) {
-    const idMongo: ObjectID = new ObjectID(id);
+    const idMongo = new ObjectId(id);
     const csrfToken = req.csrfToken();
     const { name } = await this.claimsService.getById(idMongo);
 
@@ -221,7 +221,7 @@ export class ScopesController {
     @Res() res,
   ) {
     try {
-      const idMongo: ObjectID = new ObjectID(id);
+      const idMongo = new ObjectId(id);
       await this.claimsService.update(idMongo, body);
     } catch (error) {
       req.flash('globalError', 'Impossible de modifier le claim');
@@ -248,7 +248,7 @@ export class ScopesController {
     @Body() body: IClaims,
   ) {
     try {
-      const idMongo: ObjectID = new ObjectID(id);
+      const idMongo = new ObjectId(id);
       await this.claimsService.remove(idMongo);
     } catch (error) {
       req.flash('globalError', error.message);

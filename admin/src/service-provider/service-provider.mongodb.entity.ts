@@ -1,10 +1,10 @@
 import {
   Entity,
   ObjectIdColumn,
-  ObjectId,
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 @Entity('client')
 export class ServiceProviderFromDb {

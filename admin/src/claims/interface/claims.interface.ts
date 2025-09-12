@@ -1,4 +1,6 @@
+import { ObjectId } from 'mongodb';
+
 export interface IClaims {
-  id: string;
+  id: ObjectId;
   name: string;
 }

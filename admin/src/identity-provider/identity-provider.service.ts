@@ -86,7 +86,7 @@ export class IdentityProviderService {
     const identityProviderFromDb =
       await this.identityProviderRepository.findOne({
         where: {
-          _id: ObjectId(id),
+          _id: new ObjectId(id),
         },
       });
 
@@ -128,7 +128,7 @@ export class IdentityProviderService {
 
     const existingProvider =
       await this.identityProviderRepository.findOneByOrFail({
-        _id: ObjectId(identityProviderId),
+        _id: new ObjectId(identityProviderId),
       });
 
     // Apply the updates from providerToSave

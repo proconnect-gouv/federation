@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { ConfigService } from 'nestjs-config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ScopesService } from './scopes.service';
@@ -11,7 +11,7 @@ import {
   scopesListGroupedByFdMock,
 } from './fixture';
 
-const id: ObjectID = new ObjectID('5d9c677da8bb151b00720451');
+const id = new ObjectId('5d9c677da8bb151b00720451');
 
 export const reqMock = {
   flash: jest.fn(),
@@ -126,7 +126,7 @@ describe('Scopes Controller', () => {
         scopesAndLabelsList: scopesListMock,
         claimsList: [
           {
-            id: new ObjectID('5d9c677da8bb151b00720451'),
+            id: new ObjectId('5d9c677da8bb151b00720451'),
             name: 'amr',
           },
         ],
@@ -205,7 +205,10 @@ describe('Scopes Controller', () => {
       );
 
       // Action
-      const result = await controller.showUpdateScopeForm(id, reqMock);
+      const result = await controller.showUpdateScopeForm(
+        id.toString(),
+        reqMock,
+      );
 
       // Assertion
       expect(ScopesServiceMock.getById).toHaveBeenCalledTimes(1);
@@ -216,7 +219,7 @@ describe('Scopes Controller', () => {
         label: 'myGreatLabel',
         fd: 'myGreatFD',
         scopesGroupedByFd: scopesListGroupedByFdMock,
-        id,
+        _id: id.toString(),
       });
     });
   });
@@ -228,7 +231,7 @@ describe('Scopes Controller', () => {
 
     it('should update the scope label entry corresponding to the id param', async () => {
       const updatedScopeLabel: IScopes = {
-        id: new ObjectID('5d9c677da8bb151b00720451'),
+        _id: new ObjectId('5d9c677da8bb151b00720451'),
         fd: 'DGFIP',
         scope: 'Seldon2222',
         label: 'Seldon222 Label (dgfip)',
@@ -236,7 +239,7 @@ describe('Scopes Controller', () => {
       // Action
       const returnedValue = await controller.updateScopeAndLabels(
         updatedScopeLabel,
-        id,
+        id.toString(),
         reqMock,
         resMock,
       );
@@ -254,7 +257,7 @@ describe('Scopes Controller', () => {
     it('should throw an error if scope label entry can not be update', async () => {
       // Setup
       const updatedScopeLabel: IScopes = {
-        id: new ObjectID('5d9c677da8bb151b00720451'),
+        _id: new ObjectId('5d9c677da8bb151b00720451'),
         fd: 'DGFIP',
         scope: 'Seldon2222',
         label: 'Seldon222 Label (dgfip)',
@@ -265,7 +268,7 @@ describe('Scopes Controller', () => {
       // Action
       await controller.updateScopeAndLabels(
         updatedScopeLabel,
-        id,
+        id.toString(),
         reqMock,
         resMock,
       );
@@ -296,7 +299,12 @@ describe('Scopes Controller', () => {
       };
 
       // Action
-      await controller.deleteScopeAndLabel(id, reqMock, resMock, body);
+      await controller.deleteScopeAndLabel(
+        id.toString(),
+        reqMock,
+        resMock,
+        body,
+      );
 
       // Expected
       expect(reqMock.flash).toHaveBeenCalledWith(
@@ -320,7 +328,12 @@ describe('Scopes Controller', () => {
 
       ScopesServiceMock.remove.mockRejectedValueOnce(error);
       // Action
-      await controller.deleteScopeAndLabel(id, reqMock, resMock, body);
+      await controller.deleteScopeAndLabel(
+        id.toString(),
+        reqMock,
+        resMock,
+        body,
+      );
 
       // Expected
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -390,7 +403,10 @@ describe('Scopes Controller', () => {
       });
 
       // When
-      const result = await controller.showUpdateClaimForm(id, reqMock);
+      const result = await controller.showUpdateClaimForm(
+        id.toString(),
+        reqMock,
+      );
 
       // Then
       expect(claimsServiceMock.getById).toHaveBeenCalledTimes(1);
@@ -398,7 +414,7 @@ describe('Scopes Controller', () => {
       expect(result).toEqual({
         csrfToken: 'foundationCsrfToken',
         name: 'amr',
-        id,
+        id: id.toString(),
         action: 'update',
       });
     });
@@ -406,13 +422,18 @@ describe('Scopes Controller', () => {
 
   describe('updateClaim()', () => {
     const updatedClaim: IClaims = {
-      id: new ObjectID('5d9c677da8bb151b00720451'),
+      id: new ObjectId('5d9c677da8bb151b00720451'),
       name: 'foo',
     };
 
     it('should update the claim entry corresponding to the id param', async () => {
       // When
-      await controller.updateClaim(updatedClaim, id, reqMock, resMock);
+      await controller.updateClaim(
+        updatedClaim,
+        id.toString(),
+        reqMock,
+        resMock,
+      );
 
       // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -432,7 +453,12 @@ describe('Scopes Controller', () => {
       claimsServiceMock.update.mockRejectedValueOnce(error);
 
       // When
-      await controller.updateClaim(updatedClaim, id, reqMock, resMock);
+      await controller.updateClaim(
+        updatedClaim,
+        id.toString(),
+        reqMock,
+        resMock,
+      );
 
       // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -449,13 +475,13 @@ describe('Scopes Controller', () => {
 
   describe('removeClaim()', () => {
     const body = {
-      id: new ObjectID('5d9c677da8bb151b00720451'),
+      id: new ObjectId('5d9c677da8bb151b00720451'),
       name: 'bar',
     };
 
     it('should delete the corresponding claim', async () => {
       // When
-      await controller.removeClaim(id, reqMock, resMock, body);
+      await controller.removeClaim(id.toString(), reqMock, resMock, body);
 
       // Then
       expect(reqMock.flash).toHaveBeenCalledWith(
@@ -475,7 +501,7 @@ describe('Scopes Controller', () => {
       claimsServiceMock.remove.mockRejectedValueOnce(error);
 
       // When
-      await controller.removeClaim(id, reqMock, resMock, body);
+      await controller.removeClaim(id.toString(), reqMock, resMock, body);
 
       // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -498,7 +524,7 @@ describe('Scopes Controller', () => {
     jest.spyOn(scopeService, 'remove').mockRejectedValueOnce(error);
 
     // Action
-    await controller.deleteScopeAndLabel(id, reqMock, resMock, body);
+    await controller.deleteScopeAndLabel(id.toString(), reqMock, resMock, body);
 
     // Expected
     expect(scopeService.remove).toHaveBeenCalledTimes(1);

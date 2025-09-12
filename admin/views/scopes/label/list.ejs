@@ -35,15 +35,15 @@
             <td><%= scopesAndLabel.fd %></td>
             <td class="col-1 d-inline-flex d-flex quick-action">
             <% if (CURRENT_USER.roles.includes('operator')) { %>
-              <a href="<%= APP_ROOT %>/scopes/label/update/<%= scopesAndLabel.id %>"
+              <a href="<%= APP_ROOT %>/scopes/label/update/<%= scopesAndLabel._id %>"
                 class="d-flex align-items-center mr-2 btn-action-update">
                 <i class="fa fa-pencil-square-o text-dark" aria-hidden="true"
                   title="Editer le label"></i>
               </a>
-              <form name="deleteForm" method="POST" id="delete-<%= scopesAndLabel.id %>"
-                  action="<%= APP_ROOT %>/scopes/label/delete/<%= scopesAndLabel.id %>?_method=DELETE"
+              <form name="deleteForm" method="POST" id="delete-<%= scopesAndLabel._id %>"
+                  action="<%= APP_ROOT %>/scopes/label/delete/<%= scopesAndLabel._id %>?_method=DELETE"
                   class="d-flex align-items-center mr-2" data-init="removeItem" data-element-type="le fournisseur d'identité"
-                  data-element-title="<%= scopesAndLabel.scope %>" data-element-id="<%= scopesAndLabel.id %>"
+                  data-element-title="<%= scopesAndLabel.scope %>" data-element-id="<%= scopesAndLabel._id %>"
                   novalidate>
                   <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
                   <input type="hidden" name="_totp">

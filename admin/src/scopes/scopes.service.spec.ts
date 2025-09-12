@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -13,21 +13,21 @@ import {
   scopesListGroupedByFdMock,
 } from './fixture';
 
-const id: ObjectID = new ObjectID('5d9c677da8bb151b00720451');
+const _id = new ObjectId('5d9c677da8bb151b00720451');
 
 const scopesRepositoryMock = {
   find: jest.fn(),
   count: jest.fn(),
-  findOne: jest.fn(),
+  findOneBy: jest.fn(),
   findAndCount: jest.fn(),
   save: jest.fn(),
-  insertOne: jest.fn(),
+  insert: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
 };
 
 const insertResultMock = {
-  insertedId: 'insertedIdValueMock',
+  identifiers: [{ id: 'insertedIdValueMock' }],
 };
 
 const loggerMock = {
@@ -53,8 +53,8 @@ describe('ScopesService', () => {
     jest.resetAllMocks();
 
     scopesRepositoryMock.find.mockResolvedValueOnce(scopesListMock);
-    scopesRepositoryMock.findOne.mockResolvedValueOnce(scopesMock);
-    scopesRepositoryMock.insertOne.mockResolvedValueOnce(insertResultMock);
+    scopesRepositoryMock.findOneBy.mockResolvedValueOnce(scopesMock);
+    scopesRepositoryMock.insert.mockResolvedValueOnce(insertResultMock);
   });
 
   it('should be defined', () => {
@@ -95,11 +95,11 @@ describe('ScopesService', () => {
 
     it('shoud return a scope entry for a specific ID', async () => {
       // Action
-      const result = await service.getById(id);
+      const result = await service.getById(_id);
 
       // Expected
       expect(result).toEqual({
-        id,
+        _id,
         scope: 'Seldon',
         label: 'Seldon Label',
         fd: 'Direction générale des Finances publiques',
@@ -112,7 +112,7 @@ describe('ScopesService', () => {
 
     beforeEach(() => {
       scopeAndLabel = {
-        id,
+        _id,
         scope: 'Seldon',
         label: 'Seldon Label',
         fd: 'Direction générale des Finances publiques',
@@ -130,7 +130,7 @@ describe('ScopesService', () => {
       const result: Scopes = await service.create(scopeAndLabel, userMock);
 
       // Expected
-      expect(scopesRepositoryMock.insertOne).toHaveBeenCalledTimes(1);
+      expect(scopesRepositoryMock.insert).toHaveBeenCalledTimes(1);
       /**
        * @todo enhance UT
        *
@@ -161,7 +161,7 @@ describe('ScopesService', () => {
         entity: 'scope',
         action: 'create',
         user: userMock,
-        id: insertResultMock.insertedId,
+        id: insertResultMock.identifiers[0].id,
         name: scopeAndLabel.scope,
       });
     });
@@ -179,12 +179,12 @@ describe('ScopesService', () => {
       const userMock = 'userMockValue';
 
       // Action
-      await service.update(id, userMock, scopesMock);
+      await service.update(_id, userMock, scopesMock);
 
       // Expected
       expect(saveSpy).toHaveBeenCalledTimes(1);
       expect(saveSpy).toHaveBeenCalledWith({
-        id,
+        _id,
         scope: 'Seldon',
         label: 'Seldon Label (Direction générale des Finances publiques)',
         fd: 'Direction générale des Finances publiques',
@@ -201,7 +201,7 @@ describe('ScopesService', () => {
       service['track'] = jest.fn();
 
       // Action
-      await service.update(id, userMock, scopesMock);
+      await service.update(_id, userMock, scopesMock);
 
       // expect
       // tslint:disable-next-line:no-string-literal
@@ -212,7 +212,7 @@ describe('ScopesService', () => {
         action: 'update',
         user: userMock,
         name: 'Seldon',
-        id,
+        id: _id.toString(),
       });
     });
   });
@@ -230,11 +230,11 @@ describe('ScopesService', () => {
       const userMock = 'userMockValue';
 
       // Action
-      await service.remove(id, userMock);
+      await service.remove(_id, userMock);
 
       // Expected
       expect(deleteSpy).toHaveBeenCalledTimes(1);
-      expect(deleteSpy).toHaveBeenCalledWith(id);
+      expect(deleteSpy).toHaveBeenCalledWith({ _id });
     });
 
     it('calls the tracking method', async () => {
@@ -244,7 +244,7 @@ describe('ScopesService', () => {
       service['track'] = jest.fn();
 
       // Action
-      await service.remove(id, userMock);
+      await service.remove(_id, userMock);
       // expect
       // tslint:disable-next-line:no-string-literal
       expect(service['track']).toHaveBeenCalledTimes(1);
@@ -254,7 +254,7 @@ describe('ScopesService', () => {
         action: 'delete',
         user: userMock,
         name: 'Seldon',
-        id,
+        id: _id.toString(),
       });
     });
   });
