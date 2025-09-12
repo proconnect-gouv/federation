@@ -87,7 +87,7 @@ export class OidcClientController {
     const fqdnConfig = await this.fqdnService.getFqdnConfigFromEmail(email);
     const { identityProviderIds } = fqdnConfig;
 
-    const providers: { title: string; uid: string }[] =
+    const providers =
       await this.coreFca.getIdentityProvidersByIds(identityProviderIds);
 
     const csrfToken = this.csrfService.renew();
@@ -97,6 +97,7 @@ export class OidcClientController {
       csrfToken,
       email,
       providers,
+      hasDefaultIdp: this.coreFca.hasDefaultIdp(providers),
     };
 
     res.render('interaction-identity-provider', response);

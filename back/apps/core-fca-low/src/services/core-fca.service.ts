@@ -180,4 +180,11 @@ export class CoreFcaService {
       return a.title.localeCompare(b.title, 'fr');
     });
   }
+
+  hasDefaultIdp(
+    providers: { name: string; title: string; uid: string }[],
+  ): boolean {
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+    return providers.some(({ uid }) => uid === defaultIdpId);
+  }
 }

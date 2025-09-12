@@ -21,6 +21,12 @@
         <fieldset aria-labelledby="radio-hint-legend radio-hint-messages" class="fr-fieldset" id="radio-hint">
           <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="radio-hint-legend">
             Quel accès voulez-vous utiliser aujourd’hui ?
+            <% if (locals.hasDefaultIdp) { %>
+            <span class="fr-hint-text">
+              Si votre administration n'est pas répertoriée, sélectionnez
+              "Autre".
+            </span>
+            <% } %>
           </legend>
           <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
           <input type="hidden" name="email" value="<%= locals.email %>" />
