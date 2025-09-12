@@ -27,8 +27,6 @@ Before(function () {
   const pathArray = ['fca-low', testEnv];
   setFixtureContext('environment.json', pathArray, 'env');
   setFixtureContext('api-common.json', pathArray, 'apiRequests');
-  setFixtureContext('service-provider-configs.json', pathArray, 'spConfigs');
-  setFixtureContext('identity-provider-configs.json', pathArray, 'idpConfigs');
 
   // Setup interceptions to add basic authorization header on FC requests
   if (isUsingFCBasicAuthorization()) {
@@ -53,7 +51,6 @@ Before(function () {
  */
 After(function () {
   // Delete the Context variable changed during the scenario
-  delete this.user;
   delete this.operatorUser;
 });
 

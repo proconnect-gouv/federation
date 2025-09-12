@@ -1,5 +1,5 @@
 {
-  "par defaut fc-exploit": {
+  "default": {
     "name": "dummy-sp-config-for-fc-exploit",
     "redirectUri": "https://dummy-sp-config-for-fc-exploit.fr/oidc-callback",
     "redirectUriLogout": "https://dummy-sp-config-for-fc-exploit.fr/logout-callback",
