@@ -206,7 +206,7 @@ yarn start:low
 
 ```bash
 dks switch medium
-cd $PC_ROOT/federation/admin/fc-exploitation
+cd $PC_ROOT/federation/admin
 yarn test:e2e:open
 ```
 
