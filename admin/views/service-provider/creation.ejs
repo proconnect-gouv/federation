@@ -149,7 +149,7 @@
                     <% scopes.forEach(({fd, scope}) => { %>
                     <%  if (scope === "openid") { return; } %>
                   <div class="form-check form-check-inline">
-                    <input data-fd="<%= fd; %>" type="checkbox" class="form-check-input" id="scope-<%= scope; %>" name="scopes" value="<%= scope %>" <% if (locals.messages.values && locals.messages.values[0].scopes && locals.messages.values[0].scopes.includes(scope)) { %>checked="checked" <% } %> />
+                    <input data-fd="<%= fd; %>" type="checkbox" class="form-check-input" id="scope-<%= scope; %>" name="scopes" value="<%= scope %>" <% if ((locals.messages.values && locals.messages.values[0].scopes && locals.messages.values[0].scopes.includes(scope)) || defaultScopes.includes(scope)) { %>checked="checked" <% } %> />
                     <label class="form-check-label" for="scope-<%= scope; %>"><%= scope; %></label>
                   </div>
                   <% }); %>
