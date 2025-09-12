@@ -41,14 +41,6 @@ describe('IdentityProviderService', () => {
   const encryptedSecret = '**********';
   const objectId = new ObjectId('648c1742c74d6a3d84b31943');
 
-  const additionalFields = {
-    featureHandlers: {
-      coreVerify: 'coreVerify',
-      authenticationEmail: 'authenticationEmail',
-      idpIdentityCheck: 'idpIdentityCheck',
-    },
-  };
-
   const configIdentityProviderMock = {
     defaultValues: {},
   };
@@ -195,7 +187,6 @@ describe('IdentityProviderService', () => {
         specificText:
           "Veuillez fournir une capture d'écran de votre page de profil !",
         amr: ['pop'],
-        ...additionalFields,
         modalActive: false,
         modalTitle: 'title',
         modalBody: 'body',
@@ -296,14 +287,6 @@ describe('IdentityProviderService', () => {
     // };
 
     beforeEach(() => {
-      // tslint:disable-next-line:no-string-literal
-      identityProviderService['getDefaultValues'] = jest.fn().mockReturnValue({
-        featureHandlers: {
-          authenticationEmail: 'authenticationEmail',
-          coreVerify: 'coreVerify',
-          idpIdentityCheck: 'idpIdentityCheck',
-        },
-      });
       identityProviderService[
         // tslint:disable-next-line:no-string-literal
         'transformDtoToEntity'
@@ -318,17 +301,6 @@ describe('IdentityProviderService', () => {
 
       // tslint:disable-next-line:no-string-literal
       identityProviderService['track'] = jest.fn();
-    });
-
-    it('should call getDefaultValues', async () => {
-      // WHEN
-      await identityProviderService.create(identityProviderDto, 'user');
-
-      // THEN
-      // tslint:disable-next-line:no-string-literal
-      expect(identityProviderService['getDefaultValues']).toHaveBeenCalledTimes(
-        1,
-      );
     });
 
     it('should call transformDtoToEntity', async () => {
@@ -390,10 +362,6 @@ describe('IdentityProviderService', () => {
       const fqdns = ['stendhal.fr', 'woolf.uk'];
       const identityProviderWithFqdns = { ...identityProviderDto, fqdns };
 
-      identityProviderService['getDefaultValues'] = jest
-        .fn()
-        .mockResolvedValue({ ...identityProviderDto, fqdns });
-
       fqdnToProviderServiceMock.createFqdnsWithAcceptance.mockReturnValue([
         { acceptsDefaultIdp: true, fqdn: fqdns[0] },
         { acceptsDefaultIdp: true, fqdn: fqdns[1] },
@@ -419,10 +387,6 @@ describe('IdentityProviderService', () => {
       // GIVEN
       const fqdns = [];
       const identityProviderWithFqdns = { ...identityProviderDto, fqdns };
-
-      identityProviderService['getDefaultValues'] = jest
-        .fn()
-        .mockResolvedValue({ ...identityProviderDto, fqdns });
 
       // WHEN
       await identityProviderService.create(identityProviderWithFqdns, 'user');
@@ -692,41 +656,6 @@ describe('IdentityProviderService', () => {
       expect(
         fqdnToProviderServiceMock.deleteFqdnsProvider,
       ).toHaveBeenCalledWith(uid);
-    });
-  });
-
-  describe('getDefaultValues', () => {
-    const configMockIdentityProvider = {
-      featureHandlers: {},
-      response_types: ['response_types'],
-      redirect_uris: ['http:redirect_uris.fr'],
-      post_logout_redirect_uris: ['http://post_logout_redirect_uris'],
-      revocation_endpoint_auth_method: ['client_secret_post'],
-    };
-
-    beforeEach(() => {
-      configMock.get.mockReturnValue(configMockIdentityProvider);
-    });
-    it('should retrieve identity provider config', async () => {
-      // WHEN
-      // tslint:disable-next-line:no-string-literal
-      identityProviderService['getDefaultValues']();
-
-      // THEN
-      expect(configMock.get).toHaveBeenCalledTimes(1);
-      expect(configMock.get).toHaveBeenCalledWith('identity-provider');
-    });
-
-    it('should return a provider with a uid and default values', async () => {
-      // GIVEN
-      const expectedIdentityProvider = {};
-
-      // WHEN
-      // tslint:disable-next-line:no-string-literal
-      const result = identityProviderService['getDefaultValues']();
-
-      // THEN
-      expect(result).toEqual(expectedIdentityProvider);
     });
   });
 
