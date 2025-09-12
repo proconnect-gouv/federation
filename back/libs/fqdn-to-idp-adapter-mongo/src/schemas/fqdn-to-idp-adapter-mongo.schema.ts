@@ -12,9 +12,6 @@ export class FqdnToIdentityProvider extends Document {
 
   @Prop({ type: String })
   identityProvider: string;
-
-  @Prop({ type: Boolean })
-  acceptsDefaultIdp: boolean;
 }
 
 export const FqdnToIdentityProviderSchema = SchemaFactory.createForClass(
