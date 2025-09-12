@@ -65,7 +65,6 @@ describe('CoreFcaService', () => {
   const identityProviderMockResponse = {
     name: 'nameMockValue',
     title: 'titleMockValue',
-    featureHandlers: Symbol('featureHandlersMockValue'),
   };
 
   const nonceMock = Symbol('nonceMockValue');

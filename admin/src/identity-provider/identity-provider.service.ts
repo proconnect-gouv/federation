@@ -145,13 +145,12 @@ export class IdentityProviderService {
       await this.identityProviderRepository.save(existingProvider);
 
     /**
-     *  We need to update the corresponding fqdn
-     * note : we don't return the result of the update of the fqdns
+     * We need to update the corresponding fqdn
+     * note: we don't return the result of this update.
      */
     await this.fqdnToProviderService.updateFqdnsProvider(
-      identityProviderResponse.uid,
+      existingProvider.uid,
       fqdns,
-      identityProviderId,
     );
 
     return identityProviderResponse;
@@ -200,30 +199,7 @@ export class IdentityProviderService {
       identityProviderDto.client_secret,
     );
 
-    let createdAt: Date | undefined,
-      uid: string,
-      active: boolean,
-      display: boolean;
-    switch (mode) {
-      case 'create':
-        uid = uuidv4();
-        createdAt = now;
-        active = false;
-        display = false;
-        break;
-      case 'update':
-        uid = undefined;
-        createdAt = undefined;
-        active = identityProviderDto.active;
-        display = identityProviderDto.display;
-        break;
-    }
-
-    return {
-      uid,
-      active,
-      display,
-      createdAt,
+    const entity = {
       updatedAt: now,
       updatedBy: username,
       client_secret: clientSecret,
@@ -274,6 +250,25 @@ export class IdentityProviderService {
         identityProviderDto.specificText ||
         'Une erreur est survenue lors de la transmission de votre identité.',
     };
+
+    switch (mode) {
+      case 'create':
+        Object.assign(entity, {
+          uid: uuidv4(),
+          createdAt: now,
+          active: false,
+          display: false,
+        });
+        break;
+      case 'update':
+        Object.assign(entity, {
+          active: identityProviderDto.active,
+          display: identityProviderDto.display,
+        });
+        break;
+    }
+
+    return entity as any;
   }
 
   private transformEntityToDto(

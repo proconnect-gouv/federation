@@ -80,7 +80,6 @@ export class FqdnToProviderService {
   async updateFqdnsProvider(
     identityProviderUid: string,
     fqdns: string[],
-    identityProviderId: string,
   ): Promise<void> {
     /**
      * We currently don't have a fqdn interface where we can handle acceptance.
@@ -90,10 +89,10 @@ export class FqdnToProviderService {
      */
     const existingFqdnToProviders = await this.fqdnToProviderRepository.find({
       where: {
-        _id: ObjectID(identityProviderId),
         // we only keep the fqdns that are in the new list
         // we will delete the others
         fqdn: { $in: fqdns },
+        identityProvider: identityProviderUid,
       },
     });
     const existingFqdnToProvidersFqdns = existingFqdnToProviders.map(

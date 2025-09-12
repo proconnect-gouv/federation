@@ -604,7 +604,7 @@ describe('IdentityProviderService', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         fqdnToProviderServiceMock.updateFqdnsProvider,
-      ).toHaveBeenCalledWith(uid, fqdns, idMock);
+      ).toHaveBeenCalledWith(uid, fqdns);
     });
   });
 

@@ -40,7 +40,10 @@ import {
   UserSession,
 } from '../dto';
 import { Routes } from '../enums';
-import { CoreFcaAgentNoIdpException } from '../exceptions';
+import {
+  CoreFcaAgentNoIdpException,
+  CoreFcaIdpConfigurationException,
+} from '../exceptions';
 import {
   CoreFcaFqdnService,
   CoreFcaService,
@@ -82,10 +85,10 @@ export class OidcClientController {
   ) {
     const { login_hint: email } = userSession.get();
     const fqdnConfig = await this.fqdnService.getFqdnConfigFromEmail(email);
-    const { acceptsDefaultIdp, identityProviders } = fqdnConfig;
+    const { acceptsDefaultIdp, identityProviderIds } = fqdnConfig;
 
     const providers: { title: string; uid: string }[] =
-      await this.coreFca.getIdentityProvidersByIds(identityProviders);
+      await this.coreFca.getIdentityProvidersByIds(identityProviderIds);
 
     const csrfToken = this.csrfService.renew();
     this.sessionService.set('Csrf', { csrfToken });
@@ -166,16 +169,16 @@ export class OidcClientController {
 
     userSession.set('login_hint', email);
 
-    const { identityProviders } =
+    const { identityProviderIds: idpIds } =
       await this.fqdnService.getFqdnConfigFromEmail(email);
 
-    if (identityProviders.length === 0) {
+    if (idpIds.length === 0) {
       throw new CoreFcaAgentNoIdpException();
     }
 
-    if (identityProviders.length > 1) {
+    if (idpIds.length > 1) {
       this.logger.debug(
-        `${identityProviders.length} identity providers matching for "****@${fqdn}"`,
+        `${idpIds.length} identity providers matching for "****@${fqdn}"`,
       );
       const { urlPrefix } = this.config.get<AppConfig>('App');
       const url = `${urlPrefix}${Routes.IDENTITY_PROVIDER_SELECTION}`;
@@ -183,11 +186,14 @@ export class OidcClientController {
       return res.redirect(url);
     }
 
-    const idpId = identityProviders[0];
+    const idpId = idpIds[0];
 
-    const { name, title } = await this.identityProvider.getById(idpId);
-    const idpName = name;
-    const idpLabel = title;
+    const identityProvider = await this.identityProvider.getById(idpId);
+    if (!identityProvider) {
+      throw new CoreFcaIdpConfigurationException();
+    }
+
+    const { name: idpName, title: idpLabel } = identityProvider;
 
     this.logger.debug(
       `Redirect "****@${fqdn}" to unique idp "${idpLabel}" (${idpId})`,
@@ -196,9 +202,9 @@ export class OidcClientController {
     const trackingContext: TrackedEventContextInterface = {
       req,
       fqdn,
-      idpId: idpId,
-      idpLabel: idpLabel,
-      idpName: idpName,
+      idpId,
+      idpLabel,
+      idpName,
     };
     const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
     await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);

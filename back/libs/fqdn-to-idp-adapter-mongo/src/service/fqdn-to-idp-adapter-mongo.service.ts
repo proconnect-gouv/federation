@@ -82,15 +82,7 @@ export class FqdnToIdpAdapterMongoService
 
   private async findAllFqdnToIdentityProvider() {
     const rawFqdnToIdentityProviders =
-      await this.FqdnToIdentityProviderModel.find(
-        {},
-        {
-          _id: false,
-          fqdn: true,
-          identityProvider: true,
-          acceptsDefaultIdp: true,
-        },
-      )
+      await this.FqdnToIdentityProviderModel.find({})
         .sort({ fqdn: 1, identityProvider: 1 })
         .lean();
 
@@ -102,7 +94,6 @@ export class FqdnToIdpAdapterMongoService
         rawFqdnToIdentityProvider,
       );
       const errors = await validate(fqdnToIdentityProvider, {
-        forbidNonWhitelisted: true,
         whitelist: true,
       });
 

@@ -52,27 +52,7 @@ export class ServiceProviderAdapterMongoService
       active: true,
     };
     const rawServiceProviders = await this.serviceProviderModel
-      .find(filter, {
-        _id: false,
-        active: true,
-        name: true,
-        title: true,
-        key: true,
-        entityId: true,
-        client_secret: true,
-        scopes: true,
-        redirect_uris: true,
-        post_logout_redirect_uris: true,
-        id_token_signed_response_alg: true,
-        introspection_signed_response_alg: true,
-        introspection_encrypted_response_alg: true,
-        introspection_encrypted_response_enc: true,
-        userinfo_signed_response_alg: true,
-        jwks_uri: true,
-        type: true,
-        response_types: true,
-        grant_types: true,
-      })
+      .find(filter)
       .lean();
 
     const serviceProviders = [];
@@ -83,7 +63,6 @@ export class ServiceProviderAdapterMongoService
         rawServiceProvider,
       );
       const errors = await validate(serviceProvider, {
-        forbidNonWhitelisted: true,
         whitelist: true,
       });
 

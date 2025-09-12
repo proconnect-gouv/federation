@@ -46,18 +46,12 @@ describe('IdentityProviderAdapterMongoService', () => {
     allowedAcr: ['eidas2'],
     endSessionURL:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
-    featureHandlers: {
-      authenticationEmail: null,
-      coreVerify: 'core-fcp-default-verify',
-    },
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'HS256',
     image: 'provider1.png',
     jwksURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
     name: 'provider1',
-    response_types: ['code'],
-    revocation_endpoint_auth_method: 'client_secret_post',
     title: 'provider 1',
     tokenURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
     token_endpoint_auth_method: 'client_secret_post',
@@ -82,10 +76,6 @@ describe('IdentityProviderAdapterMongoService', () => {
     allowedAcr: ['eidas2'],
     end_session_endpoint:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
-    featureHandlers: {
-      authenticationEmail: null,
-      coreVerify: 'core-fcp-default-verify',
-    },
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'HS256',
@@ -126,10 +116,6 @@ describe('IdentityProviderAdapterMongoService', () => {
     discovery: false,
     display: false,
     allowedAcr: ['eidas2'],
-    featureHandlers: {
-      authenticationEmail: null,
-      coreVerify: 'core-fcp-default-verify',
-    },
     image: 'provider1.png',
     issuer: {
       authorization_endpoint:

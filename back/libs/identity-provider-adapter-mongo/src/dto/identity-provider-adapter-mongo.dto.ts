@@ -1,6 +1,5 @@
 import { Type } from 'class-transformer';
 import {
-  IsArray,
   IsBoolean,
   IsEnum,
   IsNotEmpty,
@@ -17,7 +16,7 @@ import {
 
 import { IsIncludedInConfig } from '@fc/common';
 
-import { Amr, ResponseTypes } from '../enums';
+import { Amr } from '../enums';
 import { JwksUriValidator } from './jwksuri.validator';
 
 export class ModalIdpAdapterMongo {
@@ -77,9 +76,6 @@ export class MetadataIdpAdapterMongoDTO {
   @IsOptional()
   readonly amr?: Amr[];
 
-  @IsObject()
-  readonly featureHandlers: any;
-
   @IsOptional()
   @IsObject()
   @ValidateNested()
@@ -94,14 +90,6 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsString()
   readonly clientID: string;
-
-  @IsArray()
-  @IsEnum(ResponseTypes, { each: true })
-  readonly response_types: ResponseTypes[];
-
-  @IsOptional()
-  @IsString()
-  readonly revocation_endpoint_auth_method?: string;
 
   @IsOptional()
   @IsString()

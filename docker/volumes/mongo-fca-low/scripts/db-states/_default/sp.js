@@ -21,7 +21,6 @@ const fsa = {
     active: true,
     type: 'public',
     __v: 4,
-    featureHandlers: { none: '' },
     updatedAt: new Date('2019-04-24 17:09:17'),
     updatedBy: 'admin',
     scopes: [
@@ -73,7 +72,6 @@ const fsa = {
     active: true,
     type: 'private',
     __v: 4,
-    featureHandlers: { none: '' },
     updatedAt: new Date('2019-04-24 17:09:17'),
     updatedBy: 'admin',
     scopes: [
@@ -123,7 +121,6 @@ const fsa = {
     active: false,
     type: 'public',
     __v: 4,
-    featureHandlers: { none: '' },
     updatedAt: new Date('2019-04-24 17:09:17'),
     updatedBy: 'admin',
     scopes: [
@@ -174,7 +171,6 @@ const fsa = {
     active: true,
     type: 'public',
     __v: 4,
-    featureHandlers: { none: '' },
     updatedAt: new Date('2019-04-24 17:09:17'),
     updatedBy: 'admin',
     scopes: [

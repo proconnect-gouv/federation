@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core';
+import { CoreFcaIdpConfigurationException, UserSession } from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
@@ -160,7 +160,7 @@ describe('OidcClientController', () => {
 
       const fqdnConfig = {
         acceptsDefaultIdp: true,
-        identityProviders: ['idp1', 'idp2'],
+        identityProviderIds: ['idp1', 'idp2'],
       };
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue(fqdnConfig);
 
@@ -243,7 +243,7 @@ describe('OidcClientController', () => {
       emailValidatorService.validate.mockResolvedValue(undefined);
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
-        identityProviders: [],
+        identityProviderIds: [],
       });
 
       await expect(
@@ -258,12 +258,30 @@ describe('OidcClientController', () => {
       expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
     });
 
+    it('should throw an exception when identity provider is misconfigured', async () => {
+      const body = { email } as any;
+      emailValidatorService.validate.mockResolvedValue(undefined);
+      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
+        identityProviderIds: ['nonexistent-idp'],
+      });
+
+      await expect(
+        controller.redirectToIdp(
+          req as Request,
+          res as Response,
+          body,
+          userSession,
+        ),
+      ).rejects.toThrow(CoreFcaIdpConfigurationException);
+    });
+
     it('should redirect to identity provider selection when multiple providers are available', async () => {
       const body = { email } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
-        identityProviders: ['idp1', 'idp2'],
+        identityProviderIds: ['idp1', 'idp2'],
       });
       configService.get.mockReturnValue({ urlPrefix: '/app' });
 
@@ -289,7 +307,7 @@ describe('OidcClientController', () => {
       emailValidatorService.validate.mockResolvedValue(undefined);
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
-        identityProviders: ['idp-single'],
+        identityProviderIds: ['idp-single'],
       });
       identityProvider.getById.mockResolvedValue({
         name: 'Single IdP',

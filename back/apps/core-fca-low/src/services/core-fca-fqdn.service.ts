@@ -24,7 +24,7 @@ export class CoreFcaFqdnService {
     if (idpsByFqdn.length === 0) {
       return {
         fqdn,
-        identityProviders: defaultIdpId ? [defaultIdpId] : [],
+        identityProviderIds: defaultIdpId ? [defaultIdpId] : [],
         acceptsDefaultIdp: !!defaultIdpId,
       };
     }
@@ -54,7 +54,7 @@ export class CoreFcaFqdnService {
 
     return {
       fqdn,
-      identityProviders: Array.from(idpsWithDefaultIdpSet),
+      identityProviderIds: Array.from(idpsWithDefaultIdpSet),
       acceptsDefaultIdp: acceptsDefaultIdpConfig,
     };
   }
