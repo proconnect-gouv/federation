@@ -244,15 +244,6 @@ export class IdentityProviderDTO {
   // tslint:disable-next-line: variable-name
   readonly token_endpoint_auth_method?: string;
 
-  readonly featureHandlers: any;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  // oidc defined variable name
-  // tslint:disable-next-line: variable-name
-  readonly response_types?: string[];
-
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
@@ -266,12 +257,6 @@ export class IdentityProviderDTO {
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   readonly post_logout_redirect_uris?: string[];
-
-  @IsOptional()
-  @IsString()
-  // oidc defined variable name
-  // tslint:disable-next-line: variable-name
-  readonly revocation_endpoint_auth_method?: string;
 
   @IsOptional()
   @Transform(toArray)

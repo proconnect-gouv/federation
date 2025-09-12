@@ -49,16 +49,10 @@ export class IdentityProviderService {
   }
 
   async create(identityProviderDto: IdentityProviderDTO, username: string) {
-    const defaultValues = this.getDefaultValues();
-    const identityProviderDtoWithDefaultValues = {
-      ...defaultValues,
-      ...identityProviderDto,
-    };
-
     const fqdns = identityProviderDto.fqdns || [];
 
     const providerToSave = this.transformDtoToEntity(
-      identityProviderDtoWithDefaultValues,
+      identityProviderDto,
       username,
       'create',
     );
@@ -274,10 +268,7 @@ export class IdentityProviderService {
   private transformEntityToDto(
     identityProviderFromDb: IdentityProviderFromDb,
   ): IdentityProviderDTO {
-    const defaultValues = this.getDefaultValues();
-
     const inputProvider = {
-      ...defaultValues,
       ...identityProviderFromDb,
     };
 
@@ -310,7 +301,6 @@ export class IdentityProviderService {
       userinfo_encrypted_response_enc:
         inputProvider.userinfo_encrypted_response_enc,
       supportEmail: inputProvider.supportEmail,
-      featureHandlers: inputProvider.featureHandlers,
       messageToDisplayWhenInactive: inputProvider.hoverMsg,
       redirectionTargetWhenInactive: inputProvider.hoverRedirectLink,
       clientId: inputProvider.clientID,
@@ -329,17 +319,6 @@ export class IdentityProviderService {
       modalContinueText: inputProvider.modal?.continueText,
       modalMoreInfoLabel: inputProvider.modal?.moreInfoLabel,
       modalMoreInfoUrl: inputProvider.modal?.moreInfoUrl,
-    };
-  }
-  private getDefaultValues(): {
-    featureHandlers: any;
-    response_types: any;
-    revocation_endpoint_auth_method: string;
-  } {
-    const { defaultValues } = this.config.get('identity-provider');
-
-    return {
-      ...defaultValues,
     };
   }
 }
