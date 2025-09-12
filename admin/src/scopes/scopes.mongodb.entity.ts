@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb';
 @Unique(['scope'])
 export class Scopes {
   @ObjectIdColumn()
-  id: ObjectId;
+  _id: ObjectId;
 
   @Column({ name: 'scope' })
   scope: string;

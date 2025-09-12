@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 import { IScopes } from '../interface';
 
 export const scopesMock: IScopes = {
-  id: new ObjectId('5d9c677da8bb151b00720451'),
+  _id: new ObjectId('5d9c677da8bb151b00720451'),
   fd: 'Direction générale des Finances publiques',
   scope: 'Seldon',
   label: 'Seldon Label',
@@ -13,20 +13,20 @@ export const scopesMock: IScopes = {
 
 export const scopesListMock: IScopes[] = [
   {
-    id: new ObjectId('5d9c677da8bb151b00720451'),
+    _id: new ObjectId('5d9c677da8bb151b00720451'),
     scope: 'dgfip_revenu_fiscal_de_reference_identity',
     fd: 'IDENTITY',
     label: 'Revenu fiscal de référence (IDENTITY)',
   },
   {
-    id: new ObjectId('5d9c67cda8bd151b00720452'),
+    _id: new ObjectId('5d9c67cda8bd151b00720452'),
     scope: 'dgfip_revenu_fiscal_de_reference_dgfip',
     fd: 'Direction générale des Finances publiques',
     label:
       'Revenu fiscal de référence (Direction générale des Finances publiques)',
   },
   {
-    id: new ObjectId('5d9c67cda8bc151b00720452'),
+    _id: new ObjectId('5d9c67cda8bc151b00720452'),
     scope: 'dgfip_revenu_fiscal_de_reference_cnam',
     fd: "Caisse nationale de l'assurance maladie",
     label:
@@ -37,7 +37,7 @@ export const scopesListMock: IScopes[] = [
 export const scopesListGroupedByFdMock: Record<string, IScopes[]> = {
   IDENTITY: [
     {
-      id: new ObjectId('5d9c677da8bb151b00720451'),
+      _id: new ObjectId('5d9c677da8bb151b00720451'),
       scope: 'dgfip_revenu_fiscal_de_reference_identity',
       fd: 'IDENTITY',
       label: 'Revenu fiscal de référence (IDENTITY)',
@@ -45,7 +45,7 @@ export const scopesListGroupedByFdMock: Record<string, IScopes[]> = {
   ],
   'Direction générale des Finances publiques': [
     {
-      id: new ObjectId('5d9c67cda8bd151b00720452'),
+      _id: new ObjectId('5d9c67cda8bd151b00720452'),
       scope: 'dgfip_revenu_fiscal_de_reference_dgfip',
       fd: 'Direction générale des Finances publiques',
       label:
@@ -54,7 +54,7 @@ export const scopesListGroupedByFdMock: Record<string, IScopes[]> = {
   ],
   "Caisse nationale de l'assurance maladie": [
     {
-      id: new ObjectId('5d9c67cda8bc151b00720452'),
+      _id: new ObjectId('5d9c67cda8bc151b00720452'),
       scope: 'dgfip_revenu_fiscal_de_reference_cnam',
       fd: "Caisse nationale de l'assurance maladie",
       label:

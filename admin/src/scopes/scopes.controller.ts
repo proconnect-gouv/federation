@@ -94,13 +94,13 @@ export class ScopesController {
   @Get('label/update/:id')
   @Roles(UserRole.OPERATOR)
   @Render('scopes/label/update')
-  async showUpdateScopeForm(@Param('id') id: string, @Req() req) {
-    const idMongo = new ObjectId(id);
+  async showUpdateScopeForm(@Param('id') _id: string, @Req() req) {
+    const idMongo = new ObjectId(_id);
     const csrfToken = req.csrfToken();
     const { scope, label, fd } = await this.scopesService.getById(idMongo);
     const scopesGroupedByFd = await this.scopesService.getScopesGroupedByFd();
 
-    return { csrfToken, scope, label, fd, id, scopesGroupedByFd };
+    return { csrfToken, scope, label, fd, _id, scopesGroupedByFd };
   }
 
   /**

@@ -219,7 +219,7 @@ describe('Scopes Controller', () => {
         label: 'myGreatLabel',
         fd: 'myGreatFD',
         scopesGroupedByFd: scopesListGroupedByFdMock,
-        id: id.toString(),
+        _id: id.toString(),
       });
     });
   });
@@ -231,7 +231,7 @@ describe('Scopes Controller', () => {
 
     it('should update the scope label entry corresponding to the id param', async () => {
       const updatedScopeLabel: IScopes = {
-        id: new ObjectId('5d9c677da8bb151b00720451'),
+        _id: new ObjectId('5d9c677da8bb151b00720451'),
         fd: 'DGFIP',
         scope: 'Seldon2222',
         label: 'Seldon222 Label (dgfip)',
@@ -257,7 +257,7 @@ describe('Scopes Controller', () => {
     it('should throw an error if scope label entry can not be update', async () => {
       // Setup
       const updatedScopeLabel: IScopes = {
-        id: new ObjectId('5d9c677da8bb151b00720451'),
+        _id: new ObjectId('5d9c677da8bb151b00720451'),
         fd: 'DGFIP',
         scope: 'Seldon2222',
         label: 'Seldon222 Label (dgfip)',
