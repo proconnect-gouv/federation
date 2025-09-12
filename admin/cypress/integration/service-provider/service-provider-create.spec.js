@@ -55,6 +55,7 @@ describe('Service provider creation', () => {
       cy.get('input#scope-email').should('be.checked');
       cy.get('input#scope-uid').should('be.checked');
       cy.get('input#scope-siret').should('be.checked');
+      cy.get('input#scope-phone').should('be.checked');
       cy.get('input#scope-idp_id').should('be.checked');
       cy.get('input#scope-custom').should('be.checked');
     });

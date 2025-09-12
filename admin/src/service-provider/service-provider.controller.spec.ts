@@ -121,6 +121,7 @@ describe('ServiceProviderController', () => {
     'email',
     'uid',
     'siret',
+    'phone',
     'idp_id',
     'custom',
   ];
