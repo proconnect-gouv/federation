@@ -42,6 +42,25 @@ describe('Service provider creation', () => {
     cy.login(USER_OPERATOR, USER_PASS);
   });
 
+  describe('should have the right default configuration', () => {
+    it('should have the default scopes checked when opening the creation form', () => {
+      // Action
+      cy.url().should('eq', `${BASE_URL}/service-provider`);
+      cy.contains('Créer un fournisseur de service').click();
+
+      // Assert
+      cy.get('input#scope-openid').should('be.checked');
+      cy.get('input#scope-given_name').should('be.checked');
+      cy.get('input#scope-usual_name').should('be.checked');
+      cy.get('input#scope-email').should('be.checked');
+      cy.get('input#scope-uid').should('be.checked');
+      cy.get('input#scope-siret').should('be.checked');
+      cy.get('input#scope-phone').should('be.checked');
+      cy.get('input#scope-idp_id').should('be.checked');
+      cy.get('input#scope-custom').should('be.checked');
+    });
+  });
+
   describe('Should succeed', () => {
     it('if eidas level 1 is choosen', () => {
       // Action

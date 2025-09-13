@@ -33,6 +33,17 @@ import { PaginationSortDirectionType } from '../pagination';
 
 @Controller('service-provider')
 export class ServiceProviderController {
+  defaultScopes = [
+    'openid',
+    'given_name',
+    'usual_name',
+    'email',
+    'uid',
+    'siret',
+    'phone',
+    'idp_id',
+    'custom',
+  ];
   constructor(
     @InjectRepository(ServiceProviderFromDb, 'fc-mongo')
     private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
@@ -107,6 +118,7 @@ export class ServiceProviderController {
       scopesGroupedByFd,
       claims,
       claimsSelected: ['amr'],
+      defaultScopes: this.defaultScopes,
     };
 
     return response;

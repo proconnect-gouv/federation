@@ -114,6 +114,18 @@ describe('ServiceProviderController', () => {
     ],
   };
 
+  const defaultScopes = [
+    'openid',
+    'given_name',
+    'usual_name',
+    'email',
+    'uid',
+    'siret',
+    'phone',
+    'idp_id',
+    'custom',
+  ];
+
   const userMock = 'toto';
 
   beforeEach(async () => {
@@ -427,6 +439,7 @@ describe('ServiceProviderController', () => {
         ],
         claimsSelected: ['amr'],
         scopesGroupedByFd: scopesGroupMock,
+        defaultScopes,
       });
     });
 
@@ -440,6 +453,7 @@ describe('ServiceProviderController', () => {
         claims: expect.any(Array),
         claimsSelected: ['amr'],
         scopesGroupedByFd: scopesGroupMock,
+        defaultScopes,
       });
     });
   });

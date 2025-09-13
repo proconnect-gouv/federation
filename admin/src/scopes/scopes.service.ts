@@ -13,8 +13,6 @@ import { IScopes } from './interface';
 
 @Injectable()
 export class ScopesService {
-  baseScopes: IScopes[] = null;
-
   constructor(
     @InjectRepository(Scopes, 'fc-mongo')
     private readonly scopesRepository: Repository<Scopes>,
