@@ -25,8 +25,6 @@ const fi = {
   jwksUrl: 'https://issuer.fr/discovery',
   clientId: '09a1a257648c1742c74d6a3d84b31943',
   client_secret: '1234567890AZERTYUIOP',
-  messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
-  redirectionTargetWhenInactive: 'https://issuer.fr/promo',
   siret: '34047343800034',
   order: 1,
   emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',

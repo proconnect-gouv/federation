@@ -61,12 +61,6 @@ export class IdentityProviderFromDb {
   order: number;
 
   @Column()
-  hoverMsg: string;
-
-  @Column()
-  hoverRedirectLink: string;
-
-  @Column()
   createdAt: Date;
 
   @Column()

@@ -205,8 +205,6 @@ export class IdentityProviderService {
       discoveryUrl: identityProviderDto.discoveryUrl,
       blacklistByIdentityProviderActivated: false,
       WhitelistByServiceProviderActivated: false,
-      hoverMsg: identityProviderDto.messageToDisplayWhenInactive,
-      hoverRedirectLink: identityProviderDto.redirectionTargetWhenInactive,
       clientID: identityProviderDto.clientId,
       authzURL: identityProviderDto.authorizationUrl,
       statusURL: identityProviderDto.statusUrl,
@@ -279,8 +277,6 @@ export class IdentityProviderService {
       userinfo_encrypted_response_enc:
         inputProvider.userinfo_encrypted_response_enc,
       supportEmail: inputProvider.supportEmail,
-      messageToDisplayWhenInactive: inputProvider.hoverMsg,
-      redirectionTargetWhenInactive: inputProvider.hoverRedirectLink,
       clientId: inputProvider.clientID,
       authorizationUrl: inputProvider.authzURL,
       statusUrl: inputProvider.statusURL,

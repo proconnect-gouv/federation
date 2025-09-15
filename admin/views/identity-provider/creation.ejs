@@ -301,43 +301,6 @@
             </div>
 
             <div class="mb-3 row">
-              <label class="col-12 col-form-label" for="messageToDisplayWhenInactive">Message à afficher lorsque le FI est désactivé (Disponible prochainement par défaut si aucune saisie) :</label>
-              <div class="col-12">
-                <input id="messageToDisplayWhenInactive" type="text" class="form-control" name="messageToDisplayWhenInactive" placeholder="Disponible prochainement" value="<%= locals.messages.values && messages.values[0].messageToDisplayWhenInactive %>">
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].messageToDisplayWhenInactive) { %>
-                  <p>
-                    <% messages.errors[0].messageToDisplayWhenInactive.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez saisir un message à afficher si le fournisseur d'identité est désactivé
-                  <% } %>
-                </div>
-              </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="image">Lien vers lequel rediriger si le FI est désactivé :</label>
-              <div class="col-10">
-                <input id="redirectionTargetWhenInactive" type="text" class="form-control <%= locals.messages.errors && messages.errors[0].redirectionTargetWhenInactive && 'is-invalid' %>" name="redirectionTargetWhenInactive" value="<%= locals.messages.values && messages.values[0].redirectionTargetWhenInactive %>">
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].redirectionTargetWhenInactive) { %>
-                  <p>
-                    <% messages.errors[0].redirectionTargetWhenInactive.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez saisir un lien vers lequel rediriger si le fournisseur d'identité est désactivé
-                  <% } %>
-                </div>
-              </div>
-            </div>
-
-            <div class="mb-3 row">
               <label class="col-2 col-form-label" for="id_token_signed_response_alg">id_token_signed_response_alg * : </label>
               <div class="col-10">
                 <select class="form-select" name="id_token_signed_response_alg" required>

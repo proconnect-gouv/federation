@@ -104,17 +104,6 @@ export class IdentityProviderDTO {
   // tslint:disable-next-line: variable-name
   readonly client_secret: string;
 
-  @IsOptionalExtended()
-  @IsString()
-  readonly messageToDisplayWhenInactive: string;
-
-  @IsOptionalExtended()
-  @Matches(URL_REGEX, {
-    message:
-      'Veuillez mettre une url valide ( Ex: https://my-redirect-url.com/ )',
-  })
-  readonly redirectionTargetWhenInactive: string;
-
   @Transform(toBoolean)
   @IsBoolean()
   readonly active: boolean;
