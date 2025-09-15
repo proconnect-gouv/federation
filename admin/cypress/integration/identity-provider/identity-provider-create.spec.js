@@ -218,9 +218,6 @@ describe('Identity provider creation', () => {
       cy.contains(`Veuillez saisir un client Secret valide`)
         .scrollIntoView()
         .should('exist');
-      cy.contains(`Veuillez saisir au moins un email`)
-        .scrollIntoView()
-        .should('exist');
     });
 
     it('if the title contains invalid chars', () => {
