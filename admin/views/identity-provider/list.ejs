@@ -28,7 +28,6 @@
           </th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Nom technique</th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Fqdns</th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Email de contact</th>
           <th scope="col" class="col-4 border border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "active", fieldName: "Activé" }); %>
           </th>
@@ -66,7 +65,6 @@
                 </a>
               <% } %>
             </td>
-            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary"><%= identityProvider.mailto %></td>
             <td class="text-center border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <i class="fa fa-toggle-<%= identityProvider.active ? "on" : "off" %>"></i>
             </td>

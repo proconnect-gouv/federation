@@ -180,7 +180,6 @@ describe('IdentityProviderService', () => {
       identityProviderFactory.createIdentityProviderFromDb({
         _id: new ObjectId('68a30acf6cb39008b0015ab4'),
         name: 'MonFI',
-        mailto: 'authenticationEmail',
         createdAt: new Date('1970-01-01T00:00:00.000Z'),
         updatedAt: new Date('1970-01-01T00:00:00.000Z'),
         updatedBy: 'user',
@@ -596,7 +595,6 @@ describe('IdentityProviderService', () => {
         _id: new ObjectId('68a30acf6cb39008b0015ab4'),
         uid: mockUid,
         name: 'MonFI',
-        mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',
         createdAt: mockDate,
         updatedAt: mockDate,
         updatedBy: 'user',
