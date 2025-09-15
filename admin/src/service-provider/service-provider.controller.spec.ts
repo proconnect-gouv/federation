@@ -282,7 +282,6 @@ describe('ServiceProviderController', () => {
       const itemTest1 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
-        signup_id: '123456',
         redirect_uris: ['https://url.com'],
         post_logout_redirect_uris: [''],
         jwks_uri: 'https://monfs.com/jwks',
@@ -301,7 +300,6 @@ describe('ServiceProviderController', () => {
       const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
-        signup_id: '123456',
         redirect_uris: ['https://url.com'],
         jwks_uri: 'https://monfs.com/jwks',
         post_logout_redirect_uris: [''],
@@ -320,7 +318,6 @@ describe('ServiceProviderController', () => {
       const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
-        signup_id: '123456',
         redirect_uris: ['https://url.com'],
         jwks_uri: 'https://monfs.com/jwks',
         post_logout_redirect_uris: [''],
