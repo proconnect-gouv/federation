@@ -20,15 +20,6 @@ export class IdentityProviderFromDb {
   title: string;
 
   @Column()
-  image: string;
-
-  @Column()
-  imageFocus: string;
-
-  @Column()
-  alt: string;
-
-  @Column()
   allowedAcr: string[];
 
   @Column()

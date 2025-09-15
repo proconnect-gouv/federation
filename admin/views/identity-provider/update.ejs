@@ -340,60 +340,6 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="alt">Valeur de l'attribut HTML "alt" de l'image :</label>
-              <div class="col-10">
-                <input id="alt" type="text" class="form-control <%= locals.messages.errors && messages.errors[0].alt && 'is-invalid' %>" name="alt" value="<%= locals.messages.values && messages.values[0].alt %>">
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].alt) { %>
-                  <p>
-                    <% messages.errors[0].alt.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez saisir un nom valide
-                  <% } %>
-                </div>
-              </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="image">Nom de l'image :</label>
-              <div class="col-10">
-                <input id="image" type="text" class="form-control <%= locals.messages.errors && messages.errors[0].image && 'is-invalid' %>" name="image" value="<%= locals.messages.values && messages.values[0].image %>">
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].image) { %>
-                  <p>
-                    <% messages.errors[0].image.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez saisir un nom d'image valide finissant par .svg, .jpg, .gif, .png
-                  <% } %>
-                </div>
-              </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="imageFocus">Nom de l'image utilisée au survol/focus :</label>
-              <div class="col-10">
-                <input id="imageFocus" type="text" class="form-control <%= locals.messages.errors && messages.errors[0].imageFocus && 'is-invalid' %>" name="imageFocus" value="<%= locals.messages.values && messages.values[0].imageFocus %>">
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].imageFocus) { %>
-                  <p>
-                    <% messages.errors[0].imageFocus.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez saisir un nom d'image valide finissant par .svg, .jpg, .gif, .png
-                  <% } %>
-                </div>
-              </div>
-            </div>
 
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="id_token_signed_response_alg">id_token_signed_response_alg * : </label>

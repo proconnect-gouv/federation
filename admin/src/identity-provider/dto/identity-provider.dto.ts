@@ -122,25 +122,6 @@ export class IdentityProviderDTO {
   })
   readonly redirectionTargetWhenInactive: string;
 
-  @IsOptionalExtended()
-  @IsString()
-  readonly alt: string;
-
-  @IsOptionalExtended()
-  @Matches(IMG_REGEX, {
-    message:
-      "Veuillez saisir un nom d'image valide finissant par .svg, .jpg, .gif, .png",
-  })
-  readonly image: string;
-
-  @IsOptionalExtended()
-  @Matches(IMG_REGEX, {
-    message:
-      "Veuillez saisir un nom d'image valide finissant par .svg, .jpg, .gif, .png",
-  })
-  @IsString()
-  readonly imageFocus: string;
-
   @Transform(toBoolean)
   @IsBoolean()
   readonly active: boolean;
