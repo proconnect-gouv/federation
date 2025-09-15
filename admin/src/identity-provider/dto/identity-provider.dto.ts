@@ -10,7 +10,6 @@ import {
   IsUrl,
   IsNotEmpty,
   Length,
-  IsEmail,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import {
@@ -149,11 +148,6 @@ export class IdentityProviderDTO {
   @Transform(toBoolean)
   @IsBoolean()
   readonly display: boolean;
-
-  @IsOptionalExtended()
-  @IsNumber()
-  @Type(() => Number)
-  readonly eidas: number;
 
   @Transform(toArray)
   @IsString({ each: true })

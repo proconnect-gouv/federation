@@ -215,7 +215,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
@@ -303,7 +302,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
@@ -325,7 +323,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
@@ -347,7 +344,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });

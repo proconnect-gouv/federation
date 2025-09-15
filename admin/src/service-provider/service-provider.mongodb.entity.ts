@@ -77,9 +77,6 @@ export class ServiceProviderFromDb {
   claims?: string[];
 
   @Column()
-  eidas?: number;
-
-  @Column()
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   userinfo_signed_response_alg?: string;

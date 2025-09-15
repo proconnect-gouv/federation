@@ -33,7 +33,6 @@ describe('update a service-provider', () => {
         redirectUriLogout: 'https://url.com/logout',
         emails: 'valenttin@gmail.com',
         ipAddresses: '192.0.0.0',
-        eidas: 1,
       };
 
       // Action
@@ -64,7 +63,6 @@ describe('update a service-provider', () => {
         redirectUriLogout: 'https://url.com/logout',
         emails: 'valenttin@gmail.com',
         ipAddresses: 'Obviously not an IP',
-        eidas: 1,
       };
 
       // Action

@@ -58,30 +58,6 @@ describe('Service provider creation', () => {
   });
 
   describe('Should succeed', () => {
-    it('if eidas level 1 is choosen', () => {
-      // Action
-      cy.url().should('eq', `${BASE_URL}/service-provider`);
-      cy.contains('Créer un fournisseur de service').click();
-
-      cy.formFill(spData, basicConfiguration);
-
-      cy.totp({ totp: true });
-      cy.get('form[name="fs-form"] button[type="submit"]').click();
-
-      // Assert
-      cy.url().should('eq', `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service MyFirstSP a été créé avec succès !`,
-      );
-      cy.closeBanner('.alert-success');
-
-      cy.hasBusinessLog({
-        entity: 'service-provider',
-        action: 'create',
-        user: USER_OPERATOR,
-      });
-    });
-
     it('if we add a sp even with localhost as redirectUri (integration) ', () => {
       // Action
       createServiceProvider(

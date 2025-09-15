@@ -30,7 +30,6 @@ describe('Delete service provider', () => {
     redirectUriLogout: 'https://url.com/logout',
     emails: 'titlen@gmail.com',
     ipAddresses: '192.0.0.0',
-    eidas: 1,
   };
 
   beforeEach(() => {

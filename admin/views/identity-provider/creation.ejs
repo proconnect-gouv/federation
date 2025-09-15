@@ -404,18 +404,6 @@
               </div>
             </div>
 
-            <div class="mb-3 row" id="eidas-level">
-              <label class="col-2 col-form-label">Niveaux eidas (V2) : </label>
-              <div class="col-10">
-                <% locals.acrList.forEach((acr) => { %>
-                <div class="form-check form-check-inline">
-                  <input data-acr="<%= acr; %>" type="checkbox" class="form-check-input" id="allowedAcr-<%= acr; %>" name="allowedAcr" value="<%= acr %>" <%= messages?.values?.[0]?.allowedAcr?.includes(acr) ? 'checked' : '' %> />
-                  <label class="form-check-label" for="allowedAcr-<%= acr; %>"><%= acr; %></label>
-                </div>
-                <% }); %>
-              </div>
-            </div>
-
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="id_token_signed_response_alg">id_token_signed_response_alg * : </label>
               <div class="col-10">

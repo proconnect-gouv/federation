@@ -32,9 +32,6 @@ export class IdentityProviderFromDb {
   alt: string;
 
   @Column()
-  eidas: number;
-
-  @Column()
   allowedAcr: string[];
 
   @Column()
