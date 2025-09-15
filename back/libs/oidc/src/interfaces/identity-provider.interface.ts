@@ -8,7 +8,6 @@ export interface IdpFCMetadata {
   active: boolean;
   discovery: boolean;
   discoveryUrl?: string;
-  amr: string[];
   siret: string;
   supportEmail: string;
 }

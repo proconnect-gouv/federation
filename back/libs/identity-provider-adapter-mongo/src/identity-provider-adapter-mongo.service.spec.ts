@@ -17,7 +17,6 @@ import {
   DiscoveryIdpAdapterMongoDTO,
   NoDiscoveryIdpAdapterMongoDTO,
 } from './dto';
-import { Amr } from './enums';
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
 import { IdentityProvider } from './schemas';
 
@@ -39,7 +38,6 @@ describe('IdentityProviderAdapterMongoService', () => {
     authzURL:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
     clientID: 'clientID',
-    amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
     endSessionURL:
@@ -66,7 +64,6 @@ describe('IdentityProviderAdapterMongoService', () => {
     authorization_endpoint:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
     client_id: 'clientID',
-    amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
     end_session_endpoint:
@@ -106,7 +103,6 @@ describe('IdentityProviderAdapterMongoService', () => {
       userinfo_encrypted_response_enc: 'A256GCM',
       userinfo_signed_response_alg: 'HS256',
     },
-    amr: [Amr.MAIL, Amr.PWD],
     discovery: false,
     issuer: {
       authorization_endpoint:

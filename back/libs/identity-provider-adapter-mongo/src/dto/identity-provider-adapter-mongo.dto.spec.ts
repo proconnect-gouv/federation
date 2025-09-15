@@ -1,6 +1,5 @@
 import { validateDto } from '@fc/common';
 
-import { Amr } from '../enums';
 import {
   DiscoveryIdpAdapterMongoDTO,
   MetadataIdpAdapterMongoDTO,
@@ -15,7 +14,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
   const metaDataIdPAdapterMongoMock = {
     active: true,
     clientID: 'clientID',
-    amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
     endSessionURL:

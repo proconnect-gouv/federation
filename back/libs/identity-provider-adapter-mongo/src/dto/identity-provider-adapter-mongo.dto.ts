@@ -1,6 +1,5 @@
 import {
   IsBoolean,
-  IsEnum,
   IsOptional,
   IsString,
   IsUrl,
@@ -8,7 +7,6 @@ import {
   Validate,
 } from 'class-validator';
 
-import { Amr } from '../enums';
 import { JwksUriValidator } from './jwksuri.validator';
 
 export class MetadataIdpAdapterMongoDTO {
@@ -27,10 +25,6 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsBoolean()
   readonly active: boolean;
-
-  @IsEnum(Amr, { each: true })
-  @IsOptional()
-  readonly amr?: Amr[];
 
   @IsString()
   readonly clientID: string;
