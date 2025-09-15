@@ -1,18 +1,5 @@
 import { ClientMetadata, IssuerMetadata } from '../dto';
 
-/**
- * Alias and export interface provided by `openid-client` from our module,
- * so that we do not expose our depency to `openid-client`.
- */
-export interface IdpFCModal {
-  active: boolean;
-  title: string;
-  body: string;
-  continueText: string;
-  moreInfoLabel?: string;
-  moreInfoUrl?: string;
-}
-
 export interface IdpFCMetadata {
   uid: string;
   url: string;
@@ -22,7 +9,6 @@ export interface IdpFCMetadata {
   discovery: boolean;
   discoveryUrl?: string;
   amr: string[];
-  modal?: IdpFCModal;
   siret: string;
   supportEmail: string;
 }

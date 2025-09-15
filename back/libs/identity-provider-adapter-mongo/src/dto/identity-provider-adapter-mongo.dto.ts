@@ -1,46 +1,15 @@
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
-  IsNotEmpty,
-  IsObject,
   IsOptional,
   IsString,
   IsUrl,
   MinLength,
   Validate,
-  ValidateIf,
-  ValidateNested,
 } from 'class-validator';
 
 import { Amr } from '../enums';
 import { JwksUriValidator } from './jwksuri.validator';
-
-export class ModalIdpAdapterMongo {
-  @IsBoolean()
-  readonly active: boolean;
-
-  @IsString()
-  @ValidateIf(({ active }) => active)
-  readonly title: string;
-
-  @IsString()
-  @ValidateIf(({ active }) => active)
-  readonly body: string;
-
-  @IsString()
-  @ValidateIf(({ active }) => active)
-  readonly continueText: string;
-
-  @ValidateIf(({ active, moreInfoUrl }) => active && moreInfoUrl.length > 0)
-  @IsString()
-  @IsNotEmpty()
-  readonly moreInfoLabel?: string;
-
-  @ValidateIf(({ active, moreInfoLabel }) => active && moreInfoLabel.length > 0)
-  @IsUrl()
-  readonly moreInfoUrl?: string;
-}
 
 export class MetadataIdpAdapterMongoDTO {
   @IsString()
@@ -65,12 +34,6 @@ export class MetadataIdpAdapterMongoDTO {
   @IsEnum(Amr, { each: true })
   @IsOptional()
   readonly amr?: Amr[];
-
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => ModalIdpAdapterMongo)
-  readonly modal?: ModalIdpAdapterMongo;
 
   @IsString()
   readonly clientID: string;
