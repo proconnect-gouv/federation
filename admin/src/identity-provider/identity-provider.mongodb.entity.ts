@@ -50,9 +50,6 @@ export class IdentityProviderFromDb {
   jwksURL?: string;
 
   @Column()
-  jwtAlgorithm: string[];
-
-  @Column()
   clientID: string;
 
   @Column()

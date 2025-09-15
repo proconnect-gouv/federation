@@ -9,7 +9,6 @@ function createIdentityProviderFromDb(
     _id: new ObjectId('68a30acf6cb39008b0015ab4'),
     name: 'Default Name',
     mailto: 'mailto:default@email.fr',
-    jwtAlgorithm: ['ES256'],
     createdAt: new Date('2023-01-01T00:00:00Z'),
     updatedAt: new Date('2023-01-01T00:00:00Z'),
     updatedBy: 'jean_patoche',

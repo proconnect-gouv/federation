@@ -203,7 +203,6 @@ export class IdentityProviderService {
       order: identityProviderDto.order,
       siret: identityProviderDto.siret,
       discoveryUrl: identityProviderDto.discoveryUrl,
-      jwtAlgorithm: [],
       blacklistByIdentityProviderActivated: false,
       WhitelistByServiceProviderActivated: false,
       hoverMsg: identityProviderDto.messageToDisplayWhenInactive,
