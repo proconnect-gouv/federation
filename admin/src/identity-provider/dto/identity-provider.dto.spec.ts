@@ -24,8 +24,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     order: 1,
     emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
     siret: '',
-    specificText:
-      "Veuillez fournir une capture d'écran de votre page de profil !",
     token_endpoint_auth_method: 'client_secret_post',
   };
 
@@ -46,8 +44,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     order: 1,
     emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
     siret: '',
-    specificText:
-      "Veuillez fournir une capture d'écran de votre page de profil !",
     token_endpoint_auth_method: 'client_secret_post',
   };
 

@@ -30,8 +30,6 @@ const fi = {
   siret: '34047343800034',
   order: 1,
   emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-  specificText:
-    "Veuillez fournir une capture d'écran de votre page de profil !",
 };
 
 const fi2 = { ...fi, name: 'FI2' };

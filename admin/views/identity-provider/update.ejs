@@ -470,13 +470,6 @@
             </div>
 
             <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="specificText">Texte pour les erreur E010004, E010006, E010008, E010009, E010015. :</label>
-              <div class="col-10">
-                <input id="specificText" type="text" class="form-control <%= locals.messages.errors && messages.errors[0].specificText && 'is-invalid' %>" name="specificText" value="<%= locals.messages.values && messages.values[0].specificText %>">
-              </div>
-            </div>
-
-            <div class="mb-3 row">
               <label class="col-lg-2 col-lg-form-label" for="_totp">Code TOTP</label>
               <div class="col-lg-10">
                 <input id="_totp" type="text" required class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>" name="_totp">

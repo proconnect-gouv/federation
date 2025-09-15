@@ -22,8 +22,6 @@ describe('Delete identity provider normal', () => {
     redirectionTargetWhenInactive: 'https://issuer.fr/promo',
     order: 1,
     emails: 'sherman@tata.com\nvbonnard@tata.com',
-    specificText:
-      "Veuillez fournir une capture d'écran de votre page de profil !",
     siret: '34047343800034',
   };
 
@@ -100,8 +98,6 @@ describe('Delete identity provider non latin', () => {
     siret: '34047343800034',
     order: 1,
     emails: 'sherman@tata.com\nvbonnard@tata.com',
-    specificText:
-      "Veuillez fournir une capture d'écran de votre page de profil !",
   };
 
   before(() => {

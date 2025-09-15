@@ -47,8 +47,6 @@ describe('Identity provider creation', () => {
         redirectionTargetWhenInactive: 'https://issuer.fr/promo',
         order: 1,
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -158,8 +156,6 @@ describe('Identity provider creation', () => {
         redirectionTargetWhenInactive: 'https://issuer.fr/promo',
         order: 1,
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
         userinfo_encrypted_response_enc: 'A256GCM',
         userinfo_encrypted_response_alg: 'RSA-OAEP',
         userinfo_signed_response_alg: 'ES256',

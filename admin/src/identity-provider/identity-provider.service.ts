@@ -234,9 +234,6 @@ export class IdentityProviderService {
       token_endpoint_auth_method:
         identityProviderDto.token_endpoint_auth_method,
       supportEmail: identityProviderDto.supportEmail,
-      specificText:
-        identityProviderDto.specificText ||
-        'Une erreur est survenue lors de la transmission de votre identité.',
     };
 
     switch (mode) {
@@ -273,7 +270,6 @@ export class IdentityProviderService {
       siret: inputProvider.siret,
       client_secret: inputProvider.client_secret,
       active: inputProvider.active,
-      specificText: inputProvider.specificText,
       discoveryUrl: inputProvider.discoveryUrl,
       id_token_encrypted_response_enc:
         inputProvider.id_token_encrypted_response_enc,

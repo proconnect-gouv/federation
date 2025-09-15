@@ -23,9 +23,6 @@ export class IdentityProviderFromDb {
   mailto: string;
 
   @Column()
-  specificText: string;
-
-  @Column()
   url: string;
 
   @Column()

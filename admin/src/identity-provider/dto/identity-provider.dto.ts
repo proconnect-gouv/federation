@@ -136,10 +136,6 @@ export class IdentityProviderDTO {
   })
   readonly emails?: string[];
 
-  @IsOptionalExtended()
-  @IsString()
-  readonly specificText: string;
-
   @IsOptional()
   @IsIn(['', 'A256GCM'], {
     message:

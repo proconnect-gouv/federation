@@ -28,7 +28,6 @@ function createIdentityProviderFromDb(
     endSessionURL: 'https://default.logout-url.fr',
     url: 'https://default.issuer.fr',
     order: 0,
-    specificText: '',
     statusURL: 'https://default.status-url.fr',
     title: 'Default Title',
     id_token_encrypted_response_alg: 'default_alg',
@@ -70,9 +69,6 @@ function createIdentityProviderDto(
     messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
     redirectionTargetWhenInactive: 'https://issuer.fr/promo',
     order: 0,
-
-    specificText:
-      "Veuillez fournir une capture d'écran de votre page de profil !",
     title: 'Default Title',
     userinfo_encrypted_response_enc: 'ES256',
     userinfo_encrypted_response_alg: 'RSA-OAEP',

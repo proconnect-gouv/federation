@@ -44,8 +44,6 @@ describe('Identity provider update', () => {
         siret: '34047343800034',
         order: 1,
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
         token_endpoint_auth_method: 'client_secret_post',
       };
 
@@ -78,7 +76,6 @@ describe('Identity provider update', () => {
         redirectionTargetWhenInactive: '',
         order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText: '',
         siret: '34047343800034',
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
@@ -119,8 +116,6 @@ describe('Identity provider update', () => {
         siret: '34047343800034',
         order: 1,
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
         token_endpoint_auth_method: 'client_secret_post',
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
@@ -154,7 +149,6 @@ describe('Identity provider update', () => {
         redirectionTargetWhenInactive: '',
         order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText: '',
         siret: '34047343800034',
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
@@ -185,7 +179,6 @@ describe('Identity provider update', () => {
         redirectionTargetWhenInactive: '',
         order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText: '',
         siret: '34047343800034',
         supportEmail: 'valid@support.fr',
       };
@@ -218,8 +211,6 @@ describe('Identity provider update', () => {
         siret: '34047343800034',
         order: 5,
         emails: 'new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText:
-          "new-Veuillez fournir une capture d'écran de votre page de profil !",
         userinfo_encrypted_response_enc: 'A256GCM',
         userinfo_encrypted_response_alg: 'RSA-OAEP',
         userinfo_signed_response_alg: 'ES256',
@@ -258,8 +249,6 @@ describe('Identity provider update', () => {
         siret: '34047343800034',
         order: 5,
         emails: 'new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText:
-          "new-Veuillez fournir une capture d'écran de votre page de profil !",
         token_endpoint_auth_method: 'client_secret_post',
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
@@ -294,7 +283,6 @@ describe('Identity provider update', () => {
         discoveryUrl: '',
         order: '',
         emails: '',
-        specificText: '',
         siret: '',
       };
 
@@ -324,7 +312,6 @@ describe('Identity provider update', () => {
         discoveryUrl: 'https://new-issuer.fr/discoveryUrl',
         order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText: '',
         siret: '34047343800034',
       };
 

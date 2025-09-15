@@ -177,8 +177,6 @@ describe('IdentityProviderService', () => {
         isBeta: false,
         order: 1,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
         amr: ['pop'],
       });
 
@@ -206,8 +204,6 @@ describe('IdentityProviderService', () => {
         endSessionURL: 'https://issuer.fr/logout',
         url: 'https://default.issuer.fr',
         order: 1,
-        specificText:
-          'Une erreur est survenue lors de la transmission de votre identité.',
         statusURL: 'https://default.status-url.fr',
         title: 'Mon FI mieux écrit',
         id_token_encrypted_response_alg: 'default_alg',
@@ -596,9 +592,6 @@ describe('IdentityProviderService', () => {
         isBeta: false,
         order: 1,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
-        specificText:
-          'Une erreur est survenue lors de la transmission de votre identité.',
-
         amr: ['pop'],
         discoveryUrl: 'https://default.discovery-url.fr',
         id_token_encrypted_response_alg: 'default_alg',
@@ -638,8 +631,6 @@ describe('IdentityProviderService', () => {
         endSessionURL: 'https://issuer.fr/logout',
         url: 'https://issuer.fr',
         order: 1,
-        specificText:
-          'Une erreur est survenue lors de la transmission de votre identité.',
         statusURL: 'https://default.status-url.fr',
         title: 'Mon FI mieux écrit',
         id_token_encrypted_response_alg: 'default_alg',
