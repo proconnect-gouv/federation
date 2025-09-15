@@ -20,7 +20,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
-    display: false,
     isBeta: false,
     allowedAcr: ['eidas2'],
     endSessionURL:

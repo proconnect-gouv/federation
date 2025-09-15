@@ -20,7 +20,6 @@ export interface IdpFCMetadata {
   image: string;
   title: string;
   active: boolean;
-  display: boolean;
   discovery: boolean;
   discoveryUrl?: string;
   allowedAcr: string[];
