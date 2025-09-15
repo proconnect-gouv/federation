@@ -98,7 +98,6 @@ describe('IdentityProviderController', () => {
     );
 
     jest.resetAllMocks();
-
   });
 
   describe('list', () => {

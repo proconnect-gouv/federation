@@ -27,12 +27,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     specificText:
       "Veuillez fournir une capture d'écran de votre page de profil !",
     token_endpoint_auth_method: 'client_secret_post',
-    modalActive: 'true',
-    modalTitle: 'title',
-    modalBody: 'body',
-    modalContinueText: 'continueText',
-    modalMoreInfoLabel: 'moreInfoLabel',
-    modalMoreInfoUrl: 'https://moreInfoUrl.com',
   };
 
   const idpDiscoveryMock = {
@@ -55,12 +49,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     specificText:
       "Veuillez fournir une capture d'écran de votre page de profil !",
     token_endpoint_auth_method: 'client_secret_post',
-    modalActive: 'true',
-    modalTitle: 'title',
-    modalBody: 'body',
-    modalContinueText: 'continueText',
-    modalMoreInfoLabel: 'moreInfoLabel',
-    modalMoreInfoUrl: 'https://moreInfoUrl.com',
   };
 
   describe('should validate', () => {

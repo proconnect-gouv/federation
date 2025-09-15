@@ -7,8 +7,6 @@ import {
   IsOptional,
   ValidateIf,
   IsArray,
-  IsUrl,
-  IsNotEmpty,
   Length,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
@@ -24,7 +22,6 @@ const URL_REGEX =
   /^((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)$/;
 const EMAIL_REGEX = /^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 const FQDN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
-const IMG_REGEX = /\.(png|svg|jpg|gif)$/;
 
 export class IdentityProviderDTO {
   @IsValidInputString({
@@ -234,39 +231,6 @@ export class IdentityProviderDTO {
   })
   readonly fqdns?: string[];
 
-  @IsBoolean()
-  @Transform(toBoolean)
-  @IsOptional()
-  readonly modalActive?: boolean;
-
-  @ValidateIf(({ modalActive }) => modalActive)
-  @IsString()
-  readonly modalTitle?: string;
-
-  @ValidateIf(({ modalActive }) => modalActive)
-  @IsString()
-  readonly modalBody?: string;
-
-  @ValidateIf(({ modalActive }) => modalActive)
-  @IsString()
-  readonly modalContinueText?: string;
-
-  @ValidateIf(
-    ({ modalActive, modalMoreInfoUrl }) =>
-      modalActive && modalMoreInfoUrl.length > 0,
-  )
-  @IsString()
-  @IsNotEmpty()
-  readonly modalMoreInfoLabel?: string;
-
-  @ValidateIf(
-    ({ modalActive, modalMoreInfoLabel }) =>
-      modalActive && modalMoreInfoLabel.length > 0,
-  )
-  @IsUrl()
-  readonly modalMoreInfoUrl?: string;
-
-  // only for proconnect
   @IsOptionalExtended()
   @IsString()
   @Length(14, 14)

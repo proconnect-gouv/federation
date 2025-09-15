@@ -298,12 +298,6 @@ export class IdentityProviderService {
       emails: linesToArray({ value: inputProvider.mailto }),
       issuer: inputProvider.url,
       amr: inputProvider.amr,
-      modalActive: inputProvider.modal?.active,
-      modalTitle: inputProvider.modal?.title,
-      modalBody: inputProvider.modal?.body,
-      modalContinueText: inputProvider.modal?.continueText,
-      modalMoreInfoLabel: inputProvider.modal?.moreInfoLabel,
-      modalMoreInfoUrl: inputProvider.modal?.moreInfoUrl,
     };
   }
 }

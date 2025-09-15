@@ -129,16 +129,6 @@ export class IdentityProviderFromDb {
   amr?: string[];
 
   @Column()
-  modal?: {
-    active: boolean;
-    title: string;
-    body: string;
-    continueText: string;
-    moreInfoLabel: string;
-    moreInfoUrl: string;
-  };
-
-  @Column()
   siret: string;
 
   @Column()

@@ -180,12 +180,6 @@ describe('IdentityProviderService', () => {
         specificText:
           "Veuillez fournir une capture d'écran de votre page de profil !",
         amr: ['pop'],
-        modalActive: false,
-        modalTitle: 'title',
-        modalBody: 'body',
-        modalContinueText: 'continueText',
-        modalMoreInfoLabel: 'moreInfoLabel',
-        modalMoreInfoUrl: 'moreInfoUrl',
       });
 
     const transformedIntoEntity =
@@ -229,14 +223,6 @@ describe('IdentityProviderService', () => {
         userinfo_signed_response_alg: 'ES256',
         userInfoURL: 'https://issuer.fr/userinfo',
         uid: 'default_uid',
-        modal: {
-          active: false,
-          body: 'body',
-          continueText: 'continueText',
-          moreInfoLabel: 'moreInfoLabel',
-          moreInfoUrl: 'moreInfoUrl',
-          title: 'title',
-        },
       });
 
     beforeEach(() => {
