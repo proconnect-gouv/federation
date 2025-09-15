@@ -96,10 +96,6 @@ export class IdentityProviderDTO {
   @IsBoolean()
   readonly discovery: boolean;
 
-  @Transform(toBoolean)
-  @IsBoolean()
-  readonly isBeta: boolean;
-
   @IsString()
   readonly clientId: string;
 

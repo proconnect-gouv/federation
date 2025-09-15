@@ -47,9 +47,6 @@ export class IdentityProviderFromDb {
   discovery: boolean;
 
   @Column()
-  isBeta: boolean;
-
-  @Column()
   jwksURL?: string;
 
   @Column()
