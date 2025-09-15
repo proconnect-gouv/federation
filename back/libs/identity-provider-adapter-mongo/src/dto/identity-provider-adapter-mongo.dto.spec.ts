@@ -18,7 +18,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
-    isBeta: false,
     endSessionURL:
       'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
     id_token_encrypted_response_alg: 'RSA-OAEP',

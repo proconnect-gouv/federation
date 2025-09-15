@@ -28,9 +28,6 @@ export class MetadataIdpAdapterMongoDTO {
   @IsBoolean()
   readonly active: boolean;
 
-  @IsBoolean()
-  readonly isBeta: boolean;
-
   @IsEnum(Amr, { each: true })
   @IsOptional()
   readonly amr?: Amr[];

@@ -5,7 +5,6 @@ db.provider.update(
     uid: "ebe0026f-d6e3-4807-bfa2-c65c8ae46d07",
     name: "idp-test-update",
     active: false,
-    isBeta: false,
     title: "Idp test Inserted",
     mailto: "",
     url: "https://fia2-low.docker.dev-franceconnect.fr/",

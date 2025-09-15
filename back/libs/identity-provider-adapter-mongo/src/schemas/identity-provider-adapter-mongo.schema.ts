@@ -10,9 +10,6 @@ export class IdentityProvider extends Document {
   @Prop({ index: true, type: String })
   clientID: string;
 
-  @Prop({ type: Boolean })
-  isBeta: boolean;
-
   @Prop({ type: String })
   client_secret: string;
 
