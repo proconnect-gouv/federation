@@ -312,7 +312,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        identityConsent: false,
         trustedIdentity: false,
         eidas: 1,
         entityId:
@@ -337,7 +336,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        identityConsent: false,
         trustedIdentity: false,
         eidas: 1,
         entityId:
@@ -362,7 +360,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        identityConsent: false,
         trustedIdentity: false,
         eidas: 1,
         entityId:

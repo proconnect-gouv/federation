@@ -62,16 +62,6 @@ export function createServiceProvider(serviceProviderInfo, configuration) {
     force: true,
   });
 
-  if (serviceProviderInfo.identityConsent === true) {
-    cy.get('[type="radio"]').check('private', {
-      force: true,
-    });
-
-    cy.get('form').find('[id="consent-required"]').check('true', {
-      force: true,
-    });
-  }
-
   cy.totp(configuration);
   cy.get('form[name="fs-form"] button[type="submit"]').click();
 }

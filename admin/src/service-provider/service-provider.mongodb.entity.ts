@@ -21,9 +21,6 @@ export class ServiceProviderFromDb {
   active: boolean;
 
   @Column()
-  identityConsent?: boolean;
-
-  @Column()
   site: string[];
 
   @Column()
