@@ -108,11 +108,6 @@ export class IdentityProviderDTO {
   @IsBoolean()
   readonly active: boolean;
 
-  @IsOptionalExtended()
-  @IsNumber()
-  @Type(() => Number)
-  readonly order: number;
-
   @IsOptionalArrayExtended()
   @Transform(linesToArray)
   @Matches(EMAIL_REGEX, {

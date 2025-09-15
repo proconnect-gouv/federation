@@ -40,7 +40,6 @@ describe('Identity provider update', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         siret: '34047343800034',
-        order: 1,
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
       };
@@ -70,7 +69,6 @@ describe('Identity provider update', () => {
         statusUrl: '',
         clientId: 'new-new-09a1a257648c1742c74d6a3d84b31943',
         client_secret: 'new-new-1234567890AZERTYUIOP',
-        order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         siret: '34047343800034',
       };
@@ -108,7 +106,6 @@ describe('Identity provider update', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         siret: '34047343800034',
-        order: 1,
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
       };
@@ -139,7 +136,6 @@ describe('Identity provider update', () => {
         fqdns: 'example.com\nexample.net',
         clientId: 'new-new-09a1a257648c1742c74d6a3d84b31943',
         client_secret: 'new-new-1234567890AZERTYUIOP',
-        order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         siret: '34047343800034',
       };
@@ -167,7 +163,6 @@ describe('Identity provider update', () => {
         jwksUrl: '',
         clientId: 'new-new-09a1a257648c1742c74d6a3d84b31943',
         client_secret: 'new-new-1234567890AZERTYUIOP',
-        order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         siret: '34047343800034',
         supportEmail: 'valid@support.fr',
@@ -197,7 +192,6 @@ describe('Identity provider update', () => {
         client_secret: 'new-1234567890AZERTYUIOP',
         active: 'true',
         siret: '34047343800034',
-        order: 5,
         emails: 'new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         userinfo_encrypted_response_enc: 'A256GCM',
         userinfo_encrypted_response_alg: 'RSA-OAEP',
@@ -233,7 +227,6 @@ describe('Identity provider update', () => {
         client_secret: 'new-1234567890AZERTYUIOP',
         active: 'true',
         siret: '34047343800034',
-        order: 5,
         emails: 'new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
       };
@@ -265,7 +258,6 @@ describe('Identity provider update', () => {
         clientId: '',
         client_secret: '',
         discoveryUrl: '',
-        order: '',
         emails: '',
         siret: '',
       };
@@ -292,7 +284,6 @@ describe('Identity provider update', () => {
         client_secret: 'new-new-1234567890AZERTYUIOP',
         discovery: true,
         discoveryUrl: 'https://new-issuer.fr/discoveryUrl',
-        order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         siret: '34047343800034',
       };

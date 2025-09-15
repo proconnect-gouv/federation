@@ -172,7 +172,6 @@ describe('IdentityProviderService', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         active: true,
-        order: 1,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
       });
 
@@ -191,7 +190,6 @@ describe('IdentityProviderService', () => {
         discovery: true,
         endSessionURL: 'https://issuer.fr/logout',
         url: 'https://default.issuer.fr',
-        order: 1,
         statusURL: 'https://default.status-url.fr',
         title: 'Mon FI mieux écrit',
         id_token_encrypted_response_alg: 'default_alg',
@@ -575,7 +573,6 @@ describe('IdentityProviderService', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         active: true,
-        order: 1,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
         discoveryUrl: 'https://default.discovery-url.fr',
         id_token_encrypted_response_alg: 'default_alg',
@@ -606,7 +603,6 @@ describe('IdentityProviderService', () => {
         discovery: true,
         endSessionURL: 'https://issuer.fr/logout',
         url: 'https://issuer.fr',
-        order: 1,
         statusURL: 'https://default.status-url.fr',
         title: 'Mon FI mieux écrit',
         id_token_encrypted_response_alg: 'default_alg',

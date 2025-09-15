@@ -55,9 +55,6 @@ export class IdentityProviderFromDb {
   client_secret: string;
 
   @Column()
-  order: number;
-
-  @Column()
   createdAt: Date;
 
   @Column()
