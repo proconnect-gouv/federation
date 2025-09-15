@@ -13,7 +13,6 @@ export interface IdentityProviderConfig
   client_secret: string;
   messageToDisplayWhenInactive: string;
   redirectionTargetWhenInactive: string;
-  alt: string;
   order: string;
   emails: string;
   specificText: string;

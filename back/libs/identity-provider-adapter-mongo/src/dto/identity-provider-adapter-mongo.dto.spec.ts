@@ -27,7 +27,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'RS512',
-    image: 'provider1.png',
     name: 'provider1',
     title: 'provider 1',
     token_endpoint_auth_method: 'client_secret_post',

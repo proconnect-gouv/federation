@@ -17,7 +17,6 @@ export interface IdpFCMetadata {
   uid: string;
   url: string;
   name: string;
-  image: string;
   title: string;
   active: boolean;
   discovery: boolean;

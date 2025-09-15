@@ -8,7 +8,6 @@ import {
   IsString,
   IsUrl,
   MinLength,
-  NotContains,
   Validate,
   ValidateIf,
   ValidateNested,
@@ -55,10 +54,6 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsString()
   readonly name: string;
-
-  @IsString()
-  @NotContains('/')
-  readonly image: string;
 
   @IsString()
   readonly title: string;

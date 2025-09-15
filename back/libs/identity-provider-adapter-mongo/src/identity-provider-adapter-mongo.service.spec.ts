@@ -48,7 +48,6 @@ describe('IdentityProviderAdapterMongoService', () => {
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'HS256',
-    image: 'provider1.png',
     jwksURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
     name: 'provider1',
     title: 'provider 1',
@@ -77,7 +76,6 @@ describe('IdentityProviderAdapterMongoService', () => {
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'HS256',
-    image: 'provider1.png',
     issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
     jwks_uri: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
     name: 'provider1',
@@ -113,7 +111,6 @@ describe('IdentityProviderAdapterMongoService', () => {
     amr: [Amr.MAIL, Amr.PWD],
     discovery: false,
     allowedAcr: ['eidas2'],
-    image: 'provider1.png',
     issuer: {
       authorization_endpoint:
         'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
