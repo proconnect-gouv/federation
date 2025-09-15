@@ -18,7 +18,6 @@ describe('Delete identity provider normal', () => {
     jwksUrl: 'https://issuer.fr/discovery',
     clientId: '09a1a257648c1742c74d6a3d84b31943',
     client_secret: '1234567890AZERTYUIOP',
-    emails: 'sherman@tata.com\nvbonnard@tata.com',
     siret: '34047343800034',
   };
 
@@ -91,7 +90,6 @@ describe('Delete identity provider non latin', () => {
     clientId: '09a1a257648c1742c74d6a3d84b31943',
     client_secret: '1234567890AZERTYUIOP',
     siret: '34047343800034',
-    emails: 'sherman@tata.com\nvbonnard@tata.com',
   };
 
   before(() => {

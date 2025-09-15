@@ -108,14 +108,6 @@ export class IdentityProviderDTO {
   @IsBoolean()
   readonly active: boolean;
 
-  @IsOptionalArrayExtended()
-  @Transform(linesToArray)
-  @Matches(EMAIL_REGEX, {
-    each: true,
-    message: 'Veuillez mettre des emails valides ( Ex: email@email.com )',
-  })
-  readonly emails?: string[];
-
   @IsOptional()
   @IsIn(['', 'A256GCM'], {
     message:

@@ -393,25 +393,6 @@
             </div>
 
             <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="emails">Email pour l'envoi des statistiques (une adresse mail par ligne) :</label>
-              <div class="col-10">
-                <textarea id="emails" rows="3" name="emails" class="form-control <%= locals.messages.errors && messages.errors[0].emails && 'is-invalid' %>" pattern="^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$"><%= locals.messages.values && messages.values[0].emails instanceof Array ? messages.values[0].emails.join('\n') : '' %></textarea>
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].emails) { %>
-                  <p>
-                    <% messages.errors[0].emails.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez saisir au moins un email
-                  <% } %>
-                </div>
-              </div>
-            </div>
-
-            <div class="mb-3 row">
               <label class="col-lg-2 col-lg-form-label" for="_totp">Code TOTP</label>
               <div class="col-lg-10">
                 <input id="_totp" type="text" required class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>" name="_totp">

@@ -43,7 +43,6 @@ describe('Identity provider creation', () => {
         discovery: 'false',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -75,7 +74,6 @@ describe('Identity provider creation', () => {
         userInfoUrl: 'https://issuer.fr/me',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -99,7 +97,6 @@ describe('Identity provider creation', () => {
         userInfoUrl: 'https://issuer.fr/me',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
         supportEmail: 'support@myidp.fr',
@@ -125,7 +122,6 @@ describe('Identity provider creation', () => {
         jwksUrl: 'https://issuer.fr/jwks',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -149,7 +145,6 @@ describe('Identity provider creation', () => {
         discoveryUrl: 'http://discoveryUrl.com',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         userinfo_encrypted_response_enc: 'A256GCM',
         userinfo_encrypted_response_alg: 'RSA-OAEP',
         userinfo_signed_response_alg: 'ES256',
@@ -178,7 +173,6 @@ describe('Identity provider creation', () => {
         discoveryUrl: 'http://discoveryUrl.com',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -241,7 +235,6 @@ describe('Identity provider creation', () => {
         userInfoUrl: 'https://issuer.fr/me',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -266,7 +259,6 @@ describe('Identity provider creation', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         supportEmail: 'notAnEmail',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -288,7 +280,6 @@ describe('Identity provider creation', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         active: 'true',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };

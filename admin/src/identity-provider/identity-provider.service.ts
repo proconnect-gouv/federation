@@ -6,7 +6,6 @@ import { ConfigService } from 'nestjs-config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { linesToArray } from '../utils/transforms/string.transform';
 import { LoggerService } from '../logger/logger.service';
 
 import { ICrudTrack } from '../interfaces';

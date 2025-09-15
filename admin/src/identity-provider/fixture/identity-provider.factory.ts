@@ -63,7 +63,6 @@ function createIdentityProviderDto(
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     token_endpoint_auth_method: 'client_secret_post',
-    emails: ['sherman@kaliop.com', 'nvbonnard@kaliopmail.com'],
     fqdns: [],
     post_logout_redirect_uris: [],
     redirect_uris: [],

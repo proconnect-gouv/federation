@@ -172,7 +172,6 @@ describe('IdentityProviderService', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         active: true,
-        emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
       });
 
     const transformedIntoEntity =
@@ -573,7 +572,6 @@ describe('IdentityProviderService', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         active: true,
-        emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
         discoveryUrl: 'https://default.discovery-url.fr',
         id_token_encrypted_response_alg: 'default_alg',
         id_token_encrypted_response_enc: 'default_enc',
