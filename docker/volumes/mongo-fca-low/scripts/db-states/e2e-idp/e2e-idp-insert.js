@@ -8,7 +8,6 @@ db.provider.update(
     isBeta: false,
     title: "Idp test Inserted",
     mailto: "",
-    specificText: "specific text FI 3",
     url: "https://fia2-low.docker.dev-franceconnect.fr/",
     statusURL: "https://fia2-low.docker.dev-franceconnect.fr/",
     discoveryUrl:

@@ -18,7 +18,6 @@
     "id_token_signed_response_alg": "ES256",
     "order": "1",
     "emails": "test1@yopmail.com\ntest2@yopmail.com",
-    "specificText": "Veuillez fournir une capture d'écran de votre page de profil !",
     "token_endpoint_auth_method": "client_secret_post",
     "siret": "81801912700021"
   }

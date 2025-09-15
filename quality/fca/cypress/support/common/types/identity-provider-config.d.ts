@@ -15,6 +15,5 @@ export interface IdentityProviderConfig
   redirectionTargetWhenInactive: string;
   order: string;
   emails: string;
-  specificText: string;
   token_endpoint_auth_method: string;
 }

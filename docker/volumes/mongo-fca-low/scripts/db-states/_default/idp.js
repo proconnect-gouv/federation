@@ -10,7 +10,6 @@ const fia = {
     trustedIdentity: false,
     mailto: '',
     supportEmail: 'support+federation@proconnect.gouv.fr',
-    specificText: 'specific text fia1-low',
     url: 'https://fia1-low.docker.dev-franceconnect.fr/',
     statusURL: 'https://fia1-low.docker.dev-franceconnect.fr/',
     discoveryUrl:
@@ -50,7 +49,6 @@ const fia = {
     trustedIdentity: false,
     mailto: '',
     supportEmail: '',
-    specificText: 'specific text fia2-low',
     url: 'https://fia2-low.docker.dev-franceconnect.fr/',
     statusURL: 'https://fia2-low.docker.dev-franceconnect.fr/',
     discoveryUrl:
@@ -90,7 +88,6 @@ const fia = {
     trustedIdentity: false,
     mailto: '',
     supportEmail: 'support+federation@proconnect.gouv.fr',
-    specificText: 'specific text fia3-low',
     url: 'https://fia3-low.docker.dev-franceconnect.fr/',
     statusURL: 'https://fia3-low.docker.dev-franceconnect.fr/',
     discoveryUrl:
@@ -130,7 +127,6 @@ const fia = {
     trustedIdentity: false,
     mailto: '',
     supportEmail: 'support+federation@proconnect.gouv.fr',
-    specificText: 'specific text MonComptePro',
     url: 'https://moncomptepro.docker.dev-franceconnect.fr',
     discoveryUrl:
       'https://moncomptepro.docker.dev-franceconnect.fr/.well-known/openid-configuration',
@@ -170,7 +166,6 @@ const fia = {
     trustedIdentity: false,
     mailto: '',
     supportEmail: 'support+federation@proconnect.gouv.fr',
-    specificText: 'specific text fia-rie-low',
     url: 'https://fia-rie-low.docker.dev-franceconnect.fr/',
     statusURL: 'https://fia-rie-low.docker.dev-franceconnect.fr/',
     discoveryUrl:
@@ -210,7 +205,6 @@ const fia = {
     trustedIdentity: false,
     mailto: '',
     supportEmail: 'support+federation@proconnect.gouv.fr',
-    specificText: 'specific text llng',
     url: 'https://auth.llng.docker.dev-franceconnect.fr',
     discoveryUrl:
       'https://auth.llng.docker.dev-franceconnect.fr/.well-known/openid-configuration',
