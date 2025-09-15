@@ -82,7 +82,6 @@ export class IdentityProviderAdapterMongoService
   private async findAllIdentityProvider() {
     const rawIdentityProviders = await this.identityProviderModel
       .find({})
-      .sort({ order: 'asc', createdAt: 'asc' })
       .lean();
 
     const { disableIdpValidationOnLegacy } =
