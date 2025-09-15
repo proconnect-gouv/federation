@@ -104,15 +104,6 @@ export class ServiceProviderDto {
   // tslint:disable-next-line: variable-name
   readonly id_token_signed_response_alg?: string;
 
-  // todo: check what theses properties are used for
-  @IsOptionalExtended()
-  @Matches(/^[a-zA-Z0-9]{1}[a-zA-Z0-9\-]{31,}$/, {
-    each: true,
-    message:
-      "Veuillez mettre un id d'entité valide (lettres, chiffres, tirets et 32 caractères minimum)",
-  })
-  readonly entityId?: string;
-
   @Transform(toArray)
   @IsString({ each: true })
   @IsArray()

@@ -351,23 +351,6 @@ describe('Service provider creation', () => {
         `Le fournisseur de service My_FS with 42 : ÉçïœâùÆ/ÙÈ.com+2 & ee a été créé avec succès !`,
       );
     });
-
-    it('if we add a fs with an entityId', () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: 'My_FS with an entityId',
-          entityId:
-            '0a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-        },
-        basicConfiguration,
-      );
-
-      cy.contains(
-        `Le fournisseur de service My_FS with an entityId a été créé avec succès !`,
-      );
-    });
   });
 
   describe('Should fail', () => {

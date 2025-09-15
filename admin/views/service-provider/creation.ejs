@@ -195,25 +195,6 @@
               </div>
             </div>
 
-            <section class="mb-3 row">
-              <label class="col-2 col-form-label" for="entityId">Id d'entité : </label>
-              <div class="col-10">
-                <input id="entityId" name="entityId" type="text" class="form-control <%= locals.messages.errors && messages.errors[0].entityId && 'is-invalid' %>" value="<%= locals.messages.values && messages.values[0].entityId %>" pattern="^[a-zA-Z0-9]{1}[a-zA-Z0-9\-]{31,}$">
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].entityId) { %>
-                  <p>
-                    <% messages.errors[0].entityId.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez mettre un id d'entité valide (lettres, chiffres, tirets et 32 caractères minimum)
-                  <% } %>
-                </div>
-              </div>
-            </section>
-
             <%- include('partials/resource-server.ejs') -%>
 
             <section class="mb-3 row">

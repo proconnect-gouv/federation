@@ -191,8 +191,6 @@ export class ServiceProviderService {
     user: string,
   ): Omit<ServiceProviderFromDb, '_id'> {
     const now = new Date();
-    const entityId =
-      serviceProviderDto.entityId || this.secretAdapter.generateKey();
     const key = this.secretAdapter.generateKey();
 
     return {
@@ -229,7 +227,6 @@ export class ServiceProviderService {
       updatedBy: user,
       secretUpdatedBy: user,
       key,
-      entityId,
     };
   }
 }

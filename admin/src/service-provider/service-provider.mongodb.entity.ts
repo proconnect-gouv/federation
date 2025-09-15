@@ -53,9 +53,6 @@ export class ServiceProviderFromDb {
   @Column({ name: 'key' })
   key: string;
 
-  @Column({ name: 'entityId' })
-  entityId: string;
-
   @Column({ name: 'signup_id' })
   // tslint:disable-next-line: variable-name
   signup_id?: string;

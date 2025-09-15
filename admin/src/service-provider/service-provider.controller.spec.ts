@@ -195,8 +195,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
@@ -215,8 +213,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
@@ -237,8 +233,6 @@ describe('ServiceProviderController', () => {
         scopes: [...scopeList],
         userinfo_signed_response_alg: 'ES256',
         id_token_signed_response_alg: 'ES256',
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       // Mocking return value of serviceProviderController.list(page, limit)
@@ -302,8 +296,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
@@ -323,8 +315,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
@@ -344,8 +334,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       // Mocking return value of serviceProviderController.list(page, limit)
@@ -854,8 +842,6 @@ describe('ServiceProviderController', () => {
       createdAt: new Date('2019-11-08T09:52:29.984Z'),
       updatedBy: userMock,
       scopes: [...scopeList],
-      entityId:
-        'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
     };
 
     it('should return a list of service providers even with sort/action as undefined values', async () => {
