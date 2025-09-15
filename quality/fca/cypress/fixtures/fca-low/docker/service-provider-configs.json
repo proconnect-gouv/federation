@@ -9,6 +9,6 @@
     "active": "true",
     "type": "public",
     "userinfo_signed_response_alg": "HS256",
-    "id_token_signed_response_alg": "HS256",
+    "id_token_signed_response_alg": "HS256"
   }
 }
