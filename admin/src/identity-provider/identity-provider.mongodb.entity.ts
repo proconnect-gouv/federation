@@ -17,9 +17,6 @@ export class IdentityProviderFromDb {
   active: boolean;
 
   @Column()
-  display: boolean;
-
-  @Column()
   title: string;
 
   @Column()

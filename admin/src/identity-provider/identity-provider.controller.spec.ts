@@ -204,7 +204,6 @@ describe('IdentityProviderController', () => {
       const resultMock = {
         ...idpDtoMock,
         active: true,
-        display: true,
         discovery: true,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
       };

@@ -145,10 +145,6 @@ export class IdentityProviderDTO {
   @IsBoolean()
   readonly active: boolean;
 
-  @Transform(toBoolean)
-  @IsBoolean()
-  readonly display: boolean;
-
   @Transform(toArray)
   @IsString({ each: true })
   @IsArray()

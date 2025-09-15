@@ -249,13 +249,11 @@ export class IdentityProviderService {
           uid: uuidv4(),
           createdAt: now,
           active: false,
-          display: false,
         });
         break;
       case 'update':
         Object.assign(entity, {
           active: identityProviderDto.active,
-          display: identityProviderDto.display,
         });
         break;
     }
@@ -282,7 +280,6 @@ export class IdentityProviderService {
       image: inputProvider.image,
       imageFocus: inputProvider.imageFocus,
       active: inputProvider.active,
-      display: inputProvider.display,
       allowedAcr: inputProvider.allowedAcr,
       specificText: inputProvider.specificText,
       discoveryUrl: inputProvider.discoveryUrl,

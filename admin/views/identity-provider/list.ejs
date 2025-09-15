@@ -32,7 +32,6 @@
           <th scope="col" class="col-4 border border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "active", fieldName: "Activé" }); %>
           </th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Affiché</th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "order", fieldName: "Ordre d'affichage" }); %>
           </th>
@@ -70,9 +69,6 @@
             <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary"><%= identityProvider.mailto %></td>
             <td class="text-center border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <i class="fa fa-toggle-<%= identityProvider.active ? "on" : "off" %>"></i>
-            </td>
-            <td class="text-center border border-bottom-0 border-top-0 border-end-0 border-secondary">
-              <i class="fa fa-toggle-<%= identityProvider.display ? "on" : "off" %>"></i>
             </td>
             <td class="border border-bottom-0 border-top-0 border-secondary"><%= identityProvider.order %></td>
             <td class="border">

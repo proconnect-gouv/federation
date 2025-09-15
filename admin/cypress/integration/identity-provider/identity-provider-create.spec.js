@@ -28,7 +28,6 @@ describe('Identity provider creation', () => {
       cy.get('[name="discovery"]:checked').should('have.value', 'false');
       cy.get('[name="discoveryUrl"]').should('be.disabled');
       cy.get('[name="active"]:checked').should('have.value', 'false');
-      cy.get('[name="display"]:checked').should('have.value', 'false');
     });
 
     it('if all fields are provided', () => {
@@ -313,7 +312,6 @@ describe('Identity provider creation', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         active: 'true',
-        display: 'true',
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         allowedAcr: ['eidas2'],
