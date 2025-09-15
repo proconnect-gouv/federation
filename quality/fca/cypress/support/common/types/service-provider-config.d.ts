@@ -10,5 +10,4 @@ export interface ServiceProviderConfig
   type: string;
   userinfo_signed_response_alg: string;
   id_token_signed_response_alg: string;
-  entityId: string;
 }
