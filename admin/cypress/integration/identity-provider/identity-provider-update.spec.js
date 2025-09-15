@@ -308,6 +308,24 @@ describe('Identity provider update', () => {
 
       assertFormValues(idp);
     });
+
+    it('accepts an empty siret', () => {
+      const idp = {
+        title: 'Mon Super FI Update mais mieux écrit',
+        siret: '',
+      };
+      updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
+
+      cy.contains(
+        `Le fournisseur d'identité ${idp.title} a été modifié avec succès !`,
+      ).should('exist');
+      cy.contains(`Modifier le fournisseur d'identité: ${idp.title}`).should(
+        'exist',
+      );
+      cy.closeBanner('.alert-success');
+
+      assertFormValues(idp);
+    });
   });
 
   describe('Should fail', () => {
@@ -387,6 +405,19 @@ describe('Identity provider update', () => {
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
       cy.contains(
         `Veuillez mettre un titre valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+      )
+        .scrollIntoView()
+        .should('exist');
+    });
+
+    it('if siret is too short', () => {
+      const idp = {
+        siret: '88',
+      };
+
+      updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
+      cy.contains(
+        `siret must be longer than or equal to 14 characters`,
       )
         .scrollIntoView()
         .should('exist');
