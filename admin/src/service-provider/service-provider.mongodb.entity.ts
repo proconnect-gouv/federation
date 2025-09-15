@@ -70,10 +70,6 @@ export class ServiceProviderFromDb {
   @Column({ name: 'secretUpdatedBy' })
   secretUpdatedBy?: string;
 
-  @Column({ name: 'past_client_secret' })
-  // tslint:disable-next-line: variable-name
-  past_client_secret?: string;
-
   @Column({ name: 'scopes' })
   scopes: string[];
 

@@ -166,10 +166,8 @@ export class ServiceProviderService {
 
     const newClientSecret = this.secretManager.encrypt(unEncryptedSecret);
 
-    const pastClientSecret = serviceProvider.client_secret;
     const now = new Date();
 
-    serviceProvider.past_client_secret = pastClientSecret;
     serviceProvider.client_secret = newClientSecret;
     serviceProvider.updatedAt = now;
     serviceProvider.secretUpdatedAt = now;
