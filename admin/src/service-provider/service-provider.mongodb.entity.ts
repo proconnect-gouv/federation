@@ -80,9 +80,6 @@ export class ServiceProviderFromDb {
   id_token_signed_response_alg?: string;
 
   @Column()
-  ssoDisabled?: boolean;
-
-  @Column()
   // tslint:disable-next-line: variable-name
   introspection_signed_response_alg?: string | null;
 
