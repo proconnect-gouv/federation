@@ -9,7 +9,6 @@ describe('Service Provider Input (Data Transfer Object)', () => {
     name: 'Service Provider Test',
     redirectUri: 'https://localhost/',
     redirectUriLogout: 'https://localhost/',
-    site: 'https://localhost/',
     emails: ['toto@gmail.com'],
     ipAddresses: '1.1.1.1',
     active: 'true',

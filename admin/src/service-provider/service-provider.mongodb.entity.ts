@@ -21,9 +21,6 @@ export class ServiceProviderFromDb {
   active: boolean;
 
   @Column()
-  site: string[];
-
-  @Column()
   type: string;
 
   @Column({ name: 'IPServerAddressesAndRanges' })

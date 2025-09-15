@@ -27,7 +27,6 @@ describe('Service provider creation', () => {
     name: 'MyFirstSP',
     redirectUri: 'https://url.com/login',
     redirectUriLogout: 'https://url.com/logout',
-    site: 'https://url.com',
     emails: 'titlen@gmail.com',
     type: 'public',
     ipAddresses: '',
@@ -245,7 +244,6 @@ describe('Service provider creation', () => {
       const fs = {
         ...spData,
         name: '2 websites',
-        site: 'https://url.com\rhttps://secondsite.com',
       };
 
       // Action
@@ -357,10 +355,6 @@ describe('Service provider creation', () => {
         });
         cy.get('#fs-form').within(() => {
           cy.get('input[id=name]').should('have.value', 'hello world');
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
         });
       });
 
@@ -382,10 +376,6 @@ describe('Service provider creation', () => {
             'have.value',
             'https://www.hello.com/logout\nhttps://www.world.com/logout',
           );
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
           cy.get('textarea[id=emails]').should('have.value', 'test@me.com');
           cy.get('textarea[id=IPServerAddressesAndRanges]').should(
             'have.value',
@@ -406,10 +396,6 @@ describe('Service provider creation', () => {
         // Assert
         cy.get('#fs-form').within(() => {
           cy.get('input[id=name]').should('have.value', 'hello world');
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
           cy.get('textarea[id=emails]').should('have.value', '');
         });
       });
@@ -466,10 +452,6 @@ describe('Service provider creation', () => {
             'have.value',
             'https://www.hello.com/logout\nhttps://www.world.com/logout',
           );
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
           cy.get('textarea[id=emails]').should('have.value', 'test@me.com');
           cy.get('textarea[id=IPServerAddressesAndRanges]').should(
             'have.value',
@@ -498,10 +480,6 @@ describe('Service provider creation', () => {
           cy.get('textarea[id=post_logout_redirect_uris]').should(
             'have.value',
             'https://www.hello.com/logout\nhttps://www.world.com/logout',
-          );
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
           );
           cy.get('textarea[id=emails]').should('have.value', 'test@me.com');
           cy.get('textarea[id=IPServerAddressesAndRanges]').should(
@@ -551,7 +529,7 @@ describe('Service provider creation', () => {
       );
     });
 
-    it('if we add a sp with no redirectUri, redirectUriLogout, site and ip', () => {
+    it('if we add  a sp with no redirectUri, redirectUriLogout and ip', () => {
       // Action
       createServiceProvider(
         {
@@ -559,7 +537,6 @@ describe('Service provider creation', () => {
           name: 'champs optionnels',
           redirectUri: '',
           redirectUriLogout: '',
-          site: '',
           ipAddresses: '',
         },
         basicConfiguration,
@@ -634,7 +611,6 @@ describe('Service provider creation', () => {
           name: '',
           redirectUri: '',
           redirectUriLogout: '',
-          site: '',
           emails: '',
           ipAddresses: '',
         },
@@ -726,26 +702,6 @@ describe('Service provider creation', () => {
       cy.contains(
         '.invalid-feedback',
         `Veuillez mettre une URL valide ( Ex: https://urlvalide.com/logout )`,
-      )
-        .scrollIntoView()
-        .should('be.visible');
-    });
-
-    it('if an error occured in the form, we display an error (site)', () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: 'Good name',
-          site: '***',
-        },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.contains(
-        '.invalid-feedback',
-        `Veuillez mettre une URL valide ( Ex: https://site.com/ )`,
       )
         .scrollIntoView()
         .should('be.visible');

@@ -113,13 +113,6 @@ export class ServiceProviderDto {
   })
   readonly entityId?: string;
 
-  @Transform(linesToArray)
-  @Matches(URL_REGEX, {
-    each: true,
-    message: ' Veuillez mettre une url valide ( Ex: https://site.com/ )',
-  })
-  readonly site: string[];
-
   @Transform(toArray)
   @IsString({ each: true })
   @IsArray()

@@ -72,7 +72,6 @@ export class ServiceProviderService {
     serviceProvider.name = input.name;
     serviceProvider.redirect_uris = input.redirectUri;
     serviceProvider.post_logout_redirect_uris = input.redirectUriLogout;
-    serviceProvider.site = input.site;
     serviceProvider.type = input.type;
     serviceProvider.email = input.emails.join('\n');
     serviceProvider.active = input.active;
@@ -203,7 +202,6 @@ export class ServiceProviderService {
       name: serviceProviderDto.name,
       redirect_uris: serviceProviderDto.redirectUri,
       post_logout_redirect_uris: serviceProviderDto.redirectUriLogout,
-      site: serviceProviderDto.site,
       type: serviceProviderDto.type,
       email: serviceProviderDto.emails.join('\n'),
       IPServerAddressesAndRanges: serviceProviderDto.ipAddresses,
