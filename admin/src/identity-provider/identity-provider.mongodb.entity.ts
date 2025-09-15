@@ -94,9 +94,6 @@ export class IdentityProviderFromDb {
   hoverRedirectLink: string;
 
   @Column()
-  trustedIdentity: boolean;
-
-  @Column()
   createdAt: Date;
 
   @Column()

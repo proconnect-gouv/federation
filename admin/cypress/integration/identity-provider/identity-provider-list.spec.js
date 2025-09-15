@@ -30,7 +30,6 @@ const fi = {
   alt: 'MonFI Image',
   image: 'AliceM.svg',
   imageFocus: 'AliceM.svg',
-  trustedIdentity: 'false',
   siret: '34047343800034',
   allowedAcr: ['eidas2'],
   order: 1,

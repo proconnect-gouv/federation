@@ -230,7 +230,6 @@ export class ServiceProviderService {
       secretUpdatedBy: user,
       key,
       entityId,
-      trustedIdentity: false, // unused value, TODO needs to be deleted
     };
   }
 }

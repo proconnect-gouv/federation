@@ -203,7 +203,6 @@ describe('IdentityProviderController', () => {
 
       const resultMock = {
         ...idpDtoMock,
-        trustedIdentity: false,
         active: true,
         display: true,
         discovery: true,

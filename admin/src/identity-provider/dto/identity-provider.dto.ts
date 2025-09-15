@@ -144,10 +144,6 @@ export class IdentityProviderDTO {
 
   @Transform(toBoolean)
   @IsBoolean()
-  readonly trustedIdentity: boolean;
-
-  @Transform(toBoolean)
-  @IsBoolean()
   readonly active: boolean;
 
   @Transform(toBoolean)

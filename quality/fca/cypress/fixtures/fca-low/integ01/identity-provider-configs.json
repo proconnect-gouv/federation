@@ -17,7 +17,6 @@
     "userinfo_signed_response_alg": "ES256",
     "id_token_signed_response_alg": "ES256",
     "alt": "MonFI Image",
-    "trustedIdentity": "false",
     "allowedAcr": ["eidas1"],
     "order": "1",
     "emails": "test1@yopmail.com\ntest2@yopmail.com",

@@ -70,7 +70,6 @@ describe('ServiceProviderController', () => {
     type: 'public',
     scopes: [...scopeList],
     claims: ['amr'],
-    trustedIdentity: false,
   };
 
   const idParam = '05e4fadf-fda6-4ad8-ae75-b7f315843827';
@@ -196,7 +195,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
@@ -217,7 +215,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
         eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
@@ -239,7 +236,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
         userinfo_signed_response_alg: 'ES256',
         id_token_signed_response_alg: 'ES256',
         entityId:
@@ -307,7 +303,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
         eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
@@ -330,7 +325,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
         eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
@@ -353,7 +347,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
         eidas: 1,
         entityId:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
@@ -460,7 +453,6 @@ describe('ServiceProviderController', () => {
       IPServerAddressesAndRanges: ['1.1.1.1'],
       key: 'cb55015c-7fb5-49b4-9006-e523552bc3e7',
       scopes: [...scopeList],
-      trustedIdentity: false,
       grant_types: 'default',
       response_types: 'default',
     };
@@ -739,7 +731,6 @@ describe('ServiceProviderController', () => {
         redirect_uris: ['https://proconnect.gouv.fr'],
         status: 'public',
         scopes: [...scopeList],
-        trustedIdentity: false,
         grant_types: 'default',
         response_types: 'default',
         jwksUri: undefined,
@@ -788,7 +779,6 @@ describe('ServiceProviderController', () => {
         client_secret:
           '$2b$10$EO3FnI3YKfnnvUlvr084wegEgEPeRPRMdE2VJwMHpAsNkaMv1n9pG',
         scopes: [...scopeList],
-        trustedIdentity: false,
       };
       const generateNewClientSecretDTO = {
         name: 'aaa, bbb, ccc',
@@ -868,7 +858,6 @@ describe('ServiceProviderController', () => {
       createdAt: new Date('2019-11-08T09:52:29.984Z'),
       updatedBy: userMock,
       scopes: [...scopeList],
-      trustedIdentity: false,
       entityId:
         'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
     };

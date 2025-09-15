@@ -64,7 +64,6 @@ function createServiceProviderFromDb(
     secretUpdatedAt: new Date(),
     key: 'key',
     updatedBy: 'user',
-    trustedIdentity: false,
     ...partial,
   };
 }

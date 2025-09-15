@@ -77,9 +77,6 @@ export class ServiceProviderFromDb {
   claims?: string[];
 
   @Column()
-  trustedIdentity: boolean;
-
-  @Column()
   eidas?: number;
 
   @Column()

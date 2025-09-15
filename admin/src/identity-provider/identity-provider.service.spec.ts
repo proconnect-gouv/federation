@@ -179,7 +179,6 @@ describe('IdentityProviderService', () => {
         alt: 'MonFI Image',
         image: 'AliceM.svg',
         imageFocus: 'AliceM.svg',
-        trustedIdentity: false,
         eidas: 2,
         allowedAcr: ['eidas2'],
         order: 1,
@@ -229,7 +228,6 @@ describe('IdentityProviderService', () => {
           'Une erreur est survenue lors de la transmission de votre identité.',
         statusURL: 'https://default.status-url.fr',
         title: 'Mon FI mieux écrit',
-        trustedIdentity: false,
         id_token_encrypted_response_alg: 'default_alg',
         id_token_encrypted_response_enc: 'default_enc',
         id_token_signed_response_alg: 'ES256',
@@ -252,39 +250,6 @@ describe('IdentityProviderService', () => {
           title: 'title',
         },
       });
-
-    // const transformedIntoLegacy = {
-    //   uid: 'MonFI',
-    //   name: 'MonFI',
-    //   title: 'Mon FI mieux écrit',
-    //   discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
-    //   discovery: true,
-    //   client_secret: '1234567890AZERTYUIOP',
-    //   active: false,
-    //   display: false,
-    //   isBeta: false,
-    //   alt: 'MonFI Image',
-    //   image: 'AliceM.svg',
-    //   imageFocus: 'AliceM.svg',
-    //   trustedIdentity: false,
-    //   eidas: 2,
-    //   order: 1,
-    //   specificText:
-    //     "Veuillez fournir une capture d'écran de votre page de profil !",
-    //   ...additionalFields,
-    //   hoverMsg: 'SUPER MESSAGE !!!',
-    //   hoverRedirectLink: 'https://issuer.fr/promo',
-    //   clientID: '09a1a257648c1742c74d6a3d84b31943',
-    //   authzURL: 'https://issuer.fr/auth',
-    //   statusURL: 'https://issuer.fr/state',
-    //   tokenURL: 'https://issuer.fr/token',
-    //   userInfoURL: 'https://issuer.fr/userinfo',
-    //   endSessionURL: 'https://issuer.fr/logout',
-    //   jwksURL: 'https://issuer.fr/discovery',
-    //   WhitelistByServiceProviderActivated: true,
-    //   mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',
-    //   url: 'https://issuer.fr',
-    // };
 
     beforeEach(() => {
       identityProviderService[
@@ -428,35 +393,6 @@ describe('IdentityProviderService', () => {
 
         // client_secret: secretManagerMocked,
       });
-
-    // const updatedIdentityProvider = {
-    //   uid: 'MonFI',
-    //   name: 'MonFI',
-    //   title: 'Mon FI mieux écrit',
-    //   discoveryUrl: 'https://my-discovery-url/.well-known/openid-configuration',
-    //   discovery: true,
-    //   client_secret: '1234567890AZERTYUIOP',
-    //   active: false,
-    //   display: false,
-    //   isBeta: false,
-    //   alt: 'MonFI Image',
-    //   image: 'AliceM.svg',
-    //   imageFocus: 'AliceM.svg',
-    //   trustedIdentity: false,
-    //   eidas: 2,
-    //   order: 1,
-    //   specificText:
-    //     "Veuillez fournir une capture d'écran de votre page de profil !",
-    //   ...additionalFields,
-    //   hoverMsg: 'SUPER MESSAGE !!!',
-    //   hoverRedirectLink: 'https://issuer.fr/promo',
-    //   clientID: '09a1a257648c1742c74d6a3d84b31943',
-    //   statusURL: 'https://issuer.fr/state',
-    //   endSessionURL: 'https://issuer.fr/logout',
-    //   WhitelistByServiceProviderActivated: true,
-    //   mailto: 'sherman@kaliop.com\r\nvbonnard@kaliopmail.com',
-    //   url: 'https://issuer.fr',
-    // };
 
     beforeEach(() => {
       // tslint:disable-next-line:no-string-literal
@@ -688,7 +624,6 @@ describe('IdentityProviderService', () => {
         alt: 'MonFI Image',
         image: 'AliceM.svg',
         imageFocus: 'AliceM.svg',
-        trustedIdentity: false,
         eidas: 2,
         allowedAcr: ['eidas2'],
         order: 1,
@@ -745,7 +680,6 @@ describe('IdentityProviderService', () => {
           'Une erreur est survenue lors de la transmission de votre identité.',
         statusURL: 'https://default.status-url.fr',
         title: 'Mon FI mieux écrit',
-        trustedIdentity: false,
         id_token_encrypted_response_alg: 'default_alg',
         id_token_encrypted_response_enc: 'default_enc',
         id_token_signed_response_alg: 'ES256',

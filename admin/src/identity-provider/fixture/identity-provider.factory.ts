@@ -37,7 +37,6 @@ function createIdentityProviderFromDb(
     specificText: '',
     statusURL: 'https://default.status-url.fr',
     title: 'Default Title',
-    trustedIdentity: true,
     id_token_encrypted_response_alg: 'default_alg',
     id_token_encrypted_response_enc: 'default_enc',
     id_token_signed_response_alg: 'ES256',
@@ -87,7 +86,6 @@ function createIdentityProviderDto(
     specificText:
       "Veuillez fournir une capture d'écran de votre page de profil !",
     title: 'Default Title',
-    trustedIdentity: true,
     userinfo_encrypted_response_enc: 'ES256',
     userinfo_encrypted_response_alg: 'RSA-OAEP',
     userinfo_signed_response_alg: 'ES256',

@@ -14,7 +14,6 @@ export interface IdentityProviderConfig
   messageToDisplayWhenInactive: string;
   redirectionTargetWhenInactive: string;
   alt: string;
-  trustedIdentity: string;
   order: string;
   emails: string;
   specificText: string;

@@ -406,20 +406,6 @@
               </div>
             </div>
 
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label">Ignorer le niveau eidas : </label>
-              <div class="mb-3 col-4 d-flex align-items-end">
-                <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid" id="trustedIdentity" name="trustedIdentity" value="true" required <%= locals.messages.values && messages.values[0].trustedIdentity === true ? 'checked' : '' %>>
-                  <label class="form-check-label" for="trustedIdentity">oui</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid" id="not-trustedIdentity" name="trustedIdentity" value="false" required <%= locals.messages.values && messages.values[0].trustedIdentity === false ? 'checked' : '' %>>
-                  <label class="form-check-label" for="not-trustedIdentity">non</label>
-                </div>
-              </div>
-            </div>
-
             <div class="mb-3 row" id="eidas-level">
               <label class="col-2 col-form-label">Niveaux eidas (v2) : </label>
               <div class="col-10">
