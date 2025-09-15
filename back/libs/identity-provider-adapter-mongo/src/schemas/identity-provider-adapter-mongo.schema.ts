@@ -52,9 +52,6 @@ export class IdentityProvider extends Document {
   @Prop({ type: String })
   userinfo_encrypted_response_enc: string;
 
-  @Prop({ type: [String] })
-  allowedAcr: string[];
-
   @Prop({ type: String })
   siret: string;
 

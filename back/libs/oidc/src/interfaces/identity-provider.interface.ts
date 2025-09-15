@@ -21,7 +21,6 @@ export interface IdpFCMetadata {
   active: boolean;
   discovery: boolean;
   discoveryUrl?: string;
-  allowedAcr: string[];
   amr: string[];
   modal?: IdpFCModal;
   siret: string;

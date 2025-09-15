@@ -7,7 +7,6 @@ db.provider.update(
     active: false,
     isBeta: false,
     title: "Idp test Inserted",
-    allowedAcr: ["eidas3"],
     mailto: "",
     specificText: "specific text FI 3",
     url: "https://fia2-low.docker.dev-franceconnect.fr/",

@@ -13,8 +13,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { IsIncludedInConfig } from '@fc/common';
-
 import { Amr } from '../enums';
 import { JwksUriValidator } from './jwksuri.validator';
 
@@ -73,12 +71,6 @@ export class MetadataIdpAdapterMongoDTO {
   @ValidateNested()
   @Type(() => ModalIdpAdapterMongo)
   readonly modal?: ModalIdpAdapterMongo;
-
-  /**
-   * CLIENT METADATA
-   */
-  @IsIncludedInConfig('IdentityProviderAdapterMongo', 'allowedAcr')
-  readonly allowedAcr: string[];
 
   @IsString()
   readonly clientID: string;

@@ -32,8 +32,6 @@ export const messageDictionary: Record<string, string> = {
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Core.exceptions.coreMissingIdentity':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
-  'Core.exceptions.coreNotAllowedAcr':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
 
   // cryptography
   'Cryptography.exceptions.lowEntropyArgument':

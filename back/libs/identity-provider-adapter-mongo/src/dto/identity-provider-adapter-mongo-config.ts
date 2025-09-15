@@ -9,7 +9,4 @@ export class IdentityProviderAdapterMongoConfig {
 
   @IsBoolean()
   readonly disableIdpValidationOnLegacy: boolean;
-
-  @IsString({ each: true })
-  readonly allowedAcr: string[];
 }
