@@ -174,7 +174,6 @@ describe('IdentityProviderService', () => {
         active: true,
         order: 1,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
-        amr: ['pop'],
       });
 
     const transformedIntoEntity =
@@ -186,7 +185,6 @@ describe('IdentityProviderService', () => {
         updatedAt: new Date('1970-01-01T00:00:00.000Z'),
         updatedBy: 'user',
         active: true,
-        amr: ['pop'],
         authzURL: 'https://issuer.fr/auth',
         clientID: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
@@ -580,7 +578,6 @@ describe('IdentityProviderService', () => {
         active: true,
         order: 1,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
-        amr: ['pop'],
         discoveryUrl: 'https://default.discovery-url.fr',
         id_token_encrypted_response_alg: 'default_alg',
         id_token_encrypted_response_enc: 'default_enc',
@@ -604,7 +601,6 @@ describe('IdentityProviderService', () => {
         updatedAt: mockDate,
         updatedBy: 'user',
         active: false,
-        amr: ['pop'],
         authzURL: 'https://issuer.fr/auth',
         clientID: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: encryptedSecret,

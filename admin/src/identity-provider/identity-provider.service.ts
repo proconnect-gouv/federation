@@ -210,7 +210,6 @@ export class IdentityProviderService {
       userInfoURL: identityProviderDto.userInfoUrl,
       endSessionURL: identityProviderDto.logoutUrl,
       jwksURL: identityProviderDto.jwksUrl,
-      amr: identityProviderDto.amr,
       mailto: identityProviderDto.emails.join('\r\n'),
       url: identityProviderDto.issuer,
       userinfo_encrypted_response_enc:
@@ -284,7 +283,6 @@ export class IdentityProviderService {
       jwksUrl: inputProvider.jwksURL,
       emails: linesToArray({ value: inputProvider.mailto }),
       issuer: inputProvider.url,
-      amr: inputProvider.amr,
     };
   }
 }

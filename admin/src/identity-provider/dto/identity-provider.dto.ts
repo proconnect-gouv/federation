@@ -199,11 +199,6 @@ export class IdentityProviderDTO {
   readonly post_logout_redirect_uris?: string[];
 
   @IsOptional()
-  @Transform(toArray)
-  @IsArray()
-  amr?: string[];
-
-  @IsOptional()
   @Transform(linesToArray)
   @Matches(FQDN_REGEX, {
     each: true,

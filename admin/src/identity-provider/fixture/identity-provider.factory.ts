@@ -13,7 +13,6 @@ function createIdentityProviderFromDb(
     updatedAt: new Date('2023-01-01T00:00:00Z'),
     updatedBy: 'jean_patoche',
     active: true,
-    amr: [],
     authzURL: 'https://default.authorization-url.fr',
     clientID: 'default_client_id',
     client_secret: 'default_client_secret',
@@ -47,7 +46,6 @@ function createIdentityProviderDto(
   return {
     name: 'Default Name',
     active: true,
-    amr: [],
     discoveryUrl: 'https://default.discovery-url.fr',
     discovery: true,
     logoutUrl: 'https://default.logout-url.fr',

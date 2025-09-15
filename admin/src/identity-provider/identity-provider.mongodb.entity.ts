@@ -105,9 +105,6 @@ export class IdentityProviderFromDb {
   token_endpoint_auth_method?: string;
 
   @Column()
-  amr?: string[];
-
-  @Column()
   siret: string;
 
   @Column()

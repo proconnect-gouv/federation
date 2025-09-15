@@ -177,7 +177,6 @@ export class IdentityProviderController {
     return {
       csrfToken,
       id,
-      amrSelected: identityProviderDto?.amr || [],
     };
   }
 
