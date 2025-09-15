@@ -12,8 +12,6 @@ function createIdentityProviderFromDb(
     createdAt: new Date('2023-01-01T00:00:00Z'),
     updatedAt: new Date('2023-01-01T00:00:00Z'),
     updatedBy: 'jean_patoche',
-    WhitelistByServiceProviderActivated: false,
-    blacklistByIdentityProviderActivated: false,
     active: true,
     amr: [],
     authzURL: 'https://default.authorization-url.fr',

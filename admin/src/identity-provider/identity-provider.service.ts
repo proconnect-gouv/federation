@@ -203,8 +203,6 @@ export class IdentityProviderService {
       order: identityProviderDto.order,
       siret: identityProviderDto.siret,
       discoveryUrl: identityProviderDto.discoveryUrl,
-      blacklistByIdentityProviderActivated: false,
-      WhitelistByServiceProviderActivated: false,
       clientID: identityProviderDto.clientId,
       authzURL: identityProviderDto.authorizationUrl,
       statusURL: identityProviderDto.statusUrl,

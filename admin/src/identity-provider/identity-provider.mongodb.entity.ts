@@ -70,12 +70,6 @@ export class IdentityProviderFromDb {
   updatedBy: string;
 
   @Column()
-  blacklistByIdentityProviderActivated: boolean;
-
-  @Column()
-  WhitelistByServiceProviderActivated: boolean;
-
-  @Column()
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   userinfo_encrypted_response_enc?: string;
