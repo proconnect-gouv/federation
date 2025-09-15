@@ -154,5 +154,5 @@ export function totp(subject, arg1, arg2) {
 }
 
 export function closeBanner(target) {
-  cy.get(target+' > .btn-close').click();
+  cy.get(target + ' > .btn-close').click();
 }
