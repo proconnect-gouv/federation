@@ -199,7 +199,6 @@ export class IdentityProviderService {
       client_secret: clientSecret,
       name: identityProviderDto.name,
       title: identityProviderDto.title,
-      allowedAcr: identityProviderDto.allowedAcr,
       discovery: identityProviderDto.discovery,
       isBeta: identityProviderDto.isBeta,
       order: identityProviderDto.order,
@@ -274,7 +273,6 @@ export class IdentityProviderService {
       siret: inputProvider.siret,
       client_secret: inputProvider.client_secret,
       active: inputProvider.active,
-      allowedAcr: inputProvider.allowedAcr,
       specificText: inputProvider.specificText,
       discoveryUrl: inputProvider.discoveryUrl,
       id_token_encrypted_response_enc:

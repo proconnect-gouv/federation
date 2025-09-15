@@ -42,7 +42,6 @@ describe('Identity provider update', () => {
         messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
         redirectionTargetWhenInactive: 'https://issuer.fr/promo',
         siret: '34047343800034',
-        allowedAcr: ['eidas2'],
         order: 1,
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         specificText:
@@ -80,7 +79,6 @@ describe('Identity provider update', () => {
         order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         specificText: '',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
@@ -119,7 +117,6 @@ describe('Identity provider update', () => {
         messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
         redirectionTargetWhenInactive: 'https://issuer.fr/promo',
         siret: '34047343800034',
-        allowedAcr: ['eidas2'],
         order: 1,
         emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         specificText:
@@ -158,7 +155,6 @@ describe('Identity provider update', () => {
         order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         specificText: '',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
@@ -190,7 +186,6 @@ describe('Identity provider update', () => {
         order: '',
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         specificText: '',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
         supportEmail: 'valid@support.fr',
       };
@@ -221,7 +216,6 @@ describe('Identity provider update', () => {
         messageToDisplayWhenInactive: 'New SUPER MESSAGE !!!',
         redirectionTargetWhenInactive: 'https://new-issuer.fr/promo',
         siret: '34047343800034',
-        allowedAcr: ['eidas3'],
         order: 5,
         emails: 'new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         specificText:
@@ -262,7 +256,6 @@ describe('Identity provider update', () => {
         messageToDisplayWhenInactive: 'New SUPER MESSAGE !!!',
         redirectionTargetWhenInactive: 'https://new-issuer.fr/promo',
         siret: '34047343800034',
-        allowedAcr: ['eidas3'],
         order: 5,
         emails: 'new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         specificText:
@@ -302,7 +295,6 @@ describe('Identity provider update', () => {
         order: '',
         emails: '',
         specificText: '',
-        allowedAcr: [],
         siret: '',
       };
 
@@ -334,7 +326,6 @@ describe('Identity provider update', () => {
         emails: 'new-new-sherman@kaliop.com\nvbonnard@kaliopmail.com',
         specificText: '',
         siret: '34047343800034',
-        allowedAcr: ['eidas2'],
       };
 
       basicConfiguration.totp = false;

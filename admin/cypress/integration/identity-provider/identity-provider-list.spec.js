@@ -28,7 +28,6 @@ const fi = {
   messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
   redirectionTargetWhenInactive: 'https://issuer.fr/promo',
   siret: '34047343800034',
-  allowedAcr: ['eidas2'],
   order: 1,
   emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
   specificText:

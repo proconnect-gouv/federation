@@ -105,12 +105,9 @@ export class IdentityProviderController {
       req.session.flash.values[0] = Object.assign({}, postedValues);
     }
 
-    const { allowedAcr } = this.config.get('acr');
-
     return {
       csrfToken,
       identityProvidersCount,
-      acrList: allowedAcr,
     };
   }
 
@@ -176,14 +173,11 @@ export class IdentityProviderController {
     } else {
       req.flash('values', identityProviderWithFqdn);
     }
-    const { allowedAcr } = this.config.get('acr');
 
     return {
       csrfToken,
       id,
       amrSelected: identityProviderDto?.amr || [],
-      acrSelected: identityProviderDto?.allowedAcr || [],
-      acrList: allowedAcr,
     };
   }
 

@@ -20,9 +20,6 @@ export class IdentityProviderFromDb {
   title: string;
 
   @Column()
-  allowedAcr: string[];
-
-  @Column()
   mailto: string;
 
   @Column()

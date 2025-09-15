@@ -126,11 +126,6 @@ export class IdentityProviderDTO {
   @IsBoolean()
   readonly active: boolean;
 
-  @Transform(toArray)
-  @IsString({ each: true })
-  @IsArray()
-  readonly allowedAcr: string[];
-
   @IsOptionalExtended()
   @IsNumber()
   @Type(() => Number)

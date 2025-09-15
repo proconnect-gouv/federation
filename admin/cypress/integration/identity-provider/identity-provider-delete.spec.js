@@ -20,7 +20,6 @@ describe('Delete identity provider normal', () => {
     client_secret: '1234567890AZERTYUIOP',
     messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
     redirectionTargetWhenInactive: 'https://issuer.fr/promo',
-    allowedAcr: ['eidas2'],
     order: 1,
     emails: 'sherman@tata.com\nvbonnard@tata.com',
     specificText:
@@ -99,7 +98,6 @@ describe('Delete identity provider non latin', () => {
     messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
     redirectionTargetWhenInactive: 'https://issuer.fr/promo',
     siret: '34047343800034',
-    allowedAcr: ['eidas2'],
     order: 1,
     emails: 'sherman@tata.com\nvbonnard@tata.com',
     specificText:

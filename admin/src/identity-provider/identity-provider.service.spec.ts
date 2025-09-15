@@ -175,7 +175,6 @@ describe('IdentityProviderService', () => {
         redirectionTargetWhenInactive: 'https://issuer.fr/promo',
         active: true,
         isBeta: false,
-        allowedAcr: ['eidas2'],
         order: 1,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
         specificText:
@@ -203,7 +202,6 @@ describe('IdentityProviderService', () => {
         hoverMsg: '',
         hoverRedirectLink: '',
         active: true,
-        allowedAcr: ['eidas2'],
         amr: ['pop'],
         authzURL: 'https://issuer.fr/auth',
         clientID: '09a1a257648c1742c74d6a3d84b31943',
@@ -610,7 +608,6 @@ describe('IdentityProviderService', () => {
         redirectionTargetWhenInactive: 'https://issuer.fr/promo',
         active: true,
         isBeta: false,
-        allowedAcr: ['eidas2'],
         order: 1,
         emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
         specificText:
@@ -645,7 +642,6 @@ describe('IdentityProviderService', () => {
         hoverMsg: 'SUPER MESSAGE !!!',
         hoverRedirectLink: 'https://issuer.fr/promo',
         active: false,
-        allowedAcr: ['eidas2'],
         amr: ['pop'],
         authzURL: 'https://issuer.fr/auth',
         clientID: '09a1a257648c1742c74d6a3d84b31943',

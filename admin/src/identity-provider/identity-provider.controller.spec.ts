@@ -66,9 +66,6 @@ describe('IdentityProviderController', () => {
     deleteFqdnsProvider: jest.fn(),
   };
 
-  const configData = {
-    allowedAcr: ['eidas1', 'eidas2'],
-  };
   const configService = {
     get: jest.fn(),
   };
@@ -102,7 +99,6 @@ describe('IdentityProviderController', () => {
 
     jest.resetAllMocks();
 
-    configService.get.mockReturnValue(configData);
   });
 
   describe('list', () => {

@@ -18,7 +18,6 @@ function createIdentityProviderFromDb(
     hoverMsg: '',
     hoverRedirectLink: '',
     active: true,
-    allowedAcr: [],
     amr: [],
     authzURL: 'https://default.authorization-url.fr',
     clientID: 'default_client_id',
@@ -55,7 +54,6 @@ function createIdentityProviderDto(
   return {
     name: 'Default Name',
     active: true,
-    allowedAcr: [],
     amr: [],
     discoveryUrl: 'https://default.discovery-url.fr',
     discovery: true,
