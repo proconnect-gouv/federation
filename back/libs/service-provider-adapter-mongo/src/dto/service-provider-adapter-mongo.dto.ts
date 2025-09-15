@@ -18,10 +18,6 @@ export class ServiceProviderAdapterMongoDTO {
   @IsString()
   readonly key: string;
 
-  @IsString() // HSM
-  @MinLength(32)
-  readonly entityId: string;
-
   @IsString()
   readonly name: string;
 

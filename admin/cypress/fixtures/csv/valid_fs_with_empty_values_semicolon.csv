@@ -1,2 +1,2 @@
-name;emails;site;redirect_uris;post_logout_redirect_uris;IPServerAddressesAndRanges;scopes
-hello semicolon;test@me.com;https://www.hello.com,https://www.world.com;https://www.hello.com/callback,https://www.world.com/callback;https://www.hello.com/logout,https://www.world.com/logout;87.252.12.28,195.25.216.208/28,2001:0db8:0000:85a3:0000:0000:ac1f:8001;
+name;emails;redirect_uris;post_logout_redirect_uris;IPServerAddressesAndRanges;scopes
+hello semicolon;test@me.com;https://www.hello.com/logout,https://www.world.com/logout;87.252.12.28,195.25.216.208/28,2001:0db8:0000:85a3:0000:0000:ac1f:8001;

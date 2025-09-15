@@ -1,6 +1,5 @@
 const dps = {
   'DPA1-LOW': {
-    entityId: '6f21b751-ed06-48b6-a59c-36e1300a368a',
     name: 'Fournisseur de données Mock - 1',
     title: 'Fournisseur de données Mock - 1',
     active: true,
@@ -22,7 +21,6 @@ const dps = {
     type: 'private',
   },
   'DPA2-LOW': {
-    entityId: '735c6dc3-1e47-41b1-9fa6-6c7f667cfba1',
     name: 'Fournisseur de données Mock - 2',
     title: 'Fournisseur de données Mock - 2',
     active: true,

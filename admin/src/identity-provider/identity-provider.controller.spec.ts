@@ -66,9 +66,6 @@ describe('IdentityProviderController', () => {
     deleteFqdnsProvider: jest.fn(),
   };
 
-  const configData = {
-    allowedAcr: ['eidas1', 'eidas2'],
-  };
   const configService = {
     get: jest.fn(),
   };
@@ -101,8 +98,6 @@ describe('IdentityProviderController', () => {
     );
 
     jest.resetAllMocks();
-
-    configService.get.mockReturnValue(configData);
   });
 
   describe('list', () => {
@@ -203,11 +198,8 @@ describe('IdentityProviderController', () => {
 
       const resultMock = {
         ...idpDtoMock,
-        trustedIdentity: false,
         active: true,
-        display: true,
         discovery: true,
-        emails: ['sherman@kaliop.com', 'vbonnard@kaliopmail.com'],
       };
 
       const reqMock = {

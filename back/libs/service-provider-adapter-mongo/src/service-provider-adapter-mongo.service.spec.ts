@@ -31,7 +31,6 @@ describe('ServiceProviderAdapterMongoService', () => {
 
   const validServiceProviderMock = {
     key: '987654321987654321987654321987654',
-    entityId: '123456789101112131415161718192021',
     active: true,
     name: 'foo',
     title: 'title',

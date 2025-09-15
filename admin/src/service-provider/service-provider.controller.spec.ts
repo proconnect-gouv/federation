@@ -64,14 +64,12 @@ describe('ServiceProviderController', () => {
       'FC-app.02://openid_redirect_url',
       'franceconnect://openid_redirect_url',
     ],
-    site: ['https://monsite.com'],
     emails: ['v@b.com'],
     ipAddresses: ['192.0.0.0'],
     active: true,
     type: 'public',
     scopes: [...scopeList],
     claims: ['amr'],
-    trustedIdentity: false,
   };
 
   const idParam = '05e4fadf-fda6-4ad8-ae75-b7f315843827';
@@ -187,7 +185,6 @@ describe('ServiceProviderController', () => {
         redirect_uris: ['https://url.com'],
         post_logout_redirect_uris: [''],
         jwks_uri: 'https://monfs.com/jwks',
-        site: ['https://monsite.com'],
         email: 'v@b.com',
         IPServerAddressesAndRanges: ['192.0.0.0'],
         active: true,
@@ -198,9 +195,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
@@ -209,7 +203,6 @@ describe('ServiceProviderController', () => {
         redirect_uris: ['https://url.com'],
         post_logout_redirect_uris: [''],
         jwks_uri: 'https://monfs.com/jwks',
-        site: ['https://monsite.com'],
         email: 'v@b.com',
         IPServerAddressesAndRanges: ['192.0.0.0'],
         active: true,
@@ -220,10 +213,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
-        eidas: 1,
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
@@ -232,7 +221,6 @@ describe('ServiceProviderController', () => {
         redirect_uris: ['https://url.com'],
         post_logout_redirect_uris: [''],
         jwks_uri: 'https://monfs.com/jwks',
-        site: ['https://monsite.com'],
         email: 'v@b.com',
         IPServerAddressesAndRanges: ['192.0.0.0'],
         active: true,
@@ -243,11 +231,8 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        trustedIdentity: false,
         userinfo_signed_response_alg: 'ES256',
         id_token_signed_response_alg: 'ES256',
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       // Mocking return value of serviceProviderController.list(page, limit)
@@ -297,11 +282,9 @@ describe('ServiceProviderController', () => {
       const itemTest1 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
-        signup_id: '123456',
         redirect_uris: ['https://url.com'],
         post_logout_redirect_uris: [''],
         jwks_uri: 'https://monfs.com/jwks',
-        site: ['https://monsite.com'],
         email: 'v@b.com',
         IPServerAddressesAndRanges: ['192.0.0.0'],
         active: true,
@@ -312,21 +295,14 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        identityConsent: false,
-        trustedIdentity: false,
-        eidas: 1,
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
-        signup_id: '123456',
         redirect_uris: ['https://url.com'],
         jwks_uri: 'https://monfs.com/jwks',
         post_logout_redirect_uris: [''],
-        site: ['https://monsite.com'],
         email: 'v@b.com',
         IPServerAddressesAndRanges: ['192.0.0.0'],
         active: true,
@@ -337,21 +313,14 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        identityConsent: false,
-        trustedIdentity: false,
-        eidas: 1,
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
         name: 'Site Usagers',
-        signup_id: '123456',
         redirect_uris: ['https://url.com'],
         jwks_uri: 'https://monfs.com/jwks',
         post_logout_redirect_uris: [''],
-        site: ['https://monsite.com'],
         email: 'v@b.com',
         IPServerAddressesAndRanges: ['192.0.0.0'],
         active: true,
@@ -362,11 +331,6 @@ describe('ServiceProviderController', () => {
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        identityConsent: false,
-        trustedIdentity: false,
-        eidas: 1,
-        entityId:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       });
 
       // Mocking return value of serviceProviderController.list(page, limit)
@@ -464,14 +428,12 @@ describe('ServiceProviderController', () => {
       name: 'ProConnect TEST find one',
       redirect_uris: ['https://proconnect.gouv.fr'],
       post_logout_redirect_uris: ['https://proconnect.gouv.fr'],
-      site: ['https://proconnect.gouv.fr'],
       status: 'public',
       jwks_uri: 'https://proconnect.gouv.fr/jwks',
       active: 'true',
       IPServerAddressesAndRanges: ['1.1.1.1'],
       key: 'cb55015c-7fb5-49b4-9006-e523552bc3e7',
       scopes: [...scopeList],
-      trustedIdentity: false,
       grant_types: 'default',
       response_types: 'default',
     };
@@ -501,7 +463,6 @@ describe('ServiceProviderController', () => {
         ipsRanges: '1.1.1.1',
         postLogoutUri: 'https://proconnect.gouv.fr',
         emails: 'v@b.com',
-        site: 'https://proconnect.gouv.fr',
         userinfo_signed_response_alg: '',
       });
       expect(result).toEqual({
@@ -749,10 +710,8 @@ describe('ServiceProviderController', () => {
         post_logout_redirect_uris: ['https://proconnect.gouv.fr'],
         redirectUri: 'https://proconnect.gouv.fr',
         redirect_uris: ['https://proconnect.gouv.fr'],
-        site: 'https://proconnect.gouv.fr',
         status: 'public',
         scopes: [...scopeList],
-        trustedIdentity: false,
         grant_types: 'default',
         response_types: 'default',
         jwksUri: undefined,
@@ -797,12 +756,10 @@ describe('ServiceProviderController', () => {
         post_logout_redirect_uris: ['https://FranceConnect.com'],
         redirectUri: 'https://FranceConnect.com',
         redirect_uris: ['https://FranceConnect.com'],
-        site: 'https://FranceConnect8888.com',
         status: 'public',
         client_secret:
           '$2b$10$EO3FnI3YKfnnvUlvr084wegEgEPeRPRMdE2VJwMHpAsNkaMv1n9pG',
         scopes: [...scopeList],
-        trustedIdentity: false,
       };
       const generateNewClientSecretDTO = {
         name: 'aaa, bbb, ccc',
@@ -872,7 +829,6 @@ describe('ServiceProviderController', () => {
       redirect_uris: ['https://url.com'],
       post_logout_redirect_uris: [''],
       jwks_uri: 'https://monfs.com/jwks',
-      site: ['https://monsite.com'],
       email: 'v@b.com',
       IPServerAddressesAndRanges: ['192.0.0.0'],
       active: true,
@@ -883,9 +839,6 @@ describe('ServiceProviderController', () => {
       createdAt: new Date('2019-11-08T09:52:29.984Z'),
       updatedBy: userMock,
       scopes: [...scopeList],
-      trustedIdentity: false,
-      entityId:
-        'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
     };
 
     it('should return a list of service providers even with sort/action as undefined values', async () => {

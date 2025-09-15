@@ -1,8 +1,5 @@
 import { USER_OPERATOR, USER_PASS } from '../../support/constants';
-import {
-  createServiceProvider,
-  uploadCSV,
-} from './service-provider-create.utils';
+import { createServiceProvider } from './service-provider-create.utils';
 
 const BASE_URL = Cypress.config('baseUrl');
 
@@ -27,7 +24,6 @@ describe('Service provider creation', () => {
     name: 'MyFirstSP',
     redirectUri: 'https://url.com/login',
     redirectUriLogout: 'https://url.com/logout',
-    site: 'https://url.com',
     emails: 'titlen@gmail.com',
     type: 'public',
     ipAddresses: '',
@@ -62,30 +58,6 @@ describe('Service provider creation', () => {
   });
 
   describe('Should succeed', () => {
-    it('if eidas level 1 is choosen', () => {
-      // Action
-      cy.url().should('eq', `${BASE_URL}/service-provider`);
-      cy.contains('Créer un fournisseur de service').click();
-
-      cy.formFill(spData, basicConfiguration);
-
-      cy.totp({ totp: true });
-      cy.get('form[name="fs-form"] button[type="submit"]').click();
-
-      // Assert
-      cy.url().should('eq', `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service MyFirstSP a été créé avec succès !`,
-      );
-      cy.closeBanner('.alert-success');
-
-      cy.hasBusinessLog({
-        entity: 'service-provider',
-        action: 'create',
-        user: USER_OPERATOR,
-      });
-    });
-
     it('if we add a sp even with localhost as redirectUri (integration) ', () => {
       // Action
       createServiceProvider(
@@ -240,25 +212,6 @@ describe('Service provider creation', () => {
       cy.closeBanner('.alert-success');
     });
 
-    it('if we add a service provider with two websites', () => {
-      // Arrange
-      const fs = {
-        ...spData,
-        name: '2 websites',
-        site: 'https://url.com\rhttps://secondsite.com',
-      };
-
-      // Action
-      createServiceProvider(fs, basicConfiguration);
-
-      // Assert
-      cy.url().should('eq', `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service 2 websites a été créé avec succès !`,
-      );
-      cy.closeBanner('.alert-success');
-    });
-
     it('if we add a service provider with no email', () => {
       // Action
       createServiceProvider(
@@ -321,199 +274,6 @@ describe('Service provider creation', () => {
       );
     });
 
-    describe('Create by CSV file', () => {
-      it('if contains a "importer a csv" button', () => {
-        // Arrange
-        cy.url().should('eq', `${BASE_URL}/service-provider`);
-
-        // Action
-        cy.contains('Créer un fournisseur de service').click();
-
-        // Assert
-        cy.contains('Importer un CSV');
-      });
-
-      it('if display CSV name after import', () => {
-        // Arrange
-        const filename = 'valid_fs_comma';
-
-        // Action
-        uploadCSV(filename);
-
-        // Assert
-        cy.get('#file-name').contains(`${filename}.csv`);
-      });
-
-      it('if fill form with CSVdata with comma', () => {
-        // Arrange
-        const filename = 'valid_fs_comma';
-
-        // Action
-        uploadCSV(filename);
-
-        // Assert
-        cy.get('#file-name').contains(`${filename}.csv`, {
-          timeout: 3000,
-        });
-        cy.get('#fs-form').within(() => {
-          cy.get('input[id=name]').should('have.value', 'hello world');
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
-        });
-      });
-
-      it('if fill form with CSVdata with semicolon', () => {
-        const filename = 'valid_fs_semicolon';
-
-        // Action
-        uploadCSV(filename);
-
-        // Assert
-        cy.get('#file-name').contains(`${filename}.csv`);
-        cy.get('#fs-form').within(() => {
-          cy.get('input[id=name]').should('have.value', 'hello semicolon');
-          cy.get('textarea[id=redirect_uris]').should(
-            'have.value',
-            'https://www.hello.com/callback\nhttps://www.world.com/callback',
-          );
-          cy.get('textarea[id=post_logout_redirect_uris]').should(
-            'have.value',
-            'https://www.hello.com/logout\nhttps://www.world.com/logout',
-          );
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
-          cy.get('textarea[id=emails]').should('have.value', 'test@me.com');
-          cy.get('textarea[id=IPServerAddressesAndRanges]').should(
-            'have.value',
-            '87.252.12.28\n195.25.216.208/28\n2001:0db8:0000:85a3:0000:0000:ac1f:8001',
-          );
-
-          cy.get('input[id=scope-openid]').should('have.attr', 'checked');
-        });
-      });
-
-      it('if fill form without email field', () => {
-        // Arrange
-        const filename = 'valid_fs_comma';
-
-        // Action
-        uploadCSV(filename);
-
-        // Assert
-        cy.get('#fs-form').within(() => {
-          cy.get('input[id=name]').should('have.value', 'hello world');
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
-          cy.get('textarea[id=emails]').should('have.value', '');
-        });
-      });
-
-      it('if fill form with CSVdata is submited', () => {
-        // Arrange
-        const filename = 'valid_fs_comma';
-
-        // Action
-        uploadCSV(filename);
-
-        cy.get('textarea[id=emails]').type('w@hello.com\nw@world.com');
-        cy.get('input[id=public]').check({
-          force: true,
-        });
-
-        cy.totp(basicConfiguration);
-        cy.get('button[type=submit]').click();
-
-        // Assert
-        cy.contains(
-          `Le fournisseur de service hello world a été créé avec succès !`,
-        );
-      });
-
-      it('unless an error of parsing appears', () => {
-        // Arrange
-        const filename = 'failed_fs';
-
-        // Action
-        uploadCSV(filename);
-
-        // Assert
-        cy.get('#file-name').contains(`${filename}.csv`);
-        cy.get('#alert_error').contains('Problème de parsing');
-      });
-
-      it('if fill form with CSVdata with empty value', () => {
-        // Arrange
-        const filename = 'valid_fs_with_empty_values_semicolon';
-
-        // Action
-        uploadCSV(filename);
-
-        // Assert
-        cy.get('#file-name').contains(`${filename}.csv`);
-        cy.get('#fs-form').within(() => {
-          cy.get('input[id=name]').should('have.value', 'hello semicolon');
-          cy.get('textarea[id=redirect_uris]').should(
-            'have.value',
-            'https://www.hello.com/callback\nhttps://www.world.com/callback',
-          );
-          cy.get('textarea[id=post_logout_redirect_uris]').should(
-            'have.value',
-            'https://www.hello.com/logout\nhttps://www.world.com/logout',
-          );
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
-          cy.get('textarea[id=emails]').should('have.value', 'test@me.com');
-          cy.get('textarea[id=IPServerAddressesAndRanges]').should(
-            'have.value',
-            '87.252.12.28\n195.25.216.208/28\n2001:0db8:0000:85a3:0000:0000:ac1f:8001',
-          );
-
-          cy.get('input[id=scope-openid]').should('have.attr', 'checked');
-        });
-      });
-
-      it('if fill form with CSVdata with wrong key values added', () => {
-        // Arrange
-        const filename = 'valid_fs_with_extra_columns_semicolon';
-
-        // Action
-        uploadCSV(filename);
-
-        // Assert
-        cy.get('#file-name').contains(`${filename}.csv`);
-        cy.get('#fs-form').within(() => {
-          cy.get('input[id=name]').should('have.value', 'hello semicolon');
-          cy.get('textarea[id=redirect_uris]').should(
-            'have.value',
-            'https://www.hello.com/callback\nhttps://www.world.com/callback',
-          );
-          cy.get('textarea[id=post_logout_redirect_uris]').should(
-            'have.value',
-            'https://www.hello.com/logout\nhttps://www.world.com/logout',
-          );
-          cy.get('textarea[id=site]').should(
-            'have.value',
-            'https://www.hello.com\nhttps://www.world.com',
-          );
-          cy.get('textarea[id=emails]').should('have.value', 'test@me.com');
-          cy.get('textarea[id=IPServerAddressesAndRanges]').should(
-            'have.value',
-            '87.252.12.28\n195.25.216.208/28\n2001:0db8:0000:85a3:0000:0000:ac1f:8001',
-          );
-
-          cy.get('input[id=scope-openid]').should('have.attr', 'checked');
-        });
-      });
-    });
-
     it('if we add a URIScheme in redirectUri field', () => {
       // Action
       createServiceProvider(
@@ -551,7 +311,7 @@ describe('Service provider creation', () => {
       );
     });
 
-    it('if we add a sp with no redirectUri, redirectUriLogout, site and ip', () => {
+    it('if we add  a sp with no redirectUri, redirectUriLogout and ip', () => {
       // Action
       createServiceProvider(
         {
@@ -559,7 +319,6 @@ describe('Service provider creation', () => {
           name: 'champs optionnels',
           redirectUri: '',
           redirectUriLogout: '',
-          site: '',
           ipAddresses: '',
         },
         basicConfiguration,
@@ -592,23 +351,6 @@ describe('Service provider creation', () => {
         `Le fournisseur de service My_FS with 42 : ÉçïœâùÆ/ÙÈ.com+2 & ee a été créé avec succès !`,
       );
     });
-
-    it('if we add a fs with an entityId', () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: 'My_FS with an entityId',
-          entityId:
-            '0a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-        },
-        basicConfiguration,
-      );
-
-      cy.contains(
-        `Le fournisseur de service My_FS with an entityId a été créé avec succès !`,
-      );
-    });
   });
 
   describe('Should fail', () => {
@@ -634,7 +376,6 @@ describe('Service provider creation', () => {
           name: '',
           redirectUri: '',
           redirectUriLogout: '',
-          site: '',
           emails: '',
           ipAddresses: '',
         },
@@ -726,26 +467,6 @@ describe('Service provider creation', () => {
       cy.contains(
         '.invalid-feedback',
         `Veuillez mettre une URL valide ( Ex: https://urlvalide.com/logout )`,
-      )
-        .scrollIntoView()
-        .should('be.visible');
-    });
-
-    it('if an error occured in the form, we display an error (site)', () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: 'Good name',
-          site: '***',
-        },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.contains(
-        '.invalid-feedback',
-        `Veuillez mettre une URL valide ( Ex: https://site.com/ )`,
       )
         .scrollIntoView()
         .should('be.visible');

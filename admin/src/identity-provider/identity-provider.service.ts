@@ -6,7 +6,6 @@ import { ConfigService } from 'nestjs-config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { linesToArray } from '../utils/transforms/string.transform';
 import { LoggerService } from '../logger/logger.service';
 
 import { ICrudTrack } from '../interfaces';
@@ -199,22 +198,9 @@ export class IdentityProviderService {
       client_secret: clientSecret,
       name: identityProviderDto.name,
       title: identityProviderDto.title,
-      image: identityProviderDto.image,
-      imageFocus: identityProviderDto.imageFocus,
-      alt: identityProviderDto.alt,
-      eidas: identityProviderDto.eidas,
-      allowedAcr: identityProviderDto.allowedAcr,
       discovery: identityProviderDto.discovery,
-      isBeta: identityProviderDto.isBeta,
-      order: identityProviderDto.order,
-      trustedIdentity: identityProviderDto.trustedIdentity,
       siret: identityProviderDto.siret,
       discoveryUrl: identityProviderDto.discoveryUrl,
-      jwtAlgorithm: [],
-      blacklistByIdentityProviderActivated: false,
-      WhitelistByServiceProviderActivated: false,
-      hoverMsg: identityProviderDto.messageToDisplayWhenInactive,
-      hoverRedirectLink: identityProviderDto.redirectionTargetWhenInactive,
       clientID: identityProviderDto.clientId,
       authzURL: identityProviderDto.authorizationUrl,
       statusURL: identityProviderDto.statusUrl,
@@ -222,8 +208,6 @@ export class IdentityProviderService {
       userInfoURL: identityProviderDto.userInfoUrl,
       endSessionURL: identityProviderDto.logoutUrl,
       jwksURL: identityProviderDto.jwksUrl,
-      amr: identityProviderDto.amr,
-      mailto: identityProviderDto.emails.join('\r\n'),
       url: identityProviderDto.issuer,
       userinfo_encrypted_response_enc:
         identityProviderDto.userinfo_encrypted_response_enc,
@@ -240,9 +224,6 @@ export class IdentityProviderService {
       token_endpoint_auth_method:
         identityProviderDto.token_endpoint_auth_method,
       supportEmail: identityProviderDto.supportEmail,
-      specificText:
-        identityProviderDto.specificText ||
-        'Une erreur est survenue lors de la transmission de votre identité.',
     };
 
     switch (mode) {
@@ -251,13 +232,11 @@ export class IdentityProviderService {
           uid: uuidv4(),
           createdAt: now,
           active: false,
-          display: false,
         });
         break;
       case 'update':
         Object.assign(entity, {
           active: identityProviderDto.active,
-          display: identityProviderDto.display,
         });
         break;
     }
@@ -276,19 +255,9 @@ export class IdentityProviderService {
       name: inputProvider.name,
       title: inputProvider.title,
       discovery: inputProvider.discovery,
-      isBeta: inputProvider.isBeta,
-      order: inputProvider.order,
-      trustedIdentity: inputProvider.trustedIdentity,
       siret: inputProvider.siret,
       client_secret: inputProvider.client_secret,
-      alt: inputProvider.alt,
-      image: inputProvider.image,
-      imageFocus: inputProvider.imageFocus,
       active: inputProvider.active,
-      display: inputProvider.display,
-      eidas: inputProvider.eidas,
-      allowedAcr: inputProvider.allowedAcr,
-      specificText: inputProvider.specificText,
       discoveryUrl: inputProvider.discoveryUrl,
       id_token_encrypted_response_enc:
         inputProvider.id_token_encrypted_response_enc,
@@ -301,8 +270,6 @@ export class IdentityProviderService {
       userinfo_encrypted_response_enc:
         inputProvider.userinfo_encrypted_response_enc,
       supportEmail: inputProvider.supportEmail,
-      messageToDisplayWhenInactive: inputProvider.hoverMsg,
-      redirectionTargetWhenInactive: inputProvider.hoverRedirectLink,
       clientId: inputProvider.clientID,
       authorizationUrl: inputProvider.authzURL,
       statusUrl: inputProvider.statusURL,
@@ -310,15 +277,7 @@ export class IdentityProviderService {
       userInfoUrl: inputProvider.userInfoURL,
       logoutUrl: inputProvider.endSessionURL,
       jwksUrl: inputProvider.jwksURL,
-      emails: linesToArray({ value: inputProvider.mailto }),
       issuer: inputProvider.url,
-      amr: inputProvider.amr,
-      modalActive: inputProvider.modal?.active,
-      modalTitle: inputProvider.modal?.title,
-      modalBody: inputProvider.modal?.body,
-      modalContinueText: inputProvider.modal?.continueText,
-      modalMoreInfoLabel: inputProvider.modal?.moreInfoLabel,
-      modalMoreInfoUrl: inputProvider.modal?.moreInfoUrl,
     };
   }
 }

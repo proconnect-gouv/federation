@@ -31,10 +31,8 @@ describe('update a service-provider', () => {
         signupId: '123456',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
-        site: 'https://url.com',
         emails: 'valenttin@gmail.com',
         ipAddresses: '192.0.0.0',
-        eidas: 1,
       };
 
       // Action
@@ -63,10 +61,8 @@ describe('update a service-provider', () => {
         signupId: '123456',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
-        site: 'https://url.com',
         emails: 'valenttin@gmail.com',
         ipAddresses: 'Obviously not an IP',
-        eidas: 1,
       };
 
       // Action

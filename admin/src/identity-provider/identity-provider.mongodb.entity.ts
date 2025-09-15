@@ -17,31 +17,7 @@ export class IdentityProviderFromDb {
   active: boolean;
 
   @Column()
-  display: boolean;
-
-  @Column()
   title: string;
-
-  @Column()
-  image: string;
-
-  @Column()
-  imageFocus: string;
-
-  @Column()
-  alt: string;
-
-  @Column()
-  eidas: number;
-
-  @Column()
-  allowedAcr: string[];
-
-  @Column()
-  mailto: string;
-
-  @Column()
-  specificText: string;
 
   @Column()
   url: string;
@@ -68,13 +44,7 @@ export class IdentityProviderFromDb {
   discovery: boolean;
 
   @Column()
-  isBeta: boolean;
-
-  @Column()
   jwksURL?: string;
-
-  @Column()
-  jwtAlgorithm: string[];
 
   @Column()
   clientID: string;
@@ -85,18 +55,6 @@ export class IdentityProviderFromDb {
   client_secret: string;
 
   @Column()
-  order: number;
-
-  @Column()
-  hoverMsg: string;
-
-  @Column()
-  hoverRedirectLink: string;
-
-  @Column()
-  trustedIdentity: boolean;
-
-  @Column()
   createdAt: Date;
 
   @Column()
@@ -104,12 +62,6 @@ export class IdentityProviderFromDb {
 
   @Column()
   updatedBy: string;
-
-  @Column()
-  blacklistByIdentityProviderActivated: boolean;
-
-  @Column()
-  WhitelistByServiceProviderActivated: boolean;
 
   @Column()
   // oidc defined variable name
@@ -145,19 +97,6 @@ export class IdentityProviderFromDb {
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   token_endpoint_auth_method?: string;
-
-  @Column()
-  amr?: string[];
-
-  @Column()
-  modal?: {
-    active: boolean;
-    title: string;
-    body: string;
-    continueText: string;
-    moreInfoLabel: string;
-    moreInfoUrl: string;
-  };
 
   @Column()
   siret: string;

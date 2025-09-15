@@ -7,10 +7,7 @@ import {
   IsOptional,
   ValidateIf,
   IsArray,
-  IsUrl,
-  IsNotEmpty,
   Length,
-  IsEmail,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import {
@@ -25,7 +22,6 @@ const URL_REGEX =
   /^((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)$/;
 const EMAIL_REGEX = /^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 const FQDN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
-const IMG_REGEX = /\.(png|svg|jpg|gif)$/;
 
 export class IdentityProviderDTO {
   @IsValidInputString({
@@ -100,10 +96,6 @@ export class IdentityProviderDTO {
   @IsBoolean()
   readonly discovery: boolean;
 
-  @Transform(toBoolean)
-  @IsBoolean()
-  readonly isBeta: boolean;
-
   @IsString()
   readonly clientId: string;
 
@@ -112,74 +104,9 @@ export class IdentityProviderDTO {
   // tslint:disable-next-line: variable-name
   readonly client_secret: string;
 
-  @IsOptionalExtended()
-  @IsString()
-  readonly messageToDisplayWhenInactive: string;
-
-  @IsOptionalExtended()
-  @Matches(URL_REGEX, {
-    message:
-      'Veuillez mettre une url valide ( Ex: https://my-redirect-url.com/ )',
-  })
-  readonly redirectionTargetWhenInactive: string;
-
-  @IsOptionalExtended()
-  @IsString()
-  readonly alt: string;
-
-  @IsOptionalExtended()
-  @Matches(IMG_REGEX, {
-    message:
-      "Veuillez saisir un nom d'image valide finissant par .svg, .jpg, .gif, .png",
-  })
-  readonly image: string;
-
-  @IsOptionalExtended()
-  @Matches(IMG_REGEX, {
-    message:
-      "Veuillez saisir un nom d'image valide finissant par .svg, .jpg, .gif, .png",
-  })
-  @IsString()
-  readonly imageFocus: string;
-
-  @Transform(toBoolean)
-  @IsBoolean()
-  readonly trustedIdentity: boolean;
-
   @Transform(toBoolean)
   @IsBoolean()
   readonly active: boolean;
-
-  @Transform(toBoolean)
-  @IsBoolean()
-  readonly display: boolean;
-
-  @IsOptionalExtended()
-  @IsNumber()
-  @Type(() => Number)
-  readonly eidas: number;
-
-  @Transform(toArray)
-  @IsString({ each: true })
-  @IsArray()
-  readonly allowedAcr: string[];
-
-  @IsOptionalExtended()
-  @IsNumber()
-  @Type(() => Number)
-  readonly order: number;
-
-  @IsOptionalArrayExtended()
-  @Transform(linesToArray)
-  @Matches(EMAIL_REGEX, {
-    each: true,
-    message: 'Veuillez mettre des emails valides ( Ex: email@email.com )',
-  })
-  readonly emails?: string[];
-
-  @IsOptionalExtended()
-  @IsString()
-  readonly specificText: string;
 
   @IsOptional()
   @IsIn(['', 'A256GCM'], {
@@ -259,11 +186,6 @@ export class IdentityProviderDTO {
   readonly post_logout_redirect_uris?: string[];
 
   @IsOptional()
-  @Transform(toArray)
-  @IsArray()
-  amr?: string[];
-
-  @IsOptional()
   @Transform(linesToArray)
   @Matches(FQDN_REGEX, {
     each: true,
@@ -272,39 +194,6 @@ export class IdentityProviderDTO {
   })
   readonly fqdns?: string[];
 
-  @IsBoolean()
-  @Transform(toBoolean)
-  @IsOptional()
-  readonly modalActive?: boolean;
-
-  @ValidateIf(({ modalActive }) => modalActive)
-  @IsString()
-  readonly modalTitle?: string;
-
-  @ValidateIf(({ modalActive }) => modalActive)
-  @IsString()
-  readonly modalBody?: string;
-
-  @ValidateIf(({ modalActive }) => modalActive)
-  @IsString()
-  readonly modalContinueText?: string;
-
-  @ValidateIf(
-    ({ modalActive, modalMoreInfoUrl }) =>
-      modalActive && modalMoreInfoUrl.length > 0,
-  )
-  @IsString()
-  @IsNotEmpty()
-  readonly modalMoreInfoLabel?: string;
-
-  @ValidateIf(
-    ({ modalActive, modalMoreInfoLabel }) =>
-      modalActive && modalMoreInfoLabel.length > 0,
-  )
-  @IsUrl()
-  readonly modalMoreInfoUrl?: string;
-
-  // only for proconnect
   @IsOptionalExtended()
   @IsString()
   @Length(14, 14)

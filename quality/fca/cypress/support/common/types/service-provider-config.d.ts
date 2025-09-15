@@ -3,7 +3,6 @@ export interface ServiceProviderConfig
   name: string;
   redirectUri: string;
   redirectUriLogout: string;
-  site: string;
   emails: string[];
   ipAddresses: string[];
   scopes: string[];
@@ -11,5 +10,4 @@ export interface ServiceProviderConfig
   type: string;
   userinfo_signed_response_alg: string;
   id_token_signed_response_alg: string;
-  entityId: string;
 }

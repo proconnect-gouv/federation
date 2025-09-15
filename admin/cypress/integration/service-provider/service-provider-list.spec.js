@@ -17,7 +17,6 @@ const fs = {
   platform: 'CORE_FCP',
   redirectUri: 'https://url.com',
   redirectUriLogout: 'https://url.com/logout',
-  site: 'https://url.com',
   emails: 'titlen@gmail.com',
   ipAddresses: '192.0.0.0',
 };

@@ -1,49 +1,13 @@
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsEnum,
-  IsNotEmpty,
-  IsObject,
   IsOptional,
   IsString,
   IsUrl,
   MinLength,
-  NotContains,
   Validate,
-  ValidateIf,
-  ValidateNested,
 } from 'class-validator';
 
-import { IsIncludedInConfig } from '@fc/common';
-
-import { Amr } from '../enums';
 import { JwksUriValidator } from './jwksuri.validator';
-
-export class ModalIdpAdapterMongo {
-  @IsBoolean()
-  readonly active: boolean;
-
-  @IsString()
-  @ValidateIf(({ active }) => active)
-  readonly title: string;
-
-  @IsString()
-  @ValidateIf(({ active }) => active)
-  readonly body: string;
-
-  @IsString()
-  @ValidateIf(({ active }) => active)
-  readonly continueText: string;
-
-  @ValidateIf(({ active, moreInfoUrl }) => active && moreInfoUrl.length > 0)
-  @IsString()
-  @IsNotEmpty()
-  readonly moreInfoLabel?: string;
-
-  @ValidateIf(({ active, moreInfoLabel }) => active && moreInfoLabel.length > 0)
-  @IsUrl()
-  readonly moreInfoUrl?: string;
-}
 
 export class MetadataIdpAdapterMongoDTO {
   @IsString()
@@ -57,36 +21,10 @@ export class MetadataIdpAdapterMongoDTO {
   readonly name: string;
 
   @IsString()
-  @NotContains('/')
-  readonly image: string;
-
-  @IsString()
   readonly title: string;
 
   @IsBoolean()
   readonly active: boolean;
-
-  @IsBoolean()
-  readonly display: boolean;
-
-  @IsBoolean()
-  readonly isBeta: boolean;
-
-  @IsEnum(Amr, { each: true })
-  @IsOptional()
-  readonly amr?: Amr[];
-
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => ModalIdpAdapterMongo)
-  readonly modal?: ModalIdpAdapterMongo;
-
-  /**
-   * CLIENT METADATA
-   */
-  @IsIncludedInConfig('IdentityProviderAdapterMongo', 'allowedAcr')
-  readonly allowedAcr: string[];
 
   @IsString()
   readonly clientID: string;

@@ -382,7 +382,6 @@ describe('ServiceProviderService', () => {
           name: 'proConnect',
           redirectUri: ['https://proConnect.com'],
           redirectUriLogout: ['https://proConnect.com/logout'],
-          site: 'https://proConnect.com',
           ipAddresses: ['192.0.0.0'],
           emails: ['v@b2.com'],
           active: true,
@@ -405,39 +404,6 @@ describe('ServiceProviderService', () => {
         1,
       );
       expect(serviceProviderRepository.save).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('transformDtoIntoEntity', () => {
-    const serviceProviderDto = serviceProviderFactory.createServiceProviderDto(
-      {},
-    );
-    it('should call generateKey once if entityId is provided in params', async () => {
-      // Given
-      const spMock = {
-        ...serviceProviderDto,
-        entityId: '12aze3',
-      };
-
-      // When
-      serviceProviderService['transformDtoIntoEntity'](spMock, 'user');
-
-      // Then
-      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call generateKey twice if entityId is not provided in params', async () => {
-      // Given
-      const spMock = {
-        ...serviceProviderDto,
-        entityId: undefined,
-      };
-
-      // When
-      serviceProviderService['transformDtoIntoEntity'](spMock, 'user');
-
-      // Then
-      expect(secretAdapterMock.generateKey).toHaveBeenCalledTimes(2);
     });
   });
 });

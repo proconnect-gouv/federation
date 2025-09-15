@@ -28,10 +28,8 @@ describe('Delete service provider', () => {
     signupId: '123456',
     redirectUri: 'https://url.com',
     redirectUriLogout: 'https://url.com/logout',
-    site: 'https://url.com',
     emails: 'titlen@gmail.com',
     ipAddresses: '192.0.0.0',
-    eidas: 1,
   };
 
   beforeEach(() => {

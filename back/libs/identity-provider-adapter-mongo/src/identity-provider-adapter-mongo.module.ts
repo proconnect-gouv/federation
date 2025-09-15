@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 
-import { IsIncludedInConfigConstraint } from '@fc/common';
 import { CryptographyModule } from '@fc/cryptography';
 import { MongooseModule } from '@fc/mongoose';
 
@@ -14,10 +13,7 @@ import { IdentityProviderSchema } from './schemas';
       { name: 'IdentityProvider', schema: IdentityProviderSchema },
     ]),
   ],
-  providers: [
-    IdentityProviderAdapterMongoService,
-    IsIncludedInConfigConstraint,
-  ],
+  providers: [IdentityProviderAdapterMongoService],
   exports: [IdentityProviderAdapterMongoService],
 })
 export class IdentityProviderAdapterMongoModule {}

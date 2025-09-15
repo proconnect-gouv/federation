@@ -17,7 +17,6 @@ import {
   DiscoveryIdpAdapterMongoDTO,
   NoDiscoveryIdpAdapterMongoDTO,
 } from './dto';
-import { Amr } from './enums';
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
 import { IdentityProvider } from './schemas';
 
@@ -39,17 +38,13 @@ describe('IdentityProviderAdapterMongoService', () => {
     authzURL:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
     clientID: 'clientID',
-    amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
-    display: false,
-    allowedAcr: ['eidas2'],
     endSessionURL:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'HS256',
-    image: 'provider1.png',
     jwksURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
     name: 'provider1',
     title: 'provider 1',
@@ -69,17 +64,13 @@ describe('IdentityProviderAdapterMongoService', () => {
     authorization_endpoint:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
     client_id: 'clientID',
-    amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
-    display: false,
-    allowedAcr: ['eidas2'],
     end_session_endpoint:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'HS256',
-    image: 'provider1.png',
     issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
     jwks_uri: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
     name: 'provider1',
@@ -112,11 +103,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       userinfo_encrypted_response_enc: 'A256GCM',
       userinfo_signed_response_alg: 'HS256',
     },
-    amr: [Amr.MAIL, Amr.PWD],
     discovery: false,
-    display: false,
-    allowedAcr: ['eidas2'],
-    image: 'provider1.png',
     issuer: {
       authorization_endpoint:
         'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',

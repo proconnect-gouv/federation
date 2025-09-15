@@ -27,9 +27,7 @@ describe('Identity provider creation', () => {
       cy.contains("Créer un fournisseur d'identité").click();
       cy.get('[name="discovery"]:checked').should('have.value', 'false');
       cy.get('[name="discoveryUrl"]').should('be.disabled');
-      cy.get('[name="trustedIdentity"]:checked').should('have.value', 'false');
       cy.get('[name="active"]:checked').should('have.value', 'false');
-      cy.get('[name="display"]:checked').should('have.value', 'false');
     });
 
     it('if all fields are provided', () => {
@@ -45,17 +43,6 @@ describe('Identity provider creation', () => {
         discovery: 'false',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
-        redirectionTargetWhenInactive: 'https://issuer.fr/promo',
-        alt: 'MonFI Image',
-        image: 'AliceM.svg',
-        imageFocus: 'AliceM.svg',
-        trustedIdentity: 'false',
-        allowedAcr: ['eidas2'],
-        order: 1,
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -87,9 +74,7 @@ describe('Identity provider creation', () => {
         userInfoUrl: 'https://issuer.fr/me',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
       };
       createIdentityProvider(idp, basicConfiguration);
@@ -112,9 +97,7 @@ describe('Identity provider creation', () => {
         userInfoUrl: 'https://issuer.fr/me',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
         supportEmail: 'support@myidp.fr',
       };
@@ -139,10 +122,7 @@ describe('Identity provider creation', () => {
         jwksUrl: 'https://issuer.fr/jwks',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        trustedIdentity: 'true',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
       };
       createIdentityProvider(idp, basicConfiguration);
@@ -165,17 +145,6 @@ describe('Identity provider creation', () => {
         discoveryUrl: 'http://discoveryUrl.com',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
-        redirectionTargetWhenInactive: 'https://issuer.fr/promo',
-        alt: 'MonFI Image',
-        image: 'AliceM.svg',
-        imageFocus: 'AliceM.svg',
-        trustedIdentity: 'false',
-        allowedAcr: ['eidas2'],
-        order: 1,
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
-        specificText:
-          "Veuillez fournir une capture d'écran de votre page de profil !",
         userinfo_encrypted_response_enc: 'A256GCM',
         userinfo_encrypted_response_alg: 'RSA-OAEP',
         userinfo_signed_response_alg: 'ES256',
@@ -204,9 +173,6 @@ describe('Identity provider creation', () => {
         discoveryUrl: 'http://discoveryUrl.com',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        trustedIdentity: 'true',
-        allowedAcr: ['eidas2'],
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
       };
@@ -252,9 +218,6 @@ describe('Identity provider creation', () => {
       cy.contains(`Veuillez saisir un client Secret valide`)
         .scrollIntoView()
         .should('exist');
-      cy.contains(`Veuillez saisir au moins un email`)
-        .scrollIntoView()
-        .should('exist');
     });
 
     it('if the title contains invalid chars', () => {
@@ -269,9 +232,7 @@ describe('Identity provider creation', () => {
         userInfoUrl: 'https://issuer.fr/me',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
       };
 
@@ -295,9 +256,7 @@ describe('Identity provider creation', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         supportEmail: 'notAnEmail',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
       };
 
@@ -317,12 +276,8 @@ describe('Identity provider creation', () => {
         userInfoUrl: 'https://issuer.fr/me',
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
-        trustedIdentity: 'true',
         active: 'true',
-        display: 'true',
-        emails: 'sherman@kaliop.com\nvbonnard@kaliopmail.com',
         token_endpoint_auth_method: 'client_secret_post',
-        allowedAcr: ['eidas2'],
         siret: '34047343800034',
       };
 

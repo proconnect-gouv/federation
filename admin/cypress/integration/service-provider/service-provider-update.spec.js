@@ -28,7 +28,6 @@ describe('update a service-provider', () => {
         name: 'MyFirstFSCypress',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
-        site: 'https://urlModificate.com\nhttps://urlModificate.com',
         emails: 'valenttin@gmail.com',
         ipAddresses: '192.0.0.0',
       };
@@ -56,7 +55,6 @@ describe('update a service-provider', () => {
         name: 'MyFirstFSCypress',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
-        site: 'https://urlModificate.com\nhttps://urlModificate.com',
         emails: 'valenttin@gmail.com',
         ipAddresses: '192.0.0.0',
       };
@@ -97,7 +95,6 @@ describe('update a service-provider', () => {
         name: 'MyFirstFSCypress',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
-        site: 'https://url.com\nhttps://url.com',
         emails: 'valenttin@gmail.com',
         ipAddresses: '192.0.0.0',
         scopes: ['openid'],
@@ -295,58 +292,6 @@ describe('update a service-provider', () => {
       cy.formControl(sp);
     });
 
-    it('Should be able to update a sp ( site: one entry ) ', () => {
-      // Arrange
-      const mockConfig = {
-        ...configuration,
-        totp: true,
-      };
-
-      const sp = { site: 'https://url.com' };
-
-      // Action
-      cy.visit(`/service-provider?page=1&limit=9000`);
-
-      cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update').last().click();
-
-      cy.formFill(sp, mockConfig);
-
-      cy.get('form[name="fs-form"] button[type="submit"]').click();
-
-      // Assert
-      cy.contains(
-        `Le fournisseur de service MyFirstFSCypressModificate a été modifié avec succès !`,
-      );
-      cy.formControl(sp);
-    });
-
-    it('Should be able to update a sp ( site:multiple entries ) ', () => {
-      // Arrange
-      const mockConfig = {
-        ...configuration,
-        totp: true,
-      };
-
-      const sp = { site: 'https://site.com\nhttps://site.com' };
-
-      // Action
-      cy.visit(`/service-provider?page=1&limit=9000`);
-
-      cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update').last().click();
-
-      cy.formFill(sp, mockConfig);
-
-      cy.get('form[name="fs-form"] button[type="submit"]').click();
-
-      // Assert
-      cy.contains(
-        `Le fournisseur de service MyFirstFSCypressModificate a été modifié avec succès !`,
-      );
-      cy.formControl(sp);
-    });
-
     it('Should be able to update a sp ( emails ) ', () => {
       // Arrange
       const mockConfig = {
@@ -384,7 +329,6 @@ describe('update a service-provider', () => {
         name: 'MyFirstFSCypressModificate',
         redirectUri: '',
         redirectUriLogout: '',
-        site: '',
         emails: '',
         ipAddresses: '',
       };
@@ -454,30 +398,6 @@ describe('update a service-provider', () => {
       cy.contains(`Veuillez mettre des emails valides ( Ex: email@email.com )`);
     });
 
-    it('Should not be able to update a sp with an error( site ) ', () => {
-      // Arrange
-      const mockConfig = {
-        ...configuration,
-        typeEvent: true,
-        totp: true,
-      };
-
-      const sp = { site: '**' };
-
-      // Action
-      cy.visit(`/service-provider?page=1&limit=9000`);
-
-      cy.contains(`MyFirstFSCypressModificate`).should('be.visible');
-      cy.get('a.btn-action-update').last().click();
-
-      cy.get('#fs-form').within(() => {
-        cy.formFill(sp, mockConfig);
-      });
-
-      // Assert
-      cy.contains(`Veuillez mettre une URL valide ( Ex: https://site.com/ )`);
-    });
-
     it('Should not be able to update a sp with an error( redirectUriLogout ) ', () => {
       // Arrange
       const mockConfig = {
@@ -540,7 +460,6 @@ describe('update a service-provider', () => {
         name: 'MyFirstFSCypressModificate',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
-        site: 'https://urlModificate.com\nhttps://urlModificate.com',
         emails: 'valenttin@gmail.com',
         ipAddresses: '192.0.0.0',
       };
@@ -613,7 +532,6 @@ describe('update a service-provider', () => {
         name: 'MyFirstFSCypress',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
-        site: ['https://url.com\nhttps://url.com'],
         emails: 'valenttin@gmail.com',
         ipAddresses: '192.0.0.0',
       };
@@ -646,7 +564,6 @@ describe('update a service-provider', () => {
         name: 'MyFirstFSCypress',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
-        site: ['https://url.com\nhttps://url.com'],
         emails: 'valenttin@gmail.com',
         ipAddresses: '192.0.0.0',
       };

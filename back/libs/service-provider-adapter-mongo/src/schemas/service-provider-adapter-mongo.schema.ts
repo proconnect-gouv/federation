@@ -13,9 +13,6 @@ export class ServiceProvider extends Document {
   @Prop({ type: String, unique: true, index: true })
   key: string;
 
-  @Prop({ type: String, index: true })
-  entityId: string;
-
   @Prop({ type: String })
   client_secret: string;
 

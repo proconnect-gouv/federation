@@ -10,9 +10,6 @@ export class IdentityProvider extends Document {
   @Prop({ index: true, type: String })
   clientID: string;
 
-  @Prop({ type: Boolean })
-  isBeta: boolean;
-
   @Prop({ type: String })
   client_secret: string;
 
@@ -51,9 +48,6 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: String })
   userinfo_encrypted_response_enc: string;
-
-  @Prop({ type: [String] })
-  allowedAcr: string[];
 
   @Prop({ type: String })
   siret: string;

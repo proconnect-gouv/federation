@@ -118,13 +118,11 @@ async def create_oidc_client(data: OidcClient, request: Request):
             "updatedBy": "espace-partenaires",
             # TODO: fix these fields?
             "title": "Nouvelle application",
-            "site": ["https://site.com"],
             # Generate IDs in correct format, 64 hex chars
             "key": secrets.token_hex(32),
             "client_secret": encrypt_symetric(
                 CONFIG["client_secret_cipher_pass"], secrets.token_hex(32)
             ),
-            "entityId": secrets.token_hex(32),
             "credentialsFlow": False,
             "claims": ["amr"],
             "IPServerAddressesAndRanges": ["1.1.1.1"],

@@ -3,14 +3,12 @@
     "name": "dummy-sp-config-for-fc-exploit",
     "redirectUri": "https://dummy-sp-config-for-fc-exploit.fr/oidc-callback",
     "redirectUriLogout": "https://dummy-sp-config-for-fc-exploit.fr/logout-callback",
-    "site": "https://dummy-sp-config-for-fc-exploit.fr",
     "emails": ["dummy1@proconnect.loc", "dummy2@proconnect.loc"],
     "ipAddresses": ["1.1.1.1", "1.1.1.2"],
     "scopes": ["given_name", "usual_name", "email"],
     "active": "true",
     "type": "public",
     "userinfo_signed_response_alg": "HS256",
-    "id_token_signed_response_alg": "HS256",
-    "entityId": "a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc"
+    "id_token_signed_response_alg": "HS256"
   }
 }

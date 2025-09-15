@@ -21,12 +21,6 @@ export class ServiceProviderFromDb {
   active: boolean;
 
   @Column()
-  identityConsent?: boolean;
-
-  @Column()
-  site: string[];
-
-  @Column()
   type: string;
 
   @Column({ name: 'IPServerAddressesAndRanges' })
@@ -59,13 +53,6 @@ export class ServiceProviderFromDb {
   @Column({ name: 'key' })
   key: string;
 
-  @Column({ name: 'entityId' })
-  entityId: string;
-
-  @Column({ name: 'signup_id' })
-  // tslint:disable-next-line: variable-name
-  signup_id?: string;
-
   @Column({ name: 'client_secret' })
   // tslint:disable-next-line: variable-name
   client_secret: string;
@@ -76,21 +63,11 @@ export class ServiceProviderFromDb {
   @Column({ name: 'secretUpdatedBy' })
   secretUpdatedBy?: string;
 
-  @Column({ name: 'past_client_secret' })
-  // tslint:disable-next-line: variable-name
-  past_client_secret?: string;
-
   @Column({ name: 'scopes' })
   scopes: string[];
 
   @Column({ name: 'claims' })
   claims?: string[];
-
-  @Column()
-  trustedIdentity: boolean;
-
-  @Column()
-  eidas?: number;
 
   @Column()
   // oidc defined variable name
@@ -101,9 +78,6 @@ export class ServiceProviderFromDb {
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   id_token_signed_response_alg?: string;
-
-  @Column()
-  ssoDisabled?: boolean;
 
   @Column()
   // tslint:disable-next-line: variable-name

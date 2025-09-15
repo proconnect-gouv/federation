@@ -26,12 +26,6 @@ export function updateIdentityProvider(
   cy.wait(1);
   cy.formFill(identityProviderUpdateInfo, configuration);
 
-  if (configuration.amr) {
-    cy.get('#amr-pop').check({ force: true });
-    cy.get('#amr-sms').check({ force: true });
-    cy.get('#amr-eye').check({ force: true });
-  }
-
   cy.wait(500);
   cy.get('form[name="fi-form"] button[type="submit"]').click({ force: true });
 }

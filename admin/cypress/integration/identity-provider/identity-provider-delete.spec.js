@@ -18,17 +18,6 @@ describe('Delete identity provider normal', () => {
     jwksUrl: 'https://issuer.fr/discovery',
     clientId: '09a1a257648c1742c74d6a3d84b31943',
     client_secret: '1234567890AZERTYUIOP',
-    messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
-    redirectionTargetWhenInactive: 'https://issuer.fr/promo',
-    alt: 'MonFI Image',
-    image: 'AliceM.svg',
-    imageFocus: 'AliceM.svg',
-    trustedIdentity: 'false',
-    allowedAcr: ['eidas2'],
-    order: 1,
-    emails: 'sherman@tata.com\nvbonnard@tata.com',
-    specificText:
-      "Veuillez fournir une capture d'écran de votre page de profil !",
     siret: '34047343800034',
   };
 
@@ -100,18 +89,7 @@ describe('Delete identity provider non latin', () => {
     jwksUrl: 'https://issuer.fr/discovery',
     clientId: '09a1a257648c1742c74d6a3d84b31943',
     client_secret: '1234567890AZERTYUIOP',
-    messageToDisplayWhenInactive: 'SUPER MESSAGE !!!',
-    redirectionTargetWhenInactive: 'https://issuer.fr/promo',
-    alt: 'MonFI Image',
-    image: 'AliceM.svg',
-    imageFocus: 'AliceM.svg',
-    trustedIdentity: 'false',
     siret: '34047343800034',
-    allowedAcr: ['eidas2'],
-    order: 1,
-    emails: 'sherman@tata.com\nvbonnard@tata.com',
-    specificText:
-      "Veuillez fournir une capture d'écran de votre page de profil !",
   };
 
   before(() => {

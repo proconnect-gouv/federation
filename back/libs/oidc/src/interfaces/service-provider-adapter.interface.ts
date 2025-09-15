@@ -3,7 +3,6 @@ import { AllClientMetadata } from 'oidc-provider';
 export interface CustomClientMetadata extends AllClientMetadata {
   active: boolean;
   name: string;
-  entityId: string;
 }
 
 /**

@@ -103,9 +103,7 @@
       "@fc/account-fca": ["libs/account-fca/src"],
       "@fc/account-fca/*": ["libs/account-fca/src/*"],
       "@fc/logger-plugins": ["libs/logger-plugins/src"],
-      "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"],
-      "@mocks/common": ["libs/common/.mocks"],
-      "@mocks/common/*": ["libs/common/.mocks/*"]
+      "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"]
     }
   },
   "files": ["global.d.ts"],
