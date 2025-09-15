@@ -3,7 +3,6 @@ const fsa = {
   'FSA1-LOW': {
     name: 'FSA - FSA1-LOW',
     title: 'FSA - FSA1-LOW Title',
-    site: 'https://site.com',
     redirect_uris: [
       'https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback'
     ],
@@ -54,7 +53,6 @@ const fsa = {
   'FSA2-LOW': {
     name: 'FSA - FSA2-LOW',
     title: 'FSA - FSA2-LOW Title',
-    site: 'https://site.com',
     redirect_uris: [
       'https://fsa2-low.docker.dev-franceconnect.fr/oidc-callback',
     ],
@@ -104,7 +102,6 @@ const fsa = {
   'FSA3-LOW': {
     name: 'Service Provider Example 3 deactivated',
     title: 'FSA - FSA3-LOW Title',
-    site: 'https://site.com',
     redirect_uris: [
       'https://fsa3-low.docker.dev-franceconnect.fr/oidc-callback',
     ],
@@ -153,7 +150,6 @@ const fsa = {
   'FSA4-LOW': {
     name: 'FSA - FSA4-LOW',
     title: 'FSA - FSA4-LOW Title',
-    site: 'https://site.com',
     redirect_uris: [
       'https://fsa4-low.docker.dev-franceconnect.fr/oidc-callback',
     ],

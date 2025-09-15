@@ -3,7 +3,6 @@ export interface ServiceProviderConfig
   name: string;
   redirectUri: string;
   redirectUriLogout: string;
-  site: string;
   emails: string[];
   ipAddresses: string[];
   scopes: string[];

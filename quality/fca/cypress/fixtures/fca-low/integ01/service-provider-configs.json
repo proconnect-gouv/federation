@@ -3,7 +3,6 @@
     "name": "dummy-sp-config-for-fc-exploit",
     "redirectUri": "https://dummy-sp-config-for-fc-exploit.fr/oidc-callback",
     "redirectUriLogout": "https://dummy-sp-config-for-fc-exploit.fr/logout-callback",
-    "site": "https://dummy-sp-config-for-fc-exploit.fr",
     "emails": ["dummy1@proconnect.loc", "dummy2@proconnect.loc"],
     "ipAddresses": ["1.1.1.1", "1.1.1.2"],
     "scopes": ["given_name", "usual_name", "email"],
