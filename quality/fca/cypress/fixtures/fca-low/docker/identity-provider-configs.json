@@ -12,8 +12,6 @@
     "discovery": "false",
     "clientId": "myclientidforfia1-low",
     "client_secret": "7ae4fef2aab63fb78d777fe657b7536f",
-    "messageToDisplayWhenInactive": "SUPER MESSAGE !!!",
-    "redirectionTargetWhenInactive": "https://issuer.fr/promo",
     "userinfo_signed_response_alg": "ES256",
     "id_token_signed_response_alg": "ES256",
     "order": "1",
