@@ -1,5 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
-import { DeleteResult, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,10 +29,8 @@ export class ScopesService {
    * @returns {Promise<Scopes>}
    */
   async create(newScope: IScopes, user: string) {
-    const id = uuidv4().substring(0, 12);
-
     const scopeToSave: Scopes = {
-      _id: new ObjectId(id),
+      _id: new ObjectId(),
       scope: newScope.scope,
       label: `${newScope.label} (${newScope.fd})`,
       updatedBy: user,
