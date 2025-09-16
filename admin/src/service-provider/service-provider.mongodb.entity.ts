@@ -66,9 +66,6 @@ export class ServiceProviderFromDb {
   @Column({ name: 'scopes' })
   scopes: string[];
 
-  @Column({ name: 'claims' })
-  claims?: string[];
-
   @Column()
   // oidc defined variable name
   // tslint:disable-next-line: variable-name

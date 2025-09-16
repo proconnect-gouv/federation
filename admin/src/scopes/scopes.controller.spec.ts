@@ -3,7 +3,6 @@ import { ConfigService } from 'nestjs-config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ScopesService } from './scopes.service';
 import { ScopesController } from './scopes.controller';
-import { ClaimsService, claimsListMock, claimMock, IClaims } from '../claims';
 import { IScopes } from './interface/scopes.interface';
 import {
   scopesMock,
@@ -46,15 +45,6 @@ const ScopesServiceMock = {
   getScopesGroupedByFd: jest.fn(),
 };
 
-const claimsServiceMock = {
-  create: jest.fn(),
-  update: jest.fn(),
-  remove: jest.fn(),
-  count: jest.fn(),
-  getAll: jest.fn(),
-  getById: jest.fn(),
-};
-
 const configServiceMock = {
   get: jest.fn(),
 };
@@ -73,10 +63,6 @@ describe('Scopes Controller', () => {
         {
           provide: ScopesService,
           useValue: ScopesServiceMock,
-        },
-        {
-          provide: ClaimsService,
-          useValue: claimsServiceMock,
         },
         {
           provide: ConfigService,
@@ -112,10 +98,9 @@ describe('Scopes Controller', () => {
       });
     });
 
-    it('should return scopes, claims and csrf', async () => {
+    it('should return scopes and csrf', async () => {
       // Setup
       ScopesServiceMock.getAll.mockResolvedValueOnce(scopesListMock);
-      claimsServiceMock.getAll.mockResolvedValueOnce(claimsListMock);
 
       // Action
       const result = await controller.list(reqMock);
@@ -124,12 +109,6 @@ describe('Scopes Controller', () => {
       expect(result).toStrictEqual({
         csrfToken: 'foundationCsrfToken',
         scopesAndLabelsList: scopesListMock,
-        claimsList: [
-          {
-            id: new ObjectId('5d9c677da8bb151b00720451'),
-            name: 'amr',
-          },
-        ],
       });
     });
   });
@@ -336,174 +315,6 @@ describe('Scopes Controller', () => {
       );
 
       // Expected
-      expect(resMock.redirect).toHaveBeenCalledTimes(1);
-      expect(reqMock.flash).toHaveBeenCalledWith('globalError', 'something');
-      expect(resMock.redirect).toHaveBeenCalledWith(
-        `${resMock.locals.APP_ROOT}/scopes/label`,
-      );
-    });
-  });
-
-  describe('showNewClaimForm()', () => {
-    it('should return the csrf', async () => {
-      // When
-      const result = await controller.showNewClaimForm(reqMock);
-      // Then
-      expect(result).toEqual({
-        csrfToken: 'foundationCsrfToken',
-        action: 'creation',
-      });
-    });
-  });
-
-  describe('addNewClaim()', () => {
-    it('should add a new claim', async () => {
-      // When
-      await controller.addNewClaim(claimMock, reqMock, resMock);
-
-      // Then
-      expect(resMock.redirect).toHaveBeenCalledTimes(1);
-      expect(resMock.redirect).toHaveBeenCalledWith(
-        `${resMock.locals.APP_ROOT}/scopes/label`,
-      );
-      expect(reqMock.flash).toHaveBeenCalledWith(
-        'success',
-        `Le claim ${claimMock.name} a été créé avec succès !`,
-      );
-    });
-
-    it('should return to data-provider/label/create if it fails', async () => {
-      // Given
-      const error = new Error('something');
-      claimsServiceMock.create.mockRejectedValueOnce(error);
-
-      // When
-      await controller.addNewClaim(claimMock, reqMock, resMock);
-
-      // Then
-      expect(resMock.redirect).toHaveBeenCalledTimes(1);
-      expect(resMock.redirect).toHaveBeenCalledWith(
-        `${resMock.locals.APP_ROOT}/scopes/label/create`,
-        {
-          action: 'creation',
-        },
-      );
-      expect(reqMock.flash).toHaveBeenCalledWith(
-        'globalError',
-        "Impossible d'enregistrer le claim",
-      );
-    });
-  });
-
-  describe('showUpdateClaimForm()', () => {
-    it('should render the update form', async () => {
-      // Given
-      claimsServiceMock.getById.mockResolvedValueOnce({
-        name: 'amr',
-      });
-
-      // When
-      const result = await controller.showUpdateClaimForm(
-        id.toString(),
-        reqMock,
-      );
-
-      // Then
-      expect(claimsServiceMock.getById).toHaveBeenCalledTimes(1);
-      expect(claimsServiceMock.getById).toHaveBeenCalledWith(id);
-      expect(result).toEqual({
-        csrfToken: 'foundationCsrfToken',
-        name: 'amr',
-        id: id.toString(),
-        action: 'update',
-      });
-    });
-  });
-
-  describe('updateClaim()', () => {
-    const updatedClaim: IClaims = {
-      id: new ObjectId('5d9c677da8bb151b00720451'),
-      name: 'foo',
-    };
-
-    it('should update the claim entry corresponding to the id param', async () => {
-      // When
-      await controller.updateClaim(
-        updatedClaim,
-        id.toString(),
-        reqMock,
-        resMock,
-      );
-
-      // Then
-      expect(resMock.redirect).toHaveBeenCalledTimes(1);
-      expect(reqMock.flash).toHaveBeenCalledWith(
-        'success',
-        `Le claim ${updatedClaim.name} a été modifié avec succès !`,
-      );
-      expect(resMock.redirect).toHaveBeenCalledWith(
-        `${resMock.locals.APP_ROOT}/scopes/label`,
-      );
-    });
-
-    it('should throw an error if claim entry can not be update', async () => {
-      // Given
-      const error = new Error('something');
-
-      claimsServiceMock.update.mockRejectedValueOnce(error);
-
-      // When
-      await controller.updateClaim(
-        updatedClaim,
-        id.toString(),
-        reqMock,
-        resMock,
-      );
-
-      // Then
-      expect(resMock.redirect).toHaveBeenCalledTimes(1);
-      expect(reqMock.flash).toHaveBeenCalledWith(
-        'globalError',
-        'Impossible de modifier le claim',
-      );
-      expect(resMock.redirect).toHaveBeenCalledWith(
-        `${resMock.locals.APP_ROOT}/scopes/claim/form/5d9c677da8bb151b00720451`,
-        { action: 'update' },
-      );
-    });
-  });
-
-  describe('removeClaim()', () => {
-    const body = {
-      id: new ObjectId('5d9c677da8bb151b00720451'),
-      name: 'bar',
-    };
-
-    it('should delete the corresponding claim', async () => {
-      // When
-      await controller.removeClaim(id.toString(), reqMock, resMock, body);
-
-      // Then
-      expect(reqMock.flash).toHaveBeenCalledWith(
-        'success',
-        `Le claim ${body.name} a été supprimé avec succès !`,
-      );
-      expect(resMock.redirect).toHaveBeenCalledTimes(1);
-      expect(resMock.redirect).toHaveBeenCalledWith(
-        `${resMock.locals.APP_ROOT}/scopes/label`,
-      );
-    });
-
-    it('should throw an error if claim entry can not be removed', async () => {
-      // Given
-      const error = new Error('something');
-
-      claimsServiceMock.remove.mockRejectedValueOnce(error);
-
-      // When
-      await controller.removeClaim(id.toString(), reqMock, resMock, body);
-
-      // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
       expect(reqMock.flash).toHaveBeenCalledWith('globalError', 'something');
       expect(resMock.redirect).toHaveBeenCalledWith(

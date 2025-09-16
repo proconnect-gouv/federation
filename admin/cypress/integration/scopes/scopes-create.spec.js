@@ -18,7 +18,7 @@ describe('Add new scope label', () => {
   });
 
   describe('Should be successful', () => {
-    it('if when click to "Scopes et claims" button, page show a list of scope label', () => {
+    it('if when click to "Scopes" button, page show a list of scope label', () => {
       cy.get(`table`).should('be.visible');
     });
 

@@ -1,5 +1,5 @@
 export function useMenuToFdPage() {
-  cy.get('li .nav-link').contains('Scopes et claims').click();
+  cy.get('li .nav-link').contains('Scopes').click();
 }
 
 export function createScopeLabels(scopeLabel, basicConfiguration) {

@@ -8,7 +8,6 @@ import { SecretManagerService } from '../utils/secret-manager.service';
 import { SecretAdapter } from '../utils/secret.adapter';
 import { FileStorageService } from '../file-storage/file-storage.service';
 import { ScopesModule } from '../scopes';
-import { ClaimsModule } from '../claims';
 
 import { ServiceProviderService } from './service-provider.service';
 import { ServiceProviderController } from './service-provider.controller';
@@ -18,7 +17,6 @@ import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
   imports: [
     TypeOrmModule.forFeature([ServiceProviderFromDb, FileStorage], 'fc-mongo'),
     ScopesModule,
-    ClaimsModule,
     IdentityProviderModule,
   ],
   controllers: [ServiceProviderController],

@@ -160,18 +160,6 @@ export class AppModule implements NestModule {
         path: '/scopes/label/delete/:id',
         method: RequestMethod.DELETE,
       },
-      {
-        path: '/scopes/claim/create',
-        method: RequestMethod.POST,
-      },
-      {
-        path: '/scopes/claim/update/:id',
-        method: RequestMethod.PATCH,
-      },
-      {
-        path: '/scopes/claim/delete/:id',
-        method: RequestMethod.DELETE,
-      },
     ];
 
     const totpRoutes: RouteInfo[] = [

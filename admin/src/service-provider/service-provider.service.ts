@@ -82,7 +82,6 @@ export class ServiceProviderService {
       input.userinfo_signed_response_alg;
     serviceProvider.id_token_signed_response_alg =
       input.id_token_signed_response_alg;
-    serviceProvider.claims = input.claims;
     serviceProvider.introspection_signed_response_alg =
       input.introspection_signed_response_alg;
     serviceProvider.introspection_encrypted_response_alg =
@@ -202,7 +201,6 @@ export class ServiceProviderService {
       email: serviceProviderDto.emails.join('\n'),
       IPServerAddressesAndRanges: serviceProviderDto.ipAddresses,
       scopes: serviceProviderDto.scopes,
-      claims: serviceProviderDto.claims || [],
       userinfo_signed_response_alg:
         serviceProviderDto.userinfo_signed_response_alg,
       id_token_signed_response_alg:
