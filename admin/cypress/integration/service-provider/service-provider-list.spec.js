@@ -14,7 +14,6 @@ const basicConfiguration = {
 
 const fs = {
   name: 'CypressFS',
-  platform: 'CORE_FCP',
   redirectUri: 'https://url.com',
   redirectUriLogout: 'https://url.com/logout',
   emails: 'titlen@gmail.com',
