@@ -63,7 +63,7 @@ describe('Account', () => {
       cy.contains(USER_SECURITY);
 
       // l'utilisateur ne voit pas les liens suivants dans exploit, et à fortiori dans les autres app
-      cy.contains('Scopes et claims').should('not.exist');
+      cy.contains('Scopes').should('not.exist');
       cy.contains('Configuration').should('not.exist');
 
       // l'utilisateur ne voit pas les liens suivants dans stats, et à fortiori dans les autres app

@@ -104,11 +104,6 @@ export class ServiceProviderDto {
   // tslint:disable-next-line: variable-name
   readonly id_token_signed_response_alg?: string;
 
-  @Transform(toArray)
-  @IsString({ each: true })
-  @IsArray()
-  readonly claims: string[];
-
   @IsOptional()
   @IsString()
   @Transform(toNullableString)

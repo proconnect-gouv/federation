@@ -23,7 +23,6 @@ import {
   toEmptiableString,
 } from '../utils/transforms/string.transform';
 import { ScopesService } from '../scopes';
-import { Claims, ClaimsService } from '../claims';
 import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ServiceProviderService } from './service-provider.service';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
@@ -49,7 +48,6 @@ export class ServiceProviderController {
     private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
     private readonly serviceProviderService: ServiceProviderService,
     private readonly scopesService: ScopesService,
-    private readonly claimsService: ClaimsService,
   ) {}
 
   /**
@@ -111,13 +109,9 @@ export class ServiceProviderController {
     const csrfToken = req.csrfToken();
     const scopesGroupedByFd = await this.scopesService.getScopesGroupedByFd();
 
-    const claims: Claims[] = await this.claimsService.getAll();
-
     const response = {
       csrfToken,
       scopesGroupedByFd,
-      claims,
-      claimsSelected: ['amr'],
       defaultScopes: this.defaultScopes,
     };
 
@@ -200,14 +194,9 @@ export class ServiceProviderController {
     const scopesSelected: string[] = serviceProvider.scopes || [];
     const scopesGroupedByFd = await this.scopesService.getScopesGroupedByFd();
 
-    const claimsSelected: string[] = serviceProvider.claims || ['amr'];
-    const claims: Claims[] = await this.claimsService.getAll();
-
     const response = {
       csrfToken,
       id,
-      claimsSelected,
-      claims,
       scopesGroupedByFd,
       scopesSelected,
     };

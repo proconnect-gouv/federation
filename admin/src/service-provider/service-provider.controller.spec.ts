@@ -8,7 +8,6 @@ import {
   identityProviderFactory,
 } from '../identity-provider';
 import { ScopesService } from '../scopes';
-import { claimsListMock, ClaimsService } from '../claims';
 
 import { ServiceProviderController } from './service-provider.controller';
 import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
@@ -69,7 +68,6 @@ describe('ServiceProviderController', () => {
     active: true,
     type: 'public',
     scopes: [...scopeList],
-    claims: ['amr'],
   };
 
   const idParam = '05e4fadf-fda6-4ad8-ae75-b7f315843827';
@@ -85,10 +83,6 @@ describe('ServiceProviderController', () => {
   const scopesServiceMock = {
     getAll: jest.fn(),
     getScopesGroupedByFd: jest.fn(),
-  };
-
-  const claimsServiceMock = {
-    getAll: jest.fn(),
   };
 
   const identityProviderServiceMock = {
@@ -133,7 +127,6 @@ describe('ServiceProviderController', () => {
         ServiceProviderController,
         ServiceProviderService,
         ScopesService,
-        ClaimsService,
         IdentityProviderService,
       ],
     })
@@ -143,8 +136,6 @@ describe('ServiceProviderController', () => {
       .useValue(serviceProviderServiceMock)
       .overrideProvider(ScopesService)
       .useValue(scopesServiceMock)
-      .overrideProvider(ClaimsService)
-      .useValue(claimsServiceMock)
       .overrideProvider(IdentityProviderService)
       .useValue(identityProviderServiceMock)
       .compile();
@@ -384,7 +375,6 @@ describe('ServiceProviderController', () => {
 
   describe('showCreationForm()', () => {
     beforeEach(() => {
-      claimsServiceMock.getAll.mockResolvedValue(claimsListMock);
       scopesServiceMock.getScopesGroupedByFd.mockResolvedValue(scopesGroupMock);
     });
 
@@ -395,13 +385,6 @@ describe('ServiceProviderController', () => {
       // then
       expect(result).toEqual({
         csrfToken: 'mygreatcsrftoken',
-        claims: [
-          {
-            name: 'amr',
-            id,
-          },
-        ],
-        claimsSelected: ['amr'],
         scopesGroupedByFd: scopesGroupMock,
         defaultScopes,
       });
@@ -414,8 +397,6 @@ describe('ServiceProviderController', () => {
       // then
       expect(result).toEqual({
         csrfToken: expect.any(String),
-        claims: expect.any(Array),
-        claimsSelected: ['amr'],
         scopesGroupedByFd: scopesGroupMock,
         defaultScopes,
       });
@@ -444,7 +425,6 @@ describe('ServiceProviderController', () => {
         ...serviceProvider,
         email: ['v@b.com'],
       };
-      claimsServiceMock.getAll.mockResolvedValue(claimsListMock);
 
       serviceProviderServiceMock.findById.mockImplementation(() =>
         Promise.resolve(spMock),
@@ -470,13 +450,6 @@ describe('ServiceProviderController', () => {
         csrfToken: 'mygreatcsrftoken',
         scopesGroupedByFd: scopesGroupMock,
         scopesSelected: scopeList,
-        claimsSelected: ['amr'],
-        claims: [
-          {
-            name: 'amr',
-            id,
-          },
-        ],
       });
     });
   });
@@ -697,7 +670,6 @@ describe('ServiceProviderController', () => {
 
   describe('GenerateNewSecret View', () => {
     it('should get a service Provider and render generate client secret view', async () => {
-      claimsServiceMock.getAll.mockResolvedValue(claimsListMock);
       const serviceProvider = {
         IPServerAddressesAndRanges: ['1.1.1.1'],
         active: 'true',
@@ -730,13 +702,6 @@ describe('ServiceProviderController', () => {
         csrfToken: 'mygreatcsrftoken',
         scopesGroupedByFd: scopesGroupMock,
         scopesSelected: scopeList,
-        claimsSelected: ['amr'],
-        claims: [
-          {
-            name: 'amr',
-            id,
-          },
-        ],
       });
     });
   });
