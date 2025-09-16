@@ -129,12 +129,12 @@
               <label class="col-2 col-form-label">Accepte les employé·e·s d'organisme privé</label>
               <div class="mb-3 col-4 d-flex align-items-end">
                 <div class="form-check form-check-inline">
-                  <input type="radio" class=" form-check-input is-consent-required <%= locals.messages.errors && messages.errors[0].type && 'is-invalid' %>" id="public" name="type" value="public" <% if(locals.messages.values && messages.values[0].type === 'public'){ %> checked <% } %> required>
-                  <label class="form-check-label" for="public">non</label>
-                </div>
-                <div class="form-check form-check-inline">
                   <input type="radio" class="form-check-input is-consent-required <%= locals.messages.errors && messages.errors[0].type && 'is-invalid' %>" id="private" name="type" value="private" <% if(locals.messages.values && messages.values[0].type === 'private'){ %> checked <% } %> required>
                   <label class="form-check-label" for="private">oui</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input type="radio" class=" form-check-input is-consent-required <%= locals.messages.errors && messages.errors[0].type && 'is-invalid' %>" id="public" name="type" value="public" <% if(locals.messages.values && messages.values[0].type === 'public'){ %> checked <% } %> required>
+                  <label class="form-check-label" for="public">non</label>
                 </div>
             </section>
 
