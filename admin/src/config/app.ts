@@ -18,5 +18,5 @@ export default {
   appVersion: process.env.APP_VERSION || 'no-version',
   userTokenExpiresIn: 2880,
   userAuthenticationMaxAttempt: 4,
-  instanceFor: process.env.IDP_CORE_INSTANCE || Platform.CL,
+  instanceFor: process.env.IDP_CORE_INSTANCE || Platform.FCA_LOW,
 } as IConfig;
