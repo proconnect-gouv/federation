@@ -4,7 +4,6 @@
 @import './spinner';
 @import './configuration';
 @import './upload';
-@import './idp-filter';
 @import './constants';
 @import './modal';
 @import './login';
@@ -12,7 +11,6 @@
 @import './font-styles';
 @import './border';
 @import './scrollbox';
-
 
 html,
 body,
@@ -73,7 +71,8 @@ body {
 
 .btn-idp-preferences {
   border-radius: 0.25rem;
-  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.2),
+  box-shadow:
+    0px 2px 5px 0px rgba(0, 0, 0, 0.2),
     inset 0px -2px 5px 0px rgba(0, 0, 0, 0.2);
   border: none;
   cursor: pointer;
@@ -98,7 +97,6 @@ body {
   color: @green-color;
   font-weight: 900;
 }
-
 
 .custom-file-label:after {
   content: 'Sélectionner';

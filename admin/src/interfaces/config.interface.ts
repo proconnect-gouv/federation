@@ -3,7 +3,7 @@
 // declarative file
 import { Platform } from '../utils/instance.enum';
 
-export type AppInstance = Platform.FCA_LOW | Platform.CL;
+export type AppInstance = Platform.FCA_LOW;
 export interface IConfig {
   appName: string;
   appFqdn: string;

@@ -12,7 +12,6 @@ const fsa = {
     client_secret:
       '+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=',
     key: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
-    credentialsFlow: false,
     email: 'fsa1@franceconnect.loc',
     IPServerAddressesAndRanges: ['1.1.1.1'],
     active: true,
@@ -59,7 +58,6 @@ const fsa = {
     client_secret:
       '+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=',
     key: '7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775',
-    credentialsFlow: false,
     email: 'fsa2@franceconnect.loc',
     IPServerAddressesAndRanges: ['1.1.1.1'],
     active: true,
@@ -105,7 +103,6 @@ const fsa = {
     client_secret:
       '+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=',
     key: 'my-service-provider-deactivated',
-    credentialsFlow: false,
     email: 'fsa3@franceconnect.loc',
     IPServerAddressesAndRanges: ['1.1.1.1'],
     active: false,
@@ -151,7 +148,6 @@ const fsa = {
     client_secret:
       '+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=',
     key: '6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77',
-    credentialsFlow: false,
     email: 'fsa4@franceconnect.loc',
     IPServerAddressesAndRanges: ['1.1.1.1'],
     active: true,
