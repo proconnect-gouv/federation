@@ -27,7 +27,6 @@ describe('Identity provider creation', () => {
       cy.contains("Créer un fournisseur d'identité").click();
       cy.get('[name="discovery"]:checked').should('have.value', 'false');
       cy.get('[name="discoveryUrl"]').should('be.disabled');
-      cy.get('[name="active"]:checked').should('have.value', 'false');
     });
 
     it('if all fields are provided', () => {

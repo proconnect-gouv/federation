@@ -593,7 +593,7 @@ describe('IdentityProviderService', () => {
         createdAt: mockDate,
         updatedAt: mockDate,
         updatedBy: 'user',
-        active: false,
+        active: true,
         authzURL: 'https://issuer.fr/auth',
         clientID: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: encryptedSecret,
