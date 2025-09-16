@@ -290,11 +290,11 @@
               <label class="col-2 col-form-label">Sélectionnable dans la mire : </label>
               <div class="mb-3 col-4 d-flex align-items-end">
                 <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid" id="activated" name="active" value="true" required <%= locals.messages.values && messages.values[0].active === true ? 'checked' : '' %>>
+                  <input type="radio" class="form-check-input is-valid" id="activated" name="active" value="true" required <%= (locals.messages.values && messages.values[0].active) === undefined ? 'checked' : messages.values[0].active === true ? 'checked' : '' %>>
                   <label class="form-check-label" for="activated">oui</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid" id="unactivated" name="active" value="false" required <%= !locals.messages.values || messages.values[0].active === false ? 'checked' : '' %>>
+                  <input type="radio" class="form-check-input is-valid" id="unactivated" name="active" value="false" required <%= (locals.messages.values && messages.values[0].active === false) ? 'checked' : '' %>>
                   <label class="form-check-label" for="unactivated">non</label>
                 </div>
               </div>
