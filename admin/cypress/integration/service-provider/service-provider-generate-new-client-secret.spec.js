@@ -27,7 +27,6 @@ describe('update a service-provider', () => {
 
       const fs = {
         name: 'GenerateClientSecretFS',
-        platform: 'CORE_FCP',
         signupId: '123456',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
@@ -57,7 +56,6 @@ describe('update a service-provider', () => {
 
       const fs = {
         name: 'MyFirstFS',
-        platform: 'CORE_FCP',
         signupId: '123456',
         redirectUri: 'https://url.com',
         redirectUriLogout: 'https://url.com/logout',
