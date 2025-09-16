@@ -323,56 +323,60 @@
                 </select>
               </div>
             </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="id_token_encrypted_response_alg">id_token_encrypted_response_alg : </label>
-              <div class="col-10">
-                <select class="form-select" name="id_token_encrypted_response_alg">
-                  <option value="" <%= !messages.values || messages.values[0].id_token_encrypted_response_alg === "" ? 'selected' : '' %>></option>
-                  <option value="ECDH-ES" <%= messages.values && messages.values[0].id_token_encrypted_response_alg === "ECDH-ES" ? 'selected' : '' %>>ECDH-ES</option>
-                  <option value="RSA-OAEP" <%= messages.values && messages.values[0].id_token_encrypted_response_alg === "RSA-OAEP" ? 'selected' : '' %>>RSA-OAEP</option>
-                  <option value="RSA-OAEP-256" <%= messages.values && messages.values[0].id_token_encrypted_response_alg === "RSA-OAEP-256" ? 'selected' : '' %>>RSA-OAEP-256</option>
-                </select>
+            <details>
+              <summary class="mb-3">Paramètres avancés (optionnels)</summary>
+
+              <div class="mb-3 row">
+                <label class="col-2 col-form-label" for="id_token_encrypted_response_alg">id_token_encrypted_response_alg : </label>
+                <div class="col-10">
+                  <select class="form-select" name="id_token_encrypted_response_alg">
+                    <option value="" <%= !messages.values || messages.values[0].id_token_encrypted_response_alg === "" ? 'selected' : '' %>></option>
+                    <option value="ECDH-ES" <%= messages.values && messages.values[0].id_token_encrypted_response_alg === "ECDH-ES" ? 'selected' : '' %>>ECDH-ES</option>
+                    <option value="RSA-OAEP" <%= messages.values && messages.values[0].id_token_encrypted_response_alg === "RSA-OAEP" ? 'selected' : '' %>>RSA-OAEP</option>
+                    <option value="RSA-OAEP-256" <%= messages.values && messages.values[0].id_token_encrypted_response_alg === "RSA-OAEP-256" ? 'selected' : '' %>>RSA-OAEP-256</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="userinfo_encrypted_response_alg">userinfo_encrypted_response_alg : </label>
-              <div class="col-10">
-                <select class="form-select" name="userinfo_encrypted_response_alg">
-                  <option value="" <%= !messages.values || messages.values[0].userinfo_encrypted_response_alg === "" ? 'selected' : '' %>></option>
-                  <option value="ECDH-ES" <%= messages.values && messages.values[0].userinfo_encrypted_response_alg === "ECDH-ES" ? 'selected' : '' %>>ECDH-ES</option>
-                  <option value="RSA-OAEP" <%= messages.values && messages.values[0].userinfo_encrypted_response_alg === "RSA-OAEP" ? 'selected' : '' %>>RSA-OAEP</option>
-                  <option value="RSA-OAEP-256" <%= messages.values && messages.values[0].userinfo_encrypted_response_alg === "RSA-OAEP-256" ? 'selected' : '' %>>RSA-OAEP-256</option>
-                </select>
+              <div class="mb-3 row">
+                <label class="col-2 col-form-label" for="userinfo_encrypted_response_alg">userinfo_encrypted_response_alg : </label>
+                <div class="col-10">
+                  <select class="form-select" name="userinfo_encrypted_response_alg">
+                    <option value="" <%= !messages.values || messages.values[0].userinfo_encrypted_response_alg === "" ? 'selected' : '' %>></option>
+                    <option value="ECDH-ES" <%= messages.values && messages.values[0].userinfo_encrypted_response_alg === "ECDH-ES" ? 'selected' : '' %>>ECDH-ES</option>
+                    <option value="RSA-OAEP" <%= messages.values && messages.values[0].userinfo_encrypted_response_alg === "RSA-OAEP" ? 'selected' : '' %>>RSA-OAEP</option>
+                    <option value="RSA-OAEP-256" <%= messages.values && messages.values[0].userinfo_encrypted_response_alg === "RSA-OAEP-256" ? 'selected' : '' %>>RSA-OAEP-256</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="id_token_encrypted_response_enc">id_token_encrypted_response_enc : </label>
-              <div class="col-10">
-                <select class="form-select" name="id_token_encrypted_response_enc">
-                  <option value="" <%= !messages.values || messages.values[0].id_token_encrypted_response_enc === "" ? 'selected' : '' %>></option>
-                  <option value="A256GCM" <%= messages.values && messages.values[0].id_token_encrypted_response_enc === "A256GCM" ? 'selected' : '' %>>A256GCM</option>
-                </select>
+              <div class="mb-3 row">
+                <label class="col-2 col-form-label" for="id_token_encrypted_response_enc">id_token_encrypted_response_enc : </label>
+                <div class="col-10">
+                  <select class="form-select" name="id_token_encrypted_response_enc">
+                    <option value="" <%= !messages.values || messages.values[0].id_token_encrypted_response_enc === "" ? 'selected' : '' %>></option>
+                    <option value="A256GCM" <%= messages.values && messages.values[0].id_token_encrypted_response_enc === "A256GCM" ? 'selected' : '' %>>A256GCM</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="userinfo_encrypted_response_enc">userinfo_encrypted_response_enc : </label>
-              <div class="col-10">
-                <select class="form-select" name="userinfo_encrypted_response_enc">
-                  <option value="" <%= !messages.values || messages.values[0].userinfo_encrypted_response_enc === "" ? 'selected' : '' %>></option>
-                  <option value="A256GCM" <%= messages.values && messages.values[0].userinfo_encrypted_response_enc === "A256GCM" ? 'selected' : '' %>>A256GCM</option>
-                </select>
+              <div class="mb-3 row">
+                <label class="col-2 col-form-label" for="userinfo_encrypted_response_enc">userinfo_encrypted_response_enc : </label>
+                <div class="col-10">
+                  <select class="form-select" name="userinfo_encrypted_response_enc">
+                    <option value="" <%= !messages.values || messages.values[0].userinfo_encrypted_response_enc === "" ? 'selected' : '' %>></option>
+                    <option value="A256GCM" <%= messages.values && messages.values[0].userinfo_encrypted_response_enc === "A256GCM" ? 'selected' : '' %>>A256GCM</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            <section class="mb-3 row" id="token_endpoint_auth_method">
-              <label class="col-2 col-form-label">token_endpoint_auth_method : </label>
-              <div class="col-10">
-                <select name="token_endpoint_auth_method" class="form-select">
-                  <option value="client_secret_post" <%= messages.values && messages.values[0].token_endpoint_auth_method === 'client_secret_post' ? 'selected' : '' %>>
-                    client_secret_post
-                  </option>
-                </select>
-              </div>
-            </section>
+              <section class="mb-3 row" id="token_endpoint_auth_method">
+                <label class="col-2 col-form-label">token_endpoint_auth_method : </label>
+                <div class="col-10">
+                  <select name="token_endpoint_auth_method" class="form-select">
+                    <option value="client_secret_post" <%= messages.values && messages.values[0].token_endpoint_auth_method === 'client_secret_post' ? 'selected' : '' %>>
+                      client_secret_post
+                    </option>
+                  </select>
+                </div>
+              </section>
+            </details>
 
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="supportEmail">Email du support :</label>
