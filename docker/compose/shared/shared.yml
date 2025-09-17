@@ -108,7 +108,7 @@ services:
       - public
 
   base-redis:
-    image: 'bitnami/redis:6.2.16'
+    image: 'bitnamilegacy/redis:6.0.15'
     env_file:
       - ../shared/.env/redis.env
     volumes:
