@@ -205,11 +205,11 @@
               <label class="col-2 col-form-label">Utiliser la discovery URL : </label>
               <div class="mb-3 col-4 d-flex align-items-end">
                 <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid is-discovery discovery-radio" id="discovery" name="discovery" value="true" <%= locals.messages.values && messages.values[0].discovery ? 'checked' : '' %>>
+                  <input type="radio" class="form-check-input is-valid" id="discovery" name="discovery" value="true" <%= locals.messages.values && messages.values[0].discovery ? 'checked' : '' %>>
                   <label class="form-check-label" for="discovery">oui</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid is-discovery discovery-radio" id="no-discovery" name="discovery" value="false" <%= locals.messages.values && !messages.values[0].discovery ? 'checked' :'' %>>
+                  <input type="radio" class="form-check-input is-valid" id="no-discovery" name="discovery" value="false" <%= locals.messages.values && !messages.values[0].discovery ? 'checked' :'' %>>
                   <label class="form-check-label" for="no-discovery">non</label>
                 </div>
               </div>
