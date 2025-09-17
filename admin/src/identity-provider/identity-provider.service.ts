@@ -209,6 +209,7 @@ export class IdentityProviderService {
       endSessionURL: identityProviderDto.logoutUrl,
       jwksURL: identityProviderDto.jwksUrl,
       url: identityProviderDto.issuer,
+      active: identityProviderDto.active,
       userinfo_encrypted_response_enc:
         identityProviderDto.userinfo_encrypted_response_enc,
       userinfo_encrypted_response_alg:
@@ -226,19 +227,11 @@ export class IdentityProviderService {
       supportEmail: identityProviderDto.supportEmail,
     };
 
-    switch (mode) {
-      case 'create':
-        Object.assign(entity, {
-          uid: uuidv4(),
-          createdAt: now,
-          active: false,
-        });
-        break;
-      case 'update':
-        Object.assign(entity, {
-          active: identityProviderDto.active,
-        });
-        break;
+    if (mode === 'create') {
+      Object.assign(entity, {
+        uid: uuidv4(),
+        createdAt: now,
+      });
     }
 
     return entity as any;
