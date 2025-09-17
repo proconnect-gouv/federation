@@ -102,7 +102,7 @@ describe('CoreFcaFqdnService', () => {
   });
 
   describe('getFqdnConfigFromEmail', () => {
-    it('should return the default idp if no idp is mapped and fqdn accepts default idp', async () => {
+    it('should return the default idp if no idp is mapped', async () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: 'default-idp',
@@ -120,7 +120,6 @@ describe('CoreFcaFqdnService', () => {
       const expectedConfig = {
         fqdn: 'hogwards.uk',
         identityProviderIds: ['default-idp'],
-        acceptsDefaultIdp: true,
       };
 
       expect(response).toEqual(expectedConfig);
@@ -144,13 +143,12 @@ describe('CoreFcaFqdnService', () => {
       const expectedConfig = {
         fqdn: 'hogwards.uk',
         identityProviderIds: [],
-        acceptsDefaultIdp: false,
       };
 
       expect(response).toEqual(expectedConfig);
     });
 
-    it('should return the idps mapped and the default idp when there is a default idp and fqdn accepts default idp', async () => {
+    it('should return the idps mapped', async () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: 'default-idp',
@@ -163,12 +161,10 @@ describe('CoreFcaFqdnService', () => {
         {
           fqdn: 'hogwards.uk',
           identityProvider: 'idp1',
-          acceptsDefaultIdp: true,
         },
         {
           fqdn: 'hogwards.uk',
           identityProvider: 'idp2',
-          acceptsDefaultIdp: true,
         },
       ]);
 
@@ -178,8 +174,7 @@ describe('CoreFcaFqdnService', () => {
       // Then
       const expectedConfig = {
         fqdn: 'hogwards.uk',
-        identityProviderIds: ['idp1', 'idp2', 'default-idp'],
-        acceptsDefaultIdp: true,
+        identityProviderIds: ['idp1', 'idp2'],
       };
 
       expect(response).toEqual(expectedConfig);
@@ -198,12 +193,10 @@ describe('CoreFcaFqdnService', () => {
         {
           fqdn: 'hogwards.uk',
           identityProvider: 'idp1',
-          acceptsDefaultIdp: false,
         },
         {
           fqdn: 'hogwards.uk',
           identityProvider: 'idp2',
-          acceptsDefaultIdp: true,
         },
       ]);
 
@@ -214,7 +207,6 @@ describe('CoreFcaFqdnService', () => {
       const expectedConfig = {
         fqdn: 'hogwards.uk',
         identityProviderIds: ['idp1', 'idp2'],
-        acceptsDefaultIdp: false,
       };
 
       expect(response).toEqual(expectedConfig);
@@ -329,35 +321,6 @@ describe('CoreFcaFqdnService', () => {
 
       // Then
       expect(isAllowedIdpForEmail).toEqual(false);
-    });
-  });
-
-  describe('addDefaultIdp', () => {
-    it('should return idps provider list with default idp when there is more than one idp', () => {
-      // Given
-      const idpsSet = new Set(['idp1', 'idp2']);
-      // When
-      const result = service['addDefaultIdp'](true, idpsSet, 'default-idp');
-      // Then
-      expect(result).toEqual(new Set(['idp1', 'idp2', 'default-idp']));
-    });
-
-    it('should return idp provider uid without default idp when there is only one idp', () => {
-      // Given
-      const idpsSet = new Set(['idp1']);
-      // When
-      const result = service['addDefaultIdp'](true, idpsSet, 'default-idp');
-      // Then
-      expect(result).toEqual(new Set(['idp1']));
-    });
-
-    it('should return idp provider uid with default idp without duplicate', () => {
-      // Given
-      const idpsSet = new Set(['idp1', 'default-idp']);
-      // When
-      const result = service['addDefaultIdp'](true, idpsSet, 'default-idp');
-      // Then
-      expect(result).toEqual(new Set(['idp1', 'default-idp']));
     });
   });
 

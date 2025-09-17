@@ -82,7 +82,14 @@ export class FqdnToIdpAdapterMongoService
 
   private async findAllFqdnToIdentityProvider() {
     const rawFqdnToIdentityProviders =
-      await this.FqdnToIdentityProviderModel.find({})
+      await this.FqdnToIdentityProviderModel.find(
+        {},
+        {
+          _id: false,
+          fqdn: true,
+          identityProvider: true,
+        },
+      )
         .sort({ fqdn: 1, identityProvider: 1 })
         .lean();
 

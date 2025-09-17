@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { isEmpty } from 'lodash';
+import { isEmpty, uniq } from 'lodash';
 import { AuthorizationParameters } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';
@@ -161,20 +161,28 @@ export class CoreFcaService {
   ): Promise<{ name: string; title: string; uid: string }[]> {
     const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
     const providers = await this.identityProvider.getList();
-    const uidsSet = new Set(idpIds.map((id) => id));
+
+    // remove possible duplicate
+    const uniqueDuplicateFreeIdpUids = uniq(idpIds);
 
     const filteredProviders = providers
-      .filter(({ uid }) => uidsSet.has(uid))
+      .filter(({ uid }) => uniqueDuplicateFreeIdpUids.includes(uid))
       .map(({ name, title, uid }) => ({
         name,
-        title: uid === defaultIdpId ? 'Autre' : title,
+        title: uid === defaultIdpId ? 'Autre' : title, // rename default IdP to "Autre"
         uid,
       }));
 
+    // sort providers by title alphabetically with "Autre" at the end of the list
     return filteredProviders.sort((a, b) => {
       if (a.title === 'Autre') return 1;
       if (b.title === 'Autre') return -1;
       return a.title.localeCompare(b.title, 'fr');
     });
+  }
+
+  hasDefaultIdp(providersUid: string[]): boolean {
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+    return providersUid.includes(defaultIdpId);
   }
 }

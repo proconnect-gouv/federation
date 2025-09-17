@@ -64,6 +64,7 @@ describe('OidcClientController', () => {
     coreFca = {
       getIdentityProvidersByIds: jest.fn(),
       redirectToIdp: jest.fn(),
+      hasDefaultIdp: jest.fn(),
     };
     identityProvider = { getById: jest.fn() };
     sessionService = {
@@ -159,10 +160,11 @@ describe('OidcClientController', () => {
       } as unknown as ISessionService<UserSession>;
 
       const fqdnConfig = {
-        acceptsDefaultIdp: true,
-        identityProviderIds: ['idp1', 'idp2'],
+        identityProviderIds: ['idp1', 'idp2', 'default-idp'],
       };
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue(fqdnConfig);
+
+      coreFca.hasDefaultIdp.mockReturnValue(true);
 
       const providers = [
         { title: 'Provider One', uid: 'idp1' },
@@ -183,10 +185,10 @@ describe('OidcClientController', () => {
         csrfToken: 'csrf-token',
       });
       expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
-        acceptsDefaultIdp: fqdnConfig.acceptsDefaultIdp,
         csrfToken: 'csrf-token',
         email,
         providers,
+        hasDefaultIdp: true,
       });
     });
   });
