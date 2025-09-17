@@ -4,6 +4,7 @@ export function createIdentityProvider(identityProviderInfo, configuration) {
   cy.url().should('eq', `${BASE_URL}/identity-provider`);
   cy.contains("Créer un fournisseur d'identité").click();
   cy.wait(1);
+  cy.contains('Paramètres avancés').click();
   cy.formFill(identityProviderInfo, configuration);
   cy.wait(500);
   cy.get('form[name="fi-form"] button[type="submit"]').click({ force: true });
@@ -24,6 +25,7 @@ export function updateIdentityProvider(
 
   cy.get('input[name=name]').should('have.value', name);
   cy.wait(1);
+  cy.contains('Paramètres avancés').click();
   cy.formFill(identityProviderUpdateInfo, configuration);
 
   cy.wait(500);

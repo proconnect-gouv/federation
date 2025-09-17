@@ -12,5 +12,4 @@ export interface IdentityProviderConfig
   clientId: string;
   client_secret: string;
   emails: string;
-  token_endpoint_auth_method: string;
 }
