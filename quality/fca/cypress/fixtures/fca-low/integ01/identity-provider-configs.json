@@ -15,7 +15,6 @@
     "userinfo_signed_response_alg": "ES256",
     "id_token_signed_response_alg": "ES256",
     "emails": "test1@yopmail.com\ntest2@yopmail.com",
-    "token_endpoint_auth_method": "client_secret_post",
     "siret": "81801912700021"
   }
 }
