@@ -15,4 +15,5 @@ export interface ICoreTrackingProviders {
   readonly idpName: string | null;
   readonly idpSub: string | null;
   readonly idpLabel: string | null;
+  readonly fqdn: string | null;
 }

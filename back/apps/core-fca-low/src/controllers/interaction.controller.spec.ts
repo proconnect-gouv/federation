@@ -21,7 +21,7 @@ import {
   CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
-import { CoreFcaService } from '../services';
+import { CoreFcaFqdnService, CoreFcaService } from '../services';
 import { InteractionController } from './interaction.controller';
 
 jest.mock('uuid', () => ({
@@ -47,6 +47,7 @@ describe('InteractionController', () => {
   let sessionServiceMock: any; // for Csrf only
   let coreFcaMock: any;
   let csrfServiceMock: any;
+  let fqdnServiceMock: any;
 
   beforeEach(async () => {
     oidcProviderMock = {
@@ -83,6 +84,9 @@ describe('InteractionController', () => {
     csrfServiceMock = {
       renew: jest.fn(),
     };
+    fqdnServiceMock = {
+      getFqdnFromEmail: jest.fn(),
+    };
 
     // Create the testing module
     const module: TestingModule = await Test.createTestingModule({
@@ -98,6 +102,7 @@ describe('InteractionController', () => {
         OidcAcrService,
         SessionService,
         NotificationsService,
+        CoreFcaFqdnService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -120,6 +125,8 @@ describe('InteractionController', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(NotificationsService)
       .useValue(notificationsMock)
+      .overrideProvider(CoreFcaFqdnService)
+      .useValue(fqdnServiceMock)
       .compile();
 
     controller = module.get<InteractionController>(InteractionController);

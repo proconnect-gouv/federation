@@ -66,6 +66,7 @@ describe('CoreTrackingService', () => {
     idpName: undefined,
     idpLabel: undefined,
     idpIdentity: undefined,
+    fqdn: undefined,
   };
 
   const interactionAcrMock = 'interactionAcrMock';
@@ -326,6 +327,7 @@ describe('CoreTrackingService', () => {
         idpName: null,
         idpLabel: null,
         idpSub: null,
+        fqdn: null,
       };
       sessionServiceMock.get
         .mockReturnValueOnce(null)
@@ -357,6 +359,7 @@ describe('CoreTrackingService', () => {
         idpAcr: 'some idpAcr',
         idpSub: 'some idpSub',
         idpLabel: 'some idpLabel',
+        fqdn: null,
       };
       // When
       const result = service['getDataFromSession'](sessionIdMock);
@@ -383,6 +386,7 @@ describe('CoreTrackingService', () => {
         idpAcr: null,
         idpSub: null,
         idpLabel: null,
+        fqdn: null,
       };
       const sessionMock: UserSession = {
         spId: 'spIdMock',
@@ -418,6 +422,7 @@ describe('CoreTrackingService', () => {
         idpAcr: null,
         idpSub: null,
         idpLabel: null,
+        fqdn: null,
       };
       const sessionMock: UserSession = {
         spId: 'spIdMock',
@@ -454,6 +459,7 @@ describe('CoreTrackingService', () => {
         idpAcr: null,
         idpSub: null,
         idpLabel: null,
+        fqdn: null,
       };
       const sessionMock: UserSession = {
         spIdentity: {} as any,

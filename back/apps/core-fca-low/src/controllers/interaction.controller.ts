@@ -46,7 +46,7 @@ import {
   CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
-import { CoreFcaService } from '../services';
+import { CoreFcaFqdnService, CoreFcaService } from '../services';
 
 @Controller()
 export class InteractionController {
@@ -63,6 +63,7 @@ export class InteractionController {
     private readonly sessionService: SessionService,
     private readonly coreFca: CoreFcaService,
     private readonly csrfService: CsrfService,
+    private readonly fqdnService: CoreFcaFqdnService,
   ) {}
 
   @Get(Routes.DEFAULT)
@@ -148,6 +149,7 @@ export class InteractionController {
       spName,
       spState,
       reusesActiveSession: canReuseActiveSession,
+      fqdn: this.fqdnService.getFqdnFromEmail(loginHint),
     });
     await userSession.commit();
 

@@ -85,6 +85,8 @@ export class OidcClientController {
     userSession: ISessionService<UserSession>,
   ) {
     const { login_hint: email } = userSession.get();
+    userSession.set({ fqdn: this.fqdnService.getFqdnFromEmail(email) });
+
     const fqdnConfig = await this.fqdnService.getFqdnConfigFromEmail(email);
     const { identityProviderIds } = fqdnConfig;
 
@@ -124,6 +126,7 @@ export class OidcClientController {
     const { identityProviderUid: idpId } = body;
     const { login_hint: email } = userSession.get();
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
+    userSession.set({ fqdn: fqdn });
 
     const { name: idpName, title: idpLabel } =
       await this.identityProvider.getById(idpId);
@@ -167,9 +170,11 @@ export class OidcClientController {
 
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
 
-    userSession.set('rememberMe', rememberMe);
-
-    userSession.set('login_hint', email);
+    userSession.set({
+      fqdn,
+      rememberMe,
+      login_hint: email,
+    });
 
     const { identityProviderIds: idpIds } =
       await this.fqdnService.getFqdnConfigFromEmail(email);
@@ -313,6 +318,8 @@ export class OidcClientController {
     userSession.set({ idpNonce: null, idpState: null });
 
     const fqdn = this.fqdnService.getFqdnFromEmail(login_hint);
+    userSession.set({ fqdn: fqdn });
+
     await this.tracking.track(TrackedEvent.IDP_CALLEDBACK, {
       req,
       fqdn,

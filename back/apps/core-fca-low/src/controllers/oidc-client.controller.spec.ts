@@ -517,7 +517,12 @@ describe('OidcClientController', () => {
         idpNonce: null,
         idpState: null,
       });
+
       expect(userSession.set).toHaveBeenNthCalledWith(2, {
+        fqdn: 'fqdn.com',
+      });
+
+      expect(userSession.set).toHaveBeenNthCalledWith(3, {
         amr: 'amr-value',
         idpIdToken: 'id-token',
         idpAcr: 'acr-value',
