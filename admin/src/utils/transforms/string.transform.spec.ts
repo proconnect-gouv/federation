@@ -249,6 +249,17 @@ describe('String transform', () => {
       expect(result).toEqual(['line1', 'line3']);
     });
 
+    it('should filter out duplicates if specified', () => {
+      // Given
+      const value = 'line1;line2;line1;line3;line2';
+
+      // When
+      const result = linesToArray({ value }, { shouldDeleteDuplicates: true });
+
+      // Then
+      expect(result).toEqual(['line1', 'line2', 'line3']);
+    });
+
     it('should return undefined on error', () => {
       // Given
       const value = null;

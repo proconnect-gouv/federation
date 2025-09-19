@@ -186,7 +186,9 @@ export class IdentityProviderDTO {
   readonly post_logout_redirect_uris?: string[];
 
   @IsOptional()
-  @Transform(linesToArray)
+  @Transform(({ value }) =>
+    linesToArray({ value }, { shouldDeleteDuplicates: true }),
+  )
   @Matches(FQDN_REGEX, {
     each: true,
     message:

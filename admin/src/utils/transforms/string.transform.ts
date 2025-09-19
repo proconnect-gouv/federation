@@ -1,4 +1,5 @@
 import moment from 'moment-timezone';
+import uniq from 'lodash/uniq';
 
 export function toDate(format: string) {
   const requiredDateFormat = 'YYYY-MM-DD';
@@ -27,11 +28,14 @@ export function toBoolean({ value }: { value: string }): boolean | undefined {
   }
 }
 
-export function linesToArray({
-  value,
-}: {
-  value: string;
-}): string[] | undefined {
+export function linesToArray(
+  {
+    value,
+  }: {
+    value: string;
+  },
+  options?: { shouldDeleteDuplicates?: boolean },
+): string[] | undefined {
   let result: string[];
   try {
     result = value
@@ -40,6 +44,9 @@ export function linesToArray({
       .filter((v: string) => Boolean(v));
   } catch (e) {
     return undefined;
+  }
+  if (options?.shouldDeleteDuplicates) {
+    result = uniq(result);
   }
   return result;
 }
