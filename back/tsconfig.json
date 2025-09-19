@@ -9,6 +9,7 @@
     "removeComments": true,
     "resolveJsonModule": true,
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "paths": {
       "@fc/identity-provider-adapter-mongo": [
