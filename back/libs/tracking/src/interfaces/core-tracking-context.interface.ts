@@ -1,5 +1,6 @@
 import { IdentityFromIdpDto } from '@fc/core';
-import { NetworkContextInterface } from '@fc/tracking-context';
+
+import { NetworkContextInterface } from '../interfaces/network-context.interface';
 
 export interface ICoreTrackingContext {
   readonly source: NetworkContextInterface;

@@ -4,15 +4,15 @@ import { overrideWithSourceIfNotNull } from '@fc/common/helpers';
 import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
 import { SessionService } from '@fc/session';
-import { extractNetworkInfoFromHeaders } from '@fc/tracking-context';
 
 import { getSessionServiceMock } from '@mocks/session';
 
+import { extractNetworkInfoFromHeaders } from '../helpers';
 import { ICoreTrackingContext } from '../interfaces';
 import { CoreTrackingService } from './core-tracking.service';
 
 jest.mock('@fc/common/helpers');
-jest.mock('@fc/tracking-context', () => ({
+jest.mock('../helpers/extract-network-context.helper', () => ({
   extractNetworkInfoFromHeaders: jest.fn(),
 }));
 

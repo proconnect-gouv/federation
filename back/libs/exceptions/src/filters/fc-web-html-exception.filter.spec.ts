@@ -13,7 +13,7 @@ import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import { TrackingMissingNetworkContextException } from '@fc/tracking-context/exceptions';
+import { TrackingMissingNetworkContextException } from '@fc/tracking/exceptions';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';

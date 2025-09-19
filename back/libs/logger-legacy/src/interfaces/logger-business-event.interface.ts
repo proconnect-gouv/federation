@@ -1,4 +1,4 @@
-import { NetworkContextInterface } from '@fc/tracking-context';
+import { NetworkContextInterface } from '@fc/tracking';
 
 /**
  * This permissive interface allows us to acknowledge the intention
