@@ -125,6 +125,7 @@ export class CoreTrackingService {
       idpName = null,
       idpLabel = null,
       idpIdentity = null,
+      fqdn = null,
     } = session;
 
     return {
@@ -144,6 +145,7 @@ export class CoreTrackingService {
       idpName,
       idpLabel,
       idpSub: idpIdentity?.sub || null,
+      fqdn,
     };
   }
 }
