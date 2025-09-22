@@ -110,26 +110,15 @@ export class InteractionController {
       userSession.get(),
     );
     const activeSessionValidationErrors = await validate(activeUserSession);
-
     const isUserConnectedAlready = isEmpty(activeSessionValidationErrors);
 
     const isSessionOpenedWithHintedLogin =
       !loginHint || userSession.get('idpIdentity')?.email === loginHint;
 
-    if (isUserConnectedAlready && isSessionOpenedWithHintedLogin) {
-      // The session is duplicated here to mitigate cookie-theft-based attacks.
-      // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
-      await userSession.duplicate();
-    } else {
-      await userSession.reset();
-      userSession.set({ browsingSessionId: uuid() });
-    }
-
     const hintedIdp = await this.identityProvider.getById(idpHint);
     if (idpHint && isEmpty(hintedIdp)) {
       throw new CoreIdpHintException();
     }
-
     const isSessionOpenedWithHintedIdp =
       !idpHint || userSession.get('idpId') === hintedIdp.uid;
 
@@ -143,12 +132,15 @@ export class InteractionController {
       isSessionOpenedWithHintedLogin;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
-
     const { acrClaims } =
       this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
     const spEssentialAcr =
       acrClaims?.value || acrClaims?.values.join(' ') || null;
 
+    if (!canReuseActiveSession) {
+      await userSession.reset();
+      userSession.set({ browsingSessionId: uuid() });
+    }
     userSession.set({
       interactionId,
       spEssentialAcr,
