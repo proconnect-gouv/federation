@@ -125,7 +125,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
             ),
             "claims": ["amr"],
             "IPServerAddressesAndRanges": ["1.1.1.1"],
-            "type": "public",
+            "type": "private",
             "scopes": [
                 "openid",
                 "given_name",
