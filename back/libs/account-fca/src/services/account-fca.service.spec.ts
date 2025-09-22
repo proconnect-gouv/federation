@@ -3,6 +3,7 @@ import { v4 as uuid, Version4Options } from 'uuid';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -19,10 +20,15 @@ type uuidType = (
 
 describe('AccountFcaService', () => {
   let service: AccountFcaService;
+  let configService: any;
 
   let modelMock: any;
 
   beforeEach(async () => {
+    configService = {
+      get: jest.fn().mockReturnValue({ defaultIdpId: 'default-idp' }),
+    };
+
     modelMock = jest.fn().mockImplementation((data) => ({
       ...data,
       active: true,
@@ -33,6 +39,7 @@ describe('AccountFcaService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        ConfigService,
         AccountFcaService,
         {
           provide: getModelToken('AccountFca'),
@@ -43,7 +50,10 @@ describe('AccountFcaService', () => {
           useValue: getLoggerMock(),
         },
       ],
-    }).compile();
+    })
+      .overrideProvider(ConfigService)
+      .useValue(configService)
+      .compile();
 
     service = module.get<AccountFcaService>(AccountFcaService);
   });
