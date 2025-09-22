@@ -8,11 +8,9 @@ Elle fournit un socle exploitable par les applications, mais ces dernières doiv
 
 En effet chaque application va avoir des besoins qui lui sont propres, tant au niveau des événements journalisés, que des informations présentes dans chaque entrée de journal.
 
-**Exemples de besoins spécifiques**
+**Exemple de besoin spécifique**
 
-> `core-fcp` a besoin de systèmatiquement journaliser un identifiant d'interaction  
-> `fc-exploitation` n'a pas cette notion  
-> `fc-exploitation` a parfois besoin de journaliser un numéro de ticket OTRS
+> `core-fca` a besoin de systèmatiquement journaliser un identifiant d'interaction
 
 ## Utilisation
 
