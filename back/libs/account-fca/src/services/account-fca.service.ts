@@ -1,4 +1,4 @@
-import { some } from 'lodash';
+import { filter, isEqual } from 'lodash';
 import { Model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 
@@ -44,8 +44,10 @@ export class AccountFcaService {
   async getOrCreateAccount(
     idpUid: string,
     idpSub: string,
+    idpMail: string,
   ): Promise<AccountFca> {
     const idpAgentKeys = { idpUid, idpSub };
+    const idpFullKeys = { idpUid, idpSub, idpMail };
     let account = await this.getAccountByIdpAgentKeys(idpAgentKeys);
     if (!account) {
       account = this.createAccount();
@@ -54,9 +56,11 @@ export class AccountFcaService {
       throw new CoreFcaAgentAccountBlockedException();
     }
 
-    if (!some(account.idpIdentityKeys, idpAgentKeys)) {
-      account.idpIdentityKeys.push(idpAgentKeys);
-    }
+    account.idpIdentityKeys = filter(
+      account.idpIdentityKeys,
+      ({ idpSub, idpUid }) => !isEqual({ idpSub, idpUid }, idpAgentKeys),
+    );
+    account.idpIdentityKeys.push(idpFullKeys);
 
     account.lastConnection = new Date();
 

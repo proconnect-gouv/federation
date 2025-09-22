@@ -311,6 +311,7 @@ export class OidcClientController {
     const account = await this.accountService.getOrCreateAccount(
       idpId,
       idpIdentity.sub,
+      idpIdentity.email,
     );
 
     const spIdentity = await this.sanitizer.transformIdentity(
