@@ -17,8 +17,6 @@ import { getLoggerMock } from '@mocks/logger';
 
 import {
   OidcClientGetEndSessionUrlException,
-  OidcClientIdpDisabledException,
-  OidcClientIdpNotFoundException,
   OidcClientInvalidStateException,
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
@@ -548,40 +546,6 @@ describe('OidcClientUtilsService', () => {
           postLogoutRedirectUriMock,
         ),
       ).rejects.toThrow(expectedError);
-    });
-  });
-
-  describe('checkIdpDisabled()', () => {
-    it('should throw OidcClientIdpNotFoundException because identity provider is disabled', async () => {
-      // Given
-      identityProviderServiceMock.getById.mockResolvedValueOnce(undefined);
-
-      // When / Then
-      await expect(service.checkIdpDisabled('idpId')).rejects.toThrow(
-        OidcClientIdpNotFoundException,
-      );
-    });
-
-    it('should throw OidcClientIdpDisabledException because identity provider is disabled', async () => {
-      // Given
-      identityProviderServiceMock.getById.mockResolvedValueOnce({
-        active: false,
-      });
-
-      // When / Then
-      await expect(service.checkIdpDisabled('idpId')).rejects.toThrow(
-        OidcClientIdpDisabledException,
-      );
-    });
-
-    it('should not do anything because identity provider exists and is not disabled', () => {
-      // Given
-      identityProviderServiceMock.getById.mockResolvedValueOnce({
-        active: true,
-      });
-
-      // When / Then
-      expect(() => service.checkIdpDisabled('idpId')).not.toThrow();
     });
   });
 

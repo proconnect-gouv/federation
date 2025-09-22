@@ -8,7 +8,7 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
-  OidcClientIdpDisabledException,
+  OidcClientIdpNotFoundException,
   OidcClientService,
 } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -33,7 +33,6 @@ describe('CoreFcaService', () => {
   const oidcMock = {
     utils: {
       buildAuthorizeParameters: jest.fn(),
-      checkIdpDisabled: jest.fn(),
       getAuthorizeUrl: jest.fn(),
     },
   };
@@ -65,6 +64,7 @@ describe('CoreFcaService', () => {
   const identityProviderMockResponse = {
     name: 'nameMockValue',
     title: 'titleMockValue',
+    active: true,
   };
 
   const nonceMock = Symbol('nonceMockValue');
@@ -175,10 +175,7 @@ describe('CoreFcaService', () => {
       oidcMock.utils.getAuthorizeUrl.mockResolvedValueOnce(
         'http://mock-authorize-url',
       );
-      identityProviderMock.getById.mockResolvedValueOnce({
-        name: 'mockName',
-        title: 'mockTitle',
-      });
+
       oidcAcrMock.getFilteredAcrParamsFromInteraction.mockReturnValueOnce({
         acrClaims: {},
       });
@@ -192,8 +189,8 @@ describe('CoreFcaService', () => {
       );
       expect(sessionServiceMock.set).toHaveBeenCalledWith('User', {
         idpId: 'idpIdMockValue',
-        idpName: 'mockName',
-        idpLabel: 'mockTitle',
+        idpName: 'nameMockValue',
+        idpLabel: 'titleMockValue',
         idpNonce: 'mockNonce',
         idpState: 'mockState',
         idpIdentity: undefined,
@@ -247,19 +244,16 @@ describe('CoreFcaService', () => {
       // When / Then
       await expect(
         service.redirectToIdp(reqMock, resMock, idpId),
-      ).rejects.toThrow(`Idp ${idpId} not found`);
+      ).rejects.toThrow(OidcClientIdpNotFoundException);
     });
 
     it('should throw an error when IdP is disabled', async () => {
       // Given
       const idpId = 'disabledIdp';
       identityProviderMock.getById.mockResolvedValueOnce({
-        name: 'mockName',
-        title: 'mockTitle',
+        name: 'nameMockValue',
+        title: 'titleMockValue',
       });
-      oidcMock.utils.checkIdpDisabled.mockRejectedValueOnce(
-        new OidcClientIdpDisabledException(),
-      );
 
       // When / Then
       await expect(
@@ -267,14 +261,10 @@ describe('CoreFcaService', () => {
       ).rejects.toThrow(CoreFcaAgentIdpDisabledException);
     });
 
-    it('should throw an error when checkIdpDisabled throw random error', async () => {
+    it('should throw an error when getById throw random error', async () => {
       // Given
       const idpId = 'disabledIdp';
-      identityProviderMock.getById.mockResolvedValueOnce({
-        name: 'mockName',
-        title: 'mockTitle',
-      });
-      oidcMock.utils.checkIdpDisabled.mockRejectedValueOnce(new Error());
+      identityProviderMock.getById.mockRejectedValueOnce(new Error());
 
       // When / Then
       await expect(
@@ -333,10 +323,10 @@ describe('CoreFcaService', () => {
     });
   });
 
-  describe('validateEmailForSp', () => {
+  describe('throwIfFqdnNotAuthorizedForSp', () => {
     it('should return nothing if authorized email configuration is empty', async () => {
       await expect(
-        service['validateEmailForSp'](spIdMock, 'anyEmail@mail.fr'),
+        service['throwIfFqdnNotAuthorizedForSp'](spIdMock, 'anyEmail@mail.fr'),
       ).resolves.not.toThrow();
     });
 
@@ -347,7 +337,10 @@ describe('CoreFcaService', () => {
         authorizedFqdns: ['mordor.orc'],
       });
       await expect(
-        service['validateEmailForSp'](spIdMock, 'galadriel@lorien.elve'),
+        service['throwIfFqdnNotAuthorizedForSp'](
+          spIdMock,
+          'galadriel@lorien.elve',
+        ),
       ).rejects.toThrow();
     });
 
@@ -363,7 +356,7 @@ describe('CoreFcaService', () => {
       });
 
       await expect(
-        service['validateEmailForSp'](spIdMock, 'gollum@mordor.orc'),
+        service['throwIfFqdnNotAuthorizedForSp'](spIdMock, 'gollum@mordor.orc'),
       ).resolves.not.toThrow();
     });
 
@@ -379,7 +372,7 @@ describe('CoreFcaService', () => {
       });
 
       await expect(
-        service['validateEmailForSp'](spIdMock, 'gollum@mordor.orc'),
+        service['throwIfFqdnNotAuthorizedForSp'](spIdMock, 'gollum@mordor.orc'),
       ).resolves.not.toThrow();
     });
   });

@@ -22,8 +22,6 @@ import { LoggerService } from '@fc/logger';
 
 import {
   OidcClientGetEndSessionUrlException,
-  OidcClientIdpDisabledException,
-  OidcClientIdpNotFoundException,
   OidcClientInvalidStateException,
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
@@ -267,18 +265,6 @@ export class OidcClientUtilsService {
     } catch (error) {
       this.logger.err({ error });
       return false;
-    }
-  }
-
-  async checkIdpDisabled(idpId: string): Promise<void> {
-    const idp = await this.identityProvider.getById(idpId);
-
-    if (!idp) {
-      throw new OidcClientIdpNotFoundException();
-    }
-
-    if (!idp.active) {
-      throw new OidcClientIdpDisabledException();
     }
   }
 }
