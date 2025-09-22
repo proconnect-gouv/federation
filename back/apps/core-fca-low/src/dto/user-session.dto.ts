@@ -146,4 +146,8 @@ export class UserSession {
   @IsOptional()
   @IsBoolean()
   readonly rememberMe?: boolean;
+
+  @IsOptional()
+  @IsString()
+  readonly fqdn?: string;
 }

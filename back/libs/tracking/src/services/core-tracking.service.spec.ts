@@ -102,6 +102,7 @@ describe('CoreTrackingService', () => {
     idpLabel: 'some idpLabel',
     idpAcr: 'some idpAcr',
     idpIdentity: { sub: 'some idpSub' } as any,
+    fqdn: 'example.com',
   };
 
   beforeEach(async () => {
@@ -334,6 +335,7 @@ describe('CoreTrackingService', () => {
         idpName: null,
         idpLabel: null,
         idpSub: null,
+        fqdn: null,
       };
       sessionServiceMock.get
         .mockReturnValueOnce(null)
@@ -365,6 +367,7 @@ describe('CoreTrackingService', () => {
         idpAcr: 'some idpAcr',
         idpSub: 'some idpSub',
         idpLabel: 'some idpLabel',
+        fqdn: 'example.com',
       };
       // When
       const result = service['getDataFromSession'](sessionIdMock);
@@ -372,7 +375,7 @@ describe('CoreTrackingService', () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it('should return null values for idp info and spSub if not set in session', () => {
+    it('should return null values for idp info, spSub and fqdn if not set in session', () => {
       // Given
       const expectedResult = {
         browsingSessionId: browsingSessionIdMock,
@@ -391,6 +394,7 @@ describe('CoreTrackingService', () => {
         idpAcr: null,
         idpSub: null,
         idpLabel: null,
+        fqdn: null,
       };
       const sessionMock: UserSession = {
         spId: 'spIdMock',
@@ -462,6 +466,7 @@ describe('CoreTrackingService', () => {
         idpAcr: null,
         idpSub: null,
         idpLabel: null,
+        fqdn: null,
       };
       const sessionMock: UserSession = {
         spIdentity: {} as any,

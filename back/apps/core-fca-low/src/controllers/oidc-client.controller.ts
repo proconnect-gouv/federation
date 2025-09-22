@@ -123,6 +123,7 @@ export class OidcClientController {
     const { identityProviderUid: idpId } = body;
     const { login_hint: email } = userSession.get();
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
+    userSession.set('fqdn', fqdn);
 
     const { name: idpName, title: idpLabel } =
       await this.identityProvider.getById(idpId);
