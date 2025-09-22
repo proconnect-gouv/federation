@@ -58,7 +58,15 @@ export class AccountFcaService {
     const idpFullKeys = { idpUid, idpSub, idpMail };
     let account = await this.getAccountByIdpAgentKeys(idpAgentKeys);
     if (!account) {
-      account = this.createAccount();
+      const pciAccount = await this.model.findOne({
+        idpIdentityKeys: {
+          $elemMatch: {
+            idpMail,
+            idpUid: defaultIdpId,
+          },
+        },
+      });
+      account = pciAccount || this.createAccount();
     }
     if (!account.active) {
       throw new CoreFcaAgentAccountBlockedException();
