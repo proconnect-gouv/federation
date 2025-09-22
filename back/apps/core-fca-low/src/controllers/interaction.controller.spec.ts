@@ -21,7 +21,7 @@ import {
   CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
-import { CoreFcaFqdnService, CoreFcaService } from '../services';
+import { CoreFcaService } from '../services';
 import { InteractionController } from './interaction.controller';
 
 jest.mock('uuid', () => ({
@@ -43,7 +43,6 @@ describe('InteractionController', () => {
   let serviceProviderMock: any;
   let configServiceMock: any;
   let notificationsMock: any;
-  let fqdnServiceMock: any;
   let trackingMock: any;
   let sessionServiceMock: any; // for Csrf only
   let coreFcaMock: any;
@@ -71,9 +70,6 @@ describe('InteractionController', () => {
     };
     notificationsMock = {
       getNotificationToDisplay: jest.fn(),
-    };
-    fqdnServiceMock = {
-      getFqdnFromEmail: jest.fn(),
     };
     trackingMock = {
       track: jest.fn(),
@@ -103,7 +99,6 @@ describe('InteractionController', () => {
         ServiceProviderAdapterMongoService,
         ConfigService,
         CoreFcaService,
-        CoreFcaFqdnService,
         CsrfService,
         TrackingService,
         OidcAcrService,
@@ -117,8 +112,6 @@ describe('InteractionController', () => {
       .useValue(oidcAcrMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderMock)
-      .overrideProvider(CoreFcaFqdnService)
-      .useValue(fqdnServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreFcaMock)
       .overrideProvider(ConfigService)

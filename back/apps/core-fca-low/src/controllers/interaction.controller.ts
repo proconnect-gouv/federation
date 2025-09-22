@@ -45,7 +45,7 @@ import {
   CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
-import { CoreFcaFqdnService, CoreFcaService } from '../services';
+import { CoreFcaService } from '../services';
 
 @Controller()
 export class InteractionController {
@@ -58,7 +58,6 @@ export class InteractionController {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
-    private readonly fqdnService: CoreFcaFqdnService,
     private readonly tracking: TrackingService,
     private readonly sessionService: SessionService,
     private readonly coreFca: CoreFcaService,
@@ -180,9 +179,8 @@ export class InteractionController {
       return this.coreFca.redirectToIdp(req, res, idpHint);
     }
 
-    const fqdn = this.fqdnService.getFqdnFromEmail(loginHint);
     const { FC_SHOWED_IDP_CHOICE } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_SHOWED_IDP_CHOICE, { ...eventContext, fqdn });
+    await this.tracking.track(FC_SHOWED_IDP_CHOICE, { ...eventContext });
 
     const notification = await this.notifications.getNotificationToDisplay();
     const { defaultEmailRenater } = this.config.get<AppConfig>('App');
