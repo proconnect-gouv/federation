@@ -26,11 +26,11 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et je suis connecté au fournisseur de service
     # le cookie n'est pas supprimé en fin de cinématique
     Et le cookie "pc_session_id" est présent
-    Et la valeur du cookie "pc_session_id" est différente
+    Et la valeur du cookie "pc_session_id" est identique
     # Evènement FC_AUTHORIZE_INITIATED: cinématique SSO initialisée avec nouveau sessionId
     Et l'événement "FC_AUTHORIZE_INITIATED" est journalisé avec "reusesActiveSession" "true"
     Et la valeur "browsingSessionId" est identique dans l'événement "FC_AUTHORIZE_INITIATED"
-    Et la valeur "sessionId" est différente dans l'événement "FC_AUTHORIZE_INITIATED"
+    Et la valeur "sessionId" est identique dans l'événement "FC_AUTHORIZE_INITIATED"
     Et je mémorise la valeur "sessionId" de l'événement "FC_AUTHORIZE_INITIATED"
     # Evènement FC_DATATRANSFER_INFORMATION_IDENTITY: sessionId non changé
     Et l'événement "FC_AUTHORIZE_INITIATED" est journalisé avec "reusesActiveSession" "true"

@@ -195,30 +195,6 @@ describe('InteractionController', () => {
       });
     });
 
-    it('should duplicate user session if session is active and valid', async () => {
-      const req = {} as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({ interactionId: 'interaction123' }),
-        duplicate: jest.fn(),
-        set: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: 'interaction123',
-        params: { client_id: 'sp123' },
-      });
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {} as any,
-        userSessionService,
-      );
-
-      expect(userSessionService.duplicate).toHaveBeenCalled();
-    });
-
     it('should reset user session if login_hint is different from the email in the current session', async () => {
       const req = {} as Request;
       const res = { render: jest.fn() } as unknown as Response;
@@ -288,6 +264,7 @@ describe('InteractionController', () => {
         get: jest.fn().mockReturnValue({}),
         duplicate: jest.fn(),
         set: jest.fn(),
+        reset: jest.fn(),
         commit: jest.fn(),
       } as unknown as ISessionService<UserSession>;
       oidcProviderMock.getInteraction.mockResolvedValue({
