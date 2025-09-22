@@ -61,32 +61,40 @@ describe('CoreFcaFqdnService', () => {
       expect(fqdn).toBe('hogwards.uk');
     });
 
-    it('should only return the full qualified domain name from an email address with numbers', () => {
+    it('should only return the full qualified domain name from an email address with two @', () => {
       // When
       const fqdn = service.getFqdnFromEmail(
-        'hermione.grangerhogwards4321@hogwards1234.uk',
+        'hermione@grangerhogwards@hogwards.uk',
       );
 
       // Then
-      expect(fqdn).toBe('hogwards1234.uk');
+      expect(fqdn).toBe('hogwards.uk');
+    });
+
+    it('should only return the FQDN from a FQDN', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail('hogwards.uk');
+
+      // Then
+      expect(fqdn).toBe('hogwards.uk');
     });
 
     const emailToTest = [
       {
-        value: 'hermione.granger@hogwards1234.uK',
-        expectedFqdn: 'hogwards1234.uk',
+        value: 'hermione.granger@hogwards.uK',
+        expectedFqdn: 'hogwards.uk',
       },
       {
-        value: 'hermione.granger@hogwardS1234.uk',
-        expectedFqdn: 'hogwards1234.uk',
+        value: 'hermione.granger@hogwardS.uk',
+        expectedFqdn: 'hogwards.uk',
       },
       {
-        value: 'hermione.granger@hogwardS1234.uK',
-        expectedFqdn: 'hogwards1234.uk',
+        value: 'hermione.granger@hogwardS.uK',
+        expectedFqdn: 'hogwards.uk',
       },
       {
-        value: 'hermione.granger@HOGWARDS1234.UK',
-        expectedFqdn: 'hogwards1234.uk',
+        value: 'hermione.granger@HOGWARDS.UK',
+        expectedFqdn: 'hogwards.uk',
       },
     ];
     it.each(emailToTest)(
