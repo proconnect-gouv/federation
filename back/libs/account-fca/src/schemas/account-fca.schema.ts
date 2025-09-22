@@ -13,6 +13,9 @@ class IdpIdentityKey {
 
   @Prop({ type: String })
   idpUid: string;
+
+  @Prop({ type: String })
+  idpMail: string;
 }
 
 @Schema({
