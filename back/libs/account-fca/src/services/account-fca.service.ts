@@ -44,8 +44,10 @@ export class AccountFcaService {
   async getOrCreateAccount(
     idpUid: string,
     idpSub: string,
+    idpMail: string,
   ): Promise<AccountFca> {
     const idpAgentKeys = { idpUid, idpSub };
+    const idpFullKeys = { idpUid, idpSub, idpMail };
     let account = await this.getAccountByIdpAgentKeys(idpAgentKeys);
     if (!account) {
       account = this.createAccount();
@@ -54,8 +56,8 @@ export class AccountFcaService {
       throw new CoreFcaAgentAccountBlockedException();
     }
 
-    if (!some(account.idpIdentityKeys, idpAgentKeys)) {
-      account.idpIdentityKeys.push(idpAgentKeys);
+    if (!some(account.idpIdentityKeys, idpFullKeys)) {
+      account.idpIdentityKeys.push(idpFullKeys);
     }
 
     account.lastConnection = new Date();
