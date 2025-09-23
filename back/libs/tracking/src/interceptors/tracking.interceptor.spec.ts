@@ -8,7 +8,7 @@ import { getLoggerMock } from '@mocks/logger';
 
 import { Track } from '../decorators';
 import { TrackedEvent } from '../enums';
-import { CoreTrackingService, TrackingService } from '../services';
+import { TrackingService } from '../services';
 import { TrackingInterceptor } from './tracking.interceptor';
 
 describe('TrackingInterceptor', () => {
@@ -17,9 +17,6 @@ describe('TrackingInterceptor', () => {
 
   const trackingMock = {
     track: jest.fn(),
-  };
-
-  const appTrackingMock = {
     buildLog: jest.fn(),
   };
 
@@ -57,7 +54,6 @@ describe('TrackingInterceptor', () => {
         TrackingService,
         LoggerService,
         LoggerLegacyService,
-        CoreTrackingService,
       ],
     })
       .overrideProvider(TrackingService)
@@ -66,8 +62,6 @@ describe('TrackingInterceptor', () => {
       .useValue(loggerMock)
       .overrideProvider(LoggerLegacyService)
       .useValue(loggerLegacyMock)
-      .overrideProvider(CoreTrackingService)
-      .useValue(appTrackingMock)
       .compile();
 
     interceptor = module.get<TrackingInterceptor>(TrackingInterceptor);
