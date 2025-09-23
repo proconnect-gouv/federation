@@ -1,1 +1,6 @@
-export type TrackedEventContextInterface = Record<string, any>;
+import { Request } from 'express';
+
+export type TrackedEventContextInterface = {
+  req?: Request;
+  sessionId?: string;
+};

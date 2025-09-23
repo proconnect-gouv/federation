@@ -4,6 +4,7 @@
  * @ticket #FC-1024
  */
 import { isURL } from 'class-validator';
+import { Request } from 'express';
 import { JWK } from 'jose-v2';
 import { CallbackParamsType, errors } from 'openid-client';
 
@@ -324,7 +325,9 @@ describe('OidcClientUtilsService', () => {
   });
 
   describe('getTokenSet()', () => {
-    const req = { session: { codeVerifier: 'codeVerifierValue' } };
+    const req = {
+      session: { codeVerifier: 'codeVerifierValue' },
+    } as any as Request;
     const providerId = 'foo';
     const params: TokenParams = {
       state: 'callbackParamsState',
