@@ -17,12 +17,6 @@ export interface TrackedEventInterface {
   readonly event: string;
 
   /**
-   * Indicator of order in a flow scenario.
-   * Helpful to build advanced analytics like funnel analysis.
-   */
-  readonly step?: string;
-
-  /**
    * Automatically track exception
    */
   readonly exceptions?: Array<Type<FcException>>;
