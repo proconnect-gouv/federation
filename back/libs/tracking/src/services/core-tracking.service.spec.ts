@@ -30,7 +30,6 @@ describe('CoreTrackingService', () => {
   };
 
   const eventMock = {
-    category: 'some category',
     event: 'name',
     route: '/',
     exceptions: [],
@@ -156,7 +155,6 @@ describe('CoreTrackingService', () => {
       const expectedResult = {
         ...sessionDataMock,
         interactionId: interactionIdMock,
-        category: eventMock.category,
         event: eventMock.event,
         ip: ipMock,
         reusesActiveSession: undefined,

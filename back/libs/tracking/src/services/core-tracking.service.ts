@@ -27,7 +27,7 @@ export class CoreTrackingService {
       source: { address: ip },
     } = extractedFromContext;
 
-    const { category, event } = trackedEvent;
+    const { event } = trackedEvent;
 
     const sessionId = context.sessionId || this.sessionService.getId();
 
@@ -42,7 +42,6 @@ export class CoreTrackingService {
     return {
       ...ctxMergedWithSession,
       sessionId,
-      category,
       event,
       ip,
       claims: claims?.join(' '),
