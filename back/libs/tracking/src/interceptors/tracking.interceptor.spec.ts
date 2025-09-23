@@ -1,14 +1,9 @@
 import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from '@fc/logger';
-import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
-
-import { getLoggerMock } from '@mocks/logger';
-
 import { Track } from '../decorators';
 import { TrackedEvent } from '../enums';
-import { CoreTrackingService, TrackingService } from '../services';
+import { TrackingService } from '../services';
 import { TrackingInterceptor } from './tracking.interceptor';
 
 describe('TrackingInterceptor', () => {
@@ -17,10 +12,6 @@ describe('TrackingInterceptor', () => {
 
   const trackingMock = {
     track: jest.fn(),
-  };
-
-  const appTrackingMock = {
-    buildLog: jest.fn(),
   };
 
   const httpContextMock = {
@@ -45,29 +36,12 @@ describe('TrackingInterceptor', () => {
     pipe: jest.fn(),
   };
 
-  const loggerMock = getLoggerMock();
-  const loggerLegacyMock = {
-    businessEvent: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TrackingInterceptor,
-        TrackingService,
-        LoggerService,
-        LoggerLegacyService,
-        CoreTrackingService,
-      ],
+      providers: [TrackingInterceptor, TrackingService],
     })
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerMock)
-      .overrideProvider(LoggerLegacyService)
-      .useValue(loggerLegacyMock)
-      .overrideProvider(CoreTrackingService)
-      .useValue(appTrackingMock)
       .compile();
 
     interceptor = module.get<TrackingInterceptor>(TrackingInterceptor);
@@ -95,7 +69,7 @@ describe('TrackingInterceptor', () => {
       // Given
       TrackMock.get = jest
         .fn()
-        .mockReturnValueOnce(TrackedEvent.FC_REQUESTED_IDP_TOKEN);
+        .mockReturnValueOnce(TrackedEvent.FC_AUTHORIZE_INITIATED);
       const observableMock = {
         pipe: jest.fn(),
       };

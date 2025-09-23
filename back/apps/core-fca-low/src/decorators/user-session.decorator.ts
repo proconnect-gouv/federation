@@ -43,7 +43,7 @@ export const UserSessionDecoratorFactory = async (
 
     if (mandatoryPropertiesErrors.length) {
       throw new SessionInvalidSessionException(
-        'UserSessionDecorator: Session data is invalid.',
+        'UserSessionDecorator: mandatory session data is invalid.',
       );
     }
   }

@@ -4,6 +4,7 @@
  * @ticket #FC-1024
  */
 import { isURL } from 'class-validator';
+import { Request } from 'express';
 import { JWK } from 'jose-v2';
 import {
   AuthorizationParameters,
@@ -118,7 +119,7 @@ export class OidcClientUtilsService {
   }
 
   async getTokenSet(
-    req,
+    req: Request,
     ipdId: string,
     params: TokenParams,
     extraParams?: ExtraTokenParams,

@@ -178,7 +178,6 @@ describe('OidcClientController', () => {
       });
       expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
         csrfToken: 'csrf-token',
-        email,
         providers,
         hasDefaultIdp: true,
       });
@@ -199,11 +198,8 @@ describe('OidcClientController', () => {
       } as unknown as ISessionService<UserSession>;
     });
 
-    it('should track and redirect to selected idp when identityProviderUid is provided', async () => {
+    it('should redirect to selected idp when identityProviderUid is provided', async () => {
       const body = { identityProviderUid: 'idp123' } as any;
-      const sessionWithEmail = {
-        get: jest.fn().mockReturnValue({ login_hint: email }),
-      } as any;
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       identityProvider.getById.mockResolvedValue({
         name: 'Idp Name',
@@ -214,21 +210,8 @@ describe('OidcClientController', () => {
         req as Request,
         res as Response,
         body,
-        sessionWithEmail,
       );
 
-      expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(email);
-      expect(identityProvider.getById).toHaveBeenCalledWith('idp123');
-      expect(logger.debug).toHaveBeenCalledWith(
-        `Redirect "****@fqdn.com" to selected idp "Idp Title" (idp123)`,
-      );
-      expect(tracking.track).toHaveBeenCalledWith('FC_REDIRECT_TO_IDP', {
-        req,
-        fqdn: 'fqdn.com',
-        idpId: 'idp123',
-        idpLabel: 'Idp Title',
-        idpName: 'Idp Name',
-      });
       expect(coreFca.redirectToIdp).toHaveBeenCalledWith(req, res, 'idp123');
     });
 
@@ -248,8 +231,10 @@ describe('OidcClientController', () => {
           userSession,
         ),
       ).rejects.toThrow(CoreFcaAgentNoIdpException);
-      expect(userSession.set).toHaveBeenCalledWith('rememberMe', true);
-      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
+      expect(userSession.set).toHaveBeenCalledWith({
+        rememberMe: true,
+        idpLoginHint: email,
+      });
     });
 
     it('should throw an exception when identity provider is misconfigured', async () => {
@@ -286,8 +271,10 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      expect(userSession.set).toHaveBeenCalledWith('rememberMe', false);
-      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
+      expect(userSession.set).toHaveBeenCalledWith({
+        rememberMe: false,
+        idpLoginHint: email,
+      });
       expect(logger.debug).toHaveBeenCalledWith(
         '2 identity providers matching for "****@fqdn.com"',
       );
@@ -315,19 +302,11 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      expect(userSession.set).toHaveBeenCalledWith('rememberMe', true);
-      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
-      expect(identityProvider.getById).toHaveBeenCalledWith('idp-single');
-      expect(logger.debug).toHaveBeenCalledWith(
-        'Redirect "****@fqdn.com" to unique idp "Single Title" (idp-single)',
-      );
-      expect(tracking.track).toHaveBeenCalledWith('FC_REDIRECT_TO_IDP', {
-        req,
-        fqdn: 'fqdn.com',
-        idpId: 'idp-single',
-        idpLabel: 'Single Title',
-        idpName: 'Single IdP',
+      expect(userSession.set).toHaveBeenCalledWith({
+        rememberMe: true,
+        idpLoginHint: email,
       });
+      expect(identityProvider.getById).toHaveBeenCalledWith('idp-single');
       expect(coreFca.redirectToIdp).toHaveBeenCalledWith(
         req,
         res,
@@ -373,17 +352,12 @@ describe('OidcClientController', () => {
   describe('redirectAfterIdpLogout', () => {
     it('should track session termination, destroy the session and render the logout form', async () => {
       const req = {} as Request;
-      const res: Partial<Response> = {};
       const userSession = {
         get: jest.fn().mockReturnValue({ oidcProviderLogoutForm: 'form-data' }),
         destroy: jest.fn().mockResolvedValue(undefined),
       } as unknown as ISessionService<UserSession>;
 
-      const result = await controller.redirectAfterIdpLogout(
-        req,
-        res,
-        userSession,
-      );
+      const result = await controller.redirectAfterIdpLogout(req, userSession);
       expect(tracking.track).toHaveBeenCalledWith('FC_SESSION_TERMINATED', {
         req,
       });
@@ -403,7 +377,7 @@ describe('OidcClientController', () => {
       interactionId: 'interaction123',
       spId: 'sp123',
       spName: 'SP Name',
-      login_hint: 'user@example.com',
+      idpLoginHint: 'user@example.com',
     };
 
     beforeEach(() => {
@@ -461,11 +435,7 @@ describe('OidcClientController', () => {
       expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(
         'user@example.com',
       );
-      expect(tracking.track).toHaveBeenCalledWith('IDP_CALLEDBACK', {
-        req,
-        fqdn: 'fqdn.com',
-        email: 'user@example.com',
-      });
+      expect(tracking.track).toHaveBeenCalledWith('IDP_CALLEDBACK', { req });
       expect(oidcClient.getToken).toHaveBeenCalledWith(
         'idp123',
         { state: 'state123', nonce: 'nonce123' },
@@ -474,8 +444,6 @@ describe('OidcClientController', () => {
       );
       expect(tracking.track).toHaveBeenCalledWith('FC_REQUESTED_IDP_TOKEN', {
         req,
-        fqdn: 'fqdn.com',
-        email: 'user@example.com',
       });
       expect(oidcClient.getUserinfo).toHaveBeenCalledWith({
         accessToken: 'access-token',
@@ -487,16 +455,12 @@ describe('OidcClientController', () => {
       );
       expect(tracking.track).toHaveBeenNthCalledWith(1, 'IDP_CALLEDBACK', {
         req,
-        fqdn: 'fqdn.com',
-        email: 'user@example.com',
       });
       expect(tracking.track).toHaveBeenNthCalledWith(
         2,
         'FC_REQUESTED_IDP_TOKEN',
         {
           req,
-          fqdn: 'fqdn.com',
-          email: 'user@example.com',
         },
       );
       expect(tracking.track).toHaveBeenNthCalledWith(
@@ -504,9 +468,6 @@ describe('OidcClientController', () => {
         'FC_REQUESTED_IDP_USERINFO',
         {
           req,
-          fqdn: 'fqdn.com',
-          email: 'user@example.com',
-          idpSub: 'sub123',
         },
       );
       expect(fqdnService.isAllowedIdpForEmail).toHaveBeenCalledWith(
@@ -556,7 +517,6 @@ describe('OidcClientController', () => {
       );
       expect(tracking.track).toHaveBeenCalledWith('FC_FQDN_MISMATCH', {
         req,
-        fqdn: 'fqdn.com',
       });
       expect(userSession.set).toHaveBeenCalledWith({
         amr: 'amr-value',

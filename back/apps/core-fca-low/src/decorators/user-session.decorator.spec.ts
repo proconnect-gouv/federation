@@ -112,7 +112,9 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
-    ).rejects.toThrowError('UserSessionDecorator: Session data is invalid.');
+    ).rejects.toThrowError(
+      'UserSessionDecorator: mandatory session data is invalid.',
+    );
 
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
