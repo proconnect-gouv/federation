@@ -1,9 +1,7 @@
 import { ArgumentsHost } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions/filters';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
@@ -32,9 +30,6 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
   const sessionMock = getSessionServiceMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
@@ -69,7 +64,6 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
         ConfigService,
         LoggerService,
         SessionService,
-        EventBus,
       ],
     })
       .overrideProvider(LoggerService)
@@ -78,8 +72,6 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
       .useValue(configMock)
       .overrideProvider(SessionService)
       .useValue(sessionMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .compile();
 
     filter = module.get<OidcProviderRenderedHtmlExceptionFilter>(
@@ -116,7 +108,6 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
 
       // Then
       expect(filter['logException']).not.toHaveBeenCalled();
-      expect(eventBusMock.publish).not.toHaveBeenCalled();
     });
 
     it('should mark the original error as caught', () => {
@@ -149,16 +140,6 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
         codeMock,
         idMock,
         exceptionMock,
-      );
-    });
-
-    it('should publish an ExceptionCaughtEvent', () => {
-      // When
-      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
-
-      // Then
-      expect(eventBusMock.publish).toHaveBeenCalledExactlyOnceWith(
-        expect.any(ExceptionCaughtEvent),
       );
     });
   });

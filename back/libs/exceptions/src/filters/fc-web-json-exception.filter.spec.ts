@@ -1,10 +1,8 @@
 import { ArgumentsHost } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 
@@ -26,9 +24,6 @@ describe('FcWebJsonExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
@@ -67,19 +62,12 @@ describe('FcWebJsonExceptionFilter', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        FcWebJsonExceptionFilter,
-        ConfigService,
-        LoggerService,
-        EventBus,
-      ],
+      providers: [FcWebJsonExceptionFilter, ConfigService, LoggerService],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .compile();
 
     filter = module.get<FcWebJsonExceptionFilter>(FcWebJsonExceptionFilter);
@@ -123,16 +111,6 @@ describe('FcWebJsonExceptionFilter', () => {
         codeMock,
         idMock,
         exceptionMock,
-      );
-    });
-
-    it('should publish an ExceptionCaughtEvent', () => {
-      // When
-      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
-
-      // Then
-      expect(eventBusMock.publish).toHaveBeenCalledExactlyOnceWith(
-        expect.any(ExceptionCaughtEvent),
       );
     });
 

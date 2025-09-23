@@ -1,7 +1,6 @@
-import { Global, Injectable, Scope, Type } from '@nestjs/common';
+import { Global, Injectable, Scope } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { FcException } from '@fc/exceptions/exceptions';
 import { LoggerService } from '@fc/logger';
 import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
 
@@ -37,38 +36,5 @@ export class TrackingService {
     const message = this.appTrackingService.buildLog(trackedEvent, context);
 
     this.loggerLegacy.businessEvent(message);
-  }
-
-  private findEventForException(
-    exception: FcException,
-  ): TrackedEventInterface[] {
-    const events = Object.values(this.TrackedEventsMap).filter(
-      (eventDefinition) => {
-        const exceptionsNames = this.toClassNames(eventDefinition.exceptions);
-
-        if (exceptionsNames.includes(exception.constructor.name)) {
-          return eventDefinition;
-        }
-
-        return false;
-      },
-    );
-
-    return events;
-  }
-
-  private toClassNames(classes: Type<FcException>[] = []): string[] {
-    return classes.map(({ name }) => name);
-  }
-
-  async trackExceptionIfNeeded(
-    exception: FcException,
-    context: TrackedEventContextInterface,
-  ): Promise<void> {
-    const events = this.findEventForException(exception);
-
-    const promises = events.map((event) => this.track(event, context));
-
-    await Promise.all(promises);
   }
 }

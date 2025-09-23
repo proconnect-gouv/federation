@@ -1,5 +1,4 @@
 import { ArgumentsHost } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { BaseException } from '@fc/base-exception';
@@ -20,9 +19,6 @@ describe('UnknownHtmlExceptionFilter', () => {
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
   const sessionMock = getSessionServiceMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
@@ -42,7 +38,6 @@ describe('UnknownHtmlExceptionFilter', () => {
         ConfigService,
         SessionService,
         LoggerService,
-        EventBus,
       ],
     })
       .overrideProvider(LoggerService)
@@ -51,8 +46,6 @@ describe('UnknownHtmlExceptionFilter', () => {
       .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .compile();
     filter = module.get<UnknownHtmlExceptionFilter>(UnknownHtmlExceptionFilter);
 

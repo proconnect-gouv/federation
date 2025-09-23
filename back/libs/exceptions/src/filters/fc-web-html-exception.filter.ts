@@ -4,7 +4,6 @@ import {
   ExceptionFilter,
   Injectable,
 } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 
 import { ApiErrorParams } from '@fc/app';
 import { BaseException } from '@fc/base-exception';
@@ -14,7 +13,6 @@ import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 import { SessionService } from '@fc/session';
 
-import { ExceptionCaughtEvent } from '../events';
 import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
@@ -28,15 +26,13 @@ export class FcWebHtmlExceptionFilter
     protected readonly config: ConfigService,
     protected readonly session: SessionService,
     protected readonly logger: LoggerService,
-    protected readonly eventBus: EventBus,
   ) {
-    super(config, logger, eventBus);
+    super(config, logger);
   }
 
   catch(exception: BaseException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse();
-    const req = ctx.getRequest();
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
@@ -60,8 +56,6 @@ export class FcWebHtmlExceptionFilter
     exceptionParam.spName = this.session.get('User', 'spName');
 
     this.logException(code, id, exception);
-
-    this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
 
     this.errorOutput(exceptionParam);
   }

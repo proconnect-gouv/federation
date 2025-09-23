@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import { CqrsModule } from '@nestjs/cqrs';
 
 import { BaseException } from '@fc/base-exception';
 import { ConfigModule } from '@fc/config';
@@ -14,13 +13,7 @@ import {
 } from './filters';
 
 @Module({
-  imports: [
-    CqrsModule,
-    SessionModule,
-    ConfigModule,
-    LoggerModule,
-    BaseException,
-  ],
+  imports: [SessionModule, ConfigModule, LoggerModule, BaseException],
   providers: [
     UnknownHtmlExceptionFilter,
     FcWebHtmlExceptionFilter,
@@ -38,6 +31,5 @@ import {
       useClass: HttpExceptionFilter,
     },
   ],
-  exports: [CqrsModule],
 })
 export class ExceptionsModule {}
