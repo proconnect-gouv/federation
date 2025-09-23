@@ -10,16 +10,15 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import {
-  OidcClientConfig,
-  OidcClientIdpNotFoundException,
-  OidcClientService,
-} from '@fc/oidc-client';
+import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
+import { TrackedEvent } from '@fc/tracking/enums/tracked-event.enum';
 
 import {
   CoreFcaAgentIdpDisabledException,
+  CoreFcaIdpConfigurationException,
   CoreFcaUnauthorizedEmailException,
 } from '../exceptions';
 import { CoreFcaFqdnService } from './core-fca-fqdn.service';
@@ -37,6 +36,7 @@ export class CoreFcaService {
     private readonly session: SessionService,
     private readonly fqdnService: CoreFcaFqdnService,
     private readonly logger: LoggerService,
+    private readonly tracking: TrackingService,
   ) {}
   // eslint-disable-next-line complexity
   async redirectToIdp(
@@ -110,6 +110,8 @@ export class CoreFcaService {
 
     this.session.set('User', sessionPayload);
 
+    await this.tracking.track(TrackedEvent.IDP_CHOSEN, { req });
+
     res.redirect(authorizationUrl);
   }
 
@@ -148,7 +150,7 @@ export class CoreFcaService {
     const idp = await this.identityProvider.getById(idpId);
 
     if (isEmpty(idp)) {
-      throw new OidcClientIdpNotFoundException();
+      throw new CoreFcaIdpConfigurationException();
     }
 
     if (!idp.active) {

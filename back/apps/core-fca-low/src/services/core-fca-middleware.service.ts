@@ -143,7 +143,9 @@ export class CoreFcaMiddlewareService {
     });
   }
 
-  protected async getEventContext(ctx): Promise<TrackedEventContextInterface> {
+  protected async getEventContext(
+    ctx: OidcCtx,
+  ): Promise<TrackedEventContextInterface> {
     const accountId = ctx.oidc?.entities?.Account?.accountId;
 
     let sessionId: string | undefined;

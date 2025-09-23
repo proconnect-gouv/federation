@@ -24,11 +24,7 @@ import { OidcAcrService, SimplifiedInteraction } from '@fc/oidc-acr';
 import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
-import {
-  Track,
-  TrackedEventContextInterface,
-  TrackingService,
-} from '@fc/tracking';
+import { TrackingService } from '@fc/tracking';
 import { TrackedEvent } from '@fc/tracking/enums';
 
 import { UserSessionDecorator } from '../decorators';
@@ -86,7 +82,7 @@ export class InteractionController {
   @SetStep()
   // eslint-disable-next-line complexity
   async getInteraction(
-    @Req() req,
+    @Req() req: Request,
     @Res() res: Response,
     @Param() _params: Interaction,
     @UserSessionDecorator()
@@ -151,18 +147,10 @@ export class InteractionController {
     });
     await userSession.commit();
 
-    const eventContext: TrackedEventContextInterface = {
-      fc: { interactionId },
-      req,
-    };
-
-    await this.tracking.track(
-      TrackedEvent.FC_AUTHORIZE_INITIATED,
-      eventContext,
-    );
+    await this.tracking.track(TrackedEvent.FC_AUTHORIZE_INITIATED, { req });
 
     if (canReuseActiveSession) {
-      await this.tracking.track(TrackedEvent.FC_SSO_INITIATED, eventContext);
+      await this.tracking.track(TrackedEvent.FC_SSO_INITIATED, { req });
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
       const url = `${urlPrefix}${Routes.INTERACTION_VERIFY.replace(
@@ -173,18 +161,21 @@ export class InteractionController {
       return res.redirect(url);
     }
 
+    if (loginHint) {
+      await this.tracking.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_LOGIN, {
+        req,
+      });
+    }
+
     if (idpHint) {
-      await this.tracking.track(
-        TrackedEvent.FC_REDIRECTED_TO_HINTED_IDP,
-        eventContext,
-      );
+      await this.tracking.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_IDP, {
+        req,
+      });
 
       return this.coreFca.redirectToIdp(req, res, idpHint);
     }
 
-    await this.tracking.track(TrackedEvent.FC_SHOWED_IDP_CHOICE, {
-      ...eventContext,
-    });
+    await this.tracking.track(TrackedEvent.FC_SHOWED_IDP_CHOICE, { req });
 
     const notification = await this.notifications.getNotificationToDisplay();
     const { defaultEmailRenater } = this.config.get<AppConfig>('App');
@@ -209,9 +200,6 @@ export class InteractionController {
     Routes.INTERACTION, // Reuse of an existing session
   ])
   @SetStep()
-  // Note: The FC_REDIRECTED_TO_SP event is logged regardless of whether Panva's oidc-provider
-  // successfully redirects to the service provider or encounters an error
-  @Track('FC_REDIRECTED_TO_SP')
   // eslint-disable-next-line complexity
   async getVerify(
     @Req() req: Request,
@@ -239,7 +227,7 @@ export class InteractionController {
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
 
-      await this.trackIdpDisabled(req);
+      await this.tracking.track(TrackedEvent.FC_IDP_DISABLED, { req });
 
       const url = `${urlPrefix}${Routes.INTERACTION.replace(
         ':uid',
@@ -272,15 +260,11 @@ export class InteractionController {
     };
     userSessionService.set(session);
 
+    await this.tracking.track(TrackedEvent.FC_VERIFIED, { req });
+
     return this.oidcProvider.finishInteraction(req, res, {
       amr,
       acr: interactionAcr,
     });
-  }
-
-  async trackIdpDisabled(req: Request) {
-    const eventContext = { req };
-
-    await this.tracking.track(TrackedEvent.FC_IDP_DISABLED, eventContext);
   }
 }

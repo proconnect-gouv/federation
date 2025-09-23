@@ -11,7 +11,6 @@ import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import { TrackingMissingNetworkContextException } from '@fc/tracking/exceptions';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
@@ -150,24 +149,6 @@ describe('FcWebHtmlExceptionFilter', () => {
       // Then
       expect(resMock.status).toHaveBeenCalledOnce();
       expect(resMock.status).toHaveBeenCalledWith(500);
-    });
-
-    it('should render the error template with a static exception', () => {
-      // When
-      const inputMock = {
-        ...paramsMock,
-        exception: new TrackingMissingNetworkContextException(),
-        error: {
-          message: 'TrackingContext.exceptions.trackingMissingNetworkContext',
-        },
-      };
-      filter['errorOutput'](inputMock as unknown as ApiErrorParams);
-
-      // Then
-      expect(resMock.render).toHaveBeenCalledWith('error', {
-        ...inputMock,
-        errorDetail: 'Missing network context (headers)',
-      });
     });
 
     it('should render the error template with a UI-less static exception', () => {
