@@ -1,6 +1,5 @@
 import { Catch, HttpException, HttpStatus } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
-import { EventBus } from '@nestjs/cqrs';
 import { RpcException } from '@nestjs/microservices';
 
 import { BaseException } from '@fc/base-exception';
@@ -16,7 +15,6 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
   constructor(
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
-    protected readonly eventBus: EventBus,
   ) {
     super();
   }

@@ -4,14 +4,12 @@ import {
   ExceptionFilter,
   Injectable,
 } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 
 import { ApiErrorParams } from '@fc/app';
 import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
-import { ExceptionCaughtEvent } from '../events';
 import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
@@ -24,15 +22,13 @@ export class FcWebJsonExceptionFilter
   constructor(
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
-    protected readonly eventBus: EventBus,
   ) {
-    super(config, logger, eventBus);
+    super(config, logger);
   }
 
   catch(exception: BaseException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse();
-    const req = ctx.getRequest();
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
@@ -47,8 +43,6 @@ export class FcWebJsonExceptionFilter
     };
 
     this.logException(code, id, exception);
-
-    this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
 
     this.errorOutput(exceptionParam);
   }

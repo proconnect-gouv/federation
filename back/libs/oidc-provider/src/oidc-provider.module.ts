@@ -1,7 +1,6 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { APP_FILTER } from '@nestjs/core';
-import { CqrsModule } from '@nestjs/cqrs';
 
 import { IsUrlRequiredTldFromConfigConstraint } from '@fc/common';
 import { ExceptionsModule, FcWebHtmlExceptionFilter } from '@fc/exceptions';
@@ -50,7 +49,6 @@ export class OidcProviderModule {
     return {
       module: OidcProviderModule,
       imports: [
-        CqrsModule,
         RedisModule,
         ServiceProviderModule,
         IdentityProviderAdapterMongoModule,

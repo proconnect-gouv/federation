@@ -1,7 +1,6 @@
 import { errors } from 'oidc-provider';
 
 import { HttpStatus } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { BaseException } from '@fc/base-exception';
@@ -22,9 +21,6 @@ describe('FcBaseExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const prefixMock = 'Z';
   const scopeMock = 42;
@@ -49,15 +45,12 @@ describe('FcBaseExceptionFilter', () => {
         FcBaseExceptionFilterImplementation,
         ConfigService,
         LoggerService,
-        EventBus,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .compile();
 
     filter = module.get<FcBaseExceptionFilterImplementation>(

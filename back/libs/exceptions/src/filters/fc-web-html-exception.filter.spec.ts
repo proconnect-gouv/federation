@@ -1,14 +1,12 @@
 import { Response } from 'express';
 
 import { ArgumentsHost } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiErrorParams } from '@fc/app';
 import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { CoreFcaInvalidIdentityException } from '@fc/core';
-import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
@@ -35,9 +33,6 @@ describe('FcWebHtmlExceptionFilter', () => {
   const configMock = getConfigMock();
   const sessionMock = getSessionServiceMock();
   const loggerMock = getLoggerMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
@@ -80,7 +75,6 @@ describe('FcWebHtmlExceptionFilter', () => {
         ConfigService,
         SessionService,
         LoggerService,
-        EventBus,
       ],
     })
       .overrideProvider(LoggerService)
@@ -89,8 +83,6 @@ describe('FcWebHtmlExceptionFilter', () => {
       .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .compile();
 
     filter = module.get<FcWebHtmlExceptionFilter>(FcWebHtmlExceptionFilter);
@@ -124,16 +116,6 @@ describe('FcWebHtmlExceptionFilter', () => {
         codeMock,
         idMock,
         exceptionMock,
-      );
-    });
-
-    it('should publish an ExceptionCaughtEvent', () => {
-      // When
-      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
-
-      // Then
-      expect(eventBusMock.publish).toHaveBeenCalledExactlyOnceWith(
-        expect.any(ExceptionCaughtEvent),
       );
     });
 

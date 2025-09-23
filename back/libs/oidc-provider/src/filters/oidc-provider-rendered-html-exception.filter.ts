@@ -5,7 +5,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 
-import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions/filters';
 import { generateErrorId } from '@fc/exceptions/helpers';
 
@@ -42,13 +41,10 @@ export class OidcProviderRenderedHtmlExceptionFilter
       return super.catch(exception, host);
     }
 
-    const ctx = host.switchToHttp();
-    const req = ctx.getRequest();
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
 
     this.logException(code, id, exception);
-    this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
   }
 
   private shouldNotRedirect(exception: OidcProviderBaseRenderedException) {

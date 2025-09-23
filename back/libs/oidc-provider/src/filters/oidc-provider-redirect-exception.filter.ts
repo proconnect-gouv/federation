@@ -8,11 +8,9 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 
 import { ConfigService } from '@fc/config';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions';
-import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { IServiceProviderAdapter } from '@fc/oidc';
@@ -34,12 +32,11 @@ export class OidcProviderRedirectExceptionFilter
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
     protected readonly session: SessionService,
-    protected readonly eventBus: EventBus,
     private readonly oidcProvider: OidcProviderService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: IServiceProviderAdapter,
   ) {
-    super(config, session, logger, eventBus);
+    super(config, session, logger);
   }
 
   async catch(
@@ -59,8 +56,6 @@ export class OidcProviderRedirectExceptionFilter
     const { code, id } = params;
 
     this.logException(code, id, exception);
-
-    this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
 
     try {
       await this.oidcProvider.abortInteraction(req, res, params);
