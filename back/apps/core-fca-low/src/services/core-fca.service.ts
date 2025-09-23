@@ -8,10 +8,11 @@ import { ConfigService } from '@fc/config';
 import { AppConfig, UserSession } from '@fc/core/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientConfig,
-  OidcClientIdpDisabledException,
+  OidcClientIdpNotFoundException,
   OidcClientService,
 } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -47,15 +48,9 @@ export class CoreFcaService {
       this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
-    await this.validateEmailForSp(spId, login_hint);
+    await this.throwIfFqdnNotAuthorizedForSp(spId, login_hint);
 
-    const selectedIdp = await this.identityProvider.getById(idpId);
-
-    if (isEmpty(selectedIdp)) {
-      throw new Error(`Idp ${idpId} not found`);
-    }
-
-    await this.checkIdpDisabled(idpId);
+    const selectedIdp = await this.safelyGetExistingAndEnabledIdp(idpId);
 
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
@@ -120,9 +115,11 @@ export class CoreFcaService {
 
   /**
    * temporary code for resolving Uniforces issue
-   * we check if the email is authorized to access the idp for the sp
    */
-  private async validateEmailForSp(spId: string, email: string): Promise<void> {
+  private async throwIfFqdnNotAuthorizedForSp(
+    spId: string,
+    email: string,
+  ): Promise<void> {
     const authorizedFqdnsConfig =
       this.fqdnService.getSpAuthorizedFqdnsConfig(spId);
 
@@ -145,15 +142,20 @@ export class CoreFcaService {
     }
   }
 
-  private async checkIdpDisabled(idpId: string) {
-    try {
-      await this.oidcClient.utils.checkIdpDisabled(idpId);
-    } catch (error) {
-      if (error instanceof OidcClientIdpDisabledException) {
-        throw new CoreFcaAgentIdpDisabledException();
-      }
-      throw error;
+  private async safelyGetExistingAndEnabledIdp(
+    idpId: string,
+  ): Promise<IdentityProviderMetadata> {
+    const idp = await this.identityProvider.getById(idpId);
+
+    if (isEmpty(idp)) {
+      throw new OidcClientIdpNotFoundException();
     }
+
+    if (!idp.active) {
+      throw new CoreFcaAgentIdpDisabledException();
+    }
+
+    return idp;
   }
 
   async getIdentityProvidersByIds(
