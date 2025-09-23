@@ -1,0 +1,57 @@
+services:
+  pcdbapi:
+    build:
+      context: .
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017/core-fca-low?authSource=core-fca-low&directConnection=true
+      - MONGODB_USERNAME=fc
+      - MONGODB_PASSWORD=pass
+      - MONGODB_CERTIFICATE_FILEPATH=/etc/ssl/mongo.pem
+      - MONGODB_CA_FILEPATH=/etc/ssl/docker-stack-ca.crt
+      - API_SECRET=pcdb-api-secret-key
+      - CLIENT_SECRET_CIPHER_PASS=test-pcdbapi-secret-cipher-passs
+      - CANT_RUN_TESTS=1
+    ports:
+      - '8000:8000'
+    volumes:
+      - ../docker/volumes/ssl:/etc/ssl:ro
+    depends_on:
+      - mongo
+    networks:
+      - data
+    healthcheck:
+      test: ['CMD-SHELL', 'python -c "import urllib.request; urllib.request.urlopen(\"http://localhost:8000/healthz\")"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  pcdbapi-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    pull_policy: build
+    profiles: ['test']
+    volumes:
+      - .:/app
+      - ../docker/volumes/ssl:/etc/ssl:ro
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017/core-fca-low?authSource=core-fca-low&directConnection=true
+      - MONGODB_USERNAME=fc
+      - MONGODB_PASSWORD=pass
+      - MONGODB_CERTIFICATE_FILEPATH=/etc/ssl/mongo.pem
+      - MONGODB_CA_FILEPATH=/etc/ssl/docker-stack-ca.crt
+      - CLIENT_SECRET_CIPHER_PASS=test-pcdbapi-secret-cipher-passs
+      - API_SECRET=pcdb-api-secret-key
+    depends_on:
+      - mongo
+    networks:
+      - data
+
+  mongo:
+    extends:
+      file: ../docker/compose/fca-low/mongo.yml
+      service: mongo-fca-low
+
+networks:
+  data:
