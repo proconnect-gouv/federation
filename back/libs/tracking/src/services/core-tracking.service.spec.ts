@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { overrideWithSourceIfNotNull } from '@fc/common/helpers';
-import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
 import { SessionService } from '@fc/session';
+import { TrackedEvent } from '@fc/tracking/enums';
 
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -20,21 +20,6 @@ describe('CoreTrackingService', () => {
   let service: CoreTrackingService;
 
   const sessionServiceMock = getSessionServiceMock();
-
-  const appConfigMock = {
-    urlPrefix: '/api/v2',
-  };
-
-  const configServiceMock = {
-    get: () => appConfigMock,
-  };
-
-  const eventMock = {
-    event: 'name',
-    route: '/',
-    exceptions: [],
-    intercept: false,
-  };
 
   const ipMock = '123.123.123.123';
   const sourcePortMock = '443';
@@ -107,12 +92,10 @@ describe('CoreTrackingService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CoreTrackingService, SessionService, ConfigService],
+      providers: [CoreTrackingService, SessionService],
     })
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
       .compile();
 
     service = module.get<CoreTrackingService>(CoreTrackingService);
@@ -144,7 +127,7 @@ describe('CoreTrackingService', () => {
     it('should call extractContext with req property of context param', () => {
       // Given
       // When
-      service.buildLog(eventMock, contextMock);
+      service.buildLog(TrackedEvent.FC_AUTHORIZE_INITIATED, contextMock);
       // Then
       expect(service['extractContext']).toHaveBeenCalledTimes(1);
       expect(service['extractContext']).toHaveBeenCalledWith(contextMock);
@@ -155,7 +138,7 @@ describe('CoreTrackingService', () => {
       const expectedResult = {
         ...sessionDataMock,
         interactionId: interactionIdMock,
-        event: eventMock.event,
+        event: TrackedEvent.FC_AUTHORIZE_INITIATED,
         ip: ipMock,
         reusesActiveSession: undefined,
         source: {
@@ -173,7 +156,10 @@ describe('CoreTrackingService', () => {
         dpTitle: 'dp_title',
       };
       // When
-      const result = service.buildLog(eventMock, contextMock);
+      const result = service.buildLog(
+        TrackedEvent.FC_AUTHORIZE_INITIATED,
+        contextMock,
+      );
       // Then
       expect(result).toEqual(expectedResult);
     });
@@ -185,7 +171,10 @@ describe('CoreTrackingService', () => {
         claims: ['foo', 'bar'],
       };
       // When
-      const result = service.buildLog(eventMock, contextMock);
+      const result = service.buildLog(
+        TrackedEvent.FC_AUTHORIZE_INITIATED,
+        contextMock,
+      );
       // Then
       expect(result).toEqual(expect.objectContaining({ claims: 'foo bar' }));
     });
@@ -196,7 +185,10 @@ describe('CoreTrackingService', () => {
         sessionId: Symbol('contextWithSessionIdMock'),
       };
       // When
-      const result = service.buildLog(eventMock, contextWithSessionIdMock);
+      const result = service.buildLog(
+        TrackedEvent.FC_AUTHORIZE_INITIATED,
+        contextWithSessionIdMock,
+      );
       // Then
       expect(result).toEqual(
         expect.objectContaining({
@@ -216,7 +208,10 @@ describe('CoreTrackingService', () => {
         .fn()
         .mockReturnValueOnce(extractedContextMockValue);
       // When
-      const result = service.buildLog(eventMock, contextMock);
+      const result = service.buildLog(
+        TrackedEvent.FC_AUTHORIZE_INITIATED,
+        contextMock,
+      );
       // Then
       expect(result).toEqual(
         expect.not.objectContaining({ claims: 'foo bar' }),

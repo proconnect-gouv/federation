@@ -75,14 +75,6 @@ describe('OidcClientController', () => {
     };
     tracking = {
       track: jest.fn(),
-      TrackedEventsMap: {
-        FC_REDIRECT_TO_IDP: 'FC_REDIRECT_TO_IDP',
-        FC_SESSION_TERMINATED: 'FC_SESSION_TERMINATED',
-        IDP_CALLEDBACK: 'IDP_CALLEDBACK',
-        FC_REQUESTED_IDP_TOKEN: 'FC_REQUESTED_IDP_TOKEN',
-        FC_REQUESTED_IDP_USERINFO: 'FC_REQUESTED_IDP_USERINFO',
-        FC_FQDN_MISMATCH: 'FC_FQDN_MISMATCH',
-      },
     };
     crypto = { genRandomString: jest.fn() };
     emailValidatorService = { validate: jest.fn() };

@@ -49,10 +49,6 @@ describe('CoreFcaMiddlewareService', () => {
           provide: TrackingService,
           useValue: {
             track: jest.fn(),
-            TrackedEventsMap: {
-              SP_REQUESTED_FC_TOKEN: {},
-              SP_REQUESTED_FC_USERINFO: {},
-            },
           },
         },
         { provide: IdentityProviderAdapterMongoService, useValue: jest.fn() },

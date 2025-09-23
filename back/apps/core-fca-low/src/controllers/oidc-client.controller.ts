@@ -31,6 +31,7 @@ import {
   TrackedEventContextInterface,
   TrackingService,
 } from '@fc/tracking';
+import { TrackedEvent } from '@fc/tracking/enums';
 
 import {
   AppConfig,
@@ -137,8 +138,7 @@ export class OidcClientController {
       idpLabel,
       idpName,
     };
-    const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);
+    await this.tracking.track(TrackedEvent.FC_REDIRECT_TO_IDP, trackingContext);
 
     return this.coreFca.redirectToIdp(req, res, idpId);
   }
@@ -208,8 +208,7 @@ export class OidcClientController {
       idpLabel,
       idpName,
     };
-    const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);
+    await this.tracking.track(TrackedEvent.FC_REDIRECT_TO_IDP, trackingContext);
 
     return this.coreFca.redirectToIdp(req, res, idpId);
   }
@@ -261,8 +260,10 @@ export class OidcClientController {
     const { oidcProviderLogoutForm } = userSession.get();
 
     const trackingContext: TrackedEventContextInterface = { req };
-    const { FC_SESSION_TERMINATED } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_SESSION_TERMINATED, trackingContext);
+    await this.tracking.track(
+      TrackedEvent.FC_SESSION_TERMINATED,
+      trackingContext,
+    );
 
     await userSession.destroy();
 
@@ -312,8 +313,11 @@ export class OidcClientController {
     userSession.set({ idpNonce: null, idpState: null });
 
     const fqdn = this.fqdnService.getFqdnFromEmail(login_hint);
-    const { IDP_CALLEDBACK } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(IDP_CALLEDBACK, { req, fqdn, email: login_hint });
+    await this.tracking.track(TrackedEvent.IDP_CALLEDBACK, {
+      req,
+      fqdn,
+      email: login_hint,
+    });
     const tokenParams = {
       state: idpState,
       nonce: idpNonce,
@@ -331,8 +335,7 @@ export class OidcClientController {
       extraParams,
     );
 
-    const { FC_REQUESTED_IDP_TOKEN } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_REQUESTED_IDP_TOKEN, {
+    await this.tracking.track(TrackedEvent.FC_REQUESTED_IDP_TOKEN, {
       req,
       fqdn,
       email: login_hint,
@@ -350,10 +353,9 @@ export class OidcClientController {
       idpId,
     );
 
-    const { FC_REQUESTED_IDP_USERINFO } = this.tracking.TrackedEventsMap;
     const identityFqdn = this.fqdnService.getFqdnFromEmail(idpIdentity.email);
 
-    await this.tracking.track(FC_REQUESTED_IDP_USERINFO, {
+    await this.tracking.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO, {
       req,
       fqdn: identityFqdn,
       email: idpIdentity.email,
@@ -369,8 +371,7 @@ export class OidcClientController {
       this.logger.warning(
         `Identity from "${idpId}" using "***@${identityFqdn}" is not allowed`,
       );
-      const { FC_FQDN_MISMATCH } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(FC_FQDN_MISMATCH, {
+      await this.tracking.track(TrackedEvent.FC_FQDN_MISMATCH, {
         req,
         fqdn: identityFqdn,
       });
