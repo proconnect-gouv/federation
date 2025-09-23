@@ -4,13 +4,13 @@ import { overrideWithSourceIfNotNull } from '@fc/common';
 import { UserSession } from '@fc/core';
 import { SessionService } from '@fc/session';
 
+import { TrackedEvent } from '../enums';
 import { extractNetworkInfoFromHeaders } from '../helpers';
 import {
   ICoreTrackingContext,
   ICoreTrackingLog,
   ICoreTrackingProviders,
   TrackedEventContextInterface,
-  TrackedEventInterface,
 } from '../interfaces';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class CoreTrackingService {
   constructor(private readonly sessionService: SessionService) {}
 
   buildLog(
-    trackedEvent: TrackedEventInterface,
+    trackedEvent: TrackedEvent,
     context: TrackedEventContextInterface,
   ): ICoreTrackingLog {
     const extractedFromContext = this.extractContext(context);
@@ -26,8 +26,6 @@ export class CoreTrackingService {
       claims,
       source: { address: ip },
     } = extractedFromContext;
-
-    const { event } = trackedEvent;
 
     const sessionId = context.sessionId || this.sessionService.getId();
 
@@ -42,7 +40,7 @@ export class CoreTrackingService {
     return {
       ...ctxMergedWithSession,
       sessionId,
-      event,
+      event: trackedEvent,
       ip,
       claims: claims?.join(' '),
     };

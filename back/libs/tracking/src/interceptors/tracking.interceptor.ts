@@ -30,14 +30,13 @@ export class TrackingInterceptor implements NestInterceptor {
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-    const eventName = Track.get(this.reflector, context);
+    const trackedEvent = Track.get(this.reflector, context);
 
-    if (isEmpty(eventName)) {
+    if (isEmpty(trackedEvent)) {
       return next.handle();
     }
 
     const req = context.switchToHttp().getRequest();
-    const event = this.tracking.TrackedEventsMap[eventName];
 
     this.logger.debug({
       handler: context.getHandler(),
@@ -46,7 +45,7 @@ export class TrackingInterceptor implements NestInterceptor {
     // track will be called after controller execution
     return next.handle().pipe(
       tap({
-        next: this.tracking.track.bind(this, event, { req }),
+        next: this.tracking.track.bind(this, trackedEvent, { req }),
       }),
     );
   }

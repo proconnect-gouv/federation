@@ -83,7 +83,6 @@ describe('OidcProviderConfigAppService', () => {
   };
 
   const trackingServiceMock = {
-    TrackedEventsMap: { SP_REQUESTED_LOGOUT: {} },
     track: jest.fn(),
   };
 

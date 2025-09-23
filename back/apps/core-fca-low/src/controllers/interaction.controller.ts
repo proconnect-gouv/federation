@@ -29,6 +29,7 @@ import {
   TrackedEventContextInterface,
   TrackingService,
 } from '@fc/tracking';
+import { TrackedEvent } from '@fc/tracking/enums';
 
 import { UserSessionDecorator } from '../decorators';
 import {
@@ -156,12 +157,13 @@ export class InteractionController {
       sessionId: req.sessionId,
     };
 
-    const { FC_AUTHORIZE_INITIATED } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_AUTHORIZE_INITIATED, eventContext);
+    await this.tracking.track(
+      TrackedEvent.FC_AUTHORIZE_INITIATED,
+      eventContext,
+    );
 
     if (canReuseActiveSession) {
-      const { FC_SSO_INITIATED } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(FC_SSO_INITIATED, eventContext);
+      await this.tracking.track(TrackedEvent.FC_SSO_INITIATED, eventContext);
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
       const url = `${urlPrefix}${Routes.INTERACTION_VERIFY.replace(
@@ -173,14 +175,17 @@ export class InteractionController {
     }
 
     if (idpHint) {
-      const { FC_REDIRECTED_TO_HINTED_IDP } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(FC_REDIRECTED_TO_HINTED_IDP, eventContext);
+      await this.tracking.track(
+        TrackedEvent.FC_REDIRECTED_TO_HINTED_IDP,
+        eventContext,
+      );
 
       return this.coreFca.redirectToIdp(req, res, idpHint);
     }
 
-    const { FC_SHOWED_IDP_CHOICE } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_SHOWED_IDP_CHOICE, { ...eventContext });
+    await this.tracking.track(TrackedEvent.FC_SHOWED_IDP_CHOICE, {
+      ...eventContext,
+    });
 
     const notification = await this.notifications.getNotificationToDisplay();
     const { defaultEmailRenater } = this.config.get<AppConfig>('App');
@@ -276,8 +281,7 @@ export class InteractionController {
 
   async trackIdpDisabled(req: Request) {
     const eventContext = { req };
-    const { FC_IDP_DISABLED } = this.tracking.TrackedEventsMap;
 
-    await this.tracking.track(FC_IDP_DISABLED, eventContext);
+    await this.tracking.track(TrackedEvent.FC_IDP_DISABLED, eventContext);
   }
 }

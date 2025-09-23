@@ -73,12 +73,6 @@ describe('InteractionController', () => {
     };
     trackingMock = {
       track: jest.fn(),
-      TrackedEventsMap: {
-        FC_AUTHORIZE_INITIATED: 'EVENT_AUTHORIZE_INITIATED',
-        FC_SSO_INITIATED: 'EVENT_SSO_INITIATED',
-        FC_REDIRECTED_TO_HINTED_IDP: 'EVENT_REDIRECTED_TO_HINTED_IDP',
-        FC_SHOWED_IDP_CHOICE: 'EVENT_SHOWED_IDP_CHOICE',
-      },
     };
     sessionServiceMock = {
       set: jest.fn(), // used by Csrf part
