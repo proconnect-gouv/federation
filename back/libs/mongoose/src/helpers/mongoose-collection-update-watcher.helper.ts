@@ -1,6 +1,6 @@
 import { ChangeStreamDocument } from 'mongodb';
 import { Document, Model } from 'mongoose';
-
+import { debounce } from 'lodash';
 import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger';
@@ -14,11 +14,12 @@ export class MongooseCollectionOperationWatcherHelper {
   constructor(private readonly logger: LoggerService) {}
 
   watchWith<T extends Document>(model: Model<T>, callback: Function): void {
+    const debouncedCallback = debounce(callback as any, 1000);
     MongooseCollectionOperationWatcherHelper.listeners.push({
       model,
-      callback,
+      callback: debouncedCallback,
     });
-    this.watch<T>(model, callback);
+    this.watch<T>(model, debouncedCallback);
   }
 
   private watch<T extends Document>(model: Model<T>, callback: Function): void {
