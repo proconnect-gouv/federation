@@ -4,6 +4,7 @@ import { overrideWithSourceIfNotNull } from '@fc/common';
 import { UserSession } from '@fc/core';
 import { SessionService } from '@fc/session';
 
+import { trackedEventSteps } from '../config/tracked-event-steps';
 import { TrackedEvent } from '../enums';
 import { extractNetworkInfoFromHeaders } from '../helpers';
 import {
@@ -41,6 +42,7 @@ export class CoreTrackingService {
       ...ctxMergedWithSession,
       sessionId,
       event: trackedEvent,
+      step: trackedEventSteps[trackedEvent],
       ip,
       claims: claims?.join(' '),
     };
