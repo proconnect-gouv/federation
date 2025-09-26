@@ -149,8 +149,6 @@ export class CoreFcaMiddlewareService {
     let sessionId: string | undefined;
     if (accountId) {
       sessionId = await this.sessionService.getAlias(accountId);
-    } else {
-      sessionId = ctx.req.sessionId;
     }
 
     if (!sessionId) {
