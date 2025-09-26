@@ -115,8 +115,4 @@ export const messageDictionary: Record<string, string> = {
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Session.exceptions.sessionStorage':
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous. Si le problème persiste, contacter le support',
-
-  // tracking-context
-  'TrackingContext.exceptions.trackingMissingNetworkContext':
-    'Missing network context (headers)',
 };

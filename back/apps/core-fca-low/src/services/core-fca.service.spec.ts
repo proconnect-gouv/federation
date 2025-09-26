@@ -7,18 +7,19 @@ import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
-import {
-  OidcClientIdpNotFoundException,
-  OidcClientService,
-} from '@fc/oidc-client';
+import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { CoreFcaAgentIdpDisabledException } from '../exceptions';
+import {
+  CoreFcaAgentIdpDisabledException,
+  CoreFcaIdpConfigurationException,
+} from '../exceptions';
 import { CoreFcaService } from './core-fca.service';
 import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 
@@ -87,6 +88,10 @@ describe('CoreFcaService', () => {
     getSpAuthorizedFqdnsConfig: jest.fn(),
   };
 
+  const trackingServiceMock = {
+    track: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -103,6 +108,7 @@ describe('CoreFcaService', () => {
         SessionService,
         CoreFcaFqdnService,
         LoggerService,
+        TrackingService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -123,6 +129,8 @@ describe('CoreFcaService', () => {
       .useValue(oidcProviderServiceMock)
       .overrideProvider(OidcAcrService)
       .useValue(oidcAcrMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingServiceMock)
       .compile();
 
     service = app.get<CoreFcaService>(CoreFcaService);
@@ -244,7 +252,7 @@ describe('CoreFcaService', () => {
       // When / Then
       await expect(
         service.redirectToIdp(reqMock, resMock, idpId),
-      ).rejects.toThrow(OidcClientIdpNotFoundException);
+      ).rejects.toThrow(CoreFcaIdpConfigurationException);
     });
 
     it('should throw an error when IdP is disabled', async () => {

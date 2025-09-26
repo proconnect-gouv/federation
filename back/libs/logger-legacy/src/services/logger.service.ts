@@ -6,8 +6,6 @@ import { Injectable, ShutdownSignal } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerConfig as LoggerLegacyConfig } from '@fc/logger-legacy/dto';
 
-import { ILoggerBusinessEvent } from '../interfaces';
-
 @Injectable()
 export class LoggerService {
   public readonly logger: Logger;
@@ -39,7 +37,7 @@ export class LoggerService {
     });
   }
 
-  businessEvent(log: ILoggerBusinessEvent) {
+  businessEvent(log) {
     const logId = uuidV4();
 
     this.logger.info({
