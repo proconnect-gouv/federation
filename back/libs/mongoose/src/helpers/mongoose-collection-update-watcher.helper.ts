@@ -1,6 +1,7 @@
+import { debounce } from 'lodash';
 import { ChangeStreamDocument } from 'mongodb';
 import { Document, Model } from 'mongoose';
-import { debounce } from 'lodash';
+
 import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger';
