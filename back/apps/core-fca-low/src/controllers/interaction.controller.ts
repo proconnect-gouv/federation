@@ -154,7 +154,6 @@ export class InteractionController {
     const eventContext: TrackedEventContextInterface = {
       fc: { interactionId },
       req,
-      sessionId: req.sessionId,
     };
 
     await this.tracking.track(
