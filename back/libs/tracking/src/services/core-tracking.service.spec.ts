@@ -139,6 +139,7 @@ describe('CoreTrackingService', () => {
         ...sessionDataMock,
         interactionId: interactionIdMock,
         event: TrackedEvent.FC_AUTHORIZE_INITIATED,
+        step: '1.0.0',
         ip: ipMock,
         reusesActiveSession: undefined,
         source: {
