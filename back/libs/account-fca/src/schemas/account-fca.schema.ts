@@ -28,7 +28,7 @@ export class AccountFca extends Document {
   createdAt: Date;
 
   @Prop({ type: String, default: uuid })
-  id: string;
+  declare id: string;
 
   @Prop({ type: Date, default: Date.now, index: { expires: '3y' } })
   updatedAt: Date;

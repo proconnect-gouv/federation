@@ -7,10 +7,10 @@ import { IsSiret } from '../validators/is-siret-validator';
 
 export class IdentityForSpDto extends BaseIdentityDto {
   @IsSiret({ groups: ['siret'] })
-  siret: string;
+  declare siret: string;
 
   @IsPhoneNumberSimpleValidator({ groups: ['phone_number'] })
-  phone_number?: string;
+  declare phone_number?: string;
 
   @IsObject()
   custom: {
