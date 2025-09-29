@@ -9,10 +9,6 @@ services:
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/core-fca-low.env'
-
-  core-squid:
-    extends: core
-    hostname: core-fca-low-squid
     depends_on:
       squid:
         condition: service_started
