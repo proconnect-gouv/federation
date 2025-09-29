@@ -144,6 +144,10 @@ export class UserSession {
   readonly login_hint?: string;
 
   @IsOptional()
+  @IsString()
+  readonly inputEmail?: string;
+
+  @IsOptional()
   @IsBoolean()
   readonly rememberMe?: boolean;
 }

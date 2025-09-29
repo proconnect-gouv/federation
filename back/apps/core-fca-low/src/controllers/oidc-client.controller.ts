@@ -142,9 +142,11 @@ export class OidcClientController {
 
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
 
-    userSession.set('rememberMe', rememberMe);
-
-    userSession.set('login_hint', email);
+    userSession.set({
+      inputEmail: email,
+      rememberMe,
+      login_hint: email,
+    });
 
     const { identityProviderIds: idpIds } =
       await this.fqdnService.getFqdnConfigFromEmail(email);

@@ -232,8 +232,12 @@ describe('OidcClientController', () => {
           userSession,
         ),
       ).rejects.toThrow(CoreFcaAgentNoIdpException);
-      expect(userSession.set).toHaveBeenCalledWith('rememberMe', true);
-      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
+
+      expect(userSession.set).toHaveBeenCalledWith({
+        inputEmail: 'user@example.com',
+        login_hint: 'user@example.com',
+        rememberMe: true,
+      });
     });
 
     it('should throw an exception when identity provider is misconfigured', async () => {
@@ -270,8 +274,11 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      expect(userSession.set).toHaveBeenCalledWith('rememberMe', false);
-      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
+      expect(userSession.set).toHaveBeenCalledWith({
+        inputEmail: 'user@example.com',
+        login_hint: 'user@example.com',
+        rememberMe: false,
+      });
       expect(logger.debug).toHaveBeenCalledWith(
         '2 identity providers matching for "****@fqdn.com"',
       );
@@ -299,8 +306,11 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      expect(userSession.set).toHaveBeenCalledWith('rememberMe', true);
-      expect(userSession.set).toHaveBeenCalledWith('login_hint', email);
+      expect(userSession.set).toHaveBeenCalledWith({
+        inputEmail: 'user@example.com',
+        login_hint: 'user@example.com',
+        rememberMe: true,
+      });
       expect(identityProvider.getById).toHaveBeenCalledWith('idp-single');
       expect(coreFca.redirectToIdp).toHaveBeenCalledWith(
         req,

@@ -44,7 +44,7 @@ export class CoreFcaService {
     res: Response,
     idpId: string,
   ): Promise<void> {
-    const { spId, login_hint, spName, rememberMe } =
+    const { spId, login_hint, spName, rememberMe, inputEmail } =
       this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
@@ -106,6 +106,7 @@ export class CoreFcaService {
       idpState: state,
       idpIdentity: undefined,
       spIdentity: undefined,
+      inputEmail: inputEmail ?? login_hint,
     };
 
     this.session.set('User', sessionPayload);

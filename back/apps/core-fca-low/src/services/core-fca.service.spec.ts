@@ -202,6 +202,7 @@ describe('CoreFcaService', () => {
         idpNonce: 'mockNonce',
         idpState: 'mockState',
         idpIdentity: undefined,
+        inputEmail: 'user@example.com',
         spIdentity: undefined,
       });
     });
