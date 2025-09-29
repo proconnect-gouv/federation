@@ -14,9 +14,9 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
 
   public illustration = 'unauthorized-email-error';
   public title = 'Email non autorisé';
-  declare public description: string;
+  public declare description: string;
   public displayContact = true;
-  declare public contactMessage: string;
+  public declare contactMessage: string;
   public contactHref: string;
 
   constructor(
