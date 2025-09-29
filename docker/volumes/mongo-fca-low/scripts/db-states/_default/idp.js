@@ -33,6 +33,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    fqdns: ['fia1.fr', 'polyfi.fr', 'polyfi2.fr', 'abcd.com'],
   },
 
   // -- FIA - FIA2-LOW - Activated No support Email
@@ -69,6 +70,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    fqdns: ['fia2.fr', 'polyfi.fr', 'polyfi2.fr'],
   },
 
   // -- Fia3-low - Deactivated
@@ -105,6 +107,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    fqdns: ['fia3.fr'],
   },
 
   // -- FIA - MonComptePro - Activated
@@ -140,6 +143,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    fqdns: ['moncomptepro.fr', 'polyfi.fr'],
   },
   // RIE
 
@@ -177,6 +181,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    fqdns: ['fi-rie.fr'],
   },
 
   // -- FIA using LemonLDAP
@@ -212,6 +217,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    fqdns: [],
   },
 };
 

@@ -1,5 +1,3 @@
-import { ConfigService } from 'nestjs-config';
-
 import {
   Controller,
   Get,
@@ -20,15 +18,12 @@ import { FormErrorsInterceptor } from '../form/interceptor/form-errors.intercept
 import { IdentityProviderService } from './identity-provider.service';
 import { IdentityProviderDTO } from './dto/identity-provider.dto';
 import { plainToInstance } from 'class-transformer';
-import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationSortDirectionType } from '../pagination';
 
 @Controller('identity-provider')
 export class IdentityProviderController {
   constructor(
     private readonly identityProviderService: IdentityProviderService,
-    private readonly fqdnToProviderService: FqdnToProviderService,
-    private readonly config: ConfigService,
   ) {}
 
   /**

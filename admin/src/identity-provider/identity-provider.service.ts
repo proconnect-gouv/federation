@@ -11,7 +11,6 @@ import { ICrudTrack } from '../interfaces';
 import { SecretManagerService } from '../utils/secret-manager.service';
 
 import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
-import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationOptions, PaginationService } from '../pagination';
 import { IdentityProviderDTO } from './dto/identity-provider.dto';
 
@@ -22,7 +21,6 @@ export class IdentityProviderService {
     private readonly identityProviderRepository: Repository<IdentityProviderFromDb>,
     private readonly secretManager: SecretManagerService,
     private readonly logger: LoggerService,
-    private readonly fqdnToProviderService: FqdnToProviderService,
     private readonly paginationService: PaginationService,
   ) {}
 

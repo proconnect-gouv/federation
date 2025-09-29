@@ -34,6 +34,7 @@ function createIdentityProviderFromDb(
     userinfo_signed_response_alg: 'ES256',
     userInfoURL: 'https://default.userinfo-url.fr',
     uid: 'default_uid',
+    fqdns: [],
     ...partial,
     isRoutingEnabled: true,
   };
