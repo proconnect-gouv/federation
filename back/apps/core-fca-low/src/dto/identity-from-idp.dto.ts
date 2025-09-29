@@ -9,5 +9,5 @@ export class IdentityFromIdpDto extends BaseIdentityDto {
   @Transform(({ value }) =>
     isString(value) ? value.replace(/\s/g, '') : value,
   )
-  siret?: string;
+  declare siret?: string;
 }
