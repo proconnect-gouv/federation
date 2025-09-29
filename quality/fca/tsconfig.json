@@ -4,19 +4,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "lib": ["dom"],
     "module": "nodenext",
-    "target": "ES2022",
-    "types": [
-      "cypress",
-      "cypress-axe",
-      "node"
-    ]
+    "target": "es2023",
+    "types": ["cypress", "cypress-axe", "node"]
   },
-  "include": [
-    "**/*.ts"
-  ]
+  "include": ["**/*.ts"]
 }
