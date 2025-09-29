@@ -73,6 +73,28 @@
               </div>
             </div>
 
+            <%
+              let isRoutingEnabledChecked = false
+              if (locals.messages.values && messages.values[0].isRoutingEnabled !== undefined) {
+                isRoutingEnabledChecked = messages.values[0].isRoutingEnabled
+              } else {
+                isRoutingEnabledChecked = true
+              }
+            %>
+            <div class="mb-3 row">
+              <label class="col-2 col-form-label">Activer le routage :</label>
+              <div class="mb-3 col-4 d-flex align-items-end">
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input is-valid" id="enableRouting" name="isRoutingEnabled" value="true" required <%= isRoutingEnabledChecked ? 'checked' : '' %>>
+                    <label class="form-check-label" for="enableRouting">oui</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input is-valid" id="disableRouting" name="isRoutingEnabled" value="false" required <%= isRoutingEnabledChecked ? '' : 'checked' %>>
+                    <label class="form-check-label" for="disableRouting">non</label>
+                </div>
+              </div>
+            </div>
+
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="issuer"> Issuer URL * : </label>
               <div class="col-10">
@@ -91,6 +113,7 @@
                 </div>
               </div>
             </div>
+
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="jwksUrl"> JWKS URL <span class=<%= locals.messages.values && messages.values[0].discovery === true ? 'd-none' : '' %>>*</span> : </label>
               <div class="col-10">
