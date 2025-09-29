@@ -1,7 +1,4 @@
-ARG NODE_VERSION=22.13.0
-ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
-
-FROM ${NODE_IMAGE} AS dev
+FROM node:22.13.0-alpine AS dev
 
 RUN apk add --no-cache bash python3 make g++ lscpu
 
@@ -17,7 +14,7 @@ COPY . ./
 CMD yarn start:dev
 
 
-FROM ${NODE_IMAGE} AS builder
+FROM node:22.13.0-alpine AS builder
 
 COPY . /tmp/admin
 
@@ -43,7 +40,7 @@ RUN mkdir /etc/pm2
 COPY deploy/pm2/app.json /etc/pm2/
 
 
-FROM ${NODE_IMAGE} AS production
+FROM node:22.13.0-alpine AS production
 
 RUN yarn global add pm2@6.0.8
 

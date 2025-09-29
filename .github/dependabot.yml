@@ -29,7 +29,19 @@ updates:
       interval: "weekly"
     versioning-strategy: increase
   - package-ecosystem: "docker"
-    directory: "/"
+    directory: "/admin"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/back"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/pcdbapi"
     labels:
       - dependencies
     schedule:
