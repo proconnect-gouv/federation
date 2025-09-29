@@ -199,7 +199,7 @@ describe('OidcClientController', () => {
       } as unknown as ISessionService<UserSession>;
     });
 
-    it('should track and redirect to selected idp when identityProviderUid is provided', async () => {
+    it('should redirect to selected idp when identityProviderUid is provided', async () => {
       const body = { identityProviderUid: 'idp123' } as any;
       fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
       identityProvider.getById.mockResolvedValue({
