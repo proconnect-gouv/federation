@@ -161,18 +161,18 @@ export class InteractionController {
       return res.redirect(url);
     }
 
-    if (loginHint) {
-      await this.tracking.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_LOGIN, {
-        req,
-      });
-    }
-
     if (idpHint) {
       await this.tracking.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_IDP, {
         req,
       });
 
       return this.coreFca.redirectToIdp(req, res, idpHint);
+    }
+
+    if (loginHint) {
+      await this.tracking.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_LOGIN, {
+        req,
+      });
     }
 
     await this.tracking.track(TrackedEvent.FC_SHOWED_IDP_CHOICE, { req });
