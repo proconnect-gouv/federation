@@ -1,0 +1,5 @@
+{
+  "name": "integ01",
+  "adminRootUrl": "https://fc-exploitation.integ01.dev-agentconnect.fr",
+  "federationRootUrl": "https://fca.integ01.dev-agentconnect.fr"
+}
