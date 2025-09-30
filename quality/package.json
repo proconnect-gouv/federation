@@ -14,7 +14,7 @@
     "Cucumber"
   ],
   "engines": {
-    "node": ">=18",
+    "node": ">=22",
     "npm": "DO-NOT-USE-NPM"
   },
   "dependencies": {
