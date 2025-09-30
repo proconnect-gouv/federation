@@ -30,7 +30,7 @@ services:
       - '../shared/.env/base-app.env'
       - '../shared/.env/postgres.env'
       - '../shared/.env/pc-mongo.env'
-      - '../fca-low/.env/exploitation-fca-low.env'
+      - '../fca-low/.env/admin.env'
     networks:
       - exploitation
       - data

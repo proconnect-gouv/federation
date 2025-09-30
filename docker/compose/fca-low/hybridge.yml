@@ -38,7 +38,7 @@ services:
       - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/bridge-proxy-rie.env'
+      - '../fca-low/.env/hybridge-internet.env'
     tty: true
     networks:
       - public
@@ -69,7 +69,7 @@ services:
       - /var/www/app/dist:mode=777
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/csmr-rie.env'
+      - '../fca-low/.env/hybridge-rie.env'
     tty: true
     networks:
       - rie
