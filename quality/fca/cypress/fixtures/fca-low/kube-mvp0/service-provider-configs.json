@@ -1,0 +1,14 @@
+{
+  "default": {
+    "name": "dummy-sp-config-for-fc-exploit",
+    "redirectUri": "https://dummy-sp-config-for-fc-exploit.fr/oidc-callback",
+    "redirectUriLogout": "https://dummy-sp-config-for-fc-exploit.fr/logout-callback",
+    "emails": ["dummy1@proconnect.loc", "dummy2@proconnect.loc"],
+    "ipAddresses": ["1.1.1.1", "1.1.1.2"],
+    "scopes": ["given_name", "usual_name", "email"],
+    "active": "true",
+    "type": "public",
+    "id_token_signed_response_alg": "HS256",
+    "userinfo_signed_response_alg": null
+  }
+}

@@ -1,25 +1,47 @@
-import idpConfigsForDockerEnv from '../../../fixtures/fca-low/docker/identity-provider-configs.json';
-import idpForDockerEnv from '../../../fixtures/fca-low/docker/identity-providers.json';
-import spConfigsForDockerEnv from '../../../fixtures/fca-low/docker/service-provider-configs.json';
-import idpConfigsForIntegEnv from '../../../fixtures/fca-low/integ01/identity-provider-configs.json';
-import idpForIntegEnv from '../../../fixtures/fca-low/integ01/identity-providers.json';
-import spConfigsForIntegEnv from '../../../fixtures/fca-low/integ01/service-provider-configs.json';
+import dockerEnvIdpConfigs from '../../../fixtures/fca-low/docker/identity-provider-configs.json';
+import dockerEnvIdp from '../../../fixtures/fca-low/docker/identity-providers.json';
+import dockerEnvSpConfigs from '../../../fixtures/fca-low/docker/service-provider-configs.json';
+import integEnvIdpConfigs from '../../../fixtures/fca-low/integ01/identity-provider-configs.json';
+import integEnvIdp from '../../../fixtures/fca-low/integ01/identity-providers.json';
+import integEnvSpConfigs from '../../../fixtures/fca-low/integ01/service-provider-configs.json';
+import kubeMvp0EnvIdpConfigs from '../../../fixtures/fca-low/kube-mvp0/identity-provider-configs.json';
+import kubeMvp0EnvIdp from '../../../fixtures/fca-low/kube-mvp0/identity-providers.json';
+import kubeMvp0EnvSpConfigs from '../../../fixtures/fca-low/kube-mvp0/service-provider-configs.json';
 import {
   IdentityProvider,
   IdentityProviderConfig,
   ServiceProvider,
   ServiceProviderConfig,
 } from '../types';
-import spForDockerEnv from './../../../fixtures/fca-low/docker/service-providers.json';
-import spForIntegEnv from './../../../fixtures/fca-low/integ01/service-providers.json';
+import dockerEnvSp from './../../../fixtures/fca-low/docker/service-providers.json';
+import integEnvSp from './../../../fixtures/fca-low/integ01/service-providers.json';
+import kubeMvp0EnvSp from './../../../fixtures/fca-low/kube-mvp0/service-providers.json';
 
-const isDockerEnv = Cypress.env('TEST_ENV') === 'docker';
+let spList: ServiceProvider[],
+  spConfigs: { [key: string]: ServiceProviderConfig },
+  idpList: IdentityProvider[],
+  idpConfigs: { [key: string]: IdentityProviderConfig };
 
-const spList = isDockerEnv ? spForDockerEnv : spForIntegEnv;
-const spConfigs = isDockerEnv ? spConfigsForDockerEnv : spConfigsForIntegEnv;
-const idpList = isDockerEnv ? idpForDockerEnv : idpForIntegEnv;
-const idpConfigs = isDockerEnv ? idpConfigsForDockerEnv : idpConfigsForIntegEnv;
-
+switch (Cypress.env('TEST_ENV')) {
+  case 'kube-mvp0':
+    spList = kubeMvp0EnvSp;
+    spConfigs = kubeMvp0EnvSpConfigs;
+    idpList = kubeMvp0EnvIdp;
+    idpConfigs = kubeMvp0EnvIdpConfigs;
+    break;
+  case 'integ01':
+    spList = integEnvSp;
+    spConfigs = integEnvSpConfigs;
+    idpList = integEnvIdp;
+    idpConfigs = integEnvIdpConfigs;
+    break;
+  case 'docker':
+  default:
+    spList = dockerEnvSp;
+    spConfigs = dockerEnvSpConfigs;
+    idpList = dockerEnvIdp;
+    idpConfigs = dockerEnvIdpConfigs;
+}
 export const getServiceProviderByDescription = (
   description: string,
 ): ServiceProvider => {
