@@ -225,6 +225,7 @@ export class IdentityProviderService {
       token_endpoint_auth_method:
         identityProviderDto.token_endpoint_auth_method,
       supportEmail: identityProviderDto.supportEmail,
+      isRoutingEnabled: identityProviderDto.isRoutingEnabled,
     };
 
     if (mode === 'create') {
@@ -271,6 +272,7 @@ export class IdentityProviderService {
       logoutUrl: inputProvider.endSessionURL,
       jwksUrl: inputProvider.jwksURL,
       issuer: inputProvider.url,
+      isRoutingEnabled: inputProvider.isRoutingEnabled,
     };
   }
 }

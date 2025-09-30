@@ -35,6 +35,7 @@ function createIdentityProviderFromDb(
     userInfoURL: 'https://default.userinfo-url.fr',
     uid: 'default_uid',
     ...partial,
+    isRoutingEnabled: true,
   };
 }
 
@@ -69,6 +70,7 @@ function createIdentityProviderDto(
     siret: '',
     supportEmail: 'support@email.fr',
     ...partial,
+    isRoutingEnabled: true,
   };
 }
 

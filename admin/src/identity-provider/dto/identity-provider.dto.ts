@@ -204,4 +204,8 @@ export class IdentityProviderDTO {
   @IsOptional()
   @IsString()
   readonly supportEmail?: string;
+
+  @Transform(toBoolean)
+  @IsBoolean()
+  readonly isRoutingEnabled: boolean;
 }
