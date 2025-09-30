@@ -3,7 +3,7 @@ import { uniq } from 'lodash';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 
 import { AppConfig } from '../dto';
 import { FqdnConfigInterface } from '../interfaces';
@@ -11,13 +11,14 @@ import { FqdnConfigInterface } from '../interfaces';
 @Injectable()
 export class CoreFcaFqdnService {
   constructor(
-    private readonly fqdnToIdpAdapterMongo: FqdnToIdpAdapterMongoService,
+    private readonly identityProviderAdapterMongoService: IdentityProviderAdapterMongoService,
     private readonly config: ConfigService,
   ) {}
   async getFqdnConfigFromEmail(email: string): Promise<FqdnConfigInterface> {
     const { defaultIdpId } = this.config.get<AppConfig>('App');
     const fqdn = this.getFqdnFromEmail(email);
-    const idpsByFqdn = await this.fqdnToIdpAdapterMongo.getIdpsByFqdn(fqdn);
+    const idpsByFqdn =
+      await this.identityProviderAdapterMongoService.getIdpsByFqdn(fqdn);
 
     // when there is no idp mapped for this fqdn
     // we check if there is or not a default idp set in the app
@@ -30,9 +31,7 @@ export class CoreFcaFqdnService {
       };
     }
 
-    const uniqueDuplicateFreeIdpUids = uniq(
-      idpsByFqdn.map(({ identityProvider }) => identityProvider),
-    );
+    const uniqueDuplicateFreeIdpUids = uniq(idpsByFqdn.map(({ uid }) => uid));
 
     return {
       fqdn,
@@ -59,13 +58,11 @@ export class CoreFcaFqdnService {
   }
 
   async isAllowedIdpForEmail(idpId: string, email: string): Promise<boolean> {
-    const existingFqdnToProvider =
-      await this.fqdnToIdpAdapterMongo.fetchFqdnToIdpByEmail(email);
+    const existingIdps =
+      await this.identityProviderAdapterMongoService.getIdpsByEmail(email);
 
-    if (existingFqdnToProvider.length > 0) {
-      return existingFqdnToProvider.some(
-        ({ identityProvider }) => identityProvider === idpId,
-      );
+    if (existingIdps.length > 0) {
+      return existingIdps.some((existingIdp) => existingIdp.uid === idpId);
     }
 
     // if fqdnToProvider not exists, the only idp allowed is the default one

@@ -153,6 +153,20 @@ export class IdentityProviderAdapterMongoService
     return Boolean(idp?.active);
   }
 
+  getIdpsByEmail(email: string): Promise<IdentityProviderMetadata[]> {
+    const fqdn = email.split('@').pop().toLowerCase();
+    return this.getIdpsByFqdn(fqdn);
+  }
+
+  async getIdpsByFqdn(fqdn: string): Promise<IdentityProviderMetadata[]> {
+    const allIdentityProviders = await this.getList();
+    const filteredIdps = allIdentityProviders.filter((idp) =>
+      idp.fqdns?.includes(fqdn),
+    );
+
+    return filteredIdps;
+  }
+
   // todo: remove this method for proconnect, we have no legacy IdP
   private legacyToOpenIdPropertyName(
     source: IdentityProvider,

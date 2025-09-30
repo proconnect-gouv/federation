@@ -247,6 +247,27 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
   });
 
+  describe('getIdpsByFqdn', () => {
+    const idpListMock = [
+      { id: '1', fqdns: ['default-fqdn.fr'] },
+      { id: '2', fqdns: ['abc.fr'] },
+      { id: '3', fqdns: ['foo.fr', 'default-fqdn.fr'] },
+    ];
+    beforeEach(() => {
+      service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
+    });
+
+    it('should return a list of FqdnToIdentityProvider', async () => {
+      const idpsByFqdn = await service.getIdpsByFqdn('default-fqdn.fr');
+      expect(idpsByFqdn).toStrictEqual([idpListMock[0], idpListMock[2]]);
+    });
+
+    it('should return an empty array if no corresponding FI is found for a fqdn', async () => {
+      const fqdnToIdps = await service.getIdpsByFqdn('non-existing-fqdn.fr');
+      expect(fqdnToIdps).toStrictEqual([]);
+    });
+  });
+
   describe('legacyToOpenIdPropertyName', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
       // setup
