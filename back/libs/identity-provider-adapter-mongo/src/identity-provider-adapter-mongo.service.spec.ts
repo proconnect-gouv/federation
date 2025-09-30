@@ -268,6 +268,30 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
   });
 
+  describe('getIdpsByEmail', () => {
+    beforeEach(() => {
+      service.getIdpsByFqdn = jest.fn();
+    });
+
+    it('should only return the full qualified domain name from an email address', async () => {
+      // When
+      await service.getIdpsByEmail('hermione.granger@hogwarts.uk');
+
+      // Then
+      expect(service.getIdpsByFqdn).toHaveBeenCalledTimes(1);
+      expect(service.getIdpsByFqdn).toHaveBeenCalledWith('hogwarts.uk');
+    });
+
+    it('should only return the full qualified domain name from an email address with two @', async () => {
+      // When
+      await service.getIdpsByEmail('hermione@grangerhogwarts@hogwarts.uk');
+
+      // Then
+      expect(service.getIdpsByFqdn).toHaveBeenCalledTimes(1);
+      expect(service.getIdpsByFqdn).toHaveBeenCalledWith('hogwarts.uk');
+    });
+  });
+
   describe('legacyToOpenIdPropertyName', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
       // setup

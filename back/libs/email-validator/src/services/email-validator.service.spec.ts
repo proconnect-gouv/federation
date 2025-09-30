@@ -3,7 +3,7 @@ import { singleValidationFactory } from '@gouvfr-lasuite/proconnect.debounce/api
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
 import { getConfigMock } from '@mocks/config';
@@ -18,8 +18,8 @@ jest.mock('@gouvfr-lasuite/proconnect.debounce/api', () => ({
 describe(EmailValidatorService.name, () => {
   let service: EmailValidatorService;
   const configServiceMock = getConfigMock();
-  const fqdnToIdpAdapterMongoMock = {
-    fetchFqdnToIdpByEmail: jest.fn().mockResolvedValue([]),
+  const identityProviderAdapterMongoMock = {
+    getIdpsByEmail: jest.fn().mockResolvedValue([]),
   };
 
   const loggerServiceMock = getLoggerMock();
@@ -34,14 +34,14 @@ describe(EmailValidatorService.name, () => {
       providers: [
         LoggerService,
         EmailValidatorService,
-        FqdnToIdpAdapterMongoService,
+        IdentityProviderAdapterMongoService,
         ConfigService,
       ],
     })
-      .overrideProvider(FqdnToIdpAdapterMongoService)
-      .useValue(fqdnToIdpAdapterMongoMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(IdentityProviderAdapterMongoService)
+      .useValue(identityProviderAdapterMongoMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .compile();
@@ -58,17 +58,17 @@ describe(EmailValidatorService.name, () => {
       expect(configServiceMock.get).toHaveBeenCalledWith('EmailValidator');
     });
 
-    it('should call fetchFqdnToIdpByEmail with the correct email', async () => {
+    it('should call getIdpsByEmail with the correct email', async () => {
       await service.validate(testEmail);
       expect(
-        fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail,
+        identityProviderAdapterMongoMock.getIdpsByEmail,
       ).toHaveBeenCalledWith(testEmail);
     });
 
     it('should not call getSingleValidationMethod when email corresponds to at least one existing FqdnToProvider', async () => {
       // Given
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValue([
-        { fdqn: 'hogwarts.uk', idp: 'hogwarts' },
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([
+        { fdqns: ['hogwarts.uk'] },
       ]);
 
       (singleValidationFactory as jest.Mock).mockReturnValue(() =>
@@ -90,7 +90,7 @@ describe(EmailValidatorService.name, () => {
 
       // Then
       expect(
-        fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail,
+        identityProviderAdapterMongoMock.getIdpsByEmail,
       ).toHaveBeenCalled();
       expect(getSingleValidationMethodSpy).not.toHaveBeenCalled();
       expect(await service.validate(testEmail)).toBe(true);
@@ -99,7 +99,7 @@ describe(EmailValidatorService.name, () => {
 
     it('should call getSingleValidationMethod when email corresponds to no existing FqdnToProvider', async () => {
       // Given
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValue([]);
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
 
       const getSingleValidationMethodSpy = jest.spyOn(
         service as any,
@@ -116,7 +116,7 @@ describe(EmailValidatorService.name, () => {
 
       // Then
       expect(
-        fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail,
+        identityProviderAdapterMongoMock.getIdpsByEmail,
       ).toHaveBeenCalled();
       expect(getSingleValidationMethodSpy).toHaveBeenCalledExactlyOnceWith(
         apiKeyMock,
@@ -129,7 +129,7 @@ describe(EmailValidatorService.name, () => {
 
     it('should return true even if an error occurred', async () => {
       // Given
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValue([]);
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
 
       (singleValidationFactory as jest.Mock).mockReturnValue(() =>
         Promise.reject(new Error('An error occurred')),
@@ -147,7 +147,7 @@ describe(EmailValidatorService.name, () => {
 
     it('should return false when send_transactional is false', async () => {
       // Given
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValue([]);
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
 
       const getSingleValidationMethodSpy = jest.spyOn(
         service as any,
@@ -164,7 +164,7 @@ describe(EmailValidatorService.name, () => {
 
       // Then
       expect(
-        fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail,
+        identityProviderAdapterMongoMock.getIdpsByEmail,
       ).toHaveBeenCalled();
       expect(getSingleValidationMethodSpy).toHaveBeenCalledExactlyOnceWith(
         apiKeyMock,

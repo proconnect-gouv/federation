@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
@@ -60,6 +59,7 @@ describe('CoreFcaService', () => {
   const identityProviderMock = {
     getById: jest.fn(),
     getList: jest.fn(),
+    getIdpsByFqdn: jest.fn(),
   };
 
   const identityProviderMockResponse = {
@@ -72,12 +72,6 @@ describe('CoreFcaService', () => {
   const stateMock = Symbol('stateMockValue');
 
   const authorizeUrlMock = Symbol('authorizeUrlMockValue');
-
-  const fqdnToIdpAdapterMongoMock = {
-    getIdpsByFqdn: jest.fn(),
-    refreshCache: jest.fn(),
-    getList: jest.fn(),
-  };
 
   const coreAuthorizationServiceMock = {
     getAuthorizeUrl: jest.fn(),
@@ -104,7 +98,6 @@ describe('CoreFcaService', () => {
         ConfigService,
         OidcClientService,
         IdentityProviderAdapterMongoService,
-        FqdnToIdpAdapterMongoService,
         SessionService,
         CoreFcaFqdnService,
         LoggerService,
@@ -117,8 +110,6 @@ describe('CoreFcaService', () => {
       .useValue(oidcMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderMock)
-      .overrideProvider(FqdnToIdpAdapterMongoService)
-      .useValue(fqdnToIdpAdapterMongoMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CoreFcaFqdnService)

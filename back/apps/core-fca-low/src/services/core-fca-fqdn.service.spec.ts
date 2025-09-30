@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 
 import { getConfigMock } from '@mocks/config';
 
@@ -10,15 +10,11 @@ import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 describe('CoreFcaFqdnService', () => {
   let service: CoreFcaFqdnService;
 
-  const fqdnToIdpAdapterMongoMock = {
-    getIdpsByFqdn: jest.fn(),
-    refreshCache: jest.fn(),
-    getList: jest.fn(),
-    isAllowedIdpForEmail: jest.fn(),
-    fetchFqdnToIdpByEmail: jest.fn().mockResolvedValue([]),
-  };
-
   const configServiceMock = getConfigMock();
+  const identityProviderAdapterMongoMock = {
+    getIdpsByEmail: jest.fn().mockResolvedValue([]),
+    getIdpsByFqdn: jest.fn().mockResolvedValue([]),
+  };
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -27,12 +23,12 @@ describe('CoreFcaFqdnService', () => {
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         CoreFcaFqdnService,
-        FqdnToIdpAdapterMongoService,
+        IdentityProviderAdapterMongoService,
         ConfigService,
       ],
     })
-      .overrideProvider(FqdnToIdpAdapterMongoService)
-      .useValue(fqdnToIdpAdapterMongoMock)
+      .overrideProvider(IdentityProviderAdapterMongoService)
+      .useValue(identityProviderAdapterMongoMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .compile();
@@ -119,7 +115,7 @@ describe('CoreFcaFqdnService', () => {
       const getFqdnFromEmailSpy = jest.spyOn(service, 'getFqdnFromEmail');
       getFqdnFromEmailSpy.mockReturnValueOnce('hogwards.uk');
 
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+      identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
 
       // When
       const response = await service.getFqdnConfigFromEmail('hogwards.uk');
@@ -141,8 +137,7 @@ describe('CoreFcaFqdnService', () => {
 
       const getFqdnFromEmailSpy = jest.spyOn(service, 'getFqdnFromEmail');
       getFqdnFromEmailSpy.mockReturnValueOnce('hogwards.uk');
-
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+      identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
 
       // When
       const response = await service.getFqdnConfigFromEmail('hogwards.uk');
@@ -165,14 +160,14 @@ describe('CoreFcaFqdnService', () => {
       const getFqdnFromEmailSpy = jest.spyOn(service, 'getFqdnFromEmail');
       getFqdnFromEmailSpy.mockReturnValueOnce('hogwards.uk');
 
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+      identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
         {
-          fqdn: 'hogwards.uk',
-          identityProvider: 'idp1',
+          fqdns: ['hogwards.uk'],
+          uid: 'idp1',
         },
         {
-          fqdn: 'hogwards.uk',
-          identityProvider: 'idp2',
+          fqdns: ['hogwards.uk'],
+          uid: 'idp2',
         },
       ]);
 
@@ -197,14 +192,14 @@ describe('CoreFcaFqdnService', () => {
       const getFqdnFromEmailSpy = jest.spyOn(service, 'getFqdnFromEmail');
       getFqdnFromEmailSpy.mockReturnValueOnce('hogwards.uk');
 
-      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+      identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
         {
-          fqdn: 'hogwards.uk',
-          identityProvider: 'idp1',
+          fqdns: ['hogwards.uk'],
+          uid: 'idp1',
         },
         {
-          fqdn: 'hogwards.uk',
-          identityProvider: 'idp2',
+          fqdns: ['hogwards.uk'],
+          uid: 'idp2',
         },
       ]);
 
@@ -224,8 +219,8 @@ describe('CoreFcaFqdnService', () => {
   describe('isAllowedIdpForEmail', () => {
     it('should allow a fqdn listed in one of the FqdnToProvider of an idp', async () => {
       // Given
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([
-        { identityProvider: 'idp1' },
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([
+        { uid: 'idp1' },
       ]);
 
       // When
@@ -240,9 +235,9 @@ describe('CoreFcaFqdnService', () => {
 
     it('should not allow a fqdn listed in one of the FqdnToProvider of only others idps', async () => {
       // Given
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([
-        { identityProvider: 'idp2' },
-        { identityProvider: 'idp3' },
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([
+        { uid: 'idp2' },
+        { uid: 'idp3' },
       ]);
 
       // When
@@ -261,7 +256,7 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([]);
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([]);
 
       // When
       const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
@@ -279,7 +274,7 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([]);
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([]);
 
       // When
       const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
@@ -297,8 +292,8 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([
-        { identityProvider: 'default-idp' },
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([
+        { uid: 'default-idp' },
       ]);
 
       // When
@@ -317,8 +312,8 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      fqdnToIdpAdapterMongoMock.fetchFqdnToIdpByEmail.mockResolvedValueOnce([
-        { identityProvider: 'another-idp' },
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([
+        { uid: 'another-idp' },
       ]);
 
       // When
