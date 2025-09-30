@@ -84,23 +84,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it.skip('if discovery is not enabled but there is a discoveryUrl', async () => {
-      const failIdpNoDiscoveryMock = {
-        ...idpNoDiscoveryMock,
-        discoveryUrl: 'https://issuer.fr/discovery',
-      };
-
-      // When | Action
-      const serviceProviderToClass = plainToInstance(
-        IdentityProviderDTO,
-        failIdpNoDiscoveryMock,
-      );
-      const result = await validate(serviceProviderToClass);
-
-      // Then | Assert
-      expect(result.length).toBeGreaterThan(0);
-    });
-
     it('if discovery is enabled but there is no discoveryUrl', async () => {
       const failIdpDiscoveryMock = {
         ...idpDiscoveryMock,
@@ -109,25 +92,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
       delete failIdpDiscoveryMock.discoveryUrl;
 
       // When | Action
-      const serviceProviderToClass = plainToInstance(
-        IdentityProviderDTO,
-        failIdpDiscoveryMock,
-      );
-      const result = await validate(serviceProviderToClass);
-
-      // Then | Assert
-      expect(result.length).toBeGreaterThan(0);
-    });
-
-    it.skip('if discovery is enabled and there are token, userInfo and authorization url', async () => {
-      const failIdpDiscoveryMock = {
-        ...idpDiscoveryMock,
-        tokenUrl: 'https://issuer.fr/token',
-        userInfoUrl: 'https://issuer.fr/me',
-        authorizationUrl: 'https://issuer.fr/auth',
-      };
-
-      // When | Action
       const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
         failIdpDiscoveryMock,
