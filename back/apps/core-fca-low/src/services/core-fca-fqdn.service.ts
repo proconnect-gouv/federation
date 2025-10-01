@@ -65,7 +65,7 @@ export class CoreFcaFqdnService {
       return existingIdps.some((existingIdp) => existingIdp.uid === idpId);
     }
 
-    // if fqdnToProvider not exists, the only idp allowed is the default one
+    // if no idp explicitly handles the domain, the only idp allowed is the default one
     const { defaultIdpId } = this.config.get<AppConfig>('App');
     return defaultIdpId === idpId;
   }
