@@ -1,11 +1,6 @@
 ####################
 ####################
 services:
-  all:
-    image: alpine
-    depends_on:
-      - 'rp-all'
-      - 'large'
   ####################
   # Base Services
   ####################

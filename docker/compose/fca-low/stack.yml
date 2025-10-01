@@ -33,24 +33,6 @@ services:
       - 'dpa1-low'
       - 'dpa2-low'
 
-  large:
-    image: alpine
-    depends_on:
-      - 'core'
-      - 'fsa1-low'
-      - 'fsa2-low'
-      - 'fsa3-low'
-      - 'fsa4-low'
-      - 'fia1-low'
-      - 'fia2-low'
-      - 'moncomptepro'
-      - 'admin'
-      ### Hybridge
-      - 'lemon-ldap'
-      - 'rp-hybridge'
-      - 'hybridge-internet'
-      - 'hybridge-rie'
-
   lemon-ldap:
     image: alpine
     depends_on:
