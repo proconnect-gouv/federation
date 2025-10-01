@@ -273,6 +273,12 @@ export class OidcClientController {
       extraParams,
     );
 
+    userSession.set({
+      amr,
+      idpIdToken: idToken,
+      idpAcr: acr,
+    });
+
     await this.tracking.track(TrackedEvent.FC_REQUESTED_IDP_TOKEN, { req });
 
     const userInfoParams = {
@@ -287,7 +293,9 @@ export class OidcClientController {
       idpId,
     );
 
-    const identityFqdn = this.fqdnService.getFqdnFromEmail(idpIdentity.email);
+    userSession.set({
+      idpIdentity,
+    });
 
     const isAllowedIdpForEmail = await this.fqdnService.isAllowedIdpForEmail(
       idpId,
@@ -295,11 +303,10 @@ export class OidcClientController {
     );
 
     if (!isAllowedIdpForEmail) {
-      this.logger.warning(
-        `Identity from "${idpId}" using "***@${identityFqdn}" is not allowed`,
-      );
       await this.tracking.track(TrackedEvent.FC_FQDN_MISMATCH, { req });
     }
+
+    await this.tracking.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO, { req });
 
     const account = await this.accountService.getOrCreateAccount(
       idpId,
@@ -314,14 +321,8 @@ export class OidcClientController {
     );
 
     userSession.set({
-      amr,
-      idpIdToken: idToken,
-      idpAcr: acr,
-      idpIdentity,
       spIdentity,
     });
-
-    await this.tracking.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO, { req });
 
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;

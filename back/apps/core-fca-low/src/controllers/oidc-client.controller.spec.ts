@@ -432,9 +432,6 @@ describe('OidcClientController', () => {
         idpNonce: null,
         idpState: null,
       });
-      expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(
-        'user@example.com',
-      );
       expect(tracking.track).toHaveBeenCalledWith('IDP_CALLEDBACK', { req });
       expect(oidcClient.getToken).toHaveBeenCalledWith(
         'idp123',
@@ -449,10 +446,6 @@ describe('OidcClientController', () => {
         accessToken: 'access-token',
         idpId: 'idp123',
       });
-      // Called twice: once for login_hint and once for identity email
-      expect(fqdnService.getFqdnFromEmail).toHaveBeenCalledWith(
-        'user@example.com',
-      );
       expect(tracking.track).toHaveBeenNthCalledWith(1, 'IDP_CALLEDBACK', {
         req,
       });
@@ -474,15 +467,15 @@ describe('OidcClientController', () => {
         'idp123',
         'user@example.com',
       );
-      expect(userSession.set).toHaveBeenNthCalledWith(1, {
-        idpNonce: null,
-        idpState: null,
-      });
       expect(userSession.set).toHaveBeenNthCalledWith(2, {
         amr: 'amr-value',
         idpIdToken: 'id-token',
         idpAcr: 'acr-value',
+      });
+      expect(userSession.set).toHaveBeenNthCalledWith(3, {
         idpIdentity: { email: 'user@example.com', sub: 'sub123' },
+      });
+      expect(userSession.set).toHaveBeenNthCalledWith(4, {
         spIdentity: { given_name: 'John' },
       });
       expect(configService.get).toHaveBeenCalledWith('App');
@@ -512,9 +505,6 @@ describe('OidcClientController', () => {
         { email: 'user@example.com', sub: 'sub123' },
         'idp123',
       );
-      expect(logger.warning).toHaveBeenCalledWith(
-        'Identity from "idp123" using "***@fqdn.com" is not allowed',
-      );
       expect(tracking.track).toHaveBeenCalledWith('FC_FQDN_MISMATCH', {
         req,
       });
@@ -522,7 +512,11 @@ describe('OidcClientController', () => {
         amr: 'amr-value',
         idpIdToken: 'id-token',
         idpAcr: 'acr-value',
+      });
+      expect(userSession.set).toHaveBeenCalledWith({
         idpIdentity: sanitizedIdentity,
+      });
+      expect(userSession.set).toHaveBeenCalledWith({
         spIdentity: expect.anything(),
       });
       expect(res.redirect).toHaveBeenCalledWith(
