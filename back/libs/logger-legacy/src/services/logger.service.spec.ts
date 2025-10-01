@@ -5,7 +5,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 
-import { ILoggerBusinessEvent } from '../interfaces';
 import { LoggerService } from './logger.service';
 
 jest.mock('pino');
@@ -135,7 +134,7 @@ describe('LoggerService', () => {
   describe('businessEvent', () => {
     it('should log the business event with a UUID', () => {
       // Given
-      const businessEventMock: ILoggerBusinessEvent = {
+      const businessEventMock = {
         category: 'test-category',
         event: 'test-event',
         ip: '123.123.123.123',

@@ -139,9 +139,20 @@ export class UserSession {
   @IsString()
   readonly oidcProviderLogoutForm?: string;
 
+  /**
+   * @deprecated
+   */
   @IsOptional()
   @IsString()
   readonly login_hint?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly spLoginHint?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly idpLoginHint?: string;
 
   @IsOptional()
   @IsBoolean()
