@@ -13,8 +13,7 @@ _reset_mongodb_as_prod() {
 }
 
 _mongo_core_shell() {
-  local app_name=$1
-  _mongo_shell "mongo-$app_name" "core-$app_name"
+  _mongo_shell "mongo-fca-low" "core-fca-low"
 }
 
 _mongo_shell() {
@@ -39,8 +38,4 @@ _mongo_script() {
 # Presets for backward compatibility
 _reset_db_core_fca_low() {
   _reset_mongodb "mongo-fca-low"
-}
-
-_mongo_shell_core_fca_low() {
-  _mongo_core_shell "fca-low"
 }
