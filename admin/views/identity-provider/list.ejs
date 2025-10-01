@@ -23,15 +23,18 @@
       <table class="table table-hover table-light shadow-sm" id="list-table">
         <thead class="thead-light">
         <tr class="align-top">
-          <th scope="col" class="col-3 border-bottom-0 border-top-0 border-end-0 border-secondary">
+          <th scope="col" class="col-4 border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "name", fieldName: "Nom du FI (mire)" }); %>
           </th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Nom technique</th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Fqdns</th>
-          <th scope="col" class="col-4 border border-bottom-0 border-top-0 border-end-0 border-secondary">
+          <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "active", fieldName: "Activé" }); %>
           </th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Actions</th>
+          <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
+            <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "isRoutingEnabled", fieldName: "Routage" }); %>
+          </th>
+          <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -62,10 +65,13 @@
                 </a>
               <% } %>
             </td>
-            <td class="text-center border border-bottom-0 border-top-0 border-end-0 border-secondary">
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <i class="fa fa-toggle-<%= identityProvider.active ? "on" : "off" %>"></i>
             </td>
-            <td class="border">
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
+              <i class="fa fa-toggle-<%= identityProvider.isRoutingEnabled ? "on" : "off" %>"></i>
+            </td>
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <% if (CURRENT_USER.roles.includes('operator')) { %>
                 <div class="d-inline-flex">
                   <a href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"
