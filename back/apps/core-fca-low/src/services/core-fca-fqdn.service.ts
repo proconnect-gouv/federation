@@ -16,7 +16,8 @@ export class CoreFcaFqdnService {
   ) {}
   async getFqdnConfigFromEmail(email: string): Promise<FqdnConfigInterface> {
     const { defaultIdpId } = this.config.get<AppConfig>('App');
-    const fqdn = this.getFqdnFromEmail(email);
+    const fqdn =
+      this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
     const idpsByFqdn =
       await this.identityProviderAdapterMongoService.getIdpsByFqdn(fqdn);
 
@@ -37,10 +38,6 @@ export class CoreFcaFqdnService {
       fqdn,
       identityProviderIds: uniqueDuplicateFreeIdpUids,
     };
-  }
-
-  getFqdnFromEmail(email: string | undefined): string | undefined {
-    return email?.split('@').pop().toLowerCase();
   }
 
   getSpAuthorizedFqdnsConfig(spId: string): {

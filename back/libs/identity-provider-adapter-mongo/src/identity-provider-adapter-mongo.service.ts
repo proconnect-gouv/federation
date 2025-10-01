@@ -153,8 +153,12 @@ export class IdentityProviderAdapterMongoService
     return Boolean(idp?.active);
   }
 
+  getFqdnFromEmail(email: string | undefined): string | undefined {
+    return email?.split('@').pop().toLowerCase();
+  }
+
   getIdpsByEmail(email: string): Promise<IdentityProviderMetadata[]> {
-    const fqdn = email.split('@').pop().toLowerCase();
+    const fqdn = this.getFqdnFromEmail(email);
     return this.getIdpsByFqdn(fqdn);
   }
 
