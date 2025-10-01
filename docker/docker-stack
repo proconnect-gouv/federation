@@ -20,6 +20,7 @@ _command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" ""           
 _command_register "reset-db" "_reset_db_core_fca_low" "Alias to reset-db-core-fca-low" # Backward compatibility entry
 _command_register "reset-mongo" "_reset_mongodb" "reset-mongo <mongo-service-name> : Reset given mongodb container"
 _command_register "reset-mongo-as-prod" "_reset_mongodb_as_prod" "reset-mongo-as-prod <mongo-service-name> : Reset given mongodb container with production IDPs"
+_command_register "mongo" "_mongo_core_shell" "Open mongo shell for core"
 
 ## Nodejs apps
 _command_register "stop" "_stop" "stop application"
@@ -50,10 +51,8 @@ _command_register "compose" "_compose" "Run a docker compose command on project"
 _command_register "llng-configure" "_llng_configure" "Restore LemonLDAP configuration from ./docker/volumes/llng/llng-conf.json dump file"
 _command_register "wait" "wait_for_nodejs" "Wait for a nodejs HTTP service to respond on an URL or try to display logs"
 _command_register "log-rotate" "_log_rotate" "log-rotate Rotate the logs and send SIGUSR"
-_command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo shell"
 
 ### Legacy aliases for mongo shell access
-_command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "
 _command_register "mongo-script" "_mongo_script" "Execute MongoDB <script> on given <container>: docker-stack mongo-script <container> <script>"
 
 _command_run "$1" "${@:2}"
