@@ -1,11 +1,4 @@
 #!/usr/bin/env bash
-
-_log() {
-  app=${@:-no-container}
-  cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec ${NO_TTY} ${app} pm2 logs
-}
-
 _stop() {
   apps=${@:-no-container}
   for app in $apps; do

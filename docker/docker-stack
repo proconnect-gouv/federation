@@ -26,7 +26,6 @@ _command_register "mongo" "_mongo_core_shell" "Open mongo shell for core"
 _command_register "stop" "_stop" "stop application"
 _command_register "stop-all" "_stop_all" "Stop all application for wich containers are up"
 
-_command_register "log" "_log" "log [<app>] => exec pm2 logs for given instance"
 _command_register "logs" "_logs" "[--bg] - Show and expose logs for chrome dev-tools. If --bg option is passed, logs are only exposed to dev-tools with a background process"
 
 _command_register "test" "_test" "Launch tests?"
