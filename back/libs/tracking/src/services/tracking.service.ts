@@ -65,6 +65,7 @@ export class TrackingService {
       idpLoginHint,
       idpLoginHintFqdn: idpLoginHint?.split('@').pop().toLowerCase(),
       idpName,
+      idpSiret: idpIdentity?.siret,
       idpSub: idpIdentity?.sub,
       interactionAcr,
       interactionId,
@@ -76,6 +77,7 @@ export class TrackingService {
       spId,
       spName,
       spSub: spIdentity?.sub,
+      spSiret: spIdentity?.siret,
       step: trackedEventSteps[trackedEvent],
     };
   }
