@@ -3,6 +3,9 @@ name: 💚 CI Tests - Federation Admin
 on:
   push:
 
+permissions:
+  contents: read
+
 jobs:
   global:
     runs-on: ubuntu-24.04
