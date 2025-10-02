@@ -25,7 +25,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-        working-directory: ./admin
 
       - name: Run lint
         run: yarn lint
@@ -37,58 +36,6 @@ jobs:
         run: |
           yarn test --coverage
           ./scripts/coverage.sh
-
-  unit-shared:
-    runs-on: ubuntu-24.04
-    defaults:
-      run:
-        working-directory: ./admin/shared
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          cache: yarn
-          cache-dependency-path: ./admin/yarn.lock
-          node-version-file: ./admin/package.json
-
-      - name: Install dependencies
-        run: yarn install
-        working-directory: ./admin
-
-      - name: Run Build
-        run: yarn build
-
-      - name: Run tests
-        run: yarn test
-
-  unit-exploitation:
-    runs-on: ubuntu-24.04
-    defaults:
-      run:
-        working-directory: ./admin/fc-exploitation
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          cache: yarn
-          cache-dependency-path: ./admin/yarn.lock
-          node-version-file: ./admin/package.json
-
-      - name: Install dependencies
-        run: yarn install
-        working-directory: ./admin
-
-      - name: Run build
-        run: yarn build
-
-      - name: Run tests
-        run: yarn test
 
   e2e-exploitation:
     runs-on: ubuntu-24.04
