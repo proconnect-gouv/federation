@@ -108,7 +108,7 @@
     "less": "^4.4.1",
     "parcel-bundler": "1.12.5",
     "prettier": "^3.6.2",
-    "ts-jest": "^29.4.1",
+    "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
