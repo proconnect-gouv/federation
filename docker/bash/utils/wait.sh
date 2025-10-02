@@ -21,7 +21,7 @@ wait_for_nodejs() {
 }
 
 _wait_for_nodejs_fail() {
-  echo "$(format_failure " Failed ") Service DOWN: $1"
+  echo " Failed Service DOWN: $1"
   echo ""
   echo "--- curl Logs for ${1} ---------------------------"
   cat "$__DKS_LAST_LOG_FILE"
@@ -31,5 +31,5 @@ _wait_for_nodejs_fail() {
 }
 
 _wait_for_nodejs_success() {
-  echo "$(format_success "OK") Service UP: $1"
+  echo "OK Service UP: $1"
 }
