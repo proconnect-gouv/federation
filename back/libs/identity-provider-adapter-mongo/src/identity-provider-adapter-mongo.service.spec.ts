@@ -268,6 +268,71 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
   });
 
+  describe('getFqdnFromEmail', () => {
+    it('should only return the undefined from an undefined email address', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail(undefined);
+
+      // Then
+      expect(fqdn).toBe(undefined);
+    });
+
+    it('should only return the full qualified domain name from an email address', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail('hermione.granger@hogwards.uk');
+
+      // Then
+      expect(fqdn).toBe('hogwards.uk');
+    });
+
+    it('should only return the full qualified domain name from an email address with two @', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail(
+        'hermione@grangerhogwards@hogwards.uk',
+      );
+
+      // Then
+      expect(fqdn).toBe('hogwards.uk');
+    });
+
+    it('should only return the FQDN from a FQDN', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail('hogwards.uk');
+
+      // Then
+      expect(fqdn).toBe('hogwards.uk');
+    });
+
+    const emailToTest = [
+      {
+        value: 'hermione.granger@hogwards.uK',
+        expectedFqdn: 'hogwards.uk',
+      },
+      {
+        value: 'hermione.granger@hogwardS.uk',
+        expectedFqdn: 'hogwards.uk',
+      },
+      {
+        value: 'hermione.granger@hogwardS.uK',
+        expectedFqdn: 'hogwards.uk',
+      },
+      {
+        value: 'hermione.granger@HOGWARDS.UK',
+        expectedFqdn: 'hogwards.uk',
+      },
+    ];
+    it.each(emailToTest)(
+      'should always return qualified domain name in lower case from an email address with upper case',
+      ({ value, expectedFqdn }) => {
+        // When
+        const fqdn = service.getFqdnFromEmail(value);
+
+        // Then
+        expect(fqdn).toBe(expectedFqdn);
+      },
+    );
+  });
+
   describe('getIdpsByEmail', () => {
     beforeEach(() => {
       service.getIdpsByFqdn = jest.fn();

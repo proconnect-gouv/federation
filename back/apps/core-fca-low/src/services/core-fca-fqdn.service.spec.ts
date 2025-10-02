@@ -12,8 +12,9 @@ describe('CoreFcaFqdnService', () => {
 
   const configServiceMock = getConfigMock();
   const identityProviderAdapterMongoMock = {
-    getIdpsByEmail: jest.fn().mockResolvedValue([]),
+    getById: jest.fn().mockResolvedValue(undefined),
     getIdpsByFqdn: jest.fn().mockResolvedValue([]),
+    getFqdnFromEmail: jest.fn().mockReturnValue(''),
   };
 
   beforeEach(async () => {
@@ -40,71 +41,6 @@ describe('CoreFcaFqdnService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getFqdnFromEmail', () => {
-    it('should only return the undefined from an undefined email address', () => {
-      // When
-      const fqdn = service.getFqdnFromEmail(undefined);
-
-      // Then
-      expect(fqdn).toBe(undefined);
-    });
-
-    it('should only return the full qualified domain name from an email address', () => {
-      // When
-      const fqdn = service.getFqdnFromEmail('hermione.granger@hogwards.uk');
-
-      // Then
-      expect(fqdn).toBe('hogwards.uk');
-    });
-
-    it('should only return the full qualified domain name from an email address with two @', () => {
-      // When
-      const fqdn = service.getFqdnFromEmail(
-        'hermione@grangerhogwards@hogwards.uk',
-      );
-
-      // Then
-      expect(fqdn).toBe('hogwards.uk');
-    });
-
-    it('should only return the FQDN from a FQDN', () => {
-      // When
-      const fqdn = service.getFqdnFromEmail('hogwards.uk');
-
-      // Then
-      expect(fqdn).toBe('hogwards.uk');
-    });
-
-    const emailToTest = [
-      {
-        value: 'hermione.granger@hogwards.uK',
-        expectedFqdn: 'hogwards.uk',
-      },
-      {
-        value: 'hermione.granger@hogwardS.uk',
-        expectedFqdn: 'hogwards.uk',
-      },
-      {
-        value: 'hermione.granger@hogwardS.uK',
-        expectedFqdn: 'hogwards.uk',
-      },
-      {
-        value: 'hermione.granger@HOGWARDS.UK',
-        expectedFqdn: 'hogwards.uk',
-      },
-    ];
-    it.each(emailToTest)(
-      'should always return qualified domain name in lower case from an email address with upper case',
-      ({ value, expectedFqdn }) => {
-        // When
-        const fqdn = service.getFqdnFromEmail(value);
-
-        // Then
-        expect(fqdn).toBe(expectedFqdn);
-      },
-    );
-  });
-
   describe('getFqdnConfigFromEmail', () => {
     it('should return the default idp if no idp is mapped', async () => {
       // Given
@@ -112,17 +48,16 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      const getFqdnFromEmailSpy = jest.spyOn(service, 'getFqdnFromEmail');
-      getFqdnFromEmailSpy.mockReturnValueOnce('hogwards.uk');
-
       identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
-
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
+        'hogwarts.uk',
+      );
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwards.uk');
+      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
 
       // Then
       const expectedConfig = {
-        fqdn: 'hogwards.uk',
+        fqdn: 'hogwarts.uk',
         identityProviderIds: ['default-idp'],
       };
 
@@ -135,16 +70,17 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: '',
       });
 
-      const getFqdnFromEmailSpy = jest.spyOn(service, 'getFqdnFromEmail');
-      getFqdnFromEmailSpy.mockReturnValueOnce('hogwards.uk');
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
+        'hogwarts.uk',
+      );
       identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
 
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwards.uk');
+      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
 
       // Then
       const expectedConfig = {
-        fqdn: 'hogwards.uk',
+        fqdn: 'hogwarts.uk',
         identityProviderIds: [],
       };
 
@@ -157,26 +93,26 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      const getFqdnFromEmailSpy = jest.spyOn(service, 'getFqdnFromEmail');
-      getFqdnFromEmailSpy.mockReturnValueOnce('hogwards.uk');
-
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
+        'hogwarts.uk',
+      );
       identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
         {
-          fqdns: ['hogwards.uk'],
+          fqdns: ['hogwarts.uk'],
           uid: 'idp1',
         },
         {
-          fqdns: ['hogwards.uk'],
+          fqdns: ['hogwarts.uk'],
           uid: 'idp2',
         },
       ]);
 
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwards.uk');
+      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
 
       // Then
       const expectedConfig = {
-        fqdn: 'hogwards.uk',
+        fqdn: 'hogwarts.uk',
         identityProviderIds: ['idp1', 'idp2'],
       };
 
@@ -189,9 +125,9 @@ describe('CoreFcaFqdnService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      const getFqdnFromEmailSpy = jest.spyOn(service, 'getFqdnFromEmail');
-      getFqdnFromEmailSpy.mockReturnValueOnce('hogwards.uk');
-
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
+        'hogwards.uk',
+      );
       identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
         {
           fqdns: ['hogwards.uk'],
@@ -217,33 +153,46 @@ describe('CoreFcaFqdnService', () => {
   });
 
   describe('isAllowedIdpForEmail', () => {
-    it('should allow a fqdn listed in one of the FqdnToProvider of an idp', async () => {
+    it('should allow a fqdn listed in one of the fqdns of an idp', async () => {
       // Given
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([
-        { uid: 'idp1' },
-      ]);
+      identityProviderAdapterMongoMock.getById.mockResolvedValueOnce({
+        uid: 'idp1',
+        fqdns: ['hogwarts.uk'],
+      });
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
+        'hogwarts.uk',
+      );
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
 
       // When
       const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
         'idp1',
-        'hogwards.uk',
+        'hermione.granger@hogwarts.uk',
       );
 
       // Then
       expect(isAllowedIdpForEmail).toEqual(true);
     });
 
-    it('should not allow a fqdn listed in one of the FqdnToProvider of only others idps', async () => {
+    it('should not allow a fqdn listed in one of the fqdns of only others idps', async () => {
       // Given
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([
-        { uid: 'idp2' },
-        { uid: 'idp3' },
-      ]);
+      identityProviderAdapterMongoMock.getById.mockResolvedValueOnce({
+        uid: 'idp1',
+        fqdns: ['fqdn1.fr', 'fqdn1bis.fr'],
+      });
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
+        'hogwarts.uk',
+      );
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
 
       // When
       const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
         'idp1',
-        'hogwards.uk',
+        'hermione.granger@hogwarts.uk',
       );
 
       // Then
@@ -255,75 +204,22 @@ describe('CoreFcaFqdnService', () => {
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: 'default-idp',
       });
-
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([]);
+      identityProviderAdapterMongoMock.getById.mockResolvedValueOnce({
+        uid: 'default-idp',
+        fqdns: [],
+      });
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
+        'hogwarts.uk',
+      );
 
       // When
       const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
         'default-idp',
-        'hogwards.uk',
+        'hermione.granger@hogwarts.uk',
       );
 
       // Then
       expect(isAllowedIdpForEmail).toEqual(true);
-    });
-
-    it('should not allow an unknown domain when not using the default identity provider', async () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        defaultIdpId: 'default-idp',
-      });
-
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([]);
-
-      // When
-      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
-        'not-the-default-idp',
-        'hogwards.uk',
-      );
-
-      // Then
-      expect(isAllowedIdpForEmail).toEqual(false);
-    });
-
-    it('should allow a fqdn listed in one of the FqdnToProvider of the default identity provider', async () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        defaultIdpId: 'default-idp',
-      });
-
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([
-        { uid: 'default-idp' },
-      ]);
-
-      // When
-      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
-        'default-idp',
-        'beauxbatons.uk',
-      );
-
-      // Then
-      expect(isAllowedIdpForEmail).toEqual(true);
-    });
-
-    it('should not allow a fqdn listed in one of the FqdnToProvider even with a default identity provider activated', async () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        defaultIdpId: 'default-idp',
-      });
-
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValueOnce([
-        { uid: 'another-idp' },
-      ]);
-
-      // When
-      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
-        'default-idp',
-        'beauxbatons.uk',
-      );
-
-      // Then
-      expect(isAllowedIdpForEmail).toEqual(false);
     });
   });
 
