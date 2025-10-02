@@ -275,14 +275,14 @@ Done in 0.25s.
 
 ## Run the migration script on the mongo container
 
-We use init containers to run the migration script on the mongo container.  
-To run `core-fca-low` migration script, run:
+We use init containers to run the migration script on the mongo container.
+To run the migration script, run:
 
 ```bash
-$ dks add init-core-fca-low
+$ docker compose run --rm init-core
 ```
 
-> [!NOTE]  
-> This `init-core-fca-low` container is a dependency of the `core-fca-low` container.  
-> It will run the migration script every time the `core-fca-low` container is started.  
+> [!NOTE]
+> This `init-core` container is a dependency of the `core` container.
+> It will run the migration script every time the `core` container is started.
 > No need to do it manually when using the `dks switch`
