@@ -1,5 +1,3 @@
-import { uniq } from 'lodash';
-
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
@@ -32,11 +30,11 @@ export class CoreFcaFqdnService {
       };
     }
 
-    const uniqueDuplicateFreeIdpUids = uniq(idpsByFqdn.map(({ uid }) => uid));
+    const identityProviderIds = idpsByFqdn.map(({ uid }) => uid);
 
     return {
       fqdn,
-      identityProviderIds: uniqueDuplicateFreeIdpUids,
+      identityProviderIds,
     };
   }
 
