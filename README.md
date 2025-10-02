@@ -279,7 +279,7 @@ We use init containers to run the migration script on the mongo container.
 To run `core-fca-low` migration script, run:
 
 ```bash
-$ dks add init-core-fca-low
+$ docker compose run --rm init-core
 ```
 
 > [!NOTE]  

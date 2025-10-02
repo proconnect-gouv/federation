@@ -44,6 +44,8 @@ services:
   base-core:
     extends: base-nodejs
     depends_on:
+      init-core:
+        condition: service_completed_successfully
       rp-all:
         condition: service_started
       mongo-fca-low:

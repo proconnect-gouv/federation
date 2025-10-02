@@ -21,9 +21,12 @@ RUN --mount=type=cache,target=/usr/local/share/.cache,id=back-yarn-cache,sharing
 
 FROM ${NODE_IMAGE} AS migrator
 
+WORKDIR /var/www/app
+
 COPY --from=dependencies /var/www/app/node_modules node_modules
 COPY package.json yarn.lock ./
 COPY migrate-mongo-config.js ./migrate-mongo-config.js
+COPY migrations ./migrations
 
 FROM ${NODE_IMAGE} AS dev
 
