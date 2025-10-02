@@ -38,6 +38,7 @@ export class TrackingService {
     const sessionId =
       trackedEventContext.sessionId || this.sessionService.getId();
     const {
+      amr,
       browsingSessionId,
       interactionId,
       interactionAcr,
@@ -55,6 +56,7 @@ export class TrackingService {
     } = this.sessionService.get<UserSession>('User') || {};
 
     return {
+      amr,
       browsingSessionId,
       event: trackedEvent,
       idpAcr,
