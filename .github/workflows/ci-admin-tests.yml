@@ -64,7 +64,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-        working-directory: ./admin
 
       - name: Set PC_ROOT environment variable
         run: |
