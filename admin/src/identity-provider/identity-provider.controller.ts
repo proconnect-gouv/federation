@@ -1,5 +1,3 @@
-import { ConfigService } from 'nestjs-config';
-
 import {
   Controller,
   Get,
@@ -20,15 +18,12 @@ import { FormErrorsInterceptor } from '../form/interceptor/form-errors.intercept
 import { IdentityProviderService } from './identity-provider.service';
 import { IdentityProviderDTO } from './dto/identity-provider.dto';
 import { plainToInstance } from 'class-transformer';
-import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationSortDirectionType } from '../pagination';
 
 @Controller('identity-provider')
 export class IdentityProviderController {
   constructor(
     private readonly identityProviderService: IdentityProviderService,
-    private readonly fqdnToProviderService: FqdnToProviderService,
-    private readonly config: ConfigService,
   ) {}
 
   /**
@@ -66,13 +61,8 @@ export class IdentityProviderController {
         },
       });
 
-    const identityProvidersWithFqdns =
-      await this.fqdnToProviderService.getProvidersWithFqdns(
-        paginatedIdentityProviders,
-      );
-
     return {
-      identityProviders: identityProvidersWithFqdns,
+      identityProviders: paginatedIdentityProviders,
       totalItems,
       csrfToken,
       page,
@@ -149,16 +139,8 @@ export class IdentityProviderController {
     const csrfToken = req.csrfToken();
 
     // we map the entity as a DTO
-    const { identityProviderDto, uid } =
+    const { identityProviderDto } =
       await this.identityProviderService.findById(id);
-
-    const fqdns =
-      await this.fqdnToProviderService.getFqdnsForIdentityProviderUid(uid);
-
-    const identityProviderWithFqdn = {
-      ...identityProviderDto,
-      fqdns,
-    };
 
     // TODO
     // Potentielle refacto pour généraliser la gestion des failures de TOTP
@@ -171,7 +153,7 @@ export class IdentityProviderController {
       // Keep the user last inputs when displaying an error in the form
       req.session.flash.values[0] = Object.assign({}, postedValues);
     } else {
-      req.flash('values', identityProviderWithFqdn);
+      req.flash('values', identityProviderDto);
     }
 
     return {

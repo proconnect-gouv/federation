@@ -8,7 +8,6 @@ import { IdentityProviderController } from './identity-provider.controller';
 import { IdentityProviderService } from './identity-provider.service';
 
 import * as classTransformer from 'class-transformer';
-import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { identityProviderFactory } from './fixture';
 
 describe('IdentityProviderController', () => {
@@ -58,14 +57,6 @@ describe('IdentityProviderController', () => {
     },
   };
 
-  const fqdnToProviderServiceMock = {
-    getProvidersWithFqdns: jest.fn(),
-    getFqdnsForIdentityProviderUid: jest.fn(),
-    saveFqdnsProvider: jest.fn(),
-    updateFqdnsProvider: jest.fn(),
-    deleteFqdnsProvider: jest.fn(),
-  };
-
   const configService = {
     get: jest.fn(),
   };
@@ -79,7 +70,6 @@ describe('IdentityProviderController', () => {
           provide: getRepositoryToken(IdentityProviderService),
           useClass: Repository,
         },
-        FqdnToProviderService,
         ConfigService,
       ],
     })
@@ -87,8 +77,6 @@ describe('IdentityProviderController', () => {
       .useValue(mockedIdentityProviderRepository)
       .overrideProvider(IdentityProviderService)
       .useValue(serviceMock)
-      .overrideProvider(FqdnToProviderService)
-      .useValue(fqdnToProviderServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configService)
       .compile();
@@ -110,8 +98,11 @@ describe('IdentityProviderController', () => {
       const itemId = new ObjectId();
       //
       // //Mocking Items
+      const mockFqdns = ['fqdn1.fr', 'fqdn2.fr'];
+
       const itemTest1 = identityProviderFactory.createIdentityProviderFromDb({
         _id: itemId,
+        fqdns: mockFqdns,
       });
 
       const itemTest2 = { ...itemTest1 };
@@ -123,15 +114,9 @@ describe('IdentityProviderController', () => {
         total: 3,
       };
 
-      const mockFqdns = ['fqdn1.fr', 'fqdn2.fr'];
-
       // Actions
       // Mocking the return of service paginate function
       serviceMock.paginate.mockResolvedValueOnce(identityProviders);
-      fqdnToProviderServiceMock.getProvidersWithFqdns.mockImplementationOnce(
-        (identityProviders) =>
-          identityProviders.map((idp) => ({ ...idp, fqdn: mockFqdns })),
-      );
 
       // Calling the list function
       const listResult = await identityProviderController.list(
@@ -143,30 +128,7 @@ describe('IdentityProviderController', () => {
       // Expected
       expect(listResult.totalItems).toEqual(3);
       expect(listResult.identityProviders.length).toEqual(3);
-      expect(listResult.identityProviders[0].fqdn).toEqual(mockFqdns);
-    });
-
-    it('should call fqdnToProviderService.saveFqdnsProvider', async () => {
-      // Given
-      // Mocking return value of serviceProviderController.list(page, limit)
-      const paginatedIdentityProviders = {
-        items: [],
-        total: 0,
-      };
-
-      // Mocking the return of service paginate function
-      serviceMock.paginate.mockResolvedValueOnce(paginatedIdentityProviders);
-
-      // When
-      await identityProviderController.list(req);
-
-      // Then
-      expect(
-        fqdnToProviderServiceMock.getProvidersWithFqdns,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        fqdnToProviderServiceMock.getProvidersWithFqdns,
-      ).toHaveBeenCalledWith(paginatedIdentityProviders.items);
+      expect(listResult.identityProviders[0].fqdns).toEqual(mockFqdns);
     });
   });
 
@@ -339,30 +301,6 @@ describe('IdentityProviderController', () => {
       // Assertion
       expect(classTransformer.plainToInstance).toHaveBeenCalledTimes(1);
       expect(reqMock.session.flash.values[0]).toEqual(identityProviderDto);
-    });
-
-    it('should call fqdnToProviderService.getProviderWithFqdns if the instance is FCA low', async () => {
-      // Given
-      const uid = 'mock-uid';
-      const idpMock = identityProviderFactory.createIdentityProviderDto({
-        name: 'fip1',
-      });
-
-      serviceMock.findById.mockResolvedValueOnce({
-        uid: uid,
-        identityProviderDto: idpMock,
-      });
-
-      // When
-      await identityProviderController.findOne(params.id, req, res);
-
-      // Then
-      expect(
-        fqdnToProviderServiceMock.getFqdnsForIdentityProviderUid,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        fqdnToProviderServiceMock.getFqdnsForIdentityProviderUid,
-      ).toHaveBeenCalledWith(uid);
     });
   });
 

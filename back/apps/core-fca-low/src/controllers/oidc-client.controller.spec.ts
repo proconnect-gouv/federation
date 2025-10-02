@@ -66,7 +66,7 @@ describe('OidcClientController', () => {
       redirectToIdp: jest.fn(),
       hasDefaultIdp: jest.fn(),
     };
-    identityProvider = { getById: jest.fn() };
+    identityProvider = { getById: jest.fn(), getFqdnFromEmail: jest.fn() };
     sessionService = {
       set: jest.fn(),
       get: jest.fn(),
@@ -80,7 +80,6 @@ describe('OidcClientController', () => {
     emailValidatorService = { validate: jest.fn() };
     fqdnService = {
       getFqdnConfigFromEmail: jest.fn(),
-      getFqdnFromEmail: jest.fn(),
       isAllowedIdpForEmail: jest.fn(),
     };
     sanitizer = {
@@ -200,7 +199,7 @@ describe('OidcClientController', () => {
 
     it('should redirect to selected idp when identityProviderUid is provided', async () => {
       const body = { identityProviderUid: 'idp123' } as any;
-      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
       identityProvider.getById.mockResolvedValue({
         name: 'Idp Name',
         title: 'Idp Title',
@@ -218,7 +217,7 @@ describe('OidcClientController', () => {
     it('should throw an exception when no identity providers are available', async () => {
       const body = { email, rememberMe: true } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
-      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
         identityProviderIds: [],
       });
@@ -240,7 +239,7 @@ describe('OidcClientController', () => {
     it('should throw an exception when identity provider is misconfigured', async () => {
       const body = { email } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
-      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
         identityProviderIds: ['nonexistent-idp'],
       });
@@ -258,7 +257,7 @@ describe('OidcClientController', () => {
     it('should redirect to identity provider selection when multiple providers are available', async () => {
       const body = { email } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
-      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
         identityProviderIds: ['idp1', 'idp2'],
       });
@@ -286,7 +285,7 @@ describe('OidcClientController', () => {
     it('should process redirection when a single identity provider is available', async () => {
       const body = { email, rememberMe: true } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
-      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
       fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
         identityProviderIds: ['idp-single'],
       });
@@ -393,7 +392,7 @@ describe('OidcClientController', () => {
         get: jest.fn().mockReturnValue(sessionData),
         set: jest.fn(),
       };
-      fqdnService.getFqdnFromEmail.mockReturnValue('fqdn.com');
+      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
       tracking.track.mockResolvedValue(undefined);
       oidcClient.getToken.mockResolvedValue({
         accessToken: 'access-token',
