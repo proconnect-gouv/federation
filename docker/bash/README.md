@@ -125,7 +125,7 @@ Usage is shell / CI:
 > dks wait "fc-exploitation" "https://fc-exploitation.docker.dev-franceconnect.fr"
 ```
 
-This will print PM2 logs on case of failure to reach the app.  
+This will print curl logs on case of failure to reach the app.
 See source for more information.
 
 > :pencil: Source code is in [./utils/wait.sh](./utils/wait.sh).
