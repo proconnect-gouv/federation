@@ -34,6 +34,7 @@ services:
       - '../../volumes/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core.env'
     environment:
       - NODE_OPTIONS=--experimental-strip-types
     tty: true
