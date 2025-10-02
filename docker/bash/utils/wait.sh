@@ -23,10 +23,6 @@ wait_for_nodejs() {
 _wait_for_nodejs_fail() {
   echo "$(format_failure " Failed ") Service DOWN: $1"
   echo ""
-  echo "--- PM2 Logs for ${1} ---------------------------"
-  docker exec "pc-${1}-1" bash -c 'cat /tmp/.pm2/logs/*.log' || true
-  echo "--- End of PM2 Logs for ${1} --------------------"
-  echo ""
   echo "--- curl Logs for ${1} ---------------------------"
   cat "$__DKS_LAST_LOG_FILE"
   echo "--- End of curl Logs for ${1} ---------------------------"
