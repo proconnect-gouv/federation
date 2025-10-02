@@ -10,6 +10,7 @@ export type TrackedEventLogInterface = {
   idpLoginHint?: string;
   idpLoginHintFqdn?: string;
   idpName?: string;
+  idpSiret?: string;
   idpSub?: string;
   interactionAcr?: string;
   interactionId?: string;
