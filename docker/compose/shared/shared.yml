@@ -186,27 +186,6 @@ services:
       retries: 2
       start_period: 1s
 
-  log-hub:
-    hostname: log-hub
-    build:
-      context: '../../../back'
-      target: dev
-    user: ${CURRENT_UID}
-    volumes:
-      - '../../../docker/log-hub:/var/www/app'
-      - '../../volumes/app:/opt/scripts'
-      - '../../volumes/log:/var/log/app'
-      - '../../volumes/.home:/home'
-      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
-    environment:
-      - 'DEFAULT_MODE=dev'
-    env_file:
-      - '../shared/.env/base-app.env'
-    ports:
-      - 6666:6666
-    tty: true
-    command: 'node --inspect=0.0.0.0:6666 ./app.js /var/log/app'
-
   broker:
     build:
       context: '../..'
