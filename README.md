@@ -49,7 +49,7 @@ export COMPOSE_HTTP_TIMEOUT=200
 export CYPRESS_PC_ROOT=$PC_ROOT
 
 # Setup the docker registry url (for now, we still continue to use the ProConnect container registry)
-export PC_DOCKER_REGISTRY= ghcr.io/proconnect-gouv/federation
+export PC_DOCKER_REGISTRY=ghcr.io/proconnect-gouv/federation
 
 # Alias for the docker-stack command (you can add it to your "~/.bash_aliases" if you prefer but don't forget to set the variables before the .bash_aliases sourcing in your .bashrc 😉) :
 alias dks=$PC_ROOT/federation/docker/docker-stack
@@ -62,7 +62,6 @@ mkdir -p $PC_ROOT && cd $PC_ROOT
 
 git clone git@github.com:proconnect-gouv/federation.git
 ```
-
 
 ## Run the application
 
@@ -106,16 +105,22 @@ On any URL, if you got a 502, it might still be booting, wait one minute, then r
 
 ## Get the logs
 
-Logs are stored here:
+File based logs are stored here:
 
 ```
 federation/docker/volumes/log
 ```
 
-You can output them with:
+You can read them with:
 
+```bash
+tail -F $PC_ROOT/federation/docker/volumes/log/* | npx pino-pretty
 ```
-tail -F * | npx pino-pretty
+
+Other logs are outputted in stdout. You can read them with, for example:
+
+```bash
+docker compose logs core -f --no-log-prefix | npx pino-pretty
 ```
 
 ### Restart a single container
@@ -143,8 +148,6 @@ dks halt
 
 ```bash
 dks compose down --volumes --remove-orphans --rmi all
-git clean -nxd # check the file list, if ok, launch the next command
-git clean -fxd
 ```
 
 ### See Usages
@@ -153,13 +156,33 @@ git clean -fxd
 dks help
 ```
 
-## Run the integration tests
+## Run the unit tests
 
 These tests are included directly in source code rather than in a dedicated test folder.
+
+### Check coverage
+
+ProConnect expects 100% code coverage. You can test the coverage using the following commands.
 
 ```bash
 cd $PC_ROOT/federation/back
 yarn test --coverage --maxWorkers=50%
+cd $PC_ROOT/federation/admin
+yarn test
+```
+
+If you want to check the coverage for a single file:
+
+```bash
+yarn test:cov --collectCoverageFrom=path/to/file.ts path/to/file.spec.ts
+```
+
+### Run the tests without coverage
+
+To execute the unit tests faster, you can run them without coverage.
+
+```bash
+yarn test
 ```
 
 ## Run the quality Tests
@@ -183,14 +206,30 @@ yarn start:low
 
 ```bash
 dks switch medium
-cd $PC_ROOT/federation/admin/fc-exploitation
+cd $PC_ROOT/federation/admin
 yarn test:e2e:open
+```
+
+### Run all quality tests for PCF Core
+
+```bash
+dks switch medium
+cd $PC_ROOT/federation/quality/fca
+yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @ignore'
+```
+
+### Run all quality tests for PCF Hybridge
+
+```bash
+dks switch hybridge
+cd $PC_ROOT/federation/quality/fca
+yarn test:low:chrome-desktop --env TAGS='@hybridge'
 ```
 
 ## Visualization Tests
 
 ```bash
-dks switch medium
+dks switch small
 cd $PC_ROOT/federation/quality/fca
 yarn test:low:snapshot
 ```
@@ -206,11 +245,7 @@ yarn doc
 yarn lint --fix
 yarn prettier --write
 yarn tsc --noEmit
-```
-
-```bash
 cd $PC_ROOT/federation/admin
-yarn test
 yarn lint --fix
 ```
 

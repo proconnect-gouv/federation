@@ -1,0 +1,79 @@
+<%- include('partials/border.ejs') -%>
+
+<nav class="navbar navbar-light navbar-expand-lg col-12 shadow-sm mb-4">
+  <div class="container-fluid">
+    <a href="<%= locals.APP_ROOT %>/" class="navbar-brand logo">
+      <img src="/images/FClogo.png">
+      Exploitation
+    </a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <% if (locals.CURRENT_USER.roles.includes('operator') || locals.CURRENT_USER.roles.includes('security')) { %>
+        <li class="nav-item">
+          <a class="nav-link" data-prefix="<%= locals.APP_ROOT %>/service-provider"
+            href="<%= locals.APP_ROOT %>/service-provider">Fournisseurs de service</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-prefix="<%= locals.APP_ROOT %>/identity-provider"
+            href="<%= locals.APP_ROOT %>/identity-provider">Fournisseurs d'identité</a>
+        </li>
+        <% if (locals.CURRENT_USER.roles.includes('operator')) { %>
+        <li class="nav-item">
+          <a class="nav-link" data-prefix="<%= locals.APP_ROOT %>/scopes"
+            href="<%= locals.APP_ROOT %>/scopes/label">Scopes</a>
+        </li>
+        <% }
+        } %>
+        <li class="nav-item">
+          <a class="nav-link" data-prefix="<%= locals.APP_ROOT %>/account" href="<%= locals.APP_ROOT %>/account">Comptes
+            utilisateurs</a>
+        </li>
+      </ul>
+      <div class="dropdown">
+        <a class="dropdown-toggle me-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false"><i class="fa fa-git-square"></i></a>
+        <div class="dropdown-menu dropdown-menu-end p-3 text-muted meta-information-container">
+          <div class="meta-information">
+            <i>Environnement : <%= locals.APP_ENVIRONMENT %></i>
+          </div>
+          <div class="meta-information">
+            <i>Branche : <%= locals.APP_VERSION %></i>
+          </div>
+          <div class="meta-information">
+            <i>Commit : <a
+                href="<%= locals.COMMIT_URL_PREFIX + locals.GIT_LATEST_COMMIT_LONG_HASH %>"><%= locals.GIT_LATEST_COMMIT_SHORT_HASH %></a></i>
+          </div>
+        </div>
+      </div>
+      <%- include('partials/dropdownAccount.ejs') -%>
+    </div>
+  </div>
+</nav>
+
+<% if (messages.success) { %>
+<div class="row">
+  <div class="col-10 offset-1 alert alert-success" id="successBanner" role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+      <span class="visually-hidden">Fermer</span>
+    </button>
+    <%= messages.success[0] %>
+  </div>
+</div>
+<% } %>
+
+<% if (locals.messages.errors && messages.errors[0]._totp) { %>
+<div class="row">
+  <div class="col-10 offset-1 alert alert-danger" role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">x<span>
+          <span class="visually-hidden">Fermer</span>
+    </button>
+    <% messages.errors[0]._totp.forEach((error) => { %>
+      <p> <%= error %></p>
+    <% }) %>
+    <% if (locals.AlgoName) { %>
+      <%- include('partials/algorithms-error.ejs') -%>
+    <% } %>
+  </div>  
+</div>
+<% } %>

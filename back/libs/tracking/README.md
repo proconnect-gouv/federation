@@ -1,110 +1,33 @@
 # Tracking
 
-## À propos
+## Description
 
-Cette librairie sert à gérer les traces métiers des applications.
+An application-level tracking service for business events. It builds a normalized log entry from the provided context and session data, then forwards it to the Logger Legacy service as structured JSON.
 
-Elle fournit un socle exploitable par les applications, mais ces dernières doivent injecter des comportement spécifiques lors de l'import du module.
+## Configuration
 
-En effet chaque application va avoir des besoins qui lui sont propres, tant au niveau des événements journalisés, que des informations présentes dans chaque entrée de journal.
-
-**Exemples de besoins spécifiques**
-
-> `core-fcp` a besoin de systèmatiquement journaliser un identifiant d'interaction  
-> `fc-exploitation` n'a pas cette notion  
-> `fc-exploitation` a parfois besoin de journaliser un numéro de ticket OTRS
-
-## Utilisation
-
-### Initialisation
-
-Le module est dynamique est doit être instancié avec la méthode `register`, qui prend en paramètre une classe de service étendant la classe l'interface [`AppTrackingServiceAbstract`](src/interfaces/app-tracking-service.abstract.ts)
+No specific configuration is required for this library. Ensure Logger Legacy is configured in your application:
 
 ```typescript
-// Le présent module
-import { TrackingModule } from '@fc/tracking';
-// Le service spécifique implémentant l'interface IAppTrackingService
-import { MyAppTrackingService } from './services';
-// Une dépendance de MyAppTrackingService (à titre d'exmple)
-import { MySpecificDependencyService } from '@fc/my-dependency';
-
-@Module({
-  imports: [
-    // Import dynamique en passant en paramètre la class
-    // contenant la logique spécifique
-    TrackingModule.forRoot(MyAppTrackingService),
-  ],
-  exports: [
-    // Il faut exporter les dépendances de MyAppTrackingService
-    // Afin que le TrackingModule puisse l'instancier
-    MySpecificDependencyService,
-  ]
-})
-```
-
-### Implémentation du `AppTrackingService`
-
-#### Typage des log
-
-Chaque application doit définir sa propre interface (ou classe abstraite) étendant `TrackingLogInterface`, avec les propriétés à journaliser pour cette application.
-
-L'interface de base contient déjà les propriétés suivantes, requises :
-
-- ip: string
-- source: ISource
-- category: string
-- event: string
-
-ISource:
-
-- address: string
-- port: string
-- original_addresses: string
-
-**Exemple d'interface spécifique à l'application**
-
-```typescript
-import { TrackingLogInterface } from '@fc/tracking';
-
-export class IMyAppTrackingLog extends TrackingLogInterface {
-  readonly interactionId: string;
+{
+  LoggerLegacy: {
+    path: '/path/to/your/logfile.log'
+  }
 }
 ```
 
-La méthode [`buildLog`](src/interfaces/app-tracking-service.abstract.ts) doit renvoyer une promesse qui résoudra un objet implémentant l'interface [`TrackingLogInterface`](src/interfaces/tracking-log.interface.ts).
+## Usage
 
-C'est cet objet qui sera ajouté au journal.
-
-**Exemple d'implémentation du AppTrackingService**
+Inject the `TrackingService` and call `track()` with a `TrackedEvent` and its context:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-// Interfaces exposées par @fc/tracking
-import {
-  TrackedEvent,
-  TrackedEventContext,
-  AppTrackingServiceAbstract,
-} from '@fc/tracking';
-// Mapping des événements de l'application
-import { EventsMap } from '../events.map';
-// Interface spécifique définie précédement
-import { IMyAppTrackingLog } from '../interfaces';
+import { TrackingService } from '@fc/tracking';
+import { TrackedEvent } from '@fc/tracking/enums';
 
-@Injectable()
-export class MyAppTrackingService extends AppTrackingServiceAbstract {
-
-  // Méthode a implémenter
-  async buildLog(
-    trackedEvent: TrackedEventInterface,
-    context: TrackedEventContextInterface,
-  ): Promise<IMyAppTrackingLog> {
-    // Votre implémentation spécifique...
-  };
+// Track an event
+await this.tracking.track(TrackedEvent.FC_AUTHORIZE_INITIATED, { req });
 ```
 
-#### Mapping des événements
-
-La librairie `@fc/tracking` doit être configurée avec un mapping des évènements métiers pouvant être inscrits dans le journal.  
-Ce mapping est typé par le type [`TrackedEventMapType`](src/interfaces/tracked-event-map.interface.ts) exposée par `@fc/tracking`, voir la définition de ce dernier pour le formalisme.
-
-Le mapping des évènements est exposé via la propriété `TrackingService.TrackedEventMap`.
+Notes:
+- Session information is extracted from the request (or via the sessionId) with the sessionService.
+- Network information (IP) is extracted from `headers`.

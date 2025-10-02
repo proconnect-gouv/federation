@@ -4,22 +4,19 @@ import {
   ExceptionFilter,
   Injectable,
 } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 
-import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
+import { ApiErrorParams } from '@fc/app';
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
+import { messageDictionary } from '@fc/core/exceptions/error-messages';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 import { SessionService } from '@fc/session';
 
-import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
-import { ExceptionCaughtEvent } from '../events';
-import { FcException } from '../exceptions';
-import { BaseException } from '../exceptions/base.exception';
 import { generateErrorId } from '../helpers';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
-@Catch(FcException)
+@Catch(BaseException)
 @Injectable()
 export class FcWebHtmlExceptionFilter
   extends FcBaseExceptionFilter
@@ -29,15 +26,13 @@ export class FcWebHtmlExceptionFilter
     protected readonly config: ConfigService,
     protected readonly session: SessionService,
     protected readonly logger: LoggerService,
-    protected readonly eventBus: EventBus,
   ) {
-    super(config, logger, eventBus);
+    super(config, logger);
   }
 
   catch(exception: BaseException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse();
-    const req = ctx.getRequest();
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
@@ -49,17 +44,18 @@ export class FcWebHtmlExceptionFilter
       message = exception.ui;
     }
 
-    // @todo: weird Naming / structure
-    const errorMessage: ApiErrorMessage = { code, id, message };
-    const exceptionParam = this.getParams(exception, errorMessage, res);
+    const exceptionParam: ApiErrorParams = {
+      exception,
+      res,
+      error: { code, id, message },
+      httpResponseCode: this.getHttpStatus(exception),
+      errorDetail: undefined,
+    };
 
-    exceptionParam.dictionary = messageDictionary;
     exceptionParam.idpName = this.session.get('User', 'idpName');
     exceptionParam.spName = this.session.get('User', 'spName');
 
     this.logException(code, id, exception);
-
-    this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
 
     this.errorOutput(exceptionParam);
   }
@@ -67,11 +63,16 @@ export class FcWebHtmlExceptionFilter
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
 
-    /**
-     * Interceptors are not run in case of route not handled by our app (404)
-     * So we need to manually bind template helpers.
-     */
+    const key = errorParam.error.message;
+    const staticDetail = key
+      ? messageDictionary[key] ||
+        messageDictionary['exceptions.default_message']
+      : undefined;
+    const errorDetail = errorParam.exception.generic
+      ? errorParam.exception.error_description
+      : staticDetail;
+
     res.status(httpResponseCode);
-    res.render('error', errorParam);
+    res.render('error', { ...errorParam, errorDetail });
   }
 }

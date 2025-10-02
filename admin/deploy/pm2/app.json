@@ -5,7 +5,7 @@
   "out_file": "/data/log/fc-apps/federation-admin-out.log",
   "watch": false,
   "autorestart": false,
-  "cwd": "/var/www/app/fc-exploitation",
+  "cwd": "/var/www/app",
   "exec_mode": "fork_mode",
   "instances": "1",
   "time": false,

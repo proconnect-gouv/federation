@@ -1,4 +1,4 @@
-import { JWK } from 'jose';
+import { JWK } from 'jose-v4';
 import { Client, custom, Issuer } from 'openid-client';
 
 import { Injectable, OnModuleInit } from '@nestjs/common';

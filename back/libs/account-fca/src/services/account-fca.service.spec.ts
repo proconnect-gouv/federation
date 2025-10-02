@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid, Version4Options } from 'uuid';
 
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -11,6 +11,11 @@ import { CoreFcaAgentAccountBlockedException } from '../exceptions';
 import { AccountFcaService } from './account-fca.service';
 
 jest.mock('uuid');
+type uuidType = (
+  options?: Version4Options,
+  buf?: undefined,
+  offset?: number,
+) => string;
 
 describe('AccountFcaService', () => {
   let service: AccountFcaService;
@@ -79,7 +84,7 @@ describe('AccountFcaService', () => {
   describe('createAccount', () => {
     it('should create a new account with a unique sub', () => {
       const mockUuid = '12345-unique-id';
-      jest.mocked(uuid).mockReturnValue(mockUuid);
+      jest.mocked<uuidType>(uuid).mockReturnValue(mockUuid);
 
       const account = service.createAccount();
 
@@ -119,7 +124,7 @@ describe('AccountFcaService', () => {
 
     it('should create a new account if none is found', async () => {
       const mockUuid = 'new-unique-id';
-      jest.mocked(uuid).mockReturnValue(mockUuid);
+      jest.mocked<uuidType>(uuid).mockReturnValue(mockUuid);
 
       modelMock.findOne.mockResolvedValue(null);
       modelMock.findOneAndUpdate.mockResolvedValue({});

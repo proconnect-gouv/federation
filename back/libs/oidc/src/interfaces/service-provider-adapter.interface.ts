@@ -3,7 +3,6 @@ import { AllClientMetadata } from 'oidc-provider';
 export interface CustomClientMetadata extends AllClientMetadata {
   active: boolean;
   name: string;
-  entityId: string;
 }
 
 /**
@@ -11,10 +10,6 @@ export interface CustomClientMetadata extends AllClientMetadata {
  * so that we do not expose our dependency to `node-oidc-provider`.
  */
 export type ServiceProviderMetadata = CustomClientMetadata;
-
-export interface ServiceProviderMetadataList {
-  list: ServiceProviderMetadata[];
-}
 
 export interface IServiceProviderAdapter {
   getList(refreshCache?: boolean): Promise<ServiceProviderMetadata[]>;

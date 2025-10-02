@@ -1,0 +1,9 @@
+<div class="d-flex justify-content-between gap-4">
+  <div class="align-text-th"><%= fieldName %></div>
+  <div class="btn-group-vertical gap-2">
+    <a id="<%= fieldToSortOn %>-asc" href="<%= APP_ROOT %><%= uri %>?sortField=<%= fieldToSortOn %>&sortDirection=asc&page=<%= page %>&limit=<%= limit %>"
+      class="text-decoration-none fa fa-sort-asc <%= querySortDirection === 'asc' && querySortField === fieldToSortOn ? 'text-primary' : 'text-dark' %>"></a>
+    <a id="<%= fieldToSortOn %>-desc" href="<%= APP_ROOT %><%= uri %>?sortField=<%= fieldToSortOn %>&sortDirection=desc&page=<%= page %>&limit=<%= limit %>"
+      class="text-decoration-none fa fa-sort-desc <%= querySortDirection === 'desc' && querySortField === fieldToSortOn ? 'text-primary' : 'text-dark' %>"></a>
+  </div>
+</div>

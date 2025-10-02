@@ -1,9 +1,7 @@
 import { ArgumentsHost, HttpException } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
@@ -12,7 +10,6 @@ import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { messageDictionary } from '../../../../apps/core-fca/src/exceptions/error-messages';
 import { HttpExceptionFilter } from './http-exception.filter';
 
 jest.mock('@fc/exceptions/helpers', () => ({
@@ -28,9 +25,6 @@ describe('HttpExceptionFilter', () => {
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
   const sessionMock = getSessionServiceMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
@@ -56,7 +50,7 @@ describe('HttpExceptionFilter', () => {
       id: idMock,
       message: 'exceptions.http.500',
     },
-    dictionary: messageDictionary,
+    errorDetail: '',
   };
 
   beforeEach(async () => {
@@ -69,7 +63,6 @@ describe('HttpExceptionFilter', () => {
         ConfigService,
         SessionService,
         LoggerService,
-        EventBus,
       ],
     })
       .overrideProvider(LoggerService)
@@ -78,8 +71,6 @@ describe('HttpExceptionFilter', () => {
       .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .compile();
 
     filter = module.get<HttpExceptionFilter>(HttpExceptionFilter);
@@ -106,7 +97,6 @@ describe('HttpExceptionFilter', () => {
   describe('catch', () => {
     beforeEach(() => {
       filter['shouldNotRedirect'] = jest.fn().mockReturnValue(false);
-      filter['getParams'] = jest.fn().mockReturnValue(paramsMock);
       filter['errorOutput'] = jest.fn();
     });
 
@@ -119,16 +109,6 @@ describe('HttpExceptionFilter', () => {
         codeMock,
         idMock,
         exceptionMock,
-      );
-    });
-
-    it('should publish an ExceptionCaughtEvent', () => {
-      // When
-      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
-
-      // Then
-      expect(eventBusMock.publish).toHaveBeenCalledExactlyOnceWith(
-        expect.any(ExceptionCaughtEvent),
       );
     });
 

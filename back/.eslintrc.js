@@ -63,7 +63,9 @@ const allowedSnakeCaseParameters = [
   'response_types',
   'revocation_endpoint_auth_method',
   'send_transactional',
+  'remember_me',
   'sp_id',
+  'sp_name',
   'street_address',
   'token_endpoint',
   'token_endpoint_auth_method',
@@ -75,7 +77,7 @@ const allowedSnakeCaseParameters = [
   'userinfo_endpoint',
   'userinfo_signed_response_alg',
   'usual_name',
-  'http_status_code'
+  'http_status_code',
 ];
 
 const allowedSnakeCaseParametersRegexPattern = `^(${allowedSnakeCaseParameters.join('|')})$`;
@@ -113,7 +115,6 @@ module.exports = {
     '@typescript-eslint/eslint-plugin',
     'simple-import-sort',
     'import',
-    'jest-extended',
   ],
   root: true,
   rules: {

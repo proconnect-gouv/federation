@@ -1,0 +1,37 @@
+services:
+  admin:
+    hostname: admin
+    build:
+      context: '../../../admin'
+      target: dev
+    user: ${CURRENT_UID}
+    ports:
+      - 9329:9329
+    depends_on:
+      rp-all:
+        condition: service_started
+      pg-admin:
+        condition: service_started
+      mongo-fca-low:
+        condition: service_healthy
+      redis-pwd:
+        condition: service_healthy
+    volumes:
+      - '../../../admin/src:/var/www/app/src:ro'
+      - '../../../admin/views:/var/www/app/views:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/log:/var/log/app'
+    tmpfs:
+      - /var/www/app/dist:mode=777
+      - /var/www/app/.cache:mode=777
+    env_file:
+      - '../shared/.env/base-app.env'
+      - '../shared/.env/postgres.env'
+      - '../shared/.env/pc-mongo.env'
+      - '../fca-low/.env/admin.env'
+    networks:
+      - exploitation
+      - data
+    init: true

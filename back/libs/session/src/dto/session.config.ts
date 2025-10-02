@@ -17,6 +17,7 @@ import {
 import { RouteInfo, Type as Class } from '@nestjs/common/interfaces';
 
 import { IsStringOrRegExp } from '@fc/common';
+import { CoreFcaSession } from '@fc/core';
 
 import { SameSiteType, TemplateExposedType } from '../types';
 
@@ -87,7 +88,7 @@ export class SessionConfig {
   readonly slidingExpiration: boolean;
 
   @IsObject()
-  readonly schema: Class<unknown>;
+  readonly schema: Class<CoreFcaSession>;
 
   @IsObject()
   readonly defaultData: Record<string, unknown>;

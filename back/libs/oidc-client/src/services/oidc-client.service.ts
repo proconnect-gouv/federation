@@ -1,5 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { Request } from 'express';
 import { IdTokenClaims, TokenSet } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';
@@ -64,7 +65,10 @@ export class OidcClientService {
     const tokenValidationErrors = await validate(tokenResult as object);
 
     if (tokenValidationErrors.length) {
-      this.logger.info({ tokenValidationErrors });
+      this.logger.alert({
+        msg: 'token validation error',
+        validationErrors: tokenValidationErrors,
+      });
       throw new OidcClientTokenResultFailedException();
     }
 

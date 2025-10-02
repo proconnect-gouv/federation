@@ -1,7 +1,4 @@
 import { validateDto } from '@fc/common';
-import { Amr } from '@fc/oidc';
-
-import { mockValidator } from '@mocks/common';
 
 import {
   DiscoveryIdpAdapterMongoDTO,
@@ -17,22 +14,14 @@ describe('Identity Provider (Data Transfer Object)', () => {
   const metaDataIdPAdapterMongoMock = {
     active: true,
     clientID: 'clientID',
-    amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
-    display: false,
-    isBeta: false,
-    allowedAcr: ['eidas2'],
     endSessionURL:
       'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
-    featureHandlers: {},
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'RS512',
-    image: 'provider1.png',
     name: 'provider1',
-    response_types: ['code'],
-    revocation_endpoint_auth_method: 'client_secret_post',
     title: 'provider 1',
     token_endpoint_auth_method: 'client_secret_post',
     uid: 'uid',
@@ -57,12 +46,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     tokenURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/token',
     userInfoURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo',
   };
-
-  mockValidator(
-    MetadataIdpAdapterMongoDTO,
-    'allowedAcr',
-    'IsIncludedInConfigConstraint',
-  ).mockImplementation(() => true);
 
   describe('should validate identity provider', () => {
     it('with only meta data', async () => {

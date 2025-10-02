@@ -7,20 +7,18 @@ import {
   IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from '@fc/oidc';
-import { OidcProviderConfig } from '@fc/oidc-provider';
 
 import { OidcProviderRedisAdapter } from '../adapters';
-import { IOidcProviderConfigAppService } from '../interfaces';
+import { OidcProviderConfig } from '../dto';
 import { OidcProviderService } from '../oidc-provider.service';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from '../tokens';
+import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
 
 @Injectable()
 export class OidcProviderConfigService {
   constructor(
     private readonly config: ConfigService,
-    @Inject(OIDC_PROVIDER_CONFIG_APP_TOKEN)
-    private readonly oidcProviderConfigApp: IOidcProviderConfigAppService,
+    private readonly oidcProviderConfigApp: OidcProviderConfigAppService,
     private readonly errorService: OidcProviderErrorService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: IServiceProviderAdapter,
@@ -86,7 +84,6 @@ export class OidcProviderConfigService {
     const findAccount = this.oidcProviderConfigApp.findAccount.bind(
       this.oidcProviderConfigApp,
     );
-    const pairwiseIdentifier = this.pairwiseIdentifier.bind(this);
     const renderError = this.errorService.renderError.bind(this.errorService);
     const clientBasedCORS = this.clientBasedCORS.bind(this);
     const url = this.url.bind(this, prefix);
@@ -111,7 +108,6 @@ export class OidcProviderConfigService {
         },
         adapter,
         findAccount,
-        pairwiseIdentifier,
         renderError,
         clientBasedCORS,
         interactions: { url },
@@ -125,21 +121,6 @@ export class OidcProviderConfigService {
     };
 
     return oidcProviderConfig;
-  }
-
-  /**
-   * Pass through original identifier (sub).
-   *
-   * While we could imagine that `accountId` would carry the value set by the `findAccount` method above,
-   * it actually carries the sub.
-   *
-   * We kept the parameter name to be consistent with documentation and original function signature
-   * Note that the function receives a third parameter `client` but it is of no use for our implementation.
-   *
-   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pairwiseidentifier
-   */
-  private pairwiseIdentifier(_ctx, accountId: string) {
-    return accountId;
   }
 
   private clientBasedCORS(

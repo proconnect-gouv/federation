@@ -5,7 +5,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "target": "es2023",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -13,6 +13,10 @@
     "preserveSymlinks": true,
     "moduleResolution": "node",
     "allowJs": true,
+    "esModuleInterop": true,
+    "types": ["jest", "node"]
   },
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*"
+  ]
 }

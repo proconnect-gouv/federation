@@ -13,7 +13,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
       | email                  | idpDescription |
       | iknowthisemail@fia1.fr | par défaut     |
       | iknowthisemail@FIA1.fr | par défaut     |
-      | iknowthisemail@fia2.fr | différent      |
+      | iknowthisemail@fia2.fr | second FI      |
 
     @ignoreInteg01
     Exemples:

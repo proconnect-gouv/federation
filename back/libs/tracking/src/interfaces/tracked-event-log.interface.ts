@@ -1,0 +1,26 @@
+export type TrackedEventLogInterface = {
+  browsingSessionId?: string;
+  claims?: string;
+  event: string;
+  idpAcr?: string;
+  idpEmail?: string;
+  idpEmailFqdn?: string;
+  idpId?: string;
+  idpLabel?: string;
+  idpLoginHint?: string;
+  idpLoginHintFqdn?: string;
+  idpName?: string;
+  idpSub?: string;
+  interactionAcr?: string;
+  interactionId?: string;
+  ip: string | string[];
+  scope?: string;
+  sessionId?: string;
+  spEssentialAcr?: string;
+  spLoginHint?: string;
+  spLoginHintFqdn?: string;
+  spId?: string;
+  spName?: string;
+  spSub?: string;
+  step: string;
+};

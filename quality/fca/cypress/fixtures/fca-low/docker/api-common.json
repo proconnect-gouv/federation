@@ -15,7 +15,7 @@
     "method": "GET",
     "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/authorize"
   },
-  "checktoken": {
+  "token-introspection": {
     "body": {
       "token": "tototototo",
       "client_id": "423dcbdc5a15ece61ed00ff5989d72379c26d9ed4c8e4e05a87cffae019586e0",
@@ -23,7 +23,10 @@
     },
     "form": true,
     "method": "POST",
-    "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/checktoken"
+    "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/token/introspection",
+    "headers": {
+      "Accept": "application/token-introspection+jwt"
+    }
   },
   "discovery": {
     "method": "GET",

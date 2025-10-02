@@ -1,49 +1,25 @@
-####################
-####################
 services:
-  core-fca-low:
-    hostname: core-fca-low
-    image: pc-nodejs
-    build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      mongo-fca-low:
-        condition: service_healthy
-      redis-pwd:
-        condition: service_healthy
-    volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+  core:
+    hostname: core
+    extends:
+      file: ../shared/shared.yml
+      service: base-core
+    ports:
+      - 9229:9229
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/core-fca-low.env'
-    tty: true
-    networks:
-      - fc
-      - public
-      - data
-    init: true
-    command: 'pm2 logs'
-
-  core-fca-low-squid:
-    extends: core-fca-low
-    hostname: core-fca-low-squid
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core.env'
     depends_on:
-      mongo-fca-low:
-        condition: service_healthy
-      redis-pwd:
-        condition: service_healthy
       squid:
         condition: service_started
     environment:
       # Proxy Configuration for Hybridge
       GLOBAL_AGENT_HTTP_PROXY: http://squid:3128
       GLOBAL_AGENT_HTTPS_PROXY: http://squid:3128
+
+  core-rie:
+    extends: core
+    hostname: core-rie
+    env_file:
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core-rie.env'

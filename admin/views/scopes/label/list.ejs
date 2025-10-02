@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head.ejs') -%>
+</head>
+<body>
+<%- include('partials/header.ejs') -%>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <p class="h2">Gestion des scopes (labels)</p>
+      <p id="label-count"><i><%= scopesAndLabelsList.length %> scopes renseignés</i>
+      <% if (locals.CURRENT_USER.roles.includes('operator')) { %>
+      <div class="d-inline-flex">
+        <a class="btn btn-primary mb-3" id="create-fd-btn" href="<%= APP_ROOT %>/scopes/label/create">Créer un label</a>
+      </div>
+      <% } %>
+      <%- include('partials/global-errors-handler.ejs') -%>
+      <table id="fd-table" class="table table-hover table-light shadow-sm">
+        <thead class="thead-light">
+        <tr>
+          <th scope="col">Scope </th>
+          <th scope="col">Label</th>
+          <th scope="col">FD</th>
+          <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% scopesAndLabelsList.forEach(function(scopesAndLabel){ %>
+          <tr>
+            <th scope="row"><%= scopesAndLabel.scope %></th>
+            <td><%= scopesAndLabel.label %></td>
+            <td><%= scopesAndLabel.fd %></td>
+            <td class="col-1 d-inline-flex d-flex quick-action">
+            <% if (CURRENT_USER.roles.includes('operator')) { %>
+              <a href="<%= APP_ROOT %>/scopes/label/update/<%= scopesAndLabel._id %>"
+                class="d-flex align-items-center mr-2 btn-action-update">
+                <i class="fa fa-pencil-square-o text-dark" aria-hidden="true"
+                  title="Editer le label"></i>
+              </a>
+              <form name="deleteForm" method="POST" id="delete-<%= scopesAndLabel._id %>"
+                  action="<%= APP_ROOT %>/scopes/label/delete/<%= scopesAndLabel._id %>?_method=DELETE"
+                  class="d-flex align-items-center mr-2" data-init="removeItem" data-element-type="le fournisseur d'identité"
+                  data-element-title="<%= scopesAndLabel.scope %>" data-element-id="<%= scopesAndLabel._id %>"
+                  novalidate>
+                  <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
+                  <input type="hidden" name="_totp">
+                  <input type="hidden" name="scope" value="<%= scopesAndLabel.scope %>">
+                  <input type="hidden" name="label" value="<%= scopesAndLabel.label %>">
+                  <button type="submit" class="btn-action-delete">
+                    <i class="fa fa-trash" aria-hidden="true" title="Supprimer"></i>
+                  </button>
+              </form>
+            <% } %>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

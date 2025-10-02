@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 
-# Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
-_get_running_containers() {
-  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=pc-nodejs)
-  local raw_all_containers=$(docker ps --format '{{.Names}}')
+# Find which nodejs containers to start
+_get_node_containers_to_start() {
+  local raw_nodejs_containers=$(
+    for container in $ancestor_containers $pattern_containers; do
+      _container_to_compose_name "$container"
+    done | sort | uniq
+  )
 
-  NODEJS_CONTAINERS=$(_container_to_compose_name "${raw_nodejs_containers}")
-  FC_CONTAINERS=$(_container_to_compose_name "${raw_all_containers}")
-}
-
-_reload_rp() {
-  docker exec pc-rp-all service nginx reload
+  echo ${raw_nodejs_containers}
 }
 
 _container_to_compose_name() {
@@ -72,21 +70,11 @@ _prune_all() {
 }
 
 _prune_ci() {
-  ${DOCKER_COMPOSE} down --volumes --remove-orphans
-}
-
-_get_env() {
-  local app=${1}
-  local varName=${2}
-  local containerName="${COMPOSE_PROJECT_NAME}-${app}-1"
-  local expression='${'${varName}'}'
-
-  docker exec ${containerName} bash -c "echo ${expression}"
+  $DOCKER_COMPOSE down --volumes --remove-orphans
 }
 
 _switch() {
   _prune
   _logs "--bg"
   _up "${@}"
-  _start_all
 }

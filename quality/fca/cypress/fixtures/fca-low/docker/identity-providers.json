@@ -9,7 +9,7 @@
   },
   {
     "id": "9c716f61-b8a1-435c-a407-ef4d677ec270",
-    "descriptions": ["par défaut", "actif"],
+    "descriptions": ["premier FI", "par défaut"],
     "title": "Identity Provider 1 - eIDAS faible - ES256",
     "url": "https://fia1-low.docker.dev-franceconnect.fr",
     "signature": "ES256",
@@ -17,7 +17,7 @@
   },
   {
     "id": "0e7c099f-fe86-49a0-b7d1-19df45397212",
-    "descriptions": ["différent", "sans siret par défaut"],
+    "descriptions": ["second FI"],
     "title": "Identity Provider 2 - eIDAS faible - RS256",
     "url": "https://fia2-low.docker.dev-franceconnect.fr",
     "signature": "RS256",

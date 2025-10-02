@@ -1,6 +1,6 @@
 import { errors } from 'oidc-provider';
 
-import { BaseException } from '@fc/exceptions/exceptions';
+import { BaseException } from '@fc/base-exception';
 
 export class OriginalError extends errors.OIDCProviderError {
   caught?: boolean;
@@ -11,5 +11,5 @@ export class OidcProviderBaseException extends BaseException {
   public error = 'server_error';
   public error_description = 'something bad happened';
 
-  public originalError?: OriginalError;
+  public declare originalError?: OriginalError;
 }

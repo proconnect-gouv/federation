@@ -1,0 +1,114 @@
+import { USER_OPERATOR, USER_PASS } from '../../support/constants';
+import { useMenuToFdPage } from './scopes.utils';
+
+const BASE_URL = Cypress.config('baseUrl');
+
+describe('Add new scope label', () => {
+  before(() => cy.resetEnv('mongo'));
+  let basicConfiguration;
+
+  beforeEach(() => {
+    basicConfiguration = {
+      totp: true,
+    };
+    cy.clearBusinessLog();
+
+    cy.login(USER_OPERATOR, USER_PASS);
+    useMenuToFdPage();
+  });
+
+  describe('Should be successful', () => {
+    it('if when click to "Scopes" button, page show a list of scope label', () => {
+      cy.get(`table`).should('be.visible');
+    });
+
+    it('if a valid form is submited', () => {
+      const id = Math.random();
+      cy.get('#create-fd-btn').click();
+      cy.formFill(
+        {
+          label: 'Seldon Label',
+          scope: `Seldon ${id}`,
+          fd: 'IDENTITY',
+        },
+        basicConfiguration,
+      );
+
+      cy.get('button[type="submit"]').click();
+      cy.url().should('eq', `${BASE_URL}/scopes/label`);
+      cy.contains(
+        `Le label Seldon Label pour le scope Seldon ${id} a été créé avec succès !`,
+      );
+      cy.hasBusinessLog({
+        entity: 'scope',
+        action: 'create',
+        user: USER_OPERATOR,
+        name: `Seldon ${id}`,
+      });
+    });
+  });
+
+  describe('Should fail', () => {
+    it('if a valid form is submited but scope name already exist', () => {
+      cy.get('#create-fd-btn').click();
+      cy.formFill(
+        {
+          label: 'OpenID label',
+          scope: `openid`,
+          fd: 'IDENTITY',
+        },
+        basicConfiguration,
+      );
+
+      cy.get('button[type="submit"]').click();
+      cy.url().should('eq', `${BASE_URL}/scopes/label/create`);
+      cy.contains(`Impossible d'enregistrer le label`);
+    });
+
+    it('if a valid form is submited with invalid totp', () => {
+      cy.get('#create-fd-btn').click();
+      cy.formFill(
+        {
+          scope: `Seldon ${Math.random()}`,
+          label: 'Seldon1 Label',
+          fd: 'IDENTITY',
+        },
+        Object.assign({}, basicConfiguration, { totp: false }),
+      );
+
+      cy.get('button[type="submit"]').click();
+      cy.url().should('eq', `${BASE_URL}/scopes/label/create`);
+      cy.contains(`Le TOTP saisi n'est pas valide`);
+    });
+
+    it('if scope field is empty', () => {
+      cy.get('#create-fd-btn').click();
+      cy.formFill(
+        {
+          label: 'Seldon2 Label',
+          fd: 'IDENTITY',
+        },
+        Object.assign({}, basicConfiguration, { typeEvent: true }),
+      );
+
+      cy.get('button[type="submit"]').click();
+
+      cy.url().should('eq', `${BASE_URL}/scopes/label/create`);
+      cy.get('input[name="scope"]').should('have.class', 'is-invalid');
+    });
+
+    it('if label field is empty', () => {
+      cy.get('#create-fd-btn').click();
+      cy.formFill(
+        {
+          scope: `Seldon ${Math.random()}`,
+          fd: 'IDENTITY',
+        },
+        basicConfiguration,
+      );
+
+      cy.get('button[type="submit"]').click();
+      cy.get('input[name="label"]').should('have.class', 'is-invalid');
+    });
+  });
+});

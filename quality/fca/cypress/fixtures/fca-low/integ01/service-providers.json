@@ -8,7 +8,7 @@
   },
   {
     "name": "fsa2v2",
-    "descriptions": ["second fs"],
+    "descriptions": ["second FS"],
     "clientId": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
     "url": "https://fsa2v2.integ01.dev-agentconnect.fr",
     "userinfo_signed_response_alg": "ES256"

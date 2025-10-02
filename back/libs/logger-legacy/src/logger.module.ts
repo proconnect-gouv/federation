@@ -1,11 +1,10 @@
 import { Global, Module, Scope } from '@nestjs/common';
 
-import { LoggerService, PinoService } from './services';
+import { LoggerService } from './services';
 
 @Global()
 @Module({
   providers: [
-    PinoService,
     /**
      * ⚠️ Workarround
      * Export specifying the scope.

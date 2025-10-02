@@ -5,7 +5,7 @@ import * as glob from 'glob';
 import { MarkdownGenerator } from './markdown-generator';
 
 const TEMPLATE_FILE = `${__dirname}/views/env-vars.ejs`;
-const FILE_SEARCH_PATTERN = 'instances/*/src/config/*.ts';
+const FILE_SEARCH_PATTERN = '{apps}/*/src/config/*.ts';
 const DEST_FILE = '_doc/env-vars.md';
 
 const CONFIG_PREFIX_REGEX = /new ConfigParser\(process\.env, '(\w+)'\)/;

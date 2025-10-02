@@ -1,6 +1,6 @@
 import { ChainableElement } from '../types';
 import scopes from './../../../fixtures/fca-low/scopes.json';
-import { getServiceProviderByDescription } from './sp-provider-helper';
+import { getServiceProviderByDescription } from './fixtures-helper';
 import { getDefaultUser } from './user-helper';
 
 const defaultUserClaims = getDefaultUser();

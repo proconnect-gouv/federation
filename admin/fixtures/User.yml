@@ -1,0 +1,154 @@
+entity: User
+items:
+  jean_moust:
+    id: '7bd4adc5-6fdc-4b4e-915e-bb92b3d8bb2a'
+    username: 'jean_moust'
+    email: '{{internet.email}}'
+    roles:
+      - 'admin'
+      - 'operator'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  jean_patoche:
+    id: '5dd908c4-cb08-405e-96b0-8c9188821dc0'
+    username: 'jean_patoche'
+    email: '{{internet.email}}'
+    roles:
+      - 'operator'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  fred:
+    id: 'd3d3f8a1-26ea-4a8b-9ed3-336d3777b529'
+    username: 'fred'
+    email: '{{internet.email}}'
+    roles:
+      - 'admin'
+      - 'operator'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  jack:
+    id: 'f8448509-58dd-4fa6-8d45-3d6bc06cf520'
+    username: 'jack'
+    email: '{{internet.email}}'
+    roles:
+      - 'security'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  pierre:
+    id: '5c340f69-68b0-4de5-bf18-7cf16cc491c6'
+    username: 'pierre'
+    email: '{{internet.email}}'
+    roles:
+      - 'new_account'
+      - 'inactive_admin'
+      - 'inactive_operator'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  paul:
+    id: '0a0c748a-6ad1-4408-9d6f-1dbc163f2b26'
+    username: 'paul'
+    email: '{{internet.email}}'
+    roles:
+      - 'new_account'
+      - 'inactive_admin'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  bob:
+    id: 'a8360632-0c24-4324-bc4a-f39087af98b5'
+    username: 'bob'
+    email: '{{internet.email}}'
+    roles:
+      - 'admin'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  activationTokenAlwaysExpired:
+    id: '2c2ffc4a-fdd5-4372-a45c-3ba7b3f646ff'
+    username: 'activationTokenAlwaysExpired'
+    email: '{{internet.email}}'
+    roles:
+      - 'new_account'
+      - 'inactive_operator'
+      - 'inactive_admin'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2020-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2021-08-01T12:00:00.000Z'
+  blocked:
+    id: 'a1613124-d3f4-4dfc-a593-ae2fad90a19f'
+    username: 'blocked'
+    email: '{{internet.email}}'
+    roles:
+      - 'blocked_user'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  pwd_fail:
+    id: '1cb0fe7b-730e-4bbb-ae33-96e3f572acc4'
+    username: 'pwd_fail'
+    email: '{{internet.email}}'
+    roles:
+      - 'admin'
+      - 'operator'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  totp_fail:
+    id: '0dc13546-2a5f-40aa-83bd-aa499fa702ef'
+    username: 'totp_fail'
+    email: '{{internet.email}}'
+    roles:
+      - 'admin'
+      - 'operator'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  pwd_totp_fail:
+    id: '51c325fd-c990-4e2f-bdb0-bf6820149de1'
+    username: 'pwd_totp_fail'
+    email: '{{internet.email}}'
+    roles:
+      - 'admin'
+      - 'operator'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'
+  user{1..10}:
+    username: '{{person.firstName}}($current)'
+    email: '{{internet.email}}'
+    roles:
+      - 'operator'
+    passwordHash: '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e' # georgesmoustaki
+    secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'
+    token: '84bc8f7e-33ad-441c-826b-0c8e9c3b4044'
+    tokenCreatedAt: '2023-07-01T12:00:00.000Z'
+    tokenExpiresAt: '2050-08-01T12:00:00.000Z'

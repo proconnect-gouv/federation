@@ -13,9 +13,14 @@ import {
 } from '@nestjs/common';
 
 import { ApiContentType } from '@fc/app';
+import { SetStep } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
 
-import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
+import {
+  AuthorizeParamsDto,
+  LogoutParamsDto,
+  RevocationTokenParamsDTO,
+} from './dto';
 import { OidcProviderRoutes } from './enums';
 import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 
@@ -23,16 +28,47 @@ import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 export class OidcProviderController {
   constructor(private readonly logger: LoggerService) {}
 
+  @Get(OidcProviderRoutes.AUTHORIZATION)
+  @Header('cache-control', 'no-store')
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  @SetStep()
+  getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDto) {
+    // Pass the query to oidc-provider
+    return next();
+  }
+
+  @Post(OidcProviderRoutes.AUTHORIZATION)
+  @Header('cache-control', 'no-store')
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  @SetStep()
+  postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
+    // Pass the query to oidc-provider
+    return next();
+  }
+
   @Post(OidcProviderRoutes.TOKEN)
   @Header('Content-Type', ApiContentType.JSON)
   @UseFilters(OidcProviderRenderedJsonExceptionFilter)
   postToken(@Next() next, @Req() req) {
-    const { body, query, headers } = req;
-
     this.logger.debug({
-      body,
-      query,
-      headers,
+      msg: 'Oidc Provider post token request',
+      uri: req.url,
+      method: req.method,
+      body: req.body,
+      headers: req.headers,
+      query: req.query,
     });
 
     // Pass the query to oidc-provider
@@ -57,13 +93,15 @@ export class OidcProviderController {
   @Header('Content-Type', ApiContentType.JWT)
   @UseFilters(OidcProviderRenderedJsonExceptionFilter)
   getUserInfo(@Next() next, @Req() req) {
-    const { body, query, headers } = req;
-
     this.logger.debug({
-      body,
-      query,
-      headers,
+      msg: 'Oidc Provider userinfo request',
+      uri: req.url,
+      method: req.method,
+      body: req.body,
+      headers: req.headers,
+      query: req.query,
     });
+
     // Pass the query to oidc-provider
     return next();
   }

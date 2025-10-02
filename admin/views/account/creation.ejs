@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('partials/head.ejs') -%>
+  </head>
+  <body>
+    <%- include('partials/header.ejs') -%>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <p class="h2">Ajouter un nouveau compte utilisateur</p>
+        </div>
+        <div class="card col-12">
+          <%- include('partials/global-errors-handler.ejs') -%>
+          <div class="card-body">
+            <form method="POST" id="create-account-form" name="create-account-form" data-init="validateAccountCreate" autocomplete="off" novalidate>
+              <input type="hidden" name="_csrf" value="<%= locals.csrfToken  %>">
+              <input id="password" type="hidden" required name="password" value="<%= locals.tmpPassword%>">
+              <input type="hidden" name="secret" id="secret" value="fakeSecret">
+              <section class="mb-3 row">
+                <label class="col-2 col-form-label" for="username">Nom d'utilisateur</label>
+                <div class="col-10">
+                  <input id="username" type="text" required
+                  class="form-control <%= locals.messages.errors && messages.errors[0].username && 'is-invalid' %>" placeholder="login"
+                  name="username" value="<%= locals.messages.values && messages.values[0].username %>">
+                  <div class="invalid-feedback">
+                  <% if (locals.messages.errors && messages.errors[0].username) { %>
+                    <% messages.errors[0].username.forEach((error) => { %>
+                    <%= error %>
+                    <br>
+                    <% }) %>
+                  <% } else { %>
+                    Le nom d'utilisateur doit être renseigné
+                  <% } %>
+                  </div>
+                </div>
+              </section>
+              <section class="mb-3 row">
+                <label class="col-2 col-form-label" for="email">Email</label>
+                <div class="col-10">
+                  <input id="email" type="text" required
+                  class="form-control <%= locals.messages.errors && messages.errors[0].email && 'is-invalid' %>" placeholder="mail@to.com"
+                  name="email" value="<%= locals.messages.values && messages.values[0].email %>"
+                  pattern="^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$">
+                  <div class="invalid-feedback">
+                    <% if (locals.messages.errors && messages.errors[0].email) { %>
+                      <% messages.errors[0].email.forEach((error) => { %>
+                      <%= error %>
+                      <br>
+                      <% }) %>
+                    <% } else { %>
+                      Veuillez mettre une adresse email valide ( Ex: email@email.com )
+                    <% } %>
+                  </div>
+                </div>
+              </section>
+              <section class="mb-3 row">
+                <label class="col-2 col-form-label" for="roles">Rôles</label>
+                <div class="col-10">
+                  <% USER_ROLES_OPTIONS.filter(({value}) => !['new_account','blocked_user','inactive_'].some(role => value.startsWith(role))).forEach((roleOption, index) => { %>
+                  <div class="form-check">
+                    <input class="form-check-input <%= locals.messages.errors && messages.errors[0].roles && 'is-invalid' %>" name="roles"
+                    type="checkbox"
+                    id="role-<%= roleOption.value %>" <%= locals.messages.values && messages.values[0].roles && messages.values[0].roles.indexOf(roleOption.value) !== -1 && 'checked' %>
+                    value="<%= roleOption.value %>">
+                    <label class="form-check-label <%= locals.messages.errors && messages.errors[0].roles && 'is-invalid' %>"
+                    for="role-<%= roleOption.value %>"><%= roleOption.label %></label>
+                  </div>
+                  <% }) %>
+                  <div class="invalid-feedback roles-error">
+                    <% if (locals.messages.errors && messages.errors[0].roles) { %>
+                      <% messages.errors[0].roles.forEach((error) => { %>
+                      <%= error %>
+                      <br>
+                      <% }) %>
+                    <% } %>
+                  </div>
+                </div>
+              </section>
+
+              <div class="my-4 text-center">
+                <p>MOT DE PASSE TEMPORAIRE :</p>
+                <p class="fw-bold display-4 my-3" id="tmpPassword"><%= locals.tmpPassword%></p>
+              </div>
+
+              <section class="mb-3 row">
+                <label class="col-2 col-form-label" for="confirm-2FAuthentication">Code TOTP</label>
+                <div class="col-10">
+                  <input id="_totp" type="text" required value="<%= locals.totp %>" placeholder="123456"
+                    class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>" name="_totp">
+                  <div class="invalid-feedback">
+                    <% if (locals.messages.errors && messages.errors[0]._totp) { %>
+                    <p>
+                      <% messages.errors[0]._totp.forEach((error) => { %>
+                      <%= error %>
+                      <br>
+                      <% }) %>
+                    </p>
+                    <% } else { %>
+                    Veuillez mettre un code TOTP valide
+                    <% } %>
+                  </div>
+                </div>
+              </section>
+
+              <div class="my-4 text-center">
+                <button type="submit" class="btn btn-primary my-5">Créer l'utilisateur</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

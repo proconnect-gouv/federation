@@ -9,7 +9,7 @@ import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
-import { Amr, IdentityProviderMetadata } from '@fc/oidc';
+import { IdentityProviderMetadata } from '@fc/oidc';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -38,25 +38,15 @@ describe('IdentityProviderAdapterMongoService', () => {
     authzURL:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
     clientID: 'clientID',
-    amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
-    display: false,
-    allowedAcr: ['eidas2'],
     endSessionURL:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
-    featureHandlers: {
-      authenticationEmail: null,
-      coreVerify: 'core-fcp-default-verify',
-    },
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'HS256',
-    image: 'provider1.png',
     jwksURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
     name: 'provider1',
-    response_types: ['code'],
-    revocation_endpoint_auth_method: 'client_secret_post',
     title: 'provider 1',
     tokenURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
     token_endpoint_auth_method: 'client_secret_post',
@@ -74,21 +64,13 @@ describe('IdentityProviderAdapterMongoService', () => {
     authorization_endpoint:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
     client_id: 'clientID',
-    amr: [Amr.MAIL, Amr.PWD],
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
-    display: false,
-    allowedAcr: ['eidas2'],
     end_session_endpoint:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
-    featureHandlers: {
-      authenticationEmail: null,
-      coreVerify: 'core-fcp-default-verify',
-    },
     id_token_encrypted_response_alg: 'RSA-OAEP',
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_signed_response_alg: 'HS256',
-    image: 'provider1.png',
     issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
     jwks_uri: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
     name: 'provider1',
@@ -121,15 +103,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       userinfo_encrypted_response_enc: 'A256GCM',
       userinfo_signed_response_alg: 'HS256',
     },
-    amr: [Amr.MAIL, Amr.PWD],
     discovery: false,
-    display: false,
-    allowedAcr: ['eidas2'],
-    featureHandlers: {
-      authenticationEmail: null,
-      coreVerify: 'core-fcp-default-verify',
-    },
-    image: 'provider1.png',
     issuer: {
       authorization_endpoint:
         'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
@@ -691,80 +665,6 @@ describe('IdentityProviderAdapterMongoService', () => {
       const result = await service.isActiveById('id');
       // Then
       expect(result).toBeFalse();
-    });
-  });
-
-  describe('updateProviderStatus', () => {
-    const defaultProvidersMock = {
-      eidas: 1,
-      name: 'idp1',
-      uid: 'idp1',
-    } as unknown as IdentityProviderMetadata;
-
-    it('should return provider without modification', () => {
-      // Given
-      const isIdpAuthorizedMock = true;
-      const showExcludedIdpMock = false;
-      const expected = {
-        eidas: 1,
-        name: 'idp1',
-        uid: 'idp1',
-      };
-
-      // When
-      const result = service['updateProviderStatus'](
-        defaultProvidersMock,
-        isIdpAuthorizedMock,
-        showExcludedIdpMock,
-      );
-
-      // When
-      expect(result).toEqual(expected);
-    });
-
-    it('should return a blacklisted provider that we want to display', () => {
-      // Given
-      const isIdpAuthorizedMock = false;
-      const showExcludedIdpMock = true;
-      const expected = {
-        active: false,
-        eidas: 1,
-        name: 'idp1',
-        uid: 'idp1',
-      };
-
-      // When
-      const result = service['updateProviderStatus'](
-        defaultProvidersMock,
-        isIdpAuthorizedMock,
-        showExcludedIdpMock,
-      );
-
-      // When
-      expect(result).toEqual(expected);
-    });
-
-    it("Should return a blacklisted provider that we don't want to display", () => {
-      // Given
-      const isIdpAuthorizedMock = false;
-      const showExcludedIdpMock = false;
-      const expected = {
-        active: false,
-        display: false,
-        eidas: 1,
-        name: 'idp1',
-        uid: 'idp1',
-      };
-
-      // When
-      const result = service['updateProviderStatus'](
-        defaultProvidersMock,
-        isIdpAuthorizedMock,
-        showExcludedIdpMock,
-      );
-
-      // When
-      expect(result).toEqual(expected);
     });
   });
 });

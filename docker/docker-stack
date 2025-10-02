@@ -13,33 +13,19 @@ source "${DOCKER_BASH_DIR}/config.sh"
 source "${DOCKER_BASH_DIR}/commands/index.sh"
 
 ## Data initialisation
-_command_register "fixtures" "_hook_fc_apps" "Init postgres Exploitation : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"
+_command_register "reset-pg" "_hook_admin" "Init postgres Exploitation"
 
 ### Mongo
 _command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" ""             # Description to be defined # Deprecated
 _command_register "reset-db" "_reset_db_core_fca_low" "Alias to reset-db-core-fca-low" # Backward compatibility entry
 _command_register "reset-mongo" "_reset_mongodb" "reset-mongo <mongo-service-name> : Reset given mongodb container"
 _command_register "reset-mongo-as-prod" "_reset_mongodb_as_prod" "reset-mongo-as-prod <mongo-service-name> : Reset given mongodb container with production IDPs"
-
-### Redis
-_command_register "redis" "_redis_cli" "Connect to redis cli: redis <db>"
+_command_register "mongo" "_mongo_core_shell" "Open mongo shell for core"
 
 ## Nodejs apps
-_command_register "start" "_start" "start application"
-_command_register "start:prod" "_start_prod" "Build, then start NestJS applications (each application is built only once)"
-_command_register "start:dev" "_start_dev" "Start application in dev mode (watching changes)"
-_command_register "start-all" "_start_all" "Start all application for wich containers are up"
-
-_command_register "start-ci" "_start_ci" "start for CI only"
-_command_register "start-all-ci" "_start_all_ci" "start for CI only"
-
 _command_register "stop" "_stop" "stop application"
 _command_register "stop-all" "_stop_all" "Stop all application for wich containers are up"
 
-_command_register "reload" "_start" "Alias of start"
-_command_register "reload-all" "_start_all" "Alias for start-all"
-
-_command_register "log" "_log" "log [<app>] => exec pm2 logs for given instance"
 _command_register "logs" "_logs" "[--bg] - Show and expose logs for chrome dev-tools. If --bg option is passed, logs are only exposed to dev-tools with a background process"
 
 _command_register "test" "_test" "Launch tests?"
@@ -59,15 +45,13 @@ _command_register "run-prod" "_run_prod" "" # Description to be defined
 
 ## General / utils
 _command_register "help" "_command_list" "Display this help: help <search term>"
-_command_register "reload-rp" "_reload_rp" "Reload Reverse proxy"
+
 _command_register "compose" "_compose" "Run a docker compose command on project"
 _command_register "llng-configure" "_llng_configure" "Restore LemonLDAP configuration from ./docker/volumes/llng/llng-conf.json dump file"
 _command_register "wait" "wait_for_nodejs" "Wait for a nodejs HTTP service to respond on an URL or try to display logs"
 _command_register "log-rotate" "_log_rotate" "log-rotate Rotate the logs and send SIGUSR"
-_command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo shell"
 
 ### Legacy aliases for mongo shell access
-_command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "
 _command_register "mongo-script" "_mongo_script" "Execute MongoDB <script> on given <container>: docker-stack mongo-script <container> <script>"
 
 _command_run "$1" "${@:2}"

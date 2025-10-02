@@ -1,17 +1,13 @@
-import { Response } from 'express';
-
 import { Catch, HttpException, HttpStatus } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
-import { EventBus } from '@nestjs/cqrs';
 import { RpcException } from '@nestjs/microservices';
 
-import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 
 import { ExceptionsConfig } from '../dto';
-import { BaseException } from '../exceptions/base.exception';
 import { getCode, getStackTraceArray } from '../helpers';
 
 @Catch()
@@ -19,25 +15,8 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
   constructor(
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
-    protected readonly eventBus: EventBus,
   ) {
     super();
-  }
-
-  protected getParams(
-    exception: BaseException,
-    message: ApiErrorMessage,
-    res: Response,
-  ): ApiErrorParams {
-    const exceptionParam: ApiErrorParams = {
-      exception,
-      res,
-      error: message,
-      httpResponseCode: this.getHttpStatus(exception),
-      dictionary: {},
-    };
-
-    return exceptionParam;
   }
 
   protected getHttpStatus(
@@ -87,7 +66,9 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     }
 
     if (exception instanceof BaseException) {
-      return getCode(exception.scope, exception.code, prefix);
+      return exception.generic
+        ? exception.error
+        : getCode(exception.scope, exception.code, prefix);
     }
 
     if (exception instanceof HttpException) {

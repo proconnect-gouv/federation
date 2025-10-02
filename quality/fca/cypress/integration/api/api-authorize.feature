@@ -72,12 +72,6 @@ Fonctionnalité: API - authorize
       | login consent |
       | consent login |
 
-  Scénario: API authorize - Prompt non authorisé
-    Etant donné que je prépare une requête "authorize"
-    Et que je mets "select_account" dans le paramètre "prompt" de la requête
-    Quand je lance la requête
-    Alors le statut de la réponse est 400
-
   Scénario: API authorize - prompt n'est pas défini
     Etant donné que je prépare une requête "authorize"
     Et que je retire le paramètre "prompt" de la requête

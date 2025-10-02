@@ -1,43 +1,48 @@
+import pino, { Logger } from 'pino';
 import { v4 as uuidV4 } from 'uuid';
 
-import { ConsoleLogger, Injectable } from '@nestjs/common';
+import { Injectable, ShutdownSignal } from '@nestjs/common';
 
-import { LoggerLevelNames } from '../enum';
-import { ILoggerBusinessEvent } from '../interfaces';
-import { pinoLevelsMap } from '../log-maps.map';
-import { PinoService } from './pino.service';
+import { ConfigService } from '@fc/config';
+import { LoggerConfig as LoggerLegacyConfig } from '@fc/logger-legacy/dto';
 
-/**
- * For usage and good practices:
- * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/wikis/Logger
- */
 @Injectable()
-export class LoggerService extends ConsoleLogger {
-  constructor(private readonly adapter: PinoService) {
-    super(null);
+export class LoggerService {
+  public readonly logger: Logger;
+
+  constructor(private readonly config: ConfigService) {
+    const { path } = this.config.get<LoggerLegacyConfig>('LoggerLegacy');
+
+    const stream = pino.destination(path);
+
+    this.logger = pino(
+      {
+        formatters: {
+          /**
+           * Formatter for pino library
+           * @see https://github.com/pinojs/pino/blob/master/docs/api.md#formatters-object
+           */
+          level: (label, _number) => ({ level: label }),
+        },
+        level: 'info',
+      },
+      stream,
+    );
+
+    process.on(ShutdownSignal.SIGUSR2, () => {
+      // Keep warnings here, this log must not be in business logs
+      console.warn(`SIGUSR2: Reveived, reopening at ${path}`);
+      stream.reopen();
+      console.warn('SIGUSR2: done');
+    });
   }
 
-  private getIdentifiedLog(log) {
+  businessEvent(log: any) {
     const logId = uuidV4();
-    return {
+
+    this.logger.info({
       ...log,
       logId,
-    };
-  }
-
-  private canLog(level: string) {
-    return this.adapter.level <= pinoLevelsMap[level];
-  }
-
-  private businessLogger(level: string, log: any) {
-    if (this.canLog(level)) {
-      const identifiedLog = this.getIdentifiedLog(log);
-      this.adapter.transport[level](identifiedLog);
-    }
-  }
-
-  // Business logic, goes in event logs
-  businessEvent(log: ILoggerBusinessEvent) {
-    this.businessLogger(LoggerLevelNames.INFO, log);
+    });
   }
 }

@@ -2,12 +2,8 @@ import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 import { getIdentityProviderByDescription } from '../../common/helpers';
 
-When('je me déconnecte du fournisseur de service', function () {
-  cy.get('[action="/logout"] button').click();
-});
-
 When(
-  /je me déconnecte du fournisseur de service et j'enregistre la réponse de ProConnect et du FI "([^"]*)"/,
+  /je clique sur le bouton de déconnexion et j'enregistre la réponse de ProConnect et du FI "([^"]*)"/,
   function (description: string) {
     const { url: idpUrl } = getIdentityProviderByDescription(description);
     const { federationRootUrl } = this.env;

@@ -1,11 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
-import {
-  IsEqualToConfigConstraint,
-  IsIncludedInConfigConstraint,
-  IsUrlRequiredTldFromConfigConstraint,
-} from '@fc/common';
+import { IsUrlRequiredTldFromConfigConstraint } from '@fc/common';
 import { CryptographyModule } from '@fc/cryptography';
 import { MongooseModule } from '@fc/mongoose';
 
@@ -22,8 +18,6 @@ import { ServiceProviderAdapterMongoService } from './service-provider-adapter-m
   ],
   providers: [
     ServiceProviderAdapterMongoService,
-    IsEqualToConfigConstraint,
-    IsIncludedInConfigConstraint,
     IsUrlRequiredTldFromConfigConstraint,
   ],
   exports: [ServiceProviderAdapterMongoService],

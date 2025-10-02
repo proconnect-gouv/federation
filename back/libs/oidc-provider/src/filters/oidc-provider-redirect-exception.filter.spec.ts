@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
 
 import { ArgumentsHost } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
@@ -32,9 +30,6 @@ describe('OidcProviderRedirectExceptionFilter', () => {
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
   const sessionMock = getSessionServiceMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
@@ -80,7 +75,6 @@ describe('OidcProviderRedirectExceptionFilter', () => {
         ConfigService,
         SessionService,
         LoggerService,
-        EventBus,
         OidcProviderService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
@@ -94,8 +88,6 @@ describe('OidcProviderRedirectExceptionFilter', () => {
       .useValue(sessionMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
 
@@ -155,16 +147,6 @@ describe('OidcProviderRedirectExceptionFilter', () => {
         codeMock,
         idMock,
         exceptionMock,
-      );
-    });
-
-    it('should publish an ExceptionCaughtEvent', async () => {
-      // When
-      await filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
-
-      // Then
-      expect(eventBusMock.publish).toHaveBeenCalledExactlyOnceWith(
-        expect.any(ExceptionCaughtEvent),
       );
     });
 

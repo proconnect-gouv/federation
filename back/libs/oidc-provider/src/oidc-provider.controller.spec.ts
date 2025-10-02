@@ -2,14 +2,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
-import { OidcProviderService } from '@fc/oidc-provider';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
+import {
+  AuthorizeParamsDto,
+  LogoutParamsDto,
+  RevocationTokenParamsDTO,
+} from './dto';
 import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 import { OidcProviderController } from './oidc-provider.controller';
-import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
+import { OidcProviderService } from './oidc-provider.service';
+import { OidcProviderConfigAppService } from './services';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -49,10 +53,7 @@ describe('OidcProviderController', () => {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
         },
-        {
-          provide: OIDC_PROVIDER_CONFIG_APP_TOKEN,
-          useValue: oidcProviderConfigAppMock,
-        },
+        OidcProviderConfigAppService,
         LoggerService,
       ],
     })
@@ -60,6 +61,8 @@ describe('OidcProviderController', () => {
       .useValue(jsonExceptionFilterMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
+      .overrideProvider(OidcProviderConfigAppService)
+      .useValue(oidcProviderConfigAppMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .compile();
@@ -71,6 +74,30 @@ describe('OidcProviderController', () => {
     serviceProviderServiceMock.isActive.mockResolvedValue(true);
 
     jest.resetAllMocks();
+  });
+
+  describe('getAuthorize()', () => {
+    it('should call next', () => {
+      // Given
+      const next = jest.fn();
+      const queryMock = {} as AuthorizeParamsDto;
+      // When
+      oidcProviderController.getAuthorize(next, queryMock);
+      // Then
+      expect(next).toHaveReturnedTimes(1);
+    });
+  });
+
+  describe('postAuthorize()', () => {
+    it('should call next', () => {
+      // Given
+      const next = jest.fn();
+      const bodyMock = {} as AuthorizeParamsDto;
+      // When
+      oidcProviderController.postAuthorize(next, bodyMock);
+      // Then
+      expect(next).toHaveReturnedTimes(1);
+    });
   });
 
   describe('getUserInfo()', () => {

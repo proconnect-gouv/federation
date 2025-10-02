@@ -1,0 +1,43 @@
+name: 💚 CI Tests - Federation API Partner
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+jobs:
+  test_api_partner:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pcdbapi
+    steps:
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 📂 Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🏗️ Build containers
+        run: docker compose build --with-dependencies pcdbapi-test
+
+      - name: 🔍 Lint code (ruff check)
+        run: docker compose run -T --rm pcdbapi-test
+          ruff check .
+
+      - name: 💅 Check formatting (ruff format)
+        run: docker compose run -T --rm pcdbapi-test
+          ruff format --check .
+
+      - name: 🚀 Start services
+        run: docker compose up --build --wait pcdbapi
+
+      - name: 🧪 Run tests with coverage
+        run: docker compose run -T --rm pcdbapi-test
+          pytest -vv --cov=. --cov-report term-missing --cov-fail-under=100

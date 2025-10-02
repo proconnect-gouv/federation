@@ -1,0 +1,44 @@
+/* CUSTOMIZE CALLOUT BORDER COLOR */
+.ac-callout {
+  background-image: linear-gradient(
+    0deg,
+    var(--text-title-blue-france),
+    var(--text-title-blue-france)
+  ) !important;
+}
+/* CUSTOMIZE CALLOUT ICON */
+.ac-icon-information-line:after,
+.ac-icon-information-line:before {
+  color: var(--text-title-blue-france);
+  -webkit-mask-image: url(/icons/others/lightbulb-line.svg) !important;
+  mask-image: url(/icons/others/lightbulb-line.svg) !important;
+  mask-repeat: no-repeat;
+}
+
+@media screen and (min-width: 993px) {
+  .ac-survey {
+    background: linear-gradient(
+      to right,
+      white 50%,
+      var(--background-default-grey-hover) 50%
+    );
+  }
+}
+
+/* -----------------------------------------------------------------
+
+  OVERRIDES
+
+----------------------------------------------------------------- */
+
+.fr-footer__bottom-link {
+  white-space: nowrap;
+}
+
+form:invalid button.fr-btn {
+  background-color: #e0e0e0;
+  color: #a0a0a0;
+  cursor: not-allowed;
+  opacity: 0.7;
+  pointer-events: none;
+}

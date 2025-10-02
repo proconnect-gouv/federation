@@ -13,20 +13,19 @@ _reset_mongodb_as_prod() {
 }
 
 _mongo_core_shell() {
-  local app_name=$1
-  _mongo_shell "mongo-$app_name" "core-$app_name"
+  _mongo_shell "mongo-fca-low" "core-fca-low" "$@"
 }
 
 _mongo_shell() {
   local server=$1
   local database=$2
 
-  echo "starting mongo ${server} database in shell..."
+  >&2 echo "Starting mongo shell in ${server}..."
 
   $DOCKER_COMPOSE exec "${server}" \
     mongo -u ${MONGO_DEFAULT_USER} -p ${MONGO_DEFAULT_PASS} \
     --authenticationDatabase admin "${database}" \
-    --tls
+    --tls "${@:3}"
 }
 
 _mongo_script() {
@@ -39,8 +38,4 @@ _mongo_script() {
 # Presets for backward compatibility
 _reset_db_core_fca_low() {
   _reset_mongodb "mongo-fca-low"
-}
-
-_mongo_shell_core_fca_low() {
-  _mongo_core_shell "fca-low"
 }

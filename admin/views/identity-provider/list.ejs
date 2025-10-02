@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head.ejs') -%>
+</head>
+<body>
+<%- include('partials/header.ejs') -%>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <p class="h2">Gestion des fournisseurs d'identité</p>
+      <form id="itemPerPage" data-init="itemPerPage" method="GET" action="<%= APP_ROOT %>/identity-provider">
+        <p id="fi-count"><i><%= totalItems %> fournisseurs disponibles - Résultats par page :</i>
+        <%- include('partials/choose-items-number-to-show.ejs') -%>
+      </form>
+      <%- include('partials/global-errors-handler.ejs') -%>
+      <% if (CURRENT_USER.roles.includes('operator')) { %>
+      <div class="d-inline-flex">
+        <a class="btn btn-primary mb-3" href="<%= APP_ROOT %>/identity-provider/create">Créer un fournisseur d'identité</a>
+      </div>
+      <% } %>
+      <%- include('partials/search', {userSearch: querySearch}) -%>
+      <table class="table table-hover table-light shadow-sm" id="list-table">
+        <thead class="thead-light">
+        <tr class="align-top">
+          <th scope="col" class="col-4 border-bottom-0 border-top-0 border-end-0 border-secondary">
+            <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "name", fieldName: "Nom du FI (mire)" }); %>
+          </th>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Nom technique</th>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Fqdns</th>
+          <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
+            <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "active", fieldName: "Activé" }); %>
+          </th>
+          <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
+            <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "isRoutingEnabled", fieldName: "Routage" }); %>
+          </th>
+          <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% identityProviders.forEach(function(identityProvider){ %>
+          <tr data-idp-name="<%= identityProvider.name %>" id="<%= identityProvider.uid %>">
+            <th scope="row" class="border-bottom-0 border-top-0 border-end-0 border-secondary">
+              <% if (CURRENT_USER.roles.includes('operator')) { %>
+                <a id='provider-<%= identityProvider._id %>' class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"><%= identityProvider.title %></a>
+              <% } else { %>
+                <%= identityProvider.title %>
+              <% } %>
+            </th>
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
+              <% if (CURRENT_USER.roles.includes('operator')) { %>
+                <a id='technic-<%= identityProvider._id %>' class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"><%= identityProvider.name %></a>
+              <% } else { %>
+                <%= identityProvider.name %>
+              <% } %>
+            </td>
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
+              <% if (identityProvider.fqdns) { %>
+                <a class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>">
+                  <% identityProvider.fqdns.forEach((fqdn) => { %>
+                    <span>
+                      <%= fqdn %>
+                    </span>
+                  <% }); %>
+                </a>
+              <% } %>
+            </td>
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
+              <i class="fa fa-toggle-<%= identityProvider.active ? "on" : "off" %>"></i>
+            </td>
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
+              <i class="fa fa-toggle-<%= identityProvider.isRoutingEnabled ? "on" : "off" %>"></i>
+            </td>
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
+              <% if (CURRENT_USER.roles.includes('operator')) { %>
+                <div class="d-inline-flex">
+                  <a href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>"
+                    class="d-flex align-items-center mr-2 btn-action-update btn btn-sm">
+                    <i class="fa fa-pencil-square-o text-dark" aria-hidden="true"
+                    title="Editer le fournisseur d'identité"></i>
+                  </a>
+                  <form name="deleteForm" method="POST" id="delete-<%= identityProvider._id %>"
+                    action="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>?_method=DELETE"
+                    class="d-flex align-items-center mr-2" data-init="removeItem" data-element-type="le fournisseur d'identité"
+                    data-element-title="<%= identityProvider.title %>" data-element-id="<%= identityProvider._id %>"
+                    novalidate>
+                    <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>">
+                    <input type="hidden" name="_totp">
+                    <input type="hidden" name="name" value="<%= identityProvider.name %>">
+                    <button type="submit" class="btn-action-delete btn btn-sm">
+                      <i class="fa fa-trash" aria-hidden="true" title="Supprimer"></i>
+                    </button>
+                  </form>
+                </div>
+            <% } %>
+          </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+      <%- include('partials/pagination.ejs', {
+        total: totalItems,
+        baseHref: `${APP_ROOT}/identity-provider`,
+      }) %>
+
+    </div>
+</body>
+</html>

@@ -9,16 +9,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
+          cache: yarn
+          cache-dependency-path: ./back/yarn.lock
           node-version-file: ./back/package.json
 
       - name: Install dependencies
         working-directory: ./quality/fca
-        run: yarn install --frozen-lockfile
+        run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Cypress install
         working-directory: ./quality/fca
@@ -38,3 +40,13 @@ jobs:
         run: |
           yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
           yarn report
+
+      - name: Upload Cypress Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-integration-artifacts
+          path: |
+            quality/fca/cypress/screenshots
+            quality/fca/cypress/videos
+            quality/fca/cypress/logs

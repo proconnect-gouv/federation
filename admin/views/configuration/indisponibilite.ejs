@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head.ejs') -%>
+</head>
+<body>
+<%- include('partials/header.ejs') -%>
+<div class="container-fluid indiponibilite">
+  <div class="row">
+    <div class="col-sm my-2">
+      <h2 class="mb-4">Configuration indisponibilité FC</h2>
+      <form method="post" id="indisponibilite" action="<%= APP_ROOT %>/configuration/indisponibilite" data-init="validForm" novalidate>
+        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+        <div class="mb-3">
+          <label for="message" class="mb-3">Message d'indisponibilité</label>
+          <textarea class="form-control" 
+            name="message" 
+            id="message" 
+            cols="30" 
+            rows="5" 
+            pattern="^[A-Za-z0-9-\sàâéêèëîïôùç\'\.,!]+$"
+            required><%= (locals.messages.values && messages.values[0].message) || locals.data.messageOnLogin.message %></textarea>
+        </div>
+        
+        <div class="row">
+          <div class="col-sm my-1">
+            <p class="mx-3">Début de l'indisponibilité</p>
+            <div class="d-flex align-items-center">
+              <div class="row">
+                  <div class="col-sm">
+                      <div class="row">
+                        <div class="col-sm">
+                          <label for="dateDebut" class="m-1">Date</label>
+                          <input type="date" 
+                            class="form-control mb-2 me-sm-2"
+                            id="dateDebut" 
+                            placeholder="YYYY-MM-DD" 
+                            name="dateDebut"
+                            data-init="validateInputDate"
+                            value="<%= (locals.messages.values && messages.values[0].dateDebut) || locals.data.messageOnLogin.startDate %>"
+                            required>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-sm">
+                    <label for="heureDebut" class="m-1"> Heure</label>
+                    <input type="time" 
+                      class="form-control mb-2 me-sm-2"
+                      id="heureDebut" 
+                      placeholder="HH:mm" 
+                      name="heureDebut"
+                      data-init="validateInputHour"
+                      pattern="[0-9]{2}:[0-9]{2}"
+                      value="<%= locals.messages.values ? locals.messages.values && messages.values[0].heureDebut : moment.utc(
+                        `${locals.data.messageOnLogin.startHour}`,
+                        'HH:mm',
+                        'UTC',
+                        true
+                      ).tz('Europe/Paris').format('HH:mm') %>"
+                      required>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm my-1">
+            <p class="mx-3">Fin de l'indisponibilité</p>
+            <div class="d-flex align-items-center">
+              <div class="row">
+                <div class="col-sm">
+                  <div class="row">
+                    <div class="col-sm">
+                      <label for="dateFin" class="m-1">Date</label>
+                      <input type="date" 
+                        class="form-control mb-2 me-sm-2"
+                        id="dateFin"
+                        placeholder="YYYY-MM-DD"
+                        name="dateFin"
+                        data-init="validateInputDate"
+                        value="<%= locals.messages.values ? locals.messages.values && messages.values[0].dateFin : locals.data.messageOnLogin.stopDate %>"
+                        required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <label for="heureFin" class="m-1"> Heure</label>
+                  <input type="time" 
+                    class="form-control mb-2 me-sm-2"
+                    id="heureFin" 
+                    placeholder="HH:mm" 
+                    name="heureFin"
+                    data-init="validateInputHour"
+                    pattern="[0-9]{2}:[0-9]{2}"
+                    value="<%= locals.messages.values ? locals.messages.values && messages.values[0].heureFin : moment.utc(
+                      `${locals.data.messageOnLogin.stopHour}`,
+                      'HH:mm',
+                      '',
+                      true
+                    ).tz('Europe/Paris').format('HH:mm')%>"
+                    required>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+       <div class="col-xs-6 my-4">
+          <p class="d-flex justify-content-center">
+            <% 
+              if((locals.data.features && locals.data.features.displayMessageOnLogin === true) || (locals.data && locals.data.activateMessage === true)){ 
+                %> <span class="text-success">Le message est actuellement activé.</span> <% 
+              } else { %>
+                <span class="text-danger">Le message est actuellement désactivé.</span> 
+              <% } %>
+          </p>
+          <p class="d-flex justify-content-center">Activer le message</p>
+          <div class="d-flex justify-content-center">
+            <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input is-valid" id="activated" name="activateMessage" value="true"
+                  <% if(locals.data && (locals.data.activateMessage === true || (locals.data.features && locals.data.features.displayMessageOnLogin === true))) { %> checked <% } %>
+                  required>
+                <label class="form-check-label" for="activated">oui</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input is-valid" id="unactivated" name="activateMessage" value="false"
+                  <%if(locals.data && (locals.data.activateMessage === false || (locals.data.features && locals.data.features.displayMessageOnLogin === false))) { %> checked <% } %>
+                    required>
+                <label class="form-check-label" for="unactivated">non</label>
+              </div>
+          </div>   
+        </div>
+
+        <div class="d-flex justify-content-center">
+          <label class="my-2" for="confirm-2FAuthentication">Code TOTP</label>
+          <div class="col-lg-10">
+            <input id="_totp" 
+            type="text" 
+            required 
+            value="<%= locals.messages.values && messages.values[0]._totp %>"
+            class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>" 
+            name="_totp">
+            <div class="invalid-feedback">
+              <% if (locals.messages.errors && messages.errors[0]._totp) { %>
+                <% locals.messages.errors[0]._totp.forEach((error) => { %>
+                  <p><%= error %></p>
+                <% }) %>
+              <% } else { %>
+                Veuillez mettre un code TOTP valide.
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+          <button type="submit" id="submit-button" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

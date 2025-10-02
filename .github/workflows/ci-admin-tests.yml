@@ -1,10 +1,7 @@
 name: 💚 CI Tests - Federation Admin
 
 on:
-  pull_request:
   push:
-    branches:
-      - main
 
 jobs:
   global:
@@ -14,10 +11,10 @@ jobs:
         working-directory: ./admin
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           cache: yarn
           cache-dependency-path: ./admin/yarn.lock
@@ -94,10 +91,10 @@ jobs:
         working-directory: ./admin
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up dockerx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       # Workaround for https://github.com/docker/compose/issues/12892
       - name: Upgrade Docker Compose
@@ -106,7 +103,7 @@ jobs:
           version: latest
 
       - name: Set up Node.js for federation-admin
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           cache: yarn
           cache-dependency-path: ./admin/yarn.lock
@@ -132,9 +129,8 @@ jobs:
         working-directory: ./docker
         run: |
           ./docker-stack prune-ci
-          ./docker-stack up exploitation-fca-low
-          ./docker-stack start-all-ci
-          ./docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
+          ./docker-stack up admin
+          ./docker-stack wait "admin" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests
         run: yarn test:e2e:exploitation -c video=false
@@ -142,9 +138,9 @@ jobs:
       - name: Post failing tests
         if: failure()
         run: |
-          mkdir -p fc-exploitation/cypress/logs
-          docker cp pc-exploitation-1:/tmp/.pm2/logs fc-exploitation/cypress/logs/fc-exploitation || true
-          docker cp pc-rp-all:/var/log/nginx fc-exploitation/cypress/logs || true
+          mkdir -p cypress/logs
+          docker cp pc-exploitation-1:/tmp/.pm2/logs cypress/logs || true
+          docker cp pc-rp-all:/var/log/nginx cypress/logs || true
 
       - name: Publish artifacts
         if: failure()
@@ -152,6 +148,6 @@ jobs:
         with:
           name: cypress-outputs
           path: |
-            admin/fc-exploitation/cypress/screenshots
-            admin/fc-exploitation/cypress/videos
-            admin/fc-exploitation/cypress/logs
+            admin/cypress/screenshots
+            admin/cypress/videos
+            admin/cypress/logs

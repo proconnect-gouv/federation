@@ -63,11 +63,43 @@ When("j'utilise un compte usager avec siret incorrect", function () {
   });
 });
 
+When(
+  "j'utilise un compte usager dont le FI ne fournit pas le siret",
+  function () {
+    cy.get('input[name="siret"]').clear({ force: true });
+  },
+);
+
+When(
+  "le fournisseur d'identité renvoie l'erreur {string} avec {string}",
+  function (error: string, error_description: string) {
+    cy.get('input[name="error"]').type(error, { force: true });
+    cy.get('input[name="error_description"]').type(error_description, {
+      force: true,
+    });
+  },
+);
+
 Then(
   /la page du FI affiche l'id du FS "([^"]*)"/,
   function (spDescription: string) {
     const { clientId } = getServiceProviderByDescription(spDescription);
     cy.contains(`"sp_id": "${clientId}"`);
+  },
+);
+
+Then(
+  /la page du FI affiche le nom du FS "([^"]*)"/,
+  function (spDescription: string) {
+    const { name } = getServiceProviderByDescription(spDescription);
+    cy.contains(`"sp_name": "${name}"`);
+  },
+);
+
+Then(
+  /la page du FI affiche remember_me "([^"]*)"/,
+  function (expectedValue: string) {
+    cy.contains(`"remember_me": "${expectedValue}"`);
   },
 );
 

@@ -8,7 +8,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et que j'entre l'email "many@polyfi.fr"
     Quand je clique sur le bouton de connexion
     Alors je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
-    Quand je choisis le fournisseur d'identité "<idpLabel>"
+    Quand je choisis le fournisseur d'identité "<idpLabel>" et le bouton "Continuer" est activé
     Et je suis redirigé vers la page login du fournisseur d'identité "<idpName>"
     Et je m'authentifie
     Alors je suis redirigé vers la page fournisseur de service "par défaut"
@@ -19,13 +19,13 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Exemples:
       | idpLabel                                   | idpName    | scope           |
       | Identity Provider 1 - eIDAS faible - ES256 | par défaut | tous les scopes |
-      | Identity Provider 2 - eIDAS faible - RS256 | différent  | tous les scopes |
+      | Identity Provider 2 - eIDAS faible - RS256 | second FI  | tous les scopes |
 
     @ignoreDocker
     Exemples:
       | idpLabel                    | idpName    | scope           |
       | Identity Provider 1 - HS256 | par défaut | tous les scopes |
-      | Identity Provider 2 - ES256 | différent  | tous les scopes |
+      | Identity Provider 2 - ES256 | second FI  | tous les scopes |
 
   Scénario: Connexion d'un usager - fournisseur d'identité autre
     Etant donné que je navigue sur la page fournisseur de service
@@ -33,17 +33,20 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et que j'entre l'email "many@polyfi.fr"
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
-    Et je choisis le fournisseur d'identité "Autre"
+    Et je choisis le fournisseur d'identité "Autre" et le bouton "Continuer" est activé
     Alors je suis redirigé vers la page login du fournisseur d'identité "moncomptepro"
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - retour en arrière après redirection vers FI
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
+    Alors le bouton "Continuer" est "désactivé"
     Et que j'entre l'email "many@polyfi.fr"
+    Alors le bouton "Continuer" est "activé"
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
-    Et je choisis le fournisseur d'identité "Identity Provider 1 - eIDAS faible - ES256"
+    Alors le bouton "Continuer" est "désactivé"
+    Et je choisis le fournisseur d'identité "Identity Provider 1 - eIDAS faible - ES256" et le bouton "Continuer" est activé
     Et je suis redirigé vers la page login du fournisseur d'identité "par défaut"
     Quand je reviens en arrière
     Alors je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
@@ -67,3 +70,12 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Alors le fournisseur d'identité "Autre" n'est pas affiché
+
+  @ignoreInteg01
+  Scénario: Le FI "Autre" est toujours positionné en dernier
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "many@polyfi.fr"
+    Et que je clique sur le bouton de connexion
+    Quand je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
+    Alors le fournisseur d'identité "Autre" est positionné en dernier dans la liste des fournisseurs d'identité

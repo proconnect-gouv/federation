@@ -31,7 +31,6 @@ describe('ServiceProviderAdapterMongoService', () => {
 
   const validServiceProviderMock = {
     key: '987654321987654321987654321987654',
-    entityId: '123456789101112131415161718192021',
     active: true,
     name: 'foo',
     title: 'title',
@@ -192,28 +191,6 @@ describe('ServiceProviderAdapterMongoService', () => {
   });
 
   describe('findAllServiceProvider', () => {
-    const expectedRetreivedFields = {
-      _id: false,
-      active: true,
-      client_secret: true,
-      entityId: true,
-      grant_types: true,
-      id_token_signed_response_alg: true,
-      introspection_encrypted_response_alg: true,
-      introspection_encrypted_response_enc: true,
-      introspection_signed_response_alg: true,
-      jwks_uri: true,
-      key: true,
-      name: true,
-      post_logout_redirect_uris: true,
-      redirect_uris: true,
-      response_types: true,
-      scopes: true,
-      title: true,
-      type: true,
-      userinfo_signed_response_alg: true,
-    };
-
     beforeEach(() => {
       configMock.get.mockReturnValue({
         isLocalhostAllowed: false,
@@ -238,10 +215,7 @@ describe('ServiceProviderAdapterMongoService', () => {
       await service['findAllServiceProvider']();
 
       // expect
-      expect(repositoryMock.find).toHaveBeenCalledWith(
-        expectedRequestFilter,
-        expectedRetreivedFields,
-      );
+      expect(repositoryMock.find).toHaveBeenCalledWith(expectedRequestFilter);
     });
 
     it('should have called find with a filter argument containing active true', async () => {
@@ -253,10 +227,7 @@ describe('ServiceProviderAdapterMongoService', () => {
       await service['findAllServiceProvider']();
 
       // expect
-      expect(repositoryMock.find).toHaveBeenCalledWith(
-        expectedRequestFilter,
-        expectedRetreivedFields,
-      );
+      expect(repositoryMock.find).toHaveBeenCalledWith(expectedRequestFilter);
     });
 
     it('should return result of type list', async () => {

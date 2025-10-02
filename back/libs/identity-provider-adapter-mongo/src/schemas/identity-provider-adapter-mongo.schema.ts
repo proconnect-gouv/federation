@@ -1,4 +1,4 @@
-import { Document, Schema as SchemaNative } from 'mongoose';
+import { Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
@@ -9,9 +9,6 @@ export class IdentityProvider extends Document {
 
   @Prop({ index: true, type: String })
   clientID: string;
-
-  @Prop({ type: Boolean })
-  isBeta: boolean;
 
   @Prop({ type: String })
   client_secret: string;
@@ -32,6 +29,9 @@ export class IdentityProvider extends Document {
   token_endpoint_auth_method: string;
 
   @Prop({ type: String })
+  revocation_endpoint_auth_method: string;
+
+  @Prop({ type: String })
   id_token_encrypted_response_alg: string;
 
   @Prop({ type: String })
@@ -48,12 +48,6 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: String })
   userinfo_encrypted_response_enc: string;
-
-  @Prop({ type: SchemaNative.Types.Mixed })
-  featureHandlers: any;
-
-  @Prop({ type: [String] })
-  allowedAcr: string[];
 
   @Prop({ type: String })
   siret: string;

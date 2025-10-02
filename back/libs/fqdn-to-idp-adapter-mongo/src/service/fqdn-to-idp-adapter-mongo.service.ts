@@ -88,7 +88,6 @@ export class FqdnToIdpAdapterMongoService
           _id: false,
           fqdn: true,
           identityProvider: true,
-          acceptsDefaultIdp: true,
         },
       )
         .sort({ fqdn: 1, identityProvider: 1 })
@@ -102,7 +101,6 @@ export class FqdnToIdpAdapterMongoService
         rawFqdnToIdentityProvider,
       );
       const errors = await validate(fqdnToIdentityProvider, {
-        forbidNonWhitelisted: true,
         whitelist: true,
       });
 

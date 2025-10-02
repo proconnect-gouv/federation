@@ -1,8 +1,9 @@
-import { ValidationError } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { validate, ValidationError } from 'class-validator';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { validateDto } from '@fc/common';
-import { ConfigService, validationOptions } from '@fc/config';
+import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
@@ -22,13 +23,21 @@ import { SessionBackendStorageService } from './session-backend-storage.service'
 
 jest.mock('@fc/common');
 
+jest.mock('class-validator', () => ({
+  ...jest.requireActual('class-validator'),
+  validate: jest.fn(),
+}));
+
+jest.mock('class-transformer', () => ({
+  ...jest.requireActual('class-transformer'),
+  plainToInstance: jest.fn(),
+}));
+
 describe('SessionBackendStorageService', () => {
   let service: SessionBackendStorageService;
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
-
-  const validatedDtoMock = jest.mocked(validateDto);
 
   const encryptionKeyMock = 'encryptionKeyMock';
   const configDataMock = {
@@ -51,6 +60,9 @@ describe('SessionBackendStorageService', () => {
   };
 
   const sessionId = 'sessionId';
+
+  const validateMock = jest.mocked(validate);
+  const plainToInstanceMock = jest.mocked(plainToInstance);
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -83,6 +95,8 @@ describe('SessionBackendStorageService', () => {
 
     redisMock.client.get.mockResolvedValue(redisDataMock);
     redisMock.client.multi.mockReturnValue(redisMultiMock);
+
+    plainToInstanceMock.mockImplementation((_dto, obj) => obj);
   });
 
   it('should be defined', () => {
@@ -100,6 +114,8 @@ describe('SessionBackendStorageService', () => {
     });
 
     it('should call getSessionKey()', async () => {
+      validateMock.mockResolvedValueOnce([]);
+
       // When
       await service.get(sessionId);
 
@@ -108,6 +124,8 @@ describe('SessionBackendStorageService', () => {
     });
 
     it('should call redis.client.get()', async () => {
+      validateMock.mockResolvedValueOnce([]);
+
       // When
       await service.get(sessionId);
 
@@ -115,10 +133,10 @@ describe('SessionBackendStorageService', () => {
       expect(redisMock.client.get).toHaveBeenCalledWith(sessionKey);
     });
 
-    it('should throw if dataCipher is empty', async () => {
+    it('should throw if data is empty', async () => {
       // Given
-      const dataCipherMock = undefined;
-      redisMock.client.get.mockResolvedValue(dataCipherMock);
+      const dataMock = undefined;
+      redisMock.client.get.mockResolvedValue(dataMock);
 
       // When / Then
       await expect(service.get(sessionId)).rejects.toThrow(
@@ -138,6 +156,8 @@ describe('SessionBackendStorageService', () => {
     });
 
     it('should call deserialize()', async () => {
+      validateMock.mockResolvedValueOnce([]);
+
       // When
       await service.get(sessionId);
 
@@ -145,20 +165,24 @@ describe('SessionBackendStorageService', () => {
       expect(service['deserialize']).toHaveBeenCalledWith(redisDataMock);
     });
 
-    it('should call validate()', async () => {
-      // When
-      await service.get(sessionId);
-
-      // Then
-      expect(service['validate']).toHaveBeenCalledWith(deserializedData);
-    });
-
     it('should return deserializedData', async () => {
+      validateMock.mockResolvedValueOnce([]);
+
       // When
       const result = await service.get(sessionId);
 
       // Then
       expect(result).toBe(deserializedData);
+    });
+
+    it('should log if data is invalid', async () => {
+      validateMock.mockResolvedValueOnce([new ValidationError()]);
+
+      // When
+      await service.get(sessionId);
+
+      // Then
+      expect(loggerMock.alert).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -409,65 +433,6 @@ describe('SessionBackendStorageService', () => {
 
       // Then
       expect(result).toStrictEqual(data);
-    });
-  });
-
-  describe('validate()', () => {
-    const data = { foo: 'bar' };
-
-    beforeEach(() => {
-      validatedDtoMock.mockResolvedValue([]);
-    });
-
-    it('should call config.get()', async () => {
-      // When
-      await service['validate'](data);
-
-      // Then
-      expect(configMock.get).toHaveBeenCalledWith('Session');
-    });
-
-    it('should call validateDto()', async () => {
-      // When
-      await service['validate'](data);
-
-      // Then
-      expect(validatedDtoMock).toHaveBeenCalledWith(
-        data,
-        configDataMock.schema,
-        validationOptions,
-      );
-    });
-
-    /**
-     *
-     * Temporary disable throw to gather informations via logging
-     *
-     * @todo #1575 Activate test when throw is enabled
-     *
-     * it('should throw SessionInvalidSessionException if validateDto() returns errors', async () => {
-     *   // Given
-     *   const errors = [{ foo: 'bar' }] as unknown as ValidationError[];
-     *   validatedDtoMock.mockResolvedValueOnce(errors);
-     *
-     *   // When / Then
-     *   await expect(service['validate'](data)).rejects.toThrow(
-     *     SessionInvalidSessionDataException,
-     *     );
-     *   });
-     */
-    it('should log errors if validateDto() returns errors', async () => {
-      // Given
-      const errors = [{ foo: 'bar' }] as unknown as ValidationError[];
-      validatedDtoMock.mockResolvedValueOnce(errors);
-
-      // When
-      await service['validate'](data);
-
-      // Then
-      expect(loggerMock.crit).toHaveBeenCalledWith(
-        'SessionBackendStorageService:validate() Invalid session data from Redis.',
-      );
     });
   });
 

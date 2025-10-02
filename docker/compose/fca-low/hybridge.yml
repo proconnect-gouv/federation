@@ -5,114 +5,73 @@ services:
   ##
   ####################
 
-  rp-bridge-proxy:
-    image: nginx:1.14.2
+  rp-hybridge:
+    image: nginx:1.27.3
     volumes:
-      - ${VOLUMES_DIR}/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ${VOLUMES_DIR}/nginx-proxy/includes:/etc/nginx/includes:ro
-      - ${VOLUMES_DIR}/rp-bridge-proxy/:/etc/nginx/conf.d:ro
-      - ${VOLUMES_DIR}/ssl:/etc/nginx/docker_host:ro
+      - ../../volumes/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../../volumes/nginx-proxy/includes:/etc/nginx/includes:ro
+      - ../../volumes/rp-bridge-proxy/:/etc/nginx/conf.d:ro
+      - ../../volumes/ssl:/etc/nginx/docker_host:ro
     networks:
       public:
         ipv4_address: 172.16.1.254
     depends_on:
-      - bridge-proxy-rie
+      - hybridge-internet
 
-  bridge-proxy-rie:
-    hostname: bridge-proxy-rie
-    image: pc-nodejs
+  hybridge-internet:
+    hostname: hybridge-internet
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '../../../back'
+      target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
+    depends_on:
+      rp-all:
+        condition: service_started
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/bridge-proxy-rie.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/hybridge-internet.env'
     tty: true
     networks:
       - public
       - data
     init: true
-    command: 'pm2 logs'
 
   ####################
   ##
   ##   RIE network
   ##
   ####################
-  csmr-rie:
-    hostname: csmr-rie
-    image: pc-nodejs
+  hybridge-rie:
+    hostname: hybridge-rie
     build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
+      context: '../../../back'
+      target: dev
     user: ${CURRENT_UID}
-    working_dir: /var/www/app
     depends_on:
       - broker
     volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - ${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro
+      - '../../../back/apps:/var/www/app/apps:ro'
+      - '../../../back/libs:/var/www/app/libs:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log/:/var/log/app'
+      - '../../volumes/.home:/home'
+      - ../../volumes/ssl:/etc/ssl/docker_host:ro
+    tmpfs:
+      - /var/www/app/dist:mode=777
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/csmr-rie.env'
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/hybridge-rie.env'
     tty: true
     networks:
       - rie
     init: true
-    command: 'pm2 logs'
-
-  fia-llng-low:
-    build:
-      context: '${WORKING_DIR}'
-      dockerfile: '${WORKING_DIR}/builds/lemonldap/Dockerfile'
-    volumes:
-      - '${VOLUMES_DIR}/llng/scripts/:/scripts:ro'
-      - '${VOLUMES_DIR}/llng/llng-conf.json:/llng-conf.json:ro'
-    env_file:
-      - '${COMPOSE_DIR}/fca-low/.env/fia-llng-low.env'
-    networks:
-      - rie
-
-  fia-rie-low:
-    hostname: fia-rie-low
-    image: pc-nodejs
-    build:
-      {
-        context: '${COMPOSE_DIR}/../builds/node',
-        args: { NODE_VERSION: '${NODE_VERSION}' },
-      }
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      redis-pwd:
-        condition: service_healthy
-    volumes:
-      - '${FEDERATION_DIR}/back:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-    env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fca-low/.env/fia-rie-low.env'
-    tty: true
-    networks:
-      - rie
-    init: true
-    command: 'pm2 logs'
+    command: 'yarn start:dev csmr-rie'

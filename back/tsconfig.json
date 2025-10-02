@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2020",
+    "target": "es2023",
     "outDir": "./dist",
     "baseUrl": "./",
     "sourceMap": true,
@@ -11,23 +11,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@entities/*": ["entities/*"],
-      "@fc/rnipp": ["libs/rnipp/src"],
-      "@fc/rnipp/*": ["libs/rnipp/src/*"],
       "@fc/identity-provider-adapter-mongo": [
         "libs/identity-provider-adapter-mongo/src"
       ],
       "@fc/identity-provider-adapter-mongo/*": [
         "libs/identity-provider-adapter-mongo/src/*"
       ],
-      "@fc/data-provider-adapter-mongo": [
-        "libs/data-provider-adapter-mongo/src"
-      ],
-      "@fc/data-provider-adapter-mongo/*": [
-        "libs/data-provider-adapter-mongo/src/*"
-      ],
-      "@fc/identity": ["libs/identity/src"],
-      "@fc/identity/*": ["libs/identity/src/*"],
       "@fc/service-provider-adapter-mongo": [
         "libs/service-provider-adapter-mongo/src"
       ],
@@ -48,12 +37,10 @@
       "@fc/oidc-client/*": ["libs/oidc-client/src/*"],
       "@fc/cryptography": ["libs/cryptography/src"],
       "@fc/cryptography/*": ["libs/cryptography/src/*"],
-      "@fc/core": ["libs/core/src"],
-      "@fc/core/*": ["libs/core/src/*"],
-      "@fc/core-fca": ["apps/core-fca/src"],
-      "@fc/core-fca/*": ["apps/core-fca/src/*"],
-      "@fc/csmr-http-proxy": ["apps/csmr-http-proxy/src"],
-      "@fc/csmr-http-proxy/*": ["apps/csmr-http-proxy/src/*"],
+      "@fc/core": ["apps/core-fca-low/src"],
+      "@fc/core/*": ["apps/core-fca-low/src/*"],
+      "@fc/csmr-http-proxy": ["apps/csmr-rie/src"],
+      "@fc/csmr-http-proxy/*": ["apps/csmr-rie/src/*"],
       "@fc/common": ["libs/common/src"],
       "@fc/common/*": ["libs/common/src/*"],
       "@fc/config": ["libs/config/src"],
@@ -70,8 +57,6 @@
       "@fc/rabbitmq/*": ["libs/rabbitmq/src/*"],
       "@fc/microservices": ["libs/microservices/src"],
       "@fc/microservices/*": ["libs/microservices/src/*"],
-      "@fc/account": ["libs/account/src"],
-      "@fc/account/*": ["libs/account/src/*"],
       "@fc/oidc": ["libs/oidc/src"],
       "@fc/oidc/*": ["libs/oidc/src/*"],
       "@fc/http-proxy": ["libs/http-proxy/src"],
@@ -83,40 +68,20 @@
       "@mocks/email-validator": ["libs/email-validator/.mocks"],
       "@fc/tracking": ["libs/tracking/src"],
       "@fc/tracking/*": ["libs/tracking/src/*"],
-      "@fc/tracking-context": ["libs/tracking-context/src"],
-      "@fc/tracking-context/*": ["libs/tracking-context/src/*"],
       "@fc/app": ["libs/app/src"],
       "@fc/app/*": ["libs/app/src/*"],
-      "@fc/apache-ignite": ["libs/apache-ignite/src"],
-      "@fc/apache-ignite/*": ["libs/apache-ignite/src/*"],
       "@fc/notifications": ["libs/notifications/src"],
       "@fc/notifications/*": ["libs/notifications/src/*"],
-      "@fc/elasticsearch": ["libs/elasticsearch/src"],
-      "@fc/elasticsearch/*": ["libs/elasticsearch/src/*"],
       "@fc/csv": ["libs/csv/src"],
       "@fc/csv/*": ["libs/csv/src/*"],
-      "@fc/cog": ["libs/cog/src"],
-      "@fc/cog/*": ["libs/cog/src/*"],
-      "@fc/bridge-http-proxy": ["apps/bridge-http-proxy/src"],
-      "@fc/bridge-http-proxy/*": ["apps/bridge-http-proxy/src/*"],
-      "@fc/data-provider-core-auth": ["libs/data-provider-core-auth/src"],
-      "@fc/data-provider-core-auth/*": ["libs/data-provider-core-auth/src/*"],
+      "@fc/bridge-http-proxy": ["apps/bridge-http-proxy-rie/src"],
+      "@fc/bridge-http-proxy/*": ["apps/bridge-http-proxy-rie/src/*"],
       "@fc/hybridge-http-proxy": ["libs/hybridge-http-proxy/src"],
       "@fc/hybridge-http-proxy/*": ["libs/hybridge-http-proxy/src/*"],
-      "@fc/jwt": ["libs/jwt/src"],
-      "@fc/jwt/*": ["libs/jwt/src/*"],
-      "@mocks/jwt": ["libs/jwt/.mocks"],
-      "@mocks/jwt/*": ["libs/jwt/.mocks/*"],
-      "@fc/mock-data-provider": ["apps/mock-data-provider/src"],
-      "@fc/mock-data-provider/*": ["apps/mock-data-provider/src/*"],
       "@fc/oidc-acr": ["libs/oidc-acr/src"],
       "@fc/oidc-acr/*": ["libs/oidc-acr/src/*"],
       "@fc/flow-steps": ["libs/flow-steps/src"],
       "@fc/flow-steps/*": ["libs/flow-steps/src/*"],
-      "@fc/data-provider-adapter-core": ["libs/data-provider-adapter-core/src"],
-      "@fc/data-provider-adapter-core/*": [
-        "libs/data-provider-adapter-core/src/*"
-      ],
       "@mocks/session": ["libs/session/.mocks"],
       "@mocks/session/*": ["libs/session/.mocks/*"],
       "@fc/fqdn-to-idp-adapter-mongo": ["libs/fqdn-to-idp-adapter-mongo/src"],
@@ -127,37 +92,19 @@
       "@fc/async-local-storage/*": ["libs/async-local-storage/src/*"],
       "@mocks/async-local-storage": ["libs/async-local-storage/.mocks"],
       "@mocks/async-local-storage/*": ["libs/async-local-storage/.mocks/*"],
-      "@fc/view-templates": ["libs/view-templates/src"],
-      "@fc/view-templates/*": ["libs/view-templates/src/*"],
-      "@mocks/core": ["libs/core/.mocks"],
-      "@mocks/core/*": ["libs/core/.mocks/*"],
       "@fc/csrf": ["libs/csrf/src"],
       "@fc/csrf/*": ["libs/csrf/src/*"],
+      "@fc/base-exception": ["libs/base-exception/src"],
+      "@fc/base-exception/*": ["libs/base-exception/src/*"],
       "@fc/exceptions": ["libs/exceptions/src"],
       "@fc/exceptions/*": ["libs/exceptions/src/*"],
       "@fc/account-fca": ["libs/account-fca/src"],
       "@fc/account-fca/*": ["libs/account-fca/src/*"],
-      "@fc/dto2form": ["libs/dto2form/src"],
-      "@fc/dto2form/*": ["libs/dto2form/src/*"],
-      "@mocks/dto2form": ["libs/dto2form/.mocks"],
-      "@mocks/dto2form/*": ["libs/dto2form/.mocks/*"],
       "@fc/logger-plugins": ["libs/logger-plugins/src"],
-      "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"],
-      "@mocks/common": ["libs/common/.mocks"],
-      "@mocks/common/*": ["libs/common/.mocks/*"],
-      "@fc/postgres": ["libs/postgres/src"],
-      "@fc/postgres/*": ["libs/postgres/src/*"],
-      "@mocks/typeorm": ["libs/typeorm/.mocks"],
-      "@mocks/typeorm/*": ["libs/typeorm/.mocks/*"]
+      "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"]
     }
   },
   "files": ["global.d.ts"],
-  "include": [
-    "*.js",
-    "*.ts",
-    "libs/**/*.ts",
-    "apps/**/*.ts",
-    "instances/**/*.ts"
-  ],
+  "include": ["*.js", "*.ts", "libs/**/*.ts", "apps/**/*.ts"],
   "exclude": ["node_modules", "dist", "coverage", "scripts"]
 }

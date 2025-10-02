@@ -1,0 +1,148 @@
+import { USER_OPERATOR, USER_PASS } from '../../support/constants';
+import { createServiceProvider } from './service-provider-create.utils';
+
+const basicConfiguration = {
+  fast: true,
+  totp: true,
+};
+
+function deleteServiceProviderByName(name) {
+  cy.visit(`/service-provider?page=1&limit=9999`);
+  cy.get(`[data-element-title=${name}] button.btn-action-delete`)
+    .first()
+    .click();
+  cy.get('#totpModal').then(() => cy.totp(basicConfiguration));
+  cy.contains('Confirmer').click();
+}
+
+describe('Delete service provider', () => {
+  before(() => {
+    Cypress.session.clearAllSavedSessions();
+    cy.resetEnv('postgres');
+    cy.resetEnv('mongo');
+  });
+
+  const fs = {
+    name: 'uniquefranceconnect',
+    platform: 'CORE_FCP',
+    signupId: '123456',
+    redirectUri: 'https://url.com',
+    redirectUriLogout: 'https://url.com/logout',
+    emails: 'titlen@gmail.com',
+    ipAddresses: '192.0.0.0',
+  };
+
+  beforeEach(() => {
+    cy.clearBusinessLog();
+    cy.login(USER_OPERATOR, USER_PASS);
+  });
+
+  it('If totp is not correct or empty', () => {
+    createServiceProvider(fs, {
+      ...basicConfiguration,
+    });
+    cy.get('button.btn-action-delete').last().click();
+    cy.contains('Confirmer').click();
+    cy.contains(`Le TOTP n'a pas été saisi`).should('be.visible');
+    cy.get('#totpModal').type('000000');
+    cy.contains('Confirmer').click();
+
+    cy.contains(`Le TOTP saisi n'est pas valide`).should('be.visible');
+    cy.visit(`/service-provider?page=1&limit=9999`);
+    cy.contains(fs.name).should('be.visible');
+    deleteServiceProviderByName(fs.name);
+  });
+
+  describe('If action is cancel', () => {
+    beforeEach(() => {
+      createServiceProvider(fs, {
+        ...basicConfiguration,
+      });
+    });
+
+    afterEach(() => {
+      deleteServiceProviderByName(fs.name);
+    });
+
+    it('(checkbox & delete button)', () => {
+      cy.get('input.delete-items').first().click();
+      cy.get('input.delete-items').last().click();
+      cy.contains('Supprimer').should('be.visible').click();
+      cy.contains('Annuler').click();
+      cy.get('table').contains(fs.name).should('be.visible');
+    });
+
+    it('(trash button)', () => {
+      cy.get('button.btn-action-delete').last().click();
+      cy.contains('Annuler').click();
+      cy.get('table').contains(fs.name).should('be.visible');
+    });
+  });
+
+  describe('Should delete', () => {
+    beforeEach(() => {
+      createServiceProvider(fs, { ...basicConfiguration });
+      cy.visit(
+        `/service-provider?page=1&limit=9999&sortField=createdAt&sortDirection=asc`,
+      );
+      cy.contains(fs.name).should('be.visible');
+    });
+    it('One service provider thanks quick method (trash button)', () => {
+      cy.get('button.btn-action-delete').last().click();
+
+      cy.get('#totpModal').then(() =>
+        cy.totp({
+          ...basicConfiguration,
+        }),
+      );
+      cy.contains('Confirmer').click();
+
+      cy.contains(
+        `Le fournisseur de service ${fs.name} a été supprimé avec succès !`,
+      ).should('be.visible');
+      cy.closeBanner('.alert-success');
+      cy.get('table').contains(fs.name).should('not.exist');
+
+      cy.hasBusinessLog({
+        entity: 'service-provider',
+        action: 'delete',
+        user: USER_OPERATOR,
+      });
+    });
+
+    it('One service provider thanks long method (checkbox & delete button)', () => {
+      fs.name = 'uniquefranceconnect3';
+      cy.visit(
+        `/service-provider?page=1&limit=9999&sortField=createdAt&sortDirection=asc`,
+      );
+      cy.get('input.delete-items').last().click();
+      cy.contains('Supprimer').should('be.visible').click();
+
+      cy.get('#totpModal').then(() =>
+        cy.totp({
+          ...basicConfiguration,
+        }),
+      );
+      cy.contains('Confirmer').click();
+
+      cy.closeBanner('.alert-success');
+      cy.contains(fs.name).should('not.exist');
+    });
+
+    it('Several service provider with uuid and old id', () => {
+      cy.get('input.delete-items').first().click();
+      cy.get('input.delete-items').last().click();
+      cy.contains('Supprimer').should('be.visible').click();
+
+      cy.get('#totpModal').then(() =>
+        cy.totp({
+          ...basicConfiguration,
+        }),
+      );
+      cy.contains('Confirmer').click();
+
+      cy.closeBanner('.alert-success');
+      cy.contains(fs.name).should('not.exist');
+    });
+  });
+});

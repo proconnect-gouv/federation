@@ -1,10 +1,12 @@
+import { Response } from 'express';
+
 import { ArgumentsHost } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiErrorParams } from '@fc/app';
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
-import { ExceptionCaughtEvent } from '@fc/exceptions/events';
+import { CoreFcaInvalidIdentityException } from '@fc/core';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
@@ -30,9 +32,6 @@ describe('FcWebHtmlExceptionFilter', () => {
   const configMock = getConfigMock();
   const sessionMock = getSessionServiceMock();
   const loggerMock = getLoggerMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
@@ -43,23 +42,26 @@ describe('FcWebHtmlExceptionFilter', () => {
   class ExceptionMock extends FcException {
     error = 'ERROR';
     error_description = 'ERROR_DESCRIPTION';
+    ui = 'some.message.code';
   }
-
-  let exceptionMock: ExceptionMock;
 
   const resMock = {
     status: jest.fn(),
     render: jest.fn(),
   };
 
-  const codeMock = Symbol('code');
-  const idMock = Symbol('id');
+  const exceptionMock = new ExceptionMock();
+  const codeMock = 'code';
+  const idMock = 'id';
 
-  const paramsMock = {
-    res: resMock,
+  const paramsMock: ApiErrorParams = {
+    exception: exceptionMock,
+    error: { id: idMock, code: codeMock, message: 'some.message.code' },
+    res: resMock as unknown as Response,
+    idpName: undefined,
+    spName: undefined,
     httpResponseCode: 500,
-    error: {},
-    dictionary: {},
+    errorDetail: undefined,
   };
 
   beforeEach(async () => {
@@ -72,7 +74,6 @@ describe('FcWebHtmlExceptionFilter', () => {
         ConfigService,
         SessionService,
         LoggerService,
-        EventBus,
       ],
     })
       .overrideProvider(LoggerService)
@@ -81,8 +82,6 @@ describe('FcWebHtmlExceptionFilter', () => {
       .useValue(sessionMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .compile();
 
     filter = module.get<FcWebHtmlExceptionFilter>(FcWebHtmlExceptionFilter);
@@ -95,8 +94,6 @@ describe('FcWebHtmlExceptionFilter', () => {
     generateErrorIdMock.mockReturnValue(idMock as unknown as string);
 
     resMock.status.mockReturnThis();
-
-    exceptionMock = new ExceptionMock();
   });
 
   it('should be defined', () => {
@@ -106,7 +103,6 @@ describe('FcWebHtmlExceptionFilter', () => {
   describe('catch', () => {
     beforeEach(() => {
       filter['shouldNotRedirect'] = jest.fn().mockReturnValue(false);
-      filter['getParams'] = jest.fn().mockReturnValue(paramsMock);
       filter['errorOutput'] = jest.fn();
     });
 
@@ -122,16 +118,6 @@ describe('FcWebHtmlExceptionFilter', () => {
       );
     });
 
-    it('should publish an ExceptionCaughtEvent', () => {
-      // When
-      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
-
-      // Then
-      expect(eventBusMock.publish).toHaveBeenCalledExactlyOnceWith(
-        expect.any(ExceptionCaughtEvent),
-      );
-    });
-
     it('should output the error', () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
@@ -142,13 +128,16 @@ describe('FcWebHtmlExceptionFilter', () => {
 
     it('should output an OidcProviderNoWrapperException too', () => {
       // When
-      filter.catch(
-        new OidcProviderNoWrapperException(new Error()),
-        hostMock as unknown as ArgumentsHost,
-      );
+      const wrapped = new OidcProviderNoWrapperException(new Error());
+      filter.catch(wrapped, hostMock as unknown as ArgumentsHost);
 
       // Then
-      expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(paramsMock);
+      const expected = {
+        ...paramsMock,
+        exception: wrapped,
+        error: { ...paramsMock.error, message: 'Error' },
+      };
+      expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(expected);
     });
   });
 
@@ -162,15 +151,54 @@ describe('FcWebHtmlExceptionFilter', () => {
       expect(resMock.status).toHaveBeenCalledWith(500);
     });
 
-    it('should render the error template', () => {
+    it('should render the error template with a UI-less static exception', () => {
       // When
-      filter['errorOutput'](paramsMock as unknown as ApiErrorParams);
+      const inputMock = {
+        ...paramsMock,
+        exception: new CoreFcaInvalidIdentityException('anyone'),
+        error: {
+          message: undefined,
+        },
+      };
+      filter['errorOutput'](inputMock as unknown as ApiErrorParams);
 
       // Then
-      expect(resMock.render).toHaveBeenCalledExactlyOnceWith(
-        'error',
-        paramsMock,
-      );
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        ...inputMock,
+        errorDetail: undefined,
+      });
+    });
+
+    it('should render the error template with a generic exception', () => {
+      // When
+      const inputMock = {
+        ...paramsMock,
+        error: { message: 'invalid_scope' },
+        exception: { generic: true, error_description: 'invalid scopes' },
+      };
+      filter['errorOutput'](inputMock as unknown as ApiErrorParams);
+
+      // Then
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        ...inputMock,
+        errorDetail: 'invalid scopes',
+      });
+    });
+
+    it('should render the error template with a missing exception code', () => {
+      // When
+      const input = {
+        ...paramsMock,
+        exception: new BaseException(),
+        error: { ...paramsMock.error, code: undefined, message: undefined },
+      };
+      filter['errorOutput'](input as unknown as ApiErrorParams);
+
+      // Then
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        ...input,
+        errorDetail: undefined,
+      });
     });
   });
 });

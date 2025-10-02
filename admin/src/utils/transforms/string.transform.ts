@@ -1,0 +1,93 @@
+import moment from 'moment-timezone';
+import uniq from 'lodash/uniq';
+
+export function toDate(format: string) {
+  const requiredDateFormat = 'YYYY-MM-DD';
+  return (value: string): Date => {
+    if (format !== requiredDateFormat) {
+      return undefined;
+    }
+    return moment(value, format).toDate();
+  };
+}
+
+export function toBoolean({ value }: { value: string }): boolean | undefined {
+  switch (value) {
+    case 'true':
+    case 'on':
+    case '1':
+    case 'yes':
+      return true;
+    case 'false':
+    case 'off':
+    case '0':
+    case 'no':
+      return false;
+    default:
+      return undefined;
+  }
+}
+
+export function linesToArray(
+  {
+    value,
+  }: {
+    value: string;
+  },
+  options?: { shouldDeleteDuplicates?: boolean },
+): string[] | undefined {
+  let result: string[];
+  try {
+    result = value
+      .split(/\r\n|\n|\r|[;]/)
+      .map((v: string) => v.trim())
+      .filter((v: string) => Boolean(v));
+  } catch (e) {
+    return undefined;
+  }
+  if (options?.shouldDeleteDuplicates) {
+    result = uniq(result);
+  }
+  return result;
+}
+
+export function arrayToLines(value: any) {
+  if (Array.isArray(value)) {
+    return value.join('\r\n');
+  }
+  return value;
+}
+
+export function defaultNoneOrLinesToNullableArray({ value }: { value: any }) {
+  if (!value || value === 'default') {
+    return null;
+  } else if (value === 'none') {
+    return [];
+  } else {
+    return linesToArray({ value });
+  }
+}
+
+export function nullableArrayToDefaultNoneOrLines({ value }: { value: any }) {
+  if (!value) {
+    return 'default';
+  } else if (Array.isArray(value) && value.length === 0) {
+    return 'none';
+  } else if (Array.isArray(value) && value.length > 0) {
+    return arrayToLines(value);
+  } else {
+    return value;
+  }
+}
+
+export function toArray({ value }: { value: string | string[] }) {
+  return Array.isArray(value) ? value : [value];
+}
+
+export function toNullableString({ value }: { value: any }) {
+  return value ? value : null;
+}
+
+export function toEmptiableString({ value }: { value: any }) {
+  return value ? value : '';
+}

@@ -102,6 +102,14 @@ When('je clique sur le bouton ProConnect PKCE', function () {
   }
 });
 
+When('je clique sur le bouton de déconnexion', function () {
+  cy.get('[action="/logout"] button').click();
+});
+
+When('je clique sur le bouton FranceConnect', function () {
+  cy.get('[aria-label="S’identifier avec FranceConnect"]').click();
+});
+
 Then(
   /je suis redirigé vers la page fournisseur de service "([^"]+)"/,
   function (description: string) {
@@ -117,7 +125,7 @@ Then('je suis connecté au fournisseur de service', function () {
 Then('je suis déconnecté du fournisseur de service', function () {
   // I am on the sp page
   cy.contains('Se connecter');
-  // userinfo section is not displayed as I am disconnected
+  // the userinfo section is not displayed as I am disconnected
   cy.contains('Information utilisateur').should('not.exist');
 });
 
@@ -221,6 +229,15 @@ Then(
   },
 );
 
+Then(
+  /le idp_id transmis au fournisseur de service est celui du fournisseur d'identité "([^"]+)"/,
+  function (idpDescription: string) {
+    const { id: idpId } = getIdentityProviderByDescription(idpDescription);
+
+    getUserInfoProperty('idp_id').should('be.equal', idpId);
+  },
+);
+
 Given(
   /je rentre un id qui ne correspond à aucun fournisseur d'identité dans le champ idp_hint/,
   function () {
@@ -319,3 +336,7 @@ Given(
     setCodeChallengeMethod(codeChallengeMethod);
   },
 );
+
+When('je clique sur la checkbox "se souvenir de moi"', function () {
+  cy.contains('Se souvenir de moi').click();
+});
