@@ -47,7 +47,7 @@
     "@nestjs/platform-express": "^10.4.20",
     "@types/ejs": "^3.1.2",
     "@types/retry": "^0.12.2",
-    "amqp-connection-manager": "^4.1.14",
+    "amqp-connection-manager": "^5.0.0",
     "amqplib": "^0.10.9",
     "apache-ignite-client": "^1.0.0",
     "axios": "^1.12.0",
