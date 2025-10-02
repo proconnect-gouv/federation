@@ -11,6 +11,7 @@ const {
   Mongoose_USER,
 } = process.env;
 
+/** @type {import('migrate-mongo').config.Config} */
 const config = {
   mongodb: {
     url: `mongodb://${Mongoose_USER}:${Mongoose_PASSWORD}@${Mongoose_HOSTS}`,
@@ -21,8 +22,6 @@ const config = {
       tlsAllowInvalidCertificates: Mongoose_TLS_INSECURE,
       tlsCAFile: Mongoose_TLS_CA_FILE,
       tlsAllowInvalidHostnames: Mongoose_TLS_ALLOW_INVALID_HOST_NAME,
-      useNewUrlParser: true, // removes a deprecation warning when connecting
-      useUnifiedTopology: true, // removes a deprecating warning when connecting
     },
   },
 
