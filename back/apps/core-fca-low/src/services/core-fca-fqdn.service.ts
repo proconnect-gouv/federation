@@ -55,11 +55,14 @@ export class CoreFcaFqdnService {
   }
 
   async isAllowedIdpForEmail(idpId: string, email: string): Promise<boolean> {
-    const existingIdps =
-      await this.identityProviderAdapterMongoService.getIdpsByEmail(email);
+    const identityProvider =
+      await this.identityProviderAdapterMongoService.getById(idpId);
 
-    if (existingIdps.length > 0) {
-      return existingIdps.some((existingIdp) => existingIdp.uid === idpId);
+    const emailFqdn =
+      this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
+
+    if (identityProvider.fqdns?.some((fqdn) => fqdn === emailFqdn)) {
+      return true;
     }
 
     // if no idp explicitly handles the domain, the only idp allowed is the default one
