@@ -20,8 +20,8 @@ services:
   init-core:
     build:
       context: '../../../back'
-      target: builder
-    working_dir: /build/back
+      target: migrator
+    working_dir: /var/www/app
     user: ${CURRENT_UID}
     depends_on:
       mongo-fca-low:
