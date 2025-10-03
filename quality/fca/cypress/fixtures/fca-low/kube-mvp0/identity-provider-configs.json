@@ -1,0 +1,20 @@
+{
+  "default": {
+    "name": "bdd-idp-default",
+    "title": "FI de test sans discovery url",
+    "issuer": "https://fia1v2.integ01.dev-agentconnect.fr",
+    "authorizationUrl": "https://fia1v2.integ01.dev-agentconnect.fr/auth",
+    "tokenUrl": "https://fia1v2.integ01.dev-agentconnect.fr/token",
+    "userInfoUrl": "https://fia1v2.integ01.dev-agentconnect.fr/userinfo",
+    "logoutUrl": "https://fia1v2.integ01.dev-agentconnect.fr/session/end",
+    "statusUrl": "https://fia1v2.integ01.dev-agentconnect.fr/",
+    "jwksUrl": "https://fia1v2.integ01.dev-agentconnect.fr/jwks",
+    "discovery": "false",
+    "clientId": "myclientidforfia1v2",
+    "client_secret": "5w4NS8KZArT4Gh5M0YhQqtWmepe01l4w",
+    "userinfo_signed_response_alg": "ES256",
+    "id_token_signed_response_alg": "ES256",
+    "emails": "test1@yopmail.com\ntest2@yopmail.com",
+    "siret": "81801912700021"
+  }
+}
