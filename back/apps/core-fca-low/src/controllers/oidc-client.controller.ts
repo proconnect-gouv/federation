@@ -37,15 +37,8 @@ import {
   UserSession,
 } from '../dto';
 import { Routes } from '../enums';
-import {
-  CoreFcaAgentNoIdpException,
-  CoreFcaIdpConfigurationException,
-} from '../exceptions';
-import {
-  CoreFcaFqdnService,
-  CoreFcaService,
-  IdentitySanitizer,
-} from '../services';
+import { CoreFcaAgentNoIdpException } from '../exceptions';
+import { CoreFcaService, IdentitySanitizer } from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -57,13 +50,12 @@ export class OidcClientController {
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly oidcClientConfig: OidcClientConfigService,
-    private readonly coreFca: CoreFcaService,
+    private readonly coreFcaService: CoreFcaService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
     private readonly crypto: CryptographyService,
     private readonly emailValidatorService: EmailValidatorService,
-    private readonly fqdnService: CoreFcaFqdnService,
     private readonly sanitizer: IdentitySanitizer,
     private readonly csrfService: CsrfService,
   ) {}
@@ -81,20 +73,22 @@ export class OidcClientController {
     userSession: ISessionService<UserSession>,
   ) {
     const { idpLoginHint: email } = userSession.get();
-    const fqdnConfig = await this.fqdnService.getFqdnConfigFromEmail(email);
-    const { identityProviderIds } = fqdnConfig;
 
-    const providers =
-      await this.coreFca.getIdentityProvidersByIds(identityProviderIds);
+    const identityProviders =
+      await this.coreFcaService.selectIdpsFromEmail(email);
+    const displayableIdps =
+      this.coreFcaService.getSortedDisplayableIdentityProviders(
+        identityProviders,
+      );
 
     const csrfToken = this.csrfService.renew();
     this.sessionService.set('Csrf', { csrfToken });
 
     return res.render('interaction-identity-provider', {
       csrfToken,
-      providers,
-      hasDefaultIdp: this.coreFca.hasDefaultIdp(
-        providers.map(({ uid }) => uid),
+      identityProviders: displayableIdps,
+      hasDefaultIdp: this.coreFcaService.hasDefaultIdp(
+        identityProviders.map(({ uid }) => uid),
       ),
     });
   }
@@ -113,7 +107,7 @@ export class OidcClientController {
   ) {
     const { identityProviderUid: idpId } = body;
 
-    return this.coreFca.redirectToIdp(req, res, idpId);
+    return this.coreFcaService.redirectToIdp(req, res, idpId);
   }
 
   @Post(Routes.REDIRECT_TO_IDP)
@@ -141,16 +135,15 @@ export class OidcClientController {
 
     userSession.set({ rememberMe: rememberMe, idpLoginHint: email });
 
-    const { identityProviderIds: idpIds } =
-      await this.fqdnService.getFqdnConfigFromEmail(email);
+    const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
 
-    if (idpIds.length === 0) {
+    if (idpsFromEmail.length === 0) {
       throw new CoreFcaAgentNoIdpException();
     }
 
-    if (idpIds.length > 1) {
+    if (idpsFromEmail.length > 1) {
       this.logger.debug(
-        `${idpIds.length} identity providers matching for "****@${fqdn}"`,
+        `${idpsFromEmail.length} identity providers matching for "****@${fqdn}"`,
       );
       const { urlPrefix } = this.config.get<AppConfig>('App');
       const url = `${urlPrefix}${Routes.IDENTITY_PROVIDER_SELECTION}`;
@@ -158,14 +151,7 @@ export class OidcClientController {
       return res.redirect(url);
     }
 
-    const idpId = idpIds[0];
-
-    const identityProvider = await this.identityProvider.getById(idpId);
-    if (!identityProvider) {
-      throw new CoreFcaIdpConfigurationException();
-    }
-
-    return this.coreFca.redirectToIdp(req, res, idpId);
+    return this.coreFcaService.redirectToIdp(req, res, idpsFromEmail[0].uid);
   }
 
   /**
@@ -297,7 +283,7 @@ export class OidcClientController {
       idpIdentity,
     });
 
-    const isAllowedIdpForEmail = await this.fqdnService.isAllowedIdpForEmail(
+    const isAllowedIdpForEmail = await this.coreFcaService.isAllowedIdpForEmail(
       idpId,
       idpIdentity.email,
     );

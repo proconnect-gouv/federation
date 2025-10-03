@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -60,6 +61,7 @@ describe('CoreFcaService', () => {
     getById: jest.fn(),
     getList: jest.fn(),
     getIdpsByFqdn: jest.fn(),
+    getFqdnFromEmail: jest.fn(),
   };
 
   const identityProviderMockResponse = {
@@ -78,8 +80,7 @@ describe('CoreFcaService', () => {
   };
 
   const coreFcaFqdnServiceMock = {
-    getFqdnConfigFromEmail: jest.fn(),
-    getSpAuthorizedFqdnsConfig: jest.fn(),
+    getSpAuthorizedFqdnsDetails: jest.fn(),
   };
 
   const trackingServiceMock = {
@@ -143,10 +144,6 @@ describe('CoreFcaService', () => {
     coreAuthorizationServiceMock.getAuthorizeUrl.mockResolvedValue(
       authorizeUrlMock,
     );
-
-    coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValue({
-      fqdn: '',
-    });
   });
 
   it('should be defined', () => {
@@ -272,107 +269,60 @@ describe('CoreFcaService', () => {
     });
   });
 
-  describe('getIdentityProvidersByIds', () => {
-    beforeEach(() => {
-      configServiceMock.get.mockReturnValue({
-        defaultIdpId: 'luciusIdp',
-      });
-    });
-    it('should return the identity providers for the given ids', async () => {
-      // Given
-      identityProviderMock.getList.mockResolvedValue([
-        { ...identityProviderMockResponse, uid: 'dobbyIdp' },
-        { ...identityProviderMockResponse, uid: 'horcruxIdp' },
-        { ...identityProviderMockResponse, uid: 'luciusIdp' },
-        { ...identityProviderMockResponse, uid: 'snapeIdp' },
-      ]);
-
-      const { name } = identityProviderMockResponse;
-      const idpIds = ['snapeIdp', 'luciusIdp', 'dobbyIdp'];
-
-      // When
-      const providers = await service.getIdentityProvidersByIds(idpIds);
-
-      // Then
-      expect(providers).toEqual([
-        { name, title: 'titleMockValue', uid: 'dobbyIdp' },
-        { name, title: 'titleMockValue', uid: 'snapeIdp' },
-        { name, title: 'Autre', uid: 'luciusIdp' },
-      ]);
+  describe('throwIfFqdnIsNotAuthorizedForSp', () => {
+    it('should return nothing if authorized email configuration is empty', () => {
+      expect(() =>
+        service['throwIfFqdnIsNotAuthorizedForSp'](
+          spIdMock,
+          'anyEmail@mail.fr',
+        ),
+      ).not.toThrow();
     });
 
-    it('should rename the title to "Autre" for the default idp and sort the results', async () => {
-      // Given
-      identityProviderMock.getList.mockResolvedValue([
-        { name: 'Dobby', title: 'Elf', uid: 'dobbyIdp' },
-        { name: 'Lucius', title: 'Human', uid: 'luciusIdp' },
-        { name: 'Snape', title: 'Wizard', uid: 'snapeIdp' },
-      ]);
-      const idpIds = ['snapeIdp', 'luciusIdp', 'dobbyIdp'];
-
-      // When
-      const providers = await service.getIdentityProvidersByIds(idpIds);
-
-      // Then
-      expect(providers).toEqual([
-        { name: 'Dobby', title: 'Elf', uid: 'dobbyIdp' },
-        { name: 'Snape', title: 'Wizard', uid: 'snapeIdp' },
-        { name: 'Lucius', title: 'Autre', uid: 'luciusIdp' },
-      ]);
-    });
-  });
-
-  describe('throwIfFqdnNotAuthorizedForSp', () => {
-    it('should return nothing if authorized email configuration is empty', async () => {
-      await expect(
-        service['throwIfFqdnNotAuthorizedForSp'](spIdMock, 'anyEmail@mail.fr'),
-      ).resolves.not.toThrow();
-    });
-
-    it('should throw an error if the email is not authorized', async () => {
-      coreFcaFqdnServiceMock.getSpAuthorizedFqdnsConfig.mockReturnValueOnce({
+    it('should throw an error if the email is not authorized', () => {
+      coreFcaFqdnServiceMock.getSpAuthorizedFqdnsDetails.mockReturnValueOnce({
         spName: 'Barad-Dur',
         spContact: 'sauron@palantir.morgoth',
         authorizedFqdns: ['mordor.orc'],
       });
-      await expect(
-        service['throwIfFqdnNotAuthorizedForSp'](
+      expect(() =>
+        service['throwIfFqdnIsNotAuthorizedForSp'](
           spIdMock,
           'galadriel@lorien.elve',
         ),
-      ).rejects.toThrow();
+      ).toThrow();
     });
 
-    it('should return nothing if the email is authorized', async () => {
-      coreFcaFqdnServiceMock.getSpAuthorizedFqdnsConfig.mockReturnValueOnce({
+    it('should return nothing if the email is authorized', () => {
+      coreFcaFqdnServiceMock.getSpAuthorizedFqdnsDetails.mockReturnValueOnce({
         spName: 'Barad-Dur',
         spContact: 'sauron@palantir.morgoth',
         authorizedFqdns: ['mordor.orc'],
       });
 
-      coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValueOnce({
-        fqdn: 'mordor.orc',
-      });
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('mordor.orc');
 
-      await expect(
-        service['throwIfFqdnNotAuthorizedForSp'](spIdMock, 'gollum@mordor.orc'),
-      ).resolves.not.toThrow();
+      expect(() =>
+        service['throwIfFqdnIsNotAuthorizedForSp'](
+          spIdMock,
+          'gollum@mordor.orc',
+        ),
+      ).not.toThrow();
     });
 
-    it('should return nothing if the config has no authorized fqdns', async () => {
-      coreFcaFqdnServiceMock.getSpAuthorizedFqdnsConfig.mockReturnValueOnce({
+    it('should return nothing if the config has no authorized fqdns', () => {
+      coreFcaFqdnServiceMock.getSpAuthorizedFqdnsDetails.mockReturnValueOnce({
         spName: 'Barad-Dur',
         spContact: 'sauron@palantir.morgoth',
         authorizedFqdns: [],
       });
 
-      coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValueOnce({
-        fqdn: 'mordor.orc',
-      });
-
-      await expect(
-        service['throwIfFqdnNotAuthorizedForSp'](spIdMock, 'gollum@mordor.orc'),
-      ).resolves.not.toThrow();
+      expect(() =>
+        service['throwIfFqdnIsNotAuthorizedForSp'](
+          spIdMock,
+          'gollum@mordor.orc',
+        ),
+      ).not.toThrow();
     });
   });
 
@@ -429,6 +379,208 @@ describe('CoreFcaService', () => {
 
       // Then
       expect(result).toBe(false);
+    });
+  });
+
+  describe('selectIdpsFromEmail', () => {
+    it('should return the default idp if no idp is mapped', async () => {
+      // Given
+      const mockDefaultIdp = {
+        uid: 'default-idp',
+      } as unknown as IdentityProviderMetadata;
+      identityProviderMock.getById.mockResolvedValueOnce(mockDefaultIdp);
+
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      identityProviderMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+
+      // When
+      const response = await service.selectIdpsFromEmail('hogwarts.uk');
+
+      // Then
+      expect(response).toEqual([mockDefaultIdp]);
+    });
+
+    it('should return no idps if no idp is mapped for fqdn and no default idp is set', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: '',
+      });
+
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      identityProviderMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+
+      // When
+      const response = await service.selectIdpsFromEmail('hogwarts.uk');
+
+      // Then
+      expect(response).toEqual([]);
+    });
+
+    it('should return the idps mapped', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      identityProviderMock.getIdpsByFqdn.mockResolvedValueOnce([
+        {
+          uid: 'idp1',
+        },
+        {
+          uid: 'idp2',
+        },
+      ]);
+
+      // When
+      const response = await service.selectIdpsFromEmail('hogwarts.uk');
+
+      // Then
+      const expectedConfig = [
+        {
+          uid: 'idp1',
+        },
+        {
+          uid: 'idp2',
+        },
+      ];
+
+      expect(response).toEqual(expectedConfig);
+    });
+
+    describe('isAllowedIdpForEmail', () => {
+      it('should allow a fqdn listed in one of the fqdns of an idp', async () => {
+        // Given
+        identityProviderMock.getById.mockResolvedValueOnce({
+          uid: 'idp1',
+          fqdns: ['hogwarts.uk'],
+        });
+        identityProviderMock.getFqdnFromEmail.mockReturnValueOnce(
+          'hogwarts.uk',
+        );
+        configServiceMock.get.mockReturnValueOnce({
+          defaultIdpId: 'default-idp',
+        });
+
+        // When
+        const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+          'idp1',
+          'hermione.granger@hogwarts.uk',
+        );
+
+        // Then
+        expect(isAllowedIdpForEmail).toEqual(true);
+      });
+
+      it('should not allow a fqdn listed in one of the fqdns of only others idps', async () => {
+        // Given
+        identityProviderMock.getById.mockResolvedValueOnce({
+          uid: 'idp1',
+          fqdns: ['fqdn1.fr', 'fqdn1bis.fr'],
+        });
+        identityProviderMock.getFqdnFromEmail.mockReturnValueOnce(
+          'hogwarts.uk',
+        );
+        configServiceMock.get.mockReturnValueOnce({
+          defaultIdpId: 'default-idp',
+        });
+
+        // When
+        const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+          'idp1',
+          'hermione.granger@hogwarts.uk',
+        );
+
+        // Then
+        expect(isAllowedIdpForEmail).toEqual(false);
+      });
+
+      it('should allow an unknown fqdn when using the default identity provider', async () => {
+        // Given
+        configServiceMock.get.mockReturnValueOnce({
+          defaultIdpId: 'default-idp',
+        });
+        identityProviderMock.getById.mockResolvedValueOnce({
+          uid: 'default-idp',
+          fqdns: [],
+        });
+        identityProviderMock.getFqdnFromEmail.mockReturnValueOnce(
+          'hogwarts.uk',
+        );
+
+        // When
+        const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+          'default-idp',
+          'hermione.granger@hogwarts.uk',
+        );
+
+        // Then
+        expect(isAllowedIdpForEmail).toEqual(true);
+      });
+    });
+  });
+
+  describe('getSortedDisplayableIdentityProviders', () => {
+    it('should sort identity providers alphabetically with "Autre" at the end of the list', () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        defaultIdpId: 'idp2',
+      });
+
+      const identityProviders = [
+        { uid: 'idp1', title: 'Zeta' },
+        { uid: 'idp2', title: 'Alpha' },
+        { uid: 'idp3', title: 'Beta' },
+      ] as unknown as IdentityProviderMetadata[];
+
+      // When
+      const sortedProviders =
+        service.getSortedDisplayableIdentityProviders(identityProviders);
+
+      // Then
+      expect(sortedProviders).toEqual([
+        { uid: 'idp3', title: 'Beta' },
+        { uid: 'idp1', title: 'Zeta' },
+        { uid: 'idp2', title: 'Autre' },
+      ]);
+    });
+
+    it('should handle empty identity provider list', () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        defaultIdpId: 'idp2',
+      });
+
+      const identityProviders: IdentityProviderMetadata[] = [];
+
+      // When
+      const sortedProviders =
+        service.getSortedDisplayableIdentityProviders(identityProviders);
+
+      // Then
+      expect(sortedProviders).toEqual([]);
+    });
+
+    it('should convert default idp title to "Autre"', () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        defaultIdpId: 'idp1',
+      });
+
+      const identityProviders = [
+        { uid: 'idp1', title: 'Original Title' },
+      ] as unknown as IdentityProviderMetadata[];
+
+      // When
+      const sortedProviders =
+        service.getSortedDisplayableIdentityProviders(identityProviders);
+
+      // Then
+      expect(sortedProviders).toEqual([{ uid: 'idp1', title: 'Autre' }]);
     });
   });
 });

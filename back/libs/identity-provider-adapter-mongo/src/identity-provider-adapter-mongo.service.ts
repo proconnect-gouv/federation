@@ -126,10 +126,9 @@ export class IdentityProviderAdapterMongoService
    */
   async getList(refreshCache?: boolean): Promise<IdentityProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
-      this.logger.debug('Refresh cache from DB');
-      const list = await this.findAllIdentityProvider();
+      const allIdentityProviders = await this.findAllIdentityProvider();
       this.listCache = deepFreeze(
-        list.map(this.legacyToOpenIdPropertyName.bind(this)),
+        allIdentityProviders.map((idp) => this.legacyToOpenIdPropertyName(idp)),
       ) as IdentityProviderMetadata[];
     }
 

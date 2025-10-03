@@ -1,1 +1,1 @@
-export * from './core-fca-fqdn-service.interface';
+export * from './sp-authorized-fqdns-details';
