@@ -39,7 +39,6 @@ export abstract class BaseIdentityDto {
   siren?: string;
 
   @IsString()
-  @MinLength(1)
   @MaxLength(256)
   siret?: string;
 
@@ -56,7 +55,6 @@ export abstract class BaseIdentityDto {
   belonging_population?: string;
 
   @IsString()
-  @MinLength(1)
   @MaxLength(256)
   @IsOptional()
   phone_number?: string;

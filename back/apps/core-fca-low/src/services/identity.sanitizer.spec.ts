@@ -72,6 +72,29 @@ describe('IdentitySanitizer', () => {
         identitySanitizer.getValidatedIdentityFromIdp(invalidIdentity, idpId),
       ).rejects.toThrow(CoreFcaInvalidIdentityException);
     });
+
+    it('should not throw CoreFcaInvalidIdentityException when phone validation fails', async () => {
+      const invalidIdentity = {
+        sub: '123',
+        email: 'test@test.com',
+        given_name: 'John',
+        usual_name: 'Doe',
+        uid: 'UID123',
+        phone_number: '',
+      };
+      const idpId = 'idp1';
+
+      jest
+        .spyOn(identityProvider, 'getById')
+        .mockResolvedValue({ supportEmail: null } as any);
+
+      const result = await identitySanitizer.getValidatedIdentityFromIdp(
+        invalidIdentity,
+        idpId,
+      );
+
+      expect(result.phone_number).toEqual('');
+    });
   });
 
   describe('transformIdentity', () => {
@@ -111,6 +134,33 @@ describe('IdentitySanitizer', () => {
         uid: 'UID123',
         usual_name: 'Doe',
       });
+    });
+
+    it('should not throw CoreFcaInvalidIdentityException when phone number is invalid', async () => {
+      const idpId = 'idp1';
+      const sub = 'sub123';
+      const acr = 'acr1';
+      const identityFromIdp = {
+        sub: '123',
+        email: 'test@test.com',
+        given_name: 'John',
+        usual_name: 'Doe',
+        uid: 'UID123',
+        phone_number: '',
+      };
+
+      jest
+        .spyOn(identityProvider, 'getById')
+        .mockResolvedValue({ siret: '12345678900007' } as any);
+
+      const result = await identitySanitizer.transformIdentity(
+        identityFromIdp as IdentityFromIdpDto,
+        idpId,
+        sub,
+        acr,
+      );
+
+      expect(result.phone_number).toBeUndefined();
     });
 
     it('should throw CoreFcaInvalidIdentityException when siret is missing and no default is provided', async () => {
