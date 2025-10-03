@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { IdentityProviderMetadata } from '@fc/oidc';
 
 import { getConfigMock } from '@mocks/config';
 
@@ -41,9 +42,16 @@ describe('CoreFcaFqdnService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getFqdnConfigFromEmail', () => {
+  describe('getIdpsFromEmail', () => {
     it('should return the default idp if no idp is mapped', async () => {
       // Given
+      const mockDefaultIdp = {
+        uid: 'default-idp',
+      } as unknown as IdentityProviderMetadata;
+      identityProviderAdapterMongoMock.getById.mockResolvedValueOnce(
+        mockDefaultIdp,
+      );
+
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: 'default-idp',
       });
@@ -52,16 +60,12 @@ describe('CoreFcaFqdnService', () => {
       identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
         'hogwarts.uk',
       );
+
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
+      const response = await service.getIdpsFromEmail('hogwarts.uk');
 
       // Then
-      const expectedConfig = {
-        fqdn: 'hogwarts.uk',
-        identityProviderIds: ['default-idp'],
-      };
-
-      expect(response).toEqual(expectedConfig);
+      expect(response).toEqual([mockDefaultIdp]);
     });
 
     it('should return no idps if no idp is mapped for fqdn and no default idp is set', async () => {
@@ -76,15 +80,10 @@ describe('CoreFcaFqdnService', () => {
       identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
 
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
+      const response = await service.getIdpsFromEmail('hogwarts.uk');
 
       // Then
-      const expectedConfig = {
-        fqdn: 'hogwarts.uk',
-        identityProviderIds: [],
-      };
-
-      expect(response).toEqual(expectedConfig);
+      expect(response).toEqual([]);
     });
 
     it('should return the idps mapped', async () => {
@@ -98,55 +97,25 @@ describe('CoreFcaFqdnService', () => {
       );
       identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
         {
-          fqdns: ['hogwarts.uk'],
           uid: 'idp1',
         },
         {
-          fqdns: ['hogwarts.uk'],
           uid: 'idp2',
         },
       ]);
 
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
+      const response = await service.getIdpsFromEmail('hogwarts.uk');
 
       // Then
-      const expectedConfig = {
-        fqdn: 'hogwarts.uk',
-        identityProviderIds: ['idp1', 'idp2'],
-      };
-
-      expect(response).toEqual(expectedConfig);
-    });
-
-    it("should return the idps mapped but not the default idp when there is a default idp but fqdn doesn't accepts default idp", async () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        defaultIdpId: 'default-idp',
-      });
-
-      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValueOnce(
-        'hogwards.uk',
-      );
-      identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+      const expectedConfig = [
         {
-          fqdns: ['hogwards.uk'],
           uid: 'idp1',
         },
         {
-          fqdns: ['hogwards.uk'],
           uid: 'idp2',
         },
-      ]);
-
-      // When
-      const response = await service.getFqdnConfigFromEmail('hogwards.uk');
-
-      // Then
-      const expectedConfig = {
-        fqdn: 'hogwards.uk',
-        identityProviderIds: ['idp1', 'idp2'],
-      };
+      ];
 
       expect(response).toEqual(expectedConfig);
     });
