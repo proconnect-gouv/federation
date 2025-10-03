@@ -1,4 +1,5 @@
 export type TrackedEventLogInterface = {
+  amr?: string[];
   browsingSessionId?: string;
   claims?: string;
   event: string;
