@@ -78,7 +78,7 @@ describe('CoreFcaService', () => {
   };
 
   const coreFcaFqdnServiceMock = {
-    getFqdnConfigFromEmail: jest.fn(),
+    getIdpsFromEmail: jest.fn(),
     getSpAuthorizedFqdnsConfig: jest.fn(),
   };
 
@@ -144,7 +144,7 @@ describe('CoreFcaService', () => {
       authorizeUrlMock,
     );
 
-    coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValue({
+    coreFcaFqdnServiceMock.getIdpsFromEmail.mockResolvedValue({
       fqdn: '',
     });
   });
@@ -350,7 +350,7 @@ describe('CoreFcaService', () => {
         authorizedFqdns: ['mordor.orc'],
       });
 
-      coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValueOnce({
+      coreFcaFqdnServiceMock.getIdpsFromEmail.mockResolvedValueOnce({
         fqdn: 'mordor.orc',
       });
 
@@ -366,7 +366,7 @@ describe('CoreFcaService', () => {
         authorizedFqdns: [],
       });
 
-      coreFcaFqdnServiceMock.getFqdnConfigFromEmail.mockResolvedValueOnce({
+      coreFcaFqdnServiceMock.getIdpsFromEmail.mockResolvedValueOnce({
         fqdn: 'mordor.orc',
       });
 

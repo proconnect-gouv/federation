@@ -37,10 +37,7 @@ import {
   UserSession,
 } from '../dto';
 import { Routes } from '../enums';
-import {
-  CoreFcaAgentNoIdpException,
-  CoreFcaIdpConfigurationException,
-} from '../exceptions';
+import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaFqdnService,
   CoreFcaService,
@@ -81,20 +78,16 @@ export class OidcClientController {
     userSession: ISessionService<UserSession>,
   ) {
     const { idpLoginHint: email } = userSession.get();
-    const fqdnConfig = await this.fqdnService.getFqdnConfigFromEmail(email);
-    const { identityProviderIds } = fqdnConfig;
-
-    const providers =
-      await this.coreFca.getIdentityProvidersByIds(identityProviderIds);
+    const identityProviders = await this.fqdnService.getIdpsFromEmail(email);
 
     const csrfToken = this.csrfService.renew();
     this.sessionService.set('Csrf', { csrfToken });
 
     return res.render('interaction-identity-provider', {
       csrfToken,
-      providers,
+      identityProviders,
       hasDefaultIdp: this.coreFca.hasDefaultIdp(
-        providers.map(({ uid }) => uid),
+        identityProviders.map(({ uid }) => uid),
       ),
     });
   }
@@ -141,16 +134,15 @@ export class OidcClientController {
 
     userSession.set({ rememberMe: rememberMe, idpLoginHint: email });
 
-    const { identityProviderIds: idpIds } =
-      await this.fqdnService.getFqdnConfigFromEmail(email);
+    const idpsFromEmail = await this.fqdnService.getIdpsFromEmail(email);
 
-    if (idpIds.length === 0) {
+    if (idpsFromEmail.length === 0) {
       throw new CoreFcaAgentNoIdpException();
     }
 
-    if (idpIds.length > 1) {
+    if (idpsFromEmail.length > 1) {
       this.logger.debug(
-        `${idpIds.length} identity providers matching for "****@${fqdn}"`,
+        `${idpsFromEmail.length} identity providers matching for "****@${fqdn}"`,
       );
       const { urlPrefix } = this.config.get<AppConfig>('App');
       const url = `${urlPrefix}${Routes.IDENTITY_PROVIDER_SELECTION}`;
@@ -158,14 +150,7 @@ export class OidcClientController {
       return res.redirect(url);
     }
 
-    const idpId = idpIds[0];
-
-    const identityProvider = await this.identityProvider.getById(idpId);
-    if (!identityProvider) {
-      throw new CoreFcaIdpConfigurationException();
-    }
-
-    return this.coreFca.redirectToIdp(req, res, idpId);
+    return this.coreFca.redirectToIdp(req, res, idpsFromEmail[0].uid);
   }
 
   /**

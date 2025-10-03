@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { IdentityProviderMetadata } from '@fc/oidc';
 
 import { AppConfig } from '../dto';
-import { FqdnConfigInterface } from '../interfaces';
 
 @Injectable()
 export class CoreFcaFqdnService {
@@ -12,30 +12,29 @@ export class CoreFcaFqdnService {
     private readonly identityProviderAdapterMongoService: IdentityProviderAdapterMongoService,
     private readonly config: ConfigService,
   ) {}
-  async getFqdnConfigFromEmail(email: string): Promise<FqdnConfigInterface> {
-    const { defaultIdpId } = this.config.get<AppConfig>('App');
+  async getIdpsFromEmail(email: string): Promise<IdentityProviderMetadata[]> {
     const fqdn =
       this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
-    const idpsByFqdn =
+    const idpsFromFqdn =
       await this.identityProviderAdapterMongoService.getIdpsByFqdn(fqdn);
 
     // when there is no idp mapped for this fqdn
     // we check if there is or not a default idp set in the app
     // if yes, we return the default idp
     // if no, we return an empty config and we deduce that the default idp is not accepted
-    if (idpsByFqdn.length === 0) {
-      return {
-        fqdn,
-        identityProviderIds: defaultIdpId ? [defaultIdpId] : [],
-      };
+    if (idpsFromFqdn.length === 0) {
+      const { defaultIdpId } = this.config.get<AppConfig>('App');
+
+      if (!defaultIdpId) {
+        return [];
+      }
+
+      return [
+        await this.identityProviderAdapterMongoService.getById(defaultIdpId),
+      ];
     }
 
-    const identityProviderIds = idpsByFqdn.map(({ uid }) => uid);
-
-    return {
-      fqdn,
-      identityProviderIds,
-    };
+    return idpsFromFqdn;
   }
 
   getSpAuthorizedFqdnsConfig(spId: string): {

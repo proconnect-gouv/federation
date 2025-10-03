@@ -118,7 +118,7 @@ export class CoreFcaService {
   /**
    * temporary code for resolving Uniforces issue
    */
-  private async throwIfFqdnNotAuthorizedForSp(
+  private throwIfFqdnNotAuthorizedForSp(
     spId: string,
     email: string,
   ): Promise<void> {
@@ -127,8 +127,7 @@ export class CoreFcaService {
 
     if (!authorizedFqdnsConfig?.authorizedFqdns.length) return;
 
-    const { fqdn: fqdnFromEmail } =
-      await this.fqdnService.getFqdnConfigFromEmail(email);
+    const fqdnFromEmail = this.identityProvider.getFqdnFromEmail(email);
 
     if (
       !authorizedFqdnsConfig.authorizedFqdns.some(

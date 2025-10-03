@@ -79,7 +79,7 @@ describe('OidcClientController', () => {
     crypto = { genRandomString: jest.fn() };
     emailValidatorService = { validate: jest.fn() };
     fqdnService = {
-      getFqdnConfigFromEmail: jest.fn(),
+      getIdpsFromEmail: jest.fn(),
       isAllowedIdpForEmail: jest.fn(),
     };
     sanitizer = {
@@ -153,7 +153,7 @@ describe('OidcClientController', () => {
       const fqdnConfig = {
         identityProviderIds: ['idp1', 'idp2', 'default-idp'],
       };
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue(fqdnConfig);
+      fqdnService.getIdpsFromEmail.mockResolvedValue(fqdnConfig);
 
       coreFca.hasDefaultIdp.mockReturnValue(true);
 
@@ -218,7 +218,7 @@ describe('OidcClientController', () => {
       const body = { email, rememberMe: true } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
+      fqdnService.getIdpsFromEmail.mockResolvedValue({
         identityProviderIds: [],
       });
 
@@ -240,7 +240,7 @@ describe('OidcClientController', () => {
       const body = { email } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
+      fqdnService.getIdpsFromEmail.mockResolvedValue({
         identityProviderIds: ['nonexistent-idp'],
       });
 
@@ -258,7 +258,7 @@ describe('OidcClientController', () => {
       const body = { email } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
+      fqdnService.getIdpsFromEmail.mockResolvedValue({
         identityProviderIds: ['idp1', 'idp2'],
       });
       configService.get.mockReturnValue({ urlPrefix: '/app' });
@@ -286,7 +286,7 @@ describe('OidcClientController', () => {
       const body = { email, rememberMe: true } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
+      fqdnService.getIdpsFromEmail.mockResolvedValue({
         identityProviderIds: ['idp-single'],
       });
       identityProvider.getById.mockResolvedValue({
