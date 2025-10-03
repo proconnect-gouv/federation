@@ -41,7 +41,7 @@ describe('CoreFcaFqdnService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getFqdnConfigFromEmail', () => {
+  describe('getIdpsFromEmail', () => {
     it('should return the default idp if no idp is mapped', async () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
@@ -53,7 +53,7 @@ describe('CoreFcaFqdnService', () => {
         'hogwarts.uk',
       );
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
+      const response = await service.getIdpsFromEmail('hogwarts.uk');
 
       // Then
       const expectedConfig = {
@@ -76,7 +76,7 @@ describe('CoreFcaFqdnService', () => {
       identityProviderAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
 
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
+      const response = await service.getIdpsFromEmail('hogwarts.uk');
 
       // Then
       const expectedConfig = {
@@ -108,7 +108,7 @@ describe('CoreFcaFqdnService', () => {
       ]);
 
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwarts.uk');
+      const response = await service.getIdpsFromEmail('hogwarts.uk');
 
       // Then
       const expectedConfig = {
@@ -140,7 +140,7 @@ describe('CoreFcaFqdnService', () => {
       ]);
 
       // When
-      const response = await service.getFqdnConfigFromEmail('hogwards.uk');
+      const response = await service.getIdpsFromEmail('hogwards.uk');
 
       // Then
       const expectedConfig = {
