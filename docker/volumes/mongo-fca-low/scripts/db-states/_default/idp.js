@@ -33,6 +33,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    isRoutingEnabled:true,
     fqdns: ['fia1.fr', 'polyfi.fr', 'polyfi2.fr', 'abcd.com'],
   },
 
@@ -70,6 +71,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    isRoutingEnabled:true,
     fqdns: ['fia2.fr', 'polyfi.fr', 'polyfi2.fr'],
   },
 
@@ -107,6 +109,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    isRoutingEnabled:true,
     fqdns: ['fia3.fr'],
   },
 
@@ -143,6 +146,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    isRoutingEnabled:true,
     fqdns: ['moncomptepro.fr', 'polyfi.fr'],
   },
   // RIE
@@ -181,6 +185,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    isRoutingEnabled:true,
     fqdns: ['fi-rie.fr'],
   },
 
@@ -217,6 +222,7 @@ const fia = {
     post_logout_redirect_uris: [
       'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
     ],
+    isRoutingEnabled:true,
     fqdns: [],
   },
 };
