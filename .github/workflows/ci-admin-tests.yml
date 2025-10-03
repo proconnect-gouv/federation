@@ -3,6 +3,9 @@ name: 💚 CI Tests - Federation Admin
 on:
   push:
 
+permissions:
+  contents: read
+
 jobs:
   global:
     runs-on: ubuntu-24.04
@@ -16,6 +19,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
+          cache: yarn
+          cache-dependency-path: ./admin/yarn.lock
           node-version-file: ./admin/package.json
 
       - name: Install dependencies
@@ -53,6 +58,8 @@ jobs:
       - name: Set up Node.js for federation-admin
         uses: actions/setup-node@v5
         with:
+          cache: yarn
+          cache-dependency-path: ./admin/yarn.lock
           node-version-file: ./admin/package.json
 
       - name: Install dependencies
