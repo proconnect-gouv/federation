@@ -1,7 +1,4 @@
-ARG NODE_VERSION=22.13.0
-ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
-
-FROM ${NODE_IMAGE} AS dev
+FROM node:22.13.0-alpine AS dev
 
 RUN apk add --no-cache bash
 
@@ -17,7 +14,7 @@ COPY . ./
 CMD yarn start:dev ${NESTJS_INSTANCE}
 
 
-FROM ${NODE_IMAGE} AS builder
+FROM node:22.13.0-alpine AS builder
 
 ARG INSTANCE
 
@@ -32,7 +29,7 @@ RUN yarn run build ${INSTANCE}
 RUN rm -rf node_modules && yarn install --ignore-engines --immutable --immutable-cache --check-cache --production
 
 
-FROM ${NODE_IMAGE} AS production
+FROM node:22.13.0-alpine AS production
 
 ARG INSTANCE
 
