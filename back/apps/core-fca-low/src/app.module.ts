@@ -15,11 +15,7 @@ import {
 } from '@fc/identity-provider-adapter-mongo';
 import { LoggerModule } from '@fc/logger';
 import { LoggerModule as LoggerLegacyModule } from '@fc/logger-legacy';
-import {
-  LoggerDebugPlugin,
-  LoggerRequestPlugin,
-  LoggerSessionPlugin,
-} from '@fc/logger-plugins';
+import { LoggerRequestPlugin, LoggerSessionPlugin } from '@fc/logger-plugins';
 import { MongooseModule } from '@fc/mongoose';
 import { NotificationsModule } from '@fc/notifications';
 import { OidcAcrModule } from '@fc/oidc-acr';
@@ -49,11 +45,7 @@ export class AppModule {
         // 1. Load config module first
         ConfigModule.forRoot(configService),
         // 2. Load logger module next
-        LoggerModule.forRoot([
-          LoggerDebugPlugin,
-          LoggerRequestPlugin,
-          LoggerSessionPlugin,
-        ]),
+        LoggerModule.forRoot([LoggerRequestPlugin, LoggerSessionPlugin]),
         // 2.1 Load logger legacy module next for business logs
         LoggerLegacyModule,
         // 3. Load other modules
