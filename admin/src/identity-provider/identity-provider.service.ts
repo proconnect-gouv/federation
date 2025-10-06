@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DeleteResult, Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
-import { ConfigService } from 'nestjs-config';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -12,7 +11,6 @@ import { ICrudTrack } from '../interfaces';
 import { SecretManagerService } from '../utils/secret-manager.service';
 
 import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
-import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationOptions, PaginationService } from '../pagination';
 import { IdentityProviderDTO } from './dto/identity-provider.dto';
 
@@ -22,9 +20,7 @@ export class IdentityProviderService {
     @InjectRepository(IdentityProviderFromDb, 'fc-mongo')
     private readonly identityProviderRepository: Repository<IdentityProviderFromDb>,
     private readonly secretManager: SecretManagerService,
-    private readonly config: ConfigService,
     private readonly logger: LoggerService,
-    private readonly fqdnToProviderService: FqdnToProviderService,
     private readonly paginationService: PaginationService,
   ) {}
 
@@ -48,8 +44,6 @@ export class IdentityProviderService {
   }
 
   async create(identityProviderDto: IdentityProviderDTO, username: string) {
-    const fqdns = identityProviderDto.fqdns || [];
-
     const providerToSave = this.transformDtoToEntity(
       identityProviderDto,
       username,
@@ -58,13 +52,6 @@ export class IdentityProviderService {
 
     const saveOperation =
       await this.identityProviderRepository.insert(providerToSave);
-
-    if (fqdns.length > 0) {
-      await this.fqdnToProviderService.saveFqdnsProvider(
-        providerToSave.uid,
-        fqdns,
-      );
-    }
 
     const identityProviderId = saveOperation.identifiers[0]._id;
 
@@ -117,8 +104,6 @@ export class IdentityProviderService {
       name: identityProviderDto.name,
     });
 
-    const fqdns = identityProviderDto.fqdns || [];
-
     const providerToSave = this.transformDtoToEntity(
       identityProviderDto,
       user,
@@ -136,15 +121,6 @@ export class IdentityProviderService {
     // Save the updated provider
     const identityProviderResponse =
       await this.identityProviderRepository.save(existingProvider);
-
-    /**
-     * We need to update the corresponding fqdn
-     * note: we don't return the result of this update.
-     */
-    await this.fqdnToProviderService.updateFqdnsProvider(
-      existingProvider.uid,
-      fqdns,
-    );
 
     return identityProviderResponse;
   }
@@ -165,8 +141,6 @@ export class IdentityProviderService {
       id,
       name: identityProvider.name,
     });
-
-    await this.fqdnToProviderService.deleteFqdnsProvider(identityProvider.uid);
 
     return this.identityProviderRepository.delete({ _id: new ObjectId(id) });
   }
@@ -226,6 +200,7 @@ export class IdentityProviderService {
         identityProviderDto.token_endpoint_auth_method,
       supportEmail: identityProviderDto.supportEmail,
       isRoutingEnabled: identityProviderDto.isRoutingEnabled,
+      fqdns: identityProviderDto.fqdns,
     };
 
     if (mode === 'create') {
@@ -273,6 +248,7 @@ export class IdentityProviderService {
       jwksUrl: inputProvider.jwksURL,
       issuer: inputProvider.url,
       isRoutingEnabled: inputProvider.isRoutingEnabled,
+      fqdns: inputProvider.fqdns,
     };
   }
 }

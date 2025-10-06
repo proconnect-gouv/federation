@@ -137,7 +137,7 @@ export class OidcClientController {
     // We are testing the email validity without breaking the flow here
     await this.emailValidatorService.validate(email);
 
-    const fqdn = this.fqdnService.getFqdnFromEmail(email);
+    const fqdn = this.identityProvider.getFqdnFromEmail(email);
 
     userSession.set({ rememberMe: rememberMe, idpLoginHint: email });
 
@@ -311,6 +311,7 @@ export class OidcClientController {
     const account = await this.accountService.getOrCreateAccount(
       idpId,
       idpIdentity.sub,
+      idpIdentity.email,
     );
 
     const spIdentity = await this.sanitizer.transformIdentity(

@@ -1,4 +1,5 @@
 export type TrackedEventLogInterface = {
+  amr?: string[];
   browsingSessionId?: string;
   claims?: string;
   event: string;
@@ -10,6 +11,7 @@ export type TrackedEventLogInterface = {
   idpLoginHint?: string;
   idpLoginHintFqdn?: string;
   idpName?: string;
+  idpSiret?: string;
   idpSub?: string;
   interactionAcr?: string;
   interactionId?: string;
@@ -21,6 +23,7 @@ export type TrackedEventLogInterface = {
   spLoginHintFqdn?: string;
   spId?: string;
   spName?: string;
+  spSiret?: string;
   spSub?: string;
   step: string;
 };

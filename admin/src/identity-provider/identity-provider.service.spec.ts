@@ -9,7 +9,6 @@ import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
 import { SecretManagerService } from '../utils/secret-manager.service';
 import { ICrudTrack } from '../interfaces';
 import { v4 as uuidv4 } from 'uuid';
-import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationService } from '../pagination';
 import { identityProviderFactory } from './fixture';
 
@@ -54,13 +53,6 @@ describe('IdentityProviderService', () => {
     error: jest.fn(),
   };
 
-  const fqdnToProviderServiceMock = {
-    saveFqdnsProvider: jest.fn(),
-    updateFqdnsProvider: jest.fn(),
-    deleteFqdnsProvider: jest.fn(),
-    createFqdnsWithAcceptance: jest.fn(),
-  };
-
   const identityProvidersMock = [
     identityProviderFactory.createIdentityProviderFromDb({
       _id: new ObjectId(),
@@ -84,7 +76,6 @@ describe('IdentityProviderService', () => {
         SecretManagerService,
         ConfigService,
         LoggerService,
-        FqdnToProviderService,
         PaginationService,
       ],
     })
@@ -96,8 +87,6 @@ describe('IdentityProviderService', () => {
       .useValue(configMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
-      .overrideProvider(FqdnToProviderService)
-      .useValue(fqdnToProviderServiceMock)
       .compile();
 
     identityProviderService = module.get<IdentityProviderService>(
@@ -172,6 +161,7 @@ describe('IdentityProviderService', () => {
         clientId: '09a1a257648c1742c74d6a3d84b31943',
         client_secret: '1234567890AZERTYUIOP',
         active: true,
+        fqdns: ['my-fqdn.fr'],
       });
 
     const transformedIntoEntity =
@@ -204,6 +194,7 @@ describe('IdentityProviderService', () => {
         userinfo_signed_response_alg: 'ES256',
         userInfoURL: 'https://issuer.fr/userinfo',
         uid: 'default_uid',
+        fqdns: ['my-fqdn.fr'],
       });
 
     beforeEach(() => {
@@ -276,46 +267,6 @@ describe('IdentityProviderService', () => {
       // THEN
       expect(result).toEqual(objectId);
     });
-
-    it('should add fqdns when it is AC instance', async () => {
-      // GIVEN
-      const fqdns = ['stendhal.fr', 'woolf.uk'];
-      const identityProviderWithFqdns = { ...identityProviderDto, fqdns };
-
-      fqdnToProviderServiceMock.createFqdnsWithAcceptance.mockReturnValue([
-        { acceptsDefaultIdp: true, fqdn: fqdns[0] },
-        { acceptsDefaultIdp: true, fqdn: fqdns[1] },
-      ]);
-
-      // WHEN
-      await identityProviderService.create(identityProviderWithFqdns, 'user');
-
-      // THEN
-      expect(fqdnToProviderServiceMock.saveFqdnsProvider).toHaveBeenCalledTimes(
-        1,
-      );
-      // expect(fqdnToProviderServiceMock.saveFqdnsProvider).toHaveBeenCalledWith(
-      //   identityProviderWithFqdns.uid,
-      //   [
-      //     { acceptsDefaultIdp: true, fqdn: fqdns[0] },
-      //     { acceptsDefaultIdp: true, fqdn: fqdns[1] },
-      //   ],
-      // );
-    });
-
-    it('should not add fqdns when fqdns are empty when it is AC instance', async () => {
-      // GIVEN
-      const fqdns = [];
-      const identityProviderWithFqdns = { ...identityProviderDto, fqdns };
-
-      // WHEN
-      await identityProviderService.create(identityProviderWithFqdns, 'user');
-
-      // THEN
-      expect(fqdnToProviderServiceMock.saveFqdnsProvider).toHaveBeenCalledTimes(
-        0,
-      );
-    });
   });
 
   describe('update()', () => {
@@ -350,16 +301,11 @@ describe('IdentityProviderService', () => {
       });
 
     beforeEach(() => {
-      // tslint:disable-next-line:no-string-literal
       identityProviderService['track'] = jest.fn();
-      identityProviderService[
-        // tslint:disable-next-line:no-string-literal
-        'transformDtoToEntity'
-      ] = jest.fn().mockResolvedValue(transformedIntoEntity);
-      // // tslint:disable-next-line:no-string-literal
-      // identityProviderService['tranformIntoLegacy'] = jest
-      //   .fn()
-      //   .mockReturnValue(transformedIntoLegacy);
+      identityProviderService['transformDtoToEntity'] = jest
+        .fn()
+        .mockResolvedValue(transformedIntoEntity);
+
       identityProviderRepository.save.mockResolvedValue(transformedIntoEntity);
       identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
         existingIdentityProviderMock,
@@ -375,9 +321,7 @@ describe('IdentityProviderService', () => {
       );
 
       // THEN
-      // tslint:disable-next-line:no-string-literal
       expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
-      // tslint:disable-next-line:no-string-literal
       expect(identityProviderService['track']).toHaveBeenCalledWith({
         entity: 'identity-provider',
         action: 'update',
@@ -397,11 +341,9 @@ describe('IdentityProviderService', () => {
 
       // THEN
       expect(
-        // tslint:disable-next-line:no-string-literal
         identityProviderService['transformDtoToEntity'],
       ).toHaveBeenCalledTimes(1);
       expect(
-        // tslint:disable-next-line:no-string-literal
         identityProviderService['transformDtoToEntity'],
       ).toHaveBeenCalledWith(identityProviderToUpdate, userMock, methodMock);
     });
@@ -432,35 +374,6 @@ describe('IdentityProviderService', () => {
       // THEN
       expect(result).toEqual(transformedIntoEntity);
     });
-
-    it('should update fqdns when it is AC instance', async () => {
-      // GIVEN
-      const uid = 'MonFI';
-
-      const fqdns = ['stendhal.fr', 'woolf.uk'];
-      const identityProviderWithFqdns = { ...identityProviderToUpdate, fqdns };
-      identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
-        existingIdentityProviderMock,
-      );
-      identityProviderRepository.save.mockResolvedValueOnce(
-        existingIdentityProviderMock,
-      );
-
-      // WHEN
-      await identityProviderService.update(
-        idMock,
-        identityProviderWithFqdns,
-        userMock,
-      );
-
-      // THEN
-      expect(
-        fqdnToProviderServiceMock.updateFqdnsProvider,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        fqdnToProviderServiceMock.updateFqdnsProvider,
-      ).toHaveBeenCalledWith(uid, fqdns);
-    });
   });
 
   describe('track', () => {
@@ -468,7 +381,6 @@ describe('IdentityProviderService', () => {
       // Given
       const argsMock = {} as ICrudTrack;
       // When
-      // tslint:disable-next-line:no-string-literal
       identityProviderService['track'](argsMock);
       // Then
       expect(loggerMock.businessEvent).toHaveBeenCalledTimes(1);
@@ -507,7 +419,6 @@ describe('IdentityProviderService', () => {
     it('should call the tracking method of the service', async () => {
       // Given
       const user = 'mockUsername';
-      // tslint:disable-next-line:no-string-literal
       identityProviderService['track'] = jest.fn();
       // When
       await identityProviderService.deleteIdentityProvider(
@@ -515,9 +426,7 @@ describe('IdentityProviderService', () => {
         user,
       );
       // Then
-      // tslint:disable-next-line:no-string-literal
       expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
-      // tslint:disable-next-line:no-string-literal
       expect(identityProviderService['track']).toHaveBeenCalledWith({
         entity: 'identity-provider',
         action: 'delete',
@@ -525,34 +434,6 @@ describe('IdentityProviderService', () => {
         user,
         id: objectId.toString(),
       });
-    });
-
-    it('should delete fqdns when it is AC instance', async () => {
-      // GIVEN
-      const uid = 'MonFI';
-      const identityProviderMock = {
-        _id: objectId,
-        uid,
-        name: 'MonFI',
-      } as unknown as IdentityProviderFromDb;
-
-      identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
-        identityProviderMock,
-      );
-
-      // WHEN
-      await identityProviderService.deleteIdentityProvider(
-        identityProviderMock._id.toHexString(),
-        'user',
-      );
-
-      // THEN
-      expect(
-        fqdnToProviderServiceMock.deleteFqdnsProvider,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        fqdnToProviderServiceMock.deleteFqdnsProvider,
-      ).toHaveBeenCalledWith(uid);
     });
   });
 

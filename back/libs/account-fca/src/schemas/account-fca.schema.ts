@@ -13,6 +13,9 @@ class IdpIdentityKey {
 
   @Prop({ type: String })
   idpUid: string;
+
+  @Prop({ type: String })
+  idpMail: string;
 }
 
 @Schema({
@@ -49,7 +52,7 @@ export class AccountFca extends Document {
   @Prop({
     type: [IdpIdentityKey],
   })
-  idpIdentityKeys: [IdpIdentityKey];
+  idpIdentityKeys: IdpIdentityKey[];
 
   /**
    * Active === true means it is not blocked by AC

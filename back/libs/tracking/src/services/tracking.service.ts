@@ -38,6 +38,7 @@ export class TrackingService {
     const sessionId =
       trackedEventContext.sessionId || this.sessionService.getId();
     const {
+      amr,
       browsingSessionId,
       interactionId,
       interactionAcr,
@@ -55,6 +56,7 @@ export class TrackingService {
     } = this.sessionService.get<UserSession>('User') || {};
 
     return {
+      amr,
       browsingSessionId,
       event: trackedEvent,
       idpAcr,
@@ -65,6 +67,7 @@ export class TrackingService {
       idpLoginHint,
       idpLoginHintFqdn: idpLoginHint?.split('@').pop().toLowerCase(),
       idpName,
+      idpSiret: idpIdentity?.siret,
       idpSub: idpIdentity?.sub,
       interactionAcr,
       interactionId,
@@ -76,6 +79,7 @@ export class TrackingService {
       spId,
       spName,
       spSub: spIdentity?.sub,
+      spSiret: spIdentity?.siret,
       step: trackedEventSteps[trackedEvent],
     };
   }
