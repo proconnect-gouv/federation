@@ -1,21 +1,5 @@
 const BASE_URL = Cypress.config('baseUrl');
 
-export function uploadCSV(filename) {
-  cy.wrap({
-    filename,
-  })
-    .its('filename')
-    .should('not.to.be.empty');
-
-  cy.url().should('eq', `${BASE_URL}/service-provider`);
-  cy.contains('Créer un fournisseur de service').click();
-  cy.url().should('eq', `${BASE_URL}/service-provider/create`);
-
-  cy.get('input[name=csv-input]')
-    .should('have.class', 'csv')
-    .selectFile(`cypress/fixtures/csv/${filename}.csv`, { force: true });
-}
-
 export function createServiceProvider(serviceProviderInfo, configuration) {
   cy.url().should('eq', `${BASE_URL}/service-provider`);
   cy.contains('Créer un fournisseur de service').click();
