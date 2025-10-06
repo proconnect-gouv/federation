@@ -1,74 +1,86 @@
-import { Global, Injectable, Scope, Type } from '@nestjs/common';
+import { Global, Injectable, Scope } from '@nestjs/common';
 
-import { ConfigService } from '@fc/config';
-import { FcException } from '@fc/exceptions/exceptions';
-import { LoggerService } from '@fc/logger';
+import { UserSession } from '@fc/core';
 import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
+import { SessionService } from '@fc/session';
+import { trackedEventSteps } from '@fc/tracking/config/tracked-event-steps';
 
-import { TrackingConfig } from '../dto';
+import { TrackedEvent } from '../enums';
 import {
   TrackedEventContextInterface,
-  TrackedEventInterface,
-  TrackedEventMapType,
+  TrackedEventLogInterface,
 } from '../interfaces';
-import { CoreTrackingService } from './core-tracking.service';
 
 @Global()
 @Injectable({ scope: Scope.DEFAULT })
 export class TrackingService {
-  public TrackedEventsMap: TrackedEventMapType = {};
   constructor(
-    private readonly appTrackingService: CoreTrackingService,
-    private readonly config: ConfigService,
-    private readonly logger: LoggerService,
+    private readonly sessionService: SessionService,
     private readonly loggerLegacy: LoggerLegacyService,
   ) {}
 
-  onModuleInit() {
-    const { eventsMap } = this.config.get<TrackingConfig>('Tracking');
-    this.TrackedEventsMap = eventsMap;
-  }
-
   // eslint-disable-next-line require-await
   async track(
-    trackedEvent: TrackedEventInterface,
+    trackedEvent: TrackedEvent,
     context: TrackedEventContextInterface,
   ): Promise<void> {
-    const message = this.appTrackingService.buildLog(trackedEvent, context);
+    const message = this.buildLog(trackedEvent, context);
 
     this.loggerLegacy.businessEvent(message);
   }
 
-  private findEventForException(
-    exception: FcException,
-  ): TrackedEventInterface[] {
-    const events = Object.values(this.TrackedEventsMap).filter(
-      (eventDefinition) => {
-        const exceptionsNames = this.toClassNames(eventDefinition.exceptions);
+  private buildLog(
+    trackedEvent: TrackedEvent,
+    trackedEventContext: TrackedEventContextInterface,
+  ): TrackedEventLogInterface {
+    const ip = trackedEventContext?.req.headers['x-forwarded-for'];
 
-        if (exceptionsNames.includes(exception.constructor.name)) {
-          return eventDefinition;
-        }
+    const sessionId =
+      trackedEventContext.sessionId || this.sessionService.getId();
+    const {
+      amr,
+      browsingSessionId,
+      interactionId,
+      interactionAcr,
+      spId,
+      spEssentialAcr,
+      spName,
+      spIdentity,
+      spLoginHint,
+      idpId,
+      idpAcr,
+      idpName,
+      idpLabel,
+      idpLoginHint,
+      idpIdentity,
+    } = this.sessionService.get<UserSession>('User') || {};
 
-        return false;
-      },
-    );
-
-    return events;
-  }
-
-  private toClassNames(classes: Type<FcException>[] = []): string[] {
-    return classes.map(({ name }) => name);
-  }
-
-  async trackExceptionIfNeeded(
-    exception: FcException,
-    context: TrackedEventContextInterface,
-  ): Promise<void> {
-    const events = this.findEventForException(exception);
-
-    const promises = events.map((event) => this.track(event, context));
-
-    await Promise.all(promises);
+    return {
+      amr,
+      browsingSessionId,
+      event: trackedEvent,
+      idpAcr,
+      idpEmail: idpIdentity?.email,
+      idpEmailFqdn: idpIdentity?.email?.split('@').pop().toLowerCase(),
+      idpId,
+      idpLabel,
+      idpLoginHint,
+      idpLoginHintFqdn: idpLoginHint?.split('@').pop().toLowerCase(),
+      idpName,
+      idpSiret: idpIdentity?.siret,
+      idpSub: idpIdentity?.sub,
+      interactionAcr,
+      interactionId,
+      ip,
+      sessionId,
+      spEssentialAcr,
+      spLoginHint,
+      spLoginHintFqdn: spLoginHint?.split('@').pop().toLowerCase(),
+      spId,
+      spName,
+      spSub: spIdentity?.sub,
+      spSiret: spIdentity?.siret,
+      step: trackedEventSteps[trackedEvent],
+    };
   }
 }

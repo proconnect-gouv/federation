@@ -14,12 +14,12 @@
     "Cucumber"
   ],
   "engines": {
-    "node": ">=18",
+    "node": ">=22",
     "npm": "DO-NOT-USE-NPM"
   },
   "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "23.1.0",
-    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
+    "@badeball/cypress-cucumber-preprocessor": "23.2.0",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.6",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
     "@simonsmith/cypress-image-snapshot": "^10.0.2",
     "@types/ejs": "^3.1.5",
@@ -48,7 +48,7 @@
     "otplib": "^12.0.1",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   },
   "scripts": {
     "prettier": "prettier -c \"{.,fca}/{.,cypress,scripts}/**/*.ts\"",

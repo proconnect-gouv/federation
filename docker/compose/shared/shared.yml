@@ -1,11 +1,6 @@
 ####################
 ####################
 services:
-  all:
-    image: alpine
-    depends_on:
-      - 'rp-all'
-      - 'large'
   ####################
   # Base Services
   ####################
@@ -22,9 +17,36 @@ services:
       - data
     init: true
 
+  init-core:
+    build:
+      context: '../../../back'
+      target: migrator
+    working_dir: /var/www/app
+    user: ${CURRENT_UID}
+    depends_on:
+      mongo-fca-low:
+        condition: service_started
+    volumes:
+      - '../../../back:/build/back:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core.env'
+    environment:
+      - NODE_OPTIONS=--experimental-strip-types
+    tty: true
+    networks:
+      - data
+    command: 'yarn run migrate up'
+
   base-core:
     extends: base-nodejs
     depends_on:
+      init-core:
+        condition: service_completed_successfully
       rp-all:
         condition: service_started
       mongo-fca-low:
@@ -124,12 +146,10 @@ services:
   ####################
 
   rp-all:
-    image: nginx:1.14.2
+    image: nginx:1.27.3
     container_name: pc-rp-all
     environment:
       DHPARAM_GENERATION: 'false'
-    depends_on:
-      - docker-gen
     ports:
       - '80:80'
       - '443:443'
@@ -172,22 +192,6 @@ services:
           - fia-rie-low.docker.dev-franceconnect.fr
       exploitation:
 
-  docker-gen:
-    user: ${CURRENT_UID}
-    image: jwilder/docker-gen
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ../../volumes/nginx-proxy/default-vhost:/etc/nginx/html
-      - ../../volumes/nginx-proxy/etc:/etc/nginx/conf.d
-      - ../../volumes/docker-gen/config:/etc/docker-gen/config:ro
-      - ../../volumes/nginx-proxy/templates:/etc/docker-gen/templates:ro
-    networks:
-      - public
-      - fc
-      - exploitation
-      - rie
-    command: -config /etc/docker-gen/config
-
   squid:
     image: ubuntu/squid:6.6-24.04_beta
     ulimits:
@@ -208,27 +212,6 @@ services:
       timeout: 1s
       retries: 2
       start_period: 1s
-
-  log-hub:
-    hostname: log-hub
-    build:
-      context: '../../../back'
-      target: dev
-    user: ${CURRENT_UID}
-    volumes:
-      - '../../../docker/log-hub:/var/www/app'
-      - '../../volumes/app:/opt/scripts'
-      - '../../volumes/log:/var/log/app'
-      - '../../volumes/.home:/home'
-      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
-    environment:
-      - 'DEFAULT_MODE=dev'
-    env_file:
-      - '../shared/.env/base-app.env'
-    ports:
-      - 6666:6666
-    tty: true
-    command: 'node --inspect=0.0.0.0:6666 ./app.js /var/log/app'
 
   broker:
     build:
@@ -289,9 +272,6 @@ services:
   maildev:
     hostname: maildev
     image: maildev/maildev:2.0.5
-    environment:
-      - 'VIRTUAL_HOST=maildev.docker.dev-franceconnect.fr'
-      - 'VIRTUAL_PORT=1080'
     networks:
       - data
       - public

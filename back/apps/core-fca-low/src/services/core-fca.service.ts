@@ -8,17 +8,17 @@ import { ConfigService } from '@fc/config';
 import { AppConfig, UserSession } from '@fc/core/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import {
-  OidcClientConfig,
-  OidcClientIdpDisabledException,
-  OidcClientService,
-} from '@fc/oidc-client';
+import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
+import { TrackedEvent } from '@fc/tracking/enums/tracked-event.enum';
 
 import {
   CoreFcaAgentIdpDisabledException,
+  CoreFcaIdpConfigurationException,
   CoreFcaUnauthorizedEmailException,
 } from '../exceptions';
 import { CoreFcaFqdnService } from './core-fca-fqdn.service';
@@ -36,6 +36,7 @@ export class CoreFcaService {
     private readonly session: SessionService,
     private readonly fqdnService: CoreFcaFqdnService,
     private readonly logger: LoggerService,
+    private readonly tracking: TrackingService,
   ) {}
   // eslint-disable-next-line complexity
   async redirectToIdp(
@@ -43,19 +44,13 @@ export class CoreFcaService {
     res: Response,
     idpId: string,
   ): Promise<void> {
-    const { spId, login_hint, spName, rememberMe } =
+    const { spId, idpLoginHint, login_hint, spName, rememberMe } =
       this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
-    await this.validateEmailForSp(spId, login_hint);
+    await this.throwIfFqdnNotAuthorizedForSp(spId, idpLoginHint || login_hint);
 
-    const selectedIdp = await this.identityProvider.getById(idpId);
-
-    if (isEmpty(selectedIdp)) {
-      throw new Error(`Idp ${idpId} not found`);
-    }
-
-    await this.checkIdpDisabled(idpId);
+    const selectedIdp = await this.safelyGetExistingAndEnabledIdp(idpId);
 
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
@@ -71,7 +66,7 @@ export class CoreFcaService {
           acr: null,
         },
       },
-      login_hint,
+      login_hint: idpLoginHint || login_hint,
       sp_id: spId,
       sp_name: spName,
       remember_me: rememberMe,
@@ -115,14 +110,18 @@ export class CoreFcaService {
 
     this.session.set('User', sessionPayload);
 
+    await this.tracking.track(TrackedEvent.IDP_CHOSEN, { req });
+
     res.redirect(authorizationUrl);
   }
 
   /**
    * temporary code for resolving Uniforces issue
-   * we check if the email is authorized to access the idp for the sp
    */
-  private async validateEmailForSp(spId: string, email: string): Promise<void> {
+  private async throwIfFqdnNotAuthorizedForSp(
+    spId: string,
+    email: string,
+  ): Promise<void> {
     const authorizedFqdnsConfig =
       this.fqdnService.getSpAuthorizedFqdnsConfig(spId);
 
@@ -145,15 +144,20 @@ export class CoreFcaService {
     }
   }
 
-  private async checkIdpDisabled(idpId: string) {
-    try {
-      await this.oidcClient.utils.checkIdpDisabled(idpId);
-    } catch (error) {
-      if (error instanceof OidcClientIdpDisabledException) {
-        throw new CoreFcaAgentIdpDisabledException();
-      }
-      throw error;
+  private async safelyGetExistingAndEnabledIdp(
+    idpId: string,
+  ): Promise<IdentityProviderMetadata> {
+    const idp = await this.identityProvider.getById(idpId);
+
+    if (isEmpty(idp)) {
+      throw new CoreFcaIdpConfigurationException();
     }
+
+    if (!idp.active) {
+      throw new CoreFcaAgentIdpDisabledException();
+    }
+
+    return idp;
   }
 
   async getIdentityProvidersByIds(

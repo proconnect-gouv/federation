@@ -6,7 +6,7 @@ import {
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
 import { EmailValidatorConfig } from '../dto';
@@ -15,7 +15,7 @@ import { EmailValidatorConfig } from '../dto';
 export class EmailValidatorService {
   constructor(
     private readonly logger: LoggerService,
-    private readonly fqdnToIdpAdapterMongo: FqdnToIdpAdapterMongoService,
+    private readonly identityProviderAdapterMongoService: IdentityProviderAdapterMongoService,
     private readonly config: ConfigService,
   ) {}
 
@@ -23,10 +23,10 @@ export class EmailValidatorService {
     try {
       const { debounceApiKey } =
         this.config.get<EmailValidatorConfig>('EmailValidator');
-      const fqdnToIdp =
-        await this.fqdnToIdpAdapterMongo.fetchFqdnToIdpByEmail(email);
+      const idps =
+        await this.identityProviderAdapterMongoService.getIdpsByEmail(email);
 
-      if (fqdnToIdp.length > 0) {
+      if (idps.length > 0) {
         return true;
       }
 

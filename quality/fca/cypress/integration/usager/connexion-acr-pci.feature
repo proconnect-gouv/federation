@@ -50,3 +50,12 @@ Fonctionnalité: Connexion Usager - ACR with PCI
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "access_denied"
     Et le message d'erreur est "non renseigné"
+
+  Scénario: Déclenche un parcours certification dirigeant dans ProConnect Identité si demandé par le FS
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service requiert un niveau de sécurité "https://proconnect.gouv.fr/assurance/certification-dirigeant"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "ulysse.tosi@yopmail.com"
+    Quand je clique sur le bouton de connexion
+    Et que je rentre un mot de passe valide sur ProConnect Identité
+    Et que je clique sur le bouton FranceConnect

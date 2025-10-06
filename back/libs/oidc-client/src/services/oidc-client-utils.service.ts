@@ -4,6 +4,7 @@
  * @ticket #FC-1024
  */
 import { isURL } from 'class-validator';
+import { Request } from 'express';
 import { JWK } from 'jose-v2';
 import {
   AuthorizationParameters,
@@ -22,8 +23,6 @@ import { LoggerService } from '@fc/logger';
 
 import {
   OidcClientGetEndSessionUrlException,
-  OidcClientIdpDisabledException,
-  OidcClientIdpNotFoundException,
   OidcClientInvalidStateException,
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
@@ -120,7 +119,7 @@ export class OidcClientUtilsService {
   }
 
   async getTokenSet(
-    req,
+    req: Request,
     ipdId: string,
     params: TokenParams,
     extraParams?: ExtraTokenParams,
@@ -267,18 +266,6 @@ export class OidcClientUtilsService {
     } catch (error) {
       this.logger.err({ error });
       return false;
-    }
-  }
-
-  async checkIdpDisabled(idpId: string): Promise<void> {
-    const idp = await this.identityProvider.getById(idpId);
-
-    if (!idp) {
-      throw new OidcClientIdpNotFoundException();
-    }
-
-    if (!idp.active) {
-      throw new OidcClientIdpDisabledException();
     }
   }
 }

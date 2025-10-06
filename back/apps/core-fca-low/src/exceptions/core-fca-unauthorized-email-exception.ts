@@ -4,14 +4,6 @@ import { ErrorCode } from '../enums';
 import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
-  constructor(
-    private spName: string,
-    private spContact: string,
-    private authorizedFqdns: string[],
-  ) {
-    super();
-  }
-
   public code = ErrorCode.UNAUTHORIZED_EMAIL;
   public http_status_code = HttpStatus.BAD_REQUEST;
   public documentation = '';
@@ -22,13 +14,23 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
 
   public illustration = 'unauthorized-email-error';
   public title = 'Email non autorisé';
-  public description =
-    `Vous essayez de vous connecter à ${this.spName}.\n\n` +
-    `Réessayez en utilisant votre adresse email professionnelle :\n\n` +
-    `✅ ${this.authorizedFqdns.join(', ')}\n` +
-    `❌ gmail, yahoo, orange`;
+  public declare description: string;
   public displayContact = true;
-  public contactMessage = `Si cela ne fonctionne pas, contactez le support utilisateur du service ${this.spName} pour régler le problème.`;
+  public declare contactMessage: string;
+  public contactHref: string;
 
-  public contactHref = `mailto:${this.spContact}`;
+  constructor(
+    private spName: string,
+    private spContact: string,
+    private authorizedFqdns: string[],
+  ) {
+    super();
+    this.description =
+      `Vous essayez de vous connecter à ${this.spName}.\n\n` +
+      `Réessayez en utilisant votre adresse email professionnelle :\n\n` +
+      `✅ ${this.authorizedFqdns.join(', ')}\n` +
+      `❌ gmail, yahoo, orange`;
+    this.contactMessage = `Si cela ne fonctionne pas, contactez le support utilisateur du service ${this.spName} pour régler le problème.`;
+    this.contactHref = `mailto:${this.spContact}`;
+  }
 }

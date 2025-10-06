@@ -103,4 +103,9 @@ export class IdentityProviderFromDb {
 
   @Column()
   supportEmail?: string;
+
+  @Column()
+  isRoutingEnabled: boolean;
+  @Column()
+  fqdns: string[];
 }

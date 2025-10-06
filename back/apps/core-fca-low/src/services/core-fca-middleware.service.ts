@@ -22,6 +22,7 @@ import {
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
+import { TrackedEvent } from '@fc/tracking/enums';
 
 @Injectable()
 export class CoreFcaMiddlewareService {
@@ -142,14 +143,14 @@ export class CoreFcaMiddlewareService {
     });
   }
 
-  protected async getEventContext(ctx): Promise<TrackedEventContextInterface> {
+  protected async getEventContext(
+    ctx: OidcCtx,
+  ): Promise<TrackedEventContextInterface> {
     const accountId = ctx.oidc?.entities?.Account?.accountId;
 
     let sessionId: string | undefined;
     if (accountId) {
       sessionId = await this.sessionService.getAlias(accountId);
-    } else {
-      sessionId = ctx.req.sessionId;
     }
 
     if (!sessionId) {
@@ -167,8 +168,7 @@ export class CoreFcaMiddlewareService {
 
     await this.sessionService.initCache(eventContext.sessionId);
 
-    const { SP_REQUESTED_FC_TOKEN } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);
+    await this.tracking.track(TrackedEvent.SP_REQUESTED_FC_TOKEN, eventContext);
   }
 
   protected async userinfoMiddleware(ctx) {
@@ -176,8 +176,10 @@ export class CoreFcaMiddlewareService {
 
     await this.sessionService.initCache(eventContext.sessionId);
 
-    const { SP_REQUESTED_FC_USERINFO } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(SP_REQUESTED_FC_USERINFO, eventContext);
+    await this.tracking.track(
+      TrackedEvent.SP_REQUESTED_FC_USERINFO,
+      eventContext,
+    );
   }
 
   protected async handleSilentAuthenticationMiddleware(

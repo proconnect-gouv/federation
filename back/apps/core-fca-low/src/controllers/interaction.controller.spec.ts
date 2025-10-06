@@ -21,7 +21,7 @@ import {
   CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
-import { CoreFcaFqdnService, CoreFcaService } from '../services';
+import { CoreFcaService } from '../services';
 import { InteractionController } from './interaction.controller';
 
 jest.mock('uuid', () => ({
@@ -43,7 +43,6 @@ describe('InteractionController', () => {
   let serviceProviderMock: any;
   let configServiceMock: any;
   let notificationsMock: any;
-  let fqdnServiceMock: any;
   let trackingMock: any;
   let sessionServiceMock: any; // for Csrf only
   let coreFcaMock: any;
@@ -72,17 +71,8 @@ describe('InteractionController', () => {
     notificationsMock = {
       getNotificationToDisplay: jest.fn(),
     };
-    fqdnServiceMock = {
-      getFqdnFromEmail: jest.fn(),
-    };
     trackingMock = {
       track: jest.fn(),
-      TrackedEventsMap: {
-        FC_AUTHORIZE_INITIATED: 'EVENT_AUTHORIZE_INITIATED',
-        FC_SSO_INITIATED: 'EVENT_SSO_INITIATED',
-        FC_REDIRECTED_TO_HINTED_IDP: 'EVENT_REDIRECTED_TO_HINTED_IDP',
-        FC_SHOWED_IDP_CHOICE: 'EVENT_SHOWED_IDP_CHOICE',
-      },
     };
     sessionServiceMock = {
       set: jest.fn(), // used by Csrf part
@@ -103,7 +93,6 @@ describe('InteractionController', () => {
         ServiceProviderAdapterMongoService,
         ConfigService,
         CoreFcaService,
-        CoreFcaFqdnService,
         CsrfService,
         TrackingService,
         OidcAcrService,
@@ -117,8 +106,6 @@ describe('InteractionController', () => {
       .useValue(oidcAcrMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderMock)
-      .overrideProvider(CoreFcaFqdnService)
-      .useValue(fqdnServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreFcaMock)
       .overrideProvider(ConfigService)

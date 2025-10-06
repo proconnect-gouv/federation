@@ -29,7 +29,7 @@ function _command_run() {
     exit 1
   fi
 
-  $cmd ${@:2}
+  $cmd "${@:2}"
 }
 
 function _command_list() {

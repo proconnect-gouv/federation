@@ -10,6 +10,7 @@ export interface IdpFCMetadata {
   discoveryUrl?: string;
   siret: string;
   supportEmail: string;
+  fqdns?: string[];
 }
 
 export type IdentityProviderMetadata = IdpFCMetadata & {

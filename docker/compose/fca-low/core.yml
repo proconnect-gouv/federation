@@ -8,11 +8,7 @@ services:
       - 9229:9229
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/core-fca-low.env'
-
-  core-squid:
-    extends: core
-    hostname: core-fca-low-squid
+      - '../fca-low/.env/core.env'
     depends_on:
       squid:
         condition: service_started
@@ -26,4 +22,4 @@ services:
     hostname: core-rie
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/core-fca-rie.env'
+      - '../fca-low/.env/core-rie.env'

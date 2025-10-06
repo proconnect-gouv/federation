@@ -1,5 +1,4 @@
 import { ArgumentsHost } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiErrorParams } from '@fc/app';
@@ -18,9 +17,6 @@ describe('OidcProviderRenderedJsonExceptionFilter', () => {
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
-  const eventBusMock = {
-    publish: jest.fn(),
-  };
 
   const hostMock = {
     switchToHttp: jest.fn().mockReturnThis(),
@@ -47,15 +43,12 @@ describe('OidcProviderRenderedJsonExceptionFilter', () => {
         OidcProviderRenderedJsonExceptionFilter,
         ConfigService,
         LoggerService,
-        EventBus,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
       .compile();
 
     filter = module.get<OidcProviderRenderedJsonExceptionFilter>(

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2020",
+    "target": "es2023",
     "outDir": "./dist",
     "baseUrl": "./",
     "sourceMap": true,
@@ -84,10 +84,6 @@
       "@fc/flow-steps/*": ["libs/flow-steps/src/*"],
       "@mocks/session": ["libs/session/.mocks"],
       "@mocks/session/*": ["libs/session/.mocks/*"],
-      "@fc/fqdn-to-idp-adapter-mongo": ["libs/fqdn-to-idp-adapter-mongo/src"],
-      "@fc/fqdn-to-idp-adapter-mongo/*": [
-        "libs/fqdn-to-idp-adapter-mongo/src/*"
-      ],
       "@fc/async-local-storage": ["libs/async-local-storage/src"],
       "@fc/async-local-storage/*": ["libs/async-local-storage/src/*"],
       "@mocks/async-local-storage": ["libs/async-local-storage/.mocks"],

@@ -117,7 +117,11 @@ describe('AccountFcaService', () => {
       };
       modelMock.findOne.mockResolvedValue(existingAccount);
 
-      const result = await service.getOrCreateAccount('uid', 'sub');
+      const result = await service.getOrCreateAccount(
+        'uid',
+        'sub',
+        'email@fqdn',
+      );
 
       expect(result).toEqual(existingAccount);
     });
@@ -129,12 +133,17 @@ describe('AccountFcaService', () => {
       modelMock.findOne.mockResolvedValue(null);
       modelMock.findOneAndUpdate.mockResolvedValue({});
 
-      const result = await service.getOrCreateAccount('uid', 'sub');
+      const result = await service.getOrCreateAccount(
+        'uid',
+        'sub',
+        'email@fqdn',
+      );
 
       expect(result.sub).toBe(mockUuid);
       expect(result.idpIdentityKeys).toContainEqual({
         idpUid: 'uid',
         idpSub: 'sub',
+        idpMail: 'email@fqdn',
       });
     });
 
@@ -146,27 +155,76 @@ describe('AccountFcaService', () => {
       };
       modelMock.findOne.mockResolvedValue(inactiveAccount);
 
-      await expect(service.getOrCreateAccount('uid', 'sub')).rejects.toThrow(
-        CoreFcaAgentAccountBlockedException,
-      );
+      await expect(
+        service.getOrCreateAccount('uid', 'sub', 'email@fqdn'),
+      ).rejects.toThrow(CoreFcaAgentAccountBlockedException);
     });
 
     it('should push a new idpIdentityKey if not already present', async () => {
       const existingAccount = {
         sub: '12345',
         active: true,
-        idpIdentityKeys: [{ idpUid: 'existing-uid', idpSub: 'existing-sub' }],
+        idpIdentityKeys: [
+          {
+            idpUid: 'existing-uid',
+            idpSub: 'existing-sub',
+            idpMail: 'email@other',
+          },
+        ],
       };
 
       modelMock.findOne.mockResolvedValue(existingAccount);
       modelMock.findOneAndUpdate.mockResolvedValue({});
 
-      const result = await service.getOrCreateAccount('new-uid', 'new-sub');
+      const result = await service.getOrCreateAccount(
+        'new-uid',
+        'new-sub',
+        'email@fqdn',
+      );
 
-      expect(result.idpIdentityKeys).toContainEqual({
-        idpUid: 'new-uid',
-        idpSub: 'new-sub',
-      });
+      expect(result.idpIdentityKeys).toEqual([
+        {
+          idpUid: 'existing-uid',
+          idpSub: 'existing-sub',
+          idpMail: 'email@other',
+        },
+        {
+          idpUid: 'new-uid',
+          idpSub: 'new-sub',
+          idpMail: 'email@fqdn',
+        },
+      ]);
+    });
+
+    it('should update an idpIdentityKey with (uid,sub) with a different email', async () => {
+      const existingAccount = {
+        sub: '12345',
+        active: true,
+        idpIdentityKeys: [
+          {
+            idpUid: 'existing-uid',
+            idpSub: 'existing-sub',
+            idpMail: 'email@other',
+          },
+        ],
+      };
+
+      modelMock.findOne.mockResolvedValue(existingAccount);
+      modelMock.findOneAndUpdate.mockResolvedValue({});
+
+      const result = await service.getOrCreateAccount(
+        'existing-uid',
+        'existing-sub',
+        'email@fqdn',
+      );
+
+      expect(result.idpIdentityKeys).toEqual([
+        {
+          idpUid: 'existing-uid',
+          idpSub: 'existing-sub',
+          idpMail: 'email@fqdn',
+        },
+      ]);
     });
   });
 });

@@ -7,14 +7,10 @@ task() {
 
   if [ -z $VERBOSE ]; then
     echo -ne "${message}: "
-    ($(${cmd} ${args} &>"$__DKS_LAST_LOG_FILE") && _task_success) || _task_fail "$1" "$2" "$?"
+    ($(${cmd} ${args} &>"$__DKS_LAST_LOG_FILE") && echo "OK") || _task_fail "$1" "$2" "$?"
   else
     ${cmd} ${args}
   fi
-}
-
-_task_success() {
-  echo $(format_success "OK")
 }
 
 _task_fail() {
@@ -25,7 +21,7 @@ _task_fail() {
   if [ "$exitcode" == "$__DKS_TASK_RETURN_EXIT_CODE" ]; then
     cat "$__DKS_LAST_LOG_FILE"
   else
-    echo $(format_failure "Failed")
+    echo "Failed"
     echo -e "   - command: > ${cmd}"
     echo "   - result:"
     echo " -------------------------------- "

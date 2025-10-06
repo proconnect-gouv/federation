@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsOptional,
   IsString,
@@ -74,6 +75,11 @@ export class MetadataIdpAdapterMongoDTO {
   @IsOptional()
   @IsString()
   readonly supportEmail: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  readonly fqdns?: string[];
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {

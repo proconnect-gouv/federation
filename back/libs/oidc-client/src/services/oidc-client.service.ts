@@ -1,5 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { Request } from 'express';
 import { IdTokenClaims, TokenSet } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';

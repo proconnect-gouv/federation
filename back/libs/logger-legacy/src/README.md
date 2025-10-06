@@ -23,10 +23,7 @@ Inject the `LoggerService` and use the `businessEvent()` method to log business 
 ```typescript
 // Log a business event
 this.logger.businessEvent({
-  category: 'user',
-  event: 'login',
-  ip: '192.168.1.1',
-  source: networkContext
+  any: 'data'
 });
 ```
 

@@ -14,7 +14,8 @@ import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
-import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
+import { TrackingService } from '@fc/tracking';
+import { TrackedEvent } from '@fc/tracking/enums';
 
 import { OidcProviderRuntimeException } from '../exceptions';
 import { LogoutFormParamsInterface, OidcCtx } from '../interfaces';
@@ -109,9 +110,7 @@ export class OidcProviderConfigAppService {
 
     const params = await this.getLogoutParams(idpId);
 
-    const trackingContext: TrackedEventContextInterface = { req };
-    const { SP_REQUESTED_LOGOUT } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(SP_REQUESTED_LOGOUT, trackingContext);
+    await this.tracking.track(TrackedEvent.SP_REQUESTED_LOGOUT, { req });
 
     await this.logoutFormSessionDestroy(ctx, form, params);
   }

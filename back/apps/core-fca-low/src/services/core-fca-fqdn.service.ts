@@ -1,9 +1,7 @@
-import { uniq } from 'lodash';
-
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 
 import { AppConfig } from '../dto';
 import { FqdnConfigInterface } from '../interfaces';
@@ -11,13 +9,15 @@ import { FqdnConfigInterface } from '../interfaces';
 @Injectable()
 export class CoreFcaFqdnService {
   constructor(
-    private readonly fqdnToIdpAdapterMongo: FqdnToIdpAdapterMongoService,
+    private readonly identityProviderAdapterMongoService: IdentityProviderAdapterMongoService,
     private readonly config: ConfigService,
   ) {}
   async getFqdnConfigFromEmail(email: string): Promise<FqdnConfigInterface> {
     const { defaultIdpId } = this.config.get<AppConfig>('App');
-    const fqdn = this.getFqdnFromEmail(email);
-    const idpsByFqdn = await this.fqdnToIdpAdapterMongo.getIdpsByFqdn(fqdn);
+    const fqdn =
+      this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
+    const idpsByFqdn =
+      await this.identityProviderAdapterMongoService.getIdpsByFqdn(fqdn);
 
     // when there is no idp mapped for this fqdn
     // we check if there is or not a default idp set in the app
@@ -30,18 +30,12 @@ export class CoreFcaFqdnService {
       };
     }
 
-    const uniqueDuplicateFreeIdpUids = uniq(
-      idpsByFqdn.map(({ identityProvider }) => identityProvider),
-    );
+    const identityProviderIds = idpsByFqdn.map(({ uid }) => uid);
 
     return {
       fqdn,
-      identityProviderIds: uniqueDuplicateFreeIdpUids,
+      identityProviderIds,
     };
-  }
-
-  getFqdnFromEmail(email: string | undefined): string | undefined {
-    return email?.split('@').pop().toLowerCase();
   }
 
   getSpAuthorizedFqdnsConfig(spId: string): {
@@ -59,16 +53,17 @@ export class CoreFcaFqdnService {
   }
 
   async isAllowedIdpForEmail(idpId: string, email: string): Promise<boolean> {
-    const existingFqdnToProvider =
-      await this.fqdnToIdpAdapterMongo.fetchFqdnToIdpByEmail(email);
+    const identityProvider =
+      await this.identityProviderAdapterMongoService.getById(idpId);
 
-    if (existingFqdnToProvider.length > 0) {
-      return existingFqdnToProvider.some(
-        ({ identityProvider }) => identityProvider === idpId,
-      );
+    const emailFqdn =
+      this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
+
+    if (identityProvider.fqdns?.some((fqdn) => fqdn === emailFqdn)) {
+      return true;
     }
 
-    // if fqdnToProvider not exists, the only idp allowed is the default one
+    // if no idp explicitly handles the domain, the only idp allowed is the default one
     const { defaultIdpId } = this.config.get<AppConfig>('App');
     return defaultIdpId === idpId;
   }

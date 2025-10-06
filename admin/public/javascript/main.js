@@ -22,7 +22,6 @@ import { validateAccountUpdate } from './validateAccountUpdate';
 import { validateAccountCreate } from './validateAccountCreate';
 import { handleEmail } from './handle-email';
 import { searchReset } from './search-reset';
-import { csvParser } from './csv-parser';
 import { selectScopesGroup } from './select-scopes-group';
 import { validateNotificationCreation } from './modals/validate-notification-creation';
 
@@ -53,7 +52,6 @@ const initMap = {
   validateAccountUpdate,
   validateAccountCreate,
   searchReset,
-  csvParser,
   validateNotificationCreation,
   selectScopesGroup,
 };

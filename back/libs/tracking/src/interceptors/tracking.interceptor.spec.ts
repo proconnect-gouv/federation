@@ -1,14 +1,9 @@
 import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
-
-import { getLoggerMock } from '@mocks/logger';
-
 import { Track } from '../decorators';
-import { CoreTrackingService, TrackingService } from '../services';
+import { TrackedEvent } from '../enums';
+import { TrackingService } from '../services';
 import { TrackingInterceptor } from './tracking.interceptor';
 
 describe('TrackingInterceptor', () => {
@@ -17,11 +12,6 @@ describe('TrackingInterceptor', () => {
 
   const trackingMock = {
     track: jest.fn(),
-    TrackedEventsMap: {},
-  };
-
-  const appTrackingMock = {
-    buildLog: jest.fn(),
   };
 
   const httpContextMock = {
@@ -46,41 +36,12 @@ describe('TrackingInterceptor', () => {
     pipe: jest.fn(),
   };
 
-  const configServiceMock = {
-    get: jest.fn(),
-  };
-  const urlPrefixMock = '/url/prefix';
-
-  const configMock = {
-    urlPrefix: urlPrefixMock,
-  };
-
-  const loggerMock = getLoggerMock();
-  const loggerLegacyMock = {
-    businessEvent: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TrackingInterceptor,
-        TrackingService,
-        ConfigService,
-        LoggerService,
-        LoggerLegacyService,
-        CoreTrackingService,
-      ],
+      providers: [TrackingInterceptor, TrackingService],
     })
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
-      .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerMock)
-      .overrideProvider(LoggerLegacyService)
-      .useValue(loggerLegacyMock)
-      .overrideProvider(CoreTrackingService)
-      .useValue(appTrackingMock)
       .compile();
 
     interceptor = module.get<TrackingInterceptor>(TrackingInterceptor);
@@ -88,7 +49,6 @@ describe('TrackingInterceptor', () => {
     jest.resetAllMocks();
     nextMock.handle.mockReturnThis();
     httpContextMock.getRequest.mockReturnValue(reqMock);
-    configServiceMock.get.mockReturnValueOnce(configMock);
   });
 
   it('should be defined', () => {
@@ -107,10 +67,9 @@ describe('TrackingInterceptor', () => {
 
     it('should add a tap operator to the observable pipeline', () => {
       // Given
-      const eventName = 'TestEvent';
-      const event = { name: eventName };
-      TrackMock.get = jest.fn().mockReturnValueOnce(eventName);
-      trackingMock.TrackedEventsMap = { [eventName]: event };
+      TrackMock.get = jest
+        .fn()
+        .mockReturnValueOnce(TrackedEvent.FC_AUTHORIZE_INITIATED);
       const observableMock = {
         pipe: jest.fn(),
       };

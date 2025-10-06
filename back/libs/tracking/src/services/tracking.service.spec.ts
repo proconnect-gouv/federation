@@ -1,184 +1,167 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ConfigService } from '@fc/config';
-import { FcException } from '@fc/exceptions/exceptions';
-import { LoggerService } from '@fc/logger';
 import { LoggerService as LoggerLegacyService } from '@fc/logger-legacy';
+import { SessionService } from '@fc/session';
+import { trackedEventSteps } from '@fc/tracking/config/tracked-event-steps';
+import { TrackedEvent } from '@fc/tracking/enums';
 
-import { getLoggerMock } from '@mocks/logger';
-
-import { TrackedEventContextInterface } from '../interfaces';
-import { CoreTrackingService } from './core-tracking.service';
 import { TrackingService } from './tracking.service';
 
 describe('TrackingService', () => {
   let service: TrackingService;
 
-  const appTrackingMock = {
-    buildLog: jest.fn(),
-  };
-
-  const loggerMock = getLoggerMock();
-
   const loggerLegacyMock = {
     businessEvent: jest.fn(),
   };
 
-  class ExceptionClass extends FcException {}
-
-  const eventMapMock = {
-    FOO: {
-      category: 'someCategory',
-      event: 'FOO',
-    },
-    BAR: {
-      category: 'someCategory',
-      event: 'BAR',
-      exceptions: [ExceptionClass],
-    },
-  };
-
-  const configMock = {
+  const sessionServiceMock = {
+    getId: jest.fn<() => string, []>(),
     get: jest.fn(),
-  };
+  } as unknown as jest.Mocked<SessionService>;
 
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TrackingService,
-        ConfigService,
-        LoggerService,
-        LoggerLegacyService,
-        CoreTrackingService,
-      ],
+      providers: [TrackingService, LoggerLegacyService, SessionService],
     })
-      .overrideProvider(LoggerService)
-      .useValue(loggerMock)
       .overrideProvider(LoggerLegacyService)
       .useValue(loggerLegacyMock)
-      .overrideProvider(ConfigService)
-      .useValue(configMock)
-      .overrideProvider(CoreTrackingService)
-      .useValue(appTrackingMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
     service = module.get<TrackingService>(TrackingService);
-
-    configMock.get.mockReturnValue({
-      eventsMap: eventMapMock,
-    });
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('onModuleInit()', () => {
-    it('should set TrackedEventsMap property from config', () => {
-      // When
-      service.onModuleInit();
-      // Then
-      expect(service.TrackedEventsMap).toBe(eventMapMock);
-    });
-  });
-
   describe('track', () => {
-    it('should call `appTrackingService.buildLog()` & logger.businessEvent methods', async () => {
-      // Given
-      const EventMock = {
-        category: 'EventMockCategory',
-        event: 'eventMockEvent',
+    it('should call logger with a fully built business event when session data exists and sessionId is taken from SessionService', async () => {
+      // Arrange
+      const trackedEvent = TrackedEvent.FC_VERIFIED;
+      const context = {
+        req: { headers: { 'x-forwarded-for': '203.0.113.10' } },
+      } as any;
+
+      (sessionServiceMock.getId as jest.Mock).mockReturnValue('sid-123');
+      (sessionServiceMock.get as jest.Mock).mockReturnValue({
+        login_hint: 'login-hint',
+        browsingSessionId: 'browsing-1',
+        interactionId: 'inter-1',
+        interactionAcr: 'acr-high',
+        spId: 'sp-id-1',
+        spEssentialAcr: 'eAcr',
+        spName: 'Service Provider',
+        spIdentity: { email: 'sp@example.com', sub: 'sp-sub-1' },
+        idpId: 'idp-id-1',
+        idpAcr: 'idp-acr',
+        idpName: 'Identity Provider',
+        idpLabel: 'Label',
+        idpIdentity: { email: 'idp@example.com', sub: 'idp-sub-1' },
+      });
+
+      const expected = {
+        browsingSessionId: 'browsing-1',
+        event: 'FC_VERIFIED',
+        idpAcr: 'idp-acr',
+        idpEmail: 'idp@example.com',
+        idpEmailFqdn: 'example.com',
+        idpId: 'idp-id-1',
+        idpLabel: 'Label',
+        idpLoginHint: undefined,
+        idpLoginHintFqdn: undefined,
+        idpName: 'Identity Provider',
+        idpSub: 'idp-sub-1',
+        interactionAcr: 'acr-high',
+        interactionId: 'inter-1',
+        ip: '203.0.113.10',
+        sessionId: 'sid-123',
+        spEssentialAcr: 'eAcr',
+        spId: 'sp-id-1',
+        spLoginHint: undefined,
+        spLoginHintFqdn: undefined,
+        spName: 'Service Provider',
+        spSub: 'sp-sub-1',
+        step: '5.0.0',
       };
 
-      const context = Symbol(
-        'context',
-      ) as unknown as TrackedEventContextInterface;
-      // When
-      await service.track(EventMock, context);
-      // Then
-      expect(appTrackingMock.buildLog).toHaveBeenCalledTimes(1);
-      expect(appTrackingMock.buildLog).toHaveBeenCalledWith(EventMock, context);
+      // Act
+      await service.track(trackedEvent, context);
+
+      // Assert
       expect(loggerLegacyMock.businessEvent).toHaveBeenCalledTimes(1);
+      expect(loggerLegacyMock.businessEvent).toHaveBeenCalledWith(expected);
+    });
+
+    it('should prefer context.sessionId and handle missing user session gracefully', async () => {
+      // Arrange
+      const trackedEvent = TrackedEvent.FC_REDIRECTED_TO_SP;
+      const context = {
+        sessionId: 'override-session',
+        req: { headers: { 'x-forwarded-for': '198.51.100.77' } },
+      } as any;
+
+      (sessionServiceMock.getId as jest.Mock).mockReturnValue('sid-not-used');
+      (sessionServiceMock.get as jest.Mock).mockReturnValue(undefined);
+
+      const expected = {
+        browsingSessionId: undefined,
+        event: trackedEvent,
+        idpAcr: undefined,
+        idpEmail: undefined,
+        idpId: undefined,
+        idpLabel: undefined,
+        idpName: undefined,
+        idpSub: undefined,
+        interactionAcr: undefined,
+        interactionId: undefined,
+        ip: '198.51.100.77',
+        login_hint: undefined,
+        sessionId: 'override-session',
+        spEmail: undefined,
+        spEssentialAcr: undefined,
+        spId: undefined,
+        spName: undefined,
+        spSub: undefined,
+        step: trackedEventSteps[trackedEvent],
+      };
+
+      // Act
+      await service.track(trackedEvent, context);
+
+      // Assert
+      expect(loggerLegacyMock.businessEvent).toHaveBeenCalledTimes(1);
+      expect(loggerLegacyMock.businessEvent).toHaveBeenCalledWith(expected);
+      // Ensure getId was not used when context provides a sessionId
+      expect(sessionServiceMock.getId).not.toHaveBeenCalled();
     });
   });
 
-  describe('toClassNames', () => {
-    it('should return an array of class names', () => {
-      // Given
-      class A extends FcException {}
-      class B extends FcException {}
-      const classes = [A, B];
-      // When
-      const result = service['toClassNames'](classes);
-      // Then
-      expect(result).toEqual(['A', 'B']);
-    });
+  describe('buildLog (private)', () => {
+    it('should still be callable via any-cast and return the correct object', () => {
+      // Arrange
+      (sessionServiceMock.getId as jest.Mock).mockReturnValue('sid-zzz');
+      (sessionServiceMock.get as jest.Mock).mockReturnValue({});
+      const trackedEvent = TrackedEvent.FC_AUTHORIZE_INITIATED;
+      const context = {
+        req: { headers: { 'x-forwarded-for': ['10.0.0.1', '10.0.0.2'] } },
+      } as any;
 
-    it('should return an empty array if no input is given', () => {
-      // Given
-      const classes = undefined;
-      // When
-      const result = service['toClassNames'](classes);
-      // Then
-      expect(result).toEqual([]);
-    });
-  });
+      // Act
+      const result = (service as any).buildLog(trackedEvent, context);
 
-  describe('findEventsForException', () => {
-    it('should return matching events', () => {
-      // Given
-      const error = new ExceptionClass();
-      service.TrackedEventsMap = eventMapMock;
-      // When
-      const result = service['findEventForException'](error);
-      // Then
-      expect(result).toBeArray();
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe(eventMapMock.BAR);
-    });
-
-    it('should return empty array if there are no matching events', () => {
-      // Given
-      class NotSupportedClass extends FcException {}
-      const error = new NotSupportedClass();
-      // When
-      const result = service['findEventForException'](error);
-      // Then
-      expect(result).toBeArray();
-      expect(result).toHaveLength(0);
-    });
-  });
-
-  describe('trackExceptionIfNeeded', () => {
-    it('should call `service.track()` for all event found', async () => {
-      // Given
-      const errorMock = new FcException();
-      const contextMock = Symbol(
-        'context',
-      ) as unknown as TrackedEventContextInterface;
-      const eventsMock = [Symbol(), Symbol()];
-      service['findEventForException'] = jest
-        .fn()
-        .mockReturnValueOnce(eventsMock);
-      service.track = jest.fn();
-
-      // When
-      await service.trackExceptionIfNeeded(errorMock, contextMock);
-
-      // Then
-      expect(service.track).toHaveBeenCalledTimes(2);
-      expect(service.track).toHaveBeenNthCalledWith(
-        1,
-        eventsMock[0],
-        contextMock,
-      );
-      expect(service.track).toHaveBeenNthCalledWith(
-        2,
-        eventsMock[1],
-        contextMock,
+      // Assert
+      expect(result).toEqual(
+        expect.objectContaining({
+          event: trackedEvent,
+          ip: ['10.0.0.1', '10.0.0.2'],
+          sessionId: 'sid-zzz',
+          step: trackedEventSteps[trackedEvent],
+        }),
       );
     });
   });

@@ -247,6 +247,116 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
   });
 
+  describe('getIdpsByFqdn', () => {
+    const idpListMock = [
+      { id: '1', fqdns: ['default-fqdn.fr'] },
+      { id: '2', fqdns: ['abc.fr'] },
+      { id: '3', fqdns: ['foo.fr', 'default-fqdn.fr'] },
+    ];
+    beforeEach(() => {
+      service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
+    });
+
+    it('should return a list of FqdnToIdentityProvider', async () => {
+      const idpsByFqdn = await service.getIdpsByFqdn('default-fqdn.fr');
+      expect(idpsByFqdn).toStrictEqual([idpListMock[0], idpListMock[2]]);
+    });
+
+    it('should return an empty array if no corresponding FI is found for a fqdn', async () => {
+      const fqdnToIdps = await service.getIdpsByFqdn('non-existing-fqdn.fr');
+      expect(fqdnToIdps).toStrictEqual([]);
+    });
+  });
+
+  describe('getFqdnFromEmail', () => {
+    it('should only return the undefined from an undefined email address', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail(undefined);
+
+      // Then
+      expect(fqdn).toBe(undefined);
+    });
+
+    it('should only return the full qualified domain name from an email address', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail('hermione.granger@hogwards.uk');
+
+      // Then
+      expect(fqdn).toBe('hogwards.uk');
+    });
+
+    it('should only return the full qualified domain name from an email address with two @', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail(
+        'hermione@grangerhogwards@hogwards.uk',
+      );
+
+      // Then
+      expect(fqdn).toBe('hogwards.uk');
+    });
+
+    it('should only return the FQDN from a FQDN', () => {
+      // When
+      const fqdn = service.getFqdnFromEmail('hogwards.uk');
+
+      // Then
+      expect(fqdn).toBe('hogwards.uk');
+    });
+
+    const emailToTest = [
+      {
+        value: 'hermione.granger@hogwards.uK',
+        expectedFqdn: 'hogwards.uk',
+      },
+      {
+        value: 'hermione.granger@hogwardS.uk',
+        expectedFqdn: 'hogwards.uk',
+      },
+      {
+        value: 'hermione.granger@hogwardS.uK',
+        expectedFqdn: 'hogwards.uk',
+      },
+      {
+        value: 'hermione.granger@HOGWARDS.UK',
+        expectedFqdn: 'hogwards.uk',
+      },
+    ];
+    it.each(emailToTest)(
+      'should always return qualified domain name in lower case from an email address with upper case',
+      ({ value, expectedFqdn }) => {
+        // When
+        const fqdn = service.getFqdnFromEmail(value);
+
+        // Then
+        expect(fqdn).toBe(expectedFqdn);
+      },
+    );
+  });
+
+  describe('getIdpsByEmail', () => {
+    beforeEach(() => {
+      service.getIdpsByFqdn = jest.fn();
+    });
+
+    it('should only return the full qualified domain name from an email address', async () => {
+      // When
+      await service.getIdpsByEmail('hermione.granger@hogwarts.uk');
+
+      // Then
+      expect(service.getIdpsByFqdn).toHaveBeenCalledTimes(1);
+      expect(service.getIdpsByFqdn).toHaveBeenCalledWith('hogwarts.uk');
+    });
+
+    it('should only return the full qualified domain name from an email address with two @', async () => {
+      // When
+      await service.getIdpsByEmail('hermione@grangerhogwarts@hogwarts.uk');
+
+      // Then
+      expect(service.getIdpsByFqdn).toHaveBeenCalledTimes(1);
+      expect(service.getIdpsByFqdn).toHaveBeenCalledWith('hogwarts.uk');
+    });
+  });
+
   describe('legacyToOpenIdPropertyName', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
       // setup

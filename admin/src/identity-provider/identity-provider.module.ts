@@ -5,8 +5,6 @@ import { IdentityProviderController } from './identity-provider.controller';
 import { IdentityProviderService } from './identity-provider.service';
 import { SecretManagerService } from '../utils/secret-manager.service';
 import crypto from 'crypto';
-import { FqdnToProvider } from '../fqdn-to-provider/fqdn-to-provider.mongodb.entity';
-import { FqdnToProviderService } from '../fqdn-to-provider/fqdn-to-provider.service';
 import { PaginationService } from '../pagination';
 
 const cryptoProvider = {
@@ -15,18 +13,12 @@ const cryptoProvider = {
 };
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature(
-      [IdentityProviderFromDb, FqdnToProvider],
-      'fc-mongo',
-    ),
-  ],
+  imports: [TypeOrmModule.forFeature([IdentityProviderFromDb], 'fc-mongo')],
   controllers: [IdentityProviderController],
   providers: [
     IdentityProviderService,
     SecretManagerService,
     cryptoProvider,
-    FqdnToProviderService,
     PaginationService,
   ],
   exports: [IdentityProviderService],
