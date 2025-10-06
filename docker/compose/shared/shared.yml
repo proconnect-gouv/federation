@@ -17,9 +17,36 @@ services:
       - data
     init: true
 
+  init-core:
+    build:
+      context: '../../../back'
+      target: migrator
+    working_dir: /var/www/app
+    user: ${CURRENT_UID}
+    depends_on:
+      mongo-fca-low:
+        condition: service_started
+    volumes:
+      - '../../../back:/build/back:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/log:/var/log/app'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core.env'
+    environment:
+      - NODE_OPTIONS=--experimental-strip-types
+    tty: true
+    networks:
+      - data
+    command: 'yarn run migrate up'
+
   base-core:
     extends: base-nodejs
     depends_on:
+      init-core:
+        condition: service_completed_successfully
       rp-all:
         condition: service_started
       mongo-fca-low:

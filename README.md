@@ -256,3 +256,33 @@ cd $PC_ROOT/federation/quality/fca
 # Get the credentials from a team member
 CYPRESS_TEST_ENV=integ01 CYPRESS_EXPLOIT_USER_NAME=proconnect-test-local CYPRESS_EXPLOIT_USER_PASS='xxx' CYPRESS_EXPLOIT_USER_TOTP='xxx' yarn start:low
 ```
+
+## Add a migration script
+
+We use [migrate-mongo](https://www.npmjs.com/package/migrate-mongo) to manage the database migrations.
+
+```bash
+# in the back directory
+$ yarn run migrate create "blacklist the beatles"
+Created: migrations/20250203153126-blacklist_the_beatles.ts
+Done in 0.25s.
+```
+
+> [!NOTE]  
+> The generated file does really match our code style and might not be very TypeScript friendly.  
+> Feel free to change it to guaranty type safety.  
+> The files will run with [`NODE_OPTIONS="--experimental-strip-types"`](https://nodejs.org/docs/latest-v22.x/api/cli.html#--experimental-strip-types) for a year (2024) as Node.js 24 is will have this option active by default.
+
+## Run the migration script on the mongo container
+
+We use init containers to run the migration script on the mongo container.  
+To run `core-fca-low` migration script, run:
+
+```bash
+$ docker compose run --rm init-core
+```
+
+> [!NOTE]  
+> This `init-core-fca-low` container is a dependency of the `core-fca-low` container.  
+> It will run the migration script every time the `core-fca-low` container is started.  
+> No need to do it manually when using the `dks switch`
