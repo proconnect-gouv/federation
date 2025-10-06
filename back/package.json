@@ -18,11 +18,6 @@
     "lint": "eslint \"{apps,libs}/**/*.ts\"",
     "prettier": "prettier -c \"{apps,libs}/**/*.ts\"",
     "test": "jest",
-    "typeorm": "typeorm-ts-node-esm",
-    "typeorm:migrations-run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./typeorm.config.ts migration:run",
-    "typeorm:migrations-generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./typeorm.config.ts migration:generate",
-    "typeorm:fixtures:load": "./scripts/fixtures-load.sh",
-    "typeorm:fixtures:reset-config-test": "./scripts/fixtures-reset-config-test.sh",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -79,7 +74,6 @@
     "retry": "^0.13.1",
     "rxjs": "^7.8.2",
     "type-fest": "^4.3.1",
-    "typeorm": "^0.3.27",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
