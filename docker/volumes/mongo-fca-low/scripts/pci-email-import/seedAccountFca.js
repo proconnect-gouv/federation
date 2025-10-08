@@ -1,5 +1,8 @@
 !function() {
   db.accountFca.deleteMany({});
+  function uuidv4() {
+    return UUID().hex().replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5');
+  }
 
   const targetIdpUid = "71144ab3-ee1a-4401-b7b3-79b44f7daeeb";
 
@@ -38,6 +41,17 @@
       ],
       active: true
     },
+    // sub-D already has same email as PCI export data - no update expected
+    {
+      sub: "9DD0949F-63AA-4F1E-AE3D-C5F2326B3607",
+      createdAt: new Date("2024-11-28T23:59:00Z"),
+      id: "9DD0949F-63AA-4F1E-AE3D-C5F2326B3608",
+      idpIdentityKeys: [
+        { idpUid: targetIdpUid, idpSub: "sub-D", idpMail: "already-set@example.com" }
+      ],
+      updatedAt: new Date("2024-11-28T23:59:00Z"),
+      active: true
+    },
     // Has idpIdentityKeys for other uid only — should not be updated; creation of new docs for sub-new-* must be separate docs
     {
       sub: "9DD0949F-63AA-4F1E-AE3D-C5F2326B3509",
@@ -58,13 +72,13 @@
     },
   ];
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 800000; i++) {
     accounts.push({
-      sub: UUID().hex().replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5'),
+      sub: uuidv4(),
       createdAt: new Date("2024-06-01T00:00:00Z"),
-      id: UUID().hex().replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5'),
+      id: uuidv4(),
       idpIdentityKeys: [
-        { idpUid: targetIdpUid, idpSub: `bulk-sub-${i}` }
+        { idpUid: i < 300000 ? targetIdpUid: uuidv4(), idpSub: `pci-${i}` }
       ],
       active: true
     });

@@ -30,6 +30,12 @@ const expectedIdpIdentityKeys = {
     }
 }
 
+function assertEqual(a, b) {
+    if (JSON.stringify(a) !== JSON.stringify(b)) {
+        throw new Error(`Assertion failed: (${a} !== ${b})`);
+    }
+}
+
 function assertDeepEqual(a, b) {
     const aStr = JSON.stringify(a, Object.keys(a).sort());
     const bStr = JSON.stringify(b, Object.keys(b).sort());
@@ -68,4 +74,10 @@ for (const [idpUid, subs] of Object.entries(expectedIdpIdentityKeys)) {
 if (failed) {
     throw new Error("Some assertions failed.");
 }
+
+assertEqual(
+    db.accountFca.findOne({ idpIdentityKeys: { $elemMatch: { idpUid: targetIdpUid, idpSub: "sub-D" } } }).updatedAt,
+    new Date("2024-11-28T23:59:00Z")
+);
+
 print("All assertions passed.");

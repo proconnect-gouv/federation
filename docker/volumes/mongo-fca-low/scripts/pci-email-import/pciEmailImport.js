@@ -22,8 +22,10 @@
   const pciUsers = db.pciUserExport.find({ idpUid: targetIdpUid }).toArray();
 
   const writes = [];
+  let updateCount = 0, insertCount = 0;
   for (const pciUser of pciUsers) {
     if (!existingSubs.has(pciUser.idpSub)) {
+      insertCount++;
       writes.push({
         insertOne: {
           document: {
@@ -37,11 +39,12 @@
         }
       });
     } else {
+      updateCount++;
       // Add an update that sets idpMail on the existing element of the idpIdentityKeys array of the existing document
       // (located using $elemMatch in the query)
       writes.push({
         updateOne: {
-          filter: { idpIdentityKeys: { $elemMatch: { idpUid: targetIdpUid, idpSub: pciUser.idpSub } } },
+          filter: { idpIdentityKeys: { $elemMatch: { idpUid: targetIdpUid, idpSub: pciUser.idpSub, idpMail: { $ne: pciUser.idpMail } } } },
           update: {
             $set: {
               // Updates only the matching array element
@@ -55,6 +58,7 @@
     }
   }
 
+  print(`Prepared ${insertCount} inserts and ${updateCount} updates`);
   if (writes.length) {
     const bulkResult = db.accountFca.bulkWrite(writes, { ordered: true });
     // modifiedCount does not seem to be reported; use matchedCount as fallback

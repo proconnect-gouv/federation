@@ -17,6 +17,12 @@
     },
     {
       idpUid: '71144ab3-ee1a-4401-b7b3-79b44f7daeeb',
+      idpSub: 'sub-D',
+      idpMail: 'already-set@example.com',
+      createdAt: new Date('2024-06-15T12:34:56Z'),
+    },
+    {
+      idpUid: '71144ab3-ee1a-4401-b7b3-79b44f7daeeb',
       idpSub: 'sub-new-1',
       idpMail: 'new1@example.com',
       createdAt: new Date('2024-06-15T12:34:56Z'),
@@ -47,10 +53,10 @@
     },
   ];
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 600000; i++) {
     docs.push({
       idpUid: '71144ab3-ee1a-4401-b7b3-79b44f7daeeb',
-      idpSub: `bulk-${i}`,
+      idpSub: `pci-${i}`,
       idpMail: `toto${i}@example.fr`,
     });
   }
