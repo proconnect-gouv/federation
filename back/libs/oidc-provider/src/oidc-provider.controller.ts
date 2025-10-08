@@ -81,7 +81,6 @@ export class OidcProviderController {
   @UsePipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
     }),
   )
   revokeToken(@Next() next, @Body() _body: RevocationTokenParamsDTO) {
