@@ -179,6 +179,7 @@ services:
       - fc
       - exploitation
       - rie
+    stop_signal: SIGKILL
     healthcheck:
       test: ['CMD', 'bash', '-c', 'echo >/dev/tcp/localhost/3128 || exit 1']
       interval: 1s
