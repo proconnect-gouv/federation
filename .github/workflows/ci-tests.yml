@@ -219,6 +219,6 @@ jobs:
       matrix:
         include:
           - stack: medium
-            tags: 'not @hybridge and not @ignore'
+            tags: 'not @hybridge and not @hybridge and not @ignore'
           - stack: hybridge
             tags: '@hybridge'

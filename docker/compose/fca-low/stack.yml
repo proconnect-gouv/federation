@@ -51,3 +51,10 @@ services:
       - 'hybridge-rie'
       - 'fia-rie-low'
       - 'rp-hybridge'
+
+  rie:
+    image: alpine
+    depends_on:
+      - 'core-rie'
+      - 'fsa1-low'
+      - 'fia1-low'

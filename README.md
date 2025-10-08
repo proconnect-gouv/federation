@@ -215,7 +215,7 @@ yarn test:e2e:open
 ```bash
 dks switch medium
 cd $PC_ROOT/federation/quality/fca
-yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @ignore'
+yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @hybridge and not @ignore'
 ```
 
 ### Run all quality tests for PCF Hybridge
@@ -224,6 +224,14 @@ yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @ignore'
 dks switch hybridge
 cd $PC_ROOT/federation/quality/fca
 yarn test:low:chrome-desktop --env TAGS='@hybridge'
+```
+
+### Run all quality tests for PCF RIE
+
+```bash
+dks switch rie
+cd $PC_ROOT/federation/quality/fca
+yarn test:low:chrome-desktop --env TAGS='@rie'
 ```
 
 ## Visualization Tests
