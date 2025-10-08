@@ -12,6 +12,16 @@ const expectedIdpIdentityKeys = {
         "sub-C": [
             { idpUid: targetIdpUid, idpSub: "sub-C" }
         ],
+        "sub-C": [
+            { idpUid: targetIdpUid, idpSub: "sub-C" }
+        ],
+        "sub-new-1": [
+            {
+                idpUid: targetIdpUid,
+                idpSub: "sub-new-1",
+                idpMail: 'new1@example.com',
+            },
+        ]
     },
     "0e7c099f-fe86-49a0-b7d1-19df45397212": {
         "sub-A": [
@@ -57,5 +67,5 @@ for (const [idpUid, subs] of Object.entries(expectedIdpIdentityKeys)) {
 
 if (failed) {
     throw new Error("Some assertions failed.");
-} 
+}
 print("All assertions passed.");

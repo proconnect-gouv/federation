@@ -58,7 +58,7 @@
     },
   ];
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 1000; i++) {
     accounts.push({
       sub: UUID().hex().replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5'),
       createdAt: new Date("2024-06-01T00:00:00Z"),

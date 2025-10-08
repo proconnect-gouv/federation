@@ -47,7 +47,7 @@
     },
   ];
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 1000; i++) {
     docs.push({
       idpUid: '71144ab3-ee1a-4401-b7b3-79b44f7daeeb',
       idpSub: `bulk-${i}`,
