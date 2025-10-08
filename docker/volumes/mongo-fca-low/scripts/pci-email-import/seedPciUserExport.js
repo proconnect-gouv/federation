@@ -1,4 +1,7 @@
 !function () {
+  if (hostname() !== "mongo-fca-low") {
+    throw new Error("This script should be run locally only.");
+  }
   // Ensure exact content
   db.pciUserExport.deleteMany({});
 

@@ -1,4 +1,7 @@
 !function() {
+  if (hostname() !== "mongo-fca-low") {
+    throw new Error("This script should be run locally only.");
+  }
   db.accountFca.deleteMany({});
   function uuidv4() {
     return UUID().hex().replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5');
