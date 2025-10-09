@@ -13,7 +13,7 @@ export class IdentityProvider extends Document {
   @Prop({ type: String })
   client_secret: string;
 
-  @Prop({ type: String })
+  @Prop({ type: Boolean })
   discovery: boolean;
 
   @Prop({ type: String })
