@@ -63,6 +63,14 @@ export class AccountFca extends Document {
 
 const AccountFcaSchema = SchemaFactory.createForClass(AccountFca);
 
+AccountFcaSchema.index(
+  {
+    'idpIdentityKeys.idpUid': 1,
+    'idpIdentityKeys.idpSub': 1,
+  },
+  { unique: true },
+);
+
 AccountFcaSchema.index({
   'idpIdentityKeys.idpUid': 1,
   'idpIdentityKeys.idpMail': 1,
