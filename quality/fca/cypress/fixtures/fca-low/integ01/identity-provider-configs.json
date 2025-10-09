@@ -1,5 +1,5 @@
 {
-  "default": {
+  "bdd-idp-default": {
     "name": "bdd-idp-default",
     "title": "FI de test sans discovery url",
     "issuer": "https://fia1v2.integ01.dev-agentconnect.fr",

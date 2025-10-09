@@ -426,101 +426,175 @@ describe('CoreFcaService', () => {
         defaultIdpId: 'default-idp',
       });
 
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
-      identityProviderMock.getIdpsByFqdn.mockResolvedValueOnce([
+      const idpsList = [
         {
           uid: 'idp1',
+          isRoutingEnabled: true,
         },
         {
           uid: 'idp2',
+          isRoutingEnabled: true,
         },
-      ]);
+      ];
+
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      identityProviderMock.getIdpsByFqdn.mockResolvedValueOnce(idpsList);
 
       // When
       const response = await service.selectIdpsFromEmail('hogwarts.uk');
 
       // Then
-      const expectedConfig = [
+      expect(response).toEqual(idpsList);
+    });
+
+    it('should return the idps mapped and filter those with routing disabled', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      const idpsList = [
         {
           uid: 'idp1',
+          isRoutingEnabled: true,
         },
         {
           uid: 'idp2',
+          isRoutingEnabled: false,
         },
       ];
 
-      expect(response).toEqual(expectedConfig);
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      identityProviderMock.getIdpsByFqdn.mockResolvedValueOnce(idpsList);
+
+      // When
+      const response = await service.selectIdpsFromEmail('hogwarts.uk');
+
+      // Then
+      expect(response).toEqual([idpsList[0]]);
     });
 
-    describe('isAllowedIdpForEmail', () => {
-      it('should allow a fqdn listed in one of the fqdns of an idp', async () => {
-        // Given
-        identityProviderMock.getById.mockResolvedValueOnce({
+    it('should return the idps mapped even with routing disabled if the email is a passe-droit', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      const idpsList = [
+        {
           uid: 'idp1',
-          fqdns: ['hogwarts.uk'],
-        });
-        identityProviderMock.getFqdnFromEmail.mockReturnValueOnce(
-          'hogwarts.uk',
-        );
-        configServiceMock.get.mockReturnValueOnce({
-          defaultIdpId: 'default-idp',
-        });
+          isRoutingEnabled: true,
+        },
+        {
+          uid: 'idp2',
+          isRoutingEnabled: false,
+        },
+      ];
 
-        // When
-        const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
-          'idp1',
-          'hermione.granger@hogwarts.uk',
-        );
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      identityProviderMock.getIdpsByFqdn.mockResolvedValueOnce(idpsList);
 
-        // Then
-        expect(isAllowedIdpForEmail).toEqual(true);
+      // When
+      const response = await service.selectIdpsFromEmail(
+        'hermione.granger+proconnect@hogwarts.uk',
+      );
+
+      // Then
+      expect(response).toEqual(idpsList);
+    });
+
+    it('should not return the idps mapped with routing disabled if the email is a wrong configured passe-droit', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
       });
 
-      it('should not allow a fqdn listed in one of the fqdns of only others idps', async () => {
-        // Given
-        identityProviderMock.getById.mockResolvedValueOnce({
+      const idpsList = [
+        {
           uid: 'idp1',
-          fqdns: ['fqdn1.fr', 'fqdn1bis.fr'],
-        });
-        identityProviderMock.getFqdnFromEmail.mockReturnValueOnce(
-          'hogwarts.uk',
-        );
-        configServiceMock.get.mockReturnValueOnce({
-          defaultIdpId: 'default-idp',
-        });
+          isRoutingEnabled: true,
+        },
+        {
+          uid: 'idp2',
+          isRoutingEnabled: false,
+        },
+      ];
 
-        // When
-        const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
-          'idp1',
-          'hermione.granger@hogwarts.uk',
-        );
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      identityProviderMock.getIdpsByFqdn.mockResolvedValueOnce(idpsList);
 
-        // Then
-        expect(isAllowedIdpForEmail).toEqual(false);
+      // When
+      const response = await service.selectIdpsFromEmail(
+        'hermione.granger+proconnect.not-at-the-end@hogwarts.uk',
+      );
+
+      // Then
+      expect(response).toEqual([idpsList[0]]);
+    });
+  });
+
+  describe('isAllowedIdpForEmail', () => {
+    it('should allow a fqdn listed in one of the fqdns of an idp', async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValueOnce({
+        uid: 'idp1',
+        fqdns: ['hogwarts.uk'],
+      });
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
       });
 
-      it('should allow an unknown fqdn when using the default identity provider', async () => {
-        // Given
-        configServiceMock.get.mockReturnValueOnce({
-          defaultIdpId: 'default-idp',
-        });
-        identityProviderMock.getById.mockResolvedValueOnce({
-          uid: 'default-idp',
-          fqdns: [],
-        });
-        identityProviderMock.getFqdnFromEmail.mockReturnValueOnce(
-          'hogwarts.uk',
-        );
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'idp1',
+        'hermione.granger@hogwarts.uk',
+      );
 
-        // When
-        const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
-          'default-idp',
-          'hermione.granger@hogwarts.uk',
-        );
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(true);
+    });
 
-        // Then
-        expect(isAllowedIdpForEmail).toEqual(true);
+    it('should not allow a fqdn listed in one of the fqdns of only others idps', async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValueOnce({
+        uid: 'idp1',
+        fqdns: ['fqdn1.fr', 'fqdn1bis.fr'],
       });
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'idp1',
+        'hermione.granger@hogwarts.uk',
+      );
+
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(false);
+    });
+
+    it('should allow an unknown fqdn when using the default identity provider', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+      identityProviderMock.getById.mockResolvedValueOnce({
+        uid: 'default-idp',
+        fqdns: [],
+      });
+      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'default-idp',
+        'hermione.granger@hogwarts.uk',
+      );
+
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(true);
     });
   });
 

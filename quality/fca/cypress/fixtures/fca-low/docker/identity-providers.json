@@ -1,7 +1,10 @@
 [
   {
     "id": "71144ab3-ee1a-4401-b7b3-79b44f7daeeb",
-    "descriptions": ["moncomptepro"],
+    "descriptions": [
+      "moncomptepro",
+      "FI bdd basé sur les URLs de moncomptePro"
+    ],
     "title": "MonComptePro - eIDAS faible - ES256",
     "url": "https://moncomptepro.docker.dev-franceconnect.fr",
     "signature": "ES256",
@@ -9,7 +12,11 @@
   },
   {
     "id": "9c716f61-b8a1-435c-a407-ef4d677ec270",
-    "descriptions": ["premier FI", "par défaut"],
+    "descriptions": [
+      "premier FI",
+      "par défaut",
+      "FI bdd basé sur les URLs de fia1"
+    ],
     "title": "Identity Provider 1 - eIDAS faible - ES256",
     "url": "https://fia1-low.docker.dev-franceconnect.fr",
     "signature": "ES256",

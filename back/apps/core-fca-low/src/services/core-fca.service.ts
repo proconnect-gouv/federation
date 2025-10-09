@@ -152,11 +152,18 @@ export class CoreFcaService {
     const fqdn = this.identityProvider.getFqdnFromEmail(email);
     const idpsFromFqdn = await this.identityProvider.getIdpsByFqdn(fqdn);
 
+    // we get the part before the last @ to check if it's a "passe-droit" email
+    const emailPrefix = email.substring(0, email.lastIndexOf('@'));
+
+    const idpsWithRoutingEnabled = idpsFromFqdn.filter(
+      (idp) => idp.isRoutingEnabled || emailPrefix.endsWith('+proconnect'),
+    );
+
     // when there is no idp mapped for this fqdn
     // we check if there is or not a default idp set in the app
     // if yes, we return the default idp
     // if no, we return an empty config and we deduce that the default idp is not accepted
-    if (idpsFromFqdn.length === 0) {
+    if (idpsWithRoutingEnabled.length === 0) {
       const { defaultIdpId } = this.config.get<AppConfig>('App');
 
       if (!defaultIdpId) {
@@ -166,7 +173,7 @@ export class CoreFcaService {
       return [await this.identityProvider.getById(defaultIdpId)];
     }
 
-    return idpsFromFqdn;
+    return idpsWithRoutingEnabled;
   }
 
   /**

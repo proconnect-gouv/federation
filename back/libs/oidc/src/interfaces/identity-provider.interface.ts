@@ -1,6 +1,8 @@
 import { ClientMetadata, IssuerMetadata } from '../dto';
 
-export interface IdpFCMetadata {
+export type IdentityProviderMetadata = {
+  client: ClientMetadata;
+  issuer: IssuerMetadata;
   uid: string;
   url: string;
   name: string;
@@ -11,9 +13,5 @@ export interface IdpFCMetadata {
   siret: string;
   supportEmail: string;
   fqdns?: string[];
-}
-
-export type IdentityProviderMetadata = IdpFCMetadata & {
-  client: ClientMetadata;
-  issuer: IssuerMetadata;
+  isRoutingEnabled: boolean;
 };
