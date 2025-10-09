@@ -35,12 +35,6 @@ const accountsFca = {
   },
 };
 
-// -- ACCOUNTS -----
-db.accountFca.createIndex(
-  { "idpIdentityKeys.idpUid": 1, "idpIdentityKeys.idpSub": 1 },
-  { unique: true },
-);
-
 Object.entries(accountsFca).forEach(([key, account]) => {
   print(`${key} > Initializing user account: ${key}...`);
   db.accountFca.update({ id: account.id }, account, { upsert: true });
