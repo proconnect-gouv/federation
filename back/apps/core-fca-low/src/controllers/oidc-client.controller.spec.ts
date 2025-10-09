@@ -17,11 +17,7 @@ import { TrackingService } from '@fc/tracking';
 
 import { Routes } from '../enums';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
-import {
-  CoreFcaFqdnService,
-  CoreFcaService,
-  IdentitySanitizer,
-} from '../services';
+import { CoreFcaService, IdentitySanitizer } from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
 jest.mock('@fc/common', () => ({
@@ -44,7 +40,6 @@ describe('OidcClientController', () => {
   let tracking: any;
   let crypto: any;
   let emailValidatorService: any;
-  let fqdnService: any;
   let sanitizer: any;
   let csrfService: any;
 
@@ -103,7 +98,6 @@ describe('OidcClientController', () => {
         TrackingService,
         CryptographyService,
         EmailValidatorService,
-        CoreFcaFqdnService,
         IdentitySanitizer,
         CsrfService,
       ],
@@ -130,8 +124,6 @@ describe('OidcClientController', () => {
       .useValue(crypto)
       .overrideProvider(EmailValidatorService)
       .useValue(emailValidatorService)
-      .overrideProvider(CoreFcaFqdnService)
-      .useValue(fqdnService)
       .overrideProvider(IdentitySanitizer)
       .useValue(sanitizer)
       .overrideProvider(CsrfService)

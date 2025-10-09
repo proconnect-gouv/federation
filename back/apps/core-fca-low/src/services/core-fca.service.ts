@@ -21,7 +21,6 @@ import {
   CoreFcaIdpConfigurationException,
   CoreFcaUnauthorizedEmailException,
 } from '../exceptions';
-import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 
 @Injectable()
 export class CoreFcaService {
@@ -34,7 +33,6 @@ export class CoreFcaService {
     private readonly oidcAcr: OidcAcrService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly session: SessionService,
-    private readonly fqdnService: CoreFcaFqdnService,
     private readonly logger: LoggerService,
     private readonly tracking: TrackingService,
   ) {}
@@ -48,10 +46,7 @@ export class CoreFcaService {
       this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
-    await this.throwIfFqdnIsNotAuthorizedForSp(
-      spId,
-      idpLoginHint || login_hint,
-    );
+    this.ensureEmailIsAuthorizedForSp(spId, idpLoginHint || login_hint);
 
     const selectedIdp = await this.safelyGetExistingAndEnabledIdp(idpId);
 
@@ -149,8 +144,7 @@ export class CoreFcaService {
   async selectIdpsFromEmail(
     email: string,
   ): Promise<IdentityProviderMetadata[]> {
-    const fqdn = this.identityProvider.getFqdnFromEmail(email);
-    const idpsFromFqdn = await this.identityProvider.getIdpsByFqdn(fqdn);
+    const idpsFromFqdn = await this.identityProvider.getIdpsByEmail(email);
 
     // we get the part before the last @ to check if it's a "passe-droit" email
     const emailPrefix = email.substring(0, email.lastIndexOf('@'));
@@ -163,7 +157,7 @@ export class CoreFcaService {
     // we check if there is or not a default idp set in the app
     // if yes, we return the default idp
     // if no, we return an empty config and we deduce that the default idp is not accepted
-    if (idpsWithRoutingEnabled.length === 0) {
+    if (isEmpty(idpsWithRoutingEnabled)) {
       const { defaultIdpId } = this.config.get<AppConfig>('App');
 
       if (!defaultIdpId) {
@@ -174,34 +168,6 @@ export class CoreFcaService {
     }
 
     return idpsWithRoutingEnabled;
-  }
-
-  /**
-   * temporary code for resolving Uniforces issue
-   */
-  private throwIfFqdnIsNotAuthorizedForSp(
-    spId: string,
-    email: string,
-  ): Promise<void> {
-    const authorizedFqdnsConfig =
-      this.fqdnService.getSpAuthorizedFqdnsDetails(spId);
-
-    if (!authorizedFqdnsConfig?.authorizedFqdns.length) return;
-
-    const fqdnFromEmail = this.identityProvider.getFqdnFromEmail(email);
-
-    if (
-      !authorizedFqdnsConfig.authorizedFqdns.some(
-        (fqdnInConfig) => fqdnInConfig === fqdnFromEmail,
-      )
-    ) {
-      this.logger.err(`Unauthorized fqdn ${fqdnFromEmail} for SP ${spId}`);
-      throw new CoreFcaUnauthorizedEmailException(
-        authorizedFqdnsConfig.spName,
-        authorizedFqdnsConfig.spContact,
-        authorizedFqdnsConfig.authorizedFqdns,
-      );
-    }
   }
 
   // check if the idp is allowed to authenticate the user with this email
@@ -217,6 +183,35 @@ export class CoreFcaService {
     // if no idp explicitly handles the domain, the only idp allowed is the default one
     const { defaultIdpId } = this.config.get<AppConfig>('App');
     return defaultIdpId === idpId;
+  }
+
+  /**
+   * Only policemen can connect to Uniforces.
+   */
+  private ensureEmailIsAuthorizedForSp(spId: string, email: string): void {
+    const fqdnFromEmail = this.identityProvider.getFqdnFromEmail(email);
+    const { spAuthorizedFqdnsConfigs } = this.config.get<AppConfig>('App');
+
+    const authorizedFqdnsConfig = spAuthorizedFqdnsConfigs.find((config) => {
+      return config.spId === spId;
+    });
+
+    if (isEmpty(authorizedFqdnsConfig)) return;
+
+    if (
+      authorizedFqdnsConfig.authorizedFqdns.some(
+        (fqdnInConfig) => fqdnInConfig === fqdnFromEmail,
+      )
+    ) {
+      return;
+    }
+
+    this.logger.err(`Unauthorized fqdn ${fqdnFromEmail} for SP ${spId}`);
+    throw new CoreFcaUnauthorizedEmailException(
+      authorizedFqdnsConfig.spName,
+      authorizedFqdnsConfig.spContact,
+      authorizedFqdnsConfig.authorizedFqdns,
+    );
   }
 
   private async safelyGetExistingAndEnabledIdp(
