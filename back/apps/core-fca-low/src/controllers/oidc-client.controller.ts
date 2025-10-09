@@ -144,8 +144,10 @@ export class OidcClientController {
     const { identityProviderIds: idpIds } =
       await this.fqdnService.getFqdnConfigFromEmail(email);
 
+    const { spName } = userSession.get();
+
     if (idpIds.length === 0) {
-      throw new CoreFcaAgentNoIdpException();
+      throw new CoreFcaAgentNoIdpException(spName, email);
     }
 
     if (idpIds.length > 1) {
