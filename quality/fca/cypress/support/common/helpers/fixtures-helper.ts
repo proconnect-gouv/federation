@@ -50,6 +50,8 @@ export const getIdentityProviderByDescription = (
   return identityProvider;
 };
 
-export const getDefaultIdentityProviderConfig = (): IdentityProviderConfig => {
-  return idpConfigs['default'];
+export const getDefaultIdentityProviderConfig = (
+  providerName: string,
+): IdentityProviderConfig => {
+  return idpConfigs[providerName];
 };

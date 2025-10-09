@@ -54,6 +54,9 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: String, required: false })
   supportEmail: string;
+
+  @Prop({ type: Boolean })
+  isRoutingEnabled: boolean;
 }
 
 export const IdentityProviderSchema =
