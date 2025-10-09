@@ -61,4 +61,11 @@ export class AccountFca extends Document {
   active: boolean;
 }
 
-export const AccountFcaSchema = SchemaFactory.createForClass(AccountFca);
+const AccountFcaSchema = SchemaFactory.createForClass(AccountFca);
+
+AccountFcaSchema.index({
+  'idpIdentityKeys.idpMail': 1,
+  'idpIdentityKeys.idpUid': 1,
+});
+
+export { AccountFcaSchema };
