@@ -234,64 +234,6 @@ describe('update a service-provider', () => {
       cy.formControl(sp);
     });
 
-    it('Should be able to update a sp ( mobile urlRedirectUri: multiple entries) ', () => {
-      // Arrange
-      const mockConfig = {
-        ...configuration,
-        totp: true,
-      };
-
-      const sp = {
-        redirectUri:
-          'franceconnect://openid_redirect_url\nfc+app01://openid_redirect_url\nFC-app.02://openid_redirect_url',
-      };
-
-      // Action
-      cy.visit(`/service-provider?page=1&limit=9000`);
-
-      cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update').last().click();
-
-      cy.formFill(sp, mockConfig);
-
-      cy.get('form[name="fs-form"] button[type="submit"]').click();
-
-      // Assert
-      cy.contains(
-        `Le fournisseur de service MyFirstFSCypressModificate a été modifié avec succès !`,
-      );
-      cy.formControl(sp);
-    });
-
-    it('Should be able to update a sp ( mobile redirectUriLogout: multiple entries) ', () => {
-      // Arrange
-      const mockConfig = {
-        ...configuration,
-        totp: true,
-      };
-
-      const sp = {
-        redirectUriLogout:
-          'franceconnect://openid_redirect_url\nfc+app01://openid_redirect_url\nFC-app.02://openid_redirect_url',
-      };
-
-      // Action
-      cy.visit(`/service-provider?page=1&limit=9000`);
-
-      cy.contains(`MyFirstFSCypress`).should('be.visible');
-      cy.get('a.btn-action-update').last().click();
-
-      cy.formFill(sp, mockConfig);
-
-      cy.get('form[name="fs-form"] button[type="submit"]').click();
-
-      // Assert
-      cy.contains(
-        `Le fournisseur de service MyFirstFSCypressModificate a été modifié avec succès !`,
-      );
-      cy.formControl(sp);
-    });
-
     it('Should be able to update a sp ( emails ) ', () => {
       // Arrange
       const mockConfig = {

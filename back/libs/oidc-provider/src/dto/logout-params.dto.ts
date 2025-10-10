@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 
-import { IsUrlRequiredTldFromConfig } from '@fc/common';
+const URL_REGEX = /^https?:\/\/[^/].+$/;
 
 /**
  * Control parameters on the authentication request.
@@ -11,8 +11,8 @@ export class LogoutParamsDto {
   @IsString()
   readonly id_token_hint: string;
 
-  @IsUrlRequiredTldFromConfig()
   @IsOptional()
+  @Matches(URL_REGEX)
   readonly post_logout_redirect_uri?: string;
 
   @IsString()

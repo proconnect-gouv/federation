@@ -8,7 +8,6 @@ import {
   IsOptional,
   IsString,
   IsIn,
-  IsUrl,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import {
@@ -25,12 +24,7 @@ import { IP_VALIDATOR_REGEX } from '../../utils/ip-validator.constant';
 
 const { ES256, RS256, HS256 } = AlgoValue;
 
-// tslint:disable-next-line:max-line-length
-// match empty string because of optionals paramters
-// impossible to use IsOptionalExtended because of the Transform which always return something
-const URL_REGEX =
-  /^(?:((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|(([A-Za-z0-9\.\+-]{6,}):(?:\/\/)?(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-_]+)|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)?)$/;
-
+const URL_REGEX = /^https?:\/\/[^/].+$/;
 export class ServiceProviderDto {
   @IsValidInputString({
     message: `Veuillez mettre un nom valide ( Majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
@@ -41,6 +35,7 @@ export class ServiceProviderDto {
   readonly name: string;
 
   @Transform(linesToArray)
+  @IsOptionalExtended()
   @Matches(URL_REGEX, {
     each: true,
     message: 'Veuillez mettre une url valide ( Ex: https://toto.com/ )',
@@ -137,7 +132,7 @@ export class ServiceProviderDto {
   readonly grant_types?: string[] | null;
 
   @IsOptional()
-  @IsUrl()
+  @Matches(URL_REGEX)
   @Transform(toNullableString)
   // tslint:disable-next-line: variable-name
   readonly jwks_uri?: string | null;
