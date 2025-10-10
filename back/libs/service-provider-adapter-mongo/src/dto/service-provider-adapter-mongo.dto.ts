@@ -5,11 +5,11 @@ import {
   IsIn,
   IsOptional,
   IsString,
+  Matches,
   MinLength,
 } from 'class-validator';
 
-// Creates a cyclic dependency
-import { IsUrlRequiredTldFromConfig } from '@fc/common';
+const URL_REGEX = /^https?:\/\/[^/].+$/;
 
 export class ServiceProviderAdapterMongoDTO {
   @IsBoolean()
@@ -29,11 +29,11 @@ export class ServiceProviderAdapterMongoDTO {
   readonly client_secret: string;
 
   @IsArray()
-  @IsUrlRequiredTldFromConfig({ each: true })
+  @Matches(URL_REGEX, { each: true })
   readonly redirect_uris: string[];
 
   @IsArray()
-  @IsUrlRequiredTldFromConfig({ each: true })
+  @Matches(URL_REGEX, { each: true })
   readonly post_logout_redirect_uris: string[];
 
   @IsArray()
@@ -65,7 +65,7 @@ export class ServiceProviderAdapterMongoDTO {
   readonly introspection_encrypted_response_enc?: string;
 
   @IsOptional()
-  @IsUrlRequiredTldFromConfig()
+  @Matches(URL_REGEX)
   @Transform(({ value }) => value || undefined)
   readonly jwks_uri?: string;
 
