@@ -84,22 +84,9 @@ export class IdentityProviderAdapterMongoService
       .find({})
       .lean();
 
-    const { disableIdpValidationOnLegacy } =
-      this.config.get<IdentityProviderAdapterMongoConfig>(
-        'IdentityProviderAdapterMongo',
-      );
-
     const identityProviders = [];
 
     for (const rawIdentityProvider of rawIdentityProviders) {
-      if (disableIdpValidationOnLegacy) {
-        this.logger.warning(
-          `"${rawIdentityProvider?.uid}": Skipping DTO validation due to legacy IdP mode.`,
-        );
-        identityProviders.push(rawIdentityProvider);
-        continue;
-      }
-
       const dto = this.getIdentityProviderDTO(rawIdentityProvider?.discovery);
       const identityProvider = plainToInstance(dto, rawIdentityProvider);
       const errors = await validate(identityProvider, {

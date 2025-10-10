@@ -151,9 +151,6 @@ describe('ServiceProviderAdapterMongoService', () => {
     beforeEach(() => {
       // Given
       service.getList = jest.fn();
-      configMock.get.mockReturnValueOnce({
-        disableIdpValidationOnLegacy: false,
-      });
     });
 
     it('should call getList method with true value in param', async () => {

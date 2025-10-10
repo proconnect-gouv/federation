@@ -234,9 +234,6 @@ describe('IdentityProviderAdapterMongoService', () => {
     beforeEach(() => {
       // Given
       service.getList = jest.fn();
-      configMock.get.mockReturnValueOnce({
-        disableIdpValidationOnLegacy: false,
-      });
     });
     it('should call getList method with true value in param', async () => {
       // When
@@ -391,12 +388,6 @@ describe('IdentityProviderAdapterMongoService', () => {
   });
 
   describe('findAllIdentityProvider', () => {
-    beforeEach(() => {
-      configMock.get.mockReturnValueOnce({
-        disableIdpValidationOnLegacy: false,
-      });
-    });
-
     it('should resolve', async () => {
       // arrange
       validateMock.mockResolvedValueOnce([]);
@@ -421,20 +412,6 @@ describe('IdentityProviderAdapterMongoService', () => {
       expect(repositoryMock.find).toHaveBeenCalledTimes(1);
     });
 
-    it('should get the configuration', async () => {
-      // setup
-      validateMock.mockResolvedValueOnce([]);
-
-      // action
-      await service['findAllIdentityProvider']();
-
-      // expect
-      expect(configMock.get).toHaveBeenCalledTimes(1);
-      expect(configMock.get).toHaveBeenCalledWith(
-        'IdentityProviderAdapterMongo',
-      );
-    });
-
     it('should return result of type list', async () => {
       // setup
       validateMock.mockResolvedValueOnce([]);
@@ -444,20 +421,6 @@ describe('IdentityProviderAdapterMongoService', () => {
 
       // expect
       expect(result).toEqual([legacyIdentityProviderMock]);
-    });
-
-    it('should not call validateDto if the config "disableIdpValidationOnLegacy" is set to "true"', async () => {
-      // setup
-      validateMock.mockResolvedValueOnce([new ValidationError()]);
-      configMock.get
-        .mockReset()
-        .mockReturnValueOnce({ disableIdpValidationOnLegacy: true });
-
-      // action
-      await service['findAllIdentityProvider']();
-
-      // expect
-      expect(validateMock).toHaveBeenCalledTimes(0);
     });
 
     it('should log an alert if an entry is excluded by the DTO', async () => {
