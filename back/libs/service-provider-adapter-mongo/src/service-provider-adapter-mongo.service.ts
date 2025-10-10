@@ -86,8 +86,10 @@ export class ServiceProviderAdapterMongoService
     if (refreshCache || !this.listCache) {
       this.logger.debug('Refresh cache from DB');
 
-      const list = await this.findAllServiceProvider();
-      this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
+      const allServiceProviders = await this.findAllServiceProvider();
+      this.listCache = allServiceProviders.map((serviceProvider) =>
+        this.legacyToOpenIdPropertyName(serviceProvider),
+      );
     }
 
     return this.listCache;

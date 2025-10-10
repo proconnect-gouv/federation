@@ -80,6 +80,9 @@ export class MetadataIdpAdapterMongoDTO {
   @IsArray()
   @IsString({ each: true })
   readonly fqdns?: string[];
+
+  @IsBoolean()
+  readonly isRoutingEnabled: boolean;
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {

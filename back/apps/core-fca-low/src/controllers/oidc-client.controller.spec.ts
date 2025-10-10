@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { CoreFcaIdpConfigurationException, UserSession } from '@fc/core';
+import { UserSession } from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
@@ -17,11 +17,7 @@ import { TrackingService } from '@fc/tracking';
 
 import { Routes } from '../enums';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
-import {
-  CoreFcaFqdnService,
-  CoreFcaService,
-  IdentitySanitizer,
-} from '../services';
+import { CoreFcaService, IdentitySanitizer } from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
 jest.mock('@fc/common', () => ({
@@ -38,13 +34,12 @@ describe('OidcClientController', () => {
   let logger: any;
   let oidcClient: any;
   let oidcClientConfig: any;
-  let coreFca: any;
+  let coreFcaService: any;
   let identityProvider: any;
   let sessionService: any;
   let tracking: any;
   let crypto: any;
   let emailValidatorService: any;
-  let fqdnService: any;
   let sanitizer: any;
   let csrfService: any;
 
@@ -61,12 +56,17 @@ describe('OidcClientController', () => {
       getEndSessionUrl: jest.fn(),
     };
     oidcClientConfig = { get: jest.fn() };
-    coreFca = {
-      getIdentityProvidersByIds: jest.fn(),
+    coreFcaService = {
       redirectToIdp: jest.fn(),
       hasDefaultIdp: jest.fn(),
+      isAllowedIdpForEmail: jest.fn(),
+      selectIdpsFromEmail: jest.fn(),
+      getSortedDisplayableIdentityProviders: jest.fn(),
     };
-    identityProvider = { getById: jest.fn(), getFqdnFromEmail: jest.fn() };
+    identityProvider = {
+      getById: jest.fn(),
+      getFqdnFromEmail: jest.fn(),
+    };
     sessionService = {
       set: jest.fn(),
       get: jest.fn(),
@@ -78,10 +78,6 @@ describe('OidcClientController', () => {
     };
     crypto = { genRandomString: jest.fn() };
     emailValidatorService = { validate: jest.fn() };
-    fqdnService = {
-      getFqdnConfigFromEmail: jest.fn(),
-      isAllowedIdpForEmail: jest.fn(),
-    };
     sanitizer = {
       getValidatedIdentityFromIdp: jest.fn(),
       transformIdentity: jest.fn(),
@@ -102,7 +98,6 @@ describe('OidcClientController', () => {
         TrackingService,
         CryptographyService,
         EmailValidatorService,
-        CoreFcaFqdnService,
         IdentitySanitizer,
         CsrfService,
       ],
@@ -118,7 +113,7 @@ describe('OidcClientController', () => {
       .overrideProvider(OidcClientConfigService)
       .useValue(oidcClientConfig)
       .overrideProvider(CoreFcaService)
-      .useValue(coreFca)
+      .useValue(coreFcaService)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProvider)
       .overrideProvider(SessionService)
@@ -129,8 +124,6 @@ describe('OidcClientController', () => {
       .useValue(crypto)
       .overrideProvider(EmailValidatorService)
       .useValue(emailValidatorService)
-      .overrideProvider(CoreFcaFqdnService)
-      .useValue(fqdnService)
       .overrideProvider(IdentitySanitizer)
       .useValue(sanitizer)
       .overrideProvider(CsrfService)
@@ -150,21 +143,18 @@ describe('OidcClientController', () => {
         get: jest.fn().mockReturnValue({ login_hint: email }),
       } as unknown as ISessionService<UserSession>;
 
-      const fqdnConfig = {
-        identityProviderIds: ['idp1', 'idp2', 'default-idp'],
-      };
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue(fqdnConfig);
-
-      coreFca.hasDefaultIdp.mockReturnValue(true);
-
       const providers = [
         { title: 'Provider One', uid: 'idp1' },
         { title: 'Autre', uid: 'default-idp' },
       ];
-      coreFca.getIdentityProvidersByIds.mockResolvedValue(providers);
+      coreFcaService.selectIdpsFromEmail.mockResolvedValueOnce(providers);
+      coreFcaService.hasDefaultIdp.mockReturnValue(true);
 
       configService.get.mockReturnValue({ defaultIdpId: 'default-idp' });
       csrfService.renew.mockReturnValue('csrf-token');
+      coreFcaService.getSortedDisplayableIdentityProviders.mockReturnValueOnce(
+        providers,
+      );
 
       await controller.getIdentityProviderSelection(
         res as Response,
@@ -177,7 +167,7 @@ describe('OidcClientController', () => {
       });
       expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
         csrfToken: 'csrf-token',
-        providers,
+        identityProviders: providers,
         hasDefaultIdp: true,
       });
     });
@@ -211,16 +201,18 @@ describe('OidcClientController', () => {
         body,
       );
 
-      expect(coreFca.redirectToIdp).toHaveBeenCalledWith(req, res, 'idp123');
+      expect(coreFcaService.redirectToIdp).toHaveBeenCalledWith(
+        req,
+        res,
+        'idp123',
+      );
     });
 
     it('should throw an exception when no identity providers are available', async () => {
       const body = { email, rememberMe: true } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
-        identityProviderIds: [],
-      });
+      coreFcaService.selectIdpsFromEmail.mockResolvedValue([]);
 
       await expect(
         controller.redirectToIdp(
@@ -236,31 +228,14 @@ describe('OidcClientController', () => {
       });
     });
 
-    it('should throw an exception when identity provider is misconfigured', async () => {
-      const body = { email } as any;
-      emailValidatorService.validate.mockResolvedValue(undefined);
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
-        identityProviderIds: ['nonexistent-idp'],
-      });
-
-      await expect(
-        controller.redirectToIdp(
-          req as Request,
-          res as Response,
-          body,
-          userSession,
-        ),
-      ).rejects.toThrow(CoreFcaIdpConfigurationException);
-    });
-
     it('should redirect to identity provider selection when multiple providers are available', async () => {
       const body = { email } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
-        identityProviderIds: ['idp1', 'idp2'],
-      });
+      coreFcaService.selectIdpsFromEmail.mockResolvedValue([
+        { uid: 'idp1' },
+        { uid: 'idp2' },
+      ]);
       configService.get.mockReturnValue({ urlPrefix: '/app' });
 
       await controller.redirectToIdp(
@@ -286,13 +261,9 @@ describe('OidcClientController', () => {
       const body = { email, rememberMe: true } as any;
       emailValidatorService.validate.mockResolvedValue(undefined);
       identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      fqdnService.getFqdnConfigFromEmail.mockResolvedValue({
-        identityProviderIds: ['idp-single'],
-      });
-      identityProvider.getById.mockResolvedValue({
-        name: 'Single IdP',
-        title: 'Single Title',
-      });
+      coreFcaService.selectIdpsFromEmail.mockResolvedValue([
+        { uid: 'idp-single' },
+      ]);
 
       await controller.redirectToIdp(
         req as Request,
@@ -305,8 +276,7 @@ describe('OidcClientController', () => {
         rememberMe: true,
         idpLoginHint: email,
       });
-      expect(identityProvider.getById).toHaveBeenCalledWith('idp-single');
-      expect(coreFca.redirectToIdp).toHaveBeenCalledWith(
+      expect(coreFcaService.redirectToIdp).toHaveBeenCalledWith(
         req,
         res,
         'idp-single',
@@ -405,7 +375,7 @@ describe('OidcClientController', () => {
         sub: 'sub123',
       });
       (validateDto as jest.Mock).mockResolvedValue([]);
-      fqdnService.isAllowedIdpForEmail.mockResolvedValue(true);
+      coreFcaService['isAllowedIdpForEmail'].mockResolvedValue(true);
       configService.get.mockReturnValue({ urlPrefix: '/app' });
       sanitizer.getValidatedIdentityFromIdp.mockResolvedValue({
         email: 'user@example.com',
@@ -462,7 +432,7 @@ describe('OidcClientController', () => {
           req,
         },
       );
-      expect(fqdnService.isAllowedIdpForEmail).toHaveBeenCalledWith(
+      expect(coreFcaService['isAllowedIdpForEmail']).toHaveBeenCalledWith(
         'idp123',
         'user@example.com',
       );
@@ -492,7 +462,7 @@ describe('OidcClientController', () => {
       sanitizer.getValidatedIdentityFromIdp.mockResolvedValue(
         sanitizedIdentity,
       );
-      fqdnService.isAllowedIdpForEmail.mockResolvedValue(false);
+      coreFcaService['isAllowedIdpForEmail'].mockResolvedValue(false);
 
       await controller.getOidcCallback(
         req as Request,

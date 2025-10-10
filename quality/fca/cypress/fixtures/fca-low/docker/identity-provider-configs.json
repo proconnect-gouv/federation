@@ -1,16 +1,24 @@
 {
-  "default": {
+  "bdd-idp-default": {
     "name": "bdd-idp-default",
-    "title": "FI de test sans discovery url",
+    "title": "FI de test 1",
     "issuer": "https://fia1-low.docker.dev-franceconnect.fr",
-    "authorizationUrl": "https://fia1-low.docker.dev-franceconnect.fr/auth",
-    "tokenUrl": "https://fia1-low.docker.dev-franceconnect.fr/token",
-    "userInfoUrl": "https://fia1-low.docker.dev-franceconnect.fr/userinfo",
-    "logoutUrl": "https://fia1-low.docker.dev-franceconnect.fr/session/end",
-    "statusUrl": "https://fia1-low.docker.dev-franceconnect.fr/",
-    "jwksUrl": "https://fia1-low.docker.dev-franceconnect.fr/jwks",
-    "discovery": "false",
+    "discoveryUrl": "https://fia1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+    "discovery": "true",
     "clientId": "myclientidforfia1-low",
+    "client_secret": "7ae4fef2aab63fb78d777fe657b7536f",
+    "userinfo_signed_response_alg": "ES256",
+    "id_token_signed_response_alg": "ES256",
+    "emails": "test1@yopmail.com\ntest2@yopmail.com",
+    "siret": "81801912700021"
+  },
+  "bdd-idp-moncomptepro": {
+    "name": "bdd-idp-moncomptepro",
+    "title": "FI de test 2",
+    "issuer": "https://moncomptepro.docker.dev-franceconnect.fr",
+    "discoveryUrl": "https://moncomptepro.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+    "discovery": "true",
+    "clientId": "copyOfMyclientidforMonComptePro-low",
     "client_secret": "7ae4fef2aab63fb78d777fe657b7536f",
     "userinfo_signed_response_alg": "ES256",
     "id_token_signed_response_alg": "ES256",

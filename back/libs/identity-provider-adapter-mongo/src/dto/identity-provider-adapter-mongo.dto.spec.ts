@@ -30,6 +30,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
     userinfo_encrypted_response_enc: 'A256GCM',
     userinfo_signed_response_alg: 'RS512',
     siret: '81801912700021',
+    isRoutingEnabled: true,
   };
 
   const discoveryIdpAdapterMongoMock = {

@@ -16,7 +16,7 @@ export default {
   },
   fqdn: process.env.FQDN,
   defaultIdpId: env.string('DEFAULT_IDP_UID'),
-  spAuthorizedFqdnsConfigs: [...env.json('SP_AUTHORIZED_FQDNS_CONFIGS')],
+  spAuthorizedFqdnsConfigs: env.json('SP_AUTHORIZED_FQDNS_CONFIGS'),
   defaultEmailRenater: env.string('DEFAULT_EMAIL_RENATER'),
   contentSecurityPolicy: {
     defaultSrc: env.json('CSP_DEFAULT_SRC'),
@@ -29,4 +29,5 @@ export default {
   environment: env.string('ENVIRONMENT'),
   defaultRedirectUri: 'https://www.proconnect.gouv.fr',
   supportEmail: 'support+federation@proconnect.gouv.fr',
+  passeDroitEmailSuffix: '+proconnect',
 } as AppConfig;

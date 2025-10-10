@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { isEmpty, uniq } from 'lodash';
+import { isEmpty } from 'lodash';
 import { AuthorizationParameters } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';
@@ -21,7 +21,6 @@ import {
   CoreFcaIdpConfigurationException,
   CoreFcaUnauthorizedEmailException,
 } from '../exceptions';
-import { CoreFcaFqdnService } from './core-fca-fqdn.service';
 
 @Injectable()
 export class CoreFcaService {
@@ -34,7 +33,6 @@ export class CoreFcaService {
     private readonly oidcAcr: OidcAcrService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly session: SessionService,
-    private readonly fqdnService: CoreFcaFqdnService,
     private readonly logger: LoggerService,
     private readonly tracking: TrackingService,
   ) {}
@@ -48,7 +46,7 @@ export class CoreFcaService {
       this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
-    await this.throwIfFqdnNotAuthorizedForSp(spId, idpLoginHint || login_hint);
+    this.ensureEmailIsAuthorizedForSp(spId, idpLoginHint || login_hint);
 
     const selectedIdp = await this.safelyGetExistingAndEnabledIdp(idpId);
 
@@ -115,33 +113,107 @@ export class CoreFcaService {
     res.redirect(authorizationUrl);
   }
 
-  /**
-   * temporary code for resolving Uniforces issue
-   */
-  private async throwIfFqdnNotAuthorizedForSp(
-    spId: string,
+  hasDefaultIdp(providersUid: string[]): boolean {
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+    return providersUid.includes(defaultIdpId);
+  }
+
+  getSortedDisplayableIdentityProviders(
+    identityProviders: IdentityProviderMetadata[],
+  ): IdentityProviderMetadata[] {
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+
+    const filteredIdentityProviders = identityProviders.map(
+      (identityProvider) => ({
+        ...identityProvider,
+        title:
+          identityProvider.uid === defaultIdpId
+            ? 'Autre'
+            : identityProvider.title, // rename default IdP to "Autre"
+      }),
+    );
+
+    // sort providers by title alphabetically with "Autre" at the end of the list
+    return filteredIdentityProviders.sort((a, b) => {
+      if (a.title === 'Autre') return 1;
+      if (b.title === 'Autre') return -1;
+      return a.title.localeCompare(b.title, 'fr');
+    });
+  }
+
+  async selectIdpsFromEmail(
     email: string,
-  ): Promise<void> {
-    const authorizedFqdnsConfig =
-      this.fqdnService.getSpAuthorizedFqdnsConfig(spId);
+  ): Promise<IdentityProviderMetadata[]> {
+    const idpsFromFqdn = await this.identityProvider.getIdpsByEmail(email);
 
-    if (!authorizedFqdnsConfig?.authorizedFqdns.length) return;
+    // we get the part before the last @ to check if it's a "passe-droit" email
+    const emailPrefix = email.substring(0, email.lastIndexOf('@'));
 
-    const { fqdn: fqdnFromEmail } =
-      await this.fqdnService.getFqdnConfigFromEmail(email);
+    const { passeDroitEmailSuffix } = this.config.get<AppConfig>('App');
+    const idpsWithRoutingEnabled = idpsFromFqdn.filter(
+      (idp) =>
+        idp.isRoutingEnabled || emailPrefix.endsWith(passeDroitEmailSuffix),
+    );
+
+    // when there is no idp mapped for this fqdn
+    // we check if there is or not a default idp set in the app
+    // if yes, we return the default idp
+    // if no, we return an empty config and we deduce that the default idp is not accepted
+    if (isEmpty(idpsWithRoutingEnabled)) {
+      const { defaultIdpId } = this.config.get<AppConfig>('App');
+
+      if (!defaultIdpId) {
+        return [];
+      }
+
+      return [await this.identityProvider.getById(defaultIdpId)];
+    }
+
+    return idpsWithRoutingEnabled;
+  }
+
+  // check if the idp is allowed to authenticate the user with this email
+  async isAllowedIdpForEmail(idpId: string, email: string): Promise<boolean> {
+    const identityProvider = await this.identityProvider.getById(idpId);
+
+    const emailFqdn = this.identityProvider.getFqdnFromEmail(email);
+
+    if (identityProvider.fqdns?.some((fqdn) => fqdn === emailFqdn)) {
+      return true;
+    }
+
+    // if no idp explicitly handles the domain, the only idp allowed is the default one
+    const { defaultIdpId } = this.config.get<AppConfig>('App');
+    return defaultIdpId === idpId;
+  }
+
+  /**
+   * Only policemen can connect to Uniforces.
+   */
+  private ensureEmailIsAuthorizedForSp(spId: string, email: string): void {
+    const fqdnFromEmail = this.identityProvider.getFqdnFromEmail(email);
+    const { spAuthorizedFqdnsConfigs } = this.config.get<AppConfig>('App');
+
+    const authorizedFqdnsConfig = spAuthorizedFqdnsConfigs.find((config) => {
+      return config.spId === spId;
+    });
+
+    if (isEmpty(authorizedFqdnsConfig)) return;
 
     if (
-      !authorizedFqdnsConfig.authorizedFqdns.some(
+      authorizedFqdnsConfig.authorizedFqdns.some(
         (fqdnInConfig) => fqdnInConfig === fqdnFromEmail,
       )
     ) {
-      this.logger.err(`Unauthorized fqdn ${fqdnFromEmail} for SP ${spId}`);
-      throw new CoreFcaUnauthorizedEmailException(
-        authorizedFqdnsConfig.spName,
-        authorizedFqdnsConfig.spContact,
-        authorizedFqdnsConfig.authorizedFqdns,
-      );
+      return;
     }
+
+    this.logger.err(`Unauthorized fqdn ${fqdnFromEmail} for SP ${spId}`);
+    throw new CoreFcaUnauthorizedEmailException(
+      authorizedFqdnsConfig.spName,
+      authorizedFqdnsConfig.spContact,
+      authorizedFqdnsConfig.authorizedFqdns,
+    );
   }
 
   private async safelyGetExistingAndEnabledIdp(
@@ -158,35 +230,5 @@ export class CoreFcaService {
     }
 
     return idp;
-  }
-
-  async getIdentityProvidersByIds(
-    idpIds: string[],
-  ): Promise<{ name: string; title: string; uid: string }[]> {
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
-    const providers = await this.identityProvider.getList();
-
-    // remove possible duplicate
-    const uniqueDuplicateFreeIdpUids = uniq(idpIds);
-
-    const filteredProviders = providers
-      .filter(({ uid }) => uniqueDuplicateFreeIdpUids.includes(uid))
-      .map(({ name, title, uid }) => ({
-        name,
-        title: uid === defaultIdpId ? 'Autre' : title, // rename default IdP to "Autre"
-        uid,
-      }));
-
-    // sort providers by title alphabetically with "Autre" at the end of the list
-    return filteredProviders.sort((a, b) => {
-      if (a.title === 'Autre') return 1;
-      if (b.title === 'Autre') return -1;
-      return a.title.localeCompare(b.title, 'fr');
-    });
-  }
-
-  hasDefaultIdp(providersUid: string[]): boolean {
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
-    return providersUid.includes(defaultIdpId);
   }
 }
