@@ -6,7 +6,4 @@ export class IdentityProviderAdapterMongoConfig {
 
   @IsBoolean()
   readonly decryptClientSecretFeature: boolean;
-
-  @IsBoolean()
-  readonly disableIdpValidationOnLegacy: boolean;
 }
