@@ -29,4 +29,5 @@ export default {
   environment: env.string('ENVIRONMENT'),
   defaultRedirectUri: 'https://www.proconnect.gouv.fr',
   supportEmail: 'support+federation@proconnect.gouv.fr',
+  passeDroitEmailSuffix: '+proconnect',
 } as AppConfig;

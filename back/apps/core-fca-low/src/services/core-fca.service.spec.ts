@@ -399,15 +399,16 @@ describe('CoreFcaService', () => {
       const mockDefaultIdp = {
         uid: 'default-idp',
       } as unknown as IdentityProviderMetadata;
-      identityProviderMock.getById.mockResolvedValueOnce(mockDefaultIdp);
 
-      configServiceMock.get.mockReturnValueOnce({
+      configServiceMock.get.mockReturnValue({
         defaultIdpId: 'default-idp',
         spAuthorizedFqdnsConfigs: [],
+        passeDroitEmailSuffix: '+proconnect',
       });
 
-      identityProviderMock.getIdpsByEmail.mockResolvedValueOnce([]);
       identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
+      identityProviderMock.getById.mockResolvedValueOnce(mockDefaultIdp);
+      identityProviderMock.getIdpsByEmail.mockResolvedValueOnce([]);
 
       // When
       const response = await service.selectIdpsFromEmail('hogwarts.uk');
@@ -418,8 +419,9 @@ describe('CoreFcaService', () => {
 
     it('should return no idps if no idp is mapped for fqdn and no default idp is set', async () => {
       // Given
-      configServiceMock.get.mockReturnValueOnce({
+      configServiceMock.get.mockReturnValue({
         defaultIdpId: '',
+        passeDroitEmailSuffix: '+proconnect',
       });
 
       identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
@@ -436,6 +438,7 @@ describe('CoreFcaService', () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: 'default-idp',
+        passeDroitEmailSuffix: '+proconnect',
       });
 
       const idpsList = [
@@ -463,6 +466,7 @@ describe('CoreFcaService', () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: 'default-idp',
+        passeDroitEmailSuffix: '+proconnect',
       });
 
       const idpsList = [
@@ -490,6 +494,7 @@ describe('CoreFcaService', () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: 'default-idp',
+        passeDroitEmailSuffix: '+proconnect',
       });
 
       const idpsList = [
@@ -519,6 +524,7 @@ describe('CoreFcaService', () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: 'default-idp',
+        passeDroitEmailSuffix: '+proconnect',
       });
 
       const idpsList = [

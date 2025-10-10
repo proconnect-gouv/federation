@@ -149,8 +149,10 @@ export class CoreFcaService {
     // we get the part before the last @ to check if it's a "passe-droit" email
     const emailPrefix = email.substring(0, email.lastIndexOf('@'));
 
+    const { passeDroitEmailSuffix } = this.config.get<AppConfig>('App');
     const idpsWithRoutingEnabled = idpsFromFqdn.filter(
-      (idp) => idp.isRoutingEnabled || emailPrefix.endsWith('+proconnect'),
+      (idp) =>
+        idp.isRoutingEnabled || emailPrefix.endsWith(passeDroitEmailSuffix),
     );
 
     // when there is no idp mapped for this fqdn

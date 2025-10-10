@@ -33,4 +33,7 @@ export class AppConfig extends AppGenericConfig {
 
   @IsEmail()
   readonly supportEmail: string;
+
+  @IsString()
+  readonly passeDroitEmailSuffix: string;
 }
