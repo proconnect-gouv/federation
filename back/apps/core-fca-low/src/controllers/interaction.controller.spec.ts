@@ -21,7 +21,7 @@ import {
   CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
-import { CoreFcaService } from '../services';
+import { CoreFcaControllerService } from '../services';
 import { InteractionController } from './interaction.controller';
 
 jest.mock('uuid', () => ({
@@ -45,7 +45,7 @@ describe('InteractionController', () => {
   let notificationsMock: any;
   let trackingMock: any;
   let sessionServiceMock: any; // for Csrf only
-  let coreFcaMock: any;
+  let coreFcaControllerMock: any;
   let csrfServiceMock: any;
 
   beforeEach(async () => {
@@ -77,7 +77,7 @@ describe('InteractionController', () => {
     sessionServiceMock = {
       set: jest.fn(), // used by Csrf part
     };
-    coreFcaMock = {
+    coreFcaControllerMock = {
       redirectToIdp: jest.fn(),
     };
     csrfServiceMock = {
@@ -92,7 +92,7 @@ describe('InteractionController', () => {
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
         ConfigService,
-        CoreFcaService,
+        CoreFcaControllerService,
         CsrfService,
         TrackingService,
         OidcAcrService,
@@ -106,8 +106,8 @@ describe('InteractionController', () => {
       .useValue(oidcAcrMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderMock)
-      .overrideProvider(CoreFcaService)
-      .useValue(coreFcaMock)
+      .overrideProvider(CoreFcaControllerService)
+      .useValue(coreFcaControllerMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(CsrfService)
@@ -268,7 +268,7 @@ describe('InteractionController', () => {
       );
 
       expect(identityProviderMock.getById).toHaveBeenCalledWith('idp123');
-      expect(coreFcaMock.redirectToIdp).toHaveBeenCalledWith(
+      expect(coreFcaControllerMock.redirectToIdp).toHaveBeenCalledWith(
         req,
         res,
         'idp123',
