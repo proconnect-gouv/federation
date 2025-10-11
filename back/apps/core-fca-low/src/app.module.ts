@@ -34,6 +34,7 @@ import { TrackingModule } from '@fc/tracking';
 
 import { InteractionController, OidcClientController } from './controllers';
 import {
+  CoreFcaControllerService,
   CoreFcaMiddlewareService,
   CoreFcaService,
   IdentitySanitizer,
@@ -93,6 +94,7 @@ export class AppModule {
         CsrfService,
         CoreFcaService,
         CoreFcaMiddlewareService,
+        CoreFcaControllerService,
         IdentitySanitizer,
       ],
     };
