@@ -5,13 +5,19 @@ import { v4 as uuid } from 'uuid';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { ConfigService } from '@fc/config';
+import { AppConfig } from '@fc/core/dto';
+
 import { CoreFcaAgentAccountBlockedException } from '../exceptions';
 import { IIdpAgentKeys } from '../interfaces';
 import { AccountFca } from '../schemas';
 
 @Injectable()
 export class AccountFcaService {
-  constructor(@InjectModel('AccountFca') private model: Model<AccountFca>) {}
+  constructor(
+    private readonly config: ConfigService,
+    @InjectModel('AccountFca') private model: Model<AccountFca>,
+  ) {}
 
   async getAccountByIdpAgentKeys(
     idpIdentityKeys: IIdpAgentKeys,
@@ -46,11 +52,21 @@ export class AccountFcaService {
     idpSub: string,
     idpMail: string,
   ): Promise<AccountFca> {
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+
     const idpAgentKeys = { idpUid, idpSub };
     const idpFullKeys = { idpUid, idpSub, idpMail };
     let account = await this.getAccountByIdpAgentKeys(idpAgentKeys);
     if (!account) {
-      account = this.createAccount();
+      const pciAccount = await this.model.findOne({
+        idpIdentityKeys: {
+          $elemMatch: {
+            idpMail,
+            idpUid: defaultIdpId,
+          },
+        },
+      });
+      account = pciAccount || this.createAccount();
     }
     if (!account.active) {
       throw new CoreFcaAgentAccountBlockedException();
