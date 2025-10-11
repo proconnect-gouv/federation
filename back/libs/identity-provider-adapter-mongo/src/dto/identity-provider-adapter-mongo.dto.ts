@@ -3,19 +3,18 @@ import {
   IsBoolean,
   IsOptional,
   IsString,
-  IsUrl,
+  Matches,
   MinLength,
-  Validate,
 } from 'class-validator';
 
-import { JwksUriValidator } from './jwksuri.validator';
+const URL_REGEX = /^https?:\/\/[^/].+$/;
 
 export class MetadataIdpAdapterMongoDTO {
   @IsString()
   readonly uid: string;
 
-  @IsUrl()
   @IsOptional()
+  @Matches(URL_REGEX)
   readonly url: string;
 
   @IsString()
@@ -62,8 +61,8 @@ export class MetadataIdpAdapterMongoDTO {
   readonly client_secret: string;
 
   // issuer metadata
-  @IsString()
   @IsOptional()
+  @Matches(URL_REGEX)
   readonly endSessionURL: string;
 
   @IsBoolean()
@@ -86,21 +85,21 @@ export class MetadataIdpAdapterMongoDTO {
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
-  @IsUrl()
+  @Matches(URL_REGEX)
   readonly discoveryUrl: string;
 }
 
 export class NoDiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
   @IsOptional()
-  @Validate(JwksUriValidator)
+  @Matches(URL_REGEX)
   readonly jwksURL: string | undefined;
 
-  @IsString()
+  @Matches(URL_REGEX)
   readonly authzURL: string;
 
-  @IsString()
+  @Matches(URL_REGEX)
   readonly tokenURL: string;
 
-  @IsString()
+  @Matches(URL_REGEX)
   readonly userInfoURL: string;
 }

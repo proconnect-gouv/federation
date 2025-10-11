@@ -2,7 +2,6 @@ import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { APP_FILTER } from '@nestjs/core';
 
-import { IsUrlRequiredTldFromConfigConstraint } from '@fc/common';
 import { ExceptionsModule, FcWebHtmlExceptionFilter } from '@fc/exceptions';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
@@ -84,7 +83,6 @@ export class OidcProviderModule {
         OidcProviderService,
         OidcProviderErrorService,
         OidcProviderConfigService,
-        IsUrlRequiredTldFromConfigConstraint,
       ],
       exports: [OidcProviderService, RedisModule, serviceProviderProvider],
       controllers: [OidcProviderController],

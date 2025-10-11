@@ -134,46 +134,6 @@ describe('Service provider creation', () => {
       cy.closeBanner('.alert-success');
     });
 
-    it('if we add a service provider even with a mobile URI scheme as redirectUri ( integration ) ', () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: 'MyFirstSP mobile URI scheme',
-          redirectUri:
-            'fc+app01://openid_redirect_url\rfranceconnect://openid_redirect_url\rFC-app.02://openid_redirect_url',
-        },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.url().should('eq', `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service MyFirstSP mobile URI scheme a été créé avec succès !`,
-      );
-      cy.closeBanner('.alert-success');
-    });
-
-    it('if we add a service provider even with a mobile URI scheme as redirectUriLogout ( integration ) ', () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: 'MyFirstSP mobile URI scheme logout',
-          redirectUriLogout:
-            'fc+app01://openid_redirect_url\rfranceconnect://openid_redirect_url\rFC-app.02://openid_redirect_url',
-        },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.url().should('eq', `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service MyFirstSP mobile URI scheme logout a été créé avec succès !`,
-      );
-      cy.closeBanner('.alert-success');
-    });
-
     it('if we add a service provider with two emails', () => {
       // Action
       createServiceProvider(
@@ -274,43 +234,6 @@ describe('Service provider creation', () => {
       );
     });
 
-    it('if we add a URIScheme in redirectUri field', () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: 'MyFirstSP URIScheme',
-          redirectUri:
-            'franceconnect://url.com\rhttps://secondsite.com\rlocalhost',
-        },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.url().should('eq', `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service MyFirstSP URIScheme a été créé avec succès !`,
-      );
-      cy.closeBanner('.alert-success');
-    });
-
-    it('if we add a URIScheme in redirectUriLogout field', () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: 'MyFirstSP URIScheme',
-          redirectUriLogout:
-            'franceconnect://url.com/logout\rhttps://secondsite.com/logout\rlocalhost:3000/logout',
-        },
-        basicConfiguration,
-      );
-
-      cy.contains(
-        `Le fournisseur de service MyFirstSP URIScheme a été créé avec succès !`,
-      );
-    });
-
     it('if we add  a sp with no redirectUri, redirectUriLogout and ip', () => {
       // Action
       createServiceProvider(
@@ -340,9 +263,9 @@ describe('Service provider creation', () => {
           ...spData,
           name: 'My_FS with 42 : ÉçïœâùÆ/ÙÈ.com+2 & ee',
           redirectUri:
-            'franceconnect://url.com\rhttps://secondsite.com\rlocalhost',
+            'https://url.com\rhttps://secondsite.com\rhttp://localhost',
           redirectUriLogout:
-            'franceconnect://url.com/logout\rhttps://secondsite.com/logout\rlocalhost:3000/logout',
+            'https://url.com/logout\rhttps://secondsite.com/logout\rhttp://localhost:3000/logout',
         },
         basicConfiguration,
       );

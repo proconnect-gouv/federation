@@ -41,7 +41,7 @@
             <section class="mb-3 row">
               <label class="col-2 col-form-label" for="redirectUri">URL de redirection de connexion : </label>
               <div class="col-10">
-                <textarea id="redirect_uris" class="form-control <%= locals.messages.errors && messages.errors[0].redirectUri && 'is-invalid' %>" placeholder="https://url-de-redirection.com" name="redirectUri" pattern="^(?:((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|(([A-Za-z0-9\.\+-]{6,}):(?:\/\/)?(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-_]+)|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)?)$"><%= locals.messages.values && messages.values[0].redirectUri %></textarea>
+                <textarea id="redirect_uris" class="form-control <%= locals.messages.errors && messages.errors[0].redirectUri && 'is-invalid' %>" placeholder="https://url-de-redirection.com" name="redirectUri" pattern="^https?:\/\/[^/].+$"><%= locals.messages.values && messages.values[0].redirectUri %></textarea>
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].redirectUri) { %>
                   <p>
@@ -59,7 +59,7 @@
             <section class="mb-3 row">
               <label class="col-2 col-form-label" for="redirectUriLogout">URL de redirection de déconnexion : </label>
               <div class="col-10">
-                <textarea id="post_logout_redirect_uris" class="form-control <%= locals.messages.errors && messages.errors[0].redirectUriLogout && 'is-invalid' %>" name="redirectUriLogout" placeholder="https://url-de-redirection.com/deconnexion" pattern="^(?:((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|(([A-Za-z0-9\.\+-]{6,}):(?:\/\/)?(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-_]+)|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)?)$"><%= locals.messages.values && messages.values[0].redirectUriLogout %></textarea>
+                <textarea id="post_logout_redirect_uris" class="form-control <%= locals.messages.errors && messages.errors[0].redirectUriLogout && 'is-invalid' %>" name="redirectUriLogout" placeholder="https://url-de-redirection.com/deconnexion" pattern="^https?:\/\/[^/].+$"><%= locals.messages.values && messages.values[0].redirectUriLogout %></textarea>
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].redirectUriLogout) { %>
                   <p>
