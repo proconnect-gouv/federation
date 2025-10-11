@@ -38,7 +38,11 @@ import {
 } from '../dto';
 import { Routes } from '../enums';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
-import { CoreFcaService, IdentitySanitizer } from '../services';
+import {
+  CoreFcaControllerService,
+  CoreFcaService,
+  IdentitySanitizer,
+} from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -51,6 +55,7 @@ export class OidcClientController {
     private readonly oidcClient: OidcClientService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFcaService: CoreFcaService,
+    private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
@@ -107,7 +112,7 @@ export class OidcClientController {
   ) {
     const { identityProviderUid: idpId } = body;
 
-    return this.coreFcaService.redirectToIdp(req, res, idpId);
+    return this.coreFcaControllerService.redirectToIdp(req, res, idpId);
   }
 
   @Post(Routes.REDIRECT_TO_IDP)
@@ -151,7 +156,11 @@ export class OidcClientController {
       return res.redirect(url);
     }
 
-    return this.coreFcaService.redirectToIdp(req, res, idpsFromEmail[0].uid);
+    return this.coreFcaControllerService.redirectToIdp(
+      req,
+      res,
+      idpsFromEmail[0].uid,
+    );
   }
 
   /**
