@@ -52,6 +52,7 @@ export class AccountFcaService {
     if (!account) {
       account = this.createAccount();
     }
+    // TODO move this check to the intercation_verify route
     if (!account.active) {
       throw new CoreFcaAgentAccountBlockedException();
     }
