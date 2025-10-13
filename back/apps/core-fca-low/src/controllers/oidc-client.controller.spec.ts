@@ -507,4 +507,40 @@ describe('OidcClientController', () => {
       );
     });
   });
+
+  describe('CoreFcaAgentNoIdpException', () => {
+    it('should create exception with correct message and documentation', () => {
+      const spName = 'Mon Service';
+      const email = 'test@example.com';
+
+      const exception = new CoreFcaAgentNoIdpException(spName, email);
+
+      expect(exception).toBeInstanceOf(CoreFcaAgentNoIdpException);
+      expect(exception.spName).toBe(spName);
+      expect(exception.email).toBe(email);
+      expect(exception.documentation).toContain(spName);
+      expect(exception.documentation).toContain(email);
+      expect(exception.documentation).toContain("centre d'aide");
+      expect(exception.description).toBe(exception.documentation);
+    });
+
+    it('should use default service name when not provided', () => {
+      const email = 'test@example.com';
+
+      const exception = new CoreFcaAgentNoIdpException(undefined, email);
+
+      expect(exception.spName).toBe('le service');
+      expect(exception.documentation).toContain('le service');
+    });
+
+    it('should escape HTML characters in spName and email', () => {
+      const spName = '<script>alert("xss")</script>';
+      const email = 'test<>@example.com';
+
+      const exception = new CoreFcaAgentNoIdpException(spName, email);
+
+      expect(exception.documentation).not.toContain('<script>');
+      expect(exception.documentation).toContain('&lt;');
+    });
+  });
 });
