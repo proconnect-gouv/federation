@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-const URL_REGEX = /^https?:\/\/[^/].+$/;
+import { IsUrlExtended } from '@fc/common/validators/is-url-extended.validator';
 
 /**
  * Control parameters on the authentication request.
@@ -12,7 +12,7 @@ export class LogoutParamsDto {
   readonly id_token_hint: string;
 
   @IsOptional()
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   readonly post_logout_redirect_uri?: string;
 
   @IsString()

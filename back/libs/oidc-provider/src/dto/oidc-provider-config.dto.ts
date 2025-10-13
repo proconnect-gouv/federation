@@ -808,10 +808,6 @@ export class OidcProviderConfig {
   @IsEnum(OidcProviderPrompt, { each: true })
   readonly allowedPrompt: OidcProviderPrompt[];
 
-  @IsBoolean()
-  @IsOptional()
-  readonly isLocalhostAllowed?: boolean;
-
   @IsUrl()
   readonly errorUriBase?: string;
 }

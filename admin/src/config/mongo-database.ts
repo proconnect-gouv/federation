@@ -1,5 +1,4 @@
 import { resolve } from 'path';
-import fs from 'fs';
 import { parseBoolean } from '../utils/transforms/parse-boolean';
 
 export = {
