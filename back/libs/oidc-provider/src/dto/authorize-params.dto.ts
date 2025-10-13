@@ -4,9 +4,10 @@ import {
   IsOptional,
   IsString,
   Length,
+  Matches,
 } from 'class-validator';
 
-import { IsUrlRequiredTldFromConfig } from '@fc/common';
+const URL_REGEX = /^https?:\/\/[^/].+$/;
 
 /**
  * Control parameters on the authentication request.
@@ -44,7 +45,7 @@ export class AuthorizeParamsDto {
   @IsString()
   readonly state: string;
 
-  @IsUrlRequiredTldFromConfig()
+  @Matches(URL_REGEX)
   readonly redirect_uri: string;
 
   // The openid verification is made into oidc-provider

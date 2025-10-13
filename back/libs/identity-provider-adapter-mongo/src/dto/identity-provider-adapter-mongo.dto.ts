@@ -1,21 +1,22 @@
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsOptional,
   IsString,
-  IsUrl,
+  Matches,
   MinLength,
-  Validate,
 } from 'class-validator';
 
-import { JwksUriValidator } from './jwksuri.validator';
+const URL_REGEX = /^https?:\/\/[^/].+$/;
 
 export class MetadataIdpAdapterMongoDTO {
   @IsString()
   readonly uid: string;
 
-  @IsUrl()
   @IsOptional()
+  @Matches(URL_REGEX)
+  @Transform(({ value }) => value || undefined)
   readonly url: string;
 
   @IsString()
@@ -32,26 +33,32 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value || undefined)
   readonly userinfo_signed_response_alg?: string;
 
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value || undefined)
   readonly userinfo_encrypted_response_alg?: string;
 
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value || undefined)
   readonly userinfo_encrypted_response_enc?: string;
 
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value || undefined)
   readonly id_token_signed_response_alg?: string;
 
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value || undefined)
   readonly id_token_encrypted_response_alg?: string;
 
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value || undefined)
   readonly id_token_encrypted_response_enc?: string;
 
   @IsString()
@@ -62,9 +69,10 @@ export class MetadataIdpAdapterMongoDTO {
   readonly client_secret: string;
 
   // issuer metadata
-  @IsString()
   @IsOptional()
-  readonly endSessionURL: string;
+  @Matches(URL_REGEX)
+  @Transform(({ value }) => value || undefined)
+  readonly endSessionURL?: string;
 
   @IsBoolean()
   readonly discovery: boolean;
@@ -74,11 +82,13 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsOptional()
   @IsString()
-  readonly supportEmail: string;
+  @Transform(({ value }) => value || undefined)
+  readonly supportEmail?: string;
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
+  @Transform(({ value }) => value || undefined)
   readonly fqdns?: string[];
 
   @IsBoolean()
@@ -86,21 +96,22 @@ export class MetadataIdpAdapterMongoDTO {
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
-  @IsUrl()
+  @Matches(URL_REGEX)
   readonly discoveryUrl: string;
 }
 
 export class NoDiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
   @IsOptional()
-  @Validate(JwksUriValidator)
-  readonly jwksURL: string | undefined;
+  @Matches(URL_REGEX)
+  @Transform(({ value }) => value || undefined)
+  readonly jwksURL?: string | undefined;
 
-  @IsString()
+  @Matches(URL_REGEX)
   readonly authzURL: string;
 
-  @IsString()
+  @Matches(URL_REGEX)
   readonly tokenURL: string;
 
-  @IsString()
+  @Matches(URL_REGEX)
   readonly userInfoURL: string;
 }

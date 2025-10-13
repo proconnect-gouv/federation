@@ -1,5 +1,4 @@
 import {
-  IsNumber,
   IsString,
   IsBoolean,
   Matches,
@@ -9,18 +8,12 @@ import {
   IsArray,
   Length,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
-import {
-  IsOptionalExtended,
-  IsValidInputString,
-  IsOptionalArrayExtended,
-} from '../../utils/validators';
-import { toBoolean, linesToArray, toArray } from '../../utils/transforms';
+import { Transform } from 'class-transformer';
+import { IsOptionalExtended, IsValidInputString } from '../../utils/validators';
+import { toBoolean, linesToArray } from '../../utils/transforms';
 
 // tslint:disable-next-line:max-line-length
-const URL_REGEX =
-  /^((https?:\/\/)?((([^\s\/$.?#]{1,})(\.[^\s\/$?#]{2,})*\.[a-z]{2,})|(([0-9]{1,3}\.){3}[0-9]{1,3})|localhost)(:[0-9]{2,5})?(\/[^\s\/$]+)*\/?)$/;
-const EMAIL_REGEX = /^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$/;
+const URL_REGEX = /^https?:\/\/[^/].+$/;
 const FQDN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 
 export class IdentityProviderDTO {
