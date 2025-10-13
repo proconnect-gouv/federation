@@ -29,4 +29,5 @@ export default {
   defaultRedirectUri: 'https://www.proconnect.gouv.fr',
   supportEmail: 'support+federation@proconnect.gouv.fr',
   passeDroitEmailSuffix: '+proconnect',
+  allowInsecureUrls: env.boolean('ALLOW_INSECURE_URLS'),
 } as AppConfig;

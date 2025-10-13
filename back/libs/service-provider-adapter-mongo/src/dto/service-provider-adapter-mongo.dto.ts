@@ -5,11 +5,10 @@ import {
   IsIn,
   IsOptional,
   IsString,
-  Matches,
   MinLength,
 } from 'class-validator';
 
-const URL_REGEX = /^https?:\/\/[^/].+$/;
+import { IsUrlExtended } from '@fc/common/validators/is-url-extended.validator';
 
 export class ServiceProviderAdapterMongoDTO {
   @IsBoolean()
@@ -29,11 +28,11 @@ export class ServiceProviderAdapterMongoDTO {
   readonly client_secret: string;
 
   @IsArray()
-  @Matches(URL_REGEX, { each: true })
+  @IsUrlExtended({ each: true })
   readonly redirect_uris: string[];
 
   @IsArray()
-  @Matches(URL_REGEX, { each: true })
+  @IsUrlExtended({ each: true })
   readonly post_logout_redirect_uris: string[];
 
   @IsArray()
@@ -65,7 +64,7 @@ export class ServiceProviderAdapterMongoDTO {
   readonly introspection_encrypted_response_enc?: string;
 
   @IsOptional()
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   @Transform(({ value }) => value || undefined)
   readonly jwks_uri?: string;
 

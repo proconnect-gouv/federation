@@ -4,18 +4,17 @@ import {
   IsBoolean,
   IsOptional,
   IsString,
-  Matches,
   MinLength,
 } from 'class-validator';
 
-const URL_REGEX = /^https?:\/\/[^/].+$/;
+import { IsUrlExtended } from '@fc/common/validators/is-url-extended.validator';
 
 export class MetadataIdpAdapterMongoDTO {
   @IsString()
   readonly uid: string;
 
   @IsOptional()
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   @Transform(({ value }) => value || undefined)
   readonly url: string;
 
@@ -70,7 +69,7 @@ export class MetadataIdpAdapterMongoDTO {
 
   // issuer metadata
   @IsOptional()
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   @Transform(({ value }) => value || undefined)
   readonly endSessionURL?: string;
 
@@ -96,22 +95,22 @@ export class MetadataIdpAdapterMongoDTO {
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   readonly discoveryUrl: string;
 }
 
 export class NoDiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
   @IsOptional()
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   @Transform(({ value }) => value || undefined)
   readonly jwksURL?: string | undefined;
 
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   readonly authzURL: string;
 
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   readonly tokenURL: string;
 
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   readonly userInfoURL: string;
 }

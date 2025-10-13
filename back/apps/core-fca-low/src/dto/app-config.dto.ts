@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsEmail,
   IsString,
   IsUrl,
@@ -36,4 +37,7 @@ export class AppConfig extends AppGenericConfig {
 
   @IsString()
   readonly passeDroitEmailSuffix: string;
+
+  @IsBoolean()
+  readonly allowInsecureUrls: boolean;
 }

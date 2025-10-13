@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { IsUrlExtendedConstraint } from '@fc/common/validators/is-url-extended.validator';
 import { CryptographyModule } from '@fc/cryptography';
 import { MongooseModule } from '@fc/mongoose';
 
@@ -13,7 +14,7 @@ import { IdentityProviderSchema } from './schemas';
       { name: 'IdentityProvider', schema: IdentityProviderSchema },
     ]),
   ],
-  providers: [IdentityProviderAdapterMongoService],
+  providers: [IdentityProviderAdapterMongoService, IsUrlExtendedConstraint],
   exports: [IdentityProviderAdapterMongoService],
 })
 export class IdentityProviderAdapterMongoModule {}
