@@ -15,8 +15,6 @@ import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { Routes } from '../enums';
-import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaControllerService,
   CoreFcaService,
@@ -62,7 +60,8 @@ describe('OidcClientController', () => {
     };
     oidcClientConfig = { get: jest.fn() };
     coreFcaControllerService = {
-      redirectToIdp: jest.fn(),
+      redirectToIdpWithIdpId: jest.fn(),
+      redirectToIdpWithEmail: jest.fn(),
     };
     coreFcaService = {
       hasDefaultIdp: jest.fn(),
@@ -150,7 +149,7 @@ describe('OidcClientController', () => {
       const res: Partial<Response> = { render: jest.fn() };
       const email = 'user@example.com';
       const userSession = {
-        get: jest.fn().mockReturnValue({ login_hint: email }),
+        get: jest.fn().mockReturnValue({ idpLoginHint: email }),
       } as unknown as ISessionService<UserSession>;
 
       const providers = [
@@ -211,42 +210,28 @@ describe('OidcClientController', () => {
         body,
       );
 
-      expect(coreFcaControllerService.redirectToIdp).toHaveBeenCalledWith(
-        req,
-        res,
-        'idp123',
-      );
+      expect(
+        coreFcaControllerService.redirectToIdpWithIdpId,
+      ).toHaveBeenCalledWith(req, res, 'idp123');
     });
 
-    it('should throw an exception when no identity providers are available', async () => {
+    it('should delegate to service redirectToIdpWithEmail with provided rememberMe', async () => {
       const body = { email, rememberMe: true } as any;
-      emailValidatorService.validate.mockResolvedValue(undefined);
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      coreFcaService.selectIdpsFromEmail.mockResolvedValue([]);
 
-      await expect(
-        controller.redirectToIdp(
-          req as Request,
-          res as Response,
-          body,
-          userSession,
-        ),
-      ).rejects.toThrow(CoreFcaAgentNoIdpException);
-      expect(userSession.set).toHaveBeenCalledWith({
-        rememberMe: true,
-        idpLoginHint: email,
-      });
+      await controller.redirectToIdp(
+        req as Request,
+        res as Response,
+        body,
+        userSession,
+      );
+
+      expect(
+        coreFcaControllerService.redirectToIdpWithEmail,
+      ).toHaveBeenCalledWith(req, res, email, true);
     });
 
-    it('should redirect to identity provider selection when multiple providers are available', async () => {
+    it('should delegate to service with rememberMe defaulting to false when not provided', async () => {
       const body = { email } as any;
-      emailValidatorService.validate.mockResolvedValue(undefined);
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      coreFcaService.selectIdpsFromEmail.mockResolvedValue([
-        { uid: 'idp1' },
-        { uid: 'idp2' },
-      ]);
-      configService.get.mockReturnValue({ urlPrefix: '/app' });
 
       await controller.redirectToIdp(
         req as Request,
@@ -255,42 +240,9 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      expect(userSession.set).toHaveBeenCalledWith({
-        rememberMe: false,
-        idpLoginHint: email,
-      });
-      expect(logger.debug).toHaveBeenCalledWith(
-        '2 identity providers matching for "****@fqdn.com"',
-      );
-      expect(res.redirect).toHaveBeenCalledWith(
-        '/app' + Routes.IDENTITY_PROVIDER_SELECTION,
-      );
-    });
-
-    it('should process redirection when a single identity provider is available', async () => {
-      const body = { email, rememberMe: true } as any;
-      emailValidatorService.validate.mockResolvedValue(undefined);
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      coreFcaService.selectIdpsFromEmail.mockResolvedValue([
-        { uid: 'idp-single' },
-      ]);
-
-      await controller.redirectToIdp(
-        req as Request,
-        res as Response,
-        body,
-        userSession,
-      );
-
-      expect(userSession.set).toHaveBeenCalledWith({
-        rememberMe: true,
-        idpLoginHint: email,
-      });
-      expect(coreFcaControllerService.redirectToIdp).toHaveBeenCalledWith(
-        req,
-        res,
-        'idp-single',
-      );
+      expect(
+        coreFcaControllerService.redirectToIdpWithEmail,
+      ).toHaveBeenCalledWith(req, res, email, false);
     });
   });
 

@@ -37,7 +37,6 @@ import {
   UserSession,
 } from '../dto';
 import { Routes } from '../enums';
-import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
   CoreFcaControllerService,
   CoreFcaService,
@@ -112,7 +111,11 @@ export class OidcClientController {
   ) {
     const { identityProviderUid: idpId } = body;
 
-    return this.coreFcaControllerService.redirectToIdp(req, res, idpId);
+    return this.coreFcaControllerService.redirectToIdpWithIdpId(
+      req,
+      res,
+      idpId,
+    );
   }
 
   @Post(Routes.REDIRECT_TO_IDP)
@@ -120,41 +123,24 @@ export class OidcClientController {
   @Header('cache-control', 'no-store')
   @AuthorizeStepFrom([
     Routes.INTERACTION, // Standard flow
+    Routes.REDIRECT_TO_IDP, // Browser back button
   ])
   @SetStep()
   @UseGuards(CsrfTokenGuard)
-  async redirectToIdp(
+  redirectToIdp(
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: RedirectToIdp,
     @UserSessionDecorator()
-    userSession: ISessionService<UserSession>,
+    _userSession: ISessionService<UserSession>,
   ): Promise<void> {
     const { email, rememberMe = false } = body;
 
-    // TODO(douglasduteil): temporary solution to avoid blocking the user
-    // We are testing the email validity without breaking the flow here
-    await this.emailValidatorService.validate(email);
-
-    userSession.set({ rememberMe: rememberMe, idpLoginHint: email });
-
-    const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
-
-    if (idpsFromEmail.length === 0) {
-      throw new CoreFcaAgentNoIdpException();
-    }
-
-    if (idpsFromEmail.length > 1) {
-      const { urlPrefix } = this.config.get<AppConfig>('App');
-      const url = `${urlPrefix}${Routes.IDENTITY_PROVIDER_SELECTION}`;
-
-      return res.redirect(url);
-    }
-
-    return this.coreFcaControllerService.redirectToIdp(
+    return this.coreFcaControllerService.redirectToIdpWithEmail(
       req,
       res,
-      idpsFromEmail[0].uid,
+      email,
+      rememberMe,
     );
   }
 

@@ -4,7 +4,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { AppConfig, UserSession } from '@fc/core/dto';
+import { Routes } from '@fc/core/enums';
 import { CoreFcaService } from '@fc/core/services/core-fca.service';
+import { EmailValidatorService } from '@fc/email-validator/services';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -16,6 +18,7 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import {
   CoreFcaAgentIdpDisabledException,
+  CoreFcaAgentNoIdpException,
   CoreFcaIdpConfigurationException,
 } from '../exceptions';
 import { CoreFcaControllerService } from './core-fca-controller.service';
@@ -48,9 +51,13 @@ describe('CoreFcaControllerService', () => {
   const coreFcaServiceMock = {
     ensureEmailIsAuthorizedForSp: jest.fn(),
     safelyGetExistingAndEnabledIdp: jest.fn(),
+    selectIdpsFromEmail: jest.fn(),
   } as unknown as CoreFcaService;
 
   const idpIdMock = 'idpIdMockValue';
+  const emailValidatorServiceMock = {
+    validate: jest.fn(),
+  } as unknown as EmailValidatorService;
 
   const reqMock = {
     redirect: jest.fn(),
@@ -97,6 +104,7 @@ describe('CoreFcaControllerService', () => {
         return {
           defaultIdpId: 'idpIdMockValue',
           spAuthorizedFqdnsConfigs: [],
+          urlPrefix: '/app',
         } as unknown as AppConfig;
       return {} as any;
     });
@@ -118,6 +126,7 @@ describe('CoreFcaControllerService', () => {
         SessionService,
         TrackingService,
         CoreFcaService,
+        EmailValidatorService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -134,6 +143,8 @@ describe('CoreFcaControllerService', () => {
       .useValue(trackingServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreFcaServiceMock)
+      .overrideProvider(EmailValidatorService)
+      .useValue(emailValidatorServiceMock)
       .compile();
 
     service = app.get<CoreFcaControllerService>(CoreFcaControllerService);
@@ -143,7 +154,7 @@ describe('CoreFcaControllerService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('redirectToIdp', () => {
+  describe('redirectToIdpWithIdpId', () => {
     it('should redirect to the IdP with correct authorization URL when acrClaims present', async () => {
       // Given
       (
@@ -153,7 +164,7 @@ describe('CoreFcaControllerService', () => {
       });
 
       // When
-      await service.redirectToIdp(reqMock, resMock, idpIdMock);
+      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
 
       // Then
       expect(resMock.redirect).toHaveBeenCalledWith(
@@ -179,7 +190,7 @@ describe('CoreFcaControllerService', () => {
       });
 
       // When
-      await service.redirectToIdp(reqMock, resMock, idpIdMock);
+      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
 
       // Then
       expect(resMock.redirect).toHaveBeenCalledWith(
@@ -205,7 +216,7 @@ describe('CoreFcaControllerService', () => {
       ).mockReturnValueOnce({});
 
       // When
-      await service.redirectToIdp(reqMock, resMock, idpIdMock);
+      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
 
       // Then
       expect(resMock.redirect).toHaveBeenCalledWith(
@@ -221,7 +232,7 @@ describe('CoreFcaControllerService', () => {
 
       // When / Then
       await expect(
-        service.redirectToIdp(reqMock, resMock, 'invalidIdp'),
+        service.redirectToIdpWithIdpId(reqMock, resMock, 'invalidIdp'),
       ).rejects.toThrow(CoreFcaIdpConfigurationException);
     });
 
@@ -233,7 +244,7 @@ describe('CoreFcaControllerService', () => {
 
       // When / Then
       await expect(
-        service.redirectToIdp(reqMock, resMock, 'disabledIdp'),
+        service.redirectToIdpWithIdpId(reqMock, resMock, 'disabledIdp'),
       ).rejects.toThrow(CoreFcaAgentIdpDisabledException);
     });
 
@@ -245,8 +256,66 @@ describe('CoreFcaControllerService', () => {
 
       // When / Then
       await expect(
-        service.redirectToIdp(reqMock, resMock, 'any'),
+        service.redirectToIdpWithIdpId(reqMock, resMock, 'any'),
       ).rejects.toThrow(Error);
+    });
+  });
+
+  describe('redirectToIdpWithEmail', () => {
+    const email = 'user@example.com';
+
+    it('should validate email, store hint, and throw when no IdP matches', async () => {
+      (
+        coreFcaServiceMock.selectIdpsFromEmail as jest.Mock
+      ).mockResolvedValueOnce([]);
+
+      await expect(
+        service.redirectToIdpWithEmail(reqMock, resMock, email, true),
+      ).rejects.toThrow(CoreFcaAgentNoIdpException);
+
+      expect(emailValidatorServiceMock.validate).toHaveBeenCalledWith(email);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith('User', {
+        rememberMe: true,
+        idpLoginHint: email,
+      });
+      expect(resMock.redirect).not.toHaveBeenCalled();
+    });
+
+    it('should validate email, store hint, and redirect to selection when multiple IdPs match', async () => {
+      (
+        coreFcaServiceMock.selectIdpsFromEmail as jest.Mock
+      ).mockResolvedValueOnce([{ uid: 'idp1' }, { uid: 'idp2' }]);
+
+      await service.redirectToIdpWithEmail(reqMock, resMock, email, false);
+
+      expect(emailValidatorServiceMock.validate).toHaveBeenCalledWith(email);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith('User', {
+        rememberMe: false,
+        idpLoginHint: email,
+      });
+      expect(resMock.redirect).toHaveBeenCalledWith(
+        '/app' + Routes.IDENTITY_PROVIDER_SELECTION,
+      );
+    });
+
+    it('should validate email, store hint, and delegate to redirectToIdpWithIdpId when a single IdP matches', async () => {
+      (
+        coreFcaServiceMock.selectIdpsFromEmail as jest.Mock
+      ).mockResolvedValueOnce([{ uid: 'unique-idp' }]);
+
+      const spy = jest
+        .spyOn(service, 'redirectToIdpWithIdpId')
+        .mockResolvedValueOnce(undefined);
+
+      await service.redirectToIdpWithEmail(reqMock, resMock, email, true);
+
+      expect(emailValidatorServiceMock.validate).toHaveBeenCalledWith(email);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith('User', {
+        rememberMe: true,
+        idpLoginHint: email,
+      });
+      expect(spy).toHaveBeenCalledWith(reqMock, resMock, 'unique-idp');
+      expect(resMock.redirect).not.toHaveBeenCalled();
     });
   });
 });

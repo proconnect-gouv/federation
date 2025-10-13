@@ -78,7 +78,8 @@ describe('InteractionController', () => {
       set: jest.fn(), // used by Csrf part
     };
     coreFcaControllerMock = {
-      redirectToIdp: jest.fn(),
+      redirectToIdpWithEmail: jest.fn(),
+      redirectToIdpWithIdpId: jest.fn(),
     };
     csrfServiceMock = {
       renew: jest.fn(),
@@ -244,7 +245,7 @@ describe('InteractionController', () => {
       );
     });
 
-    it('should call redirectToIdp when a valid IdP hint exists', async () => {
+    it('should call redirectToIdpWithIdpId when a valid IdP hint exists', async () => {
       const req = { sessionId: 'session1' } as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
@@ -268,7 +269,7 @@ describe('InteractionController', () => {
       );
 
       expect(identityProviderMock.getById).toHaveBeenCalledWith('idp123');
-      expect(coreFcaControllerMock.redirectToIdp).toHaveBeenCalledWith(
+      expect(coreFcaControllerMock.redirectToIdpWithIdpId).toHaveBeenCalledWith(
         req,
         res,
         'idp123',
@@ -300,7 +301,38 @@ describe('InteractionController', () => {
       ).rejects.toThrow(CoreIdpHintException);
     });
 
-    it('should render the interaction page if no IdP hint is provided', async () => {
+    it('should call redirectToIdpWithEmail when login_hint is provided', async () => {
+      const req = { sessionId: 'session1' } as unknown as Request;
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({}),
+        duplicate: jest.fn(),
+        set: jest.fn(),
+        reset: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: 'interaction123',
+        params: { client_id: 'sp123', login_hint: 'login123' },
+      });
+      identityProviderMock.getById.mockResolvedValue({ id: 'idp123' });
+
+      await controller.getInteraction(
+        req,
+        res as Response,
+        {} as any,
+        userSessionService,
+      );
+
+      expect(coreFcaControllerMock.redirectToIdpWithEmail).toHaveBeenCalledWith(
+        req,
+        res,
+        'login123',
+        false,
+      );
+    });
+
+    it('should render the interaction page if no hints are provided', async () => {
       const req = {} as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
@@ -315,7 +347,7 @@ describe('InteractionController', () => {
       configServiceMock.get.mockReturnValue({ defaultEmailRenater: 'email' });
       oidcProviderMock.getInteraction.mockResolvedValue({
         uid: 'interaction123',
-        params: { client_id: 'sp123', login_hint: 'user@example.com' },
+        params: { client_id: 'sp123' },
       });
       csrfServiceMock.renew.mockReturnValue('csrfToken');
       (validate as jest.Mock).mockReturnValue([
@@ -334,7 +366,6 @@ describe('InteractionController', () => {
         defaultEmailRenater: 'email',
         notificationMessage: 'notification',
         spName: 'spName',
-        loginHint: 'user@example.com',
       });
     });
   });
