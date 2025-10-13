@@ -7,6 +7,7 @@ export class IdentityProvider extends Document {
   @Prop({ type: String })
   name: string;
 
+  // Note that this will create the index if not present
   @Prop({ index: true, type: String })
   clientID: string;
 

@@ -10,6 +10,7 @@ export class ServiceProvider extends Document {
   @Prop({ type: Boolean })
   active: boolean;
 
+  // Note that this will create the index if not present
   @Prop({ type: String, unique: true, index: true })
   key: string;
 

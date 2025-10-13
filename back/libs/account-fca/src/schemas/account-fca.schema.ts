@@ -33,6 +33,8 @@ export class AccountFca extends Document {
   @Prop({ type: String, default: uuid })
   declare id: string;
 
+  // Note that this will create the index if not present
+  // /!\ This also delete the entry after 3 years (see https://www.mongodb.com/docs/v5.0/core/index-ttl/)
   @Prop({ type: Date, default: Date.now, index: { expires: '3y' } })
   updatedAt: Date;
 
@@ -61,4 +63,21 @@ export class AccountFca extends Document {
   active: boolean;
 }
 
-export const AccountFcaSchema = SchemaFactory.createForClass(AccountFca);
+const AccountFcaSchema = SchemaFactory.createForClass(AccountFca);
+
+// Note that this will create the index if not present
+AccountFcaSchema.index(
+  {
+    'idpIdentityKeys.idpUid': 1,
+    'idpIdentityKeys.idpSub': 1,
+  },
+  { unique: true },
+);
+
+// Note that this will create the index if not present
+AccountFcaSchema.index({
+  'idpIdentityKeys.idpMail': 1,
+  'idpIdentityKeys.idpUid': 1,
+});
+
+export { AccountFcaSchema };
