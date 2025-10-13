@@ -11,9 +11,8 @@ import {
 import { Transform } from 'class-transformer';
 import { IsOptionalExtended, IsValidInputString } from '../../utils/validators';
 import { toBoolean, linesToArray } from '../../utils/transforms';
+import { IsUrlExtended } from '../../utils/validators/is-url-extended.validator';
 
-// tslint:disable-next-line:max-line-length
-const URL_REGEX = /^https?:\/\/[^/].+$/;
 const FQDN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 
 export class IdentityProviderDTO {
@@ -27,7 +26,7 @@ export class IdentityProviderDTO {
   })
   readonly title: string;
 
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     message:
       'Veuillez mettre une url valide ( Ex: https://my-issuer-url.com/ )',
   })
@@ -38,48 +37,48 @@ export class IdentityProviderDTO {
    * et être plus openid compliant dans le nommage des variables
    */
   @ValidateIf((i) => i.discovery === false)
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     message: 'Veuillez mettre une url valide ( Ex: https://my-jwks-url.com/ )',
   })
   @IsOptional()
   readonly jwksUrl?: string;
 
   @ValidateIf((i) => i.discovery === false)
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     message:
       'Veuillez mettre une url valide ( Ex: https://my-authorization-url.com/ )',
   })
   readonly authorizationUrl?: string;
 
   @ValidateIf((i) => i.discovery === false)
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     message: 'Veuillez mettre une url valide ( Ex: https://my-token-url.com/ )',
   })
   readonly tokenUrl?: string;
 
   @ValidateIf((i) => i.discovery === false)
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     message:
       'Veuillez mettre une url valide ( Ex: https://my-user-info-url.com/ )',
   })
   readonly userInfoUrl?: string;
 
   @IsOptionalExtended()
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     message:
       'Veuillez mettre une url valide ( Ex: https://my-user-logout.com/ )',
   })
   readonly logoutUrl: string;
 
   @IsOptionalExtended()
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     message:
       'Veuillez mettre une url valide ( Ex: https://my-status-url.com/ )',
   })
   readonly statusUrl: string;
 
   @ValidateIf((i) => i.discovery === true)
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     message:
       'Veuillez mettre une url valide ( Ex: https://my-user-info-url.com/ )',
   })
