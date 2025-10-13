@@ -15,7 +15,7 @@ export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseExcept
   public illustration = 'access-restricted-error';
   public title = 'Email non autorisé';
   public description =
-    "L'accès à ce site est limité aux agentes et agents possédant une adresse email d'une administration publique.";
+    "L'accès à ce site est limité aux agentes et agents représentant officiellement une administration publique. Le SIRET associé à votre organisation correspond à une structure de droit privé et ne permet donc pas l’accès.";
 
   public displayContact = true;
   public contactMessage =
