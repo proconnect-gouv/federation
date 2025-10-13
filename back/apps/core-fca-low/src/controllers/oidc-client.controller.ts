@@ -136,8 +136,6 @@ export class OidcClientController {
     // We are testing the email validity without breaking the flow here
     await this.emailValidatorService.validate(email);
 
-    const fqdn = this.identityProvider.getFqdnFromEmail(email);
-
     userSession.set({ rememberMe: rememberMe, idpLoginHint: email });
 
     const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
@@ -147,9 +145,6 @@ export class OidcClientController {
     }
 
     if (idpsFromEmail.length > 1) {
-      this.logger.debug(
-        `${idpsFromEmail.length} identity providers matching for "****@${fqdn}"`,
-      );
       const { urlPrefix } = this.config.get<AppConfig>('App');
       const url = `${urlPrefix}${Routes.IDENTITY_PROVIDER_SELECTION}`;
 
