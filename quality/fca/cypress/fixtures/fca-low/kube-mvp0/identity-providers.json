@@ -3,7 +3,7 @@
     "id": "moncomptepro",
     "descriptions": ["moncomptepro"],
     "title": "MonComptePro Identity Provider",
-    "url": "https://identite-sandbox.proconnect.gouv.fr",
+    "url": "",
     "signature": "HS256",
     "fqdn": "moncomptepro.fr"
   },
@@ -11,7 +11,7 @@
     "id": "fia1v2",
     "descriptions": ["premier FI", "par défaut"],
     "title": "Identity Provider 1 - HS256",
-    "url": "https://fia1v2.integ01.dev-agentconnect.fr",
+    "url": "https://idp-dev-nubo12.proconnect.bacasable.opicloud.fr",
     "signature": "HS256",
     "fqdn": "fia1.fr"
   },
@@ -19,16 +19,8 @@
     "id": "fia2v2",
     "descriptions": ["second FI"],
     "title": "Identity Provider 2 - ES256",
-    "url": "https://fia2v2.integ01.dev-agentconnect.fr",
+    "url": "",
     "signature": "ES256",
     "fqdn": "fia2.fr"
-  },
-  {
-    "id": "cerbere",
-    "descriptions": ["rattaché à plusieurs ministères", "cerbere"],
-    "title": "Cerbère",
-    "url": "https://authentification.recette.din.developpement-durable.gouv.fr",
-    "signature": "RS256",
-    "fqdn": "developpement-durable.gouv.fr"
   }
 ]

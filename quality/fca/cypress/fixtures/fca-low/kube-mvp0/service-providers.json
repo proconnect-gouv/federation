@@ -3,14 +3,14 @@
     "name": "fsa1v2",
     "descriptions": ["par défaut", "premier FS"],
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
-    "url": "https://fsa1v2.integ01.dev-agentconnect.fr",
+    "url": "https://sp-dev-nubo12.proconnect.bacasable.opicloud.fr",
     "userinfo_signed_response_alg": null
   },
   {
     "name": "fsa2v2",
     "descriptions": ["second FS"],
     "clientId": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
-    "url": "https://fsa2v2.integ01.dev-agentconnect.fr",
+    "url": "https://sp2-dev-nubo12.proconnect.bacasable.opicloud.fr",
     "userinfo_signed_response_alg": "ES256"
   }
 ]
