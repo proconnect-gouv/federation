@@ -17,7 +17,7 @@ Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est
     Et que je me connecte à exploitation en tant que "exploitant"
     Et que je navigue vers la page gestion des fournisseurs d'identité
     Et que je clique sur le bouton de modification du FI "fia2-low"
-    Et que j'entre "hogwarts.uk" dans le champ "fqdns" du formulaire de modification de FI
+    Et que j'ajoute la valeur "hogwarts.uk" au champ "fqdns" du formulaire de modification de FI
     Quand je valide le formulaire de modification de FI
     Alors le message de confirmation de modification du FI "fia2-low" est affiché
 
@@ -37,6 +37,6 @@ Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est
     Et que je me connecte à exploitation en tant que "exploitant"
     Et que je navigue vers la page gestion des fournisseurs d'identité
     Et que je clique sur le bouton de modification du FI "fia2-low"
-    Et que j'entre les valeurs "fia2.fr,polyfi.fr,polyfi2.fr" dans le champ "fqdns" du formulaire de modification de FI
+    Et que je retire la valeur "hogwarts.co" du champ "fqdns" du formulaire de modification de FI
     Quand je valide le formulaire de modification de FI
     Alors le message de confirmation de modification du FI "fia2-low" est affiché
