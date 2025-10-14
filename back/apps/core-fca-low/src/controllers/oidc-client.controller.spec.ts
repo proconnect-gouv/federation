@@ -17,7 +17,11 @@ import { TrackingService } from '@fc/tracking';
 
 import { Routes } from '../enums';
 import { CoreFcaAgentNoIdpException } from '../exceptions';
-import { CoreFcaService, IdentitySanitizer } from '../services';
+import {
+  CoreFcaControllerService,
+  CoreFcaService,
+  IdentitySanitizer,
+} from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
 jest.mock('@fc/common', () => ({
@@ -34,6 +38,7 @@ describe('OidcClientController', () => {
   let logger: any;
   let oidcClient: any;
   let oidcClientConfig: any;
+  let coreFcaControllerService: any;
   let coreFcaService: any;
   let identityProvider: any;
   let sessionService: any;
@@ -56,8 +61,10 @@ describe('OidcClientController', () => {
       getEndSessionUrl: jest.fn(),
     };
     oidcClientConfig = { get: jest.fn() };
-    coreFcaService = {
+    coreFcaControllerService = {
       redirectToIdp: jest.fn(),
+    };
+    coreFcaService = {
       hasDefaultIdp: jest.fn(),
       isAllowedIdpForEmail: jest.fn(),
       selectIdpsFromEmail: jest.fn(),
@@ -92,6 +99,7 @@ describe('OidcClientController', () => {
         LoggerService,
         OidcClientService,
         OidcClientConfigService,
+        CoreFcaControllerService,
         CoreFcaService,
         IdentityProviderAdapterMongoService,
         SessionService,
@@ -112,6 +120,8 @@ describe('OidcClientController', () => {
       .useValue(oidcClient)
       .overrideProvider(OidcClientConfigService)
       .useValue(oidcClientConfig)
+      .overrideProvider(CoreFcaControllerService)
+      .useValue(coreFcaControllerService)
       .overrideProvider(CoreFcaService)
       .useValue(coreFcaService)
       .overrideProvider(IdentityProviderAdapterMongoService)
@@ -201,7 +211,7 @@ describe('OidcClientController', () => {
         body,
       );
 
-      expect(coreFcaService.redirectToIdp).toHaveBeenCalledWith(
+      expect(coreFcaControllerService.redirectToIdp).toHaveBeenCalledWith(
         req,
         res,
         'idp123',
@@ -276,7 +286,7 @@ describe('OidcClientController', () => {
         rememberMe: true,
         idpLoginHint: email,
       });
-      expect(coreFcaService.redirectToIdp).toHaveBeenCalledWith(
+      expect(coreFcaControllerService.redirectToIdp).toHaveBeenCalledWith(
         req,
         res,
         'idp-single',

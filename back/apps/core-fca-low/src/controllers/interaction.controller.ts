@@ -42,7 +42,7 @@ import {
   CoreIdpHintException,
   CoreLoginRequiredException,
 } from '../exceptions';
-import { CoreFcaService } from '../services';
+import { CoreFcaControllerService } from '../services';
 
 @Controller()
 export class InteractionController {
@@ -57,7 +57,7 @@ export class InteractionController {
     private readonly notifications: NotificationsService,
     private readonly tracking: TrackingService,
     private readonly sessionService: SessionService,
-    private readonly coreFca: CoreFcaService,
+    private readonly coreFcaController: CoreFcaControllerService,
     private readonly csrfService: CsrfService,
   ) {}
 
@@ -167,7 +167,7 @@ export class InteractionController {
         req,
       });
 
-      return this.coreFca.redirectToIdp(req, res, idpHint);
+      return this.coreFcaController.redirectToIdp(req, res, idpHint);
     }
 
     if (spLoginHint) {
