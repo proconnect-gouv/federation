@@ -32,6 +32,24 @@ export class AccountFcaService {
     });
   }
 
+  private async getReconciledAccount(
+    idpUid: string,
+    idpMail: string,
+  ): Promise<AccountFca> {
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+    if (idpUid !== defaultIdpId) {
+      return await this.model.findOne({
+        idpIdentityKeys: {
+          $elemMatch: {
+            idpMail,
+            idpUid: defaultIdpId,
+          },
+        },
+      });
+    }
+    return null;
+  }
+
   createAccount(): AccountFca {
     const sub: string = uuid();
     return new this.model({ sub });
@@ -52,22 +70,13 @@ export class AccountFcaService {
     idpSub: string,
     idpMail: string,
   ): Promise<AccountFca> {
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
-
     const idpAgentKeys = { idpUid, idpSub };
     const idpFullKeys = { idpUid, idpSub, idpMail };
+
     let account = await this.getAccountByIdpAgentKeys(idpAgentKeys);
-    if (!account) {
-      const pciAccount = await this.model.findOne({
-        idpIdentityKeys: {
-          $elemMatch: {
-            idpMail,
-            idpUid: defaultIdpId,
-          },
-        },
-      });
-      account = pciAccount || this.createAccount();
-    }
+    account = account || (await this.getReconciledAccount(idpUid, idpMail));
+    account = account || this.createAccount();
+
     if (!account.active) {
       throw new CoreFcaAgentAccountBlockedException();
     }

@@ -136,7 +136,7 @@ describe('AccountFcaService', () => {
       expect(result).toEqual(existingAccount);
     });
 
-    it('should check for an account with email and default IdP (pci) if no account found', async () => {
+    it('should reconcile with an account with email and default IdP (pci) if no account found', async () => {
       // On the first call, no account with IdP uid and IdP sub
       modelMock.findOne.mockReturnValueOnce(null);
       modelMock.findOne.mockReturnValueOnce({
@@ -171,6 +171,51 @@ describe('AccountFcaService', () => {
       });
 
       expect(result.sub).toBe('pci-sub');
+    });
+
+    it('should NOT reconcile a PCI account with another PCI account', async () => {
+      modelMock.findOne.mockReturnValueOnce(null);
+
+      const result = await service.getOrCreateAccount(
+        'default-idp',
+        'sub',
+        'email@fqdn',
+      );
+
+      // Looking for an existing account by sub and uid fails, but…
+      expect(modelMock.findOne.mock.calls[0][0]).toMatchObject({
+        idpIdentityKeys: {
+          $elemMatch: {
+            idpSub: 'sub',
+            idpUid: 'default-idp',
+          },
+        },
+      });
+
+      // …no reconciliation because the target is a PCI account
+      expect(modelMock.findOne.mock.calls).toHaveLength(1);
+      expect(result.sub).not.toBe('sub');
+    });
+
+    it('should create a new PCI account if none is found', async () => {
+      const mockUuid = 'new-unique-id';
+      jest.mocked<uuidType>(uuid).mockReturnValue(mockUuid);
+
+      modelMock.findOne.mockResolvedValue(null);
+      modelMock.findOneAndUpdate.mockResolvedValue({});
+
+      const result = await service.getOrCreateAccount(
+        'default-idp',
+        'sub',
+        'email@fqdn',
+      );
+
+      expect(result.sub).toBe(mockUuid);
+      expect(result.idpIdentityKeys).toContainEqual({
+        idpUid: 'default-idp',
+        idpSub: 'sub',
+        idpMail: 'email@fqdn',
+      });
     });
 
     it('should create a new account if none is found', async () => {
