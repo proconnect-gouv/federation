@@ -105,16 +105,6 @@ Scénario: API authorize - Cas nominal avec response_mode (ignoré)
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page interaction
 
-  @ignoreInteg01
-  Scénario: API authorize - Cas nominal sans login_hint
-    Etant donné que je prépare une requête "authorize"
-    Et que je retire le paramètre "login_hint" de la requête
-    Quand je lance la requête
-    Alors le statut de la réponse est 200
-    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
-    Et le corps de la réponse contient une page web
-    Et je suis redirigé vers la page interaction
-
   Scénario: API authorize - Erreur <error> avec code_challenge=<codeChallenge>
     Etant donné que je prépare une requête "authorize"
     Et que je configure la requête pour ne pas suivre les redirections

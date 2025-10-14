@@ -57,7 +57,7 @@ export class InteractionController {
     private readonly notifications: NotificationsService,
     private readonly tracking: TrackingService,
     private readonly sessionService: SessionService,
-    private readonly coreFcaController: CoreFcaControllerService,
+    private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly csrfService: CsrfService,
   ) {}
 
@@ -167,13 +167,24 @@ export class InteractionController {
         req,
       });
 
-      return this.coreFcaController.redirectToIdp(req, res, idpHint);
+      return this.coreFcaControllerService.redirectToIdpWithIdpId(
+        req,
+        res,
+        idpHint,
+      );
     }
 
     if (spLoginHint) {
       await this.tracking.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_LOGIN, {
         req,
       });
+
+      return this.coreFcaControllerService.redirectToIdpWithEmail(
+        req,
+        res,
+        spLoginHint,
+        false,
+      );
     }
 
     await this.tracking.track(TrackedEvent.FC_SHOWED_IDP_CHOICE, { req });

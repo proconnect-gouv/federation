@@ -5,7 +5,10 @@ import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { AppConfig, UserSession } from '@fc/core/dto';
+import { Routes } from '@fc/core/enums';
+import { CoreFcaAgentNoIdpException } from '@fc/core/exceptions';
 import { CoreFcaService } from '@fc/core/services/core-fca.service';
+import { EmailValidatorService } from '@fc/email-validator/services';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -25,10 +28,39 @@ export class CoreFcaControllerService {
     private readonly session: SessionService,
     private readonly tracking: TrackingService,
     private readonly coreFcaService: CoreFcaService,
+    private readonly emailValidatorService: EmailValidatorService,
   ) {}
 
+  async redirectToIdpWithEmail(
+    req: Request,
+    res: Response,
+    email: string,
+    rememberMe: boolean,
+  ): Promise<void> {
+    // TODO(douglasduteil): temporary solution to avoid blocking the user
+    // We are testing the email validity without breaking the flow here
+    await this.emailValidatorService.validate(email);
+
+    this.session.set('User', { rememberMe: rememberMe, idpLoginHint: email });
+
+    const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
+
+    if (idpsFromEmail.length === 0) {
+      throw new CoreFcaAgentNoIdpException();
+    }
+
+    if (idpsFromEmail.length > 1) {
+      const { urlPrefix } = this.config.get<AppConfig>('App');
+      const url = `${urlPrefix}${Routes.IDENTITY_PROVIDER_SELECTION}`;
+
+      return res.redirect(url);
+    }
+
+    return this.redirectToIdpWithIdpId(req, res, idpsFromEmail[0].uid);
+  }
+
   // eslint-disable-next-line complexity
-  async redirectToIdp(
+  async redirectToIdpWithIdpId(
     req: Request,
     res: Response,
     idpId: string,
