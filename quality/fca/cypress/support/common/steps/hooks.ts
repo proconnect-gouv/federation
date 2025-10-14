@@ -69,7 +69,13 @@ Before({ tags: '@ignoreDocker' }, function () {
 });
 
 Before({ tags: '@ignoreInteg01' }, function () {
-  if (['kube-mvp0', 'integ01'].includes(Cypress.env('TEST_ENV'))) {
+  if (['integ01'].includes(Cypress.env('TEST_ENV'))) {
+    this.skip();
+  }
+});
+
+Before({ tags: '@ignoreKubeMvp0' }, function () {
+  if (['kube-mvp0'].includes(Cypress.env('TEST_ENV'))) {
     this.skip();
   }
 });
