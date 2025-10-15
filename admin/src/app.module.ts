@@ -178,14 +178,6 @@ export class AppModule implements NestModule {
         path: '/notification/:id',
         method: RequestMethod.PATCH,
       },
-      {
-        path: '/preferences/idpPreferences',
-        method: RequestMethod.PATCH,
-      },
-      {
-        path: '/preferences/futureIdp',
-        method: RequestMethod.PATCH,
-      },
     ];
 
     consumer.apply(TotpMiddleware).forRoutes(...totpRoutes);
