@@ -33,7 +33,7 @@ export class TrackingService {
     trackedEvent: TrackedEvent,
     trackedEventContext: TrackedEventContextInterface,
   ): TrackedEventLogInterface {
-    const ip = trackedEventContext?.req.headers['x-forwarded-for'];
+    const requestContext = this.makeRequestContext(trackedEventContext.req);
 
     const sessionId =
       trackedEventContext.sessionId || this.sessionService.getId();
@@ -55,7 +55,7 @@ export class TrackingService {
       idpIdentity,
     } = this.sessionService.get<UserSession>('User') || {};
 
-    return {
+    const sessionContext = {
       amr,
       browsingSessionId,
       event: trackedEvent,
@@ -71,7 +71,6 @@ export class TrackingService {
       idpSub: idpIdentity?.sub,
       interactionAcr,
       interactionId,
-      ip,
       sessionId,
       spEssentialAcr,
       spLoginHint,
@@ -82,5 +81,19 @@ export class TrackingService {
       spSiret: spIdentity?.siret,
       step: trackedEventSteps[trackedEvent],
     };
+
+    return { ...requestContext, ...sessionContext };
+  }
+
+  private makeRequestContext(req: TrackedEventContextInterface['req']) {
+    const { baseUrl, headers = {}, ip, method, path } = req ?? {};
+    const requestContext = {
+      ip,
+      forwardedFor: headers['x-forwarded-for'],
+      method,
+      path: `${baseUrl || ''}${path || ''}`,
+      requestId: headers['x-request-id'],
+    };
+    return requestContext;
   }
 }

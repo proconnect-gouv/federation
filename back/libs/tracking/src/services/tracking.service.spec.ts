@@ -44,7 +44,16 @@ describe('TrackingService', () => {
       // Arrange
       const trackedEvent = TrackedEvent.FC_VERIFIED;
       const context = {
-        req: { headers: { 'x-forwarded-for': '203.0.113.10' } },
+        req: {
+          ip: '1.2.3.4',
+          headers: {
+            'x-forwarded-for': '203.0.113.10',
+            'x-request-id': 'req-123',
+          },
+          method: 'GET',
+          baseUrl: '/api',
+          path: '/callback',
+        },
       } as any;
 
       (sessionServiceMock.getId as jest.Mock).mockReturnValue('sid-123');
@@ -78,7 +87,6 @@ describe('TrackingService', () => {
         idpSub: 'idp-sub-1',
         interactionAcr: 'acr-high',
         interactionId: 'inter-1',
-        ip: '203.0.113.10',
         sessionId: 'sid-123',
         spEssentialAcr: 'eAcr',
         spId: 'sp-id-1',
@@ -87,6 +95,12 @@ describe('TrackingService', () => {
         spName: 'Service Provider',
         spSub: 'sp-sub-1',
         step: '5.0.0',
+
+        ip: '1.2.3.4',
+        method: 'GET',
+        path: '/api/callback',
+        requestId: 'req-123',
+        forwardedFor: '203.0.113.10',
       };
 
       // Act
@@ -94,6 +108,27 @@ describe('TrackingService', () => {
 
       // Assert
       expect(loggerLegacyMock.businessEvent).toHaveBeenCalledTimes(1);
+      expect(loggerLegacyMock.businessEvent).toHaveBeenCalledWith(expected);
+    });
+
+    it('should handle missing request data gracefully', async () => {
+      // Arrange
+      const trackedEvent = TrackedEvent.FC_REDIRECTED_TO_SP;
+      const context = {} as any;
+
+      (sessionServiceMock.getId as jest.Mock).mockReturnValue(undefined);
+      (sessionServiceMock.get as jest.Mock).mockReturnValue(undefined);
+
+      const expected = {
+        event: 'FC_REDIRECTED_TO_SP',
+        path: '',
+        step: trackedEventSteps[trackedEvent],
+      };
+
+      // Act
+      await service.track(trackedEvent, context);
+
+      // Assert
       expect(loggerLegacyMock.businessEvent).toHaveBeenCalledWith(expected);
     });
 
@@ -119,7 +154,8 @@ describe('TrackingService', () => {
         idpSub: undefined,
         interactionAcr: undefined,
         interactionId: undefined,
-        ip: '198.51.100.77',
+        forwardedFor: '198.51.100.77',
+        path: '',
         login_hint: undefined,
         sessionId: 'override-session',
         spEmail: undefined,
@@ -158,7 +194,7 @@ describe('TrackingService', () => {
       expect(result).toEqual(
         expect.objectContaining({
           event: trackedEvent,
-          ip: ['10.0.0.1', '10.0.0.2'],
+          forwardedFor: ['10.0.0.1', '10.0.0.2'],
           sessionId: 'sid-zzz',
           step: trackedEventSteps[trackedEvent],
         }),

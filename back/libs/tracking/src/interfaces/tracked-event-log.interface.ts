@@ -15,7 +15,6 @@ export type TrackedEventLogInterface = {
   idpSub?: string;
   interactionAcr?: string;
   interactionId?: string;
-  ip: string | string[];
   scope?: string;
   sessionId?: string;
   spEssentialAcr?: string;
@@ -26,4 +25,10 @@ export type TrackedEventLogInterface = {
   spSiret?: string;
   spSub?: string;
   step: string;
+
+  ip?: string;
+  forwardedFor: string | string[];
+  method?: string;
+  path?: string;
+  requestId?: string | string[];
 };
