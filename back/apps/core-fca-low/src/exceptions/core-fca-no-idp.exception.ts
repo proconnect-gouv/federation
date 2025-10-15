@@ -6,12 +6,11 @@ import { ErrorCode } from '../enums';
 import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
-  public email: string;
-  public spName: string;
-  constructor(spName: string = 'le service', email: string) {
+  constructor(
+    public spName: string = 'le service',
+    public email: string,
+  ) {
     super();
-    this.spName = spName;
-    this.email = email;
     this.documentation = `Votre organisation n’autorise pas l’utilisation de ProConnect sur ce service. Merci de créer un compte directement sur ${escape(this.spName)}, sans passer par le bouton ProConnect. Si ce comportement vous paraît anormal, vérifiez que l’adresse e-mail utilisée (${escape(this.email)}) est correcte. Si elle ne l’est pas, recommencez le parcours de connexion. Dans le cas contraire, vous pouvez consulter le <a href="https://proconnect.crisp.help/fr/article/quest-ce-que-lerreur-y500001-4frofp/">centre d'aide</a>.`;
     this.description = this.documentation;
   }
