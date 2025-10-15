@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { Routes, UserSession } from '@fc/core';
+import { UserSession } from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
 import { EmailValidatorService } from '@fc/email-validator/services';
@@ -193,7 +193,6 @@ describe('OidcClientController', () => {
       res = { redirect: jest.fn() } as Partial<Response>;
       userSession = {
         set: jest.fn(),
-        get: jest.fn(),
       } as unknown as ISessionService<UserSession>;
     });
 
@@ -219,12 +218,6 @@ describe('OidcClientController', () => {
     it('should delegate to service redirectToIdpWithEmail with provided rememberMe', async () => {
       const body = { email, rememberMe: true } as any;
 
-      userSession.get.mockReturnValue({ spName: 'Test Service Provider' });
-
-      emailValidatorService.validate.mockResolvedValue(undefined);
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      coreFcaService.selectIdpsFromEmail.mockResolvedValue([]);
-
       await controller.redirectToIdp(
         req as Request,
         res as Response,
@@ -239,14 +232,6 @@ describe('OidcClientController', () => {
 
     it('should delegate to service with rememberMe defaulting to false when not provided', async () => {
       const body = { email } as any;
-      userSession.get.mockReturnValue({ spName: 'Test Service Provider' });
-      emailValidatorService.validate.mockResolvedValue(undefined);
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      coreFcaService.selectIdpsFromEmail.mockResolvedValue([
-        { uid: 'idp1' },
-        { uid: 'idp2' },
-      ]);
-      configService.get.mockReturnValue({ urlPrefix: '/app' });
 
       await controller.redirectToIdp(
         req as Request,
@@ -258,43 +243,6 @@ describe('OidcClientController', () => {
       expect(
         coreFcaControllerService.redirectToIdpWithEmail,
       ).toHaveBeenCalledWith(req, res, email, false);
-      expect(userSession.set).toHaveBeenCalledWith({
-        rememberMe: false,
-        idpLoginHint: email,
-      });
-      expect(logger.debug).toHaveBeenCalledWith(
-        '2 identity providers matching for "****@fqdn.com"',
-      );
-      expect(res.redirect).toHaveBeenCalledWith(
-        '/app' + Routes.IDENTITY_PROVIDER_SELECTION,
-      );
-    });
-
-    it('should process redirection when a single identity provider is available', async () => {
-      const body = { email, rememberMe: true } as any;
-      userSession.get.mockReturnValue({ spName: 'Test Service Provider' });
-      emailValidatorService.validate.mockResolvedValue(undefined);
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      coreFcaService.selectIdpsFromEmail.mockResolvedValue([
-        { uid: 'idp-single' },
-      ]);
-
-      await controller.redirectToIdp(
-        req as Request,
-        res as Response,
-        body,
-        userSession,
-      );
-
-      expect(userSession.set).toHaveBeenCalledWith({
-        rememberMe: true,
-        idpLoginHint: email,
-      });
-      expect(coreFcaService.redirectToIdp).toHaveBeenCalledWith(
-        req,
-        res,
-        'idp-single',
-      );
     });
   });
 
@@ -505,42 +453,6 @@ describe('OidcClientController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         '/app/interaction/interaction123/verify',
       );
-    });
-  });
-
-  describe('CoreFcaAgentNoIdpException', () => {
-    it('should create exception with correct message and documentation', () => {
-      const spName = 'Mon Service';
-      const email = 'test@example.com';
-
-      const exception = new CoreFcaAgentNoIdpException(spName, email);
-
-      expect(exception).toBeInstanceOf(CoreFcaAgentNoIdpException);
-      expect(exception.spName).toBe(spName);
-      expect(exception.email).toBe(email);
-      expect(exception.documentation).toContain(spName);
-      expect(exception.documentation).toContain(email);
-      expect(exception.documentation).toContain("centre d'aide");
-      expect(exception.description).toBe(exception.documentation);
-    });
-
-    it('should use default service name when not provided', () => {
-      const email = 'test@example.com';
-
-      const exception = new CoreFcaAgentNoIdpException(undefined, email);
-
-      expect(exception.spName).toBe('le service');
-      expect(exception.documentation).toContain('le service');
-    });
-
-    it('should escape HTML characters in spName and email', () => {
-      const spName = '<script>alert("xss")</script>';
-      const email = 'test<>@example.com';
-
-      const exception = new CoreFcaAgentNoIdpException(spName, email);
-
-      expect(exception.documentation).not.toContain('<script>');
-      expect(exception.documentation).toContain('&lt;');
     });
   });
 });
