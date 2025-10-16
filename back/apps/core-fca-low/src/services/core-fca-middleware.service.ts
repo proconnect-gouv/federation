@@ -133,14 +133,7 @@ export class CoreFcaMiddlewareService {
      */
     const isPostMethod = ctx.method === 'POST';
     const data = isPostMethod ? ctx.req.body : ctx.query;
-    const { prompt: dataPrompt } = data as { prompt: string };
     data.prompt = overrideValue;
-
-    this.logger.debug(`Overriding "prompt" with "${data.prompt}"`);
-    this.logger.debug({
-      originalPrompt: dataPrompt,
-      overriddenPrompt: data.prompt,
-    });
   }
 
   protected async getEventContext(

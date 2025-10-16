@@ -6,7 +6,6 @@ import {
   Next,
   Post,
   Query,
-  Req,
   UseFilters,
   UsePipes,
   ValidationPipe,
@@ -61,16 +60,7 @@ export class OidcProviderController {
   @Post(OidcProviderRoutes.TOKEN)
   @Header('Content-Type', ApiContentType.JSON)
   @UseFilters(OidcProviderRenderedJsonExceptionFilter)
-  postToken(@Next() next, @Req() req) {
-    this.logger.debug({
-      msg: 'Oidc Provider post token request',
-      uri: req.url,
-      method: req.method,
-      body: req.body,
-      headers: req.headers,
-      query: req.query,
-    });
-
+  postToken(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }
@@ -91,16 +81,7 @@ export class OidcProviderController {
   @Get(OidcProviderRoutes.USERINFO)
   @Header('Content-Type', ApiContentType.JWT)
   @UseFilters(OidcProviderRenderedJsonExceptionFilter)
-  getUserInfo(@Next() next, @Req() req) {
-    this.logger.debug({
-      msg: 'Oidc Provider userinfo request',
-      uri: req.url,
-      method: req.method,
-      body: req.body,
-      headers: req.headers,
-      query: req.query,
-    });
-
+  getUserInfo(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }

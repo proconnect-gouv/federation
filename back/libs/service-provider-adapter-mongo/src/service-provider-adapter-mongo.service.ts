@@ -84,8 +84,6 @@ export class ServiceProviderAdapterMongoService
    */
   async getList(refreshCache = false): Promise<ServiceProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
-      this.logger.debug('Refresh cache from DB');
-
       const allServiceProviders = await this.findAllServiceProvider();
       this.listCache = allServiceProviders.map((serviceProvider) =>
         this.legacyToOpenIdPropertyName(serviceProvider),

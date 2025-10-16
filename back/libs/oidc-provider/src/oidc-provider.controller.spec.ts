@@ -18,8 +18,6 @@ import { OidcProviderConfigAppService } from './services';
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
 
-  const reqMock = {};
-
   const loggerMock = getLoggerMock();
 
   const providerMock = {
@@ -106,7 +104,7 @@ describe('OidcProviderController', () => {
       const next = jest.fn();
 
       // When
-      oidcProviderController.getUserInfo(next, reqMock);
+      oidcProviderController.getUserInfo(next);
       // Then
       expect(next).toHaveBeenCalledTimes(1);
     });
@@ -117,7 +115,7 @@ describe('OidcProviderController', () => {
       // Given
       const next = jest.fn();
       // When
-      oidcProviderController.postToken(next, reqMock);
+      oidcProviderController.postToken(next);
       // Then
       expect(next).toHaveBeenCalledTimes(1);
     });
