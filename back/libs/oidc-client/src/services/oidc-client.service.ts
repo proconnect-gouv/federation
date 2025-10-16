@@ -80,7 +80,6 @@ export class OidcClientService {
     try {
       return await this.utils.getUserInfo(accessToken, idpId);
     } catch (error) {
-      this.logger.debug(error.stack);
       throw new OidcClientUserinfosFailedException();
     }
   }
