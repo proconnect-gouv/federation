@@ -241,10 +241,7 @@ cd $PC_ROOT/federation/quality/fca
 yarn lint --fix
 yarn prettier --write
 cd $PC_ROOT/federation/back
-yarn doc
-yarn lint --fix
-yarn prettier --write
-yarn tsc --noEmit
+yarn static
 cd $PC_ROOT/federation/admin
 yarn lint --fix
 ```
