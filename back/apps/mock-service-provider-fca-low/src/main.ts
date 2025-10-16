@@ -1,11 +1,11 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as session from 'express-session';
+import { bootstrap, createGlobalProxyAgent } from 'global-agent';
 import { chain, isObject } from 'lodash';
 import * as path from 'node:path';
 import * as process from 'node:process';
 import * as client from 'openid-client-v6';
-import * as undici from 'undici';
 
 import { decrypt } from './decrypt';
 
@@ -45,12 +45,9 @@ const dataProviderConfigs: { name: string; url: string }[] = JSON.parse(
 );
 
 const app = express();
-const envHttpProxyAgent = new undici.EnvHttpProxyAgent();
-const clientOptions = {
-  [client.customFetch](url, options) {
-    return undici.fetch(url, { ...options, dispatcher: envHttpProxyAgent });
-  },
-};
+
+bootstrap();
+const envHttpProxyAgent = createGlobalProxyAgent();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/'));
@@ -83,8 +80,7 @@ const getProviderConfig = async () => {
       userinfo_signed_response_alg: PC_USERINFO_SIGNED_RESPONSE_ALG || null,
     },
     client.ClientSecretPost(PC_CLIENT_SECRET),
-    // @ts-expect-error see https://github.com/panva/openid-client/blob/main/docs/variables/customFetch.md
-    clientOptions,
+    envHttpProxyAgent,
   );
   return config;
 };
