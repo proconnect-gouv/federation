@@ -34,7 +34,6 @@ export class OidcProviderController {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: true,
     }),
   )
   @SetStep()
@@ -49,7 +48,6 @@ export class OidcProviderController {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: true,
     }),
   )
   @SetStep()
@@ -109,7 +107,6 @@ export class OidcProviderController {
   @UsePipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
     }),
   )
   getEndSession(@Next() next, @Query() _query: LogoutParamsDto) {
