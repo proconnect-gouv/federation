@@ -1,4 +1,5 @@
 #language: fr
+@ignoreInteg01
 Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est préempté
   Scénario: Chapitre 1: création d'un compte ProConnect Identité (ex MonComptePro)
     Etant donné que je navigue sur la page fournisseur de service
