@@ -2,6 +2,7 @@ import { singleValidationFactory } from '@gouvfr-lasuite/proconnect.debounce/api
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -21,6 +22,9 @@ describe(EmailValidatorService.name, () => {
   const identityProviderAdapterMongoMock = {
     getIdpsByEmail: jest.fn().mockResolvedValue([]),
   };
+  const accountFcaServiceMock = {
+    checkEmailExists: jest.fn(),
+  };
 
   const loggerServiceMock = getLoggerMock();
   const apiKeyMock = 'FAKE_API_KEY';
@@ -30,12 +34,19 @@ describe(EmailValidatorService.name, () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
+    (singleValidationFactory as jest.Mock).mockReturnValue(() =>
+      Promise.resolve({ send_transactional: '1' }),
+    );
+    identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
+    accountFcaServiceMock.checkEmailExists.mockResolvedValue(false);
+
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         LoggerService,
         EmailValidatorService,
         IdentityProviderAdapterMongoService,
         ConfigService,
+        AccountFcaService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -44,6 +55,8 @@ describe(EmailValidatorService.name, () => {
       .useValue(identityProviderAdapterMongoMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(AccountFcaService)
+      .useValue(accountFcaServiceMock)
       .compile();
 
     configServiceMock.get.mockReturnValue({ debounceApiKey: apiKeyMock });
@@ -92,9 +105,35 @@ describe(EmailValidatorService.name, () => {
       expect(
         identityProviderAdapterMongoMock.getIdpsByEmail,
       ).toHaveBeenCalled();
+      expect(accountFcaServiceMock.checkEmailExists).not.toHaveBeenCalled();
       expect(getSingleValidationMethodSpy).not.toHaveBeenCalled();
       expect(await service.validate(testEmail)).toBe(true);
       expect(loggerServiceMock.info).not.toHaveBeenCalled();
+    });
+
+    it('should not call getSingleValidationMethod when email exists in FCA account base', async () => {
+      // Given
+      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
+      accountFcaServiceMock.checkEmailExists.mockResolvedValue(true);
+
+      const getSingleValidationMethodSpy = jest.spyOn(
+        service as any,
+        'getSingleValidationMethod',
+      );
+
+      // When
+      await service.validate(testEmail);
+
+      // Then
+      expect(
+        identityProviderAdapterMongoMock.getIdpsByEmail,
+      ).toHaveBeenCalled();
+      expect(accountFcaServiceMock.checkEmailExists).toHaveBeenCalledWith(
+        testEmail,
+      );
+      expect(getSingleValidationMethodSpy).not.toHaveBeenCalled();
+      expect(loggerServiceMock.info).not.toHaveBeenCalled();
+      expect(await service.validate(testEmail)).toBe(true);
     });
 
     it('should call getSingleValidationMethod when email corresponds to no existing FqdnToProvider', async () => {
@@ -118,6 +157,9 @@ describe(EmailValidatorService.name, () => {
       expect(
         identityProviderAdapterMongoMock.getIdpsByEmail,
       ).toHaveBeenCalled();
+      expect(accountFcaServiceMock.checkEmailExists).toHaveBeenCalledWith(
+        testEmail,
+      );
       expect(getSingleValidationMethodSpy).toHaveBeenCalledExactlyOnceWith(
         apiKeyMock,
       );
