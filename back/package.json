@@ -25,7 +25,7 @@
     "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/exceptions/src/cli/export-exceptions",
     "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env",
     "doc": "yarn doc:exceptions && yarn doc:env",
-    "static": "yarn doc && yarn prettier --write && yarn eslint --fix"
+    "static": "yarn doc && yarn lint --fix && yarn prettier --write && yarn tsc --noEmit"
   },
   "resolutions": {
     "cookie-signature": "1.2.0",
