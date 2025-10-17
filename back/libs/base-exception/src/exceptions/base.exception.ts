@@ -7,23 +7,13 @@ export class BaseException extends Error {
   public http_status_code: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
   public ui: string;
   public generic: boolean = false;
-  public error?: string;
   public error_description?: string;
 
-  public originalError?: Error;
-  public log: unknown;
-
-  constructor(input?: Error | string) {
-    let arg: unknown = input;
-
+  constructor(input?: Error | string, options?: ErrorOptions) {
     if (input instanceof Error) {
-      arg = input.message;
-    }
-
-    super(arg as string);
-
-    if (input instanceof Error) {
-      this.originalError = input;
+      super(input.message, { cause: input });
+    } else {
+      super(input, options);
     }
   }
 }

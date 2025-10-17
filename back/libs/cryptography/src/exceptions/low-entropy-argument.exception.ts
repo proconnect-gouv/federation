@@ -6,9 +6,9 @@ export class LowEntropyArgumentException extends CryptographyBaseException {
   public documentation =
     "Problème de configuration dans la librairie de cryptographie (Une fonction de génération d'aléa requiert une longueur minimale pour éviter des collisions)";
   public ui = 'Cryptography.exceptions.lowEntropyArgument';
-
-  constructor(length: number) {
+  public log = `${this.ui}, <${length}> given.`;
+  constructor(public length: number) {
     super();
-    this.log = `${this.ui}, <${length}> given.`;
+    this.name = 'LowEntropyArgumentException';
   }
 }
