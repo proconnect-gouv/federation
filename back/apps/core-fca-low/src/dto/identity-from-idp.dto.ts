@@ -10,4 +10,7 @@ export class IdentityFromIdpDto extends BaseIdentityDto {
     isString(value) ? value.replace(/\s/g, '') : value,
   )
   declare siret?: string;
+
+  @IsOptional()
+  phone_number?: any;
 }

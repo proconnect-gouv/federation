@@ -33,6 +33,12 @@ describe('IdentitySanitizer', () => {
   });
 
   describe('getValidatedIdentityFromIdp', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(identityProvider, 'getById')
+        .mockResolvedValue({ supportEmail: 'support@test.com' } as any);
+    });
+
     it('should return validated identity when valid data is provided', async () => {
       const validIdentity = {
         sub: '123',
@@ -42,10 +48,6 @@ describe('IdentitySanitizer', () => {
         uid: 'UID123',
       };
       const idpId = 'idp1';
-
-      jest
-        .spyOn(identityProvider, 'getById')
-        .mockResolvedValue({ supportEmail: 'support@test.com' } as any);
 
       const result = await identitySanitizer.getValidatedIdentityFromIdp(
         validIdentity,
@@ -64,16 +66,12 @@ describe('IdentitySanitizer', () => {
       };
       const idpId = 'idp1';
 
-      jest
-        .spyOn(identityProvider, 'getById')
-        .mockResolvedValue({ supportEmail: null } as any);
-
       await expect(
         identitySanitizer.getValidatedIdentityFromIdp(invalidIdentity, idpId),
       ).rejects.toThrow(CoreFcaInvalidIdentityException);
     });
 
-    it('should not throw CoreFcaInvalidIdentityException when phone validation fails', async () => {
+    it('should not throw CoreFcaInvalidIdentityException when phone number is an empty string', async () => {
       const invalidIdentity = {
         sub: '123',
         email: 'test@test.com',
@@ -84,10 +82,6 @@ describe('IdentitySanitizer', () => {
       };
       const idpId = 'idp1';
 
-      jest
-        .spyOn(identityProvider, 'getById')
-        .mockResolvedValue({ supportEmail: null } as any);
-
       const result = await identitySanitizer.getValidatedIdentityFromIdp(
         invalidIdentity,
         idpId,
@@ -95,9 +89,34 @@ describe('IdentitySanitizer', () => {
 
       expect(result.phone_number).toEqual('');
     });
+
+    it('should not throw CoreFcaInvalidIdentityException when phone number is an array', async () => {
+      const invalidIdentity = {
+        sub: '123',
+        email: 'test@test.com',
+        given_name: 'John',
+        usual_name: 'Doe',
+        uid: 'UID123',
+        phone_number: ['0123456789', '0123456789'],
+      };
+      const idpId = 'idp1';
+
+      const result = await identitySanitizer.getValidatedIdentityFromIdp(
+        invalidIdentity,
+        idpId,
+      );
+
+      expect(result.phone_number).toEqual(['0123456789', '0123456789']);
+    });
   });
 
   describe('transformIdentity', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(identityProvider, 'getById')
+        .mockResolvedValue({ siret: '12345678900007' } as any);
+    });
+
     it('should transform identity and return IdentityForSpDto object', async () => {
       const idpId = 'idp1';
       const sub = 'sub123';
@@ -111,10 +130,6 @@ describe('IdentitySanitizer', () => {
         uid: 'UID123',
         usual_name: 'Doe',
       };
-
-      jest
-        .spyOn(identityProvider, 'getById')
-        .mockResolvedValue({ siret: '12345678900007' } as any);
 
       const result = await identitySanitizer.transformIdentity(
         identityFromIdp as IdentityFromIdpDto,
@@ -149,9 +164,28 @@ describe('IdentitySanitizer', () => {
         phone_number: '',
       };
 
-      jest
-        .spyOn(identityProvider, 'getById')
-        .mockResolvedValue({ siret: '12345678900007' } as any);
+      const result = await identitySanitizer.transformIdentity(
+        identityFromIdp as IdentityFromIdpDto,
+        idpId,
+        sub,
+        acr,
+      );
+
+      expect(result.phone_number).toBeUndefined();
+    });
+
+    it('should not throw CoreFcaInvalidIdentityException when phone number is an array', async () => {
+      const idpId = 'idp1';
+      const sub = 'sub123';
+      const acr = 'acr1';
+      const identityFromIdp = {
+        sub: '123',
+        email: 'test@test.com',
+        given_name: 'John',
+        usual_name: 'Doe',
+        uid: 'UID123',
+        phone_number: ['0123456789', '0123456789'],
+      };
 
       const result = await identitySanitizer.transformIdentity(
         identityFromIdp as IdentityFromIdpDto,

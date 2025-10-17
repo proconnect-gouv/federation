@@ -1,4 +1,10 @@
-import { IsObject, IsString, MinLength } from 'class-validator';
+import {
+  IsObject,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 import { BaseIdentityDto } from '@fc/core/dto/base-identity.dto';
 
@@ -10,7 +16,10 @@ export class IdentityForSpDto extends BaseIdentityDto {
   @IsSiret({ groups: ['siret'] })
   declare siret: string;
 
+  @IsOptional({ groups: ['phone_number'] })
+  @IsString({ groups: ['phone_number'] })
   @MinLength(1, { groups: ['phone_number'] })
+  @MaxLength(256, { groups: ['phone_number'] })
   @IsPhoneNumberSimpleValidator({ groups: ['phone_number'] })
   declare phone_number?: string;
 
