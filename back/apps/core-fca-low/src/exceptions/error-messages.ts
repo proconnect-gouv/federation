@@ -20,10 +20,6 @@ export const messageDictionary: Record<string, string> = {
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'Core.exceptions.coreIdpBlockedForAccount':
     "Vous avez bloqué l'utilisation de ce fournisseur d'identité. Pour pouvoir l'utiliser, merci de vous rendre dans vos préférences FranceConnect pour l'autoriser.",
-  'Core.exceptions.coreAcrNotSatisfied':
-    'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous',
-  'Core.exceptions.coreLoginRequired':
-    'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous',
   'Core.exceptions.coreInvalidAcr':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'Core.exceptions.coreLowAcr':

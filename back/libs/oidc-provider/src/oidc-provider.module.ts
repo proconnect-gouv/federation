@@ -13,7 +13,6 @@ import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 
 import {
-  OidcProviderRedirectExceptionFilter,
   OidcProviderRenderedHtmlExceptionFilter,
   OidcProviderRenderedJsonExceptionFilter,
 } from './filters';
@@ -64,7 +63,6 @@ export class OidcProviderModule {
         ExceptionOccurredHandler,
         OidcProviderRenderedHtmlExceptionFilter,
         OidcProviderRenderedJsonExceptionFilter,
-        OidcProviderRedirectExceptionFilter,
         FcWebHtmlExceptionFilter,
         {
           provide: IDENTITY_PROVIDER_SERVICE,
@@ -73,10 +71,6 @@ export class OidcProviderModule {
         {
           provide: APP_FILTER,
           useClass: OidcProviderRenderedHtmlExceptionFilter,
-        },
-        {
-          provide: APP_FILTER,
-          useClass: OidcProviderRedirectExceptionFilter,
         },
         OidcProviderConfigAppService,
         serviceProviderProvider,

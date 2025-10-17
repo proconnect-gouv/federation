@@ -5,12 +5,8 @@ import { ApiContentType } from '@fc/app';
 import { FcException } from '@fc/exceptions';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions/filters';
 
+import { OidcProviderBaseRenderedException } from '../exceptions';
 import {
-  OidcProviderBaseRedirectException,
-  OidcProviderBaseRenderedException,
-} from '../exceptions';
-import {
-  OidcProviderRedirectExceptionFilter,
   OidcProviderRenderedHtmlExceptionFilter,
   OidcProviderRenderedJsonExceptionFilter,
 } from '../filters';
@@ -23,9 +19,6 @@ describe('ExceptionOccurredHandler', () => {
     catch: jest.fn(),
   };
   const renderedJsonMock = {
-    catch: jest.fn(),
-  };
-  const redirectMock = {
     catch: jest.fn(),
   };
   const webHtmlMock = {
@@ -46,7 +39,6 @@ describe('ExceptionOccurredHandler', () => {
         ExceptionOccurredHandler,
         OidcProviderRenderedHtmlExceptionFilter,
         OidcProviderRenderedJsonExceptionFilter,
-        OidcProviderRedirectExceptionFilter,
         FcWebHtmlExceptionFilter,
       ],
     })
@@ -54,8 +46,6 @@ describe('ExceptionOccurredHandler', () => {
       .useValue(renderedHtmlMock)
       .overrideProvider(OidcProviderRenderedJsonExceptionFilter)
       .useValue(renderedJsonMock)
-      .overrideProvider(OidcProviderRedirectExceptionFilter)
-      .useValue(redirectMock)
       .overrideProvider(FcWebHtmlExceptionFilter)
       .useValue(webHtmlMock)
       .compile();
@@ -71,29 +61,13 @@ describe('ExceptionOccurredHandler', () => {
   });
 
   describe('execute', () => {
-    it('should call the redirect filter when the exception is a redirect exception', async () => {
-      // Given
-      const exceptionMock =
-        new (class MockRedirect extends OidcProviderBaseRedirectException {})();
-
-      // When
-      await handler.execute({
-        exception: exceptionMock,
-        host: hostMock as unknown as ArgumentsHost,
-      });
-
-      // Then
-      expect(redirectMock.catch).toHaveBeenCalledTimes(1);
-      expect(redirectMock.catch).toHaveBeenCalledWith(exceptionMock, hostMock);
-    });
-
-    it('should call the rendered html filter when the exception is a rendered exception and the content type is html', async () => {
+    it('should call the rendered html filter when the exception is a rendered exception and the content type is html', () => {
       // Given
       const exceptionMock =
         new (class MockRendered extends OidcProviderBaseRenderedException {})();
 
       // When
-      await handler.execute({
+      handler.execute({
         exception: exceptionMock,
         host: hostMock as unknown as ArgumentsHost,
       });
@@ -105,7 +79,7 @@ describe('ExceptionOccurredHandler', () => {
       );
     });
 
-    it('should call the rendered json filter when the exception is a rendered exception and the content type is json', async () => {
+    it('should call the rendered json filter when the exception is a rendered exception and the content type is json', () => {
       // Given
       const exceptionMock =
         new (class MockRendered extends OidcProviderBaseRenderedException {})();
@@ -114,7 +88,7 @@ describe('ExceptionOccurredHandler', () => {
         .mockReturnValue(ApiContentType.JSON);
 
       // When
-      await handler.execute({
+      handler.execute({
         exception: exceptionMock,
         host: hostMock as unknown as ArgumentsHost,
       });
@@ -126,7 +100,7 @@ describe('ExceptionOccurredHandler', () => {
       );
     });
 
-    it('should call the default filter when the exception of another class', async () => {
+    it('should call the default filter when the exception of another class', () => {
       // Given
       const exceptionMock = new (class MockRendered extends FcException {})();
       handler['getContentType'] = jest
@@ -134,7 +108,7 @@ describe('ExceptionOccurredHandler', () => {
         .mockReturnValue(ApiContentType.JSON);
 
       // When
-      await handler.execute({
+      handler.execute({
         exception: exceptionMock,
         host: hostMock as unknown as ArgumentsHost,
       });
