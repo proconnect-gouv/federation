@@ -6,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { CsrfService } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -13,14 +14,11 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getLoggerMock } from '@mocks/logger';
+
 // --- Mocks for external dependencies ---
 import { UserSession } from '../dto';
-import {
-  CoreAcrNotSatisfiedException,
-  CoreFcaAgentNotFromPublicServiceException,
-  CoreIdpHintException,
-  CoreLoginRequiredException,
-} from '../exceptions';
+import { CoreFcaAgentNotFromPublicServiceException } from '../exceptions';
 import { CoreFcaControllerService } from '../services';
 import { InteractionController } from './interaction.controller';
 
@@ -47,11 +45,13 @@ describe('InteractionController', () => {
   let sessionServiceMock: any; // for Csrf only
   let coreFcaControllerMock: any;
   let csrfServiceMock: any;
+  let loggerMock: any;
 
   beforeEach(async () => {
     oidcProviderMock = {
       getInteraction: jest.fn(),
       finishInteraction: jest.fn(),
+      abortInteraction: jest.fn(),
     };
     identityProviderMock = {
       getById: jest.fn(),
@@ -84,6 +84,7 @@ describe('InteractionController', () => {
     csrfServiceMock = {
       renew: jest.fn(),
     };
+    loggerMock = getLoggerMock();
 
     // Create the testing module
     const module: TestingModule = await Test.createTestingModule({
@@ -99,6 +100,7 @@ describe('InteractionController', () => {
         OidcAcrService,
         SessionService,
         NotificationsService,
+        LoggerService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -121,6 +123,8 @@ describe('InteractionController', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(NotificationsService)
       .useValue(notificationsMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
       .compile();
 
     controller = module.get<InteractionController>(InteractionController);
@@ -276,7 +280,7 @@ describe('InteractionController', () => {
       );
     });
 
-    it('should throw CoreIdpHintException for invalid IdP hints', async () => {
+    it('should call abort interaction for invalid IdP hints', async () => {
       const req = {} as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
@@ -291,14 +295,14 @@ describe('InteractionController', () => {
       });
       identityProviderMock.getById.mockResolvedValue(null);
 
-      await expect(
-        controller.getInteraction(
-          req,
-          res as Response,
-          {} as any,
-          userSessionService,
-        ),
-      ).rejects.toThrow(CoreIdpHintException);
+      await controller.getInteraction(
+        req,
+        res as Response,
+        {} as any,
+        userSessionService,
+      );
+
+      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
     });
 
     it('should call redirectToIdpWithEmail when login_hint is provided', async () => {
@@ -418,7 +422,7 @@ describe('InteractionController', () => {
       );
     });
 
-    it('should throw CoreLoginRequiredException when IdP is inactive and in silent authentication mode', async () => {
+    it('should call abort interaction when IdP is inactive and in silent authentication mode', async () => {
       const req = {} as Request;
       const res = {} as Response;
       const userSessionService = {
@@ -430,9 +434,9 @@ describe('InteractionController', () => {
 
       identityProviderMock.isActiveById.mockResolvedValue(false);
 
-      await expect(
-        controller.getVerify(req, res, {} as any, userSessionService),
-      ).rejects.toThrow(CoreLoginRequiredException);
+      await controller.getVerify(req, res, {} as any, userSessionService);
+
+      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
     });
 
     it('should redirect to INTERACTION route when IdP is inactive and not in silent authentication mode', async () => {
@@ -475,7 +479,7 @@ describe('InteractionController', () => {
       ).rejects.toThrow(CoreFcaAgentNotFromPublicServiceException);
     });
 
-    it('should throw CoreAcrNotSatisfiedException when interactionAcr is not satisfied', async () => {
+    it('should call abort interaction when interactionAcr is not satisfied', async () => {
       const req = {} as Request;
       const res = {} as Response;
       const userSessionService = {
@@ -489,9 +493,9 @@ describe('InteractionController', () => {
       serviceProviderMock.getById.mockResolvedValue({ type: 'public' });
       oidcAcrMock.getInteractionAcr.mockReturnValue(null);
 
-      await expect(
-        controller.getVerify(req, res, {} as any, userSessionService),
-      ).rejects.toThrow(CoreAcrNotSatisfiedException);
+      await controller.getVerify(req, res, {} as any, userSessionService);
+
+      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
     });
   });
 });

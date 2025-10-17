@@ -19,6 +19,7 @@ import { ConfigService } from '@fc/config';
 import { CsrfService } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
 import { OidcAcrService, SimplifiedInteraction } from '@fc/oidc-acr';
 import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
@@ -36,12 +37,7 @@ import {
   UserSession,
 } from '../dto';
 import { Routes } from '../enums';
-import {
-  CoreAcrNotSatisfiedException,
-  CoreFcaAgentNotFromPublicServiceException,
-  CoreIdpHintException,
-  CoreLoginRequiredException,
-} from '../exceptions';
+import { CoreFcaAgentNotFromPublicServiceException } from '../exceptions';
 import { CoreFcaControllerService } from '../services';
 
 @Controller()
@@ -59,6 +55,7 @@ export class InteractionController {
     private readonly sessionService: SessionService,
     private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly csrfService: CsrfService,
+    private readonly logger: LoggerService,
   ) {}
 
   @Get(Routes.DEFAULT)
@@ -113,7 +110,10 @@ export class InteractionController {
 
     const hintedIdp = await this.identityProvider.getById(idpHint);
     if (idpHint && isEmpty(hintedIdp)) {
-      throw new CoreIdpHintException();
+      return await this.oidcProvider.abortInteraction(req, res, {
+        error: 'idp_hint_not_found',
+        error_description: 'provided idp_hint could not be found',
+      });
     }
     const isSessionOpenedWithHintedIdp =
       !idpHint || userSession.get('idpId') === hintedIdp.uid;
@@ -234,7 +234,10 @@ export class InteractionController {
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
     if (!isIdpActive) {
       if (isSilentAuthentication) {
-        throw new CoreLoginRequiredException();
+        return await this.oidcProvider.abortInteraction(req, res, {
+          error: 'login_required',
+          error_description: 'end-user authentication is required',
+        });
       }
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
@@ -264,7 +267,10 @@ export class InteractionController {
     });
 
     if (!interactionAcr) {
-      throw new CoreAcrNotSatisfiedException();
+      return await this.oidcProvider.abortInteraction(req, res, {
+        error: 'access_denied',
+        error_description: 'requested ACRs could not be satisfied',
+      });
     }
 
     const session: UserSession = {
