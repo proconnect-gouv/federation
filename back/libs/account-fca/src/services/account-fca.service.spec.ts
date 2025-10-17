@@ -36,6 +36,7 @@ describe('AccountFcaService', () => {
     }));
     modelMock.findOne = jest.fn();
     modelMock.findOneAndUpdate = jest.fn();
+    modelMock.exists = jest.fn();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -317,6 +318,29 @@ describe('AccountFcaService', () => {
           idpMail: 'email@fqdn',
         },
       ]);
+    });
+  });
+  describe('checkEmailExists', () => {
+    it('should return false when an account with the email exists', async () => {
+      modelMock.exists.mockResolvedValue({ _id: '1' });
+
+      const result = await service.checkEmailExists('email@fqdn');
+
+      expect(modelMock.exists).toHaveBeenCalledWith({
+        idpIdentityKeys: { $elemMatch: { idpMail: 'email@fqdn' } },
+      });
+      expect(result).toBe(true);
+    });
+
+    it('should return true when no account with the email exists', async () => {
+      modelMock.exists.mockResolvedValue(null);
+
+      const result = await service.checkEmailExists('missing@fqdn');
+
+      expect(modelMock.exists).toHaveBeenCalledWith({
+        idpIdentityKeys: { $elemMatch: { idpMail: 'missing@fqdn' } },
+      });
+      expect(result).toBe(false);
     });
   });
 });

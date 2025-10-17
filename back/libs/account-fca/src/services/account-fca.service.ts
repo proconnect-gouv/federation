@@ -1,4 +1,4 @@
-import { filter, isEqual } from 'lodash';
+import { filter, isEmpty, isEqual } from 'lodash';
 import { Model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 
@@ -92,5 +92,12 @@ export class AccountFcaService {
     await this.upsertWithSub(account);
 
     return account;
+  }
+
+  async checkEmailExists(idpMail: string): Promise<boolean> {
+    const account = await this.model.exists({
+      idpIdentityKeys: { $elemMatch: { idpMail } },
+    });
+    return !isEmpty(account);
   }
 }

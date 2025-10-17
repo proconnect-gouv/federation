@@ -5,6 +5,7 @@ import {
 
 import { Injectable } from '@nestjs/common';
 
+import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -17,8 +18,10 @@ export class EmailValidatorService {
     private readonly logger: LoggerService,
     private readonly identityProviderAdapterMongoService: IdentityProviderAdapterMongoService,
     private readonly config: ConfigService,
+    private readonly accountFcaService: AccountFcaService,
   ) {}
 
+  // eslint-disable-next-line complexity
   async validate(email: string) {
     try {
       const { debounceApiKey } =
@@ -27,6 +30,12 @@ export class EmailValidatorService {
         await this.identityProviderAdapterMongoService.getIdpsByEmail(email);
 
       if (idps.length > 0) {
+        return true;
+      }
+
+      const accountFcaExists =
+        await this.accountFcaService.checkEmailExists(email);
+      if (accountFcaExists) {
         return true;
       }
 
