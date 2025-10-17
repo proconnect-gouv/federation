@@ -1,6 +1,7 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as session from 'express-session';
+import { bootstrap, createGlobalProxyAgent } from 'global-agent';
 import { chain, isObject } from 'lodash';
 import * as path from 'node:path';
 import * as process from 'node:process';
@@ -45,6 +46,9 @@ const dataProviderConfigs: { name: string; url: string }[] = JSON.parse(
 
 const app = express();
 
+bootstrap();
+const envHttpProxyAgent = createGlobalProxyAgent();
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/'));
 app.use(
@@ -76,6 +80,7 @@ const getProviderConfig = async () => {
       userinfo_signed_response_alg: PC_USERINFO_SIGNED_RESPONSE_ALG || null,
     },
     client.ClientSecretPost(PC_CLIENT_SECRET),
+    envHttpProxyAgent,
   );
   return config;
 };
