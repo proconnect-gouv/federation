@@ -21,6 +21,7 @@ describe('ConfigParser', () => {
     'someprefix/foo': 'bar',
     'someprefix/bar': '{"fizz":"buzz"}',
     'someprefix/baz': 'true',
+    'someprefix/list': 'one,two,three',
     'someprefix/emptyString': '',
     'someprefix/woo': '42',
     'someprefix/zin': '/some/path/to/read.txt',
@@ -176,6 +177,35 @@ describe('ConfigParser', () => {
       const result = reader.string(path, { undefinedIfEmpty: true });
       // Then
       expect(result).toBe(undefined);
+    });
+  });
+
+  describe('stringArray', () => {
+    it('should return array of strings split by comma', () => {
+      // Given
+      const path = 'list';
+      // When
+      const result = reader.stringArray(path);
+      // Then
+      expect(result).toEqual(['one', 'two', 'three']);
+    });
+
+    it('should return empty array when value is empty and undefinedIfEmpty is true', () => {
+      // Given
+      const path = 'emptyString';
+      // When
+      const result = reader.stringArray(path);
+      // Then
+      expect(result).toEqual([]);
+    });
+
+    it('should return empty array when variable is not defined', () => {
+      // Given
+      const path = 'doesNotExist';
+      // When
+      const result = reader.stringArray(path);
+      // Then
+      expect(result).toEqual([]);
     });
   });
 

@@ -49,6 +49,11 @@ export class ConfigParser {
     return value;
   }
 
+  stringArray(path: string): string[] {
+    const parsedString = this.string(path, { undefinedIfEmpty: true });
+    return parsedString?.split(',') || [];
+  }
+
   number(path: string): number {
     const fullPath = this.getFullPath(path);
     return parseInt(this.source[fullPath], 10);

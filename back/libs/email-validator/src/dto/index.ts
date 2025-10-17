@@ -1,1 +1,1 @@
-export * from './email-validator.dto';
+export * from './email-validator-config.dto';
