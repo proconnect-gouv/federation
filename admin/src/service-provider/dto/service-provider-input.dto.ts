@@ -21,10 +21,10 @@ import { IsOptionalExtended } from '../../utils/validators/is-optional-extended.
 import { IsValidInputString } from '../../utils/validators/is-valid-input-string';
 import { AlgoValue } from '../../enum';
 import { IP_VALIDATOR_REGEX } from '../../utils/ip-validator.constant';
+import { IsUrlExtended } from '../../utils/validators/is-url-extended.validator';
 
 const { ES256, RS256, HS256 } = AlgoValue;
 
-const URL_REGEX = /^https?:\/\/[^/].+$/;
 export class ServiceProviderDto {
   @IsValidInputString({
     message: `Veuillez mettre un nom valide ( Majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
@@ -36,14 +36,14 @@ export class ServiceProviderDto {
 
   @Transform(linesToArray)
   @IsOptionalExtended()
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     each: true,
     message: 'Veuillez mettre une url valide ( Ex: https://toto.com/ )',
   })
   readonly redirectUri: string[];
 
   @Transform(linesToArray)
-  @Matches(URL_REGEX, {
+  @IsUrlExtended({
     each: true,
     message: ' Veuillez mettre une url valide ( Ex: https://toto.com/ )',
   })
@@ -132,7 +132,7 @@ export class ServiceProviderDto {
   readonly grant_types?: string[] | null;
 
   @IsOptional()
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   @Transform(toNullableString)
   // tslint:disable-next-line: variable-name
   readonly jwks_uri?: string | null;
