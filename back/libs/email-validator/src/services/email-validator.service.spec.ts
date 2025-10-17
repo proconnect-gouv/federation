@@ -1,4 +1,4 @@
-import { singleValidationFactory } from '@gouvfr-lasuite/proconnect.debounce/api';
+import { resolveMx } from 'node:dns/promises';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -12,33 +12,40 @@ import { getLoggerMock } from '@mocks/logger';
 
 import { EmailValidatorService } from './email-validator.service';
 
-jest.mock('@gouvfr-lasuite/proconnect.debounce/api', () => ({
-  singleValidationFactory: jest.fn(),
+jest.mock('node:dns/promises', () => ({
+  resolveMx: jest.fn(),
 }));
 
 describe(EmailValidatorService.name, () => {
   let service: EmailValidatorService;
   const configServiceMock = getConfigMock();
   const identityProviderAdapterMongoMock = {
-    getIdpsByEmail: jest.fn().mockResolvedValue([]),
+    getIdpsByEmail: jest.fn(),
+    getFqdnFromEmail: jest.fn(),
   };
   const accountFcaServiceMock = {
     checkEmailExists: jest.fn(),
   };
 
   const loggerServiceMock = getLoggerMock();
-  const apiKeyMock = 'FAKE_API_KEY';
-  const testEmail = 'test@example.com';
+  const testEmail = 'user@test.example.com';
+  const testDomain = 'test.example.com';
 
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
-    (singleValidationFactory as jest.Mock).mockReturnValue(() =>
-      Promise.resolve({ send_transactional: '1' }),
+    (resolveMx as jest.Mock).mockReset();
+
+    (
+      identityProviderAdapterMongoMock.getIdpsByEmail as jest.Mock
+    ).mockResolvedValue([]);
+    (
+      identityProviderAdapterMongoMock.getFqdnFromEmail as jest.Mock
+    ).mockReturnValue(testDomain);
+    (accountFcaServiceMock.checkEmailExists as jest.Mock).mockResolvedValue(
+      false,
     );
-    identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
-    accountFcaServiceMock.checkEmailExists.mockResolvedValue(false);
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
@@ -59,7 +66,7 @@ describe(EmailValidatorService.name, () => {
       .useValue(accountFcaServiceMock)
       .compile();
 
-    configServiceMock.get.mockReturnValue({ debounceApiKey: apiKeyMock });
+    configServiceMock.get.mockReturnValue({ domainWhitelist: [] });
 
     service = app.get<EmailValidatorService>(EmailValidatorService);
   });
@@ -74,108 +81,104 @@ describe(EmailValidatorService.name, () => {
     it('should call getIdpsByEmail with the correct email', async () => {
       await service.validate(testEmail);
       expect(
-        identityProviderAdapterMongoMock.getIdpsByEmail,
+        identityProviderAdapterMongoMock.getIdpsByEmail as jest.Mock,
       ).toHaveBeenCalledWith(testEmail);
     });
 
-    it('should not call getSingleValidationMethod when email corresponds to at least one existing FqdnToProvider', async () => {
+    it('should return true when email corresponds to at least one existing IdP and not proceed further', async () => {
       // Given
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([
-        { fdqns: ['hogwarts.uk'] },
+      (
+        identityProviderAdapterMongoMock.getIdpsByEmail as jest.Mock
+      ).mockResolvedValue([{ fdqns: ['hogwarts.uk'] }]);
+
+      // When
+      const result = await service.validate(testEmail);
+
+      // Then
+      expect(result).toBe(true);
+      expect(accountFcaServiceMock.checkEmailExists).not.toHaveBeenCalled();
+      expect(resolveMx).not.toHaveBeenCalled();
+      expect(loggerServiceMock.err).not.toHaveBeenCalled();
+    });
+
+    it('should return true when email exists in FCA account base and not proceed further', async () => {
+      // Given
+      (
+        identityProviderAdapterMongoMock.getIdpsByEmail as jest.Mock
+      ).mockResolvedValue([]);
+      (accountFcaServiceMock.checkEmailExists as jest.Mock).mockResolvedValue(
+        true,
+      );
+
+      // When
+      const result = await service.validate(testEmail);
+
+      // Then
+      expect(
+        identityProviderAdapterMongoMock.getIdpsByEmail as jest.Mock,
+      ).toHaveBeenCalled();
+      expect(accountFcaServiceMock.checkEmailExists).toHaveBeenCalledWith(
+        testEmail,
+      );
+      expect(resolveMx).not.toHaveBeenCalled();
+      expect(result).toBe(true);
+      expect(loggerServiceMock.err).not.toHaveBeenCalled();
+    });
+
+    it('should return true when domain is whitelisted and not call resolveMx', async () => {
+      // Given
+      configServiceMock.get.mockReturnValue({ domainWhitelist: [testDomain] });
+
+      // When
+      const result = await service.validate(testEmail);
+
+      // Then
+      expect(
+        identityProviderAdapterMongoMock.getFqdnFromEmail,
+      ).toHaveBeenCalledWith(testEmail);
+      expect(resolveMx).not.toHaveBeenCalled();
+      expect(result).toBe(true);
+    });
+
+    it('should call resolveMx with domain and return true when MX records are found', async () => {
+      // Given
+      (resolveMx as jest.Mock).mockResolvedValue([
+        { exchange: 'mx.test', priority: 10 },
       ]);
 
-      (singleValidationFactory as jest.Mock).mockReturnValue(() =>
-        Promise.resolve({ send_transactional: '1' }),
-      );
-
-      const getSingleValidationMethodSpy = jest.spyOn(
-        service as any,
-        'getSingleValidationMethod',
-      );
-      getSingleValidationMethodSpy.mockReturnValue(() =>
-        Promise.resolve({ send_transactional: '1' }),
-      );
-
-      configServiceMock.get.mockReturnValue({ debounceApiKey: apiKeyMock });
-
       // When
-      await service.validate(testEmail);
+      const result = await service.validate(testEmail);
 
       // Then
       expect(
-        identityProviderAdapterMongoMock.getIdpsByEmail,
-      ).toHaveBeenCalled();
-      expect(accountFcaServiceMock.checkEmailExists).not.toHaveBeenCalled();
-      expect(getSingleValidationMethodSpy).not.toHaveBeenCalled();
-      expect(await service.validate(testEmail)).toBe(true);
-      expect(loggerServiceMock.info).not.toHaveBeenCalled();
+        identityProviderAdapterMongoMock.getFqdnFromEmail,
+      ).toHaveBeenCalledWith(testEmail);
+      expect(resolveMx).toHaveBeenCalledWith(testDomain);
+      expect(result).toBe(true);
+      expect(loggerServiceMock.err).not.toHaveBeenCalled();
     });
 
-    it('should not call getSingleValidationMethod when email exists in FCA account base', async () => {
+    it('should return false and log an error when MX lookup fails', async () => {
       // Given
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
-      accountFcaServiceMock.checkEmailExists.mockResolvedValue(true);
-
-      const getSingleValidationMethodSpy = jest.spyOn(
-        service as any,
-        'getSingleValidationMethod',
-      );
+      (resolveMx as jest.Mock).mockRejectedValue(new Error('NXDOMAIN'));
 
       // When
-      await service.validate(testEmail);
+      const result = await service.validate(testEmail);
 
       // Then
-      expect(
-        identityProviderAdapterMongoMock.getIdpsByEmail,
-      ).toHaveBeenCalled();
-      expect(accountFcaServiceMock.checkEmailExists).toHaveBeenCalledWith(
-        testEmail,
-      );
-      expect(getSingleValidationMethodSpy).not.toHaveBeenCalled();
-      expect(loggerServiceMock.info).not.toHaveBeenCalled();
-      expect(await service.validate(testEmail)).toBe(true);
+      expect(resolveMx).toHaveBeenCalledWith(testDomain);
+      expect(result).toBe(false);
+      expect(loggerServiceMock.err).toHaveBeenCalledWith({
+        code: 'email_not_safe_to_send',
+      });
     });
 
-    it('should call getSingleValidationMethod when email corresponds to no existing FqdnToProvider', async () => {
-      // Given
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
+    it('should return true and log the error when a top-level error occurs', async () => {
+      // Given a top-level failure before isEmailDomainValid is called
+      (
+        identityProviderAdapterMongoMock.getIdpsByEmail as jest.Mock
+      ).mockRejectedValue(new Error('db down'));
 
-      const getSingleValidationMethodSpy = jest.spyOn(
-        service as any,
-        'getSingleValidationMethod',
-      );
-      getSingleValidationMethodSpy.mockReturnValue(() =>
-        Promise.resolve({ send_transactional: '1' }),
-      );
-
-      configServiceMock.get.mockReturnValue({ debounceApiKey: apiKeyMock });
-
-      // When
-      await service.validate(testEmail);
-
-      // Then
-      expect(
-        identityProviderAdapterMongoMock.getIdpsByEmail,
-      ).toHaveBeenCalled();
-      expect(accountFcaServiceMock.checkEmailExists).toHaveBeenCalledWith(
-        testEmail,
-      );
-      expect(getSingleValidationMethodSpy).toHaveBeenCalledExactlyOnceWith(
-        apiKeyMock,
-      );
-      expect(await service.validate(testEmail)).toBe(true);
-      expect(loggerServiceMock.info).toHaveBeenCalledWith(
-        `Email address "${testEmail}" is safe to send.`,
-      );
-    });
-
-    it('should return true even if an error occurred', async () => {
-      // Given
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
-
-      (singleValidationFactory as jest.Mock).mockReturnValue(() =>
-        Promise.reject(new Error('An error occurred')),
-      );
       // When
       const result = await service.validate(testEmail);
 
@@ -183,61 +186,8 @@ describe(EmailValidatorService.name, () => {
       expect(result).toBe(true);
       expect(loggerServiceMock.err).toHaveBeenCalled();
       expect(loggerServiceMock.err).toHaveBeenCalledWith(
-        expect.objectContaining({ message: 'An error occurred' }),
+        expect.objectContaining({ message: 'db down' }),
       );
-    });
-
-    it('should return false when send_transactional is false', async () => {
-      // Given
-      identityProviderAdapterMongoMock.getIdpsByEmail.mockResolvedValue([]);
-
-      const getSingleValidationMethodSpy = jest.spyOn(
-        service as any,
-        'getSingleValidationMethod',
-      );
-      getSingleValidationMethodSpy.mockReturnValue(() =>
-        Promise.resolve({ send_transactional: '0' }),
-      );
-
-      configServiceMock.get.mockReturnValue({ debounceApiKey: apiKeyMock });
-
-      // When
-      await service.validate(testEmail);
-
-      // Then
-      expect(
-        identityProviderAdapterMongoMock.getIdpsByEmail,
-      ).toHaveBeenCalled();
-      expect(getSingleValidationMethodSpy).toHaveBeenCalledExactlyOnceWith(
-        apiKeyMock,
-      );
-      expect(await service.validate(testEmail)).toBe(false);
-      expect(loggerServiceMock.info).toHaveBeenCalledWith(
-        `Email address "${testEmail}" is not safe to send.`,
-      );
-    });
-  });
-
-  describe('getSingleValidationMethod', () => {
-    it('should call singleValidationFactory when debounceApiKey is not empty', () => {
-      (singleValidationFactory as jest.Mock).mockReturnValue(apiKeyMock);
-      service['getSingleValidationMethod'](apiKeyMock);
-
-      expect(singleValidationFactory).toHaveBeenCalledExactlyOnceWith(
-        apiKeyMock,
-      );
-    });
-
-    it('should return a function that returns send_transactional: 1 when debounceApiKey is empty', async () => {
-      (singleValidationFactory as jest.Mock).mockReturnValue(apiKeyMock);
-      const result = service['getSingleValidationMethod']('');
-
-      expect(result).toBeFunction();
-      await expect(result('')).resolves.toEqual({
-        send_transactional: '1',
-      });
-
-      expect(singleValidationFactory).not.toHaveBeenCalled();
     });
   });
 });

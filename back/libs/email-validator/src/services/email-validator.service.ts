@@ -1,7 +1,4 @@
-import {
-  singleValidationFactory,
-  type SingleValidationHandler,
-} from '@gouvfr-lasuite/proconnect.debounce/api';
+import { resolveMx } from 'node:dns/promises';
 
 import { Injectable } from '@nestjs/common';
 
@@ -24,11 +21,8 @@ export class EmailValidatorService {
   // eslint-disable-next-line complexity
   async validate(email: string) {
     try {
-      const { debounceApiKey } =
-        this.config.get<EmailValidatorConfig>('EmailValidator');
       const idps =
         await this.identityProviderAdapterMongoService.getIdpsByEmail(email);
-
       if (idps.length > 0) {
         return true;
       }
@@ -39,14 +33,12 @@ export class EmailValidatorService {
         return true;
       }
 
-      const { send_transactional } =
-        await this.getSingleValidationMethod(debounceApiKey)(email);
+      const isEmailValid = await this.isEmailDomainValid(email);
+      if (!isEmailValid) {
+        this.logger.err({ code: 'email_not_safe_to_send' });
+      }
 
-      this.logger.info(
-        `Email address "${email}" is ${send_transactional === '1' ? '' : 'not '}safe to send.`,
-      );
-
-      return send_transactional === '1';
+      return isEmailValid;
     } catch (error) {
       this.logger.err(error);
       // NOTE(douglasduteil): Non-blocking validation
@@ -55,14 +47,22 @@ export class EmailValidatorService {
     }
   }
 
-  private getSingleValidationMethod(
-    debounceApiKey: string,
-  ): SingleValidationHandler | (() => Promise<{ send_transactional: string }>) {
-    return debounceApiKey
-      ? singleValidationFactory(debounceApiKey)
-      : () =>
-          Promise.resolve({
-            send_transactional: '1',
-          });
+  private async isEmailDomainValid(email: string) {
+    const { domainWhitelist } =
+      this.config.get<EmailValidatorConfig>('EmailValidator');
+    const emailDomain =
+      this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
+
+    if (domainWhitelist.includes(emailDomain)) {
+      return true;
+    }
+
+    try {
+      await resolveMx(emailDomain);
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }

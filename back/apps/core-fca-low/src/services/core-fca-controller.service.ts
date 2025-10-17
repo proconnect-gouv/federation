@@ -37,11 +37,11 @@ export class CoreFcaControllerService {
     email: string,
     rememberMe: boolean,
   ): Promise<void> {
+    this.session.set('User', { rememberMe: rememberMe, idpLoginHint: email });
+
     // TODO(douglasduteil): temporary solution to avoid blocking the user
     // We are testing the email validity without breaking the flow here
     await this.emailValidatorService.validate(email);
-
-    this.session.set('User', { rememberMe: rememberMe, idpLoginHint: email });
 
     const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
 
