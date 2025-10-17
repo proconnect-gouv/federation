@@ -5,31 +5,27 @@ import { ExceptionOccurredCommand } from '@fc/exceptions/commands';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions/filters';
 import { ExceptionOccurredHandler as BaseExceptionOccurredHandler } from '@fc/exceptions/handlers';
 
+import { OidcProviderBaseRenderedException } from '../exceptions';
 import {
-  OidcProviderBaseRedirectException,
-  OidcProviderBaseRenderedException,
-} from '../exceptions';
-import {
-  OidcProviderRedirectExceptionFilter,
   OidcProviderRenderedHtmlExceptionFilter,
   OidcProviderRenderedJsonExceptionFilter,
 } from '../filters';
 
+/**
+ * @deprecated let oidc-provider handle errors
+ */
 @CommandHandler(ExceptionOccurredCommand)
 export class ExceptionOccurredHandler extends BaseExceptionOccurredHandler {
   constructor(
     protected readonly htmlFilter: OidcProviderRenderedHtmlExceptionFilter,
     protected readonly jsonFilter: OidcProviderRenderedJsonExceptionFilter,
-    protected readonly redirectFilter: OidcProviderRedirectExceptionFilter,
     protected readonly defaultFilter: FcWebHtmlExceptionFilter,
   ) {
     super(htmlFilter, jsonFilter);
   }
 
   execute(command: ExceptionOccurredCommand) {
-    if (command.exception instanceof OidcProviderBaseRedirectException) {
-      return this.redirectFilter.catch(command.exception, command.host);
-    } else if (command.exception instanceof OidcProviderBaseRenderedException) {
+    if (command.exception instanceof OidcProviderBaseRenderedException) {
       const contentType = this.getContentType(
         command.host.switchToHttp().getResponse(),
       );
