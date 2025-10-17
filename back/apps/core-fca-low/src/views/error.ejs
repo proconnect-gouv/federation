@@ -41,7 +41,7 @@ const contactHref = locals.exception.contactHref ?? `mailto:support+federation@p
               </h1>
 
               <% if (locals.exception.description)  { %>
-                <p class="error-description-with-white-space"><%= locals.exception.description %></p>
+                <p class="error-description-with-white-space"><%- locals.exception.description %></p>
               <% } else { %>
                 <p>Nous n'arrivons pas à vous connecter à votre service en ligne pour l'instant.</p>
               <% } %>
