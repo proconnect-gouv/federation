@@ -55,11 +55,6 @@ export abstract class BaseIdentityDto {
   belonging_population?: string;
 
   @IsString()
-  @MaxLength(256)
-  @IsOptional()
-  phone_number?: string;
-
-  @IsString()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
