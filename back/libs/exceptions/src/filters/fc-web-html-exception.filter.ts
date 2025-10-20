@@ -10,7 +10,6 @@ import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { messageDictionary } from '@fc/core/exceptions/error-messages';
 import { LoggerService } from '@fc/logger';
-import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 import { SessionService } from '@fc/session';
 
 import { generateErrorId } from '../helpers';
@@ -37,17 +36,10 @@ export class FcWebHtmlExceptionFilter
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
 
-    let message = 'exceptions.default_message';
-    if (exception instanceof OidcProviderNoWrapperException) {
-      message = exception.originalError.constructor.name;
-    } else {
-      message = exception.ui;
-    }
-
     const exceptionParam: ApiErrorParams = {
       exception,
       res,
-      error: { code, id, message },
+      error: { code, id, message: exception.ui },
       httpResponseCode: this.getHttpStatus(exception),
       errorDetail: undefined,
     };

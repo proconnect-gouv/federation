@@ -4,5 +4,4 @@ export enum ErrorCode {
   STRINGIFY_FOR_REDIS = 5,
   PARSE_REDIS_RESPONSE = 6,
   RUNTIME_ERROR = 29,
-  NO_WRAPPER = 31,
 }

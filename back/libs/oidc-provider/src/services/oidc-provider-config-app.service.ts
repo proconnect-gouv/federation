@@ -1,4 +1,6 @@
+import { Response } from 'express';
 import {
+  Configuration,
   InteractionResults,
   KoaContextWithOIDC,
   Provider,
@@ -240,4 +242,18 @@ export class OidcProviderConfigAppService {
       </body>
     </html>`;
   }
+
+  renderError: Configuration['renderError'] = (
+    ctx: KoaContextWithOIDC,
+    { error, error_description },
+    _err,
+  ) => {
+    const res = ctx.res as unknown as Response;
+    ctx.type = 'html';
+    ctx.body = res.render('error', {
+      exception: {},
+      error: { code: error, message: true },
+      errorDetail: error_description,
+    });
+  };
 }

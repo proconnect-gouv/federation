@@ -26,7 +26,6 @@ import {
 import {
   OidcProviderConfigAppService,
   OidcProviderConfigService,
-  OidcProviderErrorService,
 } from './services';
 
 export const COOKIES = ['_session', '_interaction', '_interaction_resume'];
@@ -48,7 +47,6 @@ export class OidcProviderService {
     private httpAdapterHost: HttpAdapterHost,
     readonly logger: LoggerService,
     readonly redis: RedisService,
-    private readonly errorService: OidcProviderErrorService,
     private readonly configService: OidcProviderConfigService,
     private readonly oidcProviderConfigApp: OidcProviderConfigAppService,
   ) {}
