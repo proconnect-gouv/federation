@@ -50,6 +50,14 @@ export const setLoginHint = (loginHint: string): void => {
   });
 };
 
+export const setRedirectUri = (redirectUri: string): void => {
+  updateCustomParams((customParams) => {
+    customParams['redirect_uri'] = redirectUri;
+
+    return customParams;
+  });
+};
+
 export const setPrompt = (prompt: string): void => {
   updateCustomParams((customParams) => {
     customParams['prompt'] = prompt;
