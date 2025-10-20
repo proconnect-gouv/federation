@@ -22,7 +22,6 @@ import {
 } from './exceptions';
 import { COOKIES, OidcProviderService } from './oidc-provider.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
-import { OidcProviderErrorService } from './services/oidc-provider-error.service';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -88,10 +87,6 @@ describe('OidcProviderService', () => {
 
   const redisMock = getRedisServiceMock();
 
-  const oidcProviderErrorServiceMock = {
-    throwError: jest.fn(),
-  };
-
   const oidcProviderConfigServiceMock = {
     getConfig: jest.fn(),
     findAccount: jest.fn(),
@@ -109,7 +104,6 @@ describe('OidcProviderService', () => {
         OidcProviderService,
         HttpAdapterHost,
         RedisService,
-        OidcProviderErrorService,
         OidcProviderConfigService,
         OidcProviderConfigAppService,
       ],
@@ -120,8 +114,6 @@ describe('OidcProviderService', () => {
       .useValue(redisMock)
       .overrideProvider(HttpAdapterHost)
       .useValue(httpAdapterHostMock)
-      .overrideProvider(OidcProviderErrorService)
-      .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(OidcProviderConfigService)
       .useValue(oidcProviderConfigServiceMock)
       .overrideProvider(OidcProviderConfigAppService)

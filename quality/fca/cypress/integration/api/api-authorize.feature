@@ -8,8 +8,8 @@ Fonctionnalité: API - authorize
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "InvalidClient"
-    Et le message d'erreur est "Client non trouvé (client_id invalide)"
+    Et le code d'erreur est "invalid_client"
+    Et le message d'erreur est "client is invalid"
     Et le lien retour vers le FS n'est pas affiché dans la page erreur technique
 
     Exemples:

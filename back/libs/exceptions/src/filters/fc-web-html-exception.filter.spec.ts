@@ -9,7 +9,6 @@ import { ConfigService } from '@fc/config';
 import { CoreFcaInvalidIdentityException } from '@fc/core';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
-import { OidcProviderNoWrapperException } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
@@ -124,20 +123,6 @@ describe('FcWebHtmlExceptionFilter', () => {
 
       // Then
       expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(paramsMock);
-    });
-
-    it('should output an OidcProviderNoWrapperException too', () => {
-      // When
-      const wrapped = new OidcProviderNoWrapperException(new Error());
-      filter.catch(wrapped, hostMock as unknown as ArgumentsHost);
-
-      // Then
-      const expected = {
-        ...paramsMock,
-        exception: wrapped,
-        error: { ...paramsMock.error, message: 'Error' },
-      };
-      expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(expected);
     });
   });
 
