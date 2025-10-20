@@ -70,7 +70,7 @@ Fonctionnalité: Connexion avec LocalStorage
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité "par défaut"
     Quand je navigue sur la page fournisseur de service
-    Et que le fournisseur de service requiert le login_hint "severus.snape@fia2.fr"
+    Et que le fournisseur de service envoie le login_hint "severus.snape@fia2.fr"
     Et que je clique sur le bouton ProConnect
     Alors le champ identifiant correspond à "severus.snape@fia2.fr"
     Et la page du FI affiche remember_me "false"
