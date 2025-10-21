@@ -52,9 +52,6 @@ export class FcWebHtmlExceptionFilter
       errorDetail: undefined,
     };
 
-    exceptionParam.idpName = this.session.get('User', 'idpName');
-    exceptionParam.spName = this.session.get('User', 'spName');
-
     this.logException(code, id, exception);
 
     this.errorOutput(exceptionParam);
@@ -71,6 +68,10 @@ export class FcWebHtmlExceptionFilter
     const errorDetail = errorParam.exception.generic
       ? errorParam.exception.error_description
       : staticDetail;
+
+    // These tow params are used to generate contactHref
+    errorParam.idpName = this.session.get('User', 'idpName');
+    errorParam.spName = this.session.get('User', 'spName');
 
     res.status(httpResponseCode);
     res.render('error', { ...errorParam, errorDetail });
