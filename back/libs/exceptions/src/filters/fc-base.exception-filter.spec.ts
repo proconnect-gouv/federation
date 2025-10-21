@@ -135,7 +135,7 @@ describe('FcBaseExceptionFilter', () => {
       filter['logException']('codeMock', 'idMock', exceptionMock);
 
       // Then
-      expect(loggerMock.err).toHaveBeenCalledTimes(1);
+      expect(loggerMock.error).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -98,7 +98,7 @@ describe(EmailValidatorService.name, () => {
       expect(result).toBe(true);
       expect(accountFcaServiceMock.checkEmailExists).not.toHaveBeenCalled();
       expect(resolveMx).not.toHaveBeenCalled();
-      expect(loggerServiceMock.err).not.toHaveBeenCalled();
+      expect(loggerServiceMock.error).not.toHaveBeenCalled();
     });
 
     it('should return true when email exists in FCA account base and not proceed further', async () => {
@@ -122,7 +122,7 @@ describe(EmailValidatorService.name, () => {
       );
       expect(resolveMx).not.toHaveBeenCalled();
       expect(result).toBe(true);
-      expect(loggerServiceMock.err).not.toHaveBeenCalled();
+      expect(loggerServiceMock.error).not.toHaveBeenCalled();
     });
 
     it('should return true when domain is whitelisted and not call resolveMx', async () => {
@@ -155,7 +155,7 @@ describe(EmailValidatorService.name, () => {
       ).toHaveBeenCalledWith(testEmail);
       expect(resolveMx).toHaveBeenCalledWith(testDomain);
       expect(result).toBe(true);
-      expect(loggerServiceMock.err).not.toHaveBeenCalled();
+      expect(loggerServiceMock.error).not.toHaveBeenCalled();
     });
 
     it('should return false and log an error when MX lookup fails', async () => {
@@ -168,7 +168,7 @@ describe(EmailValidatorService.name, () => {
       // Then
       expect(resolveMx).toHaveBeenCalledWith(testDomain);
       expect(result).toBe(false);
-      expect(loggerServiceMock.err).toHaveBeenCalledWith({
+      expect(loggerServiceMock.error).toHaveBeenCalledWith({
         code: 'email_not_safe_to_send',
       });
     });
@@ -184,8 +184,8 @@ describe(EmailValidatorService.name, () => {
 
       // Then
       expect(result).toBe(true);
-      expect(loggerServiceMock.err).toHaveBeenCalled();
-      expect(loggerServiceMock.err).toHaveBeenCalledWith(
+      expect(loggerServiceMock.error).toHaveBeenCalled();
+      expect(loggerServiceMock.error).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'db down' }),
       );
     });

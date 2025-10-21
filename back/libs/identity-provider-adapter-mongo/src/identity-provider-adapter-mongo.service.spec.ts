@@ -441,8 +441,8 @@ describe('IdentityProviderAdapterMongoService', () => {
       await service['findAllIdentityProvider']();
 
       // expect
-      expect(loggerMock.alert).toHaveBeenCalledTimes(1);
-      expect(loggerMock.alert).toHaveBeenCalledWith({
+      expect(loggerMock.error).toHaveBeenCalledTimes(1);
+      expect(loggerMock.error).toHaveBeenCalledWith({
         msg: `Identity provider "${invalidIdentityProviderMock.name}" (${invalidIdentityProviderMock.uid}) was excluded at DTO validation`,
         validationErrors: [{}],
       });

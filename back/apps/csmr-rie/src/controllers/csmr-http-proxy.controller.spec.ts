@@ -166,7 +166,7 @@ describe('CsmrHttpProxyController', () => {
       // Assert
       expect(result).toStrictEqual(resultMock);
 
-      expect(loggerMock.err).toHaveBeenCalledTimes(1);
+      expect(loggerMock.error).toHaveBeenCalledTimes(1);
     });
   });
 });

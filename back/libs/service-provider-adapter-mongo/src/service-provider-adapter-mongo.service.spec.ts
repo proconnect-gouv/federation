@@ -252,7 +252,7 @@ describe('ServiceProviderAdapterMongoService', () => {
       await service['findAllServiceProvider']();
 
       // expect
-      expect(loggerMock.alert).toHaveBeenCalledTimes(1);
+      expect(loggerMock.error).toHaveBeenCalledTimes(1);
     });
 
     it('should filter out any entry excluded by the DTO', async () => {

@@ -182,7 +182,7 @@ describe('SessionBackendStorageService', () => {
       await service.get(sessionId);
 
       // Then
-      expect(loggerMock.alert).toHaveBeenCalledTimes(1);
+      expect(loggerMock.error).toHaveBeenCalledTimes(1);
     });
   });
 

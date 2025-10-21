@@ -1,7 +1,7 @@
 import { ValidationError } from 'class-validator';
 import { TokenSet } from 'openid-client';
 
-import { LoggerService } from '@fc/logger';
+import { getLoggerMock } from '@mocks/logger';
 
 import {
   OidcClientTokenResultFailedException,
@@ -13,7 +13,7 @@ import { OidcClientUtilsService } from './oidc-client-utils.service';
 describe('OidcClientService', () => {
   let service: OidcClientService;
   let utilsMock: jest.Mocked<OidcClientUtilsService>;
-  let loggerMock: jest.Mocked<LoggerService>;
+  const loggerMock = getLoggerMock();
   const jwtMock =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
@@ -24,13 +24,6 @@ describe('OidcClientService', () => {
       getEndSessionUrl: jest.fn(),
       hasEndSessionUrl: jest.fn(),
     } as unknown as jest.Mocked<OidcClientUtilsService>;
-
-    loggerMock = {
-      info: jest.fn(),
-      debug: jest.fn(),
-      err: jest.fn(),
-      alert: jest.fn(),
-    } as unknown as jest.Mocked<LoggerService>;
 
     service = new OidcClientService(utilsMock, loggerMock);
   });
@@ -79,7 +72,7 @@ describe('OidcClientService', () => {
           {} as any,
         ),
       ).rejects.toThrow(OidcClientTokenResultFailedException);
-      expect(loggerMock.alert).toHaveBeenCalledWith({
+      expect(loggerMock.error).toHaveBeenCalledWith({
         msg: 'token validation error',
         validationErrors: [expect.any(ValidationError)],
       });

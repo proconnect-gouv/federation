@@ -67,7 +67,7 @@ export class ServiceProviderAdapterMongoService
       });
 
       if (errors.length > 0) {
-        this.logger.alert({
+        this.logger.error({
           msg: `Service provider "${rawServiceProvider?.name}" (${rawServiceProvider?.key}) was excluded at DTO validation`,
           validationErrors: errors,
         });

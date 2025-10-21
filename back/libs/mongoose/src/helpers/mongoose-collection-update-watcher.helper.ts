@@ -25,7 +25,7 @@ export class MongooseCollectionOperationWatcherHelper {
 
   private watch<T extends Document>(model: Model<T>, callback: Function): void {
     const watch = model.watch();
-    this.logger.notice(
+    this.logger.info(
       `Database OperationType watcher initialization for "${model.modelName}".`,
     );
 
@@ -51,14 +51,14 @@ export class MongooseCollectionOperationWatcherHelper {
     );
 
     if (isListenedOperation) {
-      this.logger.notice(
+      this.logger.info(
         `Detected "${stream.operationType}" on "${modelName}", calling handler.`,
       );
       callback();
       return;
     }
 
-    this.logger.info(
+    this.logger.debug(
       `Detected "${stream.operationType}" on "${modelName}", Ignoring.`,
     );
   }

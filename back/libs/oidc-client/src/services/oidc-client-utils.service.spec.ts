@@ -382,7 +382,7 @@ describe('OidcClientUtilsService', () => {
       await expect(
         service.getTokenSet(req, providerId, params),
       ).rejects.toThrow(OidcClientTokenFailedException);
-      expect(loggerServiceMock.err).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.error).toHaveBeenCalledTimes(1);
     });
 
     it('should throw FcException if oidc-client throws OPError', async () => {

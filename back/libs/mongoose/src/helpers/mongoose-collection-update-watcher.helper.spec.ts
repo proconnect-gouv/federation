@@ -116,8 +116,8 @@ describe('MongooseCollectionOperationWatcherHelper', () => {
       // When
       service['watch'](modelMock as unknown as Model<Document>, callbackMock);
       // Then
-      expect(loggerServiceMock.notice).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.notice).toHaveBeenCalledWith(
+      expect(loggerServiceMock.info).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.info).toHaveBeenCalledWith(
         `Database OperationType watcher initialization for "${modelMock.modelName}".`,
       );
     });
@@ -170,8 +170,8 @@ describe('MongooseCollectionOperationWatcherHelper', () => {
       // When
       service['operationTypeWatcher'](modelNameMock, callbackMock, streamMock);
       // Then
-      expect(loggerServiceMock.notice).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.notice).toHaveBeenCalledWith(
+      expect(loggerServiceMock.info).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.info).toHaveBeenCalledWith(
         `Detected "${streamMock.operationType}" on "${modelNameMock}", calling handler.`,
       );
     });
@@ -199,7 +199,7 @@ describe('MongooseCollectionOperationWatcherHelper', () => {
       // When
       service['operationTypeWatcher'](modelNameMock, callbackMock, streamMock);
       // Then
-      expect(loggerServiceMock.notice).not.toHaveBeenCalled();
+      expect(loggerServiceMock.info).not.toHaveBeenCalled();
     });
   });
 });

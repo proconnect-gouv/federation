@@ -118,7 +118,7 @@ export class CoreFcaService {
       return;
     }
 
-    this.logger.err(`Unauthorized fqdn ${fqdnFromEmail} for SP ${spId}`);
+    this.logger.error(`Unauthorized fqdn ${fqdnFromEmail} for SP ${spId}`);
     throw new CoreFcaUnauthorizedEmailException(
       authorizedFqdnsConfig.spName,
       authorizedFqdnsConfig.spContact,

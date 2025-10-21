@@ -10,6 +10,7 @@ import { LoggerService } from './logger.service';
  * Nest logger service use any as ConsoleLogger from NestJS.
  * Any is only used to satisfy the interface.
  */
+/* istanbul ignore next */
 @Injectable()
 export class NestLoggerService
   extends ConsoleLogger
@@ -19,25 +20,25 @@ export class NestLoggerService
     super();
   }
 
-  log(message: any, context?: string): void;
-  log(message: any, ...optionalParams: [...any, string?]): void {
-    this.logger.info({ optionalParams }, message);
-  }
-
   fatal(message: any, context?: string): void;
   fatal(message: any, ...optionalParams: [...any, string?]): void {
-    this.logger.alert({ optionalParams }, message);
+    this.logger.fatal({ optionalParams }, message);
   }
 
   error(message: any, stackOrContext?: string): void;
   error(message: any, stack?: string, context?: string): void;
   error(message: any, ...optionalParams: [...any, string?, string?]) {
-    this.logger.crit({ optionalParams }, message);
+    this.logger.error({ optionalParams }, message);
   }
 
   warn(message: any, context?: string): void;
   warn(message: any, ...optionalParams: [...any, string?]): void {
-    this.logger.warning({ optionalParams }, message);
+    this.logger.warn({ optionalParams }, message);
+  }
+
+  log(message: any, context?: string): void;
+  log(message: any, ...optionalParams: [...any, string?]): void {
+    this.logger.info({ optionalParams }, message);
   }
 
   debug(message: any, context?: string): void;
@@ -47,6 +48,6 @@ export class NestLoggerService
 
   verbose(message: any, context?: string): void;
   verbose(message: any, ...optionalParams: [...any, string?]): void {
-    this.logger.debug({ optionalParams }, message);
+    this.logger.trace({ optionalParams }, message);
   }
 }

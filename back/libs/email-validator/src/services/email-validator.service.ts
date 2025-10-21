@@ -35,12 +35,12 @@ export class EmailValidatorService {
 
       const isEmailValid = await this.isEmailDomainValid(email);
       if (!isEmailValid) {
-        this.logger.err({ code: 'email_not_safe_to_send' });
+        this.logger.error({ code: 'email_not_safe_to_send' });
       }
 
       return isEmailValid;
     } catch (error) {
-      this.logger.err(error);
+      this.logger.error(error);
       // NOTE(douglasduteil): Non-blocking validation
       // We don't want to block the user if an error occurs on the http level
       return true;
