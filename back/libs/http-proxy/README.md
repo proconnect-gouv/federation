@@ -1,6 +1,6 @@
 # Proxy
 
-Ce module permet de forcr l'utilisation de paramètres proxy sur les requêtes HTTP et HTTPS
+Ce module permet de forcer l'utilisation de paramètres proxy sur les requêtes HTTP et HTTPS
 
 Ce module repose sur la librairie [global-agent](https://www.npmjs.com/package/global-agent) et [axios](https://www.npmjs.com/package/axios)
 
