@@ -1,5 +1,0 @@
-export enum Environment {
-  DEVELOPMENT = 'DEVELOPMENT',
-  INTEGRATION = 'INTEGRATION',
-  PRODUCTION = 'PRODUCTION',
-}
