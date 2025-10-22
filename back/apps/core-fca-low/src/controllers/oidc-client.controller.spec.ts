@@ -8,9 +8,6 @@ import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
-import { EmailValidatorService } from '@fc/email-validator/services';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
@@ -33,16 +30,13 @@ describe('OidcClientController', () => {
   // Mocks for injected services
   let accountService: any;
   let configService: any;
-  let logger: any;
   let oidcClient: any;
   let oidcClientConfig: any;
   let coreFcaControllerService: any;
   let coreFcaService: any;
-  let identityProvider: any;
   let sessionService: any;
   let tracking: any;
   let crypto: any;
-  let emailValidatorService: any;
   let sanitizer: any;
   let csrfService: any;
 
@@ -51,7 +45,6 @@ describe('OidcClientController', () => {
       getOrCreateAccount: jest.fn(),
     };
     configService = { get: jest.fn() };
-    logger = { debug: jest.fn(), warning: jest.fn() };
     oidcClient = {
       utils: { wellKnownKeys: jest.fn() },
       getToken: jest.fn(),
@@ -69,10 +62,6 @@ describe('OidcClientController', () => {
       selectIdpsFromEmail: jest.fn(),
       getSortedDisplayableIdentityProviders: jest.fn(),
     };
-    identityProvider = {
-      getById: jest.fn(),
-      getFqdnFromEmail: jest.fn(),
-    };
     sessionService = {
       set: jest.fn(),
       get: jest.fn(),
@@ -83,7 +72,6 @@ describe('OidcClientController', () => {
       track: jest.fn(),
     };
     crypto = { genRandomString: jest.fn() };
-    emailValidatorService = { validate: jest.fn() };
     sanitizer = {
       getValidatedIdentityFromIdp: jest.fn(),
       transformIdentity: jest.fn(),
@@ -95,16 +83,13 @@ describe('OidcClientController', () => {
       providers: [
         AccountFcaService,
         ConfigService,
-        LoggerService,
         OidcClientService,
         OidcClientConfigService,
         CoreFcaControllerService,
         CoreFcaService,
-        IdentityProviderAdapterMongoService,
         SessionService,
         TrackingService,
         CryptographyService,
-        EmailValidatorService,
         IdentitySanitizer,
         CsrfService,
       ],
@@ -113,8 +98,6 @@ describe('OidcClientController', () => {
       .useValue(accountService)
       .overrideProvider(ConfigService)
       .useValue(configService)
-      .overrideProvider(LoggerService)
-      .useValue(logger)
       .overrideProvider(OidcClientService)
       .useValue(oidcClient)
       .overrideProvider(OidcClientConfigService)
@@ -123,16 +106,12 @@ describe('OidcClientController', () => {
       .useValue(coreFcaControllerService)
       .overrideProvider(CoreFcaService)
       .useValue(coreFcaService)
-      .overrideProvider(IdentityProviderAdapterMongoService)
-      .useValue(identityProvider)
       .overrideProvider(SessionService)
       .useValue(sessionService)
       .overrideProvider(TrackingService)
       .useValue(tracking)
       .overrideProvider(CryptographyService)
       .useValue(crypto)
-      .overrideProvider(EmailValidatorService)
-      .useValue(emailValidatorService)
       .overrideProvider(IdentitySanitizer)
       .useValue(sanitizer)
       .overrideProvider(CsrfService)
@@ -198,11 +177,6 @@ describe('OidcClientController', () => {
 
     it('should redirect to selected idp when identityProviderUid is provided', async () => {
       const body = { identityProviderUid: 'idp123' } as any;
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
-      identityProvider.getById.mockResolvedValue({
-        name: 'Idp Name',
-        title: 'Idp Title',
-      });
 
       await controller.postIdentityProviderSelection(
         req as Request,
@@ -324,7 +298,6 @@ describe('OidcClientController', () => {
         get: jest.fn().mockReturnValue(sessionData),
         set: jest.fn(),
       };
-      identityProvider.getFqdnFromEmail.mockReturnValue('fqdn.com');
       tracking.track.mockResolvedValue(undefined);
       oidcClient.getToken.mockResolvedValue({
         accessToken: 'access-token',
