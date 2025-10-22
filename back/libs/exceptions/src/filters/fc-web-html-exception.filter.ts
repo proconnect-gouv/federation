@@ -69,7 +69,7 @@ export class FcWebHtmlExceptionFilter
       ? errorParam.exception.error_description
       : staticDetail;
 
-    // These tow params are used to generate contactHref
+    // These two params are used to generate contactHref
     errorParam.idpName = this.session.get('User', 'idpName');
     errorParam.spName = this.session.get('User', 'spName');
 
