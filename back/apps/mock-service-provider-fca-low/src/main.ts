@@ -5,8 +5,11 @@ import { chain, isObject } from 'lodash';
 import * as path from 'node:path';
 import * as process from 'node:process';
 import * as client from 'openid-client-v6';
+import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici';
 
 import { decrypt } from './decrypt';
+
+setGlobalDispatcher(new EnvHttpProxyAgent());
 
 declare module 'express-session' {
   export interface SessionData {
