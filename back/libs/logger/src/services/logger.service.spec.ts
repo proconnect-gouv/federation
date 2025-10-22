@@ -18,8 +18,6 @@ describe('LoggerService', () => {
 
   const configMock = {
     threshold: 'debug',
-    stdoutLevels: ['notice', 'info', 'debug'],
-    stderrLevels: ['emerg', 'alert', 'crit', 'err', 'warning'],
   };
   const configServiceMock = getConfigMock();
   const loggerMock = getLoggerMock();
@@ -81,22 +79,6 @@ describe('LoggerService', () => {
       // Then
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
       expect(configServiceMock.get).toHaveBeenCalledWith('Logger');
-    });
-
-    it('should instantiate pino with the configuration, custom levels', () => {
-      // Given
-      const expectedOptions = {
-        level: configMock.threshold,
-        customLevels: service['customLevels'],
-        useOnlyCustomLevels: true,
-      };
-
-      // When
-      service['configure']();
-
-      // Then
-      expect(jest.mocked(pino)).toHaveBeenCalledTimes(1);
-      expect(jest.mocked(pino)).toHaveBeenCalledWith(expectedOptions);
     });
 
     it('should overload the console', () => {

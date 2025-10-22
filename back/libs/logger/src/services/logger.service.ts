@@ -99,6 +99,11 @@ export class LoggerService {
       level: threshold,
       customLevels,
       useOnlyCustomLevels: true,
+      formatters: {
+        level(label, number) {
+          return { levelNumber: number, levelLabel: label };
+        },
+      },
     };
 
     this.pino = pino(options);
