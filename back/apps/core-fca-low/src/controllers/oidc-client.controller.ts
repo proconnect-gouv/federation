@@ -20,10 +20,7 @@ import { UserSessionDecorator } from '@fc/core/decorators';
 import { PostIdentityProviderSelectionDto } from '@fc/core/dto/post-identity-provider-selection.dto';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
-import { EmailValidatorService } from '@fc/email-validator/services';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 import { Track, TrackingService } from '@fc/tracking';
@@ -50,16 +47,13 @@ export class OidcClientController {
   constructor(
     private readonly accountService: AccountFcaService,
     private readonly config: ConfigService,
-    private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFcaService: CoreFcaService,
     private readonly coreFcaControllerService: CoreFcaControllerService,
-    private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
     private readonly crypto: CryptographyService,
-    private readonly emailValidatorService: EmailValidatorService,
     private readonly sanitizer: IdentitySanitizer,
     private readonly csrfService: CsrfService,
   ) {}
