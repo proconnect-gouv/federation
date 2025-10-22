@@ -43,13 +43,11 @@ export class CoreFcaControllerService {
     // We are testing the email validity without breaking the flow here
     await this.emailValidatorService.validate(email);
 
-    const { spName } = this.session.get<UserSession>('User');
-
-    this.session.set('User', { rememberMe: rememberMe, idpLoginHint: email });
-
     const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
 
     if (idpsFromEmail.length === 0) {
+      const { spName } = this.session.get<UserSession>('User');
+
       throw new CoreFcaAgentNoIdpException(spName, email);
     }
 
