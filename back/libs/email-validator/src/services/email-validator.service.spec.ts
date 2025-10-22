@@ -98,7 +98,7 @@ describe(EmailValidatorService.name, () => {
       expect(result).toBe(true);
       expect(accountFcaServiceMock.checkEmailExists).not.toHaveBeenCalled();
       expect(resolveMx).not.toHaveBeenCalled();
-      expect(loggerServiceMock.error).not.toHaveBeenCalled();
+      expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
     it('should return true when email exists in FCA account base and not proceed further', async () => {
@@ -122,7 +122,7 @@ describe(EmailValidatorService.name, () => {
       );
       expect(resolveMx).not.toHaveBeenCalled();
       expect(result).toBe(true);
-      expect(loggerServiceMock.error).not.toHaveBeenCalled();
+      expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
     it('should return true when domain is whitelisted and not call resolveMx', async () => {
@@ -155,10 +155,10 @@ describe(EmailValidatorService.name, () => {
       ).toHaveBeenCalledWith(testEmail);
       expect(resolveMx).toHaveBeenCalledWith(testDomain);
       expect(result).toBe(true);
-      expect(loggerServiceMock.error).not.toHaveBeenCalled();
+      expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
-    it('should return false and log an error when MX lookup fails', async () => {
+    it('should return false and log a warn when MX lookup fails', async () => {
       // Given
       (resolveMx as jest.Mock).mockRejectedValue(new Error('NXDOMAIN'));
 
@@ -168,7 +168,7 @@ describe(EmailValidatorService.name, () => {
       // Then
       expect(resolveMx).toHaveBeenCalledWith(testDomain);
       expect(result).toBe(false);
-      expect(loggerServiceMock.error).toHaveBeenCalledWith({
+      expect(loggerServiceMock.warn).toHaveBeenCalledWith({
         code: 'email_not_safe_to_send',
       });
     });

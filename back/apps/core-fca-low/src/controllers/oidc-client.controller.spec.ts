@@ -8,9 +8,12 @@ import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
+import { LoggerService } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import {
   CoreFcaControllerService,
@@ -30,6 +33,7 @@ describe('OidcClientController', () => {
   // Mocks for injected services
   let accountService: any;
   let configService: any;
+  let logger: any;
   let oidcClient: any;
   let oidcClientConfig: any;
   let coreFcaControllerService: any;
@@ -45,6 +49,7 @@ describe('OidcClientController', () => {
       getOrCreateAccount: jest.fn(),
     };
     configService = { get: jest.fn() };
+    logger = getLoggerMock();
     oidcClient = {
       utils: { wellKnownKeys: jest.fn() },
       getToken: jest.fn(),
@@ -83,6 +88,7 @@ describe('OidcClientController', () => {
       providers: [
         AccountFcaService,
         ConfigService,
+        LoggerService,
         OidcClientService,
         OidcClientConfigService,
         CoreFcaControllerService,
@@ -98,6 +104,8 @@ describe('OidcClientController', () => {
       .useValue(accountService)
       .overrideProvider(ConfigService)
       .useValue(configService)
+      .overrideProvider(LoggerService)
+      .useValue(logger)
       .overrideProvider(OidcClientService)
       .useValue(oidcClient)
       .overrideProvider(OidcClientConfigService)
@@ -409,9 +417,7 @@ describe('OidcClientController', () => {
         { email: 'user@example.com', sub: 'sub123' },
         'idp123',
       );
-      expect(tracking.track).toHaveBeenCalledWith('FC_FQDN_MISMATCH', {
-        req,
-      });
+      expect(logger.warn).toHaveBeenCalledWith({ code: 'fqdn_mismatch' });
       expect(userSession.set).toHaveBeenCalledWith({
         amr: 'amr-value',
         idpIdToken: 'id-token',

@@ -21,6 +21,7 @@ import { PostIdentityProviderSelectionDto } from '@fc/core/dto/post-identity-pro
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
+import { LoggerService } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 import { Track, TrackingService } from '@fc/tracking';
@@ -47,6 +48,7 @@ export class OidcClientController {
   constructor(
     private readonly accountService: AccountFcaService,
     private readonly config: ConfigService,
+    private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFcaService: CoreFcaService,
@@ -273,7 +275,7 @@ export class OidcClientController {
     );
 
     if (!isAllowedIdpForEmail) {
-      await this.tracking.track(TrackedEvent.FC_FQDN_MISMATCH, { req });
+      this.logger.warn({ code: 'fqdn_mismatch' });
     }
 
     await this.tracking.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO, { req });

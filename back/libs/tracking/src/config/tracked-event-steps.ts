@@ -11,7 +11,6 @@ export const trackedEventSteps: Record<TrackedEvent, string> = {
   IDP_CALLEDBACK: '4.0.0',
   FC_REQUESTED_IDP_TOKEN: '4.1.0',
   FC_REQUESTED_IDP_USERINFO: '4.2.0',
-  FC_FQDN_MISMATCH: '4.3.0',
   FC_VERIFIED: '5.0.0',
   FC_IDP_DISABLED: '5.1.0',
   FC_REDIRECTED_TO_SP: '7.0.0',
