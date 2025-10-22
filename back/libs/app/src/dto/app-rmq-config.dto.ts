@@ -1,12 +1,6 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
-
-import { Environment } from '../enums';
+import { IsString } from 'class-validator';
 
 export class AppRmqConfig {
   @IsString()
   readonly name: string;
-
-  @IsOptional()
-  @IsEnum(Environment)
-  environment?: Environment;
 }

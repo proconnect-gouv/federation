@@ -15,7 +15,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | Broker_QUEUE | string |
@@ -40,7 +39,6 @@
 | App_DEFAULT_EMAIL_RENATER | string |
 | App_DEFAULT_IDP_UID | string |
 | App_DSFR_ASSETS_PATHS | json |
-| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_SP_AUTHORIZED_FQDNS_CONFIGS | json |
@@ -80,7 +78,6 @@
 | Var Name | Inferred type |
 |---|---|
 | APP_NAME | string |
-| App_ENVIRONMENT | string |
 | Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 | RieBroker_QUEUE | string |

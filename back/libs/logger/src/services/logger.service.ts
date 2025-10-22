@@ -2,8 +2,6 @@ import pino, { Logger } from 'pino';
 
 import { Inject, Injectable } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app/dto';
-import { Environment } from '@fc/app/enums';
 import { ConfigService } from '@fc/config';
 
 import { LoggerConfig } from '../dto';
@@ -90,15 +88,7 @@ export class LoggerService {
   [LogLevels.DEBUG](msg: string, ...args: unknown[]);
   [LogLevels.DEBUG](obj: unknown, msg?: string, ...args: unknown[]);
   [LogLevels.DEBUG](obj: unknown, msg?: string, ...args: unknown[]): void {
-    const { environment } = this.config.get<AppConfig>('App');
-    const isDebugAllowed = [
-      Environment.DEVELOPMENT,
-      Environment.INTEGRATION,
-    ].includes(environment);
-
-    if (isDebugAllowed) {
-      this.logWithContext(LogLevels.DEBUG, obj, msg, ...args);
-    }
+    this.logWithContext(LogLevels.DEBUG, obj, msg, ...args);
   }
 
   private logWithContext(level: LogLevels, ...args: unknown[]): void {

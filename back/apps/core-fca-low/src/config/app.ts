@@ -26,7 +26,6 @@ export default {
     frameAncestors: env.json('CSP_FRAME_ANCESTORS'),
     imgSrc: env.json('CSP_IMG_SRC'),
   },
-  environment: env.string('ENVIRONMENT'),
   defaultRedirectUri: 'https://www.proconnect.gouv.fr',
   supportEmail: 'support+federation@proconnect.gouv.fr',
   passeDroitEmailSuffix: '+proconnect',
