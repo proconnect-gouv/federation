@@ -35,7 +35,7 @@ export class EmailValidatorService {
 
       const isEmailValid = await this.isEmailDomainValid(email);
       if (!isEmailValid) {
-        this.logger.error({ code: 'email_not_safe_to_send' });
+        this.logger.warn({ code: 'email_not_safe_to_send' });
       }
 
       return isEmailValid;
