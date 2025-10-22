@@ -118,8 +118,8 @@ describe('CsvService', () => {
         DtoMock,
         VALIDATOR_OPTIONS,
       );
-      expect(loggerServiceMock.warning).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.warning).toHaveBeenCalledWith(
+      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.warn).toHaveBeenCalledWith(
         '"row n°1" was excluded from the result at DTO validation :[\n  {}\n]',
       );
     });
@@ -132,7 +132,7 @@ describe('CsvService', () => {
         service['pickData']([inputMock]),
         // Assert
       ).rejects.toThrow(errorMock);
-      expect(loggerServiceMock.warning).toHaveBeenCalledTimes(0);
+      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(0);
     });
   });
 

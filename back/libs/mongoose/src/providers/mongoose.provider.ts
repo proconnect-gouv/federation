@@ -40,7 +40,7 @@ export class MongooseProvider {
 
     connection.$initialConnection = connection.$initialConnection.catch(
       (error) => {
-        logger.emerg(error, 'Invalid Mongodb Connection, exiting app');
+        logger.fatal(error, 'Invalid Mongodb Connection, exiting app');
         process.exit(1);
       },
     );

@@ -25,7 +25,7 @@ export class HttpProxyService {
 
     void bootstrap();
 
-    this.logger.notice(
+    this.logger.info(
       `Set up HTTPS proxy to: ${globalThis['GLOBAL_AGENT'].HTTPS_PROXY}`,
     );
 

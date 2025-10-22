@@ -115,7 +115,7 @@ export class IdentitySanitizer {
     if (validationErrors.length > 0) {
       const identityProvider = await this.identityProvider.getById(idpId);
 
-      this.logger.alert({
+      this.logger.error({
         msg: `Identity from "${idpId}" is invalid`,
         validationErrors: validationErrors,
       });

@@ -160,7 +160,7 @@ export class OidcClientUtilsService {
         exception.http_status_code = 400;
         throw exception;
       } else {
-        this.logger.err(error.stack);
+        this.logger.error(error.stack);
         this.logger.debug({
           client: { ...client, client_secret: '***' },
           receivedParams,
@@ -264,7 +264,7 @@ export class OidcClientUtilsService {
         require_protocol: true,
       });
     } catch (error) {
-      this.logger.err({ error });
+      this.logger.error({ error });
       return false;
     }
   }

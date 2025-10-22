@@ -118,7 +118,7 @@ export class CoreFcaMiddlewareService {
    */
   protected overrideAuthorizePrompt(ctx: OidcCtx): void {
     if (!['POST', 'GET'].includes(ctx.method)) {
-      this.logger.warning(`Unsupported method "${ctx.method}".`);
+      this.logger.warn(`Unsupported method "${ctx.method}".`);
       return;
     }
 

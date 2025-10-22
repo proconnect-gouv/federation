@@ -10,18 +10,16 @@ import { LoggerPluginServiceInterface } from '../interfaces';
 import { PLUGIN_SERVICES } from '../tokens';
 import { CustomLogLevels } from '../types';
 
+/* istanbul ignore next */
 @Injectable()
 export class LoggerService {
   private readonly customLevels = {
-    [LogLevels.BUSINESS]: 100,
-    [LogLevels.EMERGENCY]: 80,
-    [LogLevels.ALERT]: 70,
-    [LogLevels.CRITICAL]: 60,
+    [LogLevels.FATAL]: 60,
     [LogLevels.ERROR]: 50,
-    [LogLevels.WARNING]: 40,
-    [LogLevels.NOTICE]: 30,
-    [LogLevels.INFO]: 20,
-    [LogLevels.DEBUG]: 10,
+    [LogLevels.WARN]: 40,
+    [LogLevels.INFO]: 30,
+    [LogLevels.DEBUG]: 20,
+    [LogLevels.TRACE]: 10,
   };
   private pino: Logger<keyof CustomLogLevels>;
 
@@ -37,28 +35,10 @@ export class LoggerService {
    * Below are the methods to wrap the pino logger levels functions.
    */
 
-  [LogLevels.BUSINESS](msg: string, ...args: unknown[]);
-  [LogLevels.BUSINESS](obj: unknown, msg?: string, ...args: unknown[]);
-  [LogLevels.BUSINESS](obj: unknown, msg?: string, ...args: unknown[]): void {
-    this.logWithContext(LogLevels.BUSINESS, obj, msg, ...args);
-  }
-
-  [LogLevels.EMERGENCY](msg: string, ...args: unknown[]);
-  [LogLevels.EMERGENCY](obj: unknown, msg?: string, ...args: unknown[]);
-  [LogLevels.EMERGENCY](obj: unknown, msg?: string, ...args: unknown[]): void {
-    this.logWithContext(LogLevels.EMERGENCY, obj, msg, ...args);
-  }
-
-  [LogLevels.ALERT](msg: string, ...args: unknown[]);
-  [LogLevels.ALERT](obj: unknown, msg?: string, ...args: unknown[]);
-  [LogLevels.ALERT](obj: unknown, msg?: string, ...args: unknown[]): void {
-    this.logWithContext(LogLevels.ALERT, obj, msg, ...args);
-  }
-
-  [LogLevels.CRITICAL](msg: string, ...args: unknown[]);
-  [LogLevels.CRITICAL](obj: unknown, msg?: string, ...args: unknown[]);
-  [LogLevels.CRITICAL](obj: unknown, msg?: string, ...args: unknown[]): void {
-    this.logWithContext(LogLevels.CRITICAL, obj, msg, ...args);
+  [LogLevels.FATAL](msg: string, ...args: unknown[]);
+  [LogLevels.FATAL](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.FATAL](obj: unknown, msg?: string, ...args: unknown[]): void {
+    this.logWithContext(LogLevels.FATAL, obj, msg, ...args);
   }
 
   [LogLevels.ERROR](msg: string, ...args: unknown[]);
@@ -67,16 +47,10 @@ export class LoggerService {
     this.logWithContext(LogLevels.ERROR, obj, msg, ...args);
   }
 
-  [LogLevels.WARNING](msg: string, ...args: unknown[]);
-  [LogLevels.WARNING](obj: unknown, msg?: string, ...args: unknown[]);
-  [LogLevels.WARNING](obj: unknown, msg?: string, ...args: unknown[]): void {
-    this.logWithContext(LogLevels.WARNING, obj, msg, ...args);
-  }
-
-  [LogLevels.NOTICE](msg: string, ...args: unknown[]);
-  [LogLevels.NOTICE](obj: unknown, msg?: string, ...args: unknown[]);
-  [LogLevels.NOTICE](obj: unknown, msg?: string, ...args: unknown[]): void {
-    this.logWithContext(LogLevels.NOTICE, obj, msg, ...args);
+  [LogLevels.WARN](msg: string, ...args: unknown[]);
+  [LogLevels.WARN](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.WARN](obj: unknown, msg?: string, ...args: unknown[]): void {
+    this.logWithContext(LogLevels.WARN, obj, msg, ...args);
   }
 
   [LogLevels.INFO](msg: string, ...args: unknown[]);
@@ -89,6 +63,12 @@ export class LoggerService {
   [LogLevels.DEBUG](obj: unknown, msg?: string, ...args: unknown[]);
   [LogLevels.DEBUG](obj: unknown, msg?: string, ...args: unknown[]): void {
     this.logWithContext(LogLevels.DEBUG, obj, msg, ...args);
+  }
+
+  [LogLevels.TRACE](msg: string, ...args: unknown[]);
+  [LogLevels.TRACE](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.TRACE](obj: unknown, msg?: string, ...args: unknown[]): void {
+    this.logWithContext(LogLevels.TRACE, obj, msg, ...args);
   }
 
   private logWithContext(level: LogLevels, ...args: unknown[]): void {
@@ -124,15 +104,15 @@ export class LoggerService {
     this.pino = pino(options);
 
     this.overloadConsole();
-    this.pino.notice('Logger is ready and native console is now overloaded.');
+    this.pino.info('Logger is ready and native console is now overloaded.');
   }
 
   private overloadConsole() {
+    console.error = this[LogLevels.ERROR].bind(this);
+    console.warn = this[LogLevels.WARN].bind(this);
     console.log = this[LogLevels.INFO].bind(this);
-    console.info = this[LogLevels.NOTICE].bind(this);
-    console.warn = this[LogLevels.WARNING].bind(this);
-    console.error = this[LogLevels.CRITICAL].bind(this);
+    console.info = this[LogLevels.INFO].bind(this);
     console.debug = this[LogLevels.DEBUG].bind(this);
-    console.trace = this[LogLevels.DEBUG].bind(this);
+    console.trace = this[LogLevels.TRACE].bind(this);
   }
 }

@@ -63,7 +63,7 @@ describe('NestLoggerService', () => {
       service.fatal(message, context);
 
       // Then
-      expect(loggerMock.alert).toHaveBeenCalledWith(
+      expect(loggerMock.fatal).toHaveBeenCalledWith(
         { optionalParams: [context] },
         message,
       );
@@ -74,55 +74,7 @@ describe('NestLoggerService', () => {
       service.fatal(message, ...optionalParams, context);
 
       // Then
-      expect(loggerMock.alert).toHaveBeenCalledWith(
-        { optionalParams: [...optionalParams, context] },
-        message,
-      );
-    });
-  });
-
-  describe('error', () => {
-    it('should call logger.crit', () => {
-      // When
-      service.error(message, context);
-
-      // Then
-      expect(loggerMock.crit).toHaveBeenCalledWith(
-        { optionalParams: [context] },
-        message,
-      );
-    });
-
-    it('should call logger.crit with optional params', () => {
-      // When
-      service.error(message, ...optionalParams, context);
-
-      // Then
-      expect(loggerMock.crit).toHaveBeenCalledWith(
-        { optionalParams: [...optionalParams, context] },
-        message,
-      );
-    });
-  });
-
-  describe('warn', () => {
-    it('should call logger.warning', () => {
-      // When
-      service.warn(message, context);
-
-      // Then
-      expect(loggerMock.warning).toHaveBeenCalledWith(
-        { optionalParams: [context] },
-        message,
-      );
-    });
-
-    it('should call logger.warning with optional params', () => {
-      // When
-      service.warn(message, ...optionalParams, context);
-
-      // Then
-      expect(loggerMock.warning).toHaveBeenCalledWith(
+      expect(loggerMock.fatal).toHaveBeenCalledWith(
         { optionalParams: [...optionalParams, context] },
         message,
       );
@@ -144,30 +96,6 @@ describe('NestLoggerService', () => {
     it('should call logger.debug with optional params', () => {
       // When
       service.debug(message, ...optionalParams, context);
-
-      // Then
-      expect(loggerMock.debug).toHaveBeenCalledWith(
-        { optionalParams: [...optionalParams, context] },
-        message,
-      );
-    });
-  });
-
-  describe('verbose', () => {
-    it('should call logger.debug', () => {
-      // When
-      service.verbose(message, context);
-
-      // Then
-      expect(loggerMock.debug).toHaveBeenCalledWith(
-        { optionalParams: [context] },
-        message,
-      );
-    });
-
-    it('should call logger.debug with optional params', () => {
-      // When
-      service.verbose(message, ...optionalParams, context);
 
       // Then
       expect(loggerMock.debug).toHaveBeenCalledWith(

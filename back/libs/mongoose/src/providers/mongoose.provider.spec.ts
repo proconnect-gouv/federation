@@ -101,8 +101,8 @@ describe('MongooseService', () => {
       catchFn(error);
 
       // Then
-      expect(loggerMock.emerg).toHaveBeenCalledTimes(1);
-      expect(loggerMock.emerg).toHaveBeenCalledWith(
+      expect(loggerMock.fatal).toHaveBeenCalledTimes(1);
+      expect(loggerMock.fatal).toHaveBeenCalledWith(
         error,
         'Invalid Mongodb Connection, exiting app',
       );

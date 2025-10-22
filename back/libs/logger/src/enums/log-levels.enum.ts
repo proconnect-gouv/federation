@@ -1,11 +1,8 @@
 export enum LogLevels {
-  BUSINESS = 'business',
-  EMERGENCY = 'emerg',
-  ALERT = 'alert',
-  CRITICAL = 'crit',
-  ERROR = 'err',
-  WARNING = 'warning',
-  NOTICE = 'notice',
+  FATAL = 'fatal',
+  ERROR = 'error',
+  WARN = 'warn',
   INFO = 'info',
   DEBUG = 'debug',
+  TRACE = 'trace',
 }

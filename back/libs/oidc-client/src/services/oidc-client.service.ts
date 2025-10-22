@@ -65,7 +65,7 @@ export class OidcClientService {
     const tokenValidationErrors = await validate(tokenResult as object);
 
     if (tokenValidationErrors.length) {
-      this.logger.alert({
+      this.logger.error({
         msg: 'token validation error',
         validationErrors: tokenValidationErrors,
       });

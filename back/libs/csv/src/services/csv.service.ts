@@ -33,7 +33,7 @@ export class CsvService<T> implements RepositoryInterface<T> {
       );
       if (errors.length) {
         const message = JSON.stringify(errors, null, 2);
-        this.logger.warning(
+        this.logger.warn(
           `"row n°${
             i + 1
           }" was excluded from the result at DTO validation :${message}`,

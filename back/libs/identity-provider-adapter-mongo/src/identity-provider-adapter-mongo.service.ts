@@ -94,7 +94,7 @@ export class IdentityProviderAdapterMongoService
       });
 
       if (errors.length > 0) {
-        this.logger.alert({
+        this.logger.error({
           msg: `Identity provider "${rawIdentityProvider?.name}" (${rawIdentityProvider?.uid}) was excluded at DTO validation`,
           validationErrors: errors,
         });

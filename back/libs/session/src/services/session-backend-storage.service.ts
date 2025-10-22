@@ -57,7 +57,7 @@ export class SessionBackendStorageService {
     });
 
     if (errors.length > 0) {
-      this.logger.alert({
+      this.logger.error({
         msg: 'SessionBackendStorageService:validate() Invalid session data from Redis.',
         validationErrors: errors,
       });

@@ -51,7 +51,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
       statusCode: exception.http_status_code,
     };
 
-    this.logger.err(exceptionObject);
+    this.logger.error(exceptionObject);
   }
 
   // eslint-disable-next-line complexity
