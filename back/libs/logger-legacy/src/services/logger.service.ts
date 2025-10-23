@@ -4,6 +4,10 @@ import { v4 as uuidV4 } from 'uuid';
 import { Injectable, ShutdownSignal } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
+import {
+  LoggerConfig as MainLoggerConfig,
+  LoggerService as MainLoggerService,
+} from '@fc/logger';
 import { LoggerConfig as LoggerLegacyConfig } from '@fc/logger-legacy/dto';
 
 @Injectable()
@@ -12,22 +16,22 @@ export class LoggerService {
 
   constructor(private readonly config: ConfigService) {
     const { path } = this.config.get<LoggerLegacyConfig>('LoggerLegacy');
+    const { threshold } = this.config.get<MainLoggerConfig>('Logger');
 
     const stream = pino.destination(path);
 
-    this.logger = pino(
-      {
-        formatters: {
-          /**
-           * Formatter for pino library
-           * @see https://github.com/pinojs/pino/blob/master/docs/api.md#formatters-object
-           */
-          level: (label, _number) => ({ level: label }),
+    const options = {
+      level: threshold,
+      customLevels: MainLoggerService.customLevels,
+      useOnlyCustomLevels: true,
+      formatters: {
+        level(label, number) {
+          return { levelNumber: number, level: label };
         },
-        level: 'info',
       },
-      stream,
-    );
+    };
+
+    this.logger = pino(options, stream);
 
     process.on(ShutdownSignal.SIGUSR2, () => {
       // Keep warnings here, this log must not be in business logs

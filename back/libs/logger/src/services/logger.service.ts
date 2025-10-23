@@ -13,7 +13,9 @@ import { CustomLogLevels } from '../types';
 /* istanbul ignore next */
 @Injectable()
 export class LoggerService {
-  private readonly customLevels = {
+  // These levels are pino's default.
+  // This could be deleted in a near future.
+  static readonly customLevels = {
     [LogLevels.FATAL]: 60,
     [LogLevels.ERROR]: 50,
     [LogLevels.WARN]: 40,
@@ -93,7 +95,7 @@ export class LoggerService {
 
   private configure() {
     const { threshold } = this.config.get<LoggerConfig>('Logger');
-    const customLevels = this.customLevels;
+    const customLevels = LoggerService.customLevels;
 
     const options = {
       level: threshold,
@@ -101,7 +103,7 @@ export class LoggerService {
       useOnlyCustomLevels: true,
       formatters: {
         level(label, number) {
-          return { levelNumber: number, levelLabel: label };
+          return { levelNumber: number, level: label };
         },
       },
     };

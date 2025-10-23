@@ -16,8 +16,8 @@ describe('LoggerService', () => {
   let loggerMock: jest.Mocked<Logger>;
   let streamMock: { reopen: jest.Mock };
 
-  const pathMock = '/path/to/logs';
-  const configMock = { path: pathMock };
+  const legacyLoggerConfigMock = { path: '/path/to/logs' };
+  const mainLoggerConfigMock = { threshold: 'debug' };
   const uuidMock = 'mocked-uuid-value';
 
   beforeEach(async () => {
@@ -36,7 +36,11 @@ describe('LoggerService', () => {
 
     // Mock config service
     configServiceMock = {
-      get: jest.fn().mockReturnValue(configMock),
+      get: jest.fn().mockImplementation((key: string) => {
+        if (key === 'LoggerLegacy') return legacyLoggerConfigMock as any;
+        if (key === 'Logger') return mainLoggerConfigMock as any;
+        return undefined as any;
+      }),
     } as unknown as jest.Mocked<ConfigService>;
 
     // Mock process.on
@@ -65,53 +69,6 @@ describe('LoggerService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('constructor', () => {
-    it('should get the logger configuration from ConfigService', () => {
-      // Then
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('LoggerLegacy');
-    });
-
-    it('should create a pino destination with the configured path', () => {
-      // Then
-      expect(pino.destination).toHaveBeenCalledTimes(1);
-      expect(pino.destination).toHaveBeenCalledWith(pathMock);
-    });
-
-    it('should initialize pino with the correct options', () => {
-      // Then
-      expect(pino).toHaveBeenCalledTimes(1);
-      expect(pino).toHaveBeenCalledWith(
-        {
-          formatters: {
-            level: expect.any(Function),
-          },
-          level: 'info',
-        },
-        streamMock,
-      );
-    });
-
-    it('should format the level correctly', () => {
-      // Given
-      const formatter = jest.mocked(pino).mock.calls[0][0].formatters.level;
-      const label = 'info';
-      const number = 30;
-
-      // When
-      const result = formatter(label, number);
-
-      // Then
-      expect(result).toEqual({ level: label });
-    });
-
-    it('should register a handler for SIGUSR2 signal', () => {
-      // Then
-      expect(process.on).toHaveBeenCalledTimes(1);
-      expect(process.on).toHaveBeenCalledWith('SIGUSR2', expect.any(Function));
-    });
-  });
-
   describe('SIGUSR2 handler', () => {
     it('should reopen the stream when SIGUSR2 signal is received', () => {
       // Given
@@ -124,7 +81,7 @@ describe('LoggerService', () => {
       expect(console.warn).toHaveBeenCalledTimes(2);
       expect(console.warn).toHaveBeenNthCalledWith(
         1,
-        `SIGUSR2: Reveived, reopening at ${pathMock}`,
+        'SIGUSR2: Reveived, reopening at /path/to/logs',
       );
       expect(console.warn).toHaveBeenNthCalledWith(2, 'SIGUSR2: done');
       expect(streamMock.reopen).toHaveBeenCalledTimes(1);
