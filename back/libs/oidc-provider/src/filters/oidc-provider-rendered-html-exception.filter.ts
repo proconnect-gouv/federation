@@ -22,6 +22,9 @@ const NOT_REDIRECTABLE_ERROR_DESCRIPTIONS = [
   /unrecognized route or not allowed method .+/,
 ];
 
+/**
+ * @deprecated this should be replaced by oidc-provider error handling.
+ */
 @Catch(OidcProviderBaseRenderedException)
 @Injectable()
 export class OidcProviderRenderedHtmlExceptionFilter

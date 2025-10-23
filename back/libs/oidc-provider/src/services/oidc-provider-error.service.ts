@@ -44,6 +44,7 @@ export class OidcProviderErrorService {
   }
 
   /**
+   * @deprecated this should render a simple error page
    *
    * @param {KoaContextWithOIDC} ctx Koa's `ctx` object
    * @param {string} out output body, we won't use it here.
