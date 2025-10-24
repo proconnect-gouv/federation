@@ -4,10 +4,9 @@ import {
   IsOptional,
   IsString,
   Length,
-  Matches,
 } from 'class-validator';
 
-const URL_REGEX = /^https?:\/\/[^/].+$/;
+import { IsUrlExtended } from '@fc/common/validators/is-url-extended.validator';
 
 /**
  * Control parameters on the authentication request.
@@ -45,7 +44,7 @@ export class AuthorizeParamsDto {
   @IsString()
   readonly state: string;
 
-  @Matches(URL_REGEX)
+  @IsUrlExtended()
   readonly redirect_uri: string;
 
   // The openid verification is made into oidc-provider

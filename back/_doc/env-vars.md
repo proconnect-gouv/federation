@@ -28,6 +28,7 @@
 |---|---|
 | AdapterMongo_CLIENT_SECRET_CIPHER_PASS | string |
 | AdapterMongo_DECRYPT_CLIENT_SECRET_FEATURE | boolean |
+| App_ALLOW_INSECURE_URLS | boolean |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_CSP_CONNECT_SRC | json |

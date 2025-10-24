@@ -1,5 +1,6 @@
 import { Platform } from '../utils/instance.enum';
 import { IConfig } from '../interfaces';
+import { parseBoolean } from '../utils/transforms';
 
 export default {
   appName: process.env.APP_NAME || 'FC_EXPLOITATION',
@@ -19,4 +20,5 @@ export default {
   userTokenExpiresIn: 2880,
   userAuthenticationMaxAttempt: 4,
   instanceFor: process.env.IDP_CORE_INSTANCE || Platform.FCA_LOW,
+  allowInsecureUrls: parseBoolean(process.env.ALLOW_INSECURE_URLS),
 } as IConfig;
