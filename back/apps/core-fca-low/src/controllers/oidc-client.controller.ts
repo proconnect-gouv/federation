@@ -63,6 +63,7 @@ export class OidcClientController {
   @Get(Routes.IDENTITY_PROVIDER_SELECTION)
   @Header('cache-control', 'no-store')
   @AuthorizeStepFrom([
+    Routes.INTERACTION, // login_hint flow
     Routes.REDIRECT_TO_IDP, // Standard flow
     Routes.IDENTITY_PROVIDER_SELECTION, // Navigation back
   ])
