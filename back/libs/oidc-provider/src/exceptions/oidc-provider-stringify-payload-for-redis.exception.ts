@@ -1,7 +1,7 @@
 import { ErrorCode } from '../enums';
-import { OidcProviderBaseRenderedException } from './oidc-provider-base-rendered.exception';
+import { OidcProviderBaseException } from './oidc-provider-base.exception';
 
-export class OidcProviderStringifyPayloadForRedisException extends OidcProviderBaseRenderedException {
+export class OidcProviderStringifyPayloadForRedisException extends OidcProviderBaseException {
   public code = ErrorCode.STRINGIFY_FOR_REDIS;
   public documentation =
     "Une erreur est survenue lors de l'enregistrement de données dans la session de l'utilisateur. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";

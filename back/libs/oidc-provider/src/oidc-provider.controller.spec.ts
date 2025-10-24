@@ -1,75 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from '@fc/logger';
-import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
-
-import { getLoggerMock } from '@mocks/logger';
-
 import {
   AuthorizeParamsDto,
   LogoutParamsDto,
   RevocationTokenParamsDTO,
 } from './dto';
-import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 import { OidcProviderController } from './oidc-provider.controller';
-import { OidcProviderService } from './oidc-provider.service';
-import { OidcProviderConfigAppService } from './services';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
 
-  const loggerMock = getLoggerMock();
-
-  const providerMock = {
-    interactionDetails: jest.fn(),
-  };
-
-  const oidcProviderServiceMock = {
-    getProvider: () => providerMock,
-    wellKnownKeys: jest.fn(),
-    decodeAuthorizationHeader: jest.fn(),
-  };
-
-  const serviceProviderServiceMock = {
-    isActive: jest.fn(),
-  };
-
-  const oidcProviderConfigAppMock = {
-    finishInteraction: jest.fn(),
-  };
-
-  const jsonExceptionFilterMock = {
-    catch: jest.fn(),
-  };
-
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [OidcProviderController],
-      providers: [
-        OidcProviderService,
-        {
-          provide: SERVICE_PROVIDER_SERVICE_TOKEN,
-          useValue: serviceProviderServiceMock,
-        },
-        OidcProviderConfigAppService,
-        LoggerService,
-      ],
-    })
-      .overrideFilter(OidcProviderRenderedJsonExceptionFilter)
-      .useValue(jsonExceptionFilterMock)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProviderServiceMock)
-      .overrideProvider(OidcProviderConfigAppService)
-      .useValue(oidcProviderConfigAppMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerMock)
-      .compile();
+      providers: [],
+    }).compile();
 
     oidcProviderController = app.get<OidcProviderController>(
       OidcProviderController,
     );
-
-    serviceProviderServiceMock.isActive.mockResolvedValue(true);
 
     jest.resetAllMocks();
   });

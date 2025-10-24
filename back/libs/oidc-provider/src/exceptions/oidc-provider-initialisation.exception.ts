@@ -1,7 +1,7 @@
 import { ErrorCode } from '../enums';
-import { OidcProviderBaseRenderedException } from './oidc-provider-base-rendered.exception';
+import { OidcProviderBaseException } from './oidc-provider-base.exception';
 
-export class OidcProviderInitialisationException extends OidcProviderBaseRenderedException {
+export class OidcProviderInitialisationException extends OidcProviderBaseException {
   public code = ErrorCode.INIT_PROVIDER;
   public documentation =
     "Problème lors de l'initialisation de la plateforme lié au wrapper oidc-provider. La plateforme ne fonctionne pas, contacter en urgence le support N3.";
