@@ -6,7 +6,6 @@ import onProxy from 'cypress-on-fix';
 
 import { log, table } from './console-log-plugin';
 import { createHexaHash } from './crypto-plugin';
-import { getFixturePath } from './fixture-plugin';
 import { getJwtContent } from './jwt-plugin';
 import {
   clearBusinessLog,
@@ -28,7 +27,6 @@ const pluginConfig = async (
     clearBusinessLog,
     createHexaHash,
     getBusinessLogs,
-    getFixturePath,
     getJwtContent,
     getTotp,
     hasBusinessLog,

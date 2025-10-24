@@ -4,29 +4,14 @@ import {
   addFCBasicAuthorization,
   clearBusinessLog,
   forceSameSiteNone,
+  getEnv,
   isUsingFCBasicAuthorization,
 } from '../helpers';
 import { Environment } from '../types';
 
-const setFixtureContext = (
-  fixture: string,
-  pathArray: string[],
-  contextName: string,
-): void => {
-  cy.task('getFixturePath', { fixture, pathArray }).then(
-    (fixturePath: string) => {
-      cy.log(fixturePath);
-      cy.fixture(fixturePath).as(contextName);
-    },
-  );
-};
-
 Before(function () {
   // Load environment config and test data
   const testEnv: string = Cypress.env('TEST_ENV');
-  const pathArray = ['fca-low', testEnv];
-  setFixtureContext('environment.json', pathArray, 'env');
-  setFixtureContext('api-common.json', pathArray, 'apiRequests');
 
   // Setup interceptions to add basic authorization header on FC requests
   if (isUsingFCBasicAuthorization()) {
@@ -69,9 +54,8 @@ Before({ tags: '@ignoreInteg01' }, function () {
 Before({ tags: '@validationVisuelle' }, function () {
   // Clear the localstorage before each visual test
   // @link: https://github.com/cypress-io/cypress/issues/2573
-  cy.get<Environment>('@env').then((env) => {
-    cy.visit(env.federationRootUrl, { failOnStatusCode: false }).then((win) => {
-      win.localStorage.clear();
-    });
+  const { federationRootUrl } = getEnv();
+  cy.visit(federationRootUrl, { failOnStatusCode: false }).then((win) => {
+    win.localStorage.clear();
   });
 });

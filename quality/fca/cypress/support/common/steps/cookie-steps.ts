@@ -3,6 +3,7 @@ import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import {
   checkCookieExists,
   getCookieFromUrl,
+  getEnv,
   setUnknowSessionIdInSessionCookie,
 } from '../helpers';
 
@@ -10,7 +11,7 @@ Then(
   /^le cookie "([^"]+)" est (présent|absent|supprimé)$/,
   function (cookieName: string, text: string) {
     const existNotExist = text === 'présent' ? 'exist' : 'not.exist';
-    const { federationRootUrl } = this.env;
+    const { federationRootUrl } = getEnv();
     getCookieFromUrl(cookieName, federationRootUrl).should(existNotExist);
   },
 );
@@ -18,7 +19,7 @@ Then(
 When(
   /^je mémorise la valeur du cookie "([^"]+)"$/,
   function (cookieName: string) {
-    const { federationRootUrl } = this.env;
+    const { federationRootUrl } = getEnv();
     getCookieFromUrl(cookieName, federationRootUrl)
       .should('exist')
       .as(`cookie:${cookieName}`);
@@ -28,7 +29,7 @@ When(
 Then(
   /^la valeur du cookie "([^"]+)" est (identique|différente)$/,
   function (cookieName: string, text: string) {
-    const { federationRootUrl } = this.env;
+    const { federationRootUrl } = getEnv();
     const equalNotEqual = text === 'identique' ? 'equal' : 'not.equal';
     cy.get<Cypress.Cookie>(`@cookie:${cookieName}`).then((previousCookie) => {
       expect(previousCookie).to.exist;
@@ -49,7 +50,7 @@ Given('je supprime tous les cookies', function () {
 Then(
   /^les cookies ProConnect (docker|integ01) sont présents$/,
   function (env: string) {
-    const { federationRootUrl, name } = this.env;
+    const { federationRootUrl, name } = getEnv();
     const url = new URL(federationRootUrl);
     const domain = url.hostname;
 
@@ -75,13 +76,13 @@ Then(
 When(
   'je force un sessionId inexistant dans le cookie de session AgentConnect',
   function () {
-    const { federationRootUrl } = this.env;
+    const { federationRootUrl } = getEnv();
     setUnknowSessionIdInSessionCookie(federationRootUrl);
   },
 );
 
 Given('je supprime les cookies AgentConnect', function () {
-  const { federationRootUrl } = this.env;
+  const { federationRootUrl } = getEnv();
   const url = new URL(federationRootUrl);
   const domain = url.hostname;
   cy.clearCookies({ domain });

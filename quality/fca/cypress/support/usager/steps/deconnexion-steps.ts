@@ -1,12 +1,12 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
-import { getIdentityProviderByDescription } from '../../common/helpers';
+import { getEnv, getIdentityProviderByDescription } from '../../common/helpers';
 
 When(
   /je clique sur le bouton de déconnexion et j'enregistre la réponse de ProConnect et du FI "([^"]*)"/,
   function (description: string) {
     const { url: idpUrl } = getIdentityProviderByDescription(description);
-    const { federationRootUrl } = this.env;
+    const { federationRootUrl } = getEnv();
 
     cy.intercept(`${idpUrl}/session/end*`).as('idp:sessionEnd');
     cy.intercept(`${federationRootUrl}/api/v2/client/logout-callback*`).as(

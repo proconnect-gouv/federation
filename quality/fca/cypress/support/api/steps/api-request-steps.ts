@@ -1,5 +1,7 @@
 import { Given, When } from '@badeball/cypress-cucumber-preprocessor';
 
+import { getApiRequests } from '../../common/helpers';
+
 /**
  * Request Steps
  *
@@ -9,7 +11,7 @@ import { Given, When } from '@badeball/cypress-cucumber-preprocessor';
  */
 
 Given('je prépare une requête {string}', function (requestKey: string) {
-  this.apiRequest = this.apiRequests[requestKey];
+  this.apiRequest = getApiRequests(requestKey);
   expect(this.apiRequest).to.exist;
 });
 
