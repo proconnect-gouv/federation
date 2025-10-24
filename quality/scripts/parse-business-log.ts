@@ -101,10 +101,8 @@ const getDifferences = (
   source: LogEvent,
 ): [string, string][] => {
   const REG_EXP_PREFIX = 'RegExp:';
-  const isRegExpPattern = (value) =>
-    typeof value === 'string' && value.startsWith(REG_EXP_PREFIX);
   const assertions = Object.entries(test).filter(([key, value]) => {
-    if (isRegExpPattern(value)) {
+    if (typeof value === 'string' && value.startsWith(REG_EXP_PREFIX)) {
       const regExp = new RegExp(value.replace(REG_EXP_PREFIX, ''));
       return !regExp.test(source[key]);
     }
