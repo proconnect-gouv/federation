@@ -67,14 +67,11 @@ export class CoreFcaControllerService {
     res: Response,
     idpId: string,
   ): Promise<void> {
-    const { spId, idpLoginHint, login_hint, spName, rememberMe } =
+    const { spId, idpLoginHint, spName, rememberMe } =
       this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
-    this.coreFcaService.ensureEmailIsAuthorizedForSp(
-      spId,
-      idpLoginHint || login_hint,
-    );
+    this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, idpLoginHint);
 
     const selectedIdp =
       await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
@@ -93,7 +90,7 @@ export class CoreFcaControllerService {
           acr: null,
         },
       },
-      login_hint: idpLoginHint || login_hint,
+      login_hint: idpLoginHint,
       sp_id: spId,
       sp_name: spName,
       remember_me: rememberMe,
