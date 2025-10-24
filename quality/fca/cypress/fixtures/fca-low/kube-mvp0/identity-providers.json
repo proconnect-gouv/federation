@@ -1,0 +1,26 @@
+[
+  {
+    "id": "moncomptepro",
+    "descriptions": ["moncomptepro"],
+    "title": "MonComptePro Identity Provider",
+    "url": "",
+    "signature": "HS256",
+    "fqdn": "moncomptepro.fr"
+  },
+  {
+    "id": "fia1v2",
+    "descriptions": ["premier FI", "par défaut"],
+    "title": "Identity Provider 1 - HS256",
+    "url": "https://idp-dev-nubo12.proconnect.bacasable.opicloud.fr",
+    "signature": "HS256",
+    "fqdn": "fia1.fr"
+  },
+  {
+    "id": "fia2v2",
+    "descriptions": ["second FI"],
+    "title": "Identity Provider 2 - ES256",
+    "url": "",
+    "signature": "ES256",
+    "fqdn": "fia2.fr"
+  }
+]
