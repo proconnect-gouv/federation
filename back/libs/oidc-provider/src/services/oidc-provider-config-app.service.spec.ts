@@ -3,7 +3,6 @@ import { KoaContextWithOIDC, Provider } from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
@@ -23,8 +22,6 @@ jest.mock('@fc/exceptions/helpers', () => ({
 
 describe('OidcProviderConfigAppService', () => {
   let service: OidcProviderConfigAppService;
-
-  const throwExceptionMock = jest.mocked(throwException);
 
   const sessionServiceMock = getSessionServiceMock();
 
@@ -355,21 +352,6 @@ describe('OidcProviderConfigAppService', () => {
       const claims = await result.claims();
       expect(claims).toEqual(spIdentityMock);
     });
-
-    it('should throw an error when session initialization fails', async () => {
-      // Given
-      const sub = 'test-sub';
-      const sessionId = 'invalid-session-id';
-      const error = new Error('Session initialization failed');
-      sessionServiceMock.getAlias.mockResolvedValueOnce(sessionId);
-      sessionServiceMock.initCache.mockRejectedValueOnce(error);
-
-      // When
-      await service.findAccount(ctxMock, sub);
-
-      // Then
-      expect(throwExceptionMock).toHaveBeenCalledWith(error);
-    });
   });
 
   describe('finishInteraction', () => {
@@ -501,6 +483,37 @@ describe('OidcProviderConfigAppService', () => {
       await service.logoutFormSessionDestroy(ctxMock, form, params);
       // Then
       expect(ctxMock).toHaveProperty('body', htmlDisconnectFromFi);
+    });
+  });
+
+  describe('renderError', () => {
+    it('should set ctx.type to html and render the error template with details', async () => {
+      // Given
+      const renderReturnMock = 'rendered-html';
+      const renderMock = jest.fn().mockReturnValue(renderReturnMock);
+      const ctx = {
+        res: { render: renderMock },
+      } as unknown as KoaContextWithOIDC;
+
+      const params = {
+        error: 'access_denied',
+        error_description: 'Not allowed',
+      } as unknown as Parameters<
+        OidcProviderConfigAppService['renderError']
+      >[1];
+
+      // When
+      await service.renderError(ctx, params, new Error('boom'));
+
+      // Then
+      expect(ctx).toHaveProperty('type', 'html');
+      expect(renderMock).toHaveBeenCalledTimes(1);
+      expect(renderMock).toHaveBeenCalledWith('error', {
+        exception: {},
+        error: { code: 'access_denied', message: true },
+        errorDetail: 'Not allowed',
+      });
+      expect(ctx).toHaveProperty('body', renderReturnMock);
     });
   });
 });

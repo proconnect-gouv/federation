@@ -21,6 +21,7 @@ import {
   setIdpHint,
   setLoginHint,
   setPrompt,
+  setRedirectUri,
   setScope,
 } from '../../common/helpers';
 
@@ -52,16 +53,23 @@ Given(
 );
 
 Given(
-  'le fournisseur de service requiert le login_hint {string}',
-  function (login_hint: string) {
-    setLoginHint(login_hint);
+  'le fournisseur de service ne requiert pas le claim {string}',
+  function (claim: string) {
+    removeFromRequestedClaims(claim);
   },
 );
 
 Given(
-  'le fournisseur de service ne requiert pas le claim {string}',
-  function (claim: string) {
-    removeFromRequestedClaims(claim);
+  'le fournisseur de service envoie le login_hint {string}',
+  function (loginHint: string) {
+    setLoginHint(loginHint);
+  },
+);
+
+Given(
+  'le fournisseur de service envoie la redirect_uri {string}',
+  function (redirectUri: string) {
+    setRedirectUri(redirectUri);
   },
 );
 

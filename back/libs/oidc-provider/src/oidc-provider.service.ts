@@ -13,6 +13,7 @@ import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
 
 import {
+  OidcProviderEvents,
   OidcProviderMiddlewarePattern,
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
@@ -25,7 +26,6 @@ import {
 import {
   OidcProviderConfigAppService,
   OidcProviderConfigService,
-  OidcProviderErrorService,
 } from './services';
 
 export const COOKIES = ['_session', '_interaction', '_interaction_resume'];
@@ -47,7 +47,6 @@ export class OidcProviderService {
     private httpAdapterHost: HttpAdapterHost,
     readonly logger: LoggerService,
     readonly redis: RedisService,
-    private readonly errorService: OidcProviderErrorService,
     private readonly configService: OidcProviderConfigService,
     private readonly oidcProviderConfigApp: OidcProviderConfigAppService,
   ) {}
@@ -84,7 +83,24 @@ export class OidcProviderService {
       throw new OidcProviderBindingException();
     }
 
-    this.errorService.catchErrorEvents(this.provider);
+    this.addLogListenerOnProviderEvents();
+  }
+
+  private addLogListenerOnProviderEvents() {
+    const oidcProviderErrorEvents = OidcProviderEvents.filter((event) =>
+      event.endsWith('.error'),
+    );
+
+    oidcProviderErrorEvents.forEach((event) => {
+      /* istanbul ignore next */
+      // eslint-disable-next-line max-nested-callbacks
+      this.provider.on(event, (_any, err) => {
+        this.logger.error({
+          code: `oidc-provider-error:${err?.error}`,
+          cause: err,
+        });
+      });
+    });
   }
 
   /**

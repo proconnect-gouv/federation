@@ -8,8 +8,8 @@ Fonctionnalité: API - authorize
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "InvalidClient"
-    Et le message d'erreur est "Client non trouvé (client_id invalide)"
+    Et le code d'erreur est "invalid_client"
+    Et le message d'erreur est "client is invalid"
     Et le lien retour vers le FS n'est pas affiché dans la page erreur technique
 
     Exemples:
@@ -27,23 +27,6 @@ Fonctionnalité: API - authorize
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page interaction
-
-  Plan du Scénario: API authorize - erreur <error> redirect_uri=<redirectUri>
-    Etant donné que je prépare une requête "authorize"
-    Et que je mets "<redirectUri>" dans le paramètre "redirect_uri" de la requête
-    Et que je configure la requête pour ne pas suivre les redirections
-    Quand je lance la requête
-    Alors le statut de la réponse est <httpCode>
-    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
-    Et le corps de la réponse contient une page web
-    Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "<error>"
-
-    Exemples:
-      | redirectUri                          | httpCode | error   |
-      |                                      | 400      | Y000400 |
-      | https://my-malicious-url.fr/callback | 400      | InvalidRedirectUri |
-      | example.com                          | 400      | Y000400 |
 
   Plan du Scénario: API authorize - Cas nominal prompt=<prompt>
     Etant donné que je prépare une requête "authorize"
@@ -177,21 +160,3 @@ Scénario: API authorize - Cas nominal avec response_mode (ignoré)
       | code id_token  |
       | code token     |
       | code token     |
-
-  Plan du Scénario: API authorize - erreur <error> redirect_uri=<redirectUri>
-    Etant donné que je prépare une requête "authorize"
-    Et que je mets "<redirectUri>" dans le paramètre "redirect_uri" de la requête
-    Et que je configure la requête pour ne pas suivre les redirections
-    Quand je lance la requête
-    Alors le statut de la réponse est <httpCode>
-    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
-    Et le corps de la réponse contient une page web
-    Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "<error>"
-    Et le message d'erreur est "<errorDescription>"
-    Et le lien retour vers le FS n'est pas affiché dans la page erreur technique
-
-    Exemples:
-      | redirectUri                          | httpCode | error   | errorDescription                                             |
-      |                                      | 400      | Y000400 | Une erreur s'est produite, veuillez réessayer ultérieurement |
-      | https://my-malicious-url.fr/callback | 400      | InvalidRedirectUri | L’URL de callback n’est pas valide                           |

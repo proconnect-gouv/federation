@@ -77,14 +77,18 @@ describe('CoreFcaMiddlewareService', () => {
     expect(spy).toHaveBeenCalledTimes(4);
   });
 
-  it('should handle errors in koaErrorCatcherMiddlewareFactory correctly', async () => {
-    const mockCtx = { oidc: { isError: undefined }, req: {}, res: {} };
+  it('should handle errors in koaHtmlErrorFormaterMiddlewareFactory correctly', async () => {
+    const mockCtx = {
+      oidc: {},
+      req: {},
+      res: { render: jest.fn() },
+    };
     const middleware = jest.fn().mockRejectedValue(new Error('Test Error'));
-    const catcher = (service as any).koaErrorCatcherMiddlewareFactory(
+    const formater = (service as any).koaHtmlErrorFormaterMiddlewareFactory(
       middleware,
     );
-    await catcher(mockCtx);
-    expect(mockCtx.oidc.isError).toBe(true);
+    await expect(formater(mockCtx)).rejects.toThrow();
+    expect(mockCtx.res.render).toHaveBeenCalled();
   });
 
   it('should extract authorization parameters based on HTTP method', () => {
@@ -147,8 +151,18 @@ describe('CoreFcaMiddlewareService', () => {
     expect(eventContext.sessionId).toBe('123');
   });
 
-  it('should throw CoreNoSessionIdException if session ID is not set in getEventContext', async () => {
+  it('should return null if there is no accountId in ctx', async () => {
     const mockCtx = { oidc: {}, req: {} };
+    const eventContext = await (service as any).getEventContext(mockCtx);
+    expect(eventContext).toBeNull();
+  });
+
+  it('should throw CoreNoSessionIdException if session ID is not set in getEventContext', async () => {
+    const mockCtx = {
+      oidc: { entities: { Account: { accountId: '123' } } },
+      req: {},
+    };
+    mockSessionService.getAlias.mockResolvedValueOnce(null);
     await expect((service as any).getEventContext(mockCtx)).rejects.toThrow(
       CoreNoSessionIdException,
     );

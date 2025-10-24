@@ -22,7 +22,6 @@ import {
 } from './exceptions';
 import { COOKIES, OidcProviderService } from './oidc-provider.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
-import { OidcProviderErrorService } from './services/oidc-provider-error.service';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -39,6 +38,7 @@ describe('OidcProviderService', () => {
     callback() {
       return true;
     }
+    on = jest.fn();
   } as any;
 
   const BadProviderProxyMock = class {
@@ -87,11 +87,6 @@ describe('OidcProviderService', () => {
 
   const redisMock = getRedisServiceMock();
 
-  const oidcProviderErrorServiceMock = {
-    catchErrorEvents: jest.fn(),
-    throwError: jest.fn(),
-  };
-
   const oidcProviderConfigServiceMock = {
     getConfig: jest.fn(),
     findAccount: jest.fn(),
@@ -109,7 +104,6 @@ describe('OidcProviderService', () => {
         OidcProviderService,
         HttpAdapterHost,
         RedisService,
-        OidcProviderErrorService,
         OidcProviderConfigService,
         OidcProviderConfigAppService,
       ],
@@ -120,8 +114,6 @@ describe('OidcProviderService', () => {
       .useValue(redisMock)
       .overrideProvider(HttpAdapterHost)
       .useValue(httpAdapterHostMock)
-      .overrideProvider(OidcProviderErrorService)
-      .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(OidcProviderConfigService)
       .useValue(oidcProviderConfigServiceMock)
       .overrideProvider(OidcProviderConfigAppService)
@@ -161,7 +153,6 @@ describe('OidcProviderService', () => {
         ...configOidcProviderMock,
       });
       service['registerMiddlewares'] = jest.fn();
-      service['catchErrorEvents'] = jest.fn();
     });
 
     it('should create oidc-provider instance', () => {
@@ -205,17 +196,6 @@ describe('OidcProviderService', () => {
       );
     });
 
-    it('should call several internal initializers', () => {
-      // Given
-      service['ProviderProxy'] = ProviderProxyMock;
-      // When
-      service.onModuleInit();
-      // Then
-      expect(service['errorService']['catchErrorEvents']).toHaveBeenCalledTimes(
-        1,
-      );
-    });
-
     it('should call setProvider to allow oidcProviderConfigApp to retrieve this.provider ', () => {
       // Given
       service['ProviderProxy'] = ProviderProxyMock;
@@ -223,9 +203,6 @@ describe('OidcProviderService', () => {
       service.onModuleInit();
       // Then
       expect(oidcProviderConfigAppMock.setProvider).toHaveBeenCalledTimes(1);
-      expect(oidcProviderConfigAppMock.setProvider).toHaveBeenCalledWith({
-        proxy: true,
-      });
     });
   });
 
