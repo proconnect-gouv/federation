@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/core/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 
 import {
@@ -20,7 +19,6 @@ export class CoreFcaService {
   constructor(
     private readonly config: ConfigService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
-    private readonly logger: LoggerService,
   ) {}
 
   hasDefaultIdp(providersUid: string[]): boolean {
@@ -118,7 +116,6 @@ export class CoreFcaService {
       return;
     }
 
-    this.logger.error(`Unauthorized fqdn ${fqdnFromEmail} for SP ${spId}`);
     throw new CoreFcaUnauthorizedEmailException(
       authorizedFqdnsConfig.spName,
       authorizedFqdnsConfig.spContact,

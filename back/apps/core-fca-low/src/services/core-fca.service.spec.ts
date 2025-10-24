@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientService } from '@fc/oidc-client';
@@ -11,7 +10,6 @@ import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { getConfigMock } from '@mocks/config';
-import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import {
@@ -24,7 +22,6 @@ describe('CoreFcaService', () => {
   let service: CoreFcaService;
 
   const configServiceMock = getConfigMock();
-  const loggerServiceMock = getLoggerMock();
 
   const sessionServiceMock = getSessionServiceMock();
 
@@ -84,7 +81,6 @@ describe('CoreFcaService', () => {
         OidcClientService,
         IdentityProviderAdapterMongoService,
         SessionService,
-        LoggerService,
         TrackingService,
       ],
     })
@@ -96,8 +92,6 @@ describe('CoreFcaService', () => {
       .useValue(identityProviderMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(OidcAcrService)
