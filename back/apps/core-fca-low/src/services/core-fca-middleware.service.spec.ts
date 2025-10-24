@@ -147,8 +147,18 @@ describe('CoreFcaMiddlewareService', () => {
     expect(eventContext.sessionId).toBe('123');
   });
 
-  it('should throw CoreNoSessionIdException if session ID is not set in getEventContext', async () => {
+  it('should return null if there is no accountId in ctx', async () => {
     const mockCtx = { oidc: {}, req: {} };
+    const eventContext = await (service as any).getEventContext(mockCtx);
+    expect(eventContext).toBeNull();
+  });
+
+  it('should throw CoreNoSessionIdException if session ID is not set in getEventContext', async () => {
+    const mockCtx = {
+      oidc: { entities: { Account: { accountId: '123' } } },
+      req: {},
+    };
+    mockSessionService.getAlias.mockResolvedValueOnce(null);
     await expect((service as any).getEventContext(mockCtx)).rejects.toThrow(
       CoreNoSessionIdException,
     );

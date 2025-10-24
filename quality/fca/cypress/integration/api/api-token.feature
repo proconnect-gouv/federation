@@ -41,7 +41,7 @@ Scénario: API token - code invalide
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
   Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
-  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (authorization code not found)"
+  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid"
 
 Scénario: API token - id_token
   Etant donné que je navigue sur la page fournisseur de service
@@ -89,7 +89,7 @@ Scénario: API token - PKCE sans client_secret
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
   Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_client"
-  Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed (the registered client token_endpoint_auth_method does not match the provided auth mechanism)"
+  Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed"
 
 Scénario: API token - code_verifier invalide
   Etant donné que je navigue sur la page fournisseur de service
@@ -107,7 +107,7 @@ Scénario: API token - code_verifier invalide
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
   Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
-  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (PKCE verification failed)"
+  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid"
 
 Scénario: API token - refresh token
   Etant donné que je navigue sur la page fournisseur de service
@@ -152,7 +152,7 @@ Scénario: API token - refresh token invalide
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
   Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
-  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (refresh token not found)"
+  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid"
 
 Scénario: API token - refresh token révoqué
   Etant donné que je navigue sur la page fournisseur de service
@@ -177,4 +177,4 @@ Scénario: API token - refresh token révoqué
   Et l'entête de la réponse n'a pas de propriété "set-cookie"
   Et le corps de la réponse contient une erreur avec les champs error et error_description
   Et le corps de la réponse a une propriété "error" égale à "invalid_grant"
-  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (refresh token not found)"
+  Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid"

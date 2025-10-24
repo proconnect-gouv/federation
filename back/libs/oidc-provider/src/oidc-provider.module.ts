@@ -22,7 +22,6 @@ import { OidcProviderService } from './oidc-provider.service';
 import {
   OidcProviderConfigAppService,
   OidcProviderConfigService,
-  OidcProviderErrorService,
 } from './services';
 
 @Module({})
@@ -75,7 +74,6 @@ export class OidcProviderModule {
         OidcProviderConfigAppService,
         serviceProviderProvider,
         OidcProviderService,
-        OidcProviderErrorService,
         OidcProviderConfigService,
       ],
       exports: [OidcProviderService, RedisModule, serviceProviderProvider],

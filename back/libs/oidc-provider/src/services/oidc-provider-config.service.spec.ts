@@ -9,18 +9,12 @@ import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
 import { OidcProviderConfigService } from './oidc-provider-config.service';
 import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
-import { OidcProviderErrorService } from './oidc-provider-error.service';
 
 describe('OidcProviderConfigService', () => {
   let service: OidcProviderConfigService;
 
   const configServiceMock = {
     get: jest.fn(),
-  };
-
-  const errorServiceMock = {
-    renderError: jest.fn(),
-    throwError: jest.fn(),
   };
 
   const serviceProviderServiceMock = {
@@ -58,7 +52,6 @@ describe('OidcProviderConfigService', () => {
         OidcProviderConfigService,
         ConfigService,
         OidcProviderConfigAppService,
-        OidcProviderErrorService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
@@ -69,8 +62,6 @@ describe('OidcProviderConfigService', () => {
       .useValue(configServiceMock)
       .overrideProvider(OidcProviderConfigAppService)
       .useValue(oidcProviderConfigAppMock)
-      .overrideProvider(OidcProviderErrorService)
-      .useValue(errorServiceMock)
       .compile();
 
     service = module.get<OidcProviderConfigService>(OidcProviderConfigService);
