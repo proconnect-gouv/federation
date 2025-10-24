@@ -150,7 +150,7 @@ describe('FcBaseExceptionFilter', () => {
 
     it('should return the dynamic exception code otherwise', () => {
       const idpException = new BaseException();
-      idpException.error = 'invalid_scope';
+      idpException.message = 'invalid_scope';
       idpException.generic = true;
 
       const result = filter['getExceptionCodeFor'](idpException);
