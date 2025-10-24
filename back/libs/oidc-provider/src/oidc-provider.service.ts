@@ -13,6 +13,7 @@ import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
 
 import {
+  OidcProviderEvents,
   OidcProviderMiddlewarePattern,
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
@@ -84,7 +85,24 @@ export class OidcProviderService {
       throw new OidcProviderBindingException();
     }
 
-    this.errorService.catchErrorEvents(this.provider);
+    this.addLogListenerOnProviderEvents();
+  }
+
+  private addLogListenerOnProviderEvents() {
+    const oidcProviderErrorEvents = OidcProviderEvents.filter((event) =>
+      event.endsWith('.error'),
+    );
+
+    oidcProviderErrorEvents.forEach((event) => {
+      /* istanbul ignore next */
+      // eslint-disable-next-line max-nested-callbacks
+      this.provider.on(event, (_any, err) => {
+        this.logger.error({
+          code: `oidc-provider-error:${err?.error}`,
+          cause: err,
+        });
+      });
+    });
   }
 
   /**
