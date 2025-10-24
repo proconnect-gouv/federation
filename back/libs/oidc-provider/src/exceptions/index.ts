@@ -1,5 +1,4 @@
 export * from './oidc-provider-base.exception';
-export * from './oidc-provider-base-rendered.exception';
 export * from './oidc-provider-binding.exception';
 export * from './oidc-provider-initialisation.exception';
 export * from './oidc-provider-parse-redis-response.exception';

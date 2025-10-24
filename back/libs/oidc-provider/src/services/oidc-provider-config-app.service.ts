@@ -12,7 +12,6 @@ import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
 import { Routes } from '@fc/core/enums';
-import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
@@ -162,23 +161,18 @@ export class OidcProviderConfigAppService {
     _ctx: OidcCtx,
     sub: string,
   ): Promise<{ accountId: string; claims: Function }> {
-    try {
-      const sessionId = await this.sessionService.getAlias(sub);
-      await this.sessionService.initCache(sessionId);
+    const sessionId = await this.sessionService.getAlias(sub);
+    await this.sessionService.initCache(sessionId);
 
-      const { spIdentity } = this.sessionService.get<UserSession>('User');
+    const { spIdentity } = this.sessionService.get<UserSession>('User');
 
-      return {
-        accountId: spIdentity.sub,
-        // eslint-disable-next-line require-await
-        async claims() {
-          return { ...spIdentity };
-        },
-      };
-    } catch (error) {
-      // Hacky throw from oidc-provider
-      await throwException(error);
-    }
+    return {
+      accountId: spIdentity.sub,
+      // eslint-disable-next-line require-await
+      async claims() {
+        return { ...spIdentity };
+      },
+    };
   }
 
   async finishInteraction(
@@ -250,6 +244,8 @@ export class OidcProviderConfigAppService {
   ) => {
     const res = ctx.res as unknown as Response;
     ctx.type = 'html';
+    // the render function is magically available in the koa context
+    // as oidc-provider servers is mounted behind the nest server.
     ctx.body = res.render('error', {
       exception: {},
       error: { code: error, message: true },
