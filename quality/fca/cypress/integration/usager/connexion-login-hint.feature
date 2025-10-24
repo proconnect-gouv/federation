@@ -21,3 +21,9 @@ Fonctionnalité: Connexion Usager - login_hint
     Lorsque le fournisseur de service requiert le login_hint "test-login-hint@fia2.fr"
     Et je clique sur le bouton ProConnect
     Alors le champ identifiant correspond à "test-login-hint@fia2.fr"
+
+  Scénario: Le FS fournit le login_hint d'un usager multi FI
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service requiert le login_hint "many@polyfi.fr"
+    Et que je clique sur le bouton ProConnect
+    Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
