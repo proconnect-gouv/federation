@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { isString, validateSync, ValidatorOptions } from 'class-validator';
-import * as deepFreeze from 'deep-freeze';
+import deepFreeze from 'deep-freeze';
 import * as lodash from 'lodash';
 
 import { Injectable } from '@nestjs/common';
