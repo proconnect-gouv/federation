@@ -4,6 +4,9 @@ import * as crypto from 'node:crypto';
 import { JsonWebKey } from 'node:crypto';
 import * as process from 'node:process';
 import * as client from 'openid-client-v6';
+import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici';
+
+setGlobalDispatcher(new EnvHttpProxyAgent());
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const {

@@ -4,10 +4,13 @@ import { get } from 'lodash';
 import { strict as assert } from 'node:assert';
 import * as path from 'node:path';
 import Provider from 'oidc-provider-v8';
+import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici';
 
 import configuration from './oidc-provider-support/configuration';
 import MemoryAdapter from './oidc-provider-support/memory_adapter.js';
 import { createUser, getDefaultUser } from './user-data';
+
+setGlobalDispatcher(new EnvHttpProxyAgent());
 
 const {
   PORT = 3000,
