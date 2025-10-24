@@ -5,12 +5,17 @@ import idpConfigsForIntegEnv from '../../../fixtures/fca-low/integ01/identity-pr
 import idpForIntegEnv from '../../../fixtures/fca-low/integ01/identity-providers.json';
 import spConfigsForIntegEnv from '../../../fixtures/fca-low/integ01/service-provider-configs.json';
 import {
+  Environment,
   IdentityProvider,
   IdentityProviderConfig,
   ServiceProvider,
   ServiceProviderConfig,
 } from '../types';
+import apiCommonForDockerEnv from './../../../fixtures/fca-low/docker/api-common.json';
+import environnementForDockerEnv from './../../../fixtures/fca-low/docker/environment.json';
 import spForDockerEnv from './../../../fixtures/fca-low/docker/service-providers.json';
+import apiCommonForIntegEnv from './../../../fixtures/fca-low/integ01/api-common.json';
+import environnementForIntegEnv from './../../../fixtures/fca-low/integ01/environment.json';
 import spForIntegEnv from './../../../fixtures/fca-low/integ01/service-providers.json';
 
 const isDockerEnv = Cypress.env('TEST_ENV') === 'docker';
@@ -19,6 +24,10 @@ const spList = isDockerEnv ? spForDockerEnv : spForIntegEnv;
 const spConfigs = isDockerEnv ? spConfigsForDockerEnv : spConfigsForIntegEnv;
 const idpList = isDockerEnv ? idpForDockerEnv : idpForIntegEnv;
 const idpConfigs = isDockerEnv ? idpConfigsForDockerEnv : idpConfigsForIntegEnv;
+const apiCommon = isDockerEnv ? apiCommonForDockerEnv : apiCommonForIntegEnv;
+const environnement = isDockerEnv
+  ? environnementForDockerEnv
+  : environnementForIntegEnv;
 
 export const getServiceProviderByDescription = (
   description: string,
@@ -54,4 +63,12 @@ export const getDefaultIdentityProviderConfig = (
   providerName: string,
 ): IdentityProviderConfig => {
   return idpConfigs[providerName];
+};
+
+export const getApiRequests = (requestKey: string): Record<string, unknown> => {
+  return apiCommon[requestKey];
+};
+
+export const getEnv = (): Environment => {
+  return environnement;
 };
