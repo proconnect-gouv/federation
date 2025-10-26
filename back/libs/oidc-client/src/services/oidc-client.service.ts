@@ -53,14 +53,14 @@ export class OidcClientService {
       id_token: idToken,
       refresh_token: refreshToken,
     } = tokenSet;
-    const { acr, amr = [] }: IdTokenClaims = tokenSet.claims();
+    const claims: IdTokenClaims = tokenSet.claims();
+    claims.amr = claims.amr || [];
 
     const tokenResult = plainToInstance(TokenResultDto, {
-      acr,
-      amr,
       accessToken,
       idToken,
       refreshToken,
+      claims,
     });
     const tokenValidationErrors = await validate(tokenResult as object);
 

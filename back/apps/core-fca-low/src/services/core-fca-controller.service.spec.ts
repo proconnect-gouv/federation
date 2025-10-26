@@ -8,7 +8,7 @@ import { Routes } from '@fc/core/enums';
 import { CoreFcaService } from '@fc/core/services/core-fca.service';
 import { EmailValidatorService } from '@fc/email-validator/services';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
+import { OidcClientConfig, OidcClientIssuerService, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
@@ -58,6 +58,10 @@ describe('CoreFcaControllerService', () => {
   const emailValidatorServiceMock = {
     validate: jest.fn(),
   } as unknown as EmailValidatorService;
+
+  const oidcClientIssuerServiceMock = {
+    getClient: jest.fn(),
+  } as unknown as OidcClientIssuerService;
 
   const reqMock = {
     redirect: jest.fn(),
@@ -116,6 +120,13 @@ describe('CoreFcaControllerService', () => {
       rememberMe: false,
     } as unknown as UserSession);
 
+    (oidcClientIssuerServiceMock.getClient as jest.Mock).mockReturnValue({
+      issuer: {
+        scopes_supported: ["openid","email","usual_name","siret"],
+        claims_parameter_supported: true,
+      }
+    })
+
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         CoreFcaControllerService,
@@ -127,6 +138,7 @@ describe('CoreFcaControllerService', () => {
         TrackingService,
         CoreFcaService,
         EmailValidatorService,
+        OidcClientIssuerService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -145,6 +157,8 @@ describe('CoreFcaControllerService', () => {
       .useValue(coreFcaServiceMock)
       .overrideProvider(EmailValidatorService)
       .useValue(emailValidatorServiceMock)
+      .overrideProvider(OidcClientIssuerService)
+      .useValue(oidcClientIssuerServiceMock)
       .compile();
 
     service = app.get<CoreFcaControllerService>(CoreFcaControllerService);

@@ -10,7 +10,7 @@ import { CoreFcaAgentNoIdpException } from '@fc/core/exceptions';
 import { CoreFcaService } from '@fc/core/services/core-fca.service';
 import { EmailValidatorService } from '@fc/email-validator/services';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
+import { OidcClientConfig, OidcClientService, OidcClientIssuerService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
@@ -29,6 +29,7 @@ export class CoreFcaControllerService {
     private readonly tracking: TrackingService,
     private readonly coreFcaService: CoreFcaService,
     private readonly emailValidatorService: EmailValidatorService,
+    private readonly issuer: OidcClientIssuerService,
   ) {}
 
   async redirectToIdpWithEmail(
@@ -76,24 +77,31 @@ export class CoreFcaControllerService {
     const selectedIdp =
       await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
 
+    const client = await this.issuer.getClient(idpId);
+    const scopes_supported = client.issuer.scopes_supported as string[];
+    const pc_scopes = scope.split(" ");
+    const request_scopes = pc_scopes.filter(s => scopes_supported.includes(s));
+
+    const claims_param = client.issuer.claims_parameter_supported as boolean;
+
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
     const authorizeParams: AuthorizationParameters = {
       state,
       nonce,
-      scope,
+      scope: request_scopes.join(" "),
       acr_values: null,
-      claims: {
-        id_token: {
-          amr: null,
-          acr: null,
-        },
-      },
       login_hint: idpLoginHint,
       sp_id: spId,
       sp_name: spName,
       remember_me: rememberMe,
+    };
+    const claims = {
+      id_token: {
+        amr: null,
+        acr: null,
+      },
     };
 
     const interaction = await this.oidcProvider.getInteraction(req, res);
@@ -101,9 +109,13 @@ export class CoreFcaControllerService {
       this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
 
     if (acrClaims) {
-      authorizeParams['claims']['id_token']['acr'] = acrClaims;
+      claims['id_token']['acr'] = acrClaims;
     } else if (acrValues) {
       authorizeParams['acr_values'] = acrValues;
+    }
+
+    if (claims_param) {
+      authorizeParams.claims = claims;
     }
 
     const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
