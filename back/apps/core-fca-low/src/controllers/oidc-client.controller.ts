@@ -21,7 +21,13 @@ import { PostIdentityProviderSelectionDto } from '@fc/core/dto/post-identity-pro
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { LoggerService, TrackedEvent } from '@fc/logger';
-import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
+import { IdentityProviderMetadata } from '@fc/oidc';
+import {
+  OidcClientConfig,
+  OidcClientConfigService,
+  OidcClientService,
+  TokenResultClaimsDto,
+} from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 
 import {
@@ -29,6 +35,7 @@ import {
   AfterRedirectToIdpWithEmailSessionDto,
   AfterRedirectToIdpWithIdpIdSessionDto,
   AppConfig,
+  IdentityFromIdpDto,
   RedirectToIdp,
   UserSession,
 } from '../dto';
@@ -202,15 +209,19 @@ export class OidcClientController {
       sp_name: spName,
     };
 
-    const { accessToken, idToken, acr, amr } = await this.oidcClient.getToken(
+    const { accessToken, idToken, claims } = await this.oidcClient.getToken(
       idpId,
       tokenParams,
       req,
       extraParams,
     );
+    let acr = (claims['acrs'] || claims['acr'] || 'eidas1').toString();
+    if (claims['acrs']) {
+      acr = acr.replace('c', 'eidas');
+    }
 
     userSession.set({
-      amr,
+      amr: claims.amr,
       idpIdToken: idToken,
       idpAcr: acr,
     });
@@ -224,6 +235,10 @@ export class OidcClientController {
 
     const plainIdpIdentity = await this.oidcClient.getUserinfo(userInfoParams);
 
+    // Augment user info with any claims from ID Token
+    const idp = await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
+    this.augmentIdentityFromIdToken(claims, plainIdpIdentity, idp);
+
     const idpIdentity = await this.sanitizer.getValidatedIdentityFromIdp(
       plainIdpIdentity,
       idpId,
@@ -233,14 +248,7 @@ export class OidcClientController {
       idpIdentity,
     });
 
-    const isAllowedIdpForEmail = await this.coreFcaService.isAllowedIdpForEmail(
-      idpId,
-      idpIdentity.email,
-    );
-
-    if (!isAllowedIdpForEmail) {
-      this.logger.warn({ code: 'fqdn_mismatch' });
-    }
+    await this.checkIdPAllowed(idpId, idpIdentity);
 
     this.logger.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO);
 
@@ -265,5 +273,35 @@ export class OidcClientController {
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 
     res.redirect(url);
+  }
+
+  private async checkIdPAllowed(
+    idpId: string,
+    idpIdentity: IdentityFromIdpDto,
+  ) {
+    const isAllowedIdpForEmail = await this.coreFcaService.isAllowedIdpForEmail(
+      idpId,
+      idpIdentity.email,
+    );
+
+    if (!isAllowedIdpForEmail) {
+      this.logger.warn({ code: 'fqdn_mismatch' });
+    }
+  }
+
+  // eslint-disable-next-line complexity
+  private augmentIdentityFromIdToken(
+    claims: TokenResultClaimsDto,
+    plainIdpIdentity: any,
+    idp: IdentityProviderMetadata,
+  ) {
+    if (!idp.isEntraID) return;
+
+    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
+    for (const key of scope.split(' ')) {
+      if (claims[key] && !plainIdpIdentity[key]) {
+        plainIdpIdentity[key] = claims[key];
+      }
+    }
   }
 }
