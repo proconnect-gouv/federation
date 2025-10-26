@@ -1,3 +1,5 @@
+import { TokenResultClaimsDto } from '../dto';
+
 export type TokenParams = {
   state: string;
   nonce: string;
@@ -11,8 +13,7 @@ export type TokenResults = {
   accessToken: string;
   idToken: string;
   refreshToken?: string;
-  acr?: string;
-  amr?: string[];
+  claims: TokenResultClaimsDto;
 };
 
 export type UserInfosParams = {

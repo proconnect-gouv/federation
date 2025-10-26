@@ -106,6 +106,7 @@ export class IdentityProviderFromDb {
 
   @Column()
   isRoutingEnabled: boolean;
+
   @Column()
   isEntraID: boolean;
 

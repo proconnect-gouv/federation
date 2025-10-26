@@ -71,7 +71,14 @@ export class CoreFcaControllerService {
   ): Promise<void> {
     const { spId, idpLoginHint, spName, spSiretHint, rememberMe } =
       this.session.get<AfterRedirectToIdpWithEmailSessionDto>('User');
-    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
+
+    const idp = await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
+    const idpIsEntra = idp.isEntraID;
+
+    const entraConfig = { scope: 'openid email profile' };
+    const { scope } = idpIsEntra
+      ? entraConfig
+      : this.config.get<OidcClientConfig>('OidcClient');
 
     this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, idpLoginHint);
 
@@ -86,17 +93,17 @@ export class CoreFcaControllerService {
       nonce,
       scope,
       acr_values: null,
-      claims: {
-        id_token: {
-          amr: null,
-          acr: null,
-        },
-      },
       login_hint: idpLoginHint,
       siret_hint: spSiretHint,
       sp_id: spId,
       sp_name: spName,
       remember_me: rememberMe,
+    };
+    const claims = {
+      id_token: {
+        amr: null,
+        acr: null,
+      },
     };
 
     const interaction = await this.oidcProvider.getInteraction(req, res);
@@ -104,15 +111,19 @@ export class CoreFcaControllerService {
       this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
 
     if (acrClaims) {
-      authorizeParams['claims']['id_token']['acr'] = acrClaims;
+      claims['id_token']['acr'] = acrClaims;
     } else if (acrValues) {
       authorizeParams['acr_values'] = acrValues;
+    }
+
+    if (!idpIsEntra) {
+      authorizeParams.claims = claims;
     }
 
     const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
 
     // these specific behaviors are legacy implementations and should be homogenized in the future
-    if (idpId === defaultIdpId) {
+    if (idpId === defaultIdpId && !idp.isEntraID) {
       authorizeParams['scope'] += ' is_service_public';
     } else if (!acrValues && !acrClaims) {
       authorizeParams['acr_values'] = 'eidas1';
