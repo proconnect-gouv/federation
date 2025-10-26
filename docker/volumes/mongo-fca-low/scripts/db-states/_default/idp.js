@@ -231,6 +231,7 @@ const fia = {
     isRoutingEnabled: true,
     isEntraID: false,
   },
+
 };
 
 // -- Idps ----------
