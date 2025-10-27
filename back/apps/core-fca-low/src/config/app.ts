@@ -11,8 +11,8 @@ export default {
   assetsCacheTtl: env.number('ASSETS_CACHE_TTL'),
   viewsPaths: env.json('VIEWS_PATHS'),
   httpsOptions: {
-    key: env.file('HTTPS_SERVER_KEY', { optional: true }),
-    cert: env.file('HTTPS_SERVER_CERT', { optional: true }),
+    key: env.file('HTTPS_SERVER_KEY', true),
+    cert: env.file('HTTPS_SERVER_CERT', true),
   },
   fqdn: process.env.FQDN,
   defaultIdpId: env.string('DEFAULT_IDP_UID'),
