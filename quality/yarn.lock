@@ -164,10 +164,10 @@
     split "^1.0.1"
     uuid "^10.0.0"
 
-"@bahmutov/cypress-esbuild-preprocessor@^2.2.6":
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/@bahmutov/cypress-esbuild-preprocessor/-/cypress-esbuild-preprocessor-2.2.6.tgz#e3bbdec23162add93470aae39e0807a0cc53fb34"
-  integrity sha512-njJI3neexUcRh3iK/hXRZLwGa7tsjzO87MsoXkmqx0lmNaasJzewTau8hW6K9Tt74smA57e/uuskBUqU9SYrGw==
+"@bahmutov/cypress-esbuild-preprocessor@^2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@bahmutov/cypress-esbuild-preprocessor/-/cypress-esbuild-preprocessor-2.2.7.tgz#738d4e6dbd167e404e9f5a5b4fd97272851dbf50"
+  integrity sha512-n5kYNQ830Tics+04/pRR/IdJsCoc2xf4iO7emI2ofGIWGuDkE4ewIJt1jYJ+FfN41I2B7jTWQRvU274T4NloTQ==
   dependencies:
     debug "4.4.3"
 
