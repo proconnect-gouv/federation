@@ -17,6 +17,7 @@ import {
   AsymmetricSigningAlgorithm,
   CanBePromise,
   ClientAuthMethod,
+  Configuration as OidcProviderConfiguration,
   EncryptionAlgValues,
   EncryptionEncValues,
   ErrorOut,
@@ -668,7 +669,7 @@ export class Configuration {
   readonly acceptQueryParamAccessTokens: boolean;
 
   @IsObject()
-  readonly ttl: any;
+  readonly ttl: OidcProviderConfiguration['ttl'];
 
   @IsArray()
   readonly acrValues: string[];
