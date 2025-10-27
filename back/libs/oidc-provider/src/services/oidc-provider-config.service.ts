@@ -12,14 +12,12 @@ import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderConfig } from '../dto';
 import { OidcProviderService } from '../oidc-provider.service';
 import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
-import { OidcProviderErrorService } from './oidc-provider-error.service';
 
 @Injectable()
 export class OidcProviderConfigService {
   constructor(
     private readonly config: ConfigService,
     private readonly oidcProviderConfigApp: OidcProviderConfigAppService,
-    private readonly errorService: OidcProviderErrorService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: IServiceProviderAdapter,
   ) {}
@@ -84,7 +82,7 @@ export class OidcProviderConfigService {
     const findAccount = this.oidcProviderConfigApp.findAccount.bind(
       this.oidcProviderConfigApp,
     );
-    const renderError = this.errorService.renderError.bind(this.errorService);
+    const renderError = this.oidcProviderConfigApp.renderError;
     const clientBasedCORS = this.clientBasedCORS.bind(this);
     const url = this.url.bind(this, prefix);
 

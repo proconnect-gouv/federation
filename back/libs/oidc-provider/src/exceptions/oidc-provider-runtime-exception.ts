@@ -1,7 +1,11 @@
-import { ErrorCode } from '../enums';
-import { OidcProviderBaseException } from './oidc-provider-base.exception';
+import { BaseException } from '@fc/base-exception';
 
-export class OidcProviderRuntimeException extends OidcProviderBaseException {
+import { ErrorCode } from '../enums';
+
+export class OidcProviderRuntimeException extends BaseException {
   public code = ErrorCode.RUNTIME_ERROR;
   public ui = 'OidcProvider.exceptions.RuntimeException';
+  public scope = 3;
+  public error = 'server_error';
+  public error_description = 'something bad happened';
 }

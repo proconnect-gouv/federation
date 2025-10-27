@@ -5,7 +5,6 @@ import { RpcException } from '@nestjs/microservices';
 import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { OidcProviderNoWrapperException } from '@fc/oidc-provider/exceptions/oidc-provider-no-wrapper.exception';
 
 import { ExceptionsConfig } from '../dto';
 import { getCode, getStackTraceArray } from '../helpers';
@@ -23,10 +22,6 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     exception: BaseException,
     defaultStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
   ): HttpStatus {
-    if (exception instanceof OidcProviderNoWrapperException) {
-      return exception.originalError?.statusCode || defaultStatus;
-    }
-
     // Yes this checks seems redundant, it's a belt and suspenders situation
     if (exception instanceof BaseException) {
       return exception.http_status_code;
@@ -60,10 +55,6 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
   ): string {
     const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
     let errorCode = '';
-
-    if (exception instanceof OidcProviderNoWrapperException) {
-      return exception.originalError.constructor.name;
-    }
 
     if (exception instanceof BaseException) {
       return exception.generic

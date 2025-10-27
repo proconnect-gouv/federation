@@ -503,4 +503,35 @@ describe('OidcProviderConfigAppService', () => {
       expect(ctxMock).toHaveProperty('body', htmlDisconnectFromFi);
     });
   });
+
+  describe('renderError', () => {
+    it('should set ctx.type to html and render the error template with details', async () => {
+      // Given
+      const renderReturnMock = 'rendered-html';
+      const renderMock = jest.fn().mockReturnValue(renderReturnMock);
+      const ctx = {
+        res: { render: renderMock },
+      } as unknown as KoaContextWithOIDC;
+
+      const params = {
+        error: 'access_denied',
+        error_description: 'Not allowed',
+      } as unknown as Parameters<
+        OidcProviderConfigAppService['renderError']
+      >[1];
+
+      // When
+      await service.renderError(ctx, params, new Error('boom'));
+
+      // Then
+      expect(ctx).toHaveProperty('type', 'html');
+      expect(renderMock).toHaveBeenCalledTimes(1);
+      expect(renderMock).toHaveBeenCalledWith('error', {
+        exception: {},
+        error: { code: 'access_denied', message: true },
+        errorDetail: 'Not allowed',
+      });
+      expect(ctx).toHaveProperty('body', renderReturnMock);
+    });
+  });
 });
