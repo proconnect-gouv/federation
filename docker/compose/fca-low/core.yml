@@ -12,10 +12,6 @@ services:
     depends_on:
       squid:
         condition: service_started
-    environment:
-      # Proxy Configuration for Hybridge
-      GLOBAL_AGENT_HTTP_PROXY: http://squid:3128
-      GLOBAL_AGENT_HTTPS_PROXY: http://squid:3128
 
   core-rie:
     extends: core
