@@ -1,6 +1,5 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
-import { APP_FILTER } from '@nestjs/core';
 
 import { ExceptionsModule, FcWebHtmlExceptionFilter } from '@fc/exceptions';
 import { IServiceProviderAdapter } from '@fc/oidc';
@@ -12,11 +11,6 @@ import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 
-import {
-  OidcProviderRenderedHtmlExceptionFilter,
-  OidcProviderRenderedJsonExceptionFilter,
-} from './filters';
-import { ExceptionOccurredHandler } from './handlers';
 import { OidcProviderController } from './oidc-provider.controller';
 import { OidcProviderService } from './oidc-provider.service';
 import {
@@ -59,17 +53,10 @@ export class OidcProviderModule {
         ExceptionsModule,
       ],
       providers: [
-        ExceptionOccurredHandler,
-        OidcProviderRenderedHtmlExceptionFilter,
-        OidcProviderRenderedJsonExceptionFilter,
         FcWebHtmlExceptionFilter,
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useExisting: IdentityProviderAdapterMongoService,
-        },
-        {
-          provide: APP_FILTER,
-          useClass: OidcProviderRenderedHtmlExceptionFilter,
         },
         OidcProviderConfigAppService,
         serviceProviderProvider,

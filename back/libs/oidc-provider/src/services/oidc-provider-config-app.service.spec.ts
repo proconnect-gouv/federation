@@ -3,7 +3,6 @@ import { KoaContextWithOIDC, Provider } from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { throwException } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
@@ -23,8 +22,6 @@ jest.mock('@fc/exceptions/helpers', () => ({
 
 describe('OidcProviderConfigAppService', () => {
   let service: OidcProviderConfigAppService;
-
-  const throwExceptionMock = jest.mocked(throwException);
 
   const sessionServiceMock = getSessionServiceMock();
 
@@ -354,21 +351,6 @@ describe('OidcProviderConfigAppService', () => {
       // Claims function test
       const claims = await result.claims();
       expect(claims).toEqual(spIdentityMock);
-    });
-
-    it('should throw an error when session initialization fails', async () => {
-      // Given
-      const sub = 'test-sub';
-      const sessionId = 'invalid-session-id';
-      const error = new Error('Session initialization failed');
-      sessionServiceMock.getAlias.mockResolvedValueOnce(sessionId);
-      sessionServiceMock.initCache.mockRejectedValueOnce(error);
-
-      // When
-      await service.findAccount(ctxMock, sub);
-
-      // Then
-      expect(throwExceptionMock).toHaveBeenCalledWith(error);
     });
   });
 

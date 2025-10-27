@@ -1,5 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { Response } from 'express';
 import { isEmpty } from 'lodash';
 import { AuthorizationParameters } from 'openid-client';
 
@@ -8,13 +9,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { ActiveUserSessionDto, UserSession } from '@fc/core/dto';
 import { CoreNoSessionIdException } from '@fc/core/exceptions';
-import { throwException } from '@fc/exceptions/helpers';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import {
   OidcCtx,
   OidcProviderConfig,
-  OidcProviderMiddlewarePattern,
   OidcProviderMiddlewareStep,
   OidcProviderPrompt,
   OidcProviderRoutes,
@@ -39,50 +38,53 @@ export class CoreFcaMiddlewareService {
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}
 
-  protected registerMiddleware(
-    step: OidcProviderMiddlewareStep,
-    pattern: OidcProviderMiddlewarePattern | OidcProviderRoutes,
-    middleware: Function,
-  ) {
-    this.oidcProvider.registerMiddleware(step, pattern, middleware.bind(this));
-  }
-
-  protected koaErrorCatcherMiddlewareFactory(middleware: Function) {
-    return async function (ctx: OidcCtx) {
+  protected koaHtmlErrorFormatterMiddlewareFactory(middleware: Function) {
+    return async (ctx: OidcCtx) => {
       try {
         await middleware.bind(this)(ctx);
-      } catch (e) {
-        ctx.oidc['isError'] = true;
-        await throwException(e);
+      } catch (err) {
+        this.logger.error({ code: 'koa_html_error_formater' });
+        const res = ctx.res as unknown as Response;
+        ctx.type = 'html';
+        // the render function is magically available in the koa context
+        // as oidc-provider servers is mounted behind the nest server.
+        ctx.body = res.render('error', {
+          exception: {},
+          error: { code: 'koa_html_error_formater', message: true },
+        });
+
+        throw err;
       }
     };
   }
 
   onModuleInit() {
-    this.registerMiddleware(
+    this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.BEFORE,
       OidcProviderRoutes.AUTHORIZATION,
-      this.koaErrorCatcherMiddlewareFactory(this.beforeAuthorizeMiddleware),
+      this.koaHtmlErrorFormatterMiddlewareFactory(
+        this.beforeAuthorizeMiddleware,
+      ),
     );
 
-    this.registerMiddleware(
+    this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.BEFORE,
       OidcProviderRoutes.AUTHORIZATION,
-      this.koaErrorCatcherMiddlewareFactory(
+      this.koaHtmlErrorFormatterMiddlewareFactory(
         this.handleSilentAuthenticationMiddleware,
       ),
     );
 
-    this.registerMiddleware(
+    this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.AFTER,
       OidcProviderRoutes.TOKEN,
-      this.koaErrorCatcherMiddlewareFactory(this.tokenMiddleware),
+      this.tokenMiddleware.bind(this),
     );
 
-    this.registerMiddleware(
+    this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.AFTER,
       OidcProviderRoutes.USERINFO,
-      this.koaErrorCatcherMiddlewareFactory(this.userinfoMiddleware),
+      this.userinfoMiddleware.bind(this),
     );
   }
 

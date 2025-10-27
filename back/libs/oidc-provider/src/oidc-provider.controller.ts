@@ -6,14 +6,11 @@ import {
   Next,
   Post,
   Query,
-  UseFilters,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
-import { ApiContentType } from '@fc/app';
 import { SetStep } from '@fc/flow-steps';
-import { LoggerService } from '@fc/logger';
 
 import {
   AuthorizeParamsDto,
@@ -21,11 +18,10 @@ import {
   RevocationTokenParamsDTO,
 } from './dto';
 import { OidcProviderRoutes } from './enums';
-import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 
 @Controller()
 export class OidcProviderController {
-  constructor(private readonly logger: LoggerService) {}
+  constructor() {}
 
   @Get(OidcProviderRoutes.AUTHORIZATION)
   @Header('cache-control', 'no-store')
@@ -56,16 +52,14 @@ export class OidcProviderController {
   }
 
   @Post(OidcProviderRoutes.TOKEN)
-  @Header('Content-Type', ApiContentType.JSON)
-  @UseFilters(OidcProviderRenderedJsonExceptionFilter)
+  @Header('Content-Type', 'application/json')
   postToken(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }
 
   @Post(OidcProviderRoutes.REVOCATION)
-  @Header('Content-Type', ApiContentType.JSON)
-  @UseFilters(OidcProviderRenderedJsonExceptionFilter)
+  @Header('Content-Type', 'application/json')
   @UsePipes(
     new ValidationPipe({
       whitelist: true,
@@ -77,8 +71,7 @@ export class OidcProviderController {
   }
 
   @Get(OidcProviderRoutes.USERINFO)
-  @Header('Content-Type', ApiContentType.JWT)
-  @UseFilters(OidcProviderRenderedJsonExceptionFilter)
+  @Header('Content-Type', 'application/jwt')
   getUserInfo(@Next() next) {
     // Pass the query to oidc-provider
     return next();
@@ -96,9 +89,8 @@ export class OidcProviderController {
   }
 
   @Get(OidcProviderRoutes.JWKS)
-  @Header('Content-Type', ApiContentType.JWKS)
+  @Header('Content-Type', 'application/jwk-set+json')
   @Header('cache-control', 'public, max-age=600')
-  @UseFilters(OidcProviderRenderedJsonExceptionFilter)
   getJwks(@Next() next) {
     // Pass the query to oidc-provider
     return next();
@@ -106,7 +98,6 @@ export class OidcProviderController {
 
   @Get(OidcProviderRoutes.OPENID_CONFIGURATION)
   @Header('cache-control', 'public, max-age=600')
-  @UseFilters(OidcProviderRenderedJsonExceptionFilter)
   getOpenidConfiguration(@Next() next) {
     // Pass the query to oidc-provider
     return next();

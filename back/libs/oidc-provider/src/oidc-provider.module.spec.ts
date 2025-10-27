@@ -8,7 +8,6 @@ import { LoggerModule as LoggerLegacyModule } from '@fc/logger-legacy';
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
-import { OidcProviderRenderedJsonExceptionFilter } from './filters';
 import { OidcProviderModule } from './oidc-provider.module';
 
 class MockIdentityProviderAdapterService {
@@ -47,10 +46,6 @@ describe('OidcProviderModule Dependency Validation', () => {
     const loggerMock = getLoggerMock();
     configServiceMock.get.mockReturnValue({ threshold: 'info' });
 
-    const jsonExceptionFilterMock = {
-      catch: jest.fn(),
-    };
-
     const compiledModule = await Test.createTestingModule({
       imports: [
         OidcProviderModule.register(
@@ -64,8 +59,6 @@ describe('OidcProviderModule Dependency Validation', () => {
         LoggerLegacyModule,
       ],
     })
-      .overrideFilter(OidcProviderRenderedJsonExceptionFilter)
-      .useValue(jsonExceptionFilterMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .compile();
