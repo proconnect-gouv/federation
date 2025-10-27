@@ -141,7 +141,7 @@ jobs:
 
       - name: Upload Cypress Artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: cypress-snapshots-artifacts
           path: |
@@ -206,7 +206,7 @@ jobs:
 
       - name: Upload Cypress Artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: cypress-${{ matrix.stack }}-artifacts
           path: |
