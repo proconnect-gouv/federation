@@ -19,7 +19,7 @@ Scénario: API token - cas nominal
   Et le corps de la réponse a 6 propriétés
   Et le corps de la réponse a une propriété "access_token"
   Et le corps de la réponse a une propriété "refresh_token"
-  Et le corps de la réponse a une propriété "expires_in" égale à 60
+  Et le corps de la réponse a une propriété "expires_in" égale à 3600
   Et le corps de la réponse a une propriété "id_token"
   Et le corps de la réponse a une propriété "scope"
   Et le corps de la réponse a une propriété "token_type" égale à "Bearer"
@@ -60,7 +60,7 @@ Scénario: API token - id_token
   Et le corps de la réponse a 6 propriétés
   Et le corps de la réponse a une propriété "access_token"
   Et le corps de la réponse a une propriété "refresh_token"
-  Et le corps de la réponse a une propriété "expires_in" égale à 60
+  Et le corps de la réponse a une propriété "expires_in" égale à 3600
   Et le corps de la réponse a une propriété "id_token"
   Et le corps de la réponse a une propriété "scope"
   Et le corps de la réponse a une propriété "token_type" égale à "Bearer"
@@ -130,7 +130,7 @@ Scénario: API token - refresh token
   Et le corps de la réponse a 6 propriétés
   Et le corps de la réponse a une propriété "access_token"
   Et le corps de la réponse a une propriété "refresh_token"
-  Et le corps de la réponse a une propriété "expires_in" égale à 60
+  Et le corps de la réponse a une propriété "expires_in" égale à 3600
   Et le corps de la réponse a une propriété "id_token"
   Et le corps de la réponse a une propriété "scope"
   Et le corps de la réponse a une propriété "token_type" égale à "Bearer"

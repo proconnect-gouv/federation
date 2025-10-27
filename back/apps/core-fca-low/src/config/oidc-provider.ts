@@ -61,13 +61,25 @@ export default {
     },
     acceptQueryParamAccessTokens: true,
     ttl: {
-      AccessToken: 60, // 1 minute
-      AuthorizationCode: 30, // 30 seconds
-      Grant: 7200, // 2h
-      IdToken: 60, // 1 minute
-      Interaction: 7200, // 2h
-      Session: 7200, // 2h
-      RefreshToken: 7200, // 2h
+      // default values can be found in the documentation
+      // https://github.com/panva/node-oidc-provider/blob/v8.x/docs/README.md#ttl
+      Grant: 12 * 60 * 60, // 12h - same as session lifetime
+      Session: 12 * 60 * 60, // 12h - same as session lifetime
+      // eslint-disable-next-line complexity
+      RefreshToken: function RefreshTokenTTL(ctx, token, client) {
+        if (
+          ctx &&
+          ctx.oidc.entities.RotatedRefreshToken &&
+          client.applicationType === 'web' &&
+          client.clientAuthMethod === 'none' &&
+          !token.isSenderConstrained()
+        ) {
+          // Non-Sender Constrained SPA RefreshTokens do not have infinite expiration through rotation
+          return ctx.oidc.entities.RotatedRefreshToken.remainingTTL;
+        }
+
+        return 12 * 60 * 60; // 12h - same as session lifetime
+      },
     },
     acrValues: [
       'eidas1',
