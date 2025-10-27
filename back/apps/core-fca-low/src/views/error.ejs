@@ -7,6 +7,7 @@ const FS = locals.spName ?? notProvided;
 const errorCode = locals.error.code ?? notProvided;
 const errorMessage = locals.errorDetail ?? notProvided;
 const errorId = locals.error.id ?? notProvided;
+const pageTitle = locals.exception.title || "Accès impossible";
 
 const messageToDisplay = "Bonjour\n, je vous signale que j’ai rencontré une erreur dont le code est : " + errorCode + " et dont le message d’erreur est : " + errorMessage  + ".\n L’id de l’erreur est : " + errorId + ". Je souhaitais me connecter à : " + FS + ".\n Mon fournisseur d’identité est : " + FI + "." ;
 const contactHref = locals.exception.contactHref ?? `mailto:support+federation@proconnect.gouv.fr?subject=Signaler l’erreur ${locals.error.code} sur ProConnect&body=${messageToDisplay}`;
@@ -18,7 +19,9 @@ const contactHref = locals.exception.contactHref ?? `mailto:support+federation@p
     <link rel="stylesheet" href="/css/pages/error.css" />
     <link rel="stylesheet" href="/css/pages/interaction.css" />
     <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
-    <title>Erreur</title>
+    <title>
+      <%= pageTitle %> - ProConnect
+    </title>
   </head>
   <body>
     <%- include('includes/skiplinks.ejs') %>
@@ -33,11 +36,7 @@ const contactHref = locals.exception.contactHref ?? `mailto:support+federation@p
           <div class="fr-col-lg-8 fr-col-md-7 fr-col-sm-12">
             <div>
               <h1 data-testid="error-section-title" class="fr-mb-3w">
-                <%  if (locals.exception.title)  { %>
-                  <%= locals.exception.title %>
-                <% } else { %>
-                  Accès impossible
-                <% } %>
+                <%= pageTitle %>
               </h1>
 
               <% if (locals.exception.description)  { %>
