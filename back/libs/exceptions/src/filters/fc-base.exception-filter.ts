@@ -54,27 +54,15 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     this.logger.error(exceptionObject);
   }
 
-  // eslint-disable-next-line complexity
   protected getExceptionCodeFor<T extends BaseException | Error>(
     exception?: T,
   ): string {
-    const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
     let errorCode = '';
 
-    if (exception instanceof OidcProviderNoWrapperException) {
-      return exception.originalError.constructor.name;
-    }
-
-    if (exception instanceof BaseException) {
-      return exception.generic
-        ? exception.error
-        : getCode(exception.scope, exception.code, prefix);
-    }
-
     if (exception instanceof HttpException) {
-      errorCode = getCode(0, exception.getStatus(), prefix);
-    } else if (exception instanceof RpcException) {
-      errorCode = getCode(0, 0, prefix);
+      errorCode = `${exception.getStatus()} - ${exception.constructor.name}`;
+    } else {
+      errorCode = exception.constructor.name;
     }
 
     return errorCode;
