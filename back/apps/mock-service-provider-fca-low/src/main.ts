@@ -205,23 +205,37 @@ app.post('/logout', async (req, res, next) => {
   }
 });
 
-app.post(
-  '/revoke-token',
-  bodyParser.urlencoded({ extended: false }),
-  async (req, res, next) => {
-    try {
-      const config = await getProviderConfig();
-      await client.tokenRevocation(
-        config,
-        req.session?.oauth2token?.access_token,
-      );
-      res.redirect('/');
-    } catch (e) {
-      console.error(e);
-      next(e);
-    }
-  },
-);
+app.post('/refresh-token', async (req, res, next) => {
+  try {
+    const config = await getProviderConfig();
+    const tokens = await client.refreshTokenGrant(
+      config,
+      req.session?.oauth2token?.refresh_token,
+    );
+    const claims = tokens.claims();
+    req.session.idtoken = claims;
+    req.session.id_token_hint = tokens.id_token;
+    req.session.oauth2token = tokens;
+    res.redirect('/');
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+app.post('/revoke-token', async (req, res, next) => {
+  try {
+    const config = await getProviderConfig();
+    await client.tokenRevocation(
+      config,
+      req.session?.oauth2token?.access_token,
+    );
+    res.redirect('/');
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
 
 app.post('/fetch-userinfo', async (req, res, next) => {
   try {
