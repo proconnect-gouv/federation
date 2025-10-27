@@ -220,32 +220,6 @@ class Features {
   readonly resourceIndicators?: FeatureSetting;
 }
 
-class Ttl {
-  @IsNumber()
-  readonly AccessToken: number;
-
-  @IsNumber()
-  readonly AuthorizationCode: number;
-
-  @IsNumber()
-  readonly IdToken: number;
-
-  @IsNumber()
-  readonly Interaction: number;
-
-  @IsNumber()
-  readonly Session: number;
-
-  @IsNumber()
-  @IsOptional()
-  readonly RefreshToken?: number;
-
-  @IsNumber()
-  readonly Grant: number;
-
-  [key: string]: unknown;
-}
-
 class EnabledJWA {
   @IsArray()
   @IsString({ each: true })
@@ -694,9 +668,7 @@ export class Configuration {
   readonly acceptQueryParamAccessTokens: boolean;
 
   @IsObject()
-  @ValidateNested()
-  @Type(() => Ttl)
-  readonly ttl: Ttl;
+  readonly ttl: any;
 
   @IsArray()
   readonly acrValues: string[];
