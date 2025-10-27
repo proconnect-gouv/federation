@@ -25,7 +25,7 @@ Fonctionnalité: API - token-introspection
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
     Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_request"
-    Et le corps de la réponse a une propriété "error_description" égale à "no client authentication mechanism provided (undefined)"
+    Et le corps de la réponse a une propriété "error_description" égale à "no client authentication mechanism provided"
 
   Scénario: client_secret manquant
     Etant donné que je prépare une requête "token-introspection"
@@ -36,7 +36,7 @@ Fonctionnalité: API - token-introspection
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
     Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_client"
-    Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed (the registered client introspection_endpoint_auth_method does not match the provided auth mechanism)"
+    Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed"
 
   Scénario: token manquant
     Etant donné que je prépare une requête "token-introspection"
@@ -47,7 +47,7 @@ Fonctionnalité: API - token-introspection
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
     Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_request"
-    Et le corps de la réponse a une propriété "error_description" égale à "missing required parameter 'token' (undefined)"
+    Et le corps de la réponse a une propriété "error_description" égale à "missing required parameter 'token'"
 
   Scénario: Authentification client_secret invalide
     Etant donné que je prépare une requête "token-introspection"
@@ -58,7 +58,7 @@ Fonctionnalité: API - token-introspection
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
     Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_client"
-    Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed (invalid secret provided)"
+    Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed"
 
   Scénario: Authentification client_id invalide
     Etant donné que je prépare une requête "token-introspection"
@@ -69,4 +69,4 @@ Fonctionnalité: API - token-introspection
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
     Et le corps de la réponse contient une erreur avec les champs error et error_description
     Et le corps de la réponse a une propriété "error" égale à "invalid_client"
-    Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed (client not found)"
+    Et le corps de la réponse a une propriété "error_description" égale à "client authentication failed"
