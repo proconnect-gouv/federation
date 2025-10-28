@@ -82,7 +82,7 @@ async function normalLogin(req, res) {
 
   const loginResult: {
     accountId: string;
-    acr?: string | boolean;
+    acr?: any;
     amr?: string[];
     ts: number;
   } = {

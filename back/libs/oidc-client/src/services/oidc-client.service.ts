@@ -53,7 +53,7 @@ export class OidcClientService {
       id_token: idToken,
       refresh_token: refreshToken,
     } = tokenSet;
-    const { acr, amr = [] }: IdTokenClaims = tokenSet.claims();
+    const { acr, amr }: IdTokenClaims = tokenSet.claims();
 
     const tokenResult = plainToInstance(TokenResultDto, {
       acr,

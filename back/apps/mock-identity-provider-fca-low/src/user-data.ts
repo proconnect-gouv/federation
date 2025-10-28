@@ -97,6 +97,8 @@ export const parseFormDataValue = (value: string) => {
       return undefined;
     case 'empty':
       return '';
+    case 'empty-array':
+      return [];
     default:
       return value;
   }
