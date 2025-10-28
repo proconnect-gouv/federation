@@ -53,6 +53,13 @@ Given(
 );
 
 Given(
+  'le fournisseur de service requiert le claim {string} avec la valeur {string}',
+  function (claim: string, value: string) {
+    setAsRequestedClaims(claim, value);
+  },
+);
+
+Given(
   'le fournisseur de service ne requiert pas le claim {string}',
   function (claim: string) {
     removeFromRequestedClaims(claim);
