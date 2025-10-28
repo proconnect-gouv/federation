@@ -2,6 +2,7 @@ import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 import {
   getBusinessLogs,
+  getEnv,
   getValueByKeyFromFirstEvent,
   hasBusinessLog,
   LogResult,
@@ -14,7 +15,7 @@ import {
 Then(
   /^l'événement "([^"]+)" (est|n'est pas) journalisé(?: avec )?((?:"[^"]+" "(?:[^"]*)"(?: et )?)+)?$/,
   function (event: string, text: string, info?: string) {
-    const { name } = this.env;
+    const { name } = getEnv();
     if (name !== 'docker') {
       cy.log(
         'aucune validation des événements dans les logs possible en dehors de la stack locale',
@@ -50,7 +51,7 @@ Then(
 When(
   /^je mémorise la valeur "([^"]+)" de l'événement "([^"]+)"$/,
   function (key: string, event: string) {
-    const { name } = this.env;
+    const { name } = getEnv();
     if (name !== 'docker') {
       cy.log(
         'aucune validation des événements dans les logs possible en dehors de la stack locale',
@@ -70,7 +71,7 @@ When(
 Then(
   /^la valeur "([^"]+)" est (identique|différente) dans l'événement "([^"]+)"$/,
   function (key: string, text: string, event: string) {
-    const { name } = this.env;
+    const { name } = getEnv();
     if (name !== 'docker') {
       cy.log(
         'aucune validation des événements dans les logs possible en dehors de la stack locale',
