@@ -33,14 +33,22 @@ Before(function () {
     addFCBasicAuthorization();
   }
 
-  if (testEnv === 'docker') {
-    clearBusinessLog();
-  } else if (testEnv === 'integ01') {
-    // Setup interceptions to override set-cookie samesite values
-    const crossDomains = {
-      AC: 'dev-agentconnect.fr',
-    };
-    forceSameSiteNone(crossDomains);
+  switch (testEnv) {
+    case 'kube-mvp0':
+      // Setup interceptions to override set-cookie samesite values
+      forceSameSiteNone({
+        AC: 'dev-agentconnect.fr',
+      });
+      break;
+    case 'integ01':
+      // Setup interceptions to override set-cookie samesite values
+      forceSameSiteNone({
+        AC: 'dev-agentconnect.fr',
+      });
+      break;
+    case 'docker':
+    default:
+      clearBusinessLog();
   }
 });
 
@@ -61,7 +69,13 @@ Before({ tags: '@ignoreDocker' }, function () {
 });
 
 Before({ tags: '@ignoreInteg01' }, function () {
-  if (Cypress.env('TEST_ENV') === 'integ01') {
+  if (['integ01'].includes(Cypress.env('TEST_ENV'))) {
+    this.skip();
+  }
+});
+
+Before({ tags: '@ignoreKubeMvp0' }, function () {
+  if (['kube-mvp0'].includes(Cypress.env('TEST_ENV'))) {
     this.skip();
   }
 });
