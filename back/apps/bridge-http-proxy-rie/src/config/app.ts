@@ -8,7 +8,7 @@ export default {
   name: 'RIE_BRIDGE_PROXY',
   urlPrefix: '',
   httpsOptions: {
-    key: env.file('HTTPS_SERVER_KEY', { optional: true }),
-    cert: env.file('HTTPS_SERVER_CERT', { optional: true }),
+    key: env.file('HTTPS_SERVER_KEY', true),
+    cert: env.file('HTTPS_SERVER_CERT', true),
   },
 } as AppConfig;

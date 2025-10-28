@@ -1,11 +1,8 @@
 import { existsSync, readFileSync } from 'fs';
 
-import { parseBoolean, parseJsonProperty } from '@fc/common';
+import { isEmpty } from 'lodash';
 
-import {
-  ConfigParserFileOptionsInterface,
-  ConfigParserStringOptionsInterface,
-} from '../interfaces';
+import { parseBoolean, parseJsonProperty } from '@fc/common';
 
 export class ConfigParser {
   constructor(
@@ -36,32 +33,30 @@ export class ConfigParser {
     return parseJsonProperty(this.source, fullPath);
   }
 
-  string(
-    path: string,
-    options: ConfigParserStringOptionsInterface = {},
-  ): string | undefined {
+  string(path: string, undefinedIfEmpty: boolean = false): string | undefined {
     const fullPath = this.getFullPath(path);
-    const { undefinedIfEmpty } = options;
     const value = this.source[fullPath];
-    if (undefinedIfEmpty && value === '') {
+    if (undefinedIfEmpty && isEmpty(value)) {
       return undefined;
     }
     return value;
   }
 
   stringArray(path: string): string[] {
-    const parsedString = this.string(path, { undefinedIfEmpty: true });
+    const parsedString = this.string(path, true);
     return parsedString?.split(',') || [];
   }
 
-  number(path: string): number {
+  number(path: string, undefinedIfEmpty: boolean = false): number {
     const fullPath = this.getFullPath(path);
+    const value = this.source[fullPath];
+    if (undefinedIfEmpty && isEmpty(value)) {
+      return undefined;
+    }
     return parseInt(this.source[fullPath], 10);
   }
 
-  file(path: string, options: ConfigParserFileOptionsInterface = {}): string {
-    const { optional } = options;
-
+  file(path: string, undefinedIfEmpty: boolean = false): string {
     const fullPath = this.getFullPath(path);
     const filePath = this.source[fullPath];
 
@@ -71,8 +66,8 @@ export class ConfigParser {
       return readFileSync(filePath, 'utf-8');
     }
 
-    if (optional) {
-      return null;
+    if (undefinedIfEmpty) {
+      return undefined;
     }
 
     throw new Error(`file at path ${filePath} is missing`);

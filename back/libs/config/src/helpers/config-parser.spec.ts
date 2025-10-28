@@ -156,7 +156,7 @@ describe('ConfigParser', () => {
       // Given
       const path = 'foo';
       // When
-      const result = reader.string(path, { undefinedIfEmpty: true });
+      const result = reader.string(path, true);
       // Then
       expect(result).toBe('bar');
     });
@@ -165,7 +165,7 @@ describe('ConfigParser', () => {
       // Given
       const path = 'emptyString';
       // When
-      const result = reader.string(path, { undefinedIfEmpty: false });
+      const result = reader.string(path, false);
       // Then
       expect(result).toBe('');
     });
@@ -174,7 +174,7 @@ describe('ConfigParser', () => {
       // Given
       const path = 'emptyString';
       // When
-      const result = reader.string(path, { undefinedIfEmpty: true });
+      const result = reader.string(path, true);
       // Then
       expect(result).toBe(undefined);
     });
@@ -218,6 +218,14 @@ describe('ConfigParser', () => {
       // Then
       expect(typeof result).toBe('number');
       expect(result).toBe(42);
+    });
+    it('should return undefined', () => {
+      // Given
+      const path = 'emptyString';
+      // When
+      const result = reader.number(path, true);
+      // Then
+      expect(result).toBe(undefined);
     });
   });
 
@@ -269,9 +277,9 @@ describe('ConfigParser', () => {
       const path = 'zin';
       existsSyncMock.mockReturnValueOnce(false);
       // When
-      const result = reader.file(path, { optional: true });
+      const result = reader.file(path, true);
       // Then
-      expect(result).toBe(null);
+      expect(result).toBe(undefined);
     });
 
     it('should throw an error if file is missing but not optional', () => {
@@ -281,7 +289,7 @@ describe('ConfigParser', () => {
 
       expect(
         // When
-        () => reader.file(path, { optional: false }),
+        () => reader.file(path, false),
         // Then
       ).toThrow('file at path /some/path/to/read.txt is missing');
     });
