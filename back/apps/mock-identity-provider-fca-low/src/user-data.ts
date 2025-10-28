@@ -77,28 +77,29 @@ export const createUser = (body) => {
     // > If a Claim is not returned, that Claim Name SHOULD be omitted from the JSON object representing the Claims;
     // > it SHOULD NOT be present with a null or empty string value.
     .omitBy((value) => value === '' || value === null)
-    // cast boolean values
-    // eslint-disable-next-line complexity
-    .mapValues((value) => {
-      switch (value) {
-        case 'true':
-          return true;
-        case 'false':
-          return false;
-        case 'null':
-          return null;
-        case 'undefined':
-          return undefined;
-        case 'empty':
-          return '';
-        default:
-          return value;
-      }
-    })
+    .mapValues(parseFormDataValue)
     .value();
 
   userStorage.set(id, user);
   return id;
+};
+
+// eslint-disable-next-line complexity
+export const parseFormDataValue = (value: string) => {
+  switch (value) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    case 'null':
+      return null;
+    case 'undefined':
+      return undefined;
+    case 'empty':
+      return '';
+    default:
+      return value;
+  }
 };
 
 export const findUserById = (id: string) => {
