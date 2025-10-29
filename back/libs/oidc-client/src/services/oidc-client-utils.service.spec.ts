@@ -5,7 +5,6 @@
  */
 import { isURL } from 'class-validator';
 import { Request } from 'express';
-import { JWK } from 'jose-v2';
 import { CallbackParamsType, errors } from 'openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -257,29 +256,6 @@ describe('OidcClientUtilsService', () => {
       // Then
       expect(state).toEqual('randomStateMock');
       expect(url).toBe('authorizationUrlMock Resolve Value');
-    });
-  });
-
-  describe('wellKnownKeys()', () => {
-    it('should return keys', async () => {
-      // Given
-      const JwkKeyMock = {
-        toJWK: jest.fn().mockReturnValueOnce('a').mockReturnValueOnce('b'),
-      };
-      const spy = jest.spyOn(JWK, 'asKey').mockReturnValue(JwkKeyMock as any);
-
-      oidcClientConfigServiceMock.get.mockReturnValueOnce({
-        jwks: { keys: ['foo', 'bar'] },
-      });
-
-      // When
-      const result = await service.wellKnownKeys();
-      // Then
-      expect(spy).toHaveBeenCalledTimes(2);
-      expect(spy).toHaveBeenCalledWith('foo');
-      expect(spy).toHaveBeenCalledWith('bar');
-      expect(JwkKeyMock.toJWK).toHaveBeenCalledTimes(2);
-      expect(result).toEqual({ keys: ['a', 'b'] });
     });
   });
 

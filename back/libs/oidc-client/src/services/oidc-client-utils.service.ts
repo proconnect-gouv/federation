@@ -5,7 +5,6 @@
  */
 import { isURL } from 'class-validator';
 import { Request } from 'express';
-import { JWK } from 'jose-v2';
 import {
   AuthorizationParameters,
   CallbackExtras,
@@ -73,22 +72,6 @@ export class OidcClientUtilsService {
     const client: Client = await this.issuer.getClient(idpId);
 
     return client.authorizationUrl(authorizationParams);
-  }
-
-  async wellKnownKeys() {
-    const {
-      jwks: { keys },
-    } = await this.oidcClientConfig.get();
-
-    /**
-     * @TODO #427 Check why `JSONWebKeySet` entries are not compatible with `asKey` method
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/427
-     * Maybe we don't need this convertion?
-     */
-
-    const publicKeys = keys.map((key) => JWK.asKey(key as any).toJWK());
-
-    return { keys: publicKeys };
   }
 
   checkState(callbackParams, stateFromSession: string): void {
