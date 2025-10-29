@@ -51,7 +51,6 @@ describe('OidcClientController', () => {
     configService = { get: jest.fn() };
     logger = getLoggerMock();
     oidcClient = {
-      utils: { wellKnownKeys: jest.fn() },
       getToken: jest.fn(),
       getUserinfo: jest.fn(),
       getEndSessionUrl: jest.fn(),
@@ -225,15 +224,6 @@ describe('OidcClientController', () => {
       expect(
         coreFcaControllerService.redirectToIdpWithEmail,
       ).toHaveBeenCalledWith(req, res, email, false);
-    });
-  });
-
-  describe('getWellKnownKeys', () => {
-    it('should return well known keys', async () => {
-      oidcClient.utils.wellKnownKeys.mockResolvedValue('keys');
-      const result = await controller.getWellKnownKeys();
-      expect(result).toBe('keys');
-      expect(oidcClient.utils.wellKnownKeys).toHaveBeenCalled();
     });
   });
 

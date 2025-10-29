@@ -7,7 +7,6 @@ export const trackedEventSteps: Record<TrackedEvent, string> = {
   FC_REDIRECTED_TO_HINTED_IDP: '2.2.0',
   FC_REDIRECTED_TO_HINTED_LOGIN: '2.3.0',
   IDP_CHOSEN: '3.0.0',
-  IDP_REQUESTED_FC_JWKS: '3.1.0',
   IDP_CALLEDBACK: '4.0.0',
   FC_REQUESTED_IDP_TOKEN: '4.1.0',
   FC_REQUESTED_IDP_USERINFO: '4.2.0',

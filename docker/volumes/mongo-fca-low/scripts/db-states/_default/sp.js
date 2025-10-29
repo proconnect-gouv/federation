@@ -41,8 +41,6 @@ const fsa = {
     introspection_encrypted_response_enc: null,
     id_token_signed_response_alg: 'HS256',
     userinfo_signed_response_alg: null,
-    jwks_uri:
-      'https://fsa1-low.docker.dev-franceconnect.fr/client/.well-known/keys',
   },
 
   // -- FSA - FSA2-LOW - Activated - ES256 - encrypted response - No post-logout-redirect-uri - Accept private
@@ -86,8 +84,6 @@ const fsa = {
     introspection_encrypted_response_enc: null,
     id_token_signed_response_alg: 'ES256',
     userinfo_signed_response_alg: 'ES256',
-    jwks_uri:
-      'https://fsa2-low.docker.dev-franceconnect.fr/client/.well-known/keys',
   },
 
   // -- FSA - FSA3-LOW - Deactivated
@@ -131,8 +127,6 @@ const fsa = {
     introspection_encrypted_response_enc: null,
     id_token_signed_response_alg: 'ES256',
     userinfo_signed_response_alg: 'ES256',
-    jwks_uri:
-      'https://fsa3-low.docker.dev-franceconnect.fr/client/.well-known/keys',
   },
 
   // -- FSA - FSA4-LOW - Activated - RS256 - encrypted response - not autorized to request amr claim
@@ -176,8 +170,6 @@ const fsa = {
     introspection_encrypted_response_enc: null,
     id_token_signed_response_alg: 'RS256',
     userinfo_signed_response_alg: 'RS256',
-    jwks_uri:
-      'https://fsa4-low.docker.dev-franceconnect.fr/client/.well-known/keys',
   }
 };
 
