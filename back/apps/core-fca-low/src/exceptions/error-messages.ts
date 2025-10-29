@@ -76,8 +76,6 @@ export const messageDictionary: Record<string, string> = {
   // oidc-provider
   'OidcProvider.exceptions.oidcProviderAuthorizeParams':
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
-  'OidcProvider.exceptions.oidcProviderBinding':
-    'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'OidcProvider.exceptions.oidcProviderInitialisation':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
   'OidcProvider.exceptions.oidcProviderParseJsonClaims':

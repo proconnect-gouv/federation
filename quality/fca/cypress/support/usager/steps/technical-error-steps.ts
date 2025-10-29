@@ -1,4 +1,6 @@
-import { Then } from '@badeball/cypress-cucumber-preprocessor';
+import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
+
+import { getEnv } from '../../common/helpers';
 
 Then('je suis redirigé vers la page erreur technique', function () {
   cy.get('[data-testid="error-section"]').should('be.visible');
@@ -40,3 +42,10 @@ Then(
     );
   },
 );
+
+When('je navigue sur une page inexistante', function () {
+  const { federationRootUrl } = getEnv();
+  cy.visit(`${federationRootUrl}/api/v2/inexistante`, {
+    failOnStatusCode: false,
+  });
+});
