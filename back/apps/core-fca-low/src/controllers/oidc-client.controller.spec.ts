@@ -145,7 +145,7 @@ describe('OidcClientController', () => {
       coreFcaService.selectIdpsFromEmail.mockResolvedValueOnce(providers);
       coreFcaService.hasDefaultIdp.mockReturnValue(true);
 
-      configService.get.mockReturnValue({ defaultIdpId: 'default-idp' });
+      configService.get.mockReturnValue({ defaultIdpId: 'default-idp', scope: "openid" });
       csrfService.renew.mockReturnValue('csrf-token');
       coreFcaService.getSortedDisplayableIdentityProviders.mockReturnValueOnce(
         providers,
@@ -300,8 +300,10 @@ describe('OidcClientController', () => {
       oidcClient.getToken.mockResolvedValue({
         accessToken: 'access-token',
         idToken: 'id-token',
-        acr: 'acr-value',
-        amr: 'amr-value',
+        claims:{
+          acr: 'acr-value',
+          amr: 'amr-value',
+        }
       });
       oidcClient.getUserinfo.mockResolvedValue({
         email: 'user@example.com',
@@ -321,6 +323,9 @@ describe('OidcClientController', () => {
     });
 
     it('should process OIDC callback when identity is valid (no validation errors)', async () => {
+      configService.get.mockReturnValueOnce({ scope: "openid" });
+      configService.get.mockReturnValueOnce({ urlPrefix: '/app' });
+
       await controller.getOidcCallback(
         req as Request,
         res as Response,
@@ -380,9 +385,40 @@ describe('OidcClientController', () => {
       expect(userSession.set).toHaveBeenNthCalledWith(4, {
         spIdentity: { given_name: 'John' },
       });
-      expect(configService.get).toHaveBeenCalledWith('App');
+      expect(configService.get).toHaveBeenNthCalledWith(1, 'OidcClient');
+      expect(configService.get).toHaveBeenNthCalledWith(2, 'App');
       expect(res.redirect).toHaveBeenCalledWith(
         '/app/interaction/interaction123/verify',
+      );
+    });
+
+    it('should augment userInfo identity with claims in idToken', async () => {
+      // Claims that correspond to requested scopes…
+      configService.get.mockReturnValueOnce({ scope: "openid arbitrary" });
+
+      // …and that appear in the ID token…
+      oidcClient.getToken.mockResolvedValue({
+        idToken: 'id-token',
+        claims:{
+          arbitrary: 'user@example.com',
+          ignored: 'ignored'
+        },
+      });
+      // …but not in the userInfo endpoint…
+      oidcClient.getUserinfo.mockResolvedValue({
+        sub: 'sub123',
+      });
+
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+
+      // …will be used to compose the identity
+      expect(sanitizer.getValidatedIdentityFromIdp).toHaveBeenCalledWith(
+        { arbitrary: 'user@example.com', sub: 'sub123' },
+        'idp123',
       );
     });
 
@@ -396,6 +432,8 @@ describe('OidcClientController', () => {
         sanitizedIdentity,
       );
       coreFcaService['isAllowedIdpForEmail'].mockResolvedValue(false);
+
+      configService.get.mockReturnValueOnce({ scope: "openid" });
 
       await controller.getOidcCallback(
         req as Request,

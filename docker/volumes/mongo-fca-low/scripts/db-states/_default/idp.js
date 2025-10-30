@@ -225,6 +225,43 @@ const fia = {
     fqdns: [],
     isRoutingEnabled: true,
   },
+
+  'FIA-ENTRA-LOW': {
+    uid: '9c975b30-2de8-4a41-82a2-0bb9a8e2c382',
+    name: 'Entra ID',
+    siret: '32773318400516',
+    active: true,
+    title: 'Identity Provider Entra ID',
+    trustedIdentity: false,
+    supportEmail: 'support+federation@proconnect.gouv.fr',
+    url: 'https://sts.windows.net/3d474c10-7214-4487-95ff-d0b4443bca64/',
+    statusUrl: 'https://147c233a-7185-43b6-ab3a-a3cc67915025.ciamlogin.com/',
+    discoveryUrl:
+      'https://147c233a-7185-43b6-ab3a-a3cc67915025.ciamlogin.com/147c233a-7185-43b6-ab3a-a3cc67915025/v2.0/.well-known/openid-configuration',
+    discovery: true,
+    clientID: 'e545157d-fc08-46a1-b86c-a4cb5fc24cae',
+    client_secret:
+      'KuHHk9/oQAnA4AmPs7PRmG97trhAwsfkOZ+HeUhUF3BkTtYTiWVA7oBCaqDQ3hXhMOvZcoWQm90m5rvJ2k4EYU8XyWM=',
+    updatedAt: new Date('2019-04-24 17:09:17'),
+    updatedBy: 'admin',
+    endSessionURL:
+      'https://147c233a-7185-43b6-ab3a-a3cc67915025.ciamlogin.com/147c233a-7185-43b6-ab3a-a3cc67915025/oauth2/v2.0/logout',
+    id_token_signed_response_alg: 'RS256',
+    token_endpoint_auth_method: 'client_secret_post',
+    id_token_encrypted_response_alg: '',
+    id_token_encrypted_response_enc: '',
+    userinfo_signed_response_alg: '',
+    userinfo_encrypted_response_alg: '',
+    userinfo_encrypted_response_enc: 'RS256',
+    redirect_uris: [
+      'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback',
+    ],
+    post_logout_redirect_uris: [
+      'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
+    ],
+    fqdns: ['lsttesttenant.onmicrosoft.com'],
+    isRoutingEnabled: true,
+  },
 };
 
 // -- Idps ----------

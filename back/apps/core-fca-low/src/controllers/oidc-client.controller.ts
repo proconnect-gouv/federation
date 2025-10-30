@@ -22,7 +22,7 @@ import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
+import { OidcClientConfig, OidcClientConfigService, OidcClientService, } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 import { Track, TrackingService } from '@fc/tracking';
 import { TrackedEvent } from '@fc/tracking/enums';
@@ -226,12 +226,16 @@ export class OidcClientController {
       sp_name: spName,
     };
 
-    const { accessToken, idToken, acr, amr } = await this.oidcClient.getToken(
+    const { accessToken, idToken, claims } = await this.oidcClient.getToken(
       idpId,
       tokenParams,
       req,
       extraParams,
     );
+    const { amr = [] } = claims;
+    // TODO - map Entra ID values to standard values
+    // c1 = eidas1, c2 = eidas2, c3 = eidas 3 ?
+    const acr = (claims["acrs"] || claims["acr"] || "eidas1").toString();
 
     userSession.set({
       amr,
@@ -247,6 +251,14 @@ export class OidcClientController {
     };
 
     const plainIdpIdentity = await this.oidcClient.getUserinfo(userInfoParams);
+
+    // Augment user info with any claims from ID Token
+    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
+    for (var key of scope.split(" ")) {
+      if (claims[key] && !plainIdpIdentity[key]) {
+        plainIdpIdentity[key] = claims[key];
+      }
+    }
 
     const idpIdentity = await this.sanitizer.getValidatedIdentityFromIdp(
       plainIdpIdentity,
