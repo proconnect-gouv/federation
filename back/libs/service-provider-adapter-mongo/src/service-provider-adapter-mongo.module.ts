@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
+import { IsUrlExtendedConstraint } from '@fc/common/validators/is-url-extended.validator';
 import { CryptographyModule } from '@fc/cryptography';
 import { MongooseModule } from '@fc/mongoose';
 
@@ -15,7 +16,7 @@ import { ServiceProviderAdapterMongoService } from './service-provider-adapter-m
     ]),
     CqrsModule,
   ],
-  providers: [ServiceProviderAdapterMongoService],
+  providers: [ServiceProviderAdapterMongoService, IsUrlExtendedConstraint],
   exports: [ServiceProviderAdapterMongoService],
 })
 export class ServiceProviderAdapterMongoModule {}

@@ -19,4 +19,5 @@ export interface IConfig {
   userTokenExpiresIn: number;
   userAuthenticationMaxAttempt: number;
   instanceFor: AppInstance;
+  allowInsecureUrls: boolean;
 }

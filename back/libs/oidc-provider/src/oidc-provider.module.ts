@@ -1,6 +1,7 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 
+import { IsUrlExtendedConstraint } from '@fc/common/validators/is-url-extended.validator';
 import { ExceptionsModule, FcWebHtmlExceptionFilter } from '@fc/exceptions';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
@@ -62,6 +63,7 @@ export class OidcProviderModule {
         serviceProviderProvider,
         OidcProviderService,
         OidcProviderConfigService,
+        IsUrlExtendedConstraint,
       ],
       exports: [OidcProviderService, RedisModule, serviceProviderProvider],
       controllers: [OidcProviderController],

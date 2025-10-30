@@ -34,6 +34,7 @@ import { CliModule } from './cli/cli.module';
 import { CsurfMiddleware } from '@nest-middlewares/csurf';
 import { TotpMiddleware } from './authentication/middleware/totp.middleware';
 import { LoggerModule } from './logger/logger.module';
+import { IsUrlExtendedConstraint } from './utils/validators';
 
 const otplibProvider = {
   provide: 'otplib',
@@ -64,7 +65,7 @@ const otplibProvider = {
       storage: memoryStorage(),
     }),
   ],
-  providers: [LocalsInterceptor, otplibProvider],
+  providers: [LocalsInterceptor, otplibProvider, IsUrlExtendedConstraint],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {
