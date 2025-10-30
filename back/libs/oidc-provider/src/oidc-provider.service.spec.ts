@@ -1,7 +1,6 @@
 import { Response } from 'express';
 import * as OidcProvider from 'oidc-provider';
 
-import { HttpAdapterHost } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { LoggerService } from '@fc/logger';
@@ -16,7 +15,6 @@ import {
   OidcProviderMiddlewareStep,
 } from './enums';
 import {
-  OidcProviderBindingException,
   OidcProviderInitialisationException,
   OidcProviderRuntimeException,
 } from './exceptions';
@@ -28,16 +26,8 @@ describe('OidcProviderService', () => {
 
   const loggerMock = getLoggerMock();
 
-  const httpAdapterHostMock = {
-    httpAdapter: {
-      use: jest.fn(),
-    },
-  };
-
   const ProviderProxyMock = class {
-    callback() {
-      return true;
-    }
+    callback = jest.fn();
     on = jest.fn();
   } as any;
 
@@ -102,7 +92,6 @@ describe('OidcProviderService', () => {
       providers: [
         LoggerService,
         OidcProviderService,
-        HttpAdapterHost,
         RedisService,
         OidcProviderConfigService,
         OidcProviderConfigAppService,
@@ -112,8 +101,6 @@ describe('OidcProviderService', () => {
       .useValue(loggerMock)
       .overrideProvider(RedisService)
       .useValue(redisMock)
-      .overrideProvider(HttpAdapterHost)
-      .useValue(httpAdapterHostMock)
       .overrideProvider(OidcProviderConfigService)
       .useValue(oidcProviderConfigServiceMock)
       .overrideProvider(OidcProviderConfigAppService)
@@ -164,35 +151,12 @@ describe('OidcProviderService', () => {
       expect(service['provider']).toBeInstanceOf(OidcProvider.Provider);
     });
 
-    it('should mount oidc-provider in express', () => {
-      // When
-      service.onModuleInit();
-      // Then
-      expect(httpAdapterHostMock.httpAdapter.use).toHaveBeenCalledTimes(1);
-      /**
-       * Sadly we can't test `toHaveBeenCalledWith(service['provider'].callback)`
-       * since `̀Provider.callback` is a getter that returns an anonymous function
-       */
-    });
-
     it('should throw if provider can not be instantied', () => {
       // Given
       service['ProviderProxy'] = BadProviderProxyMock;
       // Then
       expect(() => service.onModuleInit()).toThrow(
         OidcProviderInitialisationException,
-      );
-    });
-
-    it('should throw if provider can not be mounted to server', () => {
-      // Given
-      service['ProviderProxy'] = ProviderProxyMock;
-      httpAdapterHostMock.httpAdapter.use.mockImplementation(() => {
-        throw Error('not working');
-      });
-      // Then
-      expect(() => service.onModuleInit()).toThrow(
-        OidcProviderBindingException,
       );
     });
 
@@ -212,6 +176,15 @@ describe('OidcProviderService', () => {
       const result = service.getProvider();
       // Then
       expect(result).toBe(service['provider']);
+    });
+  });
+
+  describe('getCallback', () => {
+    it('should return the oidc-provider instance', () => {
+      // When
+      const result = service.getCallback();
+      // Then
+      expect(result).toBe(service['callback']);
     });
   });
 

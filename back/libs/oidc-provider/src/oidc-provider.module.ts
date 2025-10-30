@@ -1,6 +1,7 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 
+import { ConfigModule } from '@fc/config';
 import { ExceptionsModule, FcWebHtmlExceptionFilter } from '@fc/exceptions';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
@@ -40,6 +41,7 @@ export class OidcProviderModule {
     return {
       module: OidcProviderModule,
       imports: [
+        ConfigModule,
         RedisModule,
         ServiceProviderModule,
         IdentityProviderAdapterMongoModule,

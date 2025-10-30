@@ -7,7 +7,6 @@ import {
 import { HttpOptions } from 'openid-client';
 
 import { Global, Injectable } from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
 
 import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
@@ -19,7 +18,6 @@ import {
   OidcProviderRoutes,
 } from './enums';
 import {
-  OidcProviderBindingException,
   OidcProviderInitialisationException,
   OidcProviderRuntimeException,
 } from './exceptions';
@@ -39,12 +37,12 @@ export const COOKIES = ['_session', '_interaction', '_interaction_resume'];
 export class OidcProviderService {
   private ProviderProxy = Provider;
   private provider: Provider;
+  private callback: ReturnType<Provider['callback']>;
   private configuration;
 
   // Dependency injection can require more than 4 parameters
-  /* eslint-disable-next-line max-params */
+
   constructor(
-    private httpAdapterHost: HttpAdapterHost,
     readonly logger: LoggerService,
     readonly redis: RedisService,
     private readonly configService: OidcProviderConfigService,
@@ -58,8 +56,7 @@ export class OidcProviderService {
    */
 
   onModuleInit() {
-    const { prefix, issuer, configuration } =
-      this.configService.getConfig(this);
+    const { issuer, configuration } = this.configService.getConfig(this);
     this.configuration = configuration;
 
     try {
@@ -68,20 +65,12 @@ export class OidcProviderService {
         httpOptions: this.getHttpOptions.bind(this),
       });
       this.provider.proxy = true;
+      this.callback = this.provider.callback();
     } catch (error) {
       throw new OidcProviderInitialisationException();
     }
 
     this.oidcProviderConfigApp.setProvider(this.provider);
-
-    try {
-      /**
-       * @see https://github.com/panva/node-oidc-provider/blob/main/docs/README.md#mounting-oidc-provider
-       */
-      this.httpAdapterHost.httpAdapter.use(prefix, this.provider.callback());
-    } catch (error) {
-      throw new OidcProviderBindingException();
-    }
 
     this.addLogListenerOnProviderEvents();
   }
@@ -110,6 +99,10 @@ export class OidcProviderService {
    */
   getProvider(): Provider {
     return this.provider;
+  }
+
+  getCallback(): ReturnType<Provider['callback']> {
+    return this.callback;
   }
 
   /**
