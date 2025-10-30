@@ -48,8 +48,7 @@ jobs:
         uses: actions/cache@v4
         id: cache
         with:
-          path: |
-            usr-local-share-cache-yarn
+          path: usr-local-share-cache-yarn
           key: instance-mount-cache-${{ hashFiles('back/Dockerfile') }}
       - name: Inject cache into docker
         uses: reproducible-containers/buildkit-cache-dance@v3.3.0
@@ -128,6 +127,21 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v5
+
+      - name: Mount Cache
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: usr-local-share-cache-yarn
+          key: instance-mount-cache-${{ hashFiles('admin/Dockerfile') }}
+      - name: Inject cache into docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.3.0
+        with:
+          cache-map: |
+            {
+              "usr-local-share-cache-yarn": "/usr/local/share/.cache/yarn"
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
       - name: Build image
         id: build
