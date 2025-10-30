@@ -28,6 +28,17 @@ Fonctionnalité: Connexion avec Claims
     Quand je m'authentifie
     Alors la cinématique n'a pas renvoyé d'amr
 
+  @ignore
+  Scénario: demande de claim amr mais FI qui n'en renvoie pas
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service requiert le claim "amr" avec la valeur "unknown"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Quand je m'authentifie
+    # Currently, the default amr: ["pwd"] is returned
+    Alors la cinématique n'a pas renvoyé d'amr
+
   Scénario: demande du claim given_name essential
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert le claim "given_name"
