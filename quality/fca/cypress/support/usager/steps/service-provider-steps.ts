@@ -177,7 +177,7 @@ Then("la cinématique a renvoyé l'amr {string}", function (amrValue: string) {
 });
 
 Then("la cinématique n'a pas renvoyé d'amr", function () {
-  cy.contains('"amr": "').should('not.exist');
+  cy.get('#idtoken').contains('"amr": ').should('not.exist');
 });
 
 Then(

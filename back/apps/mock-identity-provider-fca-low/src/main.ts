@@ -7,7 +7,7 @@ import Provider from 'oidc-provider-v8';
 
 import configuration from './oidc-provider-support/configuration';
 import MemoryAdapter from './oidc-provider-support/memory_adapter.js';
-import { createUser, getDefaultUser } from './user-data';
+import { createUser, getDefaultUser, parseFormDataValue } from './user-data';
 
 const {
   PORT = 3000,
@@ -52,6 +52,7 @@ app.get('/interaction/:uid', async (req, res, next) => {
           get(prompt.details, 'acr.values.0') ||
           params?.acr_values?.split(' ')[0] ||
           'eidas1',
+        amr: 'pwd',
         debugInfo: JSON.stringify(
           {
             oidcProviderPrompt: prompt,
@@ -76,18 +77,30 @@ async function normalLogin(req, res) {
     prompt: { name },
   } = await provider.interactionDetails(req, res);
   assert.equal(name, 'login');
-  const { acr, ...userAttributes } = req.body;
+  const { acr, amr, ...userAttributes } = req.body;
   const userId = createUser(userAttributes);
 
+  const loginResult: {
+    accountId: string;
+    acr?: any;
+    amr?: string[];
+    ts: number;
+  } = {
+    accountId: userId,
+    // the user is considered to have just logged in
+    ts: Date.now(),
+  };
+
+  if (acr !== '') {
+    loginResult.acr = parseFormDataValue(acr);
+  }
+
+  if (amr !== '') {
+    loginResult.amr = amr.split(',');
+  }
+
   const result = {
-    login: {
-      accountId: userId,
-      acr,
-      // the user is considered to have just logged in
-      ts: Date.now(),
-      // the user is considered to have logged with a password
-      amr: ['pwd'],
-    },
+    login: loginResult,
     // skip the consent
     consent: {},
   };

@@ -18,6 +18,9 @@
             <br>
             <details>
                 <summary id="open-custom-configuration">Usage avancé</summary>
+                <p><small>
+                    Liste des valeurs qui seront typés en sortie de l'idp : 'true', 'false', 'null', 'undefined', 'empty', 'empty-array'. Les champs laissés vide ne seront pas renvoyés.
+                </small></p>
                 <div>
                     <label for="given_name">given_name</label>
                     <input type="text" id="given_name" name="given_name" value="<%= locals.defaultUser.given_name %>">
@@ -37,6 +40,10 @@
                 <div>
                     <label for="acr">acr</label>
                     <input type="text" id="acr" name="acr" value="<%= locals.acr %>">
+                </div>
+                <div>
+                    <label for="amr">amr (séparés par des virgules)</label>
+                    <input type="text" id="amr" name="amr" value="<%= locals.amr %>">
                 </div>
                 <div>
                     <label for="sub">sub</label>
