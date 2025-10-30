@@ -101,6 +101,38 @@ export class OidcProviderService {
         });
       });
     });
+
+    /* istanbul ignore next */
+    this.provider.on('interaction.saved', (interaction) => {
+      const {
+        params: {
+          client_id,
+          login_hint,
+          prompt,
+          redirect_uri,
+          scope,
+          claims,
+          response_type,
+          idp_hint,
+        },
+        jti,
+      } = interaction;
+
+      this.logger.info({
+        code: `oidc-provider-info:interaction.saved`,
+        interaction: {
+          client_id,
+          login_hint,
+          prompt,
+          redirect_uri,
+          response_type,
+          scope,
+          claims,
+          idp_hint,
+          id: jti,
+        },
+      });
+    });
   }
 
   /**
