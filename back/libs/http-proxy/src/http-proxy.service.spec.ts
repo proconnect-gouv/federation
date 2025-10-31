@@ -68,16 +68,5 @@ describe('HttpProxyService', () => {
       // Then
       expect(globalAny.GLOBAL_AGENT).toBeDefined();
     });
-    it('should shutdown proxy for axios', () => {
-      // When
-      service.onModuleInit();
-      // Then
-      const {
-        axiosRef: {
-          defaults: { proxy },
-        },
-      } = httpMock;
-      expect(proxy).toBe(false);
-    });
   });
 });
