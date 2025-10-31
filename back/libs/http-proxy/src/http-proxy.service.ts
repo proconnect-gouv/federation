@@ -1,16 +1,12 @@
 import { bootstrap } from 'global-agent';
 
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger';
 
 @Injectable()
 export class HttpProxyService {
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly httpService: HttpService,
-  ) {}
+  constructor(private readonly logger: LoggerService) {}
 
   /**
    * Set up `global-agent`
@@ -28,8 +24,5 @@ export class HttpProxyService {
     this.logger.info(
       `Set up HTTPS proxy to: ${globalThis['GLOBAL_AGENT'].HTTPS_PROXY}`,
     );
-
-    // Force Axios to not use Proxy Request library for RNIPP calls
-    this.httpService.axiosRef.defaults.proxy = false;
   }
 }
