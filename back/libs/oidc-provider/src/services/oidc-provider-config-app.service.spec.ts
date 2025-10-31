@@ -509,9 +509,12 @@ describe('OidcProviderConfigAppService', () => {
       expect(ctx).toHaveProperty('type', 'html');
       expect(renderMock).toHaveBeenCalledTimes(1);
       expect(renderMock).toHaveBeenCalledWith('error', {
-        exception: {},
-        error: { code: 'access_denied', message: true },
-        errorDetail: 'Not allowed',
+        error: {
+          code: 'oidc-provider-rendered-error:access_denied',
+          id: expect.any(String),
+          message: 'Not allowed',
+        },
+        exceptionDisplay: {},
       });
       expect(ctx).toHaveProperty('body', renderReturnMock);
     });

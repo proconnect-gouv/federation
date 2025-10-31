@@ -1,4 +1,4 @@
-import { FcException } from '@fc/exceptions';
+import { FcException } from '../exceptions/fc.exception';
 
 export class CoreFcaBaseException extends FcException {
   public scope = 50;
@@ -11,4 +11,5 @@ export class CoreFcaBaseException extends FcException {
   public displayContact = true;
   public contactMessage =
     'Vous pouvez nous signaler cette erreur en nous écrivant.';
+  public contactHref: string;
 }
