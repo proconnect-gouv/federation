@@ -7,7 +7,7 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
 import { ExceptionsConfig } from '../dto';
-import { getCode, getStackTraceArray } from '../helpers';
+import { getCode } from '../helpers';
 
 @Catch()
 export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
@@ -39,9 +39,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
       code,
       id,
       msg: exception.ui,
-      originalError: exception.originalError,
-      reason: exception.log,
-      stackTrace: getStackTraceArray(exception),
+      stackTrace: exception.stack || '',
       type: exception.constructor.name,
       statusCode: exception.http_status_code,
     };
@@ -58,7 +56,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
 
     if (exception instanceof BaseException) {
       return exception.generic
-        ? exception.error
+        ? exception.message
         : getCode(exception.scope, exception.code, prefix);
     }
 
