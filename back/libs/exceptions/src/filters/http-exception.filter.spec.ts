@@ -1,8 +1,11 @@
-import { ArgumentsHost, HttpException } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  BadRequestException,
+  HttpException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { generateErrorId } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
@@ -10,10 +13,11 @@ import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
+import { generateErrorId } from '../helpers';
 import { HttpExceptionFilter } from './http-exception.filter';
 
-jest.mock('@fc/exceptions/helpers', () => ({
-  ...jest.requireActual('@fc/exceptions/helpers'),
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
   generateErrorId: jest.fn(),
 }));
 
@@ -37,21 +41,9 @@ describe('HttpExceptionFilter', () => {
   const resMock = {
     status: jest.fn(),
     render: jest.fn(),
-  };
+  } as any;
 
-  const codeMock = Symbol('code');
-  const idMock = Symbol('id');
-
-  const paramsMock = {
-    res: resMock,
-    httpResponseCode: 500,
-    error: {
-      code: codeMock,
-      id: idMock,
-      message: 'exceptions.http.500',
-    },
-    errorDetail: '',
-  };
+  const idMock = 'error-id-123';
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -75,19 +67,15 @@ describe('HttpExceptionFilter', () => {
 
     filter = module.get<HttpExceptionFilter>(HttpExceptionFilter);
 
-    filter['logException'] = jest.fn();
-    filter['errorOutput'] = jest.fn();
-    filter['getExceptionCodeFor'] = jest.fn().mockReturnValue(codeMock);
-
     hostMock.switchToHttp.mockReturnThis();
     hostMock.getResponse.mockReturnValue(resMock);
-    generateErrorIdMock.mockReturnValue(idMock as unknown as string);
+
+    generateErrorIdMock.mockReturnValue(idMock);
 
     resMock.status.mockReturnThis();
+    configMock.get.mockReturnValue({ prefix: 'Y' });
 
     exceptionMock = new HttpException('message', 500);
-
-    Object.assign(paramsMock, { exception: exceptionMock });
   });
 
   it('should be defined', () => {
@@ -95,29 +83,34 @@ describe('HttpExceptionFilter', () => {
   });
 
   describe('catch', () => {
-    beforeEach(() => {
-      filter['shouldNotRedirect'] = jest.fn().mockReturnValue(false);
-      filter['errorOutput'] = jest.fn();
-    });
-
-    it('should log the exception', () => {
+    it('should log the exception with code, id, message and original exception', () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
       // Then
-      expect(filter['logException']).toHaveBeenCalledExactlyOnceWith(
-        codeMock,
-        idMock,
-        exceptionMock,
-      );
+      expect(loggerMock.error).toHaveBeenCalledOnce();
     });
 
-    it('should output the error', () => {
+    it('should output the error with error object, exception and response', () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
       // Then
-      expect(filter['errorOutput']).toHaveBeenCalledWith(paramsMock);
+      expect(resMock.render).toHaveBeenCalledOnce();
+    });
+
+    it('should join BadRequestException messages into a single message', () => {
+      // Given
+      const badRequest = new BadRequestException({
+        message: ['first error', 'second error'],
+      } as any);
+
+      // When
+      filter.catch(badRequest, hostMock as unknown as ArgumentsHost);
+
+      // Then
+      expect(loggerMock.error).toHaveBeenCalledOnce();
+      expect(resMock.render).toHaveBeenCalledOnce();
     });
   });
 });

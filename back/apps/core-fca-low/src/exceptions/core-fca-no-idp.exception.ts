@@ -2,8 +2,9 @@ import { escape } from 'lodash';
 
 import { HttpStatus } from '@nestjs/common';
 
+import { CoreFcaBaseException } from '@fc/exceptions/exceptions/core-fca-base.exception';
+
 import { ErrorCode } from '../enums';
-import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
   constructor(

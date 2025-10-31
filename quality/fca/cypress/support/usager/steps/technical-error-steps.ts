@@ -43,9 +43,9 @@ Then(
   },
 );
 
-When('je navigue sur une page inexistante', function () {
+When('je navigue sur la page {string}', function (path: string) {
   const { federationRootUrl } = getEnv();
-  cy.visit(`${federationRootUrl}/api/v2/inexistante`, {
+  cy.visit(`${federationRootUrl}${path}`, {
     failOnStatusCode: false,
   });
 });

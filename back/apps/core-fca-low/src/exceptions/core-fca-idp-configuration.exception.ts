@@ -1,7 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { CoreFcaBaseException } from '@fc/exceptions/exceptions/core-fca-base.exception';
+
 import { ErrorCode } from '../enums';
-import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaIdpConfigurationException extends CoreFcaBaseException {
   public code = ErrorCode.MISCONFIGURED_PROVIDER;

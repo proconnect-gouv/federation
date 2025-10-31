@@ -3,6 +3,10 @@ export const messageDictionary: Record<string, string> = {
   'exceptions.default_message':
     "Une erreur s'est produite, veuillez réessayer ultérieurement",
 
+  // HttpException
+  'exceptions.http.404':
+    'Nous n’arrivons pas à trouver la page que vous souhaitez afficher.',
+
   // bridge-http-proxy
   'BridgeHttpProxy.exceptions.bridgeHttpProxyCsmr':
     'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
