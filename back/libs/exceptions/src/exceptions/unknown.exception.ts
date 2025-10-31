@@ -1,4 +1,4 @@
-import { BaseException } from '@fc/base-exception';
+import { BaseException } from './base.exception';
 
 export class UnknownException extends BaseException {
   public documentation =

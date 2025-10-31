@@ -1,7 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { CoreFcaBaseException } from '@fc/exceptions/exceptions/core-fca-base.exception';
+
 import { ErrorCode } from '../enums';
-import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
   public code = ErrorCode.UNAUTHORIZED_EMAIL;
@@ -17,7 +18,6 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
   public declare description: string;
   public displayContact = true;
   public declare contactMessage: string;
-  public contactHref: string;
 
   constructor(
     private spName: string,
@@ -31,6 +31,6 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
       `✅ ${this.authorizedFqdns.join(', ')}\n` +
       `❌ gmail, yahoo, orange`;
     this.contactMessage = `Si cela ne fonctionne pas, contactez le support utilisateur du service ${this.spName} pour régler le problème.`;
-    this.contactHref = `mailto:${this.spContact}`;
+    this.contactHref = `mailto:${encodeURIComponent(this.spContact)}`;
   }
 }

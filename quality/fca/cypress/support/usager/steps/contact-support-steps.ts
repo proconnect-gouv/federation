@@ -3,13 +3,8 @@ import { Then } from '@badeball/cypress-cucumber-preprocessor';
 import { ChainableElement } from '../../common/types';
 
 function getContactSupportLink(): ChainableElement {
-  return cy.get('a[href*="mailto:support+federation@proconnect.gouv.fr"] ');
-}
-
-function filterErrorId(message: string): string {
-  return message.replace(
-    /L’id de l’erreur est : [a-f0-9-]{36}/i,
-    'L’id de l’erreur est : <errorId>',
+  return cy.get(
+    `a[href*="mailto:${encodeURIComponent('support+federation@proconnect.gouv.fr')}"]`,
   );
 }
 
@@ -27,13 +22,18 @@ Then(
     getContactSupportLink()
       .invoke('attr', 'href')
       .then((hrefValue) => {
-        cy.log(hrefValue);
+        const matches = hrefValue.match(/subject=([^&]+)&body=([^&]+)/);
+        expect(matches).to.have.length(3);
+        const subject = decodeURIComponent(matches[1]);
+        const body = decodeURIComponent(matches[2]);
 
-        const filteredReturnedHref = filterErrorId(hrefValue);
-
-        const expectedHref = `mailto:support+federation@proconnect.gouv.fr?subject=Signaler l’erreur Y500015 sur ProConnect&body=Bonjour\n, je vous signale que j’ai rencontré une erreur dont le code est : ${errorCode} et dont le message d’erreur est : non renseigné.\n L’id de l’erreur est : <errorId>. Je souhaitais me connecter à : ${spName}.\n Mon fournisseur d’identité est : ${idpName}.`;
-
-        expect(expectedHref).to.equal(filteredReturnedHref);
+        expect(subject).to.contains(
+          `Signaler l’erreur ${errorCode} sur ProConnect`,
+        );
+        expect(body).to.contains(`Je souhaitais me connecter à « ${spName} ».`);
+        expect(body).to.contains(
+          `Mon fournisseur d’identité est « ${idpName} ».`,
+        );
       });
   },
 );

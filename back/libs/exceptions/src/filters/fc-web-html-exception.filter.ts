@@ -1,71 +1,155 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  Injectable,
-} from '@nestjs/common';
+import { Response } from 'express';
 
-import { ApiErrorParams } from '@fc/app';
-import { BaseException } from '@fc/base-exception';
+import { ArgumentsHost, Catch, Injectable } from '@nestjs/common';
+import { BaseExceptionFilter } from '@nestjs/core';
+
 import { ConfigService } from '@fc/config';
 import { messageDictionary } from '@fc/core/exceptions/error-messages';
+import { ExceptionsConfig } from '@fc/exceptions/dto';
+import { ErrorPageParams } from '@fc/exceptions/types';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
-import { generateErrorId } from '../helpers';
-import { FcBaseExceptionFilter } from './fc-base.exception-filter';
+import { BaseException } from '../exceptions/base.exception';
+import { CoreFcaBaseException } from '../exceptions/core-fca-base.exception';
+import { generateErrorId, getCode, getStackTraceArray } from '../helpers';
 
 @Catch(BaseException)
 @Injectable()
-export class FcWebHtmlExceptionFilter
-  extends FcBaseExceptionFilter
-  implements ExceptionFilter
-{
+export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException> {
   constructor(
     protected readonly config: ConfigService,
     protected readonly session: SessionService,
     protected readonly logger: LoggerService,
   ) {
-    super(config, logger);
+    super();
   }
 
   catch(exception: BaseException, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const res = ctx.getResponse();
+    const res = host.switchToHttp().getResponse();
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
-
-    const exceptionParam: ApiErrorParams = {
-      exception,
-      res,
-      error: { code, id, message: exception.ui },
-      httpResponseCode: this.getHttpStatus(exception),
-      errorDetail: undefined,
-    };
-
-    this.logException(code, id, exception);
-
-    this.errorOutput(exceptionParam);
-  }
-
-  protected errorOutput(errorParam: ApiErrorParams): void {
-    const { httpResponseCode, res } = errorParam;
-
-    const key = errorParam.error.message;
-    const staticDetail = key
-      ? messageDictionary[key] ||
+    const staticMessage = exception.ui
+      ? messageDictionary[exception.ui] ||
         messageDictionary['exceptions.default_message']
       : undefined;
-    const errorDetail = errorParam.exception.generic
-      ? errorParam.exception.error_description
-      : staticDetail;
+    const message = exception.generic
+      ? exception.error_description
+      : staticMessage;
 
-    // These two params are used to generate contactHref
-    errorParam.idpName = this.session.get('User', 'idpName');
-    errorParam.spName = this.session.get('User', 'spName');
+    this.logException(code, id, message, exception);
 
-    res.status(httpResponseCode);
-    res.render('error', { ...errorParam, errorDetail });
+    this.errorOutput({
+      error: { code, id, message },
+      exception,
+      res,
+    });
+  }
+
+  protected getExceptionCodeFor(exception: BaseException): string {
+    const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
+
+    return exception.generic
+      ? exception.error
+      : getCode(exception.scope, exception.code, prefix);
+  }
+
+  protected logException<T extends BaseException>(
+    code: string,
+    id: string,
+    message: string,
+    exception: T,
+  ): void {
+    const exceptionObject = {
+      code,
+      id,
+      message,
+      originalError: exception.originalError,
+      reason: exception.log,
+      stackTrace: getStackTraceArray(exception),
+      type: exception.constructor.name,
+      statusCode: exception.http_status_code,
+    };
+
+    this.logger.error(exceptionObject);
+  }
+
+  protected errorOutput({
+    error,
+    exception,
+    res,
+  }: {
+    error: { code: string; id: string; message: string };
+    exception: BaseException;
+    res: Response;
+  }): void {
+    const errorPageParams: ErrorPageParams = {
+      error,
+      exceptionDisplay: {},
+    };
+
+    if (exception instanceof CoreFcaBaseException) {
+      const {
+        contactHref,
+        title,
+        description,
+        displayContact,
+        contactMessage,
+        illustration,
+      } = exception;
+      errorPageParams.exceptionDisplay = {
+        contactHref: displayContact
+          ? contactHref || this.getDefaultContactHref(error)
+          : undefined,
+        title,
+        description,
+        displayContact,
+        contactMessage,
+        illustration,
+      };
+    }
+
+    res.status(exception.http_status_code);
+    res.render('error', errorPageParams);
+  }
+
+  // eslint-disable-next-line complexity
+  protected getDefaultContactHref(error: {
+    code: string;
+    id: string;
+    message: string;
+  }): string {
+    const notProvided = 'non renseigné';
+
+    const idpName = this.session.get('User', 'idpName') ?? notProvided;
+    const spName = this.session.get('User', 'spName') ?? notProvided;
+
+    const errorCode = error.code ?? notProvided;
+    const errorId = error.id ?? notProvided;
+    const errorMessage = error.message ?? notProvided;
+
+    const defaultEmailBody = encodeURIComponent(`Bonjour,
+
+Je vous signale que j’ai rencontré une erreur sur ProConnect :
+
+- Code de l’erreur : « ${errorCode} » ;
+- Identifiant de l’erreur : « ${errorId} » ;
+- Message d’erreur : « ${errorMessage} ».
+
+Je souhaitais me connecter à « ${spName} ».
+
+Mon fournisseur d’identité est « ${idpName} ».
+
+Cordialement,
+`);
+    const defaultEmailSubject = encodeURIComponent(
+      `Signaler l’erreur ${errorCode} sur ProConnect`,
+    );
+    const defaultEmailAddress = encodeURIComponent(
+      'support+federation@proconnect.gouv.fr',
+    );
+
+    return `mailto:${defaultEmailAddress}?subject=${defaultEmailSubject}&body=${defaultEmailBody}`;
   }
 }
