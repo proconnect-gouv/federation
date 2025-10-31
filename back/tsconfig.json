@@ -59,8 +59,6 @@
       "@fc/microservices/*": ["libs/microservices/src/*"],
       "@fc/oidc": ["libs/oidc/src"],
       "@fc/oidc/*": ["libs/oidc/src/*"],
-      "@fc/http-proxy": ["libs/http-proxy/src"],
-      "@fc/http-proxy/*": ["libs/http-proxy/src/*"],
       "@fc/session": ["libs/session/src"],
       "@fc/session/*": ["libs/session/src/*"],
       "@fc/email-validator": ["libs/email-validator/src"],

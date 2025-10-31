@@ -8,7 +8,6 @@ import { CsrfModule, CsrfService } from '@fc/csrf';
 import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
 import { ExceptionsModule } from '@fc/exceptions';
 import { FlowStepsModule } from '@fc/flow-steps';
-import { HttpProxyModule } from '@fc/http-proxy';
 import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
@@ -56,7 +55,6 @@ export class AppModule {
         MongooseModule.forRoot(),
         ServiceProviderAdapterMongoModule,
         IdentityProviderAdapterMongoModule,
-        HttpProxyModule,
         OidcAcrModule,
         // The Exceptions module should be imported first so that OidcProvider ExceptionFilters have precedence
         ExceptionsModule,
