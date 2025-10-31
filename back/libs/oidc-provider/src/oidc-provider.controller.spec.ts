@@ -133,6 +133,17 @@ describe('OidcProviderController', () => {
     });
   });
 
+  describe('postUserInfo()', () => {
+    it('should rewrite url and call provider callback', () => {
+      const { req, res } = buildReqRes('/userinfo');
+
+      const result = controller.postUserInfo(req, res);
+
+      expect(req.url).toBe('/userinfo');
+      expectCommonBehavior(req, res, result);
+    });
+  });
+
   describe('getEndSession()', () => {
     it('should rewrite url and call provider callback', () => {
       const { req, res } = buildReqRes('/end-session');
