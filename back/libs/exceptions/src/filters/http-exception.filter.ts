@@ -1,39 +1,99 @@
+import { Response } from 'express';
+
 import {
   ArgumentsHost,
+  BadRequestException,
   Catch,
-  ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
+import { BaseExceptionFilter } from '@nestjs/core';
 
-import { ApiErrorParams } from '@fc/app';
+import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
+import { SessionService } from '@fc/session';
 
-import { generateErrorId } from '../helpers';
-import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
+import { httpErrorDisplays } from '../config/http-error-display';
+import { ExceptionsConfig } from '../dto';
+import { generateErrorId, getCode, getStackTraceArray } from '../helpers';
+import { ErrorPageParams } from '../types/error-page-params';
 
 @Catch(HttpException)
-export class HttpExceptionFilter
-  extends FcWebHtmlExceptionFilter
-  implements ExceptionFilter
-{
-  catch(exception, host: ArgumentsHost) {
+export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
+  constructor(
+    protected readonly config: ConfigService,
+    protected readonly session: SessionService,
+    protected readonly logger: LoggerService,
+  ) {
+    super();
+  }
+
+  catch(exception: HttpException, host: ArgumentsHost) {
     const res = host.switchToHttp().getResponse();
 
-    const status = (exception as unknown as HttpException).getStatus();
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
+    let message = exception.message;
 
-    const message = `exceptions.http.${status}`;
+    if (exception instanceof BadRequestException) {
+      const badRequestResponse = exception.getResponse() as {
+        message: string[];
+      };
 
-    this.logException(code, id, exception);
+      message = badRequestResponse.message.join(', ');
+    }
 
-    const exceptionParam: ApiErrorParams = {
+    this.logException(code, id, message, exception);
+
+    this.errorOutput({
+      error: { code, id, message },
       exception,
       res,
-      error: { code, id, message },
-      httpResponseCode: status,
-      errorDetail: '',
+    });
+  }
+
+  protected getExceptionCodeFor(exception: HttpException): string {
+    const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
+
+    return getCode(0, exception.getStatus(), prefix);
+  }
+
+  protected logException(
+    code: string,
+    id: string,
+    message: string,
+    exception: HttpException,
+  ): void {
+    const exceptionObject = {
+      code,
+      id,
+      message,
+      originalError: exception,
+      stackTrace: getStackTraceArray(exception),
+      type: exception.constructor.name,
+      statusCode: exception.getStatus(),
     };
 
-    return this.errorOutput(exceptionParam);
+    this.logger.error(exceptionObject);
+  }
+
+  protected errorOutput({
+    error,
+    exception,
+    res,
+  }: {
+    error: {
+      code: string;
+      id: string;
+      message: string;
+    };
+    exception: HttpException;
+    res: Response;
+  }): void {
+    res.status(exception.getStatus());
+    const errorPageParams: ErrorPageParams = {
+      exceptionDisplay: httpErrorDisplays[exception.getStatus()] || {},
+      error,
+    };
+    res.render('error', errorPageParams);
   }
 }
