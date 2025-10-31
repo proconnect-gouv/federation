@@ -1,6 +1,9 @@
 name: 🐳 Build docker images
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/build-docker.yml'
   push:
     branches:
       - main
