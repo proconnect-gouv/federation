@@ -28,8 +28,5 @@ export class HttpProxyService {
     this.logger.info(
       `Set up HTTPS proxy to: ${globalThis['GLOBAL_AGENT'].HTTPS_PROXY}`,
     );
-
-    // Force Axios to not use Proxy Request library for RNIPP calls
-    this.httpService.axiosRef.defaults.proxy = false;
   }
 }
