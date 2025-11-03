@@ -1,4 +1,4 @@
-import { BaseException } from '@fc/base-exception';
+import { BaseException } from '@fc/exceptions';
 
 import { ErrorCode } from '../enums';
 

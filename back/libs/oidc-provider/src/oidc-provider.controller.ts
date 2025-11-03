@@ -53,6 +53,8 @@ export class OidcProviderController {
     new ValidationPipe({
       transform: true,
       whitelist: true,
+      disableErrorMessages: false,
+      validationError: { target: true },
     }),
   )
   @SetStep()

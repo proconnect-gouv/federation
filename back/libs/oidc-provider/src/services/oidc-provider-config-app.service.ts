@@ -12,6 +12,8 @@ import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
 import { Routes } from '@fc/core/enums';
+import { generateErrorId } from '@fc/exceptions/helpers';
+import { ErrorPageParams } from '@fc/exceptions/types/error-page-params';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
@@ -242,14 +244,20 @@ export class OidcProviderConfigAppService {
     { error, error_description },
     _err,
   ) => {
+    const code = `oidc-provider-rendered-error:${error}`;
+    const id = generateErrorId();
+    const message = error_description;
+
+    this.logger.error({ code, id, message });
+
     const res = ctx.res as unknown as Response;
     ctx.type = 'html';
     // the render function is magically available in the koa context
     // as oidc-provider servers is mounted behind the nest server.
-    ctx.body = res.render('error', {
-      exception: {},
-      error: { code: error, message: true },
-      errorDetail: error_description,
-    });
+    const errorPageParams: ErrorPageParams = {
+      exceptionDisplay: {},
+      error: { code, id, message },
+    };
+    ctx.body = res.render('error', errorPageParams);
   };
 }
