@@ -210,6 +210,7 @@ export class IdentityProviderService {
         identityProviderDto.token_endpoint_auth_method,
       supportEmail: identityProviderDto.supportEmail,
       isRoutingEnabled: identityProviderDto.isRoutingEnabled,
+      isEntraID: identityProviderDto.isEntraID,
       fqdns: identityProviderDto.fqdns,
     };
 
@@ -258,6 +259,7 @@ export class IdentityProviderService {
       jwksUrl: inputProvider.jwksURL,
       issuer: inputProvider.url,
       isRoutingEnabled: inputProvider.isRoutingEnabled,
+      isEntraID: inputProvider.isEntraID,
       fqdns: inputProvider.fqdns,
     };
   }

@@ -31,6 +31,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
     userinfo_signed_response_alg: 'RS512',
     siret: '81801912700021',
     isRoutingEnabled: true,
+    isEntraID: true,
   };
 
   const discoveryIdpAdapterMongoMock = {
