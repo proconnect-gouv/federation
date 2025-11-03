@@ -1,5 +1,5 @@
 #language: fr
-@ignoreInteg01
+@usager @ignoreInteg01 @ci
 Fonctionnalité: Connexion Partenaires
   Scénario: Erreur "privé non autorisé" Y500015
     Étant donné que je navigue sur la page fournisseur de service

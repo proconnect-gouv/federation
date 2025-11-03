@@ -1,8 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { CoreFcaBaseException } from '@fc/exceptions/exceptions/core-fca-base.exception';
-
 import { ErrorCode } from '../enums';
+import { CoreFcaBaseException } from './core-fca-base.exception';
 
 export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
   public documentation =
@@ -16,6 +15,7 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
   public description = this.documentation;
   public displayContact = true;
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
+  public contactHref: string;
 
   constructor(
     public contact: string,
@@ -23,28 +23,8 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
     public validationTarget: string = '',
   ) {
     super();
-
-    const emailBody = encodeURIComponent(`Bonjour,
-
-Voici une erreur remontée par ProConnect suite à une tentative de connexion infructueuse.
-
-${this.validationConstraints}
-
-Voici l'identité telle que reçue par ProConnect :
-
-${this.validationTarget}
-
-ProConnect a vérifié que l'erreur ne venait pas de leur côté.
-
-Merci de corriger mes informations d'identité afin que ProConnect reconnaisse mon identité et que je puisse me connecter.
-
-Cordialement,
-`);
-    const emailSubject = encodeURIComponent(
-      'Mise à jour de mon profil pour compatibilité ProConnect',
-    );
-    const emailAddress = encodeURIComponent(this.contact);
-
-    this.contactHref = `mailto:${emailAddress}?subject=${emailSubject}&body=${emailBody}`;
+    this.contactHref = `mailto:${this.contact}?subject=Mise à jour de mon profil pour compatibilité ProConnect&body=${encodeURIComponent(
+      `Bonjour,\nVoici une erreur remontée par ProConnect suite à une tentative de connexion infructueuse.\n${this.validationConstraints}\nVoici l'identité telle que reçue par ProConnect :\n${this.validationTarget}\nProConnect a vérifié que l'erreur ne venait pas de leur côté.\nMerci de corriger mes informations d'identité afin que ProConnect reconnaisse mon identité et que je puisse me connecter.\nCordialement,`,
+    )}`;
   }
 }
