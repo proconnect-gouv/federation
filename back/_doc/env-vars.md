@@ -19,6 +19,7 @@
 | App_HTTPS_SERVER_KEY | file |
 | Broker_QUEUE | string |
 | Broker_URLS | json |
+| LoggerLegacy_FILE | string |
 | Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 
@@ -78,6 +79,7 @@
 | Var Name | Inferred type |
 |---|---|
 | APP_NAME | string |
+| LoggerLegacy_FILE | string |
 | Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 | RieBroker_QUEUE | string |

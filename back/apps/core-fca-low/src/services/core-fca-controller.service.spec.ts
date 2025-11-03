@@ -7,13 +7,14 @@ import { AppConfig, UserSession } from '@fc/core/dto';
 import { Routes } from '@fc/core/enums';
 import { CoreFcaService } from '@fc/core/services/core-fca.service';
 import { EmailValidatorService } from '@fc/email-validator/services';
+import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
 
 import { getConfigMock } from '@mocks/config';
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import {
@@ -44,9 +45,7 @@ describe('CoreFcaControllerService', () => {
     getFilteredAcrParamsFromInteraction: jest.fn(),
   } as unknown as OidcAcrService;
 
-  const trackingServiceMock = {
-    track: jest.fn(),
-  } as unknown as TrackingService;
+  const loggerServiceMock = getLoggerMock();
 
   const coreFcaServiceMock = {
     ensureEmailIsAuthorizedForSp: jest.fn(),
@@ -124,9 +123,9 @@ describe('CoreFcaControllerService', () => {
         OidcProviderService,
         OidcAcrService,
         SessionService,
-        TrackingService,
         CoreFcaService,
         EmailValidatorService,
+        LoggerService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -139,12 +138,12 @@ describe('CoreFcaControllerService', () => {
       .useValue(oidcAcrMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreFcaServiceMock)
       .overrideProvider(EmailValidatorService)
       .useValue(emailValidatorServiceMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .compile();
 
     service = app.get<CoreFcaControllerService>(CoreFcaControllerService);

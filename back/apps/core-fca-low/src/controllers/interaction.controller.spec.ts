@@ -12,7 +12,6 @@ import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -41,7 +40,6 @@ describe('InteractionController', () => {
   let serviceProviderMock: any;
   let configServiceMock: any;
   let notificationsMock: any;
-  let trackingMock: any;
   let sessionServiceMock: any; // for Csrf only
   let coreFcaControllerMock: any;
   let csrfServiceMock: any;
@@ -71,9 +69,6 @@ describe('InteractionController', () => {
     notificationsMock = {
       getNotificationToDisplay: jest.fn(),
     };
-    trackingMock = {
-      track: jest.fn(),
-    };
     sessionServiceMock = {
       set: jest.fn(), // used by Csrf part
     };
@@ -96,7 +91,6 @@ describe('InteractionController', () => {
         ConfigService,
         CoreFcaControllerService,
         CsrfService,
-        TrackingService,
         OidcAcrService,
         SessionService,
         NotificationsService,
@@ -115,8 +109,6 @@ describe('InteractionController', () => {
       .useValue(configServiceMock)
       .overrideProvider(CsrfService)
       .useValue(csrfServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderMock)
       .overrideProvider(SessionService)

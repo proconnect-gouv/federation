@@ -19,14 +19,12 @@ import { ConfigService } from '@fc/config';
 import { CsrfService } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
+import { LoggerService, TrackedEvent } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
 import { OidcAcrService, SimplifiedInteraction } from '@fc/oidc-acr';
 import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
-import { TrackedEvent } from '@fc/tracking/enums';
 
 import { UserSessionDecorator } from '../decorators';
 import {
@@ -51,7 +49,6 @@ export class InteractionController {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
-    private readonly tracking: TrackingService,
     private readonly sessionService: SessionService,
     private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly csrfService: CsrfService,
@@ -148,10 +145,10 @@ export class InteractionController {
     });
     await userSession.commit();
 
-    await this.tracking.track(TrackedEvent.FC_AUTHORIZE_INITIATED, { req });
+    this.logger.track(TrackedEvent.FC_AUTHORIZE_INITIATED);
 
     if (canReuseActiveSession) {
-      await this.tracking.track(TrackedEvent.FC_SSO_INITIATED, { req });
+      this.logger.track(TrackedEvent.FC_SSO_INITIATED);
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
       const url = `${urlPrefix}${Routes.INTERACTION_VERIFY.replace(
@@ -163,9 +160,7 @@ export class InteractionController {
     }
 
     if (idpHint) {
-      await this.tracking.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_IDP, {
-        req,
-      });
+      this.logger.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_IDP);
 
       return this.coreFcaControllerService.redirectToIdpWithIdpId(
         req,
@@ -175,9 +170,7 @@ export class InteractionController {
     }
 
     if (spLoginHint) {
-      await this.tracking.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_LOGIN, {
-        req,
-      });
+      this.logger.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_LOGIN);
 
       return this.coreFcaControllerService.redirectToIdpWithEmail(
         req,
@@ -187,7 +180,7 @@ export class InteractionController {
       );
     }
 
-    await this.tracking.track(TrackedEvent.FC_SHOWED_IDP_CHOICE, { req });
+    this.logger.track(TrackedEvent.FC_SHOWED_IDP_CHOICE);
 
     const notification = await this.notifications.getNotificationToDisplay();
     const { defaultEmailRenater } = this.config.get<AppConfig>('App');
@@ -242,7 +235,7 @@ export class InteractionController {
 
       const { urlPrefix } = this.config.get<AppConfig>('App');
 
-      await this.tracking.track(TrackedEvent.FC_IDP_DISABLED, { req });
+      this.logger.track(TrackedEvent.FC_IDP_DISABLED);
 
       const url = `${urlPrefix}${Routes.INTERACTION.replace(
         ':uid',
@@ -278,7 +271,7 @@ export class InteractionController {
     };
     userSessionService.set(session);
 
-    await this.tracking.track(TrackedEvent.FC_VERIFIED, { req });
+    this.logger.track(TrackedEvent.FC_VERIFIED);
 
     return this.oidcProvider.finishInteraction(req, res, {
       amr,

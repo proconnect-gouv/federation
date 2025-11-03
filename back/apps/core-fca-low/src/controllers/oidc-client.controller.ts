@@ -21,11 +21,9 @@ import { PostIdentityProviderSelectionDto } from '@fc/core/dto/post-identity-pro
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
-import { LoggerService } from '@fc/logger';
+import { LoggerService, TrackedEvent } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
-import { Track, TrackingService } from '@fc/tracking';
-import { TrackedEvent } from '@fc/tracking/enums';
 
 import {
   AppConfig,
@@ -54,7 +52,6 @@ export class OidcClientController {
     private readonly coreFcaService: CoreFcaService,
     private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly sessionService: SessionService,
-    private readonly tracking: TrackingService,
     private readonly crypto: CryptographyService,
     private readonly sanitizer: IdentitySanitizer,
     private readonly csrfService: CsrfService,
@@ -143,7 +140,6 @@ export class OidcClientController {
 
   @Post(Routes.DISCONNECT_FROM_IDP)
   @Header('cache-control', 'no-store')
-  @Track(TrackedEvent.FC_REQUESTED_LOGOUT_FROM_IDP)
   async logoutFromIdp(
     @Res() res: Response,
     @UserSessionDecorator()
@@ -160,6 +156,8 @@ export class OidcClientController {
       idpIdToken,
     );
 
+    this.logger.track(TrackedEvent.FC_REQUESTED_LOGOUT_FROM_IDP);
+
     return res.redirect(endSessionUrl);
   }
 
@@ -173,7 +171,7 @@ export class OidcClientController {
   ) {
     const { oidcProviderLogoutForm } = userSession.get();
 
-    await this.tracking.track(TrackedEvent.FC_SESSION_TERMINATED, { req });
+    this.logger.track(TrackedEvent.FC_SESSION_TERMINATED);
 
     await userSession.destroy();
 
@@ -215,7 +213,7 @@ export class OidcClientController {
     // Remove nonce and state from session to prevent replay attacks
     userSession.set({ idpNonce: null, idpState: null });
 
-    await this.tracking.track(TrackedEvent.IDP_CALLEDBACK, { req });
+    this.logger.track(TrackedEvent.IDP_CALLEDBACK);
     const tokenParams = {
       state: idpState,
       nonce: idpNonce,
@@ -239,7 +237,7 @@ export class OidcClientController {
       idpAcr: acr,
     });
 
-    await this.tracking.track(TrackedEvent.FC_REQUESTED_IDP_TOKEN, { req });
+    this.logger.track(TrackedEvent.FC_REQUESTED_IDP_TOKEN);
 
     const userInfoParams = {
       accessToken,
@@ -266,7 +264,7 @@ export class OidcClientController {
       this.logger.warn({ code: 'fqdn_mismatch' });
     }
 
-    await this.tracking.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO, { req });
+    this.logger.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO);
 
     const account = await this.accountService.getOrCreateAccount(
       idpId,

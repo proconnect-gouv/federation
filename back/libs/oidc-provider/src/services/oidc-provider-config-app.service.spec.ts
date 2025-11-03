@@ -6,7 +6,6 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
@@ -79,10 +78,6 @@ describe('OidcProviderConfigAppService', () => {
     spName: 'sp-name',
   };
 
-  const trackingServiceMock = {
-    track: jest.fn(),
-  };
-
   const appConfigMock = {
     urlPrefix: '/api/v2',
   };
@@ -105,7 +100,6 @@ describe('OidcProviderConfigAppService', () => {
         LoggerService,
         OidcClientService,
         ConfigService,
-        TrackingService,
       ],
     })
       .overrideProvider(SessionService)
@@ -116,8 +110,6 @@ describe('OidcProviderConfigAppService', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingServiceMock)
       .compile();
 
     service = module.get<OidcProviderConfigAppService>(

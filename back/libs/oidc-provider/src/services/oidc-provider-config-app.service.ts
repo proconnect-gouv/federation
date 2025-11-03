@@ -12,11 +12,9 @@ import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
 import { Routes } from '@fc/core/enums';
-import { LoggerService } from '@fc/logger';
+import { LoggerService, TrackedEvent } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
-import { TrackedEvent } from '@fc/tracking/enums';
 
 import { OidcProviderRuntimeException } from '../exceptions';
 import { LogoutFormParamsInterface, OidcCtx } from '../interfaces';
@@ -29,13 +27,11 @@ import { LogoutFormParamsInterface, OidcCtx } from '../interfaces';
 export class OidcProviderConfigAppService {
   protected provider: Provider;
 
-  // eslint-disable-next-line max-params
   constructor(
     protected readonly logger: LoggerService,
     protected readonly sessionService: SessionService,
     protected readonly config: ConfigService,
     protected readonly oidcClient: OidcClientService,
-    protected readonly tracking: TrackingService,
   ) {}
 
   async logoutSource(ctx: OidcCtx, form: any): Promise<void> {
@@ -71,8 +67,6 @@ export class OidcProviderConfigAppService {
 
       return;
     }
-
-    const { req } = ctx;
 
     /**
      * Save to current session minimal informations to:
@@ -111,7 +105,7 @@ export class OidcProviderConfigAppService {
 
     const params = await this.getLogoutParams(idpId);
 
-    await this.tracking.track(TrackedEvent.SP_REQUESTED_LOGOUT, { req });
+    this.logger.track(TrackedEvent.SP_REQUESTED_LOGOUT);
 
     await this.logoutFormSessionDestroy(ctx, form, params);
   }

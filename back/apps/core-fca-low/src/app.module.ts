@@ -13,7 +13,6 @@ import {
   IdentityProviderAdapterMongoService,
 } from '@fc/identity-provider-adapter-mongo';
 import { LoggerModule } from '@fc/logger';
-import { LoggerModule as LoggerLegacyModule } from '@fc/logger-legacy';
 import { LoggerRequestPlugin, LoggerSessionPlugin } from '@fc/logger-plugins';
 import { MongooseModule } from '@fc/mongoose';
 import { NotificationsModule } from '@fc/notifications';
@@ -25,7 +24,6 @@ import {
   ServiceProviderAdapterMongoService,
 } from '@fc/service-provider-adapter-mongo';
 import { SessionModule } from '@fc/session';
-import { TrackingModule } from '@fc/tracking';
 
 import { InteractionController, OidcClientController } from './controllers';
 import {
@@ -45,8 +43,6 @@ export class AppModule {
         ConfigModule.forRoot(configService),
         // 2. Load logger module next
         LoggerModule.forRoot([LoggerRequestPlugin, LoggerSessionPlugin]),
-        // 2.1 Load logger legacy module next for business logs
-        LoggerLegacyModule,
         // 3. Load other modules
         CqrsModule,
         AsyncLocalStorageModule,
@@ -72,7 +68,6 @@ export class AppModule {
         NotificationsModule,
         CsrfModule,
         AccountFcaModule,
-        TrackingModule,
       ],
       controllers: [InteractionController, OidcClientController],
       providers: [
