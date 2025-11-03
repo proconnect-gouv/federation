@@ -9,8 +9,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { ActiveUserSessionDto, UserSession } from '@fc/core/dto';
 import { CoreNoSessionIdException } from '@fc/core/exceptions';
-import { generateErrorId } from '@fc/exceptions/helpers';
-import { ErrorPageParams } from '@fc/exceptions/types/error-page-params';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import {
@@ -45,20 +43,15 @@ export class CoreFcaMiddlewareService {
       try {
         await middleware.bind(this)(ctx);
       } catch (err) {
-        const code = 'koa_html_error_formater';
-        const id = generateErrorId();
-
-        this.logger.error({ code, id });
-
+        this.logger.error({ code: 'koa_html_error_formater' });
         const res = ctx.res as unknown as Response;
         ctx.type = 'html';
         // the render function is magically available in the koa context
         // as oidc-provider servers is mounted behind the nest server.
-        const errorPageParams: ErrorPageParams = {
-          exceptionDisplay: {},
-          error: { code, id },
-        };
-        ctx.body = res.render('error', errorPageParams);
+        ctx.body = res.render('error', {
+          exception: {},
+          error: { code: 'koa_html_error_formater', message: true },
+        });
 
         throw err;
       }

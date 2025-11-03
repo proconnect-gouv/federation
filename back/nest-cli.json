@@ -291,6 +291,15 @@
         "tsConfigPath": "libs/csrf/tsconfig.lib.json"
       }
     },
+    "base-exception": {
+      "type": "library",
+      "root": "libs/base-exception",
+      "entryFile": "index",
+      "sourceRoot": "libs/base-exception/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/base-exception/tsconfig.lib.json"
+      }
+    },
     "exceptions": {
       "type": "library",
       "root": "libs/exceptions",

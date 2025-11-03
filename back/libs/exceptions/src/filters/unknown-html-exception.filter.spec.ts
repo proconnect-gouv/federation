@@ -1,6 +1,7 @@
 import { ArgumentsHost } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { BaseException } from '@fc/base-exception';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
@@ -9,16 +10,8 @@ import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { BaseException } from '../exceptions/base.exception';
 import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
 import { UnknownHtmlExceptionFilter } from './unknown-html-exception.filter';
-
-// Avoid importing the real FcWebHtmlExceptionFilter (which pulls heavy deps) during this spec
-jest.mock('./fc-web-html-exception.filter', () => ({
-  FcWebHtmlExceptionFilter: class {
-    catch() {}
-  },
-}));
 
 describe('UnknownHtmlExceptionFilter', () => {
   let filter: UnknownHtmlExceptionFilter;

@@ -1,4 +1,3 @@
-export * from './base.exception';
 export * from './fc.exception';
 export * from './unknown.exception';
 export * from './validation-exception';
