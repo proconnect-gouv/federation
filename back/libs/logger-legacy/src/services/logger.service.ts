@@ -18,8 +18,6 @@ export class LoggerService {
     const { path } = this.config.get<LoggerLegacyConfig>('LoggerLegacy');
     const { threshold } = this.config.get<MainLoggerConfig>('Logger');
 
-    const stream = pino.destination(path);
-
     const options = {
       level: threshold,
       customLevels: MainLoggerService.customLevels,
@@ -31,12 +29,12 @@ export class LoggerService {
       },
     };
 
-    this.logger = pino(options, stream);
+    this.logger = pino(options);
 
     process.on(ShutdownSignal.SIGUSR2, () => {
       // Keep warnings here, this log must not be in business logs
       console.warn(`SIGUSR2: Reveived, reopening at ${path}`);
-      stream.reopen();
+      // stream.reopen();
       console.warn('SIGUSR2: done');
     });
   }
