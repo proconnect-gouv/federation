@@ -89,6 +89,20 @@
             </div>
 
             <div class="mb-3 row">
+              <label class="col-2 col-form-label">Identitée portée par le ID token * :</label>
+              <div class="mb-3 col-4 d-flex align-items-end">
+                <div class="form-check form-check-inline">
+                  <input type="radio" class="form-check-input is-valid" id="enableRouting" name="isEntraID" value="true" required <%= locals.messages.values && messages.values[0].isEntraID === true ? 'checked' : '' %>>
+                  <label class="form-check-label" for="tokenCentric">oui</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input type="radio" class="form-check-input is-valid" id="disableRouting" name="isEntraID" value="false" required <%= locals.messages.values && messages.values[0].isEntraID === false ? 'checked' : '' %>>
+                  <label class="form-check-label" for="userInfoCentric">non</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 row">
               <label class="col-2 col-form-label" for="issuer"> Issuer URL * : </label>
               <div class="col-10">
                 <input id="issuer" type="text" required class="form-control <%= locals.messages.errors && messages.errors[0].issuer && 'is-invalid' %>" name="issuer" value="<%= locals.messages.values && messages.values[0].issuer %>" pattern="^https?:\/\/[^/].+$">

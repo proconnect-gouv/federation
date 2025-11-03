@@ -14,4 +14,5 @@ export type IdentityProviderMetadata = {
   supportEmail: string;
   fqdns?: string[];
   isRoutingEnabled: boolean;
+  isEntraID: boolean;
 };

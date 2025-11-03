@@ -201,4 +201,8 @@ export class IdentityProviderDTO {
   @Transform(toBoolean)
   @IsBoolean()
   readonly isRoutingEnabled: boolean;
+
+  @Transform(toBoolean)
+  @IsBoolean()
+  readonly isEntraID: boolean;
 }
