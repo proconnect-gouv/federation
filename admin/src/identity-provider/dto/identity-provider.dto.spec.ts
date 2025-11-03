@@ -21,6 +21,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
     siret: '',
     token_endpoint_auth_method: 'client_secret_post',
     isRoutingEnabled: 'true',
+    isEntraID: 'false',
   };
 
   const idpDiscoveryMock = {
@@ -37,6 +38,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
     siret: '',
     token_endpoint_auth_method: 'client_secret_post',
     isRoutingEnabled: 'true',
+    isEntraID: 'false',
   };
 
   describe('should validate', () => {
