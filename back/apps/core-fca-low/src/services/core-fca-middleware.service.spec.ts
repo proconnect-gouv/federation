@@ -9,7 +9,6 @@ import { LoggerService } from '@fc/logger';
 import { OidcCtx, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
@@ -30,14 +29,14 @@ describe('CoreFcaMiddlewareService', () => {
   let mockConfigService: jest.Mocked<ConfigService>;
   let mockOidcProviderService: jest.Mocked<OidcProviderService>;
   let mockSessionService: jest.Mocked<SessionService>;
-  let mockTrackingService: jest.Mocked<TrackingService>;
+  const mockLoggerService: jest.Mocked<LoggerService> = getLoggerMock();
   let validateMock: jest.Mock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoreFcaMiddlewareService,
-        { provide: LoggerService, useValue: getLoggerMock() },
+        { provide: LoggerService, useValue: mockLoggerService },
         { provide: ConfigService, useValue: { get: jest.fn() } },
         {
           provide: OidcProviderService,
@@ -45,12 +44,6 @@ describe('CoreFcaMiddlewareService', () => {
         },
         { provide: SessionService, useValue: getSessionServiceMock() },
         { provide: ServiceProviderAdapterMongoService, useValue: jest.fn() },
-        {
-          provide: TrackingService,
-          useValue: {
-            track: jest.fn(),
-          },
-        },
         { provide: IdentityProviderAdapterMongoService, useValue: jest.fn() },
       ],
     }).compile();
@@ -65,9 +58,6 @@ describe('CoreFcaMiddlewareService', () => {
     mockSessionService = module.get<SessionService>(
       SessionService,
     ) as jest.Mocked<SessionService>;
-    mockTrackingService = module.get<TrackingService>(
-      TrackingService,
-    ) as jest.Mocked<TrackingService>;
     validateMock = jest.mocked(validate);
   });
 
@@ -141,31 +131,37 @@ describe('CoreFcaMiddlewareService', () => {
     expect(unsupportedCtx.query.prompt).toBeUndefined();
   });
 
-  it('should return the event context with session IDs in getEventContext', async () => {
+  it('should call sessionService.initCache and return { isSessionLoaded: true } in loadSessionInAsyncLocalStorage', async () => {
     const mockCtx = {
       oidc: { entities: { Account: { accountId: '123' } } },
       req: {},
     };
     mockSessionService.getAlias.mockResolvedValueOnce('123');
-    const eventContext = await (service as any).getEventContext(mockCtx);
-    expect(eventContext.sessionId).toBe('123');
+    const { isSessionLoaded } = await (
+      service as any
+    ).loadSessionInAsyncLocalStorage(mockCtx);
+
+    expect(mockSessionService.initCache).toHaveBeenCalled();
+    expect(isSessionLoaded).toBeTrue();
   });
 
-  it('should return null if there is no accountId in ctx', async () => {
+  it('should return { isSessionLoaded: false } if there is no accountId in ctx', async () => {
     const mockCtx = { oidc: {}, req: {} };
-    const eventContext = await (service as any).getEventContext(mockCtx);
-    expect(eventContext).toBeNull();
+    const { isSessionLoaded } = await (
+      service as any
+    ).loadSessionInAsyncLocalStorage(mockCtx);
+    expect(isSessionLoaded).toBeFalse();
   });
 
-  it('should throw CoreNoSessionIdException if session ID is not set in getEventContext', async () => {
+  it('should throw CoreNoSessionIdException if session ID is not set in loadSessionInAsyncLocalStorage', async () => {
     const mockCtx = {
       oidc: { entities: { Account: { accountId: '123' } } },
       req: {},
     };
     mockSessionService.getAlias.mockResolvedValueOnce(null);
-    await expect((service as any).getEventContext(mockCtx)).rejects.toThrow(
-      CoreNoSessionIdException,
-    );
+    await expect(
+      (service as any).loadSessionInAsyncLocalStorage(mockCtx),
+    ).rejects.toThrow(CoreNoSessionIdException);
   });
 
   it('should initialize session, set alias, and track event in tokenMiddleware', async () => {
@@ -174,7 +170,7 @@ describe('CoreFcaMiddlewareService', () => {
     };
     mockSessionService.getAlias.mockResolvedValueOnce('123');
     const spyInitCache = jest.spyOn(mockSessionService, 'initCache');
-    const spyTrack = jest.spyOn(mockTrackingService, 'track');
+    const spyTrack = jest.spyOn(mockLoggerService, 'track');
     await (service as any).tokenMiddleware(mockCtx);
     expect(spyInitCache).toHaveBeenCalled();
     expect(spyTrack).toHaveBeenCalled();
@@ -186,7 +182,7 @@ describe('CoreFcaMiddlewareService', () => {
     };
     mockSessionService.getAlias.mockResolvedValueOnce('123');
     const spyInitCache = jest.spyOn(mockSessionService, 'initCache');
-    const spyTrack = jest.spyOn(mockTrackingService, 'track');
+    const spyTrack = jest.spyOn(mockLoggerService, 'track');
     await (service as any).userinfoMiddleware(mockCtx);
     expect(spyInitCache).toHaveBeenCalled();
     expect(spyTrack).toHaveBeenCalled();

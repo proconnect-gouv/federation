@@ -7,7 +7,6 @@ import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
 
 import { getConfigMock } from '@mocks/config';
 import { getSessionServiceMock } from '@mocks/session';
@@ -64,10 +63,6 @@ describe('CoreFcaService', () => {
     getAuthorizeUrl: jest.fn(),
   };
 
-  const trackingServiceMock = {
-    track: jest.fn(),
-  };
-
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -81,7 +76,6 @@ describe('CoreFcaService', () => {
         OidcClientService,
         IdentityProviderAdapterMongoService,
         SessionService,
-        TrackingService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -96,8 +90,6 @@ describe('CoreFcaService', () => {
       .useValue(oidcProviderServiceMock)
       .overrideProvider(OidcAcrService)
       .useValue(oidcAcrMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingServiceMock)
       .compile();
 
     service = app.get<CoreFcaService>(CoreFcaService);

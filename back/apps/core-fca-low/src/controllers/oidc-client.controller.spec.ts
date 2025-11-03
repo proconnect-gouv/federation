@@ -11,7 +11,6 @@ import { CsrfService } from '@fc/csrf';
 import { LoggerService } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -39,7 +38,6 @@ describe('OidcClientController', () => {
   let coreFcaControllerService: any;
   let coreFcaService: any;
   let sessionService: any;
-  let tracking: any;
   let crypto: any;
   let sanitizer: any;
   let csrfService: any;
@@ -72,9 +70,6 @@ describe('OidcClientController', () => {
       destroy: jest.fn(),
       duplicate: jest.fn(),
     };
-    tracking = {
-      track: jest.fn(),
-    };
     crypto = { genRandomString: jest.fn() };
     sanitizer = {
       getValidatedIdentityFromIdp: jest.fn(),
@@ -93,7 +88,6 @@ describe('OidcClientController', () => {
         CoreFcaControllerService,
         CoreFcaService,
         SessionService,
-        TrackingService,
         CryptographyService,
         IdentitySanitizer,
         CsrfService,
@@ -115,8 +109,6 @@ describe('OidcClientController', () => {
       .useValue(coreFcaService)
       .overrideProvider(SessionService)
       .useValue(sessionService)
-      .overrideProvider(TrackingService)
-      .useValue(tracking)
       .overrideProvider(CryptographyService)
       .useValue(crypto)
       .overrideProvider(IdentitySanitizer)
@@ -261,9 +253,7 @@ describe('OidcClientController', () => {
       } as unknown as ISessionService<UserSession>;
 
       const result = await controller.redirectAfterIdpLogout(req, userSession);
-      expect(tracking.track).toHaveBeenCalledWith('FC_SESSION_TERMINATED', {
-        req,
-      });
+      expect(logger.track).toHaveBeenCalledWith('FC_SESSION_TERMINATED');
       expect(userSession.destroy).toHaveBeenCalled();
       expect(result).toEqual({ oidcProviderLogoutForm: 'form-data' });
     });
@@ -296,7 +286,7 @@ describe('OidcClientController', () => {
         get: jest.fn().mockReturnValue(sessionData),
         set: jest.fn(),
       };
-      tracking.track.mockResolvedValue(undefined);
+      logger.track.mockResolvedValue(undefined);
       oidcClient.getToken.mockResolvedValue({
         accessToken: 'access-token',
         idToken: 'id-token',
@@ -334,36 +324,23 @@ describe('OidcClientController', () => {
         idpNonce: null,
         idpState: null,
       });
-      expect(tracking.track).toHaveBeenCalledWith('IDP_CALLEDBACK', { req });
+      expect(logger.track).toHaveBeenCalledWith('IDP_CALLEDBACK');
       expect(oidcClient.getToken).toHaveBeenCalledWith(
         'idp123',
         { state: 'state123', nonce: 'nonce123' },
         req,
         { sp_id: 'sp123', sp_name: 'SP Name' },
       );
-      expect(tracking.track).toHaveBeenCalledWith('FC_REQUESTED_IDP_TOKEN', {
-        req,
-      });
+      expect(logger.track).toHaveBeenCalledWith('FC_REQUESTED_IDP_TOKEN');
       expect(oidcClient.getUserinfo).toHaveBeenCalledWith({
         accessToken: 'access-token',
         idpId: 'idp123',
       });
-      expect(tracking.track).toHaveBeenNthCalledWith(1, 'IDP_CALLEDBACK', {
-        req,
-      });
-      expect(tracking.track).toHaveBeenNthCalledWith(
-        2,
-        'FC_REQUESTED_IDP_TOKEN',
-        {
-          req,
-        },
-      );
-      expect(tracking.track).toHaveBeenNthCalledWith(
+      expect(logger.track).toHaveBeenNthCalledWith(1, 'IDP_CALLEDBACK');
+      expect(logger.track).toHaveBeenNthCalledWith(2, 'FC_REQUESTED_IDP_TOKEN');
+      expect(logger.track).toHaveBeenNthCalledWith(
         3,
         'FC_REQUESTED_IDP_USERINFO',
-        {
-          req,
-        },
       );
       expect(coreFcaService['isAllowedIdpForEmail']).toHaveBeenCalledWith(
         'idp123',

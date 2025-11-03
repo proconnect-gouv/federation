@@ -23,10 +23,6 @@
       "@fc/service-provider-adapter-mongo/*": [
         "libs/service-provider-adapter-mongo/src/*"
       ],
-      "@fc/logger-legacy": ["libs/logger-legacy/src"],
-      "@fc/logger-legacy/*": ["libs/logger-legacy/src/*"],
-      "@mocks/logger-legacy": ["libs/logger-legacy/.mocks"],
-      "@mocks/logger-legacy/*": ["libs/logger-legacy/.mocks/*"],
       "@fc/logger": ["libs/logger/src"],
       "@fc/logger/*": ["libs/logger/src/*"],
       "@mocks/logger": ["libs/logger/.mocks"],
@@ -64,8 +60,6 @@
       "@fc/email-validator": ["libs/email-validator/src"],
       "@fc/email-validator/*": ["libs/email-validator/src/*"],
       "@mocks/email-validator": ["libs/email-validator/.mocks"],
-      "@fc/tracking": ["libs/tracking/src"],
-      "@fc/tracking/*": ["libs/tracking/src/*"],
       "@fc/app": ["libs/app/src"],
       "@fc/app/*": ["libs/app/src/*"],
       "@fc/notifications": ["libs/notifications/src"],

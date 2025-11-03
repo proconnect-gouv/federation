@@ -93,15 +93,6 @@
         "tsConfigPath": "libs/service-provider-adapter-mongo/tsconfig.lib.json"
       }
     },
-    "logger-legacy": {
-      "type": "library",
-      "root": "libs/logger-legacy",
-      "entryFile": "index",
-      "sourceRoot": "libs/logger-legacy/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/logger-legacy/tsconfig.lib.json"
-      }
-    },
     "logger": {
       "type": "library",
       "root": "libs/logger",
@@ -208,15 +199,6 @@
       "sourceRoot": "libs/session/src",
       "compilerOptions": {
         "tsConfigPath": "libs/session/tsconfig.lib.json"
-      }
-    },
-    "tracking": {
-      "type": "library",
-      "root": "libs/tracking",
-      "entryFile": "index",
-      "sourceRoot": "libs/tracking/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/tracking/tsconfig.lib.json"
       }
     },
     "app": {

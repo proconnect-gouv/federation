@@ -3,7 +3,6 @@ import { Test } from '@nestjs/testing';
 
 import { ConfigModule } from '@fc/config';
 import { LoggerModule, LoggerService } from '@fc/logger';
-import { LoggerModule as LoggerLegacyModule } from '@fc/logger-legacy';
 
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
@@ -56,7 +55,6 @@ describe('OidcProviderModule Dependency Validation', () => {
         ),
         ConfigModule.forRoot(configServiceMock as any),
         LoggerModule.forRoot([]),
-        LoggerLegacyModule,
       ],
     })
       .overrideProvider(LoggerService)

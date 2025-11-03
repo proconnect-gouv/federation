@@ -1,11 +1,13 @@
+import { isEmpty } from 'lodash';
 import pino, { Logger } from 'pino';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, ShutdownSignal } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 
-import { LoggerConfig } from '../dto';
-import { LogLevels } from '../enums';
+import { trackedEventSteps } from '../config/tracked-event-steps';
+import { LoggerConfig, LoggerLegacyConfig } from '../dto';
+import { LogLevels, TrackedEvent } from '../enums';
 import { LoggerPluginServiceInterface } from '../interfaces';
 import { PLUGIN_SERVICES } from '../tokens';
 import { CustomLogLevels } from '../types';
@@ -24,6 +26,7 @@ export class LoggerService {
     [LogLevels.TRACE]: 10,
   };
   private pino: Logger<keyof CustomLogLevels>;
+  private pinoFileLogger: Logger<keyof CustomLogLevels>;
 
   constructor(
     private readonly config: ConfigService,
@@ -73,6 +76,28 @@ export class LoggerService {
     this.logWithContext(LogLevels.TRACE, obj, msg, ...args);
   }
 
+  track(event: TrackedEvent): void {
+    const pluginsContext = this.getContextFromPlugins();
+    const trackContext = {
+      event,
+      step: trackedEventSteps[event],
+      ...pluginsContext,
+    };
+
+    const { path } = this.config.get<LoggerLegacyConfig>('LoggerLegacy');
+    if (!isEmpty(path)) {
+      return this.pinoFileLogger.info({
+        ...trackContext,
+        ...pluginsContext,
+      });
+    }
+
+    this.pino.info({
+      ...trackContext,
+      ...pluginsContext,
+    });
+  }
+
   private logWithContext(level: LogLevels, ...args: unknown[]): void {
     const pluginsContext = this.getContextFromPlugins();
     const userContext = typeof args[0] === 'string' ? {} : args.shift();
@@ -109,6 +134,19 @@ export class LoggerService {
     };
 
     this.pino = pino(options);
+
+    const { path } = this.config.get<LoggerLegacyConfig>('LoggerLegacy');
+    if (!isEmpty(path)) {
+      const stream = pino.destination(path);
+      this.pinoFileLogger = pino(options, stream);
+
+      process.on(ShutdownSignal.SIGUSR2, () => {
+        // Keep warnings here, this log must not be in business logs
+        console.warn(`SIGUSR2: Reveived, reopening at ${path}`);
+        stream.reopen();
+        console.warn('SIGUSR2: done');
+      });
+    }
 
     this.overloadConsole();
     this.pino.info('Logger is ready and native console is now overloaded.');

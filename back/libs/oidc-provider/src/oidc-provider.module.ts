@@ -10,7 +10,6 @@ import { IIdentityProviderAdapter, OidcClientModule } from '@fc/oidc-client';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
-import { TrackingModule } from '@fc/tracking';
 
 import { OidcProviderController } from './oidc-provider.controller';
 import { OidcProviderService } from './oidc-provider.service';
@@ -51,7 +50,6 @@ export class OidcProviderModule {
           IdentityProviderAdapterMongoService,
           IdentityProviderAdapterMongoModule,
         ),
-        TrackingModule,
         ExceptionsModule,
       ],
       providers: [

@@ -72,15 +72,6 @@ describe('LoggerService', () => {
       service['overloadConsole'] = jest.fn();
     });
 
-    it('should retrieve the logger config', () => {
-      // When
-      service['configure']();
-
-      // Then
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('Logger');
-    });
-
     it('should overload the console', () => {
       // When
       service['configure']();

@@ -9,12 +9,11 @@ import { Routes } from '@fc/core/enums';
 import { CoreFcaAgentNoIdpException } from '@fc/core/exceptions';
 import { CoreFcaService } from '@fc/core/services/core-fca.service';
 import { EmailValidatorService } from '@fc/email-validator/services';
+import { LoggerService, TrackedEvent } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
-import { TrackedEvent } from '@fc/tracking/enums';
 
 @Injectable()
 export class CoreFcaControllerService {
@@ -26,9 +25,9 @@ export class CoreFcaControllerService {
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcAcr: OidcAcrService,
     private readonly session: SessionService,
-    private readonly tracking: TrackingService,
     private readonly coreFcaService: CoreFcaService,
     private readonly emailValidatorService: EmailValidatorService,
+    private readonly logger: LoggerService,
   ) {}
 
   async redirectToIdpWithEmail(
@@ -134,7 +133,7 @@ export class CoreFcaControllerService {
 
     this.session.set('User', sessionPayload);
 
-    await this.tracking.track(TrackedEvent.IDP_CHOSEN, { req });
+    this.logger.track(TrackedEvent.IDP_CHOSEN);
 
     res.redirect(authorizationUrl);
   }
