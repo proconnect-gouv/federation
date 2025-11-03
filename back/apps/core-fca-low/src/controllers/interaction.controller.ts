@@ -131,7 +131,7 @@ export class InteractionController {
       acrClaims?.value || acrClaims?.values.join(' ') || null;
 
     if (!canReuseActiveSession) {
-      await userSession.reset();
+      userSession.reset();
       userSession.set({ browsingSessionId: uuid() });
     }
     userSession.set({

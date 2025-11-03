@@ -40,8 +40,8 @@ export class SessionService {
   /**
    * Lifecycle methods
    */
-  reset(res: Response): Promise<string> {
-    return this.lifecycle.reset(res);
+  reset(): void {
+    return this.lifecycle.reset();
   }
 
   initCache(sessionId: string): Promise<void> {

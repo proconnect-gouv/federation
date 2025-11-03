@@ -57,12 +57,15 @@ export class SessionLifecycleService {
     });
   }
 
-  async reset(res: Response): Promise<string> {
+  reset(): void {
+    const { defaultData } = this.config.get<SessionConfig>('Session');
     const { id } = this.localStorage.getStore();
 
-    await this.backendStorage.remove(id);
-
-    return this.init(res);
+    this.localStorage.setStore({
+      data: cloneDeep(defaultData),
+      id,
+      sync: false,
+    });
   }
 
   async duplicate(res: Response) {
@@ -127,6 +130,8 @@ export class SessionLifecycleService {
 
   async commit(): Promise<boolean> {
     const { data, id, sync } = this.localStorage.getStore();
+
+    console.log({ commitedData: data });
 
     if (!id) {
       throw new SessionCannotCommitUndefinedSession();
