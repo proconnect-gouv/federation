@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-NODE_VERSION=v24.10.0
+NODE_VERSION=v24.11.0
 export  NODE_VERSION
 
 DOCKER_COMPOSE="docker compose"
