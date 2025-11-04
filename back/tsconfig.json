@@ -82,8 +82,6 @@
       "@mocks/async-local-storage/*": ["libs/async-local-storage/.mocks/*"],
       "@fc/csrf": ["libs/csrf/src"],
       "@fc/csrf/*": ["libs/csrf/src/*"],
-      "@fc/base-exception": ["libs/base-exception/src"],
-      "@fc/base-exception/*": ["libs/base-exception/src/*"],
       "@fc/exceptions": ["libs/exceptions/src"],
       "@fc/exceptions/*": ["libs/exceptions/src/*"],
       "@fc/account-fca": ["libs/account-fca/src"],

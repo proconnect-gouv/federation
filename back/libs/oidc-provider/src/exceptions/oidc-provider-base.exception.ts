@@ -1,6 +1,6 @@
 import { errors } from 'oidc-provider';
 
-import { BaseException } from '@fc/base-exception';
+import { BaseException } from '@fc/exceptions';
 
 export class OriginalError extends errors.OIDCProviderError {
   caught?: boolean;

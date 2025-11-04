@@ -12,7 +12,7 @@ Fonctionnalité: Erreur redirect uri invalide
     Et le lien retour vers le FS n'est pas affiché dans la page erreur technique
 
     Exemples:
-      | redirectUri                          | httpCode | error                | errorDescription                                                        |
-      |                                      | 400      | Y000400              | Une erreur s'est produite, veuillez réessayer ultérieurement            |
-      | example.com                          | 400      | Y000400              | Une erreur s'est produite, veuillez réessayer ultérieurement            |
-      | https://my-malicious-url.fr/callback | 400      | invalid_redirect_uri | redirect_uri did not match any of the client's registered redirect_uris |
+      | redirectUri                          | error                                             | errorDescription                                                        |
+      |                                      | Y000400                                           | redirect_uri must match /^https?:\/\/[^/].+$/ regular expression        |
+      | example.com                          | Y000400                                           | redirect_uri must match /^https?:\/\/[^/].+$/ regular expression        |
+      | https://my-malicious-url.fr/callback | oidc-provider-rendered-error:invalid_redirect_uri | redirect_uri did not match any of the client's registered redirect_uris |
