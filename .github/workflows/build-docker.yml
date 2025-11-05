@@ -6,8 +6,8 @@ on:
       - '.github/workflows/build-docker.yml'
   push:
     branches:
-      - main
-    tags:
+      #   - main
+      # tags:
       - '*'
 
 jobs:
@@ -53,6 +53,7 @@ jobs:
         with:
           path: usr-local-share-cache-yarn
           key: instance-mount-cache-${{ hashFiles('back/Dockerfile') }}
+
       - name: Inject cache into docker
         uses: reproducible-containers/buildkit-cache-dance@v3.3.0
         with:
@@ -88,12 +89,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - instance: bridge-http-proxy-rie
+          # - instance: bridge-http-proxy-rie
           - instance: core-fca-low
-          - instance: csmr-rie
-          - instance: mock-data-provider
-          - instance: mock-identity-provider-fca-low
-          - instance: mock-service-provider-fca-low
+          # - instance: csmr-rie
+          # - instance: mock-data-provider
+          # - instance: mock-identity-provider-fca-low
+          # - instance: mock-service-provider-fca-low
 
   build_docker_admin:
     name: 🐳 Build Admin
@@ -120,6 +121,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/proconnect-gouv/federation/fc-exploitation-v2
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
             type=sha,format=long,prefix=
             type=ref,event=branch
@@ -164,55 +167,55 @@ jobs:
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
 
-  build_api_partenaires:
-    name: 🐳 Build API Partenaires
-    if: github.actor != 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-      attestations: write
-      id-token: write
-    steps:
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  # build_api_partenaires:
+  #   name: 🐳 Build API Partenaires
+  #   if: github.actor != 'dependabot[bot]'
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     packages: write
+  #     contents: read
+  #     attestations: write
+  #     id-token: write
+  #   steps:
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
 
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ github.token }}
+  #     - name: Login to Github Container Registry
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.repository_owner }}
+  #         password: ${{ github.token }}
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/proconnect-gouv/federation/api-partner
-          tags: |
-            type=sha,format=long,prefix=
-            type=ref,event=branch
-            type=ref,event=tag
-            type=raw,value=${{ github.ref_name }}
-          flavor: |
-            latest=${{ github.ref == 'refs/heads/main' }}
+  #     - name: Docker meta
+  #       id: meta
+  #       uses: docker/metadata-action@v5
+  #       with:
+  #         images: ghcr.io/proconnect-gouv/federation/api-partner
+  #         tags: |
+  #           type=sha,format=long,prefix=
+  #           type=ref,event=branch
+  #           type=ref,event=tag
+  #           type=raw,value=${{ github.ref_name }}
+  #         flavor: |
+  #           latest=${{ github.ref == 'refs/heads/main' }}
 
-      - name: Checkout
-        uses: actions/checkout@v5
+  #     - name: Checkout
+  #       uses: actions/checkout@v5
 
-      - name: Build image
-        id: build
-        uses: docker/build-push-action@v6
-        with:
-          labels: ${{ steps.meta.outputs.labels }}
-          context: ./pcdbapi
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+  #     - name: Build image
+  #       id: build
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         labels: ${{ steps.meta.outputs.labels }}
+  #         context: ./pcdbapi
+  #         platforms: linux/amd64,linux/arm64
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}
 
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
-        with:
-          subject-name: ghcr.io/proconnect-gouv/federation/api-partner
-          subject-digest: ${{ steps.build.outputs.digest }}
-          push-to-registry: true
+  #     - name: Generate artifact attestation
+  #       uses: actions/attest-build-provenance@v3
+  #       with:
+  #         subject-name: ghcr.io/proconnect-gouv/federation/api-partner
+  #         subject-digest: ${{ steps.build.outputs.digest }}
+  #         push-to-registry: true
