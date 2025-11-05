@@ -42,7 +42,10 @@ export class CoreFcaControllerService {
     // We are testing the email validity without breaking the flow here
     await this.emailValidatorService.validate(email);
 
-    const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
+    let idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
+
+    this.logger.info(`IDPs count found from email: ${idpsFromEmail.length}`);
+    this.logger.info(`IDPs found from email: ${JSON.stringify(idpsFromEmail)}`);
 
     if (idpsFromEmail.length === 0) {
       const { spName } = this.session.get<UserSession>('User');
