@@ -4,15 +4,15 @@ import { ArgumentsHost, Catch, Injectable } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 
 import { ConfigService } from '@fc/config';
-import { messageDictionary } from '@fc/core/exceptions/error-messages';
-import { ExceptionsConfig } from '@fc/exceptions/dto';
-import { ErrorPageParams } from '@fc/exceptions/types';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
+import { messageDictionary } from '../config/error-messages';
+import { ExceptionsConfig } from '../dto';
 import { BaseException } from '../exceptions/base.exception';
 import { CoreFcaBaseException } from '../exceptions/core-fca-base.exception';
 import { generateErrorId, getCode, getStackTraceArray } from '../helpers';
+import { ErrorPageParams } from '../types';
 
 @Catch(BaseException)
 @Injectable()
