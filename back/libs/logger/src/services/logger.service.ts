@@ -115,11 +115,11 @@ export class LoggerService {
   }
 
   private overloadConsole() {
-    console.error = this[LogLevels.ERROR].bind(this);
-    console.warn = this[LogLevels.WARN].bind(this);
-    console.log = this[LogLevels.INFO].bind(this);
-    console.info = this[LogLevels.INFO].bind(this);
-    console.debug = this[LogLevels.DEBUG].bind(this);
-    console.trace = this[LogLevels.TRACE].bind(this);
+    // console.error = this[LogLevels.ERROR].bind(this);
+    // console.warn = this[LogLevels.WARN].bind(this);
+    // console.log = this[LogLevels.INFO].bind(this);
+    // console.info = this[LogLevels.INFO].bind(this);
+    // console.debug = this[LogLevels.DEBUG].bind(this);
+    // console.trace = this[LogLevels.TRACE].bind(this);
   }
 }

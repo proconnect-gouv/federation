@@ -17,11 +17,13 @@ import { SessionConfig } from '@fc/session';
 import { AppModule } from './app.module';
 import config from './config';
 
+console.dir(config, { depth: null });
 async function bootstrap() {
   const configService = new ConfigService({
     config,
     schema: CoreFcaConfig,
   });
+
   const {
     urlPrefix,
     assetsPaths,

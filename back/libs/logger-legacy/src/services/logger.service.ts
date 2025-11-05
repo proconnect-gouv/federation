@@ -31,7 +31,7 @@ export class LoggerService {
       },
     };
 
-    this.logger = pino(options, stream);
+    this.logger = pino(options);
 
     process.on(ShutdownSignal.SIGUSR2, () => {
       // Keep warnings here, this log must not be in business logs

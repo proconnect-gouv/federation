@@ -46,6 +46,11 @@ export class MongooseConfig {
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
+  readonly uri: string;
+
+  @IsString()
+  @IsNotEmpty()
   readonly hosts: string;
 
   @IsString()
