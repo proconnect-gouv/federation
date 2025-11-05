@@ -49,7 +49,6 @@ Fonctionnalité: Connexion Usager - ACR with PCI
     Alors je vois une page d'erreur ProConnect Identité et je clique sur le bouton continuer
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "access_denied"
-    Et le message d'erreur est "non renseigné"
 
   Scénario: Déclenche un parcours certification dirigeant dans ProConnect Identité si demandé par le FS
     Etant donné que je navigue sur la page fournisseur de service
