@@ -26,6 +26,7 @@ export class LoggerRequestService implements LoggerPluginServiceInterface {
     const context = {
       ip,
       forwardedFor: headers['x-forwarded-for'],
+      userAgent: headers['user-agent'],
       method,
       path: `${baseUrl}${path}`,
       requestId: headers['x-request-id'],
