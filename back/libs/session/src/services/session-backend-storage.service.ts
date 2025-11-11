@@ -45,8 +45,8 @@ export class SessionBackendStorageService {
     /**
      * If the cipher is invalid, we set an empty session.
      */
-    if (!serializedSession) {
-      throw new SessionNotFoundException('backend.get');
+    if (isEmpty(serializedSession)) {
+      throw new SessionNotFoundException();
     }
 
     const rawSession = this.deserialize(serializedSession);
