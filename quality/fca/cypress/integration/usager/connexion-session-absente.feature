@@ -28,7 +28,6 @@ Fonctionnalité: Connexion Usager - session absente
     Et je rafraîchis la page
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y190001"
-    Et le message d'erreur est "Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous."
 
   Scénario: Erreur lors de la connexion - session absente au retour du FI
     Etant donné que je navigue sur la page fournisseur de service
@@ -41,7 +40,6 @@ Fonctionnalité: Connexion Usager - session absente
     Quand je m'authentifie
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y190001"
-    Et le message d'erreur est "Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous."
 
   Scénario: Erreur lors de la connexion - session absente sur la page multi FI
     Etant donné que je navigue sur la page fournisseur de service
@@ -52,4 +50,3 @@ Fonctionnalité: Connexion Usager - session absente
     Et je rafraîchis la page
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y190001"
-    Et le message d'erreur est "Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous."

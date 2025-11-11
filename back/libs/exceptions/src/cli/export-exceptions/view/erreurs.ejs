@@ -3,8 +3,8 @@
 <% markdown.forEach((library) => { %>
 
 ## @fc/<%= library[0].path.split('/')[1] %>
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|<% 
-library.forEach((errorData) => { const { errorCode, path, documentation, exception, translated, http_status_code, error, error_description } = errorData; %>
-| [<b><%= errorCode %></b>](<%=projectRootPath%><%=path%>) | <%= documentation?.replaceAll('||', 'OR') %> | <%= translated %> | <b>Classe :</b> [<%= exception %>](<%=projectRootPath%><%=path%>) <br /><b>Code HTTP :</b> <%= http_status_code %> <br /><b>error :</b> <%= error %> <br /> <b>error_description :</b> <%= error_description %> |<%
+| Code d'erreur | Classe | Code HTTP | error | error_description |
+|---|---|---|---|---|<%
+library.forEach((errorData) => { const { errorCode, path, exception, http_status_code, error, error_description } = errorData; %>
+| [<b><%= errorCode %></b>](<%=projectRootPath%><%=path%>) | [<%= exception %>](<%=projectRootPath%><%=path%>) | <%= http_status_code %> | <%= error %> | <%= error_description %> |<%
 })}) %>

@@ -3,6 +3,10 @@ import { validate } from 'class-validator';
 import { ExecutionContext } from '@nestjs/common';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
+import {
+  SessionInvalidMandatoryFieldsException,
+  SessionInvalidSessionException,
+} from '@fc/session';
 
 import { UserSessionDecoratorFactory } from './user-session.decorator';
 
@@ -112,9 +116,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
-    ).rejects.toThrowError(
-      'UserSessionDecorator: mandatory session data is invalid.',
-    );
+    ).rejects.toThrowError(SessionInvalidMandatoryFieldsException);
 
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
@@ -132,7 +134,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
-    ).rejects.toThrowError('UserSessionDecorator: Session data is invalid.');
+    ).rejects.toThrowError(SessionInvalidSessionException);
 
     expect(validateMock).toHaveBeenCalledTimes(2);
   });
@@ -161,7 +163,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(undefined, fakeExecutionContext),
-    ).rejects.toThrowError('UserSessionDecorator: Session data is invalid.');
+    ).rejects.toThrowError(SessionInvalidSessionException);
 
     expect(validateMock).toHaveBeenCalledTimes(1);
   });

@@ -17,4 +17,5 @@ export const enum ErrorCode {
   BAD_COOKIE = 12,
   CANNOT_COMMIT = 13,
   ALIAS_NOT_FOUND = 14,
+  INVALID_MANDATORY_FIELDS = 15,
 }

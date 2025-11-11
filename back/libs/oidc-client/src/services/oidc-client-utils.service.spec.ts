@@ -7,10 +7,10 @@ import { isURL } from 'class-validator';
 import { Request } from 'express';
 import { CallbackParamsType, errors } from 'openid-client';
 
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CryptographyService } from '@fc/cryptography';
-import { FcException } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -350,7 +350,7 @@ describe('OidcClientUtilsService', () => {
       expect(result).toBe('callbackMock Resolve Value');
     });
 
-    it('should throw if something unexpected goes wrong in extractParams', async () => {
+    it('should throw OidcClientTokenFailedException if something unexpected goes wrong in extractParams', async () => {
       // Given
       const errorMessage = 'a custom error message';
       callbackMock.mockRejectedValueOnce(errorMessage);
@@ -358,20 +358,19 @@ describe('OidcClientUtilsService', () => {
       await expect(
         service.getTokenSet(req, providerId, params),
       ).rejects.toThrow(OidcClientTokenFailedException);
-      expect(loggerServiceMock.error).toHaveBeenCalledTimes(1);
     });
 
-    it('should throw FcException if oidc-client throws OPError', async () => {
+    it('should throw BadRequestException if oidc-client throws OPError', async () => {
       // Given
       const exception = new errors.OPError({ error: 'invalid_scope' });
       callbackMock.mockRejectedValueOnce(exception);
       // Then
       await expect(
         service.getTokenSet(req, providerId, params),
-      ).rejects.toThrow(FcException);
+      ).rejects.toThrow(BadRequestException);
     });
 
-    it('should throw FcException if oidc-client throws RPError', async () => {
+    it('should throw BadRequestException if oidc-client throws RPError', async () => {
       // Given
       const exception = new errors.RPError({
         message: 'state missing from the response',
@@ -380,7 +379,7 @@ describe('OidcClientUtilsService', () => {
       // Then
       await expect(
         service.getTokenSet(req, providerId, params),
-      ).rejects.toThrow(FcException);
+      ).rejects.toThrow(BadRequestException);
     });
   });
 

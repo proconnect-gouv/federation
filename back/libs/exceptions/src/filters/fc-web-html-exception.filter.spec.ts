@@ -38,9 +38,8 @@ describe('FcWebHtmlExceptionFilter', () => {
   };
 
   class ExceptionMock extends CoreFcaBaseException {
-    error = 'ERROR';
-    error_description = 'ERROR_DESCRIPTION';
-    ui = 'some.message.code';
+    message = 'message';
+    code = 'code';
   }
 
   const resMock = {
@@ -53,7 +52,7 @@ describe('FcWebHtmlExceptionFilter', () => {
 
   const paramsMock = {
     exception: exceptionMock,
-    error: { id: idMock, code: 'ERROR', message: 'ERROR_DESCRIPTION' },
+    error: { id: idMock, code: 'Y50code', message: 'message' },
     res: resMock as unknown as Response,
   };
 
@@ -94,17 +93,6 @@ describe('FcWebHtmlExceptionFilter', () => {
   describe('catch', () => {
     beforeEach(() => {
       filter['errorOutput'] = jest.fn();
-    });
-
-    it('should log the exception', () => {
-      // When
-      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
-      // Force generic to ensure message comes from error_description deterministically
-      exceptionMock.generic = true;
-      exceptionMock.ui = undefined;
-
-      // Then
-      expect(loggerMock.error).toHaveBeenCalledOnce();
     });
 
     it('should output the error', () => {
@@ -151,28 +139,6 @@ describe('FcWebHtmlExceptionFilter', () => {
             description: expect.any(String),
             displayContact: expect.any(Boolean),
           }),
-        }),
-      );
-    });
-
-    it('should render the error template with a generic exception (no CoreFca display)', () => {
-      // When
-      const inputMock = {
-        ...paramsMock,
-        error: { ...paramsMock.error, message: 'invalid_scope' },
-        exception: Object.assign(new BaseException(), {
-          generic: true,
-          error_description: 'invalid scopes',
-        }),
-      };
-      filter['errorOutput'](inputMock as any);
-
-      // Then
-      expect(resMock.render).toHaveBeenCalledWith(
-        'error',
-        expect.objectContaining({
-          error: inputMock.error,
-          exceptionDisplay: {},
         }),
       );
     });

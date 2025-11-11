@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { isArray } from 'lodash';
 
 import {
   ArgumentsHost,
@@ -36,10 +37,12 @@ export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
 
     if (exception instanceof BadRequestException) {
       const badRequestResponse = exception.getResponse() as {
-        message: string[];
+        message: any;
       };
 
-      message = badRequestResponse.message.join(', ');
+      if (isArray(badRequestResponse.message)) {
+        message = badRequestResponse.message.join(', ');
+      }
     }
 
     this.logException(code, id, message, exception);

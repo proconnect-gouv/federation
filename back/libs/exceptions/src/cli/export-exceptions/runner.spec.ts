@@ -295,30 +295,24 @@ describe('Runner', () => {
       // Then
       expect(result).toStrictEqual([
         {
-          documentation: 'documentation',
           scope: 1,
           code: 2,
           http_status_code: 500,
-          ui: 'ui',
           errorCode: '010002',
           exception: 'ImportFixture',
           path: paths[0],
           error: 'error',
           error_description: 'error description',
-          translated: undefined,
         },
         {
-          documentation: 'documentation',
           scope: 2,
           code: 2,
           http_status_code: 500,
-          ui: 'ui',
           errorCode: '020002',
           exception: 'ImportFixture2',
           path: paths[1],
           error: 'error',
           error_description: 'error description',
-          translated: undefined,
         },
       ]);
     });
@@ -400,7 +394,7 @@ describe('Runner', () => {
       expect(Runner.renderFile).toHaveBeenNthCalledWith(1, expect.any(String), {
         markdown: markdownGenerateResult,
         projectRootPath,
-        title: 'Code erreurs généraux',
+        title: 'Codes d’erreur généraux',
       });
     });
 
