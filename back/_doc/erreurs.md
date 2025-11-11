@@ -2,11 +2,6 @@
 
 
 
-## @fc/exceptions
-| Code d'erreur | Classe | Code HTTP | error | error_description |
-|---|---|---|---|---|
-| [<b>000000</b>](../libs/exceptions/src/exceptions/unknown.exception.ts) | [UnknownException](../libs/exceptions/src/exceptions/unknown.exception.ts) | 500 |  |  |
-
 ## @fc/oidc-client
 | Code d'erreur | Classe | Code HTTP | error | error_description |
 |---|---|---|---|---|

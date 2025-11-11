@@ -1,21 +1,17 @@
 import {
   ArgumentsHost,
   Catch,
-  ExceptionFilter,
   Injectable,
+  InternalServerErrorException,
 } from '@nestjs/common';
 
-import { UnknownException } from '../exceptions';
-import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
+import { HttpExceptionFilter } from './http-exception.filter';
 
 @Catch()
 @Injectable()
-export class UnknownHtmlExceptionFilter
-  extends FcWebHtmlExceptionFilter
-  implements ExceptionFilter
-{
+export class UnknownHtmlExceptionFilter extends HttpExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {
-    const wrapped = new UnknownException(exception);
+    const wrapped = new InternalServerErrorException(exception);
 
     super.catch(wrapped, host);
   }
