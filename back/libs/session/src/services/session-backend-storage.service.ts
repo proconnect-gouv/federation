@@ -1,5 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { isEmpty } from 'lodash';
 
 import { Injectable } from '@nestjs/common';
 
@@ -10,6 +11,7 @@ import { RedisService } from '@fc/redis';
 
 import { SessionConfig } from '../dto';
 import {
+  SessionAliasNotFoundException,
   SessionBadAliasException,
   SessionBadFormatException,
   SessionBadStringifyException,
@@ -173,6 +175,10 @@ export class SessionBackendStorageService {
       throw new SessionBadAliasException();
     }
     const value = await this.redis.client.get(key);
+
+    if (isEmpty(value)) {
+      throw new SessionAliasNotFoundException();
+    }
 
     return value;
   }

@@ -103,8 +103,6 @@ export const messageDictionary: Record<string, string> = {
     'Votre session a expiré, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Session.exceptions.sessionInvalidSession':
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
-  'Session.exceptions.sessionNoSessionId':
-    'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Session.exceptions.sessionNotFound':
     'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
   'Session.exceptions.sessionStorage':

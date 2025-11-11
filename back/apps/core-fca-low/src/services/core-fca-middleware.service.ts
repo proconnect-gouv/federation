@@ -7,7 +7,6 @@ import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { ActiveUserSessionDto, UserSession } from '@fc/core/dto';
-import { CoreNoSessionIdException } from '@fc/core/exceptions';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { ErrorPageParams } from '@fc/exceptions/types/error-page-params';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -153,10 +152,6 @@ export class CoreFcaMiddlewareService {
     }
 
     const sessionId = await this.sessionService.getAlias(accountId);
-
-    if (!sessionId) {
-      throw new CoreNoSessionIdException();
-    }
 
     await this.sessionService.initCache(sessionId);
 
