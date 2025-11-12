@@ -55,6 +55,7 @@
     "ejs": "^3.1.10",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
+    "global-agent": "^3.0.0",
     "helmet": "^8.1.0",
     "ioredis": "^5.8.2",
     "jose-v2": "npm:jose@^2.0.5",
