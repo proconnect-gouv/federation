@@ -13,6 +13,7 @@ import { getLoggerMock } from '@mocks/logger';
 import { getRedisServiceMock, getRedisServiceMultiMock } from '@mocks/redis';
 
 import {
+  SessionAliasNotFoundException,
   SessionBadAliasException,
   SessionBadFormatException,
   SessionBadStringifyException,
@@ -538,7 +539,7 @@ describe('SessionBackendStorageService', () => {
 
     it('should return the result of client.get()', async () => {
       // Given
-      const redisResult = Symbol('redisResult');
+      const redisResult = 'redisResult';
       redisMock.client.get.mockResolvedValue(redisResult);
 
       // When
@@ -546,6 +547,17 @@ describe('SessionBackendStorageService', () => {
 
       // Then
       expect(result).toBe(redisResult);
+    });
+
+    it('should return the result of client.get()', async () => {
+      // Given
+      const redisResult = undefined;
+      redisMock.client.get.mockResolvedValue(redisResult);
+
+      // When / Then
+      await expect(service.getAlias(alias)).rejects.toThrow(
+        SessionAliasNotFoundException,
+      );
     });
   });
 });

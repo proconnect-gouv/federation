@@ -3,7 +3,6 @@ import { validate } from 'class-validator';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CoreNoSessionIdException } from '@fc/core/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcCtx, OidcProviderService } from '@fc/oidc-provider';
@@ -151,17 +150,6 @@ describe('CoreFcaMiddlewareService', () => {
       service as any
     ).loadSessionInAsyncLocalStorage(mockCtx);
     expect(isSessionLoaded).toBeFalse();
-  });
-
-  it('should throw CoreNoSessionIdException if session ID is not set in loadSessionInAsyncLocalStorage', async () => {
-    const mockCtx = {
-      oidc: { entities: { Account: { accountId: '123' } } },
-      req: {},
-    };
-    mockSessionService.getAlias.mockResolvedValueOnce(null);
-    await expect(
-      (service as any).loadSessionInAsyncLocalStorage(mockCtx),
-    ).rejects.toThrow(CoreNoSessionIdException);
   });
 
   it('should initialize session, set alias, and track event in tokenMiddleware', async () => {
