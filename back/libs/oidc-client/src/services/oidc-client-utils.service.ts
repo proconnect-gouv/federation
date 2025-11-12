@@ -10,11 +10,10 @@ import {
   CallbackExtras,
   CallbackParamsType,
   Client,
-  errors,
   TokenSet,
 } from 'openid-client';
 
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -24,6 +23,7 @@ import {
   OidcClientInvalidStateException,
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
+  OidcClientUserinfoFailedException,
 } from '../exceptions';
 import {
   ExtraTokenParams,
@@ -126,20 +126,13 @@ export class OidcClientUtilsService {
         this.buildExtraParameters(extraParams),
       );
     } catch (error) {
-      if (error instanceof errors.RPError) {
-        throw new BadRequestException(error);
-      }
-      if (error instanceof errors.OPError) {
-        throw new BadRequestException(error);
-      } else {
-        this.logger.debug({
-          client: { ...client, client_secret: '***' },
-          receivedParams,
-          params,
-        });
+      this.logger.debug({
+        client: { ...client, client_secret: '***' },
+        receivedParams,
+        params,
+      });
 
-        throw new OidcClientTokenFailedException(error);
-      }
+      throw new OidcClientTokenFailedException(error);
     }
 
     return tokenSet;
@@ -154,9 +147,11 @@ export class OidcClientUtilsService {
   async getUserInfo<T>(accessToken: string, idpId: string): Promise<T> {
     const client = await this.issuer.getClient(idpId);
 
-    const userInfo = await client.userinfo<T>(accessToken);
-
-    return userInfo;
+    try {
+      return await client.userinfo<T>(accessToken);
+    } catch (error) {
+      throw new OidcClientUserinfoFailedException(error);
+    }
   }
 
   /**
@@ -202,7 +197,7 @@ export class OidcClientUtilsService {
         state: stateFromSession,
       });
     } catch (error) {
-      throw new OidcClientGetEndSessionUrlException();
+      throw new OidcClientGetEndSessionUrlException(error);
     }
 
     /**

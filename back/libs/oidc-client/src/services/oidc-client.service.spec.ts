@@ -3,10 +3,7 @@ import { TokenSet } from 'openid-client';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import {
-  OidcClientTokenResultFailedException,
-  OidcClientUserinfosFailedException,
-} from '../exceptions';
+import { OidcClientTokenResultFailedException } from '../exceptions';
 import { OidcClientService } from './oidc-client.service';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 
@@ -96,17 +93,6 @@ describe('OidcClientService', () => {
       });
 
       expect(result).toEqual(identityMock);
-    });
-
-    it('should throw an exception if fetching user info fails', async () => {
-      utilsMock.getUserInfo.mockRejectedValueOnce(new Error('Fetch error'));
-
-      await expect(
-        service.getUserinfo({
-          accessToken: 'accessTokenMock',
-          idpId: 'idpIdMock',
-        }),
-      ).rejects.toThrow(OidcClientUserinfosFailedException);
     });
   });
 

@@ -8,10 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 
 import { TokenResultDto } from '../dto';
-import {
-  OidcClientTokenResultFailedException,
-  OidcClientUserinfosFailedException,
-} from '../exceptions';
+import { OidcClientTokenResultFailedException } from '../exceptions';
 import {
   ExtraTokenParams,
   TokenParams,
@@ -33,13 +30,6 @@ export class OidcClientService {
     req: Request,
     extraParams?: ExtraTokenParams,
   ): Promise<TokenResults> {
-    /**
-     * @todo #434 refacto sur getTokenSet,
-     * - ne pas renvoyer tokenSet mais directement tokenResult
-     * - inclure le DTO à la fin de getTokenSet (seul vérification de l'acces_token)
-     * - simplifier les appels de getTokenSet en (idp, les code de transfert(state, nonce), le context pour tracking)
-     * - voir commit original : 440d0a1734e0e1206b7e21781cbb0f186a93dd82
-     */
     // OIDC: call idp's /token endpoint
     const tokenSet: TokenSet = await this.utils.getTokenSet(
       req,
@@ -77,11 +67,7 @@ export class OidcClientService {
 
   async getUserinfo({ accessToken, idpId }: UserInfosParams): Promise<any> {
     // OIDC: call idp's /userinfo endpoint
-    try {
-      return await this.utils.getUserInfo(accessToken, idpId);
-    } catch (error) {
-      throw new OidcClientUserinfosFailedException();
-    }
+    return await this.utils.getUserInfo(accessToken, idpId);
   }
 
   async getEndSessionUrl(

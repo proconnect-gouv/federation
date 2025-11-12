@@ -7,7 +7,6 @@ import { isURL } from 'class-validator';
 import { Request } from 'express';
 import { CallbackParamsType, errors } from 'openid-client';
 
-import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CryptographyService } from '@fc/cryptography';
@@ -20,6 +19,7 @@ import {
   OidcClientInvalidStateException,
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
+  OidcClientUserinfoFailedException,
 } from '../exceptions';
 import { TokenParams } from '../interfaces';
 import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
@@ -360,17 +360,17 @@ describe('OidcClientUtilsService', () => {
       ).rejects.toThrow(OidcClientTokenFailedException);
     });
 
-    it('should throw BadRequestException if oidc-client throws OPError', async () => {
+    it('should throw OidcClientTokenFailedException if oidc-client throws OPError', async () => {
       // Given
       const exception = new errors.OPError({ error: 'invalid_scope' });
       callbackMock.mockRejectedValueOnce(exception);
       // Then
       await expect(
         service.getTokenSet(req, providerId, params),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(OidcClientTokenFailedException);
     });
 
-    it('should throw BadRequestException if oidc-client throws RPError', async () => {
+    it('should throw OidcClientTokenFailedException if oidc-client throws RPError', async () => {
       // Given
       const exception = new errors.RPError({
         message: 'state missing from the response',
@@ -379,7 +379,7 @@ describe('OidcClientUtilsService', () => {
       // Then
       await expect(
         service.getTokenSet(req, providerId, params),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(OidcClientTokenFailedException);
     });
   });
 
@@ -444,6 +444,16 @@ describe('OidcClientUtilsService', () => {
       const result = await service.getUserInfo(accessToken, providerId);
       // Then
       expect(result).toBe('userinfoMock Resolve Value');
+    });
+
+    it('should throw a OidcClientUserinfoFailedException', async () => {
+      const accessToken = 'accessTokenValue';
+      const providerId = 'providerIdValue';
+      userinfoMock.mockRejectedValueOnce(new Error('mock error'));
+
+      await expect(() =>
+        service.getUserInfo(accessToken, providerId),
+      ).rejects.toThrow(OidcClientUserinfoFailedException);
     });
   });
 
@@ -514,7 +524,9 @@ describe('OidcClientUtilsService', () => {
       clientMock.endSessionUrl.mockReset().mockImplementationOnce(() => {
         throw new Error('Unknown Error');
       });
-      const expectedError = new OidcClientGetEndSessionUrlException();
+      const expectedError = new OidcClientGetEndSessionUrlException(
+        'Unknown Error',
+      );
       // When
       await expect(() =>
         service.getEndSessionUrl(
