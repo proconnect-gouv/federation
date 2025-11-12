@@ -84,6 +84,5 @@ Fonctionnalité: Connexion Usager - SSO
     Et que je suis redirigé vers la page fournisseur de service "premier FS"
     Et que la cinématique a utilisé le niveau de sécurité "eidas1"
     Quand je navigue sur la page fournisseur de service "second FS"
-    Et que le fournisseur de service requiert un niveau de sécurité "eidas2"
-    Et que je clique sur le bouton ProConnect
+    Et que je clique sur le bouton ProConnect deux facteurs
     Alors je suis redirigé vers la page interaction

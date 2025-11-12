@@ -110,11 +110,15 @@ When('je clique sur le bouton ProConnect', function () {
 });
 
 When('je clique sur le bouton ProConnect PKCE', function () {
-  cy.get('button#login-pkce').click({ force: true });
+  cy.get('button#login-pkce').click();
 
   if (isUsingFCBasicAuthorization()) {
     checkFCBasicAuthorization();
   }
+});
+
+When('je clique sur le bouton ProConnect deux facteurs', function () {
+  cy.get('button#force-2fa').click();
 });
 
 When('je clique sur le bouton de déconnexion', function () {
