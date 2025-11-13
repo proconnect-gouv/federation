@@ -9,13 +9,12 @@ import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { BaseException } from '../exceptions/base.exception';
-import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
+import { HttpExceptionFilter } from './http-exception.filter';
 import { UnknownHtmlExceptionFilter } from './unknown-html-exception.filter';
 
-// Avoid importing the real FcWebHtmlExceptionFilter (which pulls heavy deps) during this spec
-jest.mock('./fc-web-html-exception.filter', () => ({
-  FcWebHtmlExceptionFilter: class {
+// Avoid importing the real HttpExceptionFilter (which pulls heavy deps) during this spec
+jest.mock('./http-exception.filter', () => ({
+  HttpExceptionFilter: class {
     catch() {}
   },
 }));
@@ -57,7 +56,7 @@ describe('UnknownHtmlExceptionFilter', () => {
     filter = module.get<UnknownHtmlExceptionFilter>(UnknownHtmlExceptionFilter);
 
     spyParent = jest
-      .spyOn(FcWebHtmlExceptionFilter.prototype, 'catch')
+      .spyOn(HttpExceptionFilter.prototype, 'catch')
       .mockImplementation(() => {});
   });
 
@@ -68,28 +67,16 @@ describe('UnknownHtmlExceptionFilter', () => {
   describe('catch', () => {
     it('should call super.catch', () => {
       // Given
-      const exceptionMock = new Error('message') as BaseException;
+      const exceptionMock = new Error('message');
 
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
       // Then
       expect(spyParent).toHaveBeenCalledExactlyOnceWith(
-        expect.any(BaseException),
+        expect.any(Error),
         hostMock,
       );
-    });
-
-    it('should wrap the exception', () => {
-      // Given
-      const exceptionMock = new Error('message') as BaseException;
-      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
-
-      // When
-      const wrapped = spyParent.mock.calls[0][0] as BaseException;
-
-      // Then
-      expect(wrapped.originalError).toBe(exceptionMock);
     });
   });
 });
