@@ -42,6 +42,9 @@ const PC_USERINFO_SIGNED_RESPONSE_ALG =
 const dataProviderConfigs: { name: string; url: string }[] = JSON.parse(
   process.env.App_DATA_APIS,
 );
+const ACR_VALUES_FOR_2FA =
+  process.env.ACR_VALUES_FOR_2FA ||
+  'eidas2 eidas3 https://proconnect.gouv.fr/assurance/self-asserted-2fa https://proconnect.gouv.fr/assurance/consistency-checked-2fa';
 
 const app = express();
 
@@ -282,6 +285,21 @@ app.post('/fetch-userdata', async (req, res, next) => {
     next(e);
   }
 });
+
+app.post(
+  '/force-2fa',
+  getAuthorizationControllerFactory({
+    claims: {
+      id_token: {
+        amr: null,
+        acr: {
+          essential: true,
+          values: ACR_VALUES_FOR_2FA?.split(' '),
+        },
+      },
+    },
+  }),
+);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
