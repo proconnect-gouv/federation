@@ -58,4 +58,4 @@ export const OidcProviderEvents = [
   'session.destroyed',
   'session.saved',
   'userinfo.error',
-];
+] as const;
