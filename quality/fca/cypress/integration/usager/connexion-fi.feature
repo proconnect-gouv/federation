@@ -39,3 +39,14 @@ Fonctionnalité: Connexion à un FI
     Alors je suis redirigé vers la page erreur technique
     Et le titre de la page d'erreur est "Accès impossible"
     Et le code d'erreur est "Y500001"
+
+  @ignoreInteg01
+  Scénario: Affichage d'une erreur technique lorsque le FI n'est pas joignable
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fi-rie.fr"
+    Et que je clique sur le bouton de connexion
+    Alors je suis redirigé vers la page erreur technique
+    Et le titre de la page d'erreur est "Accès impossible"
+    Et le message d'erreur est "Client network socket disconnected before secure TLS connection was established"
+    Et le code d'erreur est "Y000000"
