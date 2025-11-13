@@ -5,8 +5,6 @@ import { CoreFcaBaseException } from '@fc/exceptions/exceptions/core-fca-base.ex
 import { ErrorCode } from '../enums';
 
 export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseException {
-  public documentation =
-    "L'utilisateur renseigné n'est pas reconnu comme dépendant du service public";
   public code = ErrorCode.AGENT_NOT_FOUND;
   public http_status_code = HttpStatus.BAD_REQUEST;
 

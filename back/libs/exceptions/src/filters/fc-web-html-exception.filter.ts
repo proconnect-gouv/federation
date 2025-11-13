@@ -7,7 +7,6 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
-import { messageDictionary } from '../config/error-messages';
 import { ExceptionsConfig } from '../dto';
 import { BaseException } from '../exceptions/base.exception';
 import { CoreFcaBaseException } from '../exceptions/core-fca-base.exception';
@@ -30,13 +29,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
 
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
-    const staticMessage = exception.ui
-      ? messageDictionary[exception.ui] ||
-        messageDictionary['exceptions.default_message']
-      : undefined;
-    const message = exception.generic
-      ? exception.error_description
-      : staticMessage;
+    const message = exception.message;
 
     this.logException(code, id, message, exception);
 
@@ -50,9 +43,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
   protected getExceptionCodeFor(exception: BaseException): string {
     const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
 
-    return exception.generic
-      ? exception.error
-      : getCode(exception.scope, exception.code, prefix);
+    return getCode(exception.scope, exception.code, prefix);
   }
 
   protected logException<T extends BaseException>(

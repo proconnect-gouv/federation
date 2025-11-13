@@ -3,12 +3,12 @@ import { CryptographyBaseException } from './cryptography-base.exception';
 
 export class LowEntropyArgumentException extends CryptographyBaseException {
   public code = ErrorCode.LOW_ENTROPY;
-  public documentation =
-    "Problème de configuration dans la librairie de cryptographie (Une fonction de génération d'aléa requiert une longueur minimale pour éviter des collisions)";
-  public ui = 'Cryptography.exceptions.lowEntropyArgument';
+  public error = 'server_error';
+  public error_description =
+    'authentication aborted due to a technical error on the authorization server';
 
   constructor(length: number) {
     super();
-    this.log = `${this.ui}, <${length}> given.`;
+    this.log = `Entropy must be at least 32 Bytes for random bytes generation, <${length}> given.`;
   }
 }

@@ -6,8 +6,6 @@ import { ErrorCode } from '../enums';
 
 export class CoreFcaAgentIdpDisabledException extends CoreFcaBaseException {
   public code = ErrorCode.DISABLED_PROVIDER;
-  public documentation =
-    'Le FI est désactivé, si le problème persiste, contacter le support ProConnect';
   public http_status_code = HttpStatus.BAD_REQUEST;
 
   public error = 'server_error';

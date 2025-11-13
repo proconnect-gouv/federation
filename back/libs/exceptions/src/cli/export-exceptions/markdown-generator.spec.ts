@@ -33,25 +33,6 @@ describe('MarkdownGenerator', () => {
     });
   });
 
-  describe('MarkdownGenerator.groupExceptionsByScope', () => {
-    it('should group exceptions with the same scope property', () => {
-      const errs = [
-        { scope: 3, ui: '3.1' },
-        { scope: 3, ui: '3.2' },
-        { scope: 2, ui: '2.1' },
-      ];
-      const result = errs.reduce(MarkdownGenerator.groupExceptionsByScope, {});
-      const expected = {
-        3: [
-          { scope: 3, ui: '3.1' },
-          { scope: 3, ui: '3.2' },
-        ],
-        2: [{ scope: 2, ui: '2.1' }],
-      };
-      expect(result).toStrictEqual(expected);
-    });
-  });
-
   describe('MarkdownGenerator.generate', () => {
     it('should generate a markdown document from a stack of errors', () => {
       const errors = [

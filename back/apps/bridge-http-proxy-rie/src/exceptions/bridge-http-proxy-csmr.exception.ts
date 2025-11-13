@@ -5,12 +5,9 @@ import { BridgeHttpProxyBaseException } from './bridge-http-proxy-base.exception
 
 export class BridgeHttpProxyCsmrException extends BridgeHttpProxyBaseException {
   public code = ErrorCode.CSMR_ERROR;
-  public documentation =
-    'Une erreur technique est survenue dans le consumer au moment de la récupération des informations à travers le broker rabbitmq';
   public error = 'server_error';
   public error_description =
     'authentication aborted due to a technical error on the authorization server';
-  public ui = 'BridgeHttpProxy.exceptions.bridgeHttpProxyCsmr';
 
   public reference: number;
   public name: string;

@@ -5,7 +5,6 @@ import * as glob from 'glob';
 
 import { HttpStatus } from '@nestjs/common';
 
-import { messageDictionary } from '../../config/error-messages';
 import { BaseException } from '../../exceptions/base.exception';
 import { getCode } from '../../helpers';
 import {
@@ -94,15 +93,8 @@ export default class Runner {
     path,
     Exception,
   }: PathAndInstantiatedException): ExceptionDocumentationInterface {
-    const {
-      error,
-      error_description,
-      ui,
-      http_status_code,
-      scope,
-      code,
-      documentation,
-    } = new Exception();
+    const { error, error_description, http_status_code, scope, code } =
+      new Exception();
 
     const errorCode = getCode(scope, code, '');
 
@@ -112,9 +104,6 @@ export default class Runner {
       errorCode,
       exception: Exception.name,
       http_status_code,
-      ui,
-      translated: messageDictionary[ui],
-      documentation,
       path,
       error,
       error_description,
@@ -173,7 +162,7 @@ export default class Runner {
     const mainPage = await Runner.renderFile(inputFile, {
       markdown: mainMarkdown,
       projectRootPath,
-      title: 'Code erreurs généraux',
+      title: 'Codes d’erreur généraux',
     });
 
     fs.writeFileSync('_doc/erreurs.md', mainPage);

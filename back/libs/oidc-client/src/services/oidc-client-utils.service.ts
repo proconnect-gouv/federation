@@ -14,10 +14,9 @@ import {
   TokenSet,
 } from 'openid-client';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 
 import { CryptographyService } from '@fc/cryptography';
-import { FcException } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
 
 import {
@@ -128,29 +127,18 @@ export class OidcClientUtilsService {
       );
     } catch (error) {
       if (error instanceof errors.RPError) {
-        const exception = new FcException();
-        exception.generic = true;
-        exception.error = error.name;
-        exception.error_description = error.message;
-        exception.http_status_code = 400;
-        throw exception;
+        throw new BadRequestException(error);
       }
       if (error instanceof errors.OPError) {
-        const exception = new FcException();
-        exception.generic = true;
-        exception.error = error.error;
-        exception.error_description = error.error_description;
-        exception.http_status_code = 400;
-        throw exception;
+        throw new BadRequestException(error);
       } else {
-        this.logger.error(error.stack);
         this.logger.debug({
           client: { ...client, client_secret: '***' },
           receivedParams,
           params,
         });
 
-        throw new OidcClientTokenFailedException();
+        throw new OidcClientTokenFailedException(error);
       }
     }
 

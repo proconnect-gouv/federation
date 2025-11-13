@@ -58,7 +58,7 @@ Fonctionnalité: API - oidc-callback
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "RPError"
+    Et le code d'erreur est "Y000400"
     Et le message d'erreur est "code missing from response"
 
   Scénario: API oidc-callback - code vide
@@ -76,7 +76,7 @@ Fonctionnalité: API - oidc-callback
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "RPError"
+    Et le code d'erreur est "Y000400"
     Et le message d'erreur est "code missing from response"
 
   Scénario: API oidc-callback - affichage de l'erreur remontée via le paramètre error
@@ -87,8 +87,8 @@ Fonctionnalité: API - oidc-callback
     Et que le fournisseur d'identité renvoie l'erreur "invalid_scope" avec "your scopes are invalid"
     Et je m'authentifie
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "invalid_scope"
-    Et le message d'erreur est "your scopes are invalid"
+    Et le code d'erreur est "Y000400"
+    Et le message d'erreur est "invalid_scope (your scopes are invalid)"
 
   Scénario: API oidc-callback - bon state mais mauvais code
     Etant donné que je navigue sur la page fournisseur de service
@@ -104,5 +104,5 @@ Fonctionnalité: API - oidc-callback
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "invalid_grant"
-    Et le message d'erreur est "grant request is invalid"
+    Et le code d'erreur est "Y000400"
+    Et le message d'erreur est "invalid_grant (grant request is invalid)"

@@ -5,15 +5,14 @@ import { CoreFcaBaseException } from '@fc/exceptions/exceptions/core-fca-base.ex
 import { ErrorCode } from '../enums';
 
 export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
-  public documentation =
-    'Nous ne pouvons pas vérifier votre identité auprès de la source officielle : certains éléments ont un format invalide. Nous vous conseillons de contacter le service informatique de votre organisation ou ministère.';
   public code = ErrorCode.INVALID_IDENTITY;
   public http_status_code = HttpStatus.BAD_REQUEST;
   public error = 'server_error';
   public error_description =
     'authentication aborted due to a technical error on the authorization server';
 
-  public description = this.documentation;
+  public description =
+    'Nous ne pouvons pas vérifier votre identité auprès de la source officielle : certains éléments ont un format invalide. Nous vous conseillons de contacter le service informatique de votre organisation ou ministère.';
   public displayContact = true;
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
 

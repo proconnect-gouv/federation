@@ -6,7 +6,10 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
 import { CoreFcaSession, UserSession } from '@fc/core/dto';
-import { SessionInvalidSessionException } from '@fc/session';
+import {
+  SessionInvalidMandatoryFieldsException,
+  SessionInvalidSessionException,
+} from '@fc/session';
 import { ISessionService } from '@fc/session/interfaces';
 import { SessionService } from '@fc/session/services';
 
@@ -42,9 +45,7 @@ export const UserSessionDecoratorFactory = async (
     const mandatoryPropertiesErrors = await validate(object as object);
 
     if (mandatoryPropertiesErrors.length) {
-      throw new SessionInvalidSessionException(
-        'UserSessionDecorator: mandatory session data is invalid.',
-      );
+      throw new SessionInvalidMandatoryFieldsException();
     }
   }
 
@@ -52,9 +53,7 @@ export const UserSessionDecoratorFactory = async (
   const typeErrors = await validate(object as object);
 
   if (typeErrors.length) {
-    throw new SessionInvalidSessionException(
-      'UserSessionDecorator: Session data is invalid.',
-    );
+    throw new SessionInvalidSessionException();
   }
 
   return boundSessionService;
