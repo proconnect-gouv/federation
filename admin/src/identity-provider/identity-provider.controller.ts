@@ -113,10 +113,14 @@ export class IdentityProviderController {
     @Res() res,
   ) {
     try {
-      await this.identityProviderService.create(
-        identityProviderDto,
-        req.user.username,
-      );
+      const { hasGristPublicationSucceeded } =
+        await this.identityProviderService.create(
+          identityProviderDto,
+          req.user.username,
+        );
+      if (!hasGristPublicationSucceeded) {
+        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+      }
     } catch (error) {
       req.flash('globalError', error.message);
       req.flash('values', req.body);
@@ -176,11 +180,15 @@ export class IdentityProviderController {
     @Res() res,
   ) {
     try {
-      await this.identityProviderService.update(
-        id,
-        identityProviderDto,
-        req.user.username,
-      );
+      const { hasGristPublicationSucceeded } =
+        await this.identityProviderService.update(
+          id,
+          identityProviderDto,
+          req.user.username,
+        );
+      if (!hasGristPublicationSucceeded) {
+        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+      }
     } catch (error) {
       req.flash('globalError', error.message);
       return res.redirect(`${res.locals.APP_ROOT}/identity-provider/${id}`);
@@ -206,10 +214,14 @@ export class IdentityProviderController {
     @Body() body,
   ) {
     try {
-      await this.identityProviderService.deleteIdentityProvider(
-        id,
-        req.user.username,
-      );
+      const { hasGristPublicationSucceeded } =
+        await this.identityProviderService.deleteIdentityProvider(
+          id,
+          req.user.username,
+        );
+      if (!hasGristPublicationSucceeded) {
+        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+      }
     } catch (error) {
       req.flash('globalError', error.message);
       return res.status(500);
