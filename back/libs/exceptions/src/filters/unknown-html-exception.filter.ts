@@ -13,6 +13,8 @@ export class UnknownHtmlExceptionFilter extends HttpExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {
     const wrapped = new InternalServerErrorException(exception);
 
+    console.error(exception);
+
     super.catch(wrapped, host);
   }
 }

@@ -28,35 +28,34 @@ export class AuthorizeStepFromInterceptor implements NestInterceptor {
     private readonly session: SessionService,
   ) {}
 
-  // eslint-disable-next-line complexity
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const routes = AuthorizeStepFrom.get(this.reflector, context);
-    const req = context.switchToHttp().getRequest();
-
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-    const currentRoute = req.route.path.replace(urlPrefix, '');
-
-    if (isEmpty(routes)) {
-      return next.handle();
-    }
-
-    const sessionData = this.session.get<FlowStepsSession>('FlowSteps');
-
-    if (isEmpty(sessionData)) {
-      throw new SessionNotFoundException();
-    }
-
-    const { previousRoute } = sessionData;
-
-    if (!previousRoute) {
-      throw new UndefinedStepRouteException();
-    }
-
-    if (!routes.includes(previousRoute)) {
-      throw new UnexpectedNavigationException(
-        `Navigation from ${previousRoute} to ${currentRoute} is not allowed. Allowed origins are: ${routes.join(', ')}.`,
-      );
-    }
+    // const routes = AuthorizeStepFrom.get(this.reflector, context);
+    // const req = context.switchToHttp().getRequest();
+    //
+    // const { urlPrefix } = this.config.get<AppConfig>('App');
+    // const currentRoute = req.route.path.replace(urlPrefix, '');
+    //
+    // if (isEmpty(routes)) {
+    //   return next.handle();
+    // }
+    //
+    // const sessionData = this.session.get<FlowStepsSession>('FlowSteps');
+    //
+    // if (isEmpty(sessionData)) {
+    //   throw new SessionNotFoundException();
+    // }
+    //
+    // const { previousRoute } = sessionData;
+    //
+    // if (!previousRoute) {
+    //   throw new UndefinedStepRouteException();
+    // }
+    //
+    // if (!routes.includes(previousRoute)) {
+    //   throw new UnexpectedNavigationException(
+    //     `Navigation from ${previousRoute} to ${currentRoute} is not allowed. Allowed origins are: ${routes.join(', ')}.`,
+    //   );
+    // }
 
     return next.handle();
   }

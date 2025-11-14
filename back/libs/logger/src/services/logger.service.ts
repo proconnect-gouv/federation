@@ -148,7 +148,7 @@ export class LoggerService {
       });
     }
 
-    this.overloadConsole();
+    // this.overloadConsole();
     this.pino.info('Logger is ready and native console is now overloaded.');
   }
 
