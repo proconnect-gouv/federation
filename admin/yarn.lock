@@ -1566,10 +1566,10 @@
     path-to-regexp "8.2.0"
     tslib "2.8.1"
 
-"@nestjs/microservices@^11.1.6":
-  version "11.1.6"
-  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-11.1.6.tgz#a295eba66c7beb655b6ff5e8fb45972b1147accd"
-  integrity sha512-5ibvCvZ8IBxKhpSkyAC+EBdtm0XVAu3h+GV4PmOi4bXbRvVBT3Kwqq4td2wkWDN3VqteChjQ0aTADv0jizhCrg==
+"@nestjs/microservices@^11.1.8":
+  version "11.1.8"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-11.1.8.tgz#2b3b6280e3f7d164f0d9023c32663e64e84edbda"
+  integrity sha512-AybVmZHzJtSnf3igmwH79FpwFjPZejtWTcWP29bT7QoPmDPg5A7/hPuWA6/Wf2cD6U37EAaX83+R4jCnR5E+6A==
   dependencies:
     iterare "1.2.1"
     tslib "2.8.1"
