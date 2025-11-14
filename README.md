@@ -283,3 +283,70 @@ $ docker compose run --rm init-core
 > This `init-core-fca-low` container is a dependency of the `core-fca-low` container.  
 > It will run the migration script every time the `core-fca-low` container is started.  
 > No need to do it manually when using the `dks switch`
+
+
+## Generate a new version of class-validator-0.14.2
+
+We forked the class-validator package because we needed inhertiance features and is not yet merged [into the main branch](https://github.com/typestack/class-validator/pull/2641).
+
+To update the package, follow these steps.
+
+Get and update the project:
+```bash
+git clone git@github.com:proconnect-gouv/class-validator.git
+```
+
+Update the version attribute of `class-validator/package.json`:
+```json
+{
+  "name": "class-validator",
+  "version": "0.14.2-proconnect.1",
+  "...": "..."
+}
+```
+
+Build the new package:
+```bash
+rm -rf build
+npm ci --ignore-scripts
+npm run prettier:check
+npm run lint:check
+npm run test:ci
+npm run build:es2015
+npm run build:esm5
+npm run build:cjs
+npm run build:umd
+npm run build:types
+cp LICENSE build/LICENSE
+cp README.md build/README.md
+jq 'del(.devDependencies) | del(.scripts)' package.json > build/package.json
+npm pack ./build
+```
+
+Then push the built package in a dedicated branch:
+```bash
+git checkout -b build-0.14.2-proconnect.1
+find . -mindepth 1 -maxdepth 1 \
+  ! -name '.git' \
+  ! -name '.idea' \
+  ! -name '.gitignore' \
+  ! -name 'build' \
+  -exec rm -rf {} +
+mv build/* .
+rmdir build
+git add .
+git commit -m "Build version 0.14.2-proconnect.1"
+git push
+```
+
+Update `federation/back/package.json`:
+
+```json
+{
+  "dependencies": {
+    "class-validator": "git+https://github.com/proconnect-gouv/class-validator.git#build-0.14.2-proconnect.1",
+  }
+}
+```
+
+Run yarn install.

@@ -1,6 +1,8 @@
 import { IsDefined } from 'class-validator';
 
-export class GetIdentityProviderSelectionSessionDto {
+import { UserSession } from '@fc/core/dto/user-session.dto';
+
+export class GetIdentityProviderSelectionSessionDto extends UserSession {
   @IsDefined()
-  readonly idpLoginHint: string;
+  declare idpLoginHint: string;
 }

@@ -92,7 +92,7 @@ export class UserSession {
   @IsString()
   @IsNotEmpty()
   @Expose()
-  readonly idpId?: string;
+  idpId?: string;
 
   @IsOptional()
   @IsString()

@@ -97,7 +97,6 @@ export class IdentitySanitizer {
     const identityValidationErrors = await validate(identityForSp);
     // But we may yet throw if the IdP has no default value
     // to substitute for an incorrect siret
-    /* istanbul ignore next */
     await this.throwIfInvalid(
       identityValidationErrors,
       idpId,

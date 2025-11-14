@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core';
+import { GetIdentityProviderSelectionSessionDto, UserSession } from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
 import { LoggerService } from '@fc/logger';
@@ -128,7 +128,7 @@ describe('OidcClientController', () => {
       const email = 'user@example.com';
       const userSession = {
         get: jest.fn().mockReturnValue({ idpLoginHint: email }),
-      } as unknown as ISessionService<UserSession>;
+      } as unknown as ISessionService<GetIdentityProviderSelectionSessionDto>;
 
       const providers = [
         { title: 'Provider One', uid: 'idp1' },

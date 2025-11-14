@@ -1,17 +1,21 @@
-import { IsDefined } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDefined, ValidateNested } from 'class-validator';
 
 import { IdentityFromIdpDto } from './identity-from-idp.dto';
+import { UserSession } from './user-session.dto';
 
-export class GetVerifySessionDto {
+export class GetVerifySessionDto extends UserSession {
   @IsDefined()
-  readonly idpId: string;
-
-  @IsDefined()
-  readonly idpName: string;
+  declare idpId: string;
 
   @IsDefined()
-  readonly idpLabel: string;
+  declare idpName: string;
 
   @IsDefined()
-  readonly idpIdentity: Partial<IdentityFromIdpDto>;
+  declare idpLabel: string;
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => IdentityFromIdpDto)
+  declare idpIdentity: IdentityFromIdpDto;
 }
