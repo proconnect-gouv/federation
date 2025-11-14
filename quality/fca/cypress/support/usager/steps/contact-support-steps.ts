@@ -27,9 +27,7 @@ Then(
         const subject = decodeURIComponent(matches[1]);
         const body = decodeURIComponent(matches[2]);
 
-        expect(subject).to.contains(
-          `Signaler l’erreur ${errorCode} sur ProConnect`,
-        );
+        expect(subject).to.contains(`Signaler l’erreur ${errorCode}`);
         expect(body).to.contains(`Je souhaitais me connecter à « ${spName} ».`);
         expect(body).to.contains(
           `Mon fournisseur d’identité est « ${idpName} ».`,
