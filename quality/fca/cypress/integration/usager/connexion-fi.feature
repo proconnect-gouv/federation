@@ -49,4 +49,4 @@ Fonctionnalité: Connexion à un FI
     Alors je suis redirigé vers la page erreur technique
     Et le titre de la page d'erreur est "Accès impossible"
     Et le message d'erreur est "Client network socket disconnected before secure TLS connection was established"
-    Et le code d'erreur est "Y000500"
+    Et le code d'erreur est "Y020031"
