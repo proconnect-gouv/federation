@@ -6,10 +6,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
 import { CoreFcaSession, UserSession } from '@fc/core/dto';
-import {
-  SessionInvalidMandatoryFieldsException,
-  SessionInvalidSessionException,
-} from '@fc/session';
+import { SessionInvalidSessionException } from '@fc/session';
 import { ISessionService } from '@fc/session/interfaces';
 import { SessionService } from '@fc/session/services';
 
@@ -44,11 +41,7 @@ export const UserSessionDecoratorFactory = async (
   const validationErrors = await validate(object as object);
 
   if (validationErrors.length) {
-    if (userSessionDto === UserSession) {
-      throw new SessionInvalidSessionException();
-    } else {
-      throw new SessionInvalidMandatoryFieldsException();
-    }
+    throw new SessionInvalidSessionException(validationErrors.toString());
   }
 
   return boundSessionService;
