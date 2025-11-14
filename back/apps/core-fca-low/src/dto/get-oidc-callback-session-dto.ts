@@ -1,18 +1,20 @@
 import { IsDefined } from 'class-validator';
 
-export class GetOidcCallbackSessionDto {
+import { UserSession } from '@fc/core/dto/user-session.dto';
+
+export class GetOidcCallbackSessionDto extends UserSession {
   @IsDefined()
-  readonly idpId: string;
+  declare idpId: string;
 
   @IsDefined()
-  readonly idpName: string;
+  declare idpName: string;
 
   @IsDefined()
-  readonly idpLabel: string;
+  declare idpLabel: string;
 
   @IsDefined()
-  readonly idpState: string;
+  declare idpState: string;
 
   @IsDefined()
-  readonly idpNonce: string;
+  declare idpNonce: string;
 }

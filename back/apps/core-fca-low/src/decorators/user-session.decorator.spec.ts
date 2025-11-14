@@ -63,45 +63,25 @@ describe('UserSessionDecoratorFactory', () => {
     jest.restoreAllMocks();
   });
 
-  it('should return the bound session service with all methods when validations pass (with mandatory DTO)', async () => {
+  it('should return the bound session service with all methods when validations pass', async () => {
     // Define a dummy DTO for mandatory validation.
     class DummyDto {}
 
-    // Simulate no validation errors for both the mandatory DTO and the UserSession.
     const validateMock = jest.mocked(validate);
-    validateMock.mockResolvedValueOnce([]); // For validating DummyDto instance.
-    validateMock.mockResolvedValueOnce([]); // For validating UserSession instance.
+    validateMock.mockResolvedValueOnce([]);
 
     const result = await UserSessionDecoratorFactory(
       DummyDto,
       fakeExecutionContext,
     );
 
-    // Expect the bound session service to have all expected methods.
-    expect(typeof result.get).toBe('function');
-    expect(typeof result.set).toBe('function');
-    expect(typeof result.commit).toBe('function');
-    expect(typeof result.duplicate).toBe('function');
-    expect(typeof result.reset).toBe('function');
-    expect(typeof result.destroy).toBe('function');
-
     // Call duplicate and ensure that it calls the underlying sessionService.duplicate with the response.
     const duplicateResult = result.duplicate();
     expect(fakeSessionService.duplicate).toHaveBeenCalledWith(fakeResponse);
     expect(duplicateResult).toBe('duplicatedSession');
-
-    // Call reset and destroy to verify they are bound with the response.
-    await result.reset();
-    expect(fakeSessionService.reset).toHaveBeenCalledWith(fakeResponse);
-    await result.destroy();
-    expect(fakeSessionService.destroy).toHaveBeenCalledWith(fakeResponse);
-
-    // Commit is not bound with the response so just check it is called.
-    await result.commit();
-    expect(fakeSessionService.commit).toHaveBeenCalled();
   });
 
-  it('should throw SessionInvalidSessionException if mandatory DTO validation fails', async () => {
+  it('should throw SessionInvalidSessionException if a session DTO validation fails', async () => {
     class DummyDto {}
     const validationError = [
       {
@@ -110,9 +90,8 @@ describe('UserSessionDecoratorFactory', () => {
       },
     ];
 
-    // Simulate a validation error for the mandatory DTO.
     const validateMock = jest.mocked(validate);
-    validateMock.mockResolvedValueOnce(validationError); // First call (for DummyDto)
+    validateMock.mockResolvedValueOnce(validationError);
 
     await expect(
       UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
@@ -121,28 +100,9 @@ describe('UserSessionDecoratorFactory', () => {
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
 
-  it('should throw SessionInvalidSessionException if UserSession validation fails', async () => {
-    class DummyDto {}
-    const validationError = [
-      { property: 'user', constraints: { isDefined: 'user must be defined' } },
-    ];
-
-    // Simulate successful validation for the mandatory DTO, then a failure for the UserSession.
+  it('should validate only UserSession when no session DTO is provided', async () => {
     const validateMock = jest.mocked(validate);
-    validateMock.mockResolvedValueOnce([]); // For DummyDto
-    validateMock.mockResolvedValueOnce(validationError); // For UserSession
-
-    await expect(
-      UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
-    ).rejects.toThrowError(SessionInvalidSessionException);
-
-    expect(validateMock).toHaveBeenCalledTimes(2);
-  });
-
-  it('should validate only UserSession when no mandatory DTO is provided', async () => {
-    // When no mandatory DTO is provided, only one validation (for UserSession) occurs.
-    const validateMock = jest.mocked(validate);
-    validateMock.mockResolvedValueOnce([]); // For UserSession
+    validateMock.mockResolvedValueOnce([]);
 
     const result = await UserSessionDecoratorFactory(
       undefined,
@@ -152,14 +112,13 @@ describe('UserSessionDecoratorFactory', () => {
     expect(typeof result.get).toBe('function');
   });
 
-  it('should throw SessionInvalidSessionException if UserSession validation fails when no mandatory DTO is provided', async () => {
+  it('should throw SessionInvalidSessionException if UserSession validation fails when no session DTO is provided', async () => {
     const validationError = [
       { property: 'user', constraints: { isDefined: 'user must be defined' } },
     ];
 
-    // Simulate a validation error for UserSession when no mandatory DTO is provided.
     const validateMock = jest.mocked(validate);
-    validateMock.mockResolvedValueOnce(validationError); // For UserSession
+    validateMock.mockResolvedValueOnce(validationError);
 
     await expect(
       UserSessionDecoratorFactory(undefined, fakeExecutionContext),

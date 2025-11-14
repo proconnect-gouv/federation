@@ -14,7 +14,7 @@ import { ISessionService } from '@fc/session/interfaces';
 import { SessionService } from '@fc/session/services';
 
 export const UserSessionDecoratorFactory = async (
-  mandatoryPropertiesDto: Class<unknown>,
+  userSessionDto: Class<UserSession> = UserSession,
   ctx: ExecutionContext,
 ): Promise<ISessionService<UserSession>> => {
   const sessionService =
@@ -40,20 +40,15 @@ export const UserSessionDecoratorFactory = async (
 
   const sessionData = boundSessionService.get();
 
-  if (mandatoryPropertiesDto) {
-    const object = plainToInstance(mandatoryPropertiesDto, sessionData);
-    const mandatoryPropertiesErrors = await validate(object as object);
+  const object = plainToInstance(userSessionDto, sessionData);
+  const validationErrors = await validate(object as object);
 
-    if (mandatoryPropertiesErrors.length) {
+  if (validationErrors.length) {
+    if (userSessionDto === UserSession) {
+      throw new SessionInvalidSessionException();
+    } else {
       throw new SessionInvalidMandatoryFieldsException();
     }
-  }
-
-  const object = plainToInstance(UserSession, sessionData);
-  const typeErrors = await validate(object as object);
-
-  if (typeErrors.length) {
-    throw new SessionInvalidSessionException();
   }
 
   return boundSessionService;

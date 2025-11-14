@@ -211,7 +211,7 @@ export class InteractionController {
     @Res() res: Response,
     @Param() _params: Interaction,
     @UserSessionDecorator(GetVerifySessionDto)
-    userSessionService: ISessionService<UserSession>,
+    userSessionService: ISessionService<GetVerifySessionDto>,
   ) {
     const {
       amr,

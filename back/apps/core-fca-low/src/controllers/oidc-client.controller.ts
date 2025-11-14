@@ -68,7 +68,7 @@ export class OidcClientController {
   async getIdentityProviderSelection(
     @Res() res: Response,
     @UserSessionDecorator(GetIdentityProviderSelectionSessionDto)
-    userSession: ISessionService<UserSession>,
+    userSession: ISessionService<GetIdentityProviderSelectionSessionDto>,
   ) {
     const { idpLoginHint: email } = userSession.get();
 
@@ -201,7 +201,7 @@ export class OidcClientController {
      * @ticket FC-1020
      */
     @UserSessionDecorator(GetOidcCallbackSessionDto)
-    userSession: ISessionService<UserSession>,
+    userSession: ISessionService<GetOidcCallbackSessionDto>,
   ) {
     // The session is duplicated here to mitigate cookie-theft-based attacks.
     // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
