@@ -6,6 +6,7 @@ import { IdentityProviderService } from './identity-provider.service';
 import { SecretManagerService } from '../utils/secret-manager.service';
 import crypto from 'crypto';
 import { PaginationService } from '../pagination';
+import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 const cryptoProvider = {
   provide: 'cryptoProvider',
@@ -20,6 +21,7 @@ const cryptoProvider = {
     SecretManagerService,
     cryptoProvider,
     PaginationService,
+    GristPublisherService,
   ],
   exports: [IdentityProviderService],
 })

@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { LoggerService } from '../logger/logger.service';
+import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 import { ICrudTrack } from '../interfaces';
 import { SecretManagerService } from '../utils/secret-manager.service';
@@ -22,6 +23,7 @@ export class IdentityProviderService {
     private readonly secretManager: SecretManagerService,
     private readonly logger: LoggerService,
     private readonly paginationService: PaginationService,
+    private readonly gristPublisherService: GristPublisherService,
   ) {}
 
   private track(log: ICrudTrack) {
@@ -62,6 +64,8 @@ export class IdentityProviderService {
       id: identityProviderId,
       name: identityProviderDto.name,
     });
+
+    this.publishIdentityProvidersToGrist();
 
     return identityProviderId;
   }
@@ -122,13 +126,12 @@ export class IdentityProviderService {
     const identityProviderResponse =
       await this.identityProviderRepository.save(existingProvider);
 
+    await this.publishIdentityProvidersToGrist();
+
     return identityProviderResponse;
   }
 
-  async deleteIdentityProvider(
-    id: string,
-    user: string,
-  ): Promise<DeleteResult> {
+  async deleteIdentityProvider(id: string, user: string) {
     const identityProvider =
       await this.identityProviderRepository.findOneByOrFail({
         _id: new ObjectId(id),
@@ -142,7 +145,13 @@ export class IdentityProviderService {
       name: identityProvider.name,
     });
 
-    return this.identityProviderRepository.delete({ _id: new ObjectId(id) });
+    const result = await this.identityProviderRepository.delete({
+      _id: new ObjectId(id),
+    });
+
+    await this.publishIdentityProvidersToGrist();
+
+    return result.affected === 1;
   }
 
   async paginate(options: PaginationOptions) {
@@ -250,5 +259,19 @@ export class IdentityProviderService {
       isRoutingEnabled: inputProvider.isRoutingEnabled,
       fqdns: inputProvider.fqdns,
     };
+  }
+
+  private async publishIdentityProvidersToGrist() {
+    const allIdentityProviders = await this.identityProviderRepository.find();
+
+    try {
+      await this.gristPublisherService.publishIdentityProvidersToGrist(
+        allIdentityProviders,
+      );
+    } catch (error) {
+      throw new Error(
+        `Une erreur est survenue lors de la publication des Fournisseurs d'Identité sur Grist`,
+      );
+    }
   }
 }

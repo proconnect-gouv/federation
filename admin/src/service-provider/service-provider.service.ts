@@ -12,6 +12,7 @@ import { SecretAdapter } from '../utils/secret.adapter';
 import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { PaginationOptions, PaginationService } from '../pagination';
+import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 @Injectable()
 export class ServiceProviderService {
@@ -22,6 +23,7 @@ export class ServiceProviderService {
     private readonly secretAdapter: SecretAdapter,
     private readonly logger: LoggerService,
     private readonly paginationService: PaginationService,
+    private readonly gristPublisherService: GristPublisherService,
   ) {}
 
   private track(log: ICrudTrack) {
@@ -48,6 +50,8 @@ export class ServiceProviderService {
       name: serviceProviderDBEntity.key,
       id: saveOperation.identifiers[0].id,
     });
+
+    await this.publishServiceProvidersToGrist();
 
     return saveOperation;
   }
@@ -116,6 +120,8 @@ export class ServiceProviderService {
       name: serviceProvider.key,
     });
 
+    await this.publishServiceProvidersToGrist();
+
     return this.serviceProviderRepository.save(serviceProvider);
   }
 
@@ -126,9 +132,11 @@ export class ServiceProviderService {
    * Dirty costly solution: iterate through given ids
    */
   async deleteManyServiceProvidersById(ids: string[], user: string) {
-    return Promise.all(
+    await Promise.all(
       ids.map((id) => this.deleteServiceProviderById(id, user)),
     );
+
+    await this.publishServiceProvidersToGrist();
   }
 
   async deleteServiceProviderById(id: string, user: string): Promise<boolean> {
@@ -148,6 +156,8 @@ export class ServiceProviderService {
       id,
       name: serviceProvider.key,
     });
+
+    await this.publishServiceProvidersToGrist();
 
     return result.affected === 1;
   }
@@ -226,5 +236,18 @@ export class ServiceProviderService {
       secretUpdatedBy: user,
       key,
     };
+  }
+
+  private async publishServiceProvidersToGrist() {
+    const allServiceProviders = await this.serviceProviderRepository.find();
+    try {
+      await this.gristPublisherService.publishServiceProvidersToGrist(
+        allServiceProviders,
+      );
+    } catch (error) {
+      throw new Error(
+        `Une erreur est survenue lors de la publication des Fournisseurs de Service sur Grist`,
+      );
+    }
   }
 }
