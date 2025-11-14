@@ -1,6 +1,6 @@
 import { IsDefined } from 'class-validator';
 
-import { UserSession } from '@fc/core/dto/user-session.dto';
+import { UserSession } from '@fc/core/dto/user-session/user-session.dto';
 
 export class GetOidcCallbackSessionDto extends UserSession {
   @IsDefined()
