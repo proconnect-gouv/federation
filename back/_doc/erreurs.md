@@ -40,7 +40,6 @@
 | [<b>190012</b>](../libs/session/src/exceptions/session-bad-cookie.exception.ts) | [SessionBadCookieException](../libs/session/src/exceptions/session-bad-cookie.exception.ts) | 401 | access_denied | user authentication aborted |
 | [<b>190013</b>](../libs/session/src/exceptions/session-cannot-commit-undefined-session.exception.ts) | [SessionCannotCommitUndefinedSession](../libs/session/src/exceptions/session-cannot-commit-undefined-session.exception.ts) | 500 | access_denied | user authentication aborted |
 | [<b>190014</b>](../libs/session/src/exceptions/session-alias-not-found.exception.ts) | [SessionAliasNotFoundException](../libs/session/src/exceptions/session-alias-not-found.exception.ts) | 500 | access_denied | user authentication aborted |
-| [<b>190015</b>](../libs/session/src/exceptions/session-invalid-mandatory-fields.exception.ts) | [SessionInvalidMandatoryFieldsException](../libs/session/src/exceptions/session-invalid-mandatory-fields.exception.ts) | 409 | access_denied | user authentication aborted |
 
 ## @fc/csv
 | Code d'erreur | Classe | Code HTTP | error | error_description |

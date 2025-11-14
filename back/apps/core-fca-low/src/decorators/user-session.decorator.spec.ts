@@ -3,10 +3,7 @@ import { validate } from 'class-validator';
 import { ExecutionContext } from '@nestjs/common';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import {
-  SessionInvalidMandatoryFieldsException,
-  SessionInvalidSessionException,
-} from '@fc/session';
+import { SessionInvalidSessionException } from '@fc/session';
 
 import { UserSessionDecoratorFactory } from './user-session.decorator';
 
@@ -95,7 +92,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
-    ).rejects.toThrowError(SessionInvalidMandatoryFieldsException);
+    ).rejects.toThrowError(SessionInvalidSessionException);
 
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
