@@ -52,7 +52,7 @@ describe('FcWebHtmlExceptionFilter', () => {
 
   const paramsMock = {
     exception: exceptionMock,
-    error: { id: idMock, code: 'Y50code', message: 'message' },
+    error: { id: idMock, code: 'Y50code (ExceptionMock)', message: 'message' },
     res: resMock as unknown as Response,
   };
 

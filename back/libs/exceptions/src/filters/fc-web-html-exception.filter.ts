@@ -34,7 +34,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
     this.logException(code, id, message, exception);
 
     this.errorOutput({
-      error: { code, id, message },
+      error: { code: `${code} (${exception.constructor.name})`, id, message },
       exception,
       res,
     });
