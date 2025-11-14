@@ -42,6 +42,8 @@ export class AuthorizeStepFromInterceptor implements NestInterceptor {
 
     const sessionData = this.session.get<FlowStepsSession>('FlowSteps');
 
+    console.warn({ sessionData: this.session.get() });
+
     if (isEmpty(sessionData)) {
       throw new SessionNotFoundException();
     }
