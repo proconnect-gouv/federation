@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { LoggerService } from '../logger/logger.service';
+import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 import { ICrudTrack } from '../interfaces';
 import { SecretManagerService } from '../utils/secret-manager.service';
@@ -22,6 +23,7 @@ export class IdentityProviderService {
     private readonly secretManager: SecretManagerService,
     private readonly logger: LoggerService,
     private readonly paginationService: PaginationService,
+    private readonly gristPublisherService: GristPublisherService,
   ) {}
 
   private track(log: ICrudTrack) {
@@ -63,7 +65,10 @@ export class IdentityProviderService {
       name: identityProviderDto.name,
     });
 
-    return identityProviderId;
+    const hasGristPublicationSucceeded =
+      await this.publishIdentityProvidersToGrist();
+
+    return { identityProviderId, hasGristPublicationSucceeded };
   }
 
   async findById(
@@ -119,16 +124,15 @@ export class IdentityProviderService {
     Object.assign(existingProvider, providerToSave);
 
     // Save the updated provider
-    const identityProviderResponse =
-      await this.identityProviderRepository.save(existingProvider);
+    await this.identityProviderRepository.save(existingProvider);
 
-    return identityProviderResponse;
+    const hasGristPublicationSucceeded =
+      await this.publishIdentityProvidersToGrist();
+
+    return { identityProviderId, hasGristPublicationSucceeded };
   }
 
-  async deleteIdentityProvider(
-    id: string,
-    user: string,
-  ): Promise<DeleteResult> {
+  async deleteIdentityProvider(id: string, user: string) {
     const identityProvider =
       await this.identityProviderRepository.findOneByOrFail({
         _id: new ObjectId(id),
@@ -142,7 +146,13 @@ export class IdentityProviderService {
       name: identityProvider.name,
     });
 
-    return this.identityProviderRepository.delete({ _id: new ObjectId(id) });
+    const result = await this.identityProviderRepository.delete({
+      _id: new ObjectId(id),
+    });
+    const hasDeletionSucceeded = result.affected === 1;
+
+    // we do not know how to update grist after a deletion
+    return { hasGristPublicationSucceeded: false, hasDeletionSucceeded };
   }
 
   async paginate(options: PaginationOptions) {
@@ -250,5 +260,13 @@ export class IdentityProviderService {
       isRoutingEnabled: inputProvider.isRoutingEnabled,
       fqdns: inputProvider.fqdns,
     };
+  }
+
+  private async publishIdentityProvidersToGrist() {
+    const allIdentityProviders = await this.identityProviderRepository.find();
+
+    return this.gristPublisherService.publishIdentityProviders(
+      allIdentityProviders,
+    );
   }
 }

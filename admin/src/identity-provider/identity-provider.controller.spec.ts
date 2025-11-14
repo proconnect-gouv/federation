@@ -196,6 +196,10 @@ describe('IdentityProviderController', () => {
 
   describe('post create', () => {
     it('should call successfully the service provider create function', async () => {
+      // set
+      serviceMock.create.mockResolvedValueOnce({
+        hasGristPublicationSucceeded: true,
+      });
       // action
       await identityProviderController.createIdentityProvider(
         identityProviderDTO,
@@ -306,6 +310,11 @@ describe('IdentityProviderController', () => {
 
   describe('post update', () => {
     it('should call the update function from the identity provider service', async () => {
+      // set
+      serviceMock.update.mockResolvedValueOnce({
+        hasGristPublicationSucceeded: true,
+      });
+
       // action
       await identityProviderController.identityProviderUpdate(
         identityProviderDTO,
