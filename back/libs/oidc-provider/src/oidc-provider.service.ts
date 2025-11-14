@@ -84,9 +84,15 @@ export class OidcProviderService {
       /* istanbul ignore next */
       // eslint-disable-next-line max-nested-callbacks
       this.provider.on(event, (_any, err) => {
+        if (['invalid_client', 'invalid_redirect_uri'].includes(err?.error)) {
+          // we do not want to log these errors as they are already logged in the renderError function
+          return;
+        }
+
         this.logger.error({
           code: `oidc-provider-error:${err?.error}`,
-          cause: err,
+          event,
+          originalError: err,
         });
       });
     });

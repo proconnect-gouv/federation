@@ -236,13 +236,13 @@ export class OidcProviderConfigAppService {
   renderError: Configuration['renderError'] = (
     ctx: KoaContextWithOIDC,
     { error, error_description },
-    _err,
+    err,
   ) => {
     const code = `oidc-provider-rendered-error:${error}`;
     const id = generateErrorId();
     const message = error_description;
 
-    this.logger.error({ code, id, message });
+    this.logger.error({ code, id, message, originalError: err });
 
     const res = ctx.res as unknown as Response;
     ctx.type = 'html';
