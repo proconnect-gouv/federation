@@ -9,6 +9,7 @@ import { OidcClientClass } from '../enums';
 import {
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
+  OidcClientIssuerDiscoveryFailedException,
 } from '../exceptions';
 import { OidcClientConfigService } from './oidc-client-config.service';
 
@@ -65,17 +66,16 @@ export class OidcClientIssuerService implements OnModuleInit {
    * @returns providers metadata
    * @throws Error
    */
+
   private async getIssuer(issuerId: string): Promise<Issuer<Client>> {
     const idpMetadata = await this.getIdpMetadata(issuerId);
 
     if (idpMetadata.discovery) {
-      /**
-       * @TODO #142 handle network failure with specific Exception / error code
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/142
-       */
-      const issuer = await this.IssuerProxy.discover(idpMetadata.discoveryUrl);
-
-      return issuer;
+      try {
+        return await this.IssuerProxy.discover(idpMetadata.discoveryUrl);
+      } catch (error) {
+        throw new OidcClientIssuerDiscoveryFailedException(error);
+      }
     }
 
     return new this.IssuerProxy(idpMetadata.issuer);

@@ -6,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
+  OidcClientIssuerDiscoveryFailedException,
 } from '../exceptions';
 import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
@@ -210,6 +211,17 @@ describe('OidcClientIssuerService', () => {
       expect(issuerProxyMock.discover).toHaveBeenCalledTimes(1);
       expect(issuerProxyMock.discover).toHaveBeenCalledWith(
         idpMetadataMock.discoveryUrl,
+      );
+    });
+
+    it('should throw OidcClientIssuerDiscoveryFailedException', async () => {
+      // Given
+      const issuerId = 'foo';
+      issuerProxyMock['discover'] = jest.fn().mockRejectedValue(new Error());
+
+      // When
+      await expect(service['getIssuer'](issuerId)).rejects.toThrow(
+        OidcClientIssuerDiscoveryFailedException,
       );
     });
 

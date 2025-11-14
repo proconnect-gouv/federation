@@ -54,11 +54,11 @@ Fonctionnalité: API - oidc-callback
     Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
     Et que je retire le paramètre "code" de la requête
     Quand je lance la requête
-    Alors le statut de la réponse est 400
+    Alors le statut de la réponse est 502
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y000400"
+    Et le code d'erreur est "Y020026"
     Et le message d'erreur est "code missing from response"
 
   Scénario: API oidc-callback - code vide
@@ -72,11 +72,11 @@ Fonctionnalité: API - oidc-callback
     Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
     Et que je mets "" dans le paramètre "code" de la requête
     Quand je lance la requête
-    Alors le statut de la réponse est 400
+    Alors le statut de la réponse est 502
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y000400"
+    Et le code d'erreur est "Y020026"
     Et le message d'erreur est "code missing from response"
 
   Scénario: API oidc-callback - affichage de l'erreur remontée via le paramètre error
@@ -87,7 +87,7 @@ Fonctionnalité: API - oidc-callback
     Et que le fournisseur d'identité renvoie l'erreur "invalid_scope" avec "your scopes are invalid"
     Et je m'authentifie
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y000400"
+    Et le code d'erreur est "Y020026"
     Et le message d'erreur est "invalid_scope (your scopes are invalid)"
 
   Scénario: API oidc-callback - bon state mais mauvais code
@@ -100,9 +100,9 @@ Fonctionnalité: API - oidc-callback
     Et que je mets le state fourni par AC dans le paramètre "state" de la requête
     Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
     Quand je lance la requête
-    Alors le statut de la réponse est 400
+    Alors le statut de la réponse est 502
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y000400"
+    Et le code d'erreur est "Y020026"
     Et le message d'erreur est "invalid_grant (grant request is invalid)"
