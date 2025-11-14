@@ -34,13 +34,12 @@
 | [<b>190001</b>](../libs/session/src/exceptions/session-not-found.exception.ts) | [SessionNotFoundException](../libs/session/src/exceptions/session-not-found.exception.ts) | 401 | access_denied | user authentication aborted |
 | [<b>190002</b>](../libs/session/src/exceptions/session-bad-format.exception.ts) | [SessionBadFormatException](../libs/session/src/exceptions/session-bad-format.exception.ts) | 500 | access_denied | user authentication aborted |
 | [<b>190003</b>](../libs/session/src/exceptions/session-bad-alias.exception.ts) | [SessionBadAliasException](../libs/session/src/exceptions/session-bad-alias.exception.ts) | 500 | access_denied | user authentication aborted |
-| [<b>190004</b>](../libs/session/src/exceptions/session-invalid-session.exception.ts) | [SessionInvalidSessionException](../libs/session/src/exceptions/session-invalid-session.exception.ts) | 409 | access_denied | user authentication aborted |
+| [<b>190004</b>](../apps/core-fca-low/src/exceptions/invalid-session.exception.ts) | [SessionInvalidSessionException](../apps/core-fca-low/src/exceptions/invalid-session.exception.ts) | 409 | access_denied | user authentication aborted |
 | [<b>190005</b>](../libs/session/src/exceptions/session-storage.exception.ts) | [SessionStorageException](../libs/session/src/exceptions/session-storage.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
 | [<b>190008</b>](../libs/session/src/exceptions/session-bad-stringify.exception.ts) | [SessionBadStringifyException](../libs/session/src/exceptions/session-bad-stringify.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
 | [<b>190012</b>](../libs/session/src/exceptions/session-bad-cookie.exception.ts) | [SessionBadCookieException](../libs/session/src/exceptions/session-bad-cookie.exception.ts) | 401 | access_denied | user authentication aborted |
 | [<b>190013</b>](../libs/session/src/exceptions/session-cannot-commit-undefined-session.exception.ts) | [SessionCannotCommitUndefinedSession](../libs/session/src/exceptions/session-cannot-commit-undefined-session.exception.ts) | 500 | access_denied | user authentication aborted |
 | [<b>190014</b>](../libs/session/src/exceptions/session-alias-not-found.exception.ts) | [SessionAliasNotFoundException](../libs/session/src/exceptions/session-alias-not-found.exception.ts) | 500 | access_denied | user authentication aborted |
-| [<b>190015</b>](../libs/session/src/exceptions/session-invalid-mandatory-fields.exception.ts) | [SessionInvalidMandatoryFieldsException](../libs/session/src/exceptions/session-invalid-mandatory-fields.exception.ts) | 409 | access_denied | user authentication aborted |
 
 ## @fc/csv
 | Code d'erreur | Classe | Code HTTP | error | error_description |

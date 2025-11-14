@@ -51,8 +51,7 @@ export class BridgeHttpProxyService {
     try {
       idpResponse = await lastValueFrom(order);
     } catch (error) {
-      this.logger.debug(error);
-      throw new BridgeHttpProxyRabbitmqException();
+      throw new BridgeHttpProxyRabbitmqException(error);
     }
 
     const dtoProtocolErrors = await validateDto(

@@ -1,11 +1,13 @@
 import { bootstrap } from 'global-agent';
 
 import { DynamicModule, Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 
 import { AccountFcaModule } from '@fc/account-fca';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ConfigModule, ConfigService } from '@fc/config';
+import { InvalidSessionExceptionFilter } from '@fc/core/filters';
 import { CsrfModule, CsrfService } from '@fc/csrf';
 import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
 import { ExceptionsModule } from '@fc/exceptions';
@@ -89,6 +91,10 @@ export class AppModule {
         CoreFcaMiddlewareService,
         CoreFcaControllerService,
         IdentitySanitizer,
+        {
+          provide: APP_FILTER,
+          useClass: InvalidSessionExceptionFilter,
+        },
       ],
     };
   }

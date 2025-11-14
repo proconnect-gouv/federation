@@ -56,6 +56,7 @@ services:
     volumes:
       - '../../../back/apps:/var/www/app/apps:ro'
       - '../../../back/libs:/var/www/app/libs:ro'
+      - '../../../back/node_modules:/var/www/app/node_modules'
       - '../../volumes/app:/opt/scripts'
       - '../../volumes/log:/var/log/app'
       - '../../volumes/.home:/home'

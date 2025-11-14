@@ -17,10 +17,10 @@ import {
     UnknownHtmlExceptionFilter,
     FcWebHtmlExceptionFilter,
     HttpExceptionFilter,
-    {
-      provide: APP_FILTER,
-      useClass: UnknownHtmlExceptionFilter,
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: UnknownHtmlExceptionFilter,
+    // },
     {
       provide: APP_FILTER,
       useClass: FcWebHtmlExceptionFilter,
