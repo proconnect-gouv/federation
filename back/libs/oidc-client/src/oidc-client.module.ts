@@ -37,7 +37,11 @@ export class OidcClientModule {
         OidcClientConfigService,
         OidcClientIssuerService,
       ],
-      exports: [OidcClientService, OidcClientConfigService],
+      exports: [
+        OidcClientService,
+        OidcClientConfigService,
+        OidcClientIssuerService,
+      ],
     };
   }
 }

@@ -63,6 +63,7 @@ describe('OidcClientController', () => {
       isAllowedIdpForEmail: jest.fn(),
       selectIdpsFromEmail: jest.fn(),
       getSortedDisplayableIdentityProviders: jest.fn(),
+      safelyGetExistingAndEnabledIdp: jest.fn(),
     };
     sessionService = {
       set: jest.fn(),
@@ -120,6 +121,10 @@ describe('OidcClientController', () => {
     controller = module.get<OidcClientController>(OidcClientController);
     jest.clearAllMocks();
     (validateDto as jest.Mock).mockReset();
+
+    coreFcaService.safelyGetExistingAndEnabledIdp.mockReturnValue({
+      isEntraID: false,
+    });
   });
 
   describe('getIdentityProviderSelection', () => {
@@ -137,7 +142,10 @@ describe('OidcClientController', () => {
       coreFcaService.selectIdpsFromEmail.mockResolvedValueOnce(providers);
       coreFcaService.hasDefaultIdp.mockReturnValue(true);
 
-      configService.get.mockReturnValue({ defaultIdpId: 'default-idp' });
+      configService.get.mockReturnValue({
+        defaultIdpId: 'default-idp',
+        scope: 'openid',
+      });
       csrfService.renew.mockReturnValue('csrf-token');
       coreFcaService.getSortedDisplayableIdentityProviders.mockReturnValueOnce(
         providers,
@@ -290,8 +298,10 @@ describe('OidcClientController', () => {
       oidcClient.getToken.mockResolvedValue({
         accessToken: 'access-token',
         idToken: 'id-token',
-        acr: 'acr-value',
-        amr: 'amr-value',
+        claims: {
+          acr: 'acr-value',
+          amr: 'amr-value',
+        },
       });
       oidcClient.getUserinfo.mockResolvedValue({
         email: 'user@example.com',
@@ -311,6 +321,8 @@ describe('OidcClientController', () => {
     });
 
     it('should process OIDC callback when identity is valid (no validation errors)', async () => {
+      configService.get.mockReturnValueOnce({ urlPrefix: '/app' });
+
       await controller.getOidcCallback(
         req as Request,
         res as Response,
@@ -357,9 +369,69 @@ describe('OidcClientController', () => {
       expect(userSession.set).toHaveBeenNthCalledWith(4, {
         spIdentity: { given_name: 'John' },
       });
-      expect(configService.get).toHaveBeenCalledWith('App');
+      expect(configService.get).toHaveBeenNthCalledWith(1, 'App');
       expect(res.redirect).toHaveBeenCalledWith(
         '/app/interaction/interaction123/verify',
+      );
+    });
+
+    it('should augment userInfo identity with claims in idToken if IdP is Entra', async () => {
+      // When IdP is EntraID…
+      coreFcaService.safelyGetExistingAndEnabledIdp.mockReturnValue({
+        isEntraID: true,
+      });
+
+      // …claims that correspond to requested scopes…
+      configService.get.mockReturnValueOnce({ scope: 'openid arbitrary' });
+
+      // …and that appear in the ID token…
+      oidcClient.getToken.mockResolvedValue({
+        idToken: 'id-token',
+        claims: {
+          arbitrary: 'user@example.com',
+          ignored: 'ignored',
+        },
+      });
+      // …but not in the userInfo endpoint…
+      oidcClient.getUserinfo.mockResolvedValue({
+        sub: 'sub123',
+      });
+
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+
+      // …will be used to compose the identity
+      expect(sanitizer.getValidatedIdentityFromIdp).toHaveBeenCalledWith(
+        { arbitrary: 'user@example.com', sub: 'sub123' },
+        'idp123',
+      );
+    });
+
+    it('should accept the "acrs" claim (an array) and map it', async () => {
+      // …and that appear in the ID token…
+      oidcClient.getToken.mockResolvedValue({
+        idToken: 'id-token',
+        claims: {
+          acrs: ['c1'],
+        },
+      });
+
+      configService.get.mockReturnValueOnce({ scope: 'openid email' });
+
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+
+      expect(sanitizer.transformIdentity).toHaveBeenCalledWith(
+        { email: 'user@example.com', sub: 'sub123' },
+        'idp123',
+        'accountSub',
+        'eidas1',
       );
     });
 
