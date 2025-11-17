@@ -48,7 +48,7 @@ Fonctionnalité: Connexion Usager - ACR with PCI
     Et que je rentre un totp valide sur ProConnect Identité
     Alors je vois une page d'erreur ProConnect Identité et je clique sur le bouton continuer
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "access_denied"
+    Et le code d'erreur est "Y020026"
 
   Scénario: Déclenche un parcours certification dirigeant dans ProConnect Identité si demandé par le FS
     Etant donné que je navigue sur la page fournisseur de service
