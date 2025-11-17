@@ -80,6 +80,7 @@ export class InteractionController {
         state: spState,
         idp_hint: idpHint,
         login_hint: spLoginHint,
+        siret_hint: spSiretHint,
       },
     } = interaction;
 
@@ -123,6 +124,7 @@ export class InteractionController {
     }
     userSession.set({
       spLoginHint,
+      spSiretHint,
       interactionId,
       spEssentialAcr,
       spId,
