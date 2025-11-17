@@ -2,5 +2,4 @@ export enum ErrorCode {
   INIT_PROVIDER = 2,
   STRINGIFY_FOR_REDIS = 5,
   PARSE_REDIS_RESPONSE = 6,
-  RUNTIME_ERROR = 29,
 }

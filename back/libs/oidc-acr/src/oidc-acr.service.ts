@@ -6,7 +6,7 @@ import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 
-import { AcrClaims, AcrValues, SimplifiedInteraction } from './oidc-acr.type';
+import { AcrClaims, AcrValues, ExtendedInteraction } from './oidc-acr.type';
 
 @Injectable()
 export class OidcAcrService {
@@ -67,7 +67,7 @@ export class OidcAcrService {
   isEssentialAcrSatisfied({
     prompt,
   }: {
-    prompt: SimplifiedInteraction['prompt'];
+    prompt: ExtendedInteraction['prompt'];
   }): boolean {
     if (prompt.name === 'login' && prompt.reasons.includes('essential_acr')) {
       return false;
@@ -84,7 +84,7 @@ export class OidcAcrService {
   getFilteredAcrParamsFromInteraction({
     params,
     prompt,
-  }: SimplifiedInteraction): { acrValues?: AcrValues; acrClaims?: AcrClaims } {
+  }: ExtendedInteraction): { acrValues?: AcrValues; acrClaims?: AcrClaims } {
     if (prompt.name === 'login' && prompt.reasons.includes('essential_acr')) {
       return {
         acrClaims: {

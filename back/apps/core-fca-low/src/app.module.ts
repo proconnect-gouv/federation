@@ -26,7 +26,10 @@ import { MongooseModule } from '@fc/mongoose';
 import { NotificationsModule } from '@fc/notifications';
 import { OidcAcrModule } from '@fc/oidc-acr';
 import { IDENTITY_PROVIDER_SERVICE, OidcClientModule } from '@fc/oidc-client';
-import { OidcProviderModule } from '@fc/oidc-provider';
+import {
+  OidcProviderModule,
+  OidcProviderSessionNotFoundExceptionFilter,
+} from '@fc/oidc-provider';
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -105,6 +108,10 @@ export class AppModule {
         {
           provide: APP_FILTER,
           useClass: HttpExceptionFilter,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: OidcProviderSessionNotFoundExceptionFilter,
         },
       ],
     };

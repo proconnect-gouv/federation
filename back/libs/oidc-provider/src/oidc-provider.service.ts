@@ -9,6 +9,7 @@ import { HttpOptions } from 'openid-client';
 import { Global, Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger';
+import { ExtendedInteraction } from '@fc/oidc-acr';
 import { RedisService } from '@fc/redis';
 
 import {
@@ -17,10 +18,7 @@ import {
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
 } from './enums';
-import {
-  OidcProviderInitialisationException,
-  OidcProviderRuntimeException,
-} from './exceptions';
+import { OidcProviderInitialisationException } from './exceptions';
 import {
   OidcProviderConfigAppService,
   OidcProviderConfigService,
@@ -154,31 +152,10 @@ export class OidcProviderService {
     return options;
   }
 
-  /**
-   * @todo #1023 je type les entrées et sortie correctement et non pas avec any
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1023
-   * @ticket #FC-1023
-   */
-  /**
-   * Wrap `oidc-provider` method to
-   *  - lower coupling in other modules
-   *  - handle exceptions
-   *
-   * @param req
-   * @param res
-   */
-  // `oidc-provider` does not provide a type for interaction
-  async getInteraction(req, res): Promise<any> {
-    try {
-      const interactionDetails = await this.provider.interactionDetails(
-        req,
-        res,
-      );
+  async getInteraction(req, res): Promise<ExtendedInteraction> {
+    const interactionDetails = await this.provider.interactionDetails(req, res);
 
-      return interactionDetails;
-    } catch (error) {
-      throw new OidcProviderRuntimeException(error);
-    }
+    return interactionDetails as ExtendedInteraction;
   }
 
   async abortInteraction(

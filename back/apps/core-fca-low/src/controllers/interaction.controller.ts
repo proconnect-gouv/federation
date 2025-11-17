@@ -21,7 +21,7 @@ import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService, TrackedEvent } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
-import { OidcAcrService, SimplifiedInteraction } from '@fc/oidc-acr';
+import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
@@ -82,8 +82,7 @@ export class InteractionController {
     @UserSessionDecorator()
     userSession: ISessionService<UserSession>,
   ): Promise<void> {
-    const interaction: SimplifiedInteraction =
-      await this.oidcProvider.getInteraction(req, res);
+    const interaction = await this.oidcProvider.getInteraction(req, res);
 
     const {
       uid: interactionId,

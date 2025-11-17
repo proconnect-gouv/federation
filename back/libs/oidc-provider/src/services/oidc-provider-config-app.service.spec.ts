@@ -10,7 +10,6 @@ import { SessionService } from '@fc/session';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { OidcProviderRuntimeException } from '../exceptions';
 import { OidcCtx } from '../interfaces';
 import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
 
@@ -391,29 +390,6 @@ describe('OidcProviderConfigAppService', () => {
         reqMock,
         resMock,
         resultMock,
-      );
-    });
-
-    it('should throw OidcProviderRuntimeException', async () => {
-      // Given
-      sessionServiceMock.get.mockReturnValueOnce({
-        spIdentity: spIdentityMock,
-      });
-      providerMock.interactionFinished.mockRejectedValueOnce(
-        new Error('invalid_request'),
-      );
-
-      // Then
-      await expect(
-        service.finishInteraction(reqMock, resMock, {
-          amr: ['amrValue'],
-          acr: 'acrValue',
-        }),
-      ).rejects.toThrow(OidcProviderRuntimeException);
-      expect(sessionServiceMock.get).toHaveBeenCalledWith('User');
-      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
-        spIdentityMock.sub,
-        'sessionId',
       );
     });
   });
