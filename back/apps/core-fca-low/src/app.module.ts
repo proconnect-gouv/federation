@@ -15,7 +15,6 @@ import {
   HttpExceptionFilter,
   UnknownHtmlExceptionFilter,
 } from '@fc/exceptions';
-import { FlowStepsModule } from '@fc/flow-steps';
 import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
@@ -37,6 +36,7 @@ import {
 import { SessionModule } from '@fc/session';
 
 import { InteractionController, OidcClientController } from './controllers';
+import { InvalidSessionExceptionFilter } from './filters';
 import {
   CoreFcaControllerService,
   CoreFcaMiddlewareService,
@@ -80,7 +80,6 @@ export class AppModule {
           IdentityProviderAdapterMongoService,
           IdentityProviderAdapterMongoModule,
         ),
-        FlowStepsModule,
         NotificationsModule,
         CsrfModule,
         AccountFcaModule,
@@ -108,6 +107,10 @@ export class AppModule {
         {
           provide: APP_FILTER,
           useClass: HttpExceptionFilter,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: InvalidSessionExceptionFilter,
         },
         {
           provide: APP_FILTER,

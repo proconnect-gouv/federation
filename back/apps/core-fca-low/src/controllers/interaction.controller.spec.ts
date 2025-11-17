@@ -16,7 +16,7 @@ import { ISessionService, SessionService } from '@fc/session';
 import { getLoggerMock } from '@mocks/logger';
 
 // --- Mocks for external dependencies ---
-import { GetVerifySessionDto, UserSession } from '../dto';
+import { AfterGetOidcCallbackSessionDto, UserSession } from '../dto';
 import { CoreFcaAgentNotFromPublicServiceException } from '../exceptions';
 import { CoreFcaControllerService } from '../services';
 import { InteractionController } from './interaction.controller';
@@ -380,7 +380,7 @@ describe('InteractionController', () => {
           idpIdentity: { sub: 'user1', extraClaims: 'extra' },
         }),
         set: jest.fn(),
-      } as unknown as ISessionService<GetVerifySessionDto>;
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
       const interactionAcr = 'high';
 
       identityProviderMock.isActiveById.mockResolvedValue(true);
@@ -422,7 +422,7 @@ describe('InteractionController', () => {
           isSilentAuthentication: true,
           idpId: 'idp123',
         }),
-      } as unknown as ISessionService<GetVerifySessionDto>;
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
       identityProviderMock.isActiveById.mockResolvedValue(false);
 
@@ -440,7 +440,7 @@ describe('InteractionController', () => {
           interactionId: 'interaction123',
           idpId: 'idp123',
         }),
-      } as unknown as ISessionService<GetVerifySessionDto>;
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
       identityProviderMock.isActiveById.mockResolvedValue(false);
       configServiceMock.get.mockReturnValueOnce({ urlPrefix: '/prefix' });
@@ -461,7 +461,7 @@ describe('InteractionController', () => {
           idpId: 'idp123',
           idpIdentity: { is_service_public: false },
         }),
-      } as unknown as ISessionService<GetVerifySessionDto>;
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
       identityProviderMock.isActiveById.mockResolvedValue(true);
       serviceProviderMock.getById.mockResolvedValue({ type: 'public' });
@@ -479,7 +479,7 @@ describe('InteractionController', () => {
           spEssentialAcr: 'high',
           idpAcr: 'low',
         }),
-      } as unknown as ISessionService<GetVerifySessionDto>;
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
       identityProviderMock.isActiveById.mockResolvedValue(true);
       serviceProviderMock.getById.mockResolvedValue({ type: 'public' });

@@ -13,7 +13,6 @@ import {
 
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/core';
-import { SetStep } from '@fc/flow-steps';
 
 import {
   AuthorizeParamsDto,
@@ -41,7 +40,6 @@ export class OidcProviderController {
       whitelist: true,
     }),
   )
-  @SetStep()
   getAuthorize(@Req() req, @Res() res, @Query() _query: AuthorizeParamsDto) {
     req.url = req.originalUrl.replace(this.prefix, '');
     return this.oidcProviderService.getCallback()(req, res);
@@ -57,7 +55,6 @@ export class OidcProviderController {
       validationError: { target: true },
     }),
   )
-  @SetStep()
   postAuthorize(@Req() req, @Res() res, @Body() _body: AuthorizeParamsDto) {
     req.url = req.originalUrl.replace(this.prefix, '');
     return this.oidcProviderService.getCallback()(req, res);

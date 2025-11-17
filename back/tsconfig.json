@@ -72,8 +72,6 @@
       "@fc/hybridge-http-proxy/*": ["libs/hybridge-http-proxy/src/*"],
       "@fc/oidc-acr": ["libs/oidc-acr/src"],
       "@fc/oidc-acr/*": ["libs/oidc-acr/src/*"],
-      "@fc/flow-steps": ["libs/flow-steps/src"],
-      "@fc/flow-steps/*": ["libs/flow-steps/src/*"],
       "@mocks/session": ["libs/session/.mocks"],
       "@mocks/session/*": ["libs/session/.mocks/*"],
       "@fc/async-local-storage": ["libs/async-local-storage/src"],

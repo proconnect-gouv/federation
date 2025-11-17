@@ -3,25 +3,26 @@ import { IsDefined, ValidateNested } from 'class-validator';
 
 import { IdentityForSpDto } from '../identity-for-sp.dto';
 import { IdentityFromIdpDto } from '../identity-from-idp.dto';
+import { UserSession } from './user-session.dto';
 
-export class ActiveUserSessionDto {
+export class ActiveUserSessionDto extends UserSession {
   @IsDefined()
   @ValidateNested()
   @Type(() => IdentityForSpDto)
-  readonly spIdentity: IdentityForSpDto;
+  declare spIdentity: IdentityForSpDto;
 
   @IsDefined()
-  readonly idpId: string;
+  declare idpId: string;
 
   @IsDefined()
-  readonly idpName: string;
+  declare idpName: string;
 
   @IsDefined()
-  readonly idpLabel: string;
+  declare idpLabel: string;
 
   @IsDefined()
-  readonly idpIdToken: string;
+  declare idpIdToken: string;
 
   @IsDefined()
-  readonly idpIdentity: IdentityFromIdpDto;
+  declare idpIdentity: IdentityFromIdpDto;
 }
