@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { IsOptional, IsString, Matches } from 'class-validator';
 
 const URL_REGEX = /^https?:\/\/[^/].+$/;
 
@@ -7,12 +7,12 @@ const URL_REGEX = /^https?:\/\/[^/].+$/;
  * @see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.3.1.2.1
  */
 export class LogoutParamsDto {
-  @IsNotEmpty()
   @IsString()
-  readonly id_token_hint: string;
-
   @IsOptional()
+  readonly id_token_hint?: string;
+
   @Matches(URL_REGEX)
+  @IsOptional()
   readonly post_logout_redirect_uri?: string;
 
   @IsString()
