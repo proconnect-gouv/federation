@@ -1,0 +1,15 @@
+{
+  "bdd-idp-default": {
+    "name": "bdd-idp-default",
+    "title": "FI de test 1",
+    "issuer": "https://idp-dev-nubo12.proconnect.bacasable.opicloud.fr",
+    "discoveryUrl": "https://idp-dev-nubo12.proconnect.bacasable.opicloud.fr/.well-known/openid-configuration",
+    "discovery": "true",
+    "clientId": "myclientidforfia1-low",
+    "client_secret": "7ae4fef2aab63fb78d777fe657b7536f",
+    "userinfo_signed_response_alg": "ES256",
+    "id_token_signed_response_alg": "ES256",
+    "emails": "test1@yopmail.com\ntest2@yopmail.com",
+    "siret": "81801912700021"
+  }
+}

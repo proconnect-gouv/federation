@@ -7,7 +7,6 @@ import {
   getEnv,
   isUsingFCBasicAuthorization,
 } from '../helpers';
-import { Environment } from '../types';
 
 Before(function () {
   // Load environment config and test data
@@ -18,14 +17,22 @@ Before(function () {
     addFCBasicAuthorization();
   }
 
-  if (testEnv === 'docker') {
-    clearBusinessLog();
-  } else if (testEnv === 'integ01') {
-    // Setup interceptions to override set-cookie samesite values
-    const crossDomains = {
-      AC: 'dev-agentconnect.fr',
-    };
-    forceSameSiteNone(crossDomains);
+  switch (testEnv) {
+    case 'kube-mvp0':
+      // Setup interceptions to override set-cookie samesite values
+      forceSameSiteNone({
+        AC: 'dev-agentconnect.fr',
+      });
+      break;
+    case 'integ01':
+      // Setup interceptions to override set-cookie samesite values
+      forceSameSiteNone({
+        AC: 'dev-agentconnect.fr',
+      });
+      break;
+    case 'docker':
+    default:
+      clearBusinessLog();
   }
 });
 
@@ -40,7 +47,7 @@ After(function () {
 });
 
 Before({ tags: '@ignoreDocker' }, function () {
-  if (['docker', 'recette'].includes(Cypress.env('TEST_ENV'))) {
+  if (['docker', 'kube-mvp0'].includes(Cypress.env('TEST_ENV'))) {
     this.skip();
   }
 });

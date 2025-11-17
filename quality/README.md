@@ -18,14 +18,14 @@ FCA end-to-end tests are implemented using a testing framework based on Cypress 
 
 | Environment Variable | Description                       | Comment                                      |
 | -------------------- | --------------------------------- | -------------------------------------------- |
-| TEST_ENV             | Test environment                  | `docker` or `integ01`, etc.                  |
+| TEST_ENV             | Test environment                  | `docker`, `kube-mvp0` or `integ01`, etc.     |
 | TAGS                 | Tags expression                   | `not @ignore`                                |
-| EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/preprod              |
-| EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/preprod              |
-| EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/preprod              |
-| EXPLOIT_USER_NAME    | Exploitation operator username    | needed only for integ01/preprod              |
-| EXPLOIT_USER_PASS    | Exploitation operator password    | needed only for integ01/preprod              |
-| EXPLOIT_USER_TOTP    | Exploitation operator totp secret | needed only for integ01/preprod              |
+| EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/kube-mvp0            |
+| EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/kube-mvp0            |
+| EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/kube-mvp0            |
+| EXPLOIT_USER_NAME    | Exploitation operator username    | needed only for integ01/kube-mvp0            |
+| EXPLOIT_USER_PASS    | Exploitation operator password    | needed only for integ01/kube-mvp0            |
+| EXPLOIT_USER_TOTP    | Exploitation operator totp secret | needed only for integ01/kube-mvp0            |
 | FC_ACCESS_USER       | FranceConnect network username    | needed on recette/integ01 outside FC network |
 | FC_ACCESS_PASS       | FranceConnect network password    | needed on recette/integ01 outside FC network |
 
@@ -97,8 +97,8 @@ yarn start:low
 "EXPLOIT_USER_NAME": "<your integ01 operator user>",
 "EXPLOIT_USER_PASS": "<your integ01 operator password>",
 "EXPLOIT_USER_TOTP": "<your integ01 operator totp secret",
-"FC_ACCESS_USER": "<FranceConnect access user for HTTP Basic Authentication>",
-"FC_ACCESS_PASS": "<FranceConnect access password for HTTP Basic Authentication>",
+"FC_ACCESS_USER": "<ProConnect access user for HTTP Basic Authentication>",
+"FC_ACCESS_PASS": "<ProConnect access password for HTTP Basic Authentication>",
 ```
 
 1. Start the proxy to access `https://docker.dev-franceconnect.fr/integ01/fca.html`
