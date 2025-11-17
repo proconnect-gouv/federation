@@ -107,6 +107,7 @@ export class OidcProviderService {
         params: {
           client_id,
           login_hint,
+          siret_hint,
           prompt,
           redirect_uri,
           scope,
@@ -122,6 +123,7 @@ export class OidcProviderService {
         interaction: {
           client_id,
           login_hint,
+          siret_hint,
           prompt,
           redirect_uri,
           response_type,
