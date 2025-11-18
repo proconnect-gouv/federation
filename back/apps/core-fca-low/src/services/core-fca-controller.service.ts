@@ -10,7 +10,7 @@ import { CoreFcaAgentNoIdpException } from '@fc/core/exceptions';
 import { CoreFcaService } from '@fc/core/services/core-fca.service';
 import { EmailValidatorService } from '@fc/email-validator/services';
 import { LoggerService, TrackedEvent } from '@fc/logger';
-import { OidcAcrService } from '@fc/oidc-acr';
+import { AcrClaims, OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
@@ -78,41 +78,13 @@ export class CoreFcaControllerService {
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizeParams: AuthorizationParameters = {
-      state,
-      nonce,
-      scope,
-      acr_values: null,
-      claims: {
-        id_token: {
-          amr: null,
-          acr: null,
-        },
-      },
-      login_hint: idpLoginHint,
-      sp_id: spId,
-      sp_name: spName,
-      remember_me: rememberMe,
-    };
-
     const interaction = await this.oidcProvider.getInteraction(req, res);
     const { acrValues, acrClaims } =
       this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
 
-    if (acrClaims) {
-      authorizeParams['claims']['id_token']['acr'] = acrClaims;
-    } else if (acrValues) {
-      authorizeParams['acr_values'] = acrValues;
-    }
-
     const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
 
-    // these specific behaviors are legacy implementations and should be homogenized in the future
-    if (idpId === defaultIdpId) {
-      authorizeParams['scope'] += ' is_service_public';
-    } else if (!acrValues && !acrClaims) {
-      authorizeParams['acr_values'] = 'eidas1';
-    }
+    const authorizeParams: AuthorizationParameters = this.authorizationParameters(state, nonce, scope, idpLoginHint, spId, spName, rememberMe, acrClaims, acrValues, idpId, defaultIdpId);
 
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
       idpId,
@@ -136,5 +108,38 @@ export class CoreFcaControllerService {
     this.logger.track(TrackedEvent.IDP_CHOSEN);
 
     res.redirect(authorizationUrl);
+  }
+
+  authorizationParameters(state: string, nonce: string, scope: string, idpLoginHint: string, spId: string, spName: string, rememberMe: boolean, acrClaims: AcrClaims, acrValues: string, idpId: string, defaultIdpId: string) {
+    const authorizeParams: AuthorizationParameters = {
+      state,
+      nonce,
+      scope,
+      acr_values: null,
+      claims: {
+        id_token: {
+          amr: null,
+          acr: null,
+        },
+      },
+      login_hint: idpLoginHint,
+      sp_id: spId,
+      sp_name: spName,
+      remember_me: rememberMe,
+    };
+
+    if (acrClaims) {
+      authorizeParams['claims']['id_token']['acr'] = acrClaims;
+    } else if (acrValues) {
+      authorizeParams['acr_values'] = acrValues;
+    }
+
+    // these specific behaviors are legacy implementations and should be homogenized in the future
+    if (idpId === defaultIdpId) {
+      authorizeParams['scope'] += ' is_service_public';
+    } else if (!acrValues && !acrClaims) {
+      authorizeParams['acr_values'] = 'eidas1';
+    }
+    return authorizeParams;
   }
 }
