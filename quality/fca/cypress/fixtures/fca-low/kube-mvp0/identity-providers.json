@@ -1,0 +1,14 @@
+[
+  {
+    "id": "9c716f61-b8a1-435c-a407-ef4d677ec270",
+    "descriptions": [
+      "premier FI",
+      "par défaut",
+      "FI bdd basé sur les URLs de fia1"
+    ],
+    "title": "Identity Provider 1 - eIDAS faible - ES256",
+    "url": "https://idp-dev-nubo12.proconnect.bacasable.opicloud.fr",
+    "signature": "ES256",
+    "fqdn": "fia1.fr"
+  }
+]
