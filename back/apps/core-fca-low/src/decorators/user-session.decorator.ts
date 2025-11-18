@@ -5,13 +5,11 @@ import { Class } from 'type-fest';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import { CoreFcaSession, UserSession } from '@fc/core/dto';
-import {
-  SessionInvalidMandatoryFieldsException,
-  SessionInvalidSessionException,
-} from '@fc/session';
 import { ISessionService } from '@fc/session/interfaces';
 import { SessionService } from '@fc/session/services';
+
+import { CoreFcaSession, UserSession } from '../dto';
+import { InvalidSessionException } from '../exceptions';
 
 export const UserSessionDecoratorFactory = async (
   userSessionDto: Class<UserSession> = UserSession,
@@ -44,11 +42,7 @@ export const UserSessionDecoratorFactory = async (
   const validationErrors = await validate(object as object);
 
   if (validationErrors.length) {
-    if (userSessionDto === UserSession) {
-      throw new SessionInvalidSessionException();
-    } else {
-      throw new SessionInvalidMandatoryFieldsException();
-    }
+    throw new InvalidSessionException(validationErrors.toString());
   }
 
   return boundSessionService;

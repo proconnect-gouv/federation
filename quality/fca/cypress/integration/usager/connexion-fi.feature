@@ -50,3 +50,16 @@ Fonctionnalité: Connexion à un FI
     Et le titre de la page d'erreur est "Accès impossible"
     Et le message d'erreur est "Client network socket disconnected before secure TLS connection was established"
     Et le code d'erreur est "Y020031"
+
+  @ignoreInteg01
+  Scénario: Retour en arrière après une connexion réussie
+    Étant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je m'authentifie
+    Et que je suis connecté au fournisseur de service
+    Quand je reviens en arrière
+    Quand je reviens en arrière
+    Alors je suis redirigé vers la page erreur technique
+    Et le code d'erreur est "oidc-provider-error:session-not-found"

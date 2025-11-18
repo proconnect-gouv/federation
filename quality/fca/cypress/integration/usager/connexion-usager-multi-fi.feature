@@ -80,3 +80,19 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et que je clique sur le bouton de connexion
     Quand je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Alors le fournisseur d'identité "Autre" est positionné en dernier dans la liste des fournisseurs d'identité
+
+  @ignoreInteg01
+  Scénario: Retour en arrière après une connexion multi FI réussie
+    Étant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@polyfi.fr"
+    Et que je clique sur le bouton de connexion
+    Et je choisis le fournisseur d'identité "Identity Provider 1 - eIDAS faible - ES256"
+    Et que je m'authentifie
+    Et que je suis connecté au fournisseur de service
+    Quand je reviens en arrière
+    Quand je reviens en arrière
+    Alors je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
+    Quand je reviens en arrière
+    Alors je suis redirigé vers la page erreur technique
+    Et le code d'erreur est "oidc-provider-error:session-not-found"

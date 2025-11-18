@@ -18,7 +18,6 @@ import { LoggerService, TrackedEvent } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 
-import { OidcProviderRuntimeException } from '../exceptions';
 import { LogoutFormParamsInterface, OidcCtx } from '../interfaces';
 
 /**
@@ -199,11 +198,7 @@ export class OidcProviderConfigAppService {
       consent: {},
     } as InteractionResults;
 
-    try {
-      return await this.provider.interactionFinished(req, res, result);
-    } catch (error) {
-      throw new OidcProviderRuntimeException(error);
-    }
+    return await this.provider.interactionFinished(req, res, result);
   }
 
   setProvider(provider: Provider): void {

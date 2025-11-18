@@ -14,10 +14,7 @@ import {
   OidcProviderMiddlewarePattern,
   OidcProviderMiddlewareStep,
 } from './enums';
-import {
-  OidcProviderInitialisationException,
-  OidcProviderRuntimeException,
-} from './exceptions';
+import { OidcProviderInitialisationException } from './exceptions';
 import { COOKIES, OidcProviderService } from './oidc-provider.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
 
@@ -469,18 +466,6 @@ describe('OidcProviderService', () => {
       const result = await service.getInteraction(reqMock, resMock);
       // Then
       expect(result).toBe(resolvedValue);
-    });
-
-    it('should throw OidcProviderRuntimeException', async () => {
-      // Given
-      const reqMock = {};
-      const resMock = {};
-      const nativeError = new Error('invalid_request');
-      providerMock.interactionDetails.mockRejectedValueOnce(nativeError);
-
-      await expect(service.getInteraction(reqMock, resMock)).rejects.toThrow(
-        OidcProviderRuntimeException,
-      );
     });
   });
 

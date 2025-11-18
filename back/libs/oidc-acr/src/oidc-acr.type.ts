@@ -1,7 +1,8 @@
-import { UnknownObject } from 'oidc-provider';
+import { Provider, UnknownObject } from 'oidc-provider';
 
-export type SimplifiedInteraction = {
-  uid: string;
+type Interaction = Awaited<ReturnType<Provider['interactionDetails']>>;
+
+export interface ExtendedInteraction extends Interaction {
   params: {
     acr_values?: string;
     client_id: string;
@@ -23,7 +24,7 @@ export type SimplifiedInteraction = {
         }
       | UnknownObject;
   };
-};
+}
 
 export type AcrValues = string;
 

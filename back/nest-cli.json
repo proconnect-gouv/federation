@@ -246,15 +246,6 @@
         "tsConfigPath": "libs/oidc-acr/tsconfig.lib.json"
       }
     },
-    "flow-steps": {
-      "type": "library",
-      "root": "libs/flow-steps",
-      "entryFile": "index",
-      "sourceRoot": "libs/flow-steps/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/flow-steps/tsconfig.lib.json"
-      }
-    },
     "async-local-storage": {
       "type": "library",
       "root": "libs/async-local-storage",

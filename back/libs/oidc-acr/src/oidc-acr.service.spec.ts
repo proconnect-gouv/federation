@@ -6,7 +6,7 @@ import { UserSession } from '@fc/core';
 import { getConfigMock } from '@mocks/config';
 
 import { OidcAcrService } from './oidc-acr.service';
-import { SimplifiedInteraction } from './oidc-acr.type';
+import { ExtendedInteraction } from './oidc-acr.type';
 
 describe('OidcAcrService', () => {
   let service: OidcAcrService;
@@ -137,7 +137,7 @@ describe('OidcAcrService', () => {
           name: 'login',
           reasons: ['essential_acr'],
         },
-      } as undefined as SimplifiedInteraction;
+      } as undefined as ExtendedInteraction;
 
       // When
       const result = service['isEssentialAcrSatisfied'](interactionMock);
@@ -153,7 +153,7 @@ describe('OidcAcrService', () => {
           name: 'login',
           reasons: ['essential_acrs'],
         },
-      } as undefined as SimplifiedInteraction;
+      } as undefined as ExtendedInteraction;
 
       // When
       const result = service['isEssentialAcrSatisfied'](interactionMock);
@@ -169,7 +169,7 @@ describe('OidcAcrService', () => {
           name: 'interaction-check',
           reasons: ['other_reasons'],
         },
-      } as undefined as SimplifiedInteraction;
+      } as undefined as ExtendedInteraction;
 
       // When
       const result = service['isEssentialAcrSatisfied'](interactionMock);
@@ -182,7 +182,7 @@ describe('OidcAcrService', () => {
   describe('getFilteredAcrParamsFromInteraction()', () => {
     it('should return acrClaims with essential single value', () => {
       // Given
-      const interactionMock: SimplifiedInteraction = {
+      const interactionMock: ExtendedInteraction = {
         uid: '123',
         params: {},
         prompt: {
@@ -195,7 +195,7 @@ describe('OidcAcrService', () => {
             },
           },
         },
-      } as undefined as SimplifiedInteraction;
+      } as undefined as ExtendedInteraction;
 
       jest.spyOn(service, 'getFilteredAcrValues').mockReturnValueOnce(['A']);
 
@@ -214,7 +214,7 @@ describe('OidcAcrService', () => {
 
     it('should return acrClaims with essential multiple values', () => {
       // Given
-      const interactionMock: SimplifiedInteraction = {
+      const interactionMock: ExtendedInteraction = {
         uid: '123',
         params: {},
         prompt: {
@@ -227,7 +227,7 @@ describe('OidcAcrService', () => {
             },
           },
         },
-      } as undefined as SimplifiedInteraction;
+      } as undefined as ExtendedInteraction;
 
       jest.spyOn(service, 'getFilteredAcrValues').mockReturnValueOnce(['A']);
 
@@ -246,7 +246,7 @@ describe('OidcAcrService', () => {
 
     it('should return acrValues when acr_values parameter is used', () => {
       // Given
-      const interactionMock: SimplifiedInteraction = {
+      const interactionMock = {
         uid: '123',
         params: {
           acr_values: 'A B',
@@ -261,7 +261,7 @@ describe('OidcAcrService', () => {
           reasons: [],
           details: {},
         },
-      };
+      } as unknown as ExtendedInteraction;
 
       jest.spyOn(service, 'getFilteredAcrValues').mockReturnValueOnce(['A']);
 
@@ -277,7 +277,7 @@ describe('OidcAcrService', () => {
 
     it('should return acrValues when none of the previous conditions are valid', () => {
       // Given
-      const interactionMock: SimplifiedInteraction = {
+      const interactionMock = {
         uid: '123',
         params: {
           client_id: '',
@@ -291,7 +291,7 @@ describe('OidcAcrService', () => {
           reasons: [],
           details: {},
         },
-      };
+      } as unknown as ExtendedInteraction;
 
       // When
       const result =

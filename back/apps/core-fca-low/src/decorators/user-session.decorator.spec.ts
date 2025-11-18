@@ -3,11 +3,8 @@ import { validate } from 'class-validator';
 import { ExecutionContext } from '@nestjs/common';
 
 import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import {
-  SessionInvalidMandatoryFieldsException,
-  SessionInvalidSessionException,
-} from '@fc/session';
 
+import { InvalidSessionException } from '../exceptions';
 import { UserSessionDecoratorFactory } from './user-session.decorator';
 
 jest.mock('class-validator', () => ({
@@ -95,7 +92,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
-    ).rejects.toThrowError(SessionInvalidMandatoryFieldsException);
+    ).rejects.toThrowError(InvalidSessionException);
 
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
@@ -122,7 +119,7 @@ describe('UserSessionDecoratorFactory', () => {
 
     await expect(
       UserSessionDecoratorFactory(undefined, fakeExecutionContext),
-    ).rejects.toThrowError(SessionInvalidSessionException);
+    ).rejects.toThrowError(InvalidSessionException);
 
     expect(validateMock).toHaveBeenCalledTimes(1);
   });

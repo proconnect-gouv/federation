@@ -17,20 +17,19 @@ import {
 
 import { ConfigService } from '@fc/config';
 import { CsrfService } from '@fc/csrf';
-import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService, TrackedEvent } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
-import { OidcAcrService, SimplifiedInteraction } from '@fc/oidc-acr';
-import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
+import { OidcAcrService } from '@fc/oidc-acr';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
 
 import { UserSessionDecorator } from '../decorators';
 import {
   ActiveUserSessionDto,
+  AfterGetOidcCallbackSessionDto,
   AppConfig,
-  GetVerifySessionDto,
   Interaction,
   UserSession,
 } from '../dto';
@@ -65,15 +64,6 @@ export class InteractionController {
   @Get(Routes.INTERACTION)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @AuthorizeStepFrom([
-    OidcProviderRoutes.AUTHORIZATION, // Standard flow
-    Routes.INTERACTION, // Refresh
-    Routes.OIDC_CALLBACK, // Back on error
-    Routes.INTERACTION_VERIFY, // Back on error
-    Routes.IDENTITY_PROVIDER_SELECTION, // Client is choosing an identity provider
-    Routes.REDIRECT_TO_IDP, // Browser back button
-  ])
-  @SetStep()
   // eslint-disable-next-line complexity
   async getInteraction(
     @Req() req: Request,
@@ -82,8 +72,7 @@ export class InteractionController {
     @UserSessionDecorator()
     userSession: ISessionService<UserSession>,
   ): Promise<void> {
-    const interaction: SimplifiedInteraction =
-      await this.oidcProvider.getInteraction(req, res);
+    const interaction = await this.oidcProvider.getInteraction(req, res);
 
     const {
       uid: interactionId,
@@ -200,18 +189,13 @@ export class InteractionController {
   @Get(Routes.INTERACTION_VERIFY)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @AuthorizeStepFrom([
-    Routes.OIDC_CALLBACK, // Standard cinematic
-    Routes.INTERACTION, // Reuse of an existing session
-  ])
-  @SetStep()
   // eslint-disable-next-line complexity
   async getVerify(
     @Req() req: Request,
     @Res() res: Response,
     @Param() _params: Interaction,
-    @UserSessionDecorator(GetVerifySessionDto)
-    userSessionService: ISessionService<GetVerifySessionDto>,
+    @UserSessionDecorator(AfterGetOidcCallbackSessionDto)
+    userSessionService: ISessionService<AfterGetOidcCallbackSessionDto>,
   ) {
     const {
       amr,

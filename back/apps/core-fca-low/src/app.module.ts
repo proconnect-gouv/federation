@@ -1,6 +1,7 @@
 import { bootstrap } from 'global-agent';
 
 import { DynamicModule, Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 
 import { AccountFcaModule } from '@fc/account-fca';
@@ -8,8 +9,12 @@ import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ConfigModule, ConfigService } from '@fc/config';
 import { CsrfModule, CsrfService } from '@fc/csrf';
 import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
-import { ExceptionsModule } from '@fc/exceptions';
-import { FlowStepsModule } from '@fc/flow-steps';
+import {
+  ExceptionsModule,
+  FcWebHtmlExceptionFilter,
+  HttpExceptionFilter,
+  UnknownHtmlExceptionFilter,
+} from '@fc/exceptions';
 import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
@@ -20,7 +25,10 @@ import { MongooseModule } from '@fc/mongoose';
 import { NotificationsModule } from '@fc/notifications';
 import { OidcAcrModule } from '@fc/oidc-acr';
 import { IDENTITY_PROVIDER_SERVICE, OidcClientModule } from '@fc/oidc-client';
-import { OidcProviderModule } from '@fc/oidc-provider';
+import {
+  OidcProviderModule,
+  OidcProviderSessionNotFoundExceptionFilter,
+} from '@fc/oidc-provider';
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -28,6 +36,7 @@ import {
 import { SessionModule } from '@fc/session';
 
 import { InteractionController, OidcClientController } from './controllers';
+import { InvalidSessionExceptionFilter } from './filters';
 import {
   CoreFcaControllerService,
   CoreFcaMiddlewareService,
@@ -60,7 +69,6 @@ export class AppModule {
         ServiceProviderAdapterMongoModule,
         IdentityProviderAdapterMongoModule,
         OidcAcrModule,
-        // The Exceptions module should be imported first so that OidcProvider ExceptionFilters have precedence
         ExceptionsModule,
         OidcProviderModule.register(
           IdentityProviderAdapterMongoService,
@@ -72,7 +80,6 @@ export class AppModule {
           IdentityProviderAdapterMongoService,
           IdentityProviderAdapterMongoModule,
         ),
-        FlowStepsModule,
         NotificationsModule,
         CsrfModule,
         AccountFcaModule,
@@ -89,6 +96,26 @@ export class AppModule {
         CoreFcaMiddlewareService,
         CoreFcaControllerService,
         IdentitySanitizer,
+        {
+          provide: APP_FILTER,
+          useClass: UnknownHtmlExceptionFilter,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: FcWebHtmlExceptionFilter,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: HttpExceptionFilter,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: InvalidSessionExceptionFilter,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: OidcProviderSessionNotFoundExceptionFilter,
+        },
       ],
     };
   }

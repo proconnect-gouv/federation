@@ -4,7 +4,12 @@ import { AuthorizationParameters } from 'openid-client';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { AppConfig, UserSession } from '@fc/core/dto';
+import {
+  AfterGetInteractionSessionDto,
+  AfterRedirectToIdpWithEmailSessionDto,
+  AppConfig,
+  UserSession,
+} from '@fc/core/dto';
 import { Routes } from '@fc/core/enums';
 import { CoreFcaAgentNoIdpException } from '@fc/core/exceptions';
 import { CoreFcaService } from '@fc/core/services/core-fca.service';
@@ -45,7 +50,8 @@ export class CoreFcaControllerService {
     const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
 
     if (idpsFromEmail.length === 0) {
-      const { spName } = this.session.get<UserSession>('User');
+      const { spName } =
+        this.session.get<AfterGetInteractionSessionDto>('User');
 
       throw new CoreFcaAgentNoIdpException(spName, email);
     }
@@ -67,7 +73,7 @@ export class CoreFcaControllerService {
     idpId: string,
   ): Promise<void> {
     const { spId, idpLoginHint, spName, rememberMe } =
-      this.session.get<UserSession>('User');
+      this.session.get<AfterRedirectToIdpWithEmailSessionDto>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
     this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, idpLoginHint);

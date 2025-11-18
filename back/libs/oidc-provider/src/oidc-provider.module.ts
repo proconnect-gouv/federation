@@ -3,6 +3,7 @@ import { ModuleMetadata } from '@nestjs/common/interfaces';
 
 import { ConfigModule } from '@fc/config';
 import { ExceptionsModule, FcWebHtmlExceptionFilter } from '@fc/exceptions';
+import { LoggerModule } from '@fc/logger';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcAcrModule } from '@fc/oidc-acr';
@@ -11,6 +12,7 @@ import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
 
+import { OidcProviderSessionNotFoundExceptionFilter } from './filters/oidc-provider-session-not-found-exception.filter';
 import { OidcProviderController } from './oidc-provider.controller';
 import { OidcProviderService } from './oidc-provider.service';
 import {
@@ -51,6 +53,7 @@ export class OidcProviderModule {
           IdentityProviderAdapterMongoModule,
         ),
         ExceptionsModule,
+        LoggerModule,
       ],
       providers: [
         FcWebHtmlExceptionFilter,
@@ -62,6 +65,7 @@ export class OidcProviderModule {
         serviceProviderProvider,
         OidcProviderService,
         OidcProviderConfigService,
+        OidcProviderSessionNotFoundExceptionFilter,
       ],
       exports: [OidcProviderService, RedisModule, serviceProviderProvider],
       controllers: [OidcProviderController],

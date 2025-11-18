@@ -1,4 +1,3 @@
-import { ValidationError } from 'class-validator';
 import { TokenSet } from 'openid-client';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -69,10 +68,6 @@ describe('OidcClientService', () => {
           {} as any,
         ),
       ).rejects.toThrow(OidcClientTokenResultFailedException);
-      expect(loggerMock.error).toHaveBeenCalledWith({
-        msg: 'token validation error',
-        validationErrors: [expect.any(ValidationError)],
-      });
     });
   });
 

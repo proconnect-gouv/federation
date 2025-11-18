@@ -20,15 +20,15 @@ import { UserSessionDecorator } from '@fc/core/decorators';
 import { PostIdentityProviderSelectionDto } from '@fc/core/dto/post-identity-provider-selection.dto';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
-import { AuthorizeStepFrom, SetStep } from '@fc/flow-steps';
 import { LoggerService, TrackedEvent } from '@fc/logger';
 import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 
 import {
+  AfterGetInteractionSessionDto,
+  AfterRedirectToIdpWithEmailSessionDto,
+  AfterRedirectToIdpWithIdpIdSessionDto,
   AppConfig,
-  GetIdentityProviderSelectionSessionDto,
-  GetOidcCallbackSessionDto,
   RedirectToIdp,
   UserSession,
 } from '../dto';
@@ -58,17 +58,12 @@ export class OidcClientController {
   ) {}
 
   @Get(Routes.IDENTITY_PROVIDER_SELECTION)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
-  @AuthorizeStepFrom([
-    Routes.INTERACTION, // login_hint flow
-    Routes.REDIRECT_TO_IDP, // Standard flow
-    Routes.IDENTITY_PROVIDER_SELECTION, // Navigation back
-  ])
-  @SetStep()
   async getIdentityProviderSelection(
     @Res() res: Response,
-    @UserSessionDecorator(GetIdentityProviderSelectionSessionDto)
-    userSession: ISessionService<GetIdentityProviderSelectionSessionDto>,
+    @UserSessionDecorator(AfterRedirectToIdpWithEmailSessionDto)
+    userSession: ISessionService<AfterRedirectToIdpWithEmailSessionDto>,
   ) {
     const { idpLoginHint: email } = userSession.get();
 
@@ -94,9 +89,6 @@ export class OidcClientController {
   @Post(Routes.IDENTITY_PROVIDER_SELECTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
-  @AuthorizeStepFrom([
-    Routes.IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
-  ])
   @UseGuards(CsrfTokenGuard)
   postIdentityProviderSelection(
     @Req() req: Request,
@@ -115,18 +107,13 @@ export class OidcClientController {
   @Post(Routes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
-  @AuthorizeStepFrom([
-    Routes.INTERACTION, // Standard flow
-    Routes.REDIRECT_TO_IDP, // Browser back button
-  ])
-  @SetStep()
   @UseGuards(CsrfTokenGuard)
   redirectToIdp(
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: RedirectToIdp,
-    @UserSessionDecorator()
-    _userSession: ISessionService<UserSession>,
+    @UserSessionDecorator(AfterGetInteractionSessionDto)
+    _userSession: ISessionService<AfterGetInteractionSessionDto>,
   ): Promise<void> {
     const { email, rememberMe = false } = body;
 
@@ -139,6 +126,7 @@ export class OidcClientController {
   }
 
   @Post(Routes.DISCONNECT_FROM_IDP)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
   async logoutFromIdp(
     @Res() res: Response,
@@ -162,6 +150,7 @@ export class OidcClientController {
   }
 
   @Get(Routes.CLIENT_LOGOUT_CALLBACK)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
   @Render('oidc-provider-logout-form')
   async redirectAfterIdpLogout(
@@ -186,22 +175,11 @@ export class OidcClientController {
   @Get(Routes.OIDC_CALLBACK)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @AuthorizeStepFrom([
-    Routes.REDIRECT_TO_IDP, // Standard flow
-    Routes.IDENTITY_PROVIDER_SELECTION, // Multi-idp flow
-    Routes.INTERACTION, // idp_hint flow
-  ])
-  @SetStep()
   async getOidcCallback(
     @Req() req: Request,
     @Res() res: Response,
-    /**
-     * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
-     * @ticket FC-1020
-     */
-    @UserSessionDecorator(GetOidcCallbackSessionDto)
-    userSession: ISessionService<GetOidcCallbackSessionDto>,
+    @UserSessionDecorator(AfterRedirectToIdpWithIdpIdSessionDto)
+    userSession: ISessionService<AfterRedirectToIdpWithIdpIdSessionDto>,
   ) {
     // The session is duplicated here to mitigate cookie-theft-based attacks.
     // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
@@ -210,7 +188,7 @@ export class OidcClientController {
     const { idpId, idpNonce, idpState, interactionId, spId, spName } =
       userSession.get();
 
-    // Remove nonce and state from session to prevent replay attacks
+    // Remove nonce and state from the session to prevent replay attacks
     userSession.set({ idpNonce: null, idpState: null });
 
     this.logger.track(TrackedEvent.IDP_CALLEDBACK);
