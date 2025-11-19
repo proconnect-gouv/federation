@@ -15,6 +15,9 @@ export class ServiceProvider extends Document {
   key: string;
 
   @Prop({ type: String })
+  client_id: string;
+
+  @Prop({ type: String })
   client_secret: string;
 
   @Prop({ type: [String] })
@@ -22,6 +25,9 @@ export class ServiceProvider extends Document {
 
   @Prop({ type: [String] })
   redirect_uris: string[];
+
+  @Prop({ type: [String] })
+  post_logout_redirect_uris: string[];
 
   @Prop({ type: String })
   id_token_signed_response_alg: string;
@@ -31,6 +37,9 @@ export class ServiceProvider extends Document {
 
   @Prop({ type: String })
   jwks_uri: string;
+
+  @Prop({ type: String })
+  title: string;
 
   @Prop({ type: String })
   type: string;
