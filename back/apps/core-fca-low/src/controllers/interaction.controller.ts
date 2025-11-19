@@ -194,9 +194,24 @@ export class InteractionController {
     @Req() req: Request,
     @Res() res: Response,
     @Param() _params: Interaction,
-    @UserSessionDecorator(AfterGetOidcCallbackSessionDto)
-    userSessionService: ISessionService<AfterGetOidcCallbackSessionDto>,
+    @UserSessionDecorator(ActiveUserSessionDto)
+    userSessionService: ISessionService<ActiveUserSessionDto>,
   ) {
+    const afterGetOidcCallbackSession = plainToInstance(
+      AfterGetOidcCallbackSessionDto,
+      userSessionService.get(),
+    );
+    const validationErrors = await validate(afterGetOidcCallbackSession);
+
+    /* istanbul ignore next line */
+    if (!isEmpty(validationErrors)) {
+      // add a log to debug the differences between ActiveUserSessionDto and AfterGetOidcCallbackSessionDto
+      this.logger.info({
+        code: 'debug_interaction_verify_validation_error',
+        message: validationErrors.toString(),
+      });
+    }
+
     const {
       amr,
       idpAcr,

@@ -31,7 +31,12 @@ export class InvalidSessionExceptionFilter extends HttpExceptionFilter {
     super(config, session, logger);
   }
 
-  async catch(_exception: InvalidSessionException, host: ArgumentsHost) {
+  async catch(exception: InvalidSessionException, host: ArgumentsHost) {
+    this.logger.info({
+      code: 'invalid-session-exception',
+      message: exception?.message,
+    });
+
     const req = host.switchToHttp().getRequest();
     const res = host.switchToHttp().getResponse();
 
@@ -46,11 +51,6 @@ export class InvalidSessionExceptionFilter extends HttpExceptionFilter {
         ':uid',
         interactionId,
       )}`;
-
-      this.logger.info({
-        code: 'invalid-session-exception',
-        message: `Redirecting to interaction page for interaction ID: ${interactionId}`,
-      });
 
       return res.redirect(url);
     } catch (error) {
