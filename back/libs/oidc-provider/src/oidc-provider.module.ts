@@ -13,7 +13,6 @@ import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
 
 import { OidcProviderSessionNotFoundExceptionFilter } from './filters/oidc-provider-session-not-found-exception.filter';
-import { OidcProviderController } from './oidc-provider.controller';
 import { OidcProviderService } from './oidc-provider.service';
 import {
   OidcProviderConfigAppService,
@@ -68,7 +67,6 @@ export class OidcProviderModule {
         OidcProviderSessionNotFoundExceptionFilter,
       ],
       exports: [OidcProviderService, RedisModule, serviceProviderProvider],
-      controllers: [OidcProviderController],
     };
   }
 }
