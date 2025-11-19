@@ -148,12 +148,12 @@ describe('InteractionController', () => {
       configServiceMock.get.mockReturnValue({ urlPrefix: '/prefix' });
     });
 
-    it('should reset user session if there is no active session', async () => {
+    it('should clear user session if there is no active session', async () => {
       const req = {} as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({}),
-        reset: jest.fn(),
+        clear: jest.fn(),
         set: jest.fn(),
         commit: jest.fn(),
       } as unknown as ISessionService<UserSession>;
@@ -173,13 +173,10 @@ describe('InteractionController', () => {
         userSessionService,
       );
 
-      expect(userSessionService.reset).toHaveBeenCalled();
-      expect(userSessionService.set).toHaveBeenCalledWith({
-        browsingSessionId: 'uuid-mock',
-      });
+      expect(userSessionService.clear).toHaveBeenCalled();
     });
 
-    it('should reset user session if login_hint is different from the email in the current session', async () => {
+    it('should clear user session if login_hint is different from the email in the current session', async () => {
       const req = {} as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
@@ -195,7 +192,7 @@ describe('InteractionController', () => {
             idpIdentity: { email: 'current@example.com' },
           };
         }),
-        reset: jest.fn(),
+        clear: jest.fn(),
         set: jest.fn(),
         commit: jest.fn(),
       } as unknown as ISessionService<UserSession>;
@@ -212,7 +209,7 @@ describe('InteractionController', () => {
         userSessionService,
       );
 
-      expect(userSessionService.reset).toHaveBeenCalled();
+      expect(userSessionService.clear).toHaveBeenCalled();
     });
 
     it('should redirect to INTERACTION_VERIFY when session is reused', async () => {
@@ -248,7 +245,7 @@ describe('InteractionController', () => {
         get: jest.fn().mockReturnValue({}),
         duplicate: jest.fn(),
         set: jest.fn(),
-        reset: jest.fn(),
+        clear: jest.fn(),
         commit: jest.fn(),
       } as unknown as ISessionService<UserSession>;
       oidcProviderMock.getInteraction.mockResolvedValue({
@@ -304,7 +301,7 @@ describe('InteractionController', () => {
         get: jest.fn().mockReturnValue({}),
         duplicate: jest.fn(),
         set: jest.fn(),
-        reset: jest.fn(),
+        clear: jest.fn(),
         commit: jest.fn(),
       } as unknown as ISessionService<UserSession>;
       oidcProviderMock.getInteraction.mockResolvedValue({
@@ -334,7 +331,7 @@ describe('InteractionController', () => {
       const userSessionService = {
         get: jest.fn().mockReturnValue({}),
         set: jest.fn(),
-        reset: jest.fn(),
+        clear: jest.fn(),
         commit: jest.fn(),
       } as unknown as ISessionService<UserSession>;
       notificationsMock.getNotificationToDisplay.mockResolvedValue({

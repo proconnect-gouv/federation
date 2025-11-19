@@ -25,14 +25,13 @@ describe('SessionService', () => {
   };
 
   const lifecycleMock = {
-    reset: jest.fn(),
+    clear: jest.fn(),
     initCache: jest.fn(),
     init: jest.fn(),
     destroy: jest.fn(),
     commit: jest.fn(),
     duplicate: jest.fn(),
     refresh: jest.fn(),
-    detach: jest.fn(),
   };
 
   const cookiesMock = {
@@ -151,22 +150,21 @@ describe('SessionService', () => {
     });
   });
 
-  describe('reset()', () => {
-    it('should call lifecycle.reset()', async () => {
+  describe('clear()', () => {
+    it('should call lifecycle.clear()', () => {
       // When
-      await service.reset(res);
+      service.clear();
 
       // Then
-      expect(lifecycleMock.reset).toHaveBeenCalledTimes(1);
-      expect(lifecycleMock.reset).toHaveBeenCalledWith(res);
+      expect(lifecycleMock.clear).toHaveBeenCalledTimes(1);
     });
 
-    it('should return result of lifecycle.reset()', async () => {
+    it('should return result of lifecycle.clear()', () => {
       // When
-      const result = await service.reset(res);
+      const result = service.clear();
 
       // Then
-      expect(result).toBe('mockedReturnValue::reset');
+      expect(result).toBe('mockedReturnValue::clear');
     });
   });
 
@@ -272,25 +270,6 @@ describe('SessionService', () => {
 
       // Then
       expect(result).toBe('mockedReturnValue::refresh');
-    });
-  });
-
-  describe('detach()', () => {
-    it('should call lifecycle.detach()', async () => {
-      // When
-      await service.detach(res);
-
-      // Then
-      expect(lifecycleMock.detach).toHaveBeenCalledTimes(1);
-      expect(lifecycleMock.detach).toHaveBeenCalledWith(res);
-    });
-
-    it('should return result of lifecycle.detach()', async () => {
-      // When
-      const result = await service.detach(res);
-
-      // Then
-      expect(result).toBe('mockedReturnValue::detach');
     });
   });
 

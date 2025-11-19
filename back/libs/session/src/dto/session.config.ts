@@ -89,7 +89,4 @@ export class SessionConfig {
 
   @IsObject()
   readonly schema: Class<CoreFcaSession>;
-
-  @IsObject()
-  readonly defaultData: Record<string, unknown>;
 }

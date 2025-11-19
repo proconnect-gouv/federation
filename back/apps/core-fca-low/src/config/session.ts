@@ -41,9 +41,4 @@ export default {
     User: { spName: true, idpName: true },
   },
   schema: CoreFcaSession,
-  defaultData: {
-    User: {},
-    Csrf: {},
-    FlowSteps: {},
-  },
 } as SessionConfig;

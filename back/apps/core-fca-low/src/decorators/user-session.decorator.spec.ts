@@ -17,7 +17,7 @@ jest.mock('class-validator', () => ({
  *
  * This decorator:
  * - Retrieves a SessionService instance from the NestJsDependencyInjectionWrapper.
- * - Binds session methods (get, set, commit, duplicate, reset, destroy) to the 'User' module.
+ * - Binds session methods (get, set, commit, duplicate, clear, destroy) to the 'User' module.
  * - Validates the session data against an optional mandatory DTO as well as the UserSession DTO.
  * - Throws a SessionInvalidSessionException when validation errors occur.
  */
@@ -46,7 +46,7 @@ describe('UserSessionDecoratorFactory', () => {
       set: jest.fn(),
       commit: jest.fn(),
       duplicate: jest.fn().mockReturnValue('duplicatedSession'),
-      reset: jest.fn(),
+      clear: jest.fn(),
       destroy: jest.fn(),
     };
 
