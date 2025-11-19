@@ -66,19 +66,28 @@ export class CoreFcaControllerService {
     res: Response,
     idpId: string,
   ): Promise<void> {
-    const { spId, idpLoginHint, spName, rememberMe } =
-      this.session.get<UserSession>('User');
+    // Inputs
+    const priorSession = this.session.get<UserSession>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
+    const security = await this.oidcClient.utils.buildSecurityParameters();
+    const interaction = await this.oidcProvider.getInteraction(req, res);
+    const acrParams = this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
+    const isDefaultIdP = (idpId == this.config.get<AppConfig>('App').defaultIdpId);
 
-    this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, idpLoginHint);
+    // Computation
+    const authorizeParams: AuthorizationParameters = this.authorizationParameters(security, scope, priorSession, acrParams, isDefaultIdP);
+
+    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
+      idpId,
+      authorizeParams,
+    );
+
+    // Effects
+    this.coreFcaService.ensureEmailIsAuthorizedForSp(priorSession.spId, priorSession.idpLoginHint);
 
     const selectedIdp =
       await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
-
-    const security = await this.oidcClient.utils.buildSecurityParameters();
-
     const { name: idpName, title: idpLabel } = selectedIdp;
-
     const sessionPayload: UserSession = {
       idpId,
       idpName,
@@ -88,30 +97,17 @@ export class CoreFcaControllerService {
       idpIdentity: undefined,
       spIdentity: undefined,
     };
-
     this.session.set('User', sessionPayload);
-
-    const interaction = await this.oidcProvider.getInteraction(req, res);
-    const { acrValues, acrClaims } =
-      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
-
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
-
-    const authorizeParams: AuthorizationParameters = this.authorizationParameters(security, scope, sessionPayload, acrClaims, acrValues, idpId, defaultIdpId);
-
-    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
-      idpId,
-      authorizeParams,
-    );
 
     this.logger.track(TrackedEvent.IDP_CHOSEN);
 
     res.redirect(authorizationUrl);
   }
 
-  authorizationParameters(safety : any, scope: string, sessionPayload: UserSession, acrClaims: AcrClaims, acrValues: string, idpId: string, defaultIdpId: string) {
+  authorizationParameters(safety : any, scope: string, sessionPayload: UserSession, acrParams: any, isDefaultIdP: boolean) {
     const { state, nonce } = safety;
     const { idpLoginHint, spId, spName, rememberMe } = sessionPayload;
+    const { acrClaims, acrValues } = acrParams;
 
     const authorizeParams: AuthorizationParameters = {
       state,
@@ -137,7 +133,7 @@ export class CoreFcaControllerService {
     }
 
     // these specific behaviors are legacy implementations and should be homogenized in the future
-    if (idpId === defaultIdpId) {
+    if (isDefaultIdP) {
       authorizeParams['scope'] += ' is_service_public';
     } else if (!acrValues && !acrClaims) {
       authorizeParams['acr_values'] = 'eidas1';

@@ -6,8 +6,9 @@ describe('CoreFcaControllerService', () => {
   it('should build authorize URL params', () => {
     const subject = new CoreFcaControllerService(null,null,null,null,null,null,null,null);
     const safety = {state:'anyState', nonce:'anyNonce'};
-    const userSession = {idpLoginHint: 'any hint', spId: 'any sp id', spName: 'any sp name', rememberMe: false}
-    const params = subject.authorizationParameters(safety,'any scope', userSession, null, '', '', '1');
+    const userSession = {idpLoginHint: 'any hint', spId: 'any sp id', spName: 'any sp name', rememberMe: false};
+    const isDefaultIdP = false;
+    const params = subject.authorizationParameters(safety,'any scope', userSession, {}, isDefaultIdP);
     expect(params).toMatchObject(
         {
             state:'anyState',
