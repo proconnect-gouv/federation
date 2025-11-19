@@ -100,7 +100,6 @@ describe('SessionLifecycleService', () => {
       // Then
       expect(localStorageMock.setStore).toHaveBeenCalledWith({
         data: {
-          Csrf: {},
           User: {
             browsingSessionId: expect.any(String),
           },

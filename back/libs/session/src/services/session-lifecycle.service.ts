@@ -35,7 +35,6 @@ export class SessionLifecycleService {
         User: {
           browsingSessionId: uuid(),
         },
-        Csrf: {},
       },
       id: sessionId,
       sync: false,
@@ -70,7 +69,6 @@ export class SessionLifecycleService {
         User: {
           browsingSessionId: data?.User?.browsingSessionId || uuid(),
         },
-        Csrf: {},
       },
       id,
       sync: false,
