@@ -39,13 +39,15 @@ export class InvalidSessionExceptionFilter extends HttpExceptionFilter {
 
     const req = host.switchToHttp().getRequest();
     const res = host.switchToHttp().getResponse();
+    // We clear our session _before_ calling `getInteraction`,
+    // so that if `getInteraction` throws a SessionNotFound error
+    // (the `oidc-provider` has lost its own independent session),
+    // our session will have been cleared already.
+    this.session.clear();
 
+    // Restart the oidc-provider interaction
+    // (which may fail if it also has lost its session)
     try {
-      // There is no need to keep session information as we are going to restart the interaction
-      // We reset the session before calling getInteraction, so that if getInteraction throws a SessionNotFound error, the session will be reset anyway
-      this.session.clear();
-
-      // Calling getInteraction to ensure oidc-provider can continue the interaction
       const { uid: interactionId } = await this.oidcProvider.getInteraction(
         req,
         res,
