@@ -262,14 +262,14 @@ describe('OidcClientUtilsService', () => {
   describe('buildAuthorizeParameters()', () => {
     it('should call crypto to generate state', async () => {
       // When
-      const result = await service.buildAuthorizeParameters();
+      const result = await service.buildSecurityParameters();
       // Then
       expect(result.state).toBeDefined();
       expect(result.state).toBe(randomStringMock);
     });
     it('should return parameters + generated state', async () => {
       // When
-      const result = await service.buildAuthorizeParameters();
+      const result = await service.buildSecurityParameters();
       // Then
       expect(result).toEqual({
         state: randomStringMock,

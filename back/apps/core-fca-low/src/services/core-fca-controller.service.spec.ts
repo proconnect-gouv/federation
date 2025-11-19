@@ -82,7 +82,7 @@ describe('CoreFcaControllerService', () => {
     });
 
     (
-      oidcClientMock.utils.buildAuthorizeParameters as jest.Mock
+      oidcClientMock.utils.buildSecurityParameters as jest.Mock
     ).mockResolvedValue({
       nonce: 'mockNonce',
       state: 'mockState',

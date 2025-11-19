@@ -47,7 +47,7 @@ export class OidcClientUtilsService {
     private readonly identityProvider: IIdentityProviderAdapter,
   ) {}
 
-  async buildAuthorizeParameters() {
+  async buildSecurityParameters() {
     const { stateLength } = await this.oidcClientConfig.get();
     const state = this.crypto.genRandomString(stateLength);
     /**

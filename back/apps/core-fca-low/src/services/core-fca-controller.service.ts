@@ -75,21 +75,7 @@ export class CoreFcaControllerService {
     const selectedIdp =
       await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
 
-    const { nonce, state } =
-      await this.oidcClient.utils.buildAuthorizeParameters();
-
-    const interaction = await this.oidcProvider.getInteraction(req, res);
-    const { acrValues, acrClaims } =
-      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
-
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
-
-    const authorizeParams: AuthorizationParameters = this.authorizationParameters(state, nonce, scope, idpLoginHint, spId, spName, rememberMe, acrClaims, acrValues, idpId, defaultIdpId);
-
-    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
-      idpId,
-      authorizeParams,
-    );
+    const security = await this.oidcClient.utils.buildSecurityParameters();
 
     const { name: idpName, title: idpLabel } = selectedIdp;
 
@@ -97,20 +83,36 @@ export class CoreFcaControllerService {
       idpId,
       idpName,
       idpLabel,
-      idpNonce: nonce,
-      idpState: state,
+      idpNonce: security.nonce,
+      idpState: security.state,
       idpIdentity: undefined,
       spIdentity: undefined,
     };
 
     this.session.set('User', sessionPayload);
 
+    const interaction = await this.oidcProvider.getInteraction(req, res);
+    const { acrValues, acrClaims } =
+      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
+
+    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+
+    const authorizeParams: AuthorizationParameters = this.authorizationParameters(security, scope, sessionPayload, acrClaims, acrValues, idpId, defaultIdpId);
+
+    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
+      idpId,
+      authorizeParams,
+    );
+
     this.logger.track(TrackedEvent.IDP_CHOSEN);
 
     res.redirect(authorizationUrl);
   }
 
-  authorizationParameters(state: string, nonce: string, scope: string, idpLoginHint: string, spId: string, spName: string, rememberMe: boolean, acrClaims: AcrClaims, acrValues: string, idpId: string, defaultIdpId: string) {
+  authorizationParameters(safety : any, scope: string, sessionPayload: UserSession, acrClaims: AcrClaims, acrValues: string, idpId: string, defaultIdpId: string) {
+    const { state, nonce } = safety;
+    const { idpLoginHint, spId, spName, rememberMe } = sessionPayload;
+
     const authorizeParams: AuthorizationParameters = {
       state,
       nonce,
