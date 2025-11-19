@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsObject,
   IsOptional,
   IsString,
@@ -46,6 +47,11 @@ export class MongooseConfig {
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
+  readonly uri?: string;
+
+  @IsString()
+  @IsNotEmpty()
   readonly hosts: string;
 
   @IsString()
@@ -56,4 +62,7 @@ export class MongooseConfig {
   @ValidateNested()
   @Type(() => MongooseConfigOptions)
   readonly options: MongooseConfigOptions;
+
+  @IsNumber()
+  readonly watcherDebounceWaitDuration: number;
 }

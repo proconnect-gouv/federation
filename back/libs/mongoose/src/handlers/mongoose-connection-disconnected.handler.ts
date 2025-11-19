@@ -1,17 +1,17 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
-import { MongooseConnectionConnectedEvent } from '../events';
+import { MongooseConnectionDisconnectedEvent } from '../events';
 import { MongooseCollectionOperationWatcherHelper } from '../helpers/mongoose-collection-update-watcher.helper';
 
-@EventsHandler(MongooseConnectionConnectedEvent)
-export class MongooseConnectionConnectedHandler
-  implements IEventHandler<MongooseConnectionConnectedEvent>
+@EventsHandler(MongooseConnectionDisconnectedEvent)
+export class MongooseConnectionDisconnectedHandler
+  implements IEventHandler<MongooseConnectionDisconnectedEvent>
 {
   constructor(
     private readonly mongooseHelper: MongooseCollectionOperationWatcherHelper,
   ) {}
 
   public async handle() {
-    await this.mongooseHelper.connectAllWatchers();
+    await this.mongooseHelper.disconnectAllWatchers();
   }
 }

@@ -53,10 +53,15 @@ export class MongooseProvider {
     config: ConfigService,
     eventBus,
   ): MongooseModuleOptions {
-    const { user, password, hosts, database, options } =
-      config.get<MongooseConfig>('Mongoose');
+    const {
+      user,
+      password,
+      hosts,
+      database,
+      options,
+      uri = `mongodb://${user}:${password}@${hosts}/${database}`,
+    } = config.get<MongooseConfig>('Mongoose');
 
-    const uri = `mongodb://${user}:${password}@${hosts}/${database}`;
     const params: MongooseModuleOptions = {
       uri,
       ...options,

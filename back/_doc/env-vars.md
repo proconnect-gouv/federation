@@ -56,6 +56,7 @@
 | Mongoose_TLS_CA_FILE | string |
 | Mongoose_TLS_INSECURE | boolean |
 | Mongoose_USER | string |
+| Mongoose_WATCHER_DEBOUNCE_WAIT_DURATION | number |
 | OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEYS | json |
 | OidcClient_FAPI | boolean |
 | OidcClient_SCOPE | string |
