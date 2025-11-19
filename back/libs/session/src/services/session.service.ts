@@ -68,10 +68,6 @@ export class SessionService {
     return this.lifecycle.refresh(req, res);
   }
 
-  detach(res: Response) {
-    return this.lifecycle.detach(res);
-  }
-
   /**
    * Cookies methods
    */

@@ -104,27 +104,6 @@ export class SessionLifecycleService {
     return await this.backendStorage.remove(id);
   }
 
-  async detach(res: Response, backendLifetime?: number): Promise<void> {
-    const { id } = this.localStorage.getStore();
-    const { defaultData } = this.config.get<SessionConfig>('Session');
-    this.localStorage.setStore({
-      data: cloneDeep(defaultData),
-      id: undefined,
-      sync: false,
-    });
-
-    /**
-     * Expire value stored in redis
-     * @info this code is not currently used
-     * @todo #1512 Handle backend session data expiration
-     */
-    if (backendLifetime) {
-      await this.backendStorage.expire(id, backendLifetime);
-    }
-
-    this.cookies.remove(res);
-  }
-
   async commit(): Promise<boolean> {
     const { data, id, sync } = this.localStorage.getStore();
 

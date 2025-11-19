@@ -11,7 +11,6 @@ export function getSessionServiceMock() {
     commit: jest.fn(),
     duplicate: jest.fn(),
     refresh: jest.fn(),
-    detach: jest.fn(),
 
     getSessionIdFromCookie: jest.fn(),
 

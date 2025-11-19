@@ -381,56 +381,6 @@ describe('SessionLifecycleService', () => {
     });
   });
 
-  describe('detach()', () => {
-    // Given
-    const storeMock = {
-      id: Symbol('idMock'),
-    };
-
-    beforeEach(() => {
-      localStorageMock.getStore.mockReturnValue(storeMock);
-    });
-
-    it('should call localStorage.getStore()', async () => {
-      // When
-      await service.detach(res);
-
-      // Then
-      expect(localStorageMock.getStore).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call localStorage.setStore()', async () => {
-      // When
-      await service.detach(res);
-
-      // Then
-      expect(localStorageMock.setStore).toHaveBeenCalledTimes(1);
-      expect(localStorageMock.setStore).toHaveBeenCalledWith({
-        data: defaultData,
-        id: undefined,
-        sync: false,
-      });
-    });
-
-    it('should call cookies.remove()', async () => {
-      // When
-      await service.detach(res);
-
-      // Then
-      expect(cookiesMock.remove).toHaveBeenCalledTimes(1);
-      expect(cookiesMock.remove).toHaveBeenCalledWith(res);
-    });
-
-    it('should call backendStorage.expire()', async () => {
-      // When
-      await service.detach(res, 123);
-
-      // Then
-      expect(backendStorageMock.expire).toHaveBeenCalledTimes(1);
-      expect(backendStorageMock.expire).toHaveBeenCalledWith(storeMock.id, 123);
-    });
-  });
-
   describe('commit()', () => {
     // Given
     const storeMock = {

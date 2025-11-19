@@ -32,7 +32,6 @@ describe('SessionService', () => {
     commit: jest.fn(),
     duplicate: jest.fn(),
     refresh: jest.fn(),
-    detach: jest.fn(),
   };
 
   const cookiesMock = {
@@ -272,25 +271,6 @@ describe('SessionService', () => {
 
       // Then
       expect(result).toBe('mockedReturnValue::refresh');
-    });
-  });
-
-  describe('detach()', () => {
-    it('should call lifecycle.detach()', async () => {
-      // When
-      await service.detach(res);
-
-      // Then
-      expect(lifecycleMock.detach).toHaveBeenCalledTimes(1);
-      expect(lifecycleMock.detach).toHaveBeenCalledWith(res);
-    });
-
-    it('should return result of lifecycle.detach()', async () => {
-      // When
-      const result = await service.detach(res);
-
-      // Then
-      expect(result).toBe('mockedReturnValue::detach');
     });
   });
 
