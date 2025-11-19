@@ -4,7 +4,7 @@ export function getSessionServiceMock() {
     set: jest.fn(),
     getId: jest.fn(),
 
-    reset: jest.fn(),
+    clear: jest.fn(),
     initCache: jest.fn(),
     init: jest.fn(),
     destroy: jest.fn(),

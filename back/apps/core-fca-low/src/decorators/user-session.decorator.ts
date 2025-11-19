@@ -32,7 +32,7 @@ export const UserSessionDecoratorFactory = async (
       sessionService.set.bind(sessionService, cleanedData);
       return sessionService.duplicate.bind(sessionService, res)();
     },
-    reset: sessionService.reset.bind(sessionService, res),
+    clear: sessionService.clear.bind(sessionService),
     destroy: sessionService.destroy.bind(sessionService, res),
   } as ISessionService<UserSession>;
 

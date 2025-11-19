@@ -33,7 +33,7 @@ export interface ISessionService<T> {
 
   duplicate(): Promise<boolean>;
 
-  reset(): Promise<boolean>;
+  clear(): void;
 
   destroy(): Promise<boolean>;
 }

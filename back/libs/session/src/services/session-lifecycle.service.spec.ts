@@ -20,7 +20,6 @@ describe('SessionLifecycleService', () => {
 
   const configMock = getConfigMock();
   const sessionIdLength = Symbol('sessionIdLength');
-  const defaultData = Symbol('defaultData');
 
   const cryptographyMock = {
     genRandomString: jest.fn(),
@@ -86,7 +85,7 @@ describe('SessionLifecycleService', () => {
     service = module.get<SessionLifecycleService>(SessionLifecycleService);
 
     cryptographyMock.genRandomString.mockReturnValue(randomStringValue);
-    configMock.get.mockReturnValue({ defaultData, sessionIdLength });
+    configMock.get.mockReturnValue({ sessionIdLength });
   });
 
   it('should be defined', () => {
@@ -100,7 +99,12 @@ describe('SessionLifecycleService', () => {
 
       // Then
       expect(localStorageMock.setStore).toHaveBeenCalledWith({
-        data: defaultData,
+        data: {
+          Csrf: {},
+          User: {
+            browsingSessionId: expect.any(String),
+          },
+        },
         id: randomStringValue,
         sync: false,
       });
@@ -178,7 +182,7 @@ describe('SessionLifecycleService', () => {
     });
   });
 
-  describe('reset()', () => {
+  describe('clear()', () => {
     // Given
     const sessionId = 'sessionId';
 
@@ -187,38 +191,12 @@ describe('SessionLifecycleService', () => {
       service['init'] = jest.fn().mockReturnValue(sessionId);
     });
 
-    it('should call localStorage.getStore()', async () => {
+    it('should call localStorage.getStore()', () => {
       // When
-      await service.reset(res);
+      service.clear();
 
       // Then
       expect(localStorageMock.getStore).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call backendStorage.remove() with sessionId', async () => {
-      // When
-      await service.reset(res);
-
-      // Then
-      expect(backendStorageMock.remove).toHaveBeenCalledTimes(1);
-      expect(backendStorageMock.remove).toHaveBeenCalledWith(sessionId);
-    });
-
-    it('should call init()', async () => {
-      // When
-      await service.reset(res);
-
-      // Then
-      expect(service['init']).toHaveBeenCalledTimes(1);
-      expect(service['init']).toHaveBeenCalledWith(res);
-    });
-
-    it('should return sessionId', async () => {
-      // When
-      const result = await service.reset(res);
-
-      // Then
-      expect(result).toBe(sessionId);
     });
   });
 

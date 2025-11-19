@@ -2,7 +2,6 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Request, Response } from 'express';
 import { isEmpty } from 'lodash';
-import { v4 as uuid } from 'uuid';
 
 import {
   Controller,
@@ -120,8 +119,7 @@ export class InteractionController {
       acrClaims?.value || acrClaims?.values.join(' ') || null;
 
     if (!canReuseActiveSession) {
-      await userSession.reset();
-      userSession.set({ browsingSessionId: uuid() });
+      userSession.clear();
     }
     userSession.set({
       spLoginHint,

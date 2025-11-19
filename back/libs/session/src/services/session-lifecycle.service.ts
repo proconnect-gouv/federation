@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { cloneDeep } from 'lodash';
+import { v4 as uuid } from 'uuid';
 
 import { Injectable } from '@nestjs/common';
 
@@ -25,13 +26,17 @@ export class SessionLifecycleService {
   ) {}
 
   init(res: Response): string {
-    const { sessionIdLength, defaultData } =
-      this.config.get<SessionConfig>('Session');
+    const { sessionIdLength } = this.config.get<SessionConfig>('Session');
     const sessionId: string =
       this.cryptography.genRandomString(sessionIdLength);
 
     this.localStorage.setStore({
-      data: cloneDeep(defaultData),
+      data: {
+        User: {
+          browsingSessionId: uuid(),
+        },
+        Csrf: {},
+      },
       id: sessionId,
       sync: false,
     });
@@ -57,12 +62,19 @@ export class SessionLifecycleService {
     });
   }
 
-  async reset(res: Response): Promise<string> {
-    const { id } = this.localStorage.getStore();
+  clear(): void {
+    const { id, data } = this.localStorage.getStore();
 
-    await this.backendStorage.remove(id);
-
-    return this.init(res);
+    this.localStorage.setStore({
+      data: {
+        User: {
+          browsingSessionId: data?.User?.browsingSessionId || uuid(),
+        },
+        Csrf: {},
+      },
+      id,
+      sync: false,
+    });
   }
 
   async duplicate(res: Response) {

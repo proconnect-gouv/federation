@@ -25,7 +25,7 @@ describe('SessionService', () => {
   };
 
   const lifecycleMock = {
-    reset: jest.fn(),
+    clear: jest.fn(),
     initCache: jest.fn(),
     init: jest.fn(),
     destroy: jest.fn(),
@@ -150,22 +150,21 @@ describe('SessionService', () => {
     });
   });
 
-  describe('reset()', () => {
-    it('should call lifecycle.reset()', async () => {
+  describe('clear()', () => {
+    it('should call lifecycle.clear()', () => {
       // When
-      await service.reset(res);
+      service.clear();
 
       // Then
-      expect(lifecycleMock.reset).toHaveBeenCalledTimes(1);
-      expect(lifecycleMock.reset).toHaveBeenCalledWith(res);
+      expect(lifecycleMock.clear).toHaveBeenCalledTimes(1);
     });
 
-    it('should return result of lifecycle.reset()', async () => {
+    it('should return result of lifecycle.clear()', () => {
       // When
-      const result = await service.reset(res);
+      const result = service.clear();
 
       // Then
-      expect(result).toBe('mockedReturnValue::reset');
+      expect(result).toBe('mockedReturnValue::clear');
     });
   });
 
