@@ -17,4 +17,8 @@ export class RedisService {
 
     this.client = new Redis(config);
   }
+
+  onModuleDestroy() {
+    this.client.disconnect();
+  }
 }
