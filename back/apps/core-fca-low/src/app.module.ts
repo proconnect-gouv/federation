@@ -35,7 +35,11 @@ import {
 } from '@fc/service-provider-adapter-mongo';
 import { SessionModule } from '@fc/session';
 
-import { InteractionController, OidcClientController } from './controllers';
+import {
+  InteractionController,
+  OidcClientController,
+  OidcProviderController,
+} from './controllers';
 import { InvalidSessionExceptionFilter } from './filters';
 import {
   CoreFcaControllerService,
@@ -84,7 +88,11 @@ export class AppModule {
         CsrfModule,
         AccountFcaModule,
       ],
-      controllers: [InteractionController, OidcClientController],
+      controllers: [
+        InteractionController,
+        OidcClientController,
+        OidcProviderController,
+      ],
       providers: [
         CoreFcaService,
         {

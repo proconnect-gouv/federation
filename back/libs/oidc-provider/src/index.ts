@@ -4,7 +4,6 @@ export * from './enums';
 export * from './exceptions';
 export * from './filters';
 export * from './interfaces';
-export * from './oidc-provider.controller';
 export * from './oidc-provider.module';
 export * from './oidc-provider.service';
 export * from './services';

@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { OidcProviderService } from '@fc/oidc-provider/oidc-provider.service';
 
 import {
   AuthorizeParamsDto,
   LogoutParamsDto,
   RevocationTokenParamsDTO,
-} from './dto';
+} from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
-import { OidcProviderService } from './oidc-provider.service';
 
 describe('OidcProviderController', () => {
   let controller: OidcProviderController;

@@ -12,15 +12,15 @@ import {
 } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { AppConfig } from '@fc/core';
+import { AppConfig } from '@fc/core/index';
+import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
+import { OidcProviderService } from '@fc/oidc-provider/oidc-provider.service';
 
 import {
   AuthorizeParamsDto,
   LogoutParamsDto,
   RevocationTokenParamsDTO,
-} from './dto';
-import { OidcProviderRoutes } from './enums';
-import { OidcProviderService } from './oidc-provider.service';
+} from '../dto';
 
 @Controller()
 export class OidcProviderController {
