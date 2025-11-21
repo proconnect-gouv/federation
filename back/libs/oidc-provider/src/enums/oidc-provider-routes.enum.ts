@@ -7,6 +7,7 @@ export enum OidcProviderRoutes {
   DEVICE_AUTHORIZATION = '/device/auth',
   END_SESSION = '/session/end',
   END_SESSION_CONFIRM = '/session/end/confirm',
+  END_SESSION_SUCCESS = '/session/end/success',
   JWKS = '/jwks',
   PUSHED_AUTHORIZATION_REQUEST = '/request',
   REGISTRATION = '/reg',

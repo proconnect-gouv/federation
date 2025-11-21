@@ -47,3 +47,9 @@ Then('le bouton {string} est {string}', (buttonText, state) => {
     expectedPointer,
   );
 });
+
+Then('je suis redirigé vers la page de déconnexion', function () {
+  cy.contains(
+    'Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.',
+  );
+});

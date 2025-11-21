@@ -98,6 +98,11 @@
             <button id="force-2fa">Forcer une connexion a deux facteurs</button>
         </form>
         <br>
+        <form action="/logout" method="post">
+            <input name="no_redirect" type="hidden" value="true" />
+            <button id="logout">Se déconnecter (sans redirection)</button>
+        </form>
+        <br>
         <details>
             <summary id="open-custom-configuration">Usage avancé</summary>
 

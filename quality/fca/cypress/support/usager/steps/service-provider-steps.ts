@@ -125,6 +125,10 @@ When('je clique sur le bouton de déconnexion', function () {
   cy.get('[action="/logout"] button').click();
 });
 
+When('je clique sur le bouton de déconnexion sans redirection', function () {
+  cy.contains('Se déconnecter (sans redirection)').click();
+});
+
 When('je clique sur le bouton FranceConnect', function () {
   cy.get('[aria-label="S’identifier avec FranceConnect"]').click();
 });
