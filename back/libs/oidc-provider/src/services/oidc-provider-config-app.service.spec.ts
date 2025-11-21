@@ -101,32 +101,16 @@ describe('OidcProviderConfigAppService', () => {
   describe('postLogoutSuccessSource', () => {
     it('should set a body property to koa context', () => {
       // Given
+      const renderMock = jest.fn();
       const ctx = {
-        request: {
-          method: 'POST',
-          url: 'https://url.com',
-        },
-        response: {
-          status: 200,
-          message: 'OK',
-        },
-        req: 'toto',
+        res: { render: renderMock },
       } as unknown as KoaContextWithOIDC;
-
-      const htmlPostLogoutSuccessSource = `<!DOCTYPE html>
-        <head>
-          <title>Déconnexion</title>
-        </head>
-        <body>
-          <p>Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.</p>
-        </body>
-        </html>`;
 
       // When
       service.postLogoutSuccessSource(ctx);
 
       // Then
-      expect(ctx).toHaveProperty('body', htmlPostLogoutSuccessSource);
+      expect(renderMock).toHaveBeenCalledOnce();
     });
   });
 

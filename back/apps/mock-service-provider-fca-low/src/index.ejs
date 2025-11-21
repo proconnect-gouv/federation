@@ -75,7 +75,7 @@
         </form>
         <br>
         <form action="/logout" method="post">
-            <button id="logout">Se déconnecter</button>
+            <button id="logout">Se déconnecter (avec redirection vers le service)</button>
         </form>
         <br>
         <form action="/refresh-token" method="post">
@@ -96,6 +96,11 @@
         <br>
         <form action="/force-2fa" method="post">
             <button id="force-2fa">Forcer une connexion a deux facteurs</button>
+        </form>
+        <br>
+        <form action="/logout" method="post">
+            <input name="no_redirect" type="hidden" value="true" />
+            <button id="logout">Se déconnecter (sans redirection vers le service)</button>
         </form>
         <br>
         <details>

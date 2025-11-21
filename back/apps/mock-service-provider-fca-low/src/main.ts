@@ -189,24 +189,32 @@ app.get(CALLBACK_URL, async (req, res, next) => {
   }
 });
 
-app.post('/logout', async (req, res, next) => {
-  try {
-    const id_token_hint = req.session.id_token_hint;
-    await new Promise((resolve) => req.session.destroy(resolve));
-    const config = await getProviderConfig();
-    const redirectUrl = client.buildEndSessionUrl(
-      config,
-      objToUrlParams({
-        post_logout_redirect_uri: `${HOST}/`,
+app.post(
+  '/logout',
+  bodyParser.urlencoded({ extended: false }),
+  async (req, res, next) => {
+    try {
+      const id_token_hint = req.session.id_token_hint;
+      await new Promise((resolve) => req.session.destroy(resolve));
+      const config = await getProviderConfig();
+      const paramObject = {
         id_token_hint,
-      }),
-    );
+        post_logout_redirect_uri: null,
+      };
+      if (req.body?.no_redirect !== 'true') {
+        paramObject.post_logout_redirect_uri = `${HOST}/`;
+      }
+      const redirectUrl = client.buildEndSessionUrl(
+        config,
+        objToUrlParams(paramObject),
+      );
 
-    res.redirect(redirectUrl.toString());
-  } catch (e) {
-    next(e);
-  }
-});
+      res.redirect(redirectUrl.toString());
+    } catch (e) {
+      next(e);
+    }
+  },
+);
 
 app.post('/refresh-token', async (req, res, next) => {
   try {

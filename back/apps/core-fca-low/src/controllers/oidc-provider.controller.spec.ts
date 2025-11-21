@@ -274,6 +274,17 @@ describe('OidcProviderController', () => {
     });
   });
 
+  describe('getEndSessionSuccess()', () => {
+    it('should rewrite url and call provider callback', () => {
+      const { req, res } = buildReqRes('/session/end/success');
+
+      const result = controller.getEndSessionSuccess(req, res);
+
+      expect(req.url).toBe('/session/end/success');
+      expectCommonBehavior(req, res, result);
+    });
+  });
+
   describe('getJwks()', () => {
     it('should rewrite url and call provider callback', () => {
       const { req, res } = buildReqRes('/jwks');
