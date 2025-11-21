@@ -52,14 +52,24 @@ export class OidcProviderConfigAppService {
   }
 
   postLogoutSuccessSource(ctx: KoaContextWithOIDC) {
-    ctx.body = `<!DOCTYPE html>
-        <head>
-          <title>Déconnexion</title>
-        </head>
-        <body>
-          <p>Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.</p>
-        </body>
-        </html>`;
+    // This line magically avoids error 500: ERR_HTTP_HEADERS_SENT
+    // TODO investigate why.
+    ctx.body = '';
+
+    const res = ctx.res as unknown as Response;
+    ctx.type = 'html';
+    // the render function is magically available in the koa context
+    // as oidc-provider servers is mounted behind the nest server.
+    const errorPageParams: ErrorPageParams = {
+      exceptionDisplay: {
+        title: 'Déconnexion',
+        description:
+          'Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.',
+        illustration: 'connexion',
+      },
+      error: {},
+    };
+    ctx.body = res.render('error', errorPageParams);
   }
 
   async findAccount(

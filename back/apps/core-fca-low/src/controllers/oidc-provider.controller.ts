@@ -174,6 +174,12 @@ export class OidcProviderController {
     return this.oidcProviderService.getCallback()(req, res);
   }
 
+  @Get(OidcProviderRoutes.END_SESSION_SUCCESS)
+  getEndSessionSuccess(@Req() req, @Res() res) {
+    req.url = req.originalUrl.replace(this.prefix, '');
+    return this.oidcProviderService.getCallback()(req, res);
+  }
+
   @Get(OidcProviderRoutes.JWKS)
   @Header('Content-Type', 'application/jwk-set+json')
   @Header('cache-control', 'public, max-age=600')
