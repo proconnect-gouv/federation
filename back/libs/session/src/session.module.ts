@@ -17,7 +17,7 @@ import { SessionLocalStorageService } from './services/session-local-storage.ser
 
 @Global()
 @Module({
-  imports: [AsyncLocalStorageModule, RedisModule, CryptographyModule],
+  imports: [RedisModule, CryptographyModule],
   providers: [
     {
       provide: APP_INTERCEPTOR,
