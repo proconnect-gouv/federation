@@ -10,6 +10,7 @@ export interface ExtendedInteraction extends Interaction {
     state: string;
     idp_hint: string;
     login_hint: string;
+    siret_hint: string;
   };
   prompt: {
     name: 'login' | 'consent' | string;

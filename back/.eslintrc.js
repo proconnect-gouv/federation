@@ -46,6 +46,7 @@ const allowedSnakeCaseParameters = [
   'is_service_public',
   'jwks_uri',
   'login_hint',
+  'siret_hint',
   'middle_name',
   'organizational_unit',
   'phone_number',
@@ -111,11 +112,7 @@ module.exports = {
     project: './tsconfig.json',
     sourceType: 'module',
   },
-  plugins: [
-    '@typescript-eslint/eslint-plugin',
-    'simple-import-sort',
-    'import',
-  ],
+  plugins: ['@typescript-eslint/eslint-plugin', 'simple-import-sort', 'import'],
   root: true,
   rules: {
     '@eslint-community/eslint-comments/no-unused-disable': 'error',

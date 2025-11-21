@@ -87,6 +87,7 @@ export class OidcProviderConfigAppService {
       spEssentialAcr,
       spId,
       spName,
+      spSiretHint,
     } = userSession;
 
     this.sessionService.set('User', {
@@ -102,6 +103,7 @@ export class OidcProviderConfigAppService {
       spEssentialAcr,
       spId,
       spName,
+      spSiretHint,
     });
 
     const params = await this.getLogoutParams(idpId);
