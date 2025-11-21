@@ -29,6 +29,8 @@ import {
   ServiceProviderConfig,
 } from '../types';
 
+/*global Record*/
+
 type EnvKey = 'docker' | 'integ01' | 'kube-mvp0';
 
 type FixturesConfiguration = {

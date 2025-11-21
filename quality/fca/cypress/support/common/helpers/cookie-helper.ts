@@ -1,3 +1,5 @@
+/*global Partial*/
+
 const FC_SESSION_COOKIE = 'pc_session_id';
 
 /**

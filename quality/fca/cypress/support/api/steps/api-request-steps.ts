@@ -10,6 +10,8 @@ import { getApiRequests } from '../../common/helpers';
  * from ./api-response-steps.ts
  */
 
+/*global Partial*/
+
 Given('je prépare une requête {string}', function (requestKey: string) {
   this.apiRequest = getApiRequests(requestKey);
   expect(this.apiRequest).to.exist;
