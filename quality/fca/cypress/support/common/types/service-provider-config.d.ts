@@ -1,3 +1,5 @@
+/*global Record*/
+
 export interface ServiceProviderConfig
   extends Record<string, string | string[]> {
   name: string;

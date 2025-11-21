@@ -1,3 +1,5 @@
+/*global Record*/
+
 export enum LogResult {
   EventFound,
   UnexpectedError,

@@ -1,3 +1,5 @@
+/*global Record*/
+
 export interface IdentityProviderConfig
   extends Record<string, string | string[]> {
   uid?: string;

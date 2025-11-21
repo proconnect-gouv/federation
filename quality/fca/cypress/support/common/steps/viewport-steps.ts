@@ -1,5 +1,7 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
+/*global Record*/
+
 enum ViewportType {
   DESKTOP = 'desktop',
   MOBILE = 'mobile',

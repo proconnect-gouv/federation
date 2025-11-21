@@ -1,6 +1,8 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
+/*global Record*/
+
 const asyncExec = promisify(exec);
 
 // Path to script

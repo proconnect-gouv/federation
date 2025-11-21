@@ -12,6 +12,8 @@ import {
  * Those steps are only runnable on local logs
  */
 
+/*global Record*/
+
 Then(
   /^l'événement "([^"]+)" (est|n'est pas) journalisé(?: avec )?((?:"[^"]+" "(?:[^"]*)"(?: et )?)+)?$/,
   function (event: string, text: string, info?: string) {
