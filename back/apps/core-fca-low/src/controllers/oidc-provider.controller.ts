@@ -1,3 +1,9 @@
+import { randomBytes } from 'crypto';
+
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { isEmpty } from 'lodash';
+
 import {
   Body,
   Controller,
@@ -12,14 +18,21 @@ import {
 } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { AppConfig } from '@fc/core/index';
+import { LoggerService } from '@fc/logger';
+import { TrackedEvent } from '@fc/logger/enums';
+import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
 import { OidcProviderService } from '@fc/oidc-provider/oidc-provider.service';
+import { ISessionService } from '@fc/session';
 
+import { UserSessionDecorator } from '../decorators';
 import {
+  ActiveUserSessionDto,
+  AppConfig,
   AuthorizeParamsDto,
   LogoutParamsDto,
   RevocationTokenParamsDTO,
+  UserSession,
 } from '../dto';
 
 @Controller()
@@ -27,6 +40,8 @@ export class OidcProviderController {
   private prefix: string;
   constructor(
     private readonly config: ConfigService,
+    private readonly logger: LoggerService,
+    private readonly oidcClient: OidcClientService,
     private readonly oidcProviderService: OidcProviderService,
   ) {
     this.prefix = this.config.get<AppConfig>('App').urlPrefix;
@@ -104,7 +119,51 @@ export class OidcProviderController {
       whitelist: true,
     }),
   )
-  getEndSession(@Req() req, @Res() res, @Query() _query: LogoutParamsDto) {
+  async getEndSession(
+    @Req() req,
+    @Res() res,
+    @Query() _query: LogoutParamsDto,
+    @UserSessionDecorator() userSession: ISessionService<UserSession>,
+  ) {
+    if (req.query.from_idp !== 'true') {
+      this.logger.track(TrackedEvent.SP_REQUESTED_LOGOUT);
+    }
+
+    const activeUserSession = plainToInstance(
+      ActiveUserSessionDto,
+      userSession.get(),
+    );
+    const activeUserSessionValidationErrors = await validate(activeUserSession);
+    const isUserConnected = isEmpty(activeUserSessionValidationErrors);
+
+    if (isUserConnected) {
+      const { idpIdToken, idpId } = activeUserSession;
+      userSession.clear();
+
+      if (await this.oidcClient.hasEndSessionUrl(idpId)) {
+        this.logger.track(TrackedEvent.FC_REQUESTED_LOGOUT_FROM_IDP);
+
+        userSession.set({
+          orginalLogoutUrlSearchParamsFromSp: new URLSearchParams(
+            req.query,
+          ).toString(),
+        });
+
+        const endSessionUrl = await this.oidcClient.getEndSessionUrl(
+          idpId,
+          // note that state is never tested and could be removed in a dedicated PR
+          randomBytes(24).toString('base64url'),
+          idpIdToken,
+        );
+
+        return res.redirect(endSessionUrl);
+      }
+    }
+
+    this.logger.track(TrackedEvent.FC_SESSION_TERMINATED);
+    await userSession.destroy();
+
+    // let `oidc-provider` close his own session
     req.url = req.originalUrl.replace(this.prefix, '');
     return this.oidcProviderService.getCallback()(req, res);
   }

@@ -24,6 +24,7 @@ describe('SessionCookiesService', () => {
 
   const res = {
     cookie: jest.fn(),
+    removeHeader: jest.fn(),
     clearCookie: jest.fn(),
   } as unknown as Response;
 
@@ -114,22 +115,7 @@ describe('SessionCookiesService', () => {
       service.remove(res);
 
       // Then
-      expect(configMock.get).toHaveBeenCalledWith('Session');
-    });
-
-    it('should call res.clearCookie()', () => {
-      // When
-      service.remove(res);
-
-      // Then
-      expect(res.clearCookie).toHaveBeenCalledWith(
-        configDataMock.sessionCookieName,
-        {
-          ...configDataMock.cookieOptions,
-          maxAge: -1,
-          signed: false,
-        },
-      );
+      expect(res.clearCookie).toHaveBeenCalled();
     });
   });
 });

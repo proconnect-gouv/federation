@@ -23,6 +23,6 @@ export default {
   scope: env.string('SCOPE'),
   // Toggle Financial Grade API
   fapi: env.boolean('FAPI'),
-  postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.CLIENT_LOGOUT_CALLBACK}`,
+  postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_LOGOUT_CALLBACK}`,
   redirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_CALLBACK}`,
 } as OidcClientConfig;

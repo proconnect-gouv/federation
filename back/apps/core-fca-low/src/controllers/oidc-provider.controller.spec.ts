@@ -1,26 +1,42 @@
+import { validate, ValidationError } from 'class-validator';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
+import { TrackedEvent } from '@fc/logger/enums';
+import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider/oidc-provider.service';
+import { ISessionService } from '@fc/session';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import {
   AuthorizeParamsDto,
   LogoutParamsDto,
   RevocationTokenParamsDTO,
+  UserSession,
 } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
+
+jest.mock('class-validator', () => ({
+  ...jest.requireActual('class-validator'),
+  validate: jest.fn(),
+}));
 
 describe('OidcProviderController', () => {
   let controller: OidcProviderController;
   let configService: { get: jest.Mock };
   let oidcProviderService: { getCallback: jest.Mock };
+  let oidcClientService: OidcClientService;
   let handler: jest.Mock;
+  let loggerMock: ReturnType<typeof getLoggerMock>;
 
   const urlPrefix = '/prefix';
   const buildReqRes = (path = '/authorize') => {
     const originalUrl = `${urlPrefix}${path}`;
-    const req: any = { originalUrl };
-    const res: any = {};
+    const req: any = { originalUrl, query: {} };
+    const res: any = { redirect: jest.fn() };
     return { req, res };
   };
 
@@ -29,6 +45,11 @@ describe('OidcProviderController', () => {
     oidcProviderService = {
       getCallback: jest.fn().mockReturnValue(handler),
     };
+    oidcClientService = {
+      hasEndSessionUrl: jest.fn(),
+      getEndSessionUrl: jest.fn(),
+    } as unknown as OidcClientService;
+
     configService = {
       get: jest.fn().mockImplementation((key: string) => {
         if (key === 'App') {
@@ -38,16 +59,19 @@ describe('OidcProviderController', () => {
       }),
     };
 
+    loggerMock = getLoggerMock();
+
     const app: TestingModule = await Test.createTestingModule({
       controllers: [OidcProviderController],
       providers: [
         { provide: ConfigService, useValue: configService },
+        { provide: LoggerService, useValue: loggerMock },
+        { provide: OidcClientService, useValue: oidcClientService },
         { provide: OidcProviderService, useValue: oidcProviderService },
       ],
     }).compile();
 
     controller = app.get<OidcProviderController>(OidcProviderController);
-
     jest.resetAllMocks();
     // Reconfigure mocks after reset
     handler = jest.fn().mockReturnValue('handler-result');
@@ -145,14 +169,97 @@ describe('OidcProviderController', () => {
   });
 
   describe('getEndSession()', () => {
-    it('should rewrite url and call provider callback', () => {
+    let userSession: ISessionService<UserSession>;
+
+    beforeEach(() => {
+      userSession = {
+        get: jest.fn().mockReturnValue({
+          idpId: 'idp',
+          idpIdToken: 'token',
+        } as unknown as UserSession),
+        clear: jest.fn(),
+        set: jest.fn(),
+        destroy: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+    });
+
+    it('should clear session and redirect to IdP end-session when user is connected and IdP supports it', async () => {
       const { req, res } = buildReqRes('/end-session');
+      req.query = { a: '1' }; // from_idp not present => SP initiated
+      const query = {} as LogoutParamsDto;
+      oidcClientService.hasEndSessionUrl = jest.fn().mockResolvedValue(true);
+      oidcClientService.getEndSessionUrl = jest
+        .fn()
+        .mockResolvedValue('/end-session-url');
+
+      // Force user connected
+      const validateMock = jest.mocked(validate);
+      validateMock.mockResolvedValue([]);
+
+      await controller.getEndSession(req, res, query, userSession);
+
+      expect(oidcProviderService.getCallback).not.toHaveBeenCalled();
+      expect(res.redirect).toHaveBeenCalledWith('/end-session-url');
+
+      // Logging
+      expect(loggerMock.track).toHaveBeenCalledWith(
+        TrackedEvent.SP_REQUESTED_LOGOUT,
+      );
+      expect(loggerMock.track).toHaveBeenCalledWith(
+        TrackedEvent.FC_REQUESTED_LOGOUT_FROM_IDP,
+      );
+    });
+
+    it('should terminate locally when IdP has no end-session URL', async () => {
+      const { req, res } = buildReqRes('/end-session');
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      req.query = { from_idp: 'false' };
+      const query = {} as LogoutParamsDto;
+      oidcClientService.hasEndSessionUrl = jest.fn().mockResolvedValue(false);
+      oidcClientService.getEndSessionUrl = jest
+        .fn()
+        .mockResolvedValue(undefined);
+
+      // Force user connected
+      const validateMock = jest.mocked(validate);
+      validateMock.mockResolvedValue([]);
+
+      await controller.getEndSession(req, res, query, userSession);
+
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(oidcProviderService.getCallback).toHaveBeenCalledTimes(1);
+
+      // Logging
+      expect(loggerMock.track).toHaveBeenCalledWith(
+        TrackedEvent.SP_REQUESTED_LOGOUT,
+      );
+      expect(loggerMock.track).toHaveBeenCalledWith(
+        TrackedEvent.FC_SESSION_TERMINATED,
+      );
+    });
+
+    it('should not log SP_REQUESTED_LOGOUT when called back from IdP and should terminate locally when user is not connected', async () => {
+      const { req, res } = buildReqRes('/end-session');
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      req.query = { from_idp: 'true' };
       const query = {} as LogoutParamsDto;
 
-      const result = controller.getEndSession(req, res, query as any);
+      // Make validation report user NOT connected
+      const validateMock = jest.mocked(validate);
+      validateMock.mockResolvedValue([new ValidationError()]);
 
-      expect(req.url).toBe('/end-session');
-      expectCommonBehavior(req, res, result);
+      await controller.getEndSession(req, res, query, userSession);
+
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(oidcProviderService.getCallback).toHaveBeenCalledTimes(1);
+
+      // Logging
+      expect(loggerMock.track).not.toHaveBeenCalledWith(
+        TrackedEvent.SP_REQUESTED_LOGOUT,
+      );
+      expect(loggerMock.track).toHaveBeenCalledWith(
+        TrackedEvent.FC_SESSION_TERMINATED,
+      );
     });
   });
 

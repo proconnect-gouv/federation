@@ -137,7 +137,7 @@ export class UserSession {
 
   @IsOptional()
   @IsString()
-  readonly oidcProviderLogoutForm?: string;
+  readonly orginalLogoutUrlSearchParamsFromSp?: string;
 
   @IsOptional()
   @IsString()

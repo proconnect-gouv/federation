@@ -217,12 +217,14 @@ export class OidcClientUtilsService {
   }
 
   async hasEndSessionUrl(idpId: string): Promise<boolean> {
+    if (!idpId) {
+      return false;
+    }
+
     const client = await this.issuer.getClient(idpId);
 
-    let endSessionUrl;
-
     try {
-      endSessionUrl = client.endSessionUrl();
+      const endSessionUrl = client.endSessionUrl();
       return isURL(endSessionUrl, {
         protocols: ['https'],
         // Validator.js defined property

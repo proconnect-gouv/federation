@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { isEmpty } from 'lodash';
 
 import {
   Body,
@@ -6,7 +7,6 @@ import {
   Get,
   Header,
   Post,
-  Render,
   Req,
   Res,
   UseGuards,
@@ -16,14 +16,13 @@ import {
 
 import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
-import { UserSessionDecorator } from '@fc/core/decorators';
-import { PostIdentityProviderSelectionDto } from '@fc/core/dto/post-identity-provider-selection.dto';
-import { CryptographyService } from '@fc/cryptography';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { LoggerService, TrackedEvent } from '@fc/logger';
-import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
+import { OidcClientService } from '@fc/oidc-client';
+import { OidcProviderRoutes } from '@fc/oidc-provider';
 import { ISessionService, SessionService } from '@fc/session';
 
+import { UserSessionDecorator } from '../decorators';
 import {
   AfterGetInteractionSessionDto,
   AfterRedirectToIdpWithEmailSessionDto,
@@ -32,6 +31,7 @@ import {
   RedirectToIdp,
   UserSession,
 } from '../dto';
+import { PostIdentityProviderSelectionDto } from '../dto/post-identity-provider-selection.dto';
 import { Routes } from '../enums';
 import {
   CoreFcaControllerService,
@@ -48,11 +48,9 @@ export class OidcClientController {
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
-    private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFcaService: CoreFcaService,
     private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly sessionService: SessionService,
-    private readonly crypto: CryptographyService,
     private readonly sanitizer: IdentitySanitizer,
     private readonly csrfService: CsrfService,
   ) {}
@@ -123,48 +121,6 @@ export class OidcClientController {
       email,
       rememberMe,
     );
-  }
-
-  @Post(Routes.DISCONNECT_FROM_IDP)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Header('cache-control', 'no-store')
-  async logoutFromIdp(
-    @Res() res: Response,
-    @UserSessionDecorator()
-    userSession: ISessionService<UserSession>,
-  ) {
-    const { idpIdToken, idpId } = userSession.get();
-
-    const { stateLength } = await this.oidcClientConfig.get();
-    const idpState: string = this.crypto.genRandomString(stateLength);
-
-    const endSessionUrl: string = await this.oidcClient.getEndSessionUrl(
-      idpId,
-      idpState,
-      idpIdToken,
-    );
-
-    this.logger.track(TrackedEvent.FC_REQUESTED_LOGOUT_FROM_IDP);
-
-    return res.redirect(endSessionUrl);
-  }
-
-  @Get(Routes.CLIENT_LOGOUT_CALLBACK)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Header('cache-control', 'no-store')
-  @Render('oidc-provider-logout-form')
-  async redirectAfterIdpLogout(
-    @Req() req: Request,
-    @UserSessionDecorator()
-    userSession: ISessionService<UserSession>,
-  ) {
-    const { oidcProviderLogoutForm } = userSession.get();
-
-    this.logger.track(TrackedEvent.FC_SESSION_TERMINATED);
-
-    await userSession.destroy();
-
-    return { oidcProviderLogoutForm };
   }
 
   /**
@@ -263,6 +219,22 @@ export class OidcClientController {
 
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
+
+    res.redirect(url);
+  }
+
+  @Get(Routes.OIDC_LOGOUT_CALLBACK)
+  getOidcLogoutCallback(
+    @Res() res: Response,
+    @UserSessionDecorator() userSession: ISessionService<UserSession>,
+  ) {
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    let url = `${urlPrefix}${OidcProviderRoutes.END_SESSION}?from_idp=true`;
+
+    const searchParams = userSession.get('orginalLogoutUrlSearchParamsFromSp');
+    if (!isEmpty(searchParams)) {
+      url += `&${searchParams}`;
+    }
 
     res.redirect(url);
   }
