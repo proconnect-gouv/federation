@@ -17,4 +17,6 @@ export default {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },
+  watcherDebounceWaitDuration:
+    env.number('WATCHER_DEBOUNCE_WAIT_DURATION', true) ?? 1_000,
 } as MongooseConfig;

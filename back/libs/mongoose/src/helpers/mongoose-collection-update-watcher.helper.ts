@@ -1,29 +1,43 @@
-import { debounce } from 'lodash';
-import { ChangeStreamDocument } from 'mongodb';
+import { debounce, type DebouncedFunc } from 'lodash';
+import { type ChangeStream, ChangeStreamDocument } from 'mongodb';
 import { Document, Model } from 'mongoose';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, type OnModuleDestroy } from '@nestjs/common';
 
+import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+
+import type { MongooseConfig } from '../dto';
 
 const DEFAULT_OPERATIONS = ['insert', 'update', 'delete', 'rename', 'replace'];
 
 @Injectable()
-export class MongooseCollectionOperationWatcherHelper {
-  private static listeners = [];
+export class MongooseCollectionOperationWatcherHelper
+  implements OnModuleDestroy
+{
+  private static listeners: {
+    callback: DebouncedFunc<any>;
+    model: Model<any>;
+    watch: ChangeStream<any, any>;
+  }[] = [];
 
-  constructor(private readonly logger: LoggerService) {}
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly config: ConfigService,
+  ) {}
 
   watchWith<T extends Document>(model: Model<T>, callback: Function): void {
-    const debouncedCallback = debounce(callback as any, 1000);
+    const waitDuration =
+      this.config.get<MongooseConfig>('Mongoose').watcherDebounceWaitDuration;
+    const debouncedCallback = debounce(callback as any, waitDuration);
     MongooseCollectionOperationWatcherHelper.listeners.push({
       model,
       callback: debouncedCallback,
+      watch: this.watch<T>(model, debouncedCallback),
     });
-    this.watch<T>(model, debouncedCallback);
   }
 
-  private watch<T extends Document>(model: Model<T>, callback: Function): void {
+  private watch<T extends Document>(model: Model<T>, callback: Function) {
     const watch = model.watch();
     this.logger.info(
       `Database OperationType watcher initialization for "${model.modelName}".`,
@@ -33,11 +47,25 @@ export class MongooseCollectionOperationWatcherHelper {
       'change',
       this.operationTypeWatcher.bind(this, model.modelName, callback),
     );
+    return watch;
   }
 
-  connectAllWatchers() {
-    MongooseCollectionOperationWatcherHelper.listeners.forEach(
-      ({ model, callback }) => this.watch(model, callback),
+  async connectAllWatchers() {
+    for (const listener of MongooseCollectionOperationWatcherHelper.listeners) {
+      const { model, callback, watch: oldWatch } = listener;
+
+      await oldWatch.close();
+      listener.watch = this.watch(model, callback);
+    }
+  }
+  disconnectAllWatchers() {
+    return Promise.all(
+      MongooseCollectionOperationWatcherHelper.listeners.map(
+        async function disconnectWatcher({ watch, callback }) {
+          callback.cancel();
+          await watch.close();
+        },
+      ),
     );
   }
 
@@ -61,5 +89,13 @@ export class MongooseCollectionOperationWatcherHelper {
     this.logger.debug(
       `Detected "${stream.operationType}" on "${modelName}", Ignoring.`,
     );
+  }
+
+  async onModuleDestroy() {
+    this.logger.debug('Closing all ChangeStreams');
+
+    await this.disconnectAllWatchers();
+
+    MongooseCollectionOperationWatcherHelper.listeners = [];
   }
 }

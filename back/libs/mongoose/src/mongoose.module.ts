@@ -10,6 +10,7 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
 import { MongooseConnectionConnectedHandler } from './handlers';
+import { MongooseConnectionDisconnectedHandler } from './handlers/mongoose-connection-disconnected.handler';
 import { MongooseCollectionOperationWatcherHelper } from './helpers';
 import { MongooseProvider } from './providers';
 
@@ -32,8 +33,9 @@ export class MongooseModule {
       imports: [...mongoose.imports, CqrsModule],
       providers: [
         EventBus,
-        MongooseConnectionConnectedHandler,
         MongooseCollectionOperationWatcherHelper,
+        MongooseConnectionConnectedHandler,
+        MongooseConnectionDisconnectedHandler,
       ],
       exports: [MongooseCollectionOperationWatcherHelper],
     };
