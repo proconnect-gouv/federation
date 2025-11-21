@@ -545,6 +545,14 @@ describe('OidcClientUtilsService', () => {
       clientMock.endSessionUrl.mockReturnValueOnce(endSessionUrlWithParamsMock);
     });
 
+    it('should return false if no idpId is provided', async () => {
+      // When
+      const result = await service.hasEndSessionUrl(undefined);
+
+      // Then
+      expect(result).toBeFalse();
+    });
+
     it('should retrieves the client instance by calling utils.getClient()', async () => {
       // When
       await service.hasEndSessionUrl(providerUidMock);

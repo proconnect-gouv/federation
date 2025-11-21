@@ -5,15 +5,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountFcaService } from '@fc/account-fca';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from '@fc/core';
-import { CryptographyService } from '@fc/cryptography';
 import { CsrfService } from '@fc/csrf';
 import { LoggerService } from '@fc/logger';
-import { OidcClientConfigService, OidcClientService } from '@fc/oidc-client';
+import { OidcClientService } from '@fc/oidc-client';
 import { ISessionService, SessionService } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
 
+import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from '../dto';
 import {
   CoreFcaControllerService,
   CoreFcaService,
@@ -34,11 +33,9 @@ describe('OidcClientController', () => {
   let configService: any;
   let logger: any;
   let oidcClient: any;
-  let oidcClientConfig: any;
   let coreFcaControllerService: any;
   let coreFcaService: any;
   let sessionService: any;
-  let crypto: any;
   let sanitizer: any;
   let csrfService: any;
 
@@ -46,14 +43,13 @@ describe('OidcClientController', () => {
     accountService = {
       getOrCreateAccount: jest.fn(),
     };
-    configService = { get: jest.fn() };
+    configService = { get: jest.fn().mockReturnValue({ urlPrefix: '/app' }) };
     logger = getLoggerMock();
     oidcClient = {
       getToken: jest.fn(),
       getUserinfo: jest.fn(),
       getEndSessionUrl: jest.fn(),
     };
-    oidcClientConfig = { get: jest.fn() };
     coreFcaControllerService = {
       redirectToIdpWithIdpId: jest.fn(),
       redirectToIdpWithEmail: jest.fn(),
@@ -70,7 +66,6 @@ describe('OidcClientController', () => {
       destroy: jest.fn(),
       duplicate: jest.fn(),
     };
-    crypto = { genRandomString: jest.fn() };
     sanitizer = {
       getValidatedIdentityFromIdp: jest.fn(),
       transformIdentity: jest.fn(),
@@ -84,11 +79,9 @@ describe('OidcClientController', () => {
         ConfigService,
         LoggerService,
         OidcClientService,
-        OidcClientConfigService,
         CoreFcaControllerService,
         CoreFcaService,
         SessionService,
-        CryptographyService,
         IdentitySanitizer,
         CsrfService,
       ],
@@ -101,16 +94,12 @@ describe('OidcClientController', () => {
       .useValue(logger)
       .overrideProvider(OidcClientService)
       .useValue(oidcClient)
-      .overrideProvider(OidcClientConfigService)
-      .useValue(oidcClientConfig)
       .overrideProvider(CoreFcaControllerService)
       .useValue(coreFcaControllerService)
       .overrideProvider(CoreFcaService)
       .useValue(coreFcaService)
       .overrideProvider(SessionService)
       .useValue(sessionService)
-      .overrideProvider(CryptographyService)
-      .useValue(crypto)
       .overrideProvider(IdentitySanitizer)
       .useValue(sanitizer)
       .overrideProvider(CsrfService)
@@ -216,46 +205,6 @@ describe('OidcClientController', () => {
       expect(
         coreFcaControllerService.redirectToIdpWithEmail,
       ).toHaveBeenCalledWith(req, res, email, false);
-    });
-  });
-
-  describe('logoutFromIdp', () => {
-    it('should redirect to the end session URL', async () => {
-      const res: Partial<Response> = { redirect: jest.fn() };
-      const userSession = {
-        get: jest
-          .fn()
-          .mockReturnValue({ idpIdToken: 'token', idpId: 'idp123' }),
-      } as unknown as ISessionService<UserSession>;
-      oidcClientConfig.get.mockResolvedValue({ stateLength: 10 });
-      crypto.genRandomString.mockReturnValue('random-state');
-      oidcClient.getEndSessionUrl.mockResolvedValue('end-session-url');
-
-      await controller.logoutFromIdp(res as Response, userSession);
-
-      expect(oidcClientConfig.get).toHaveBeenCalled();
-      expect(crypto.genRandomString).toHaveBeenCalledWith(10);
-      expect(oidcClient.getEndSessionUrl).toHaveBeenCalledWith(
-        'idp123',
-        'random-state',
-        'token',
-      );
-      expect(res.redirect).toHaveBeenCalledWith('end-session-url');
-    });
-  });
-
-  describe('redirectAfterIdpLogout', () => {
-    it('should track session termination, destroy the session and render the logout form', async () => {
-      const req = {} as Request;
-      const userSession = {
-        get: jest.fn().mockReturnValue({ oidcProviderLogoutForm: 'form-data' }),
-        destroy: jest.fn().mockResolvedValue(undefined),
-      } as unknown as ISessionService<UserSession>;
-
-      const result = await controller.redirectAfterIdpLogout(req, userSession);
-      expect(logger.track).toHaveBeenCalledWith('FC_SESSION_TERMINATED');
-      expect(userSession.destroy).toHaveBeenCalled();
-      expect(result).toEqual({ oidcProviderLogoutForm: 'form-data' });
     });
   });
 
@@ -398,6 +347,30 @@ describe('OidcClientController', () => {
       });
       expect(res.redirect).toHaveBeenCalledWith(
         '/app/interaction/interaction123/verify',
+      );
+    });
+  });
+
+  describe('getOidcLogoutCallback', () => {
+    it('should track session termination, destroy the session and render the logout form', () => {
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSession = {
+        get: jest.fn().mockReturnValue({}),
+      } as unknown as ISessionService<UserSession>;
+      controller.getOidcLogoutCallback(res, userSession);
+
+      expect(res.redirect).toHaveBeenCalled();
+    });
+
+    it('should append redirection url if params are stored in session', () => {
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSession = {
+        get: jest.fn().mockReturnValue('jean'),
+      } as unknown as ISessionService<UserSession>;
+      controller.getOidcLogoutCallback(res, userSession);
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/app/session/end?from_idp=true&jean',
       );
     });
   });

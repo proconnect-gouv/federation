@@ -34,8 +34,8 @@ export default {
     Routes.IDENTITY_PROVIDER_SELECTION,
 
     // Disconnect flow
-    Routes.DISCONNECT_FROM_IDP,
-    Routes.CLIENT_LOGOUT_CALLBACK,
+    `${OidcProviderRoutes.END_SESSION}$`,
+    Routes.OIDC_LOGOUT_CALLBACK,
   ],
   templateExposed: {
     User: { spName: true, idpName: true },

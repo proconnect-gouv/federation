@@ -8,17 +8,14 @@ import {
 
 import { Injectable } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { UserSession } from '@fc/core';
-import { Routes } from '@fc/core/enums';
 import { generateErrorId } from '@fc/exceptions/helpers';
 import { ErrorPageParams } from '@fc/exceptions/types/error-page-params';
-import { LoggerService, TrackedEvent } from '@fc/logger';
-import { OidcClientService } from '@fc/oidc-client';
+import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
-import { LogoutFormParamsInterface, OidcCtx } from '../interfaces';
+import { OidcCtx } from '../interfaces';
 
 /**
  * More documentation can be found in oidc-provider repo
@@ -32,23 +29,10 @@ export class OidcProviderConfigAppService {
     protected readonly logger: LoggerService,
     protected readonly sessionService: SessionService,
     protected readonly config: ConfigService,
-    protected readonly oidcClient: OidcClientService,
   ) {}
 
-  async logoutSource(ctx: OidcCtx, form: any): Promise<void> {
-    const sub = ctx.oidc?.session?.accountId;
-
-    let userSession: UserSession;
-    try {
-      const sessionId = await this.sessionService.getAlias(sub);
-
-      await this.sessionService.initCache(sessionId);
-
-      userSession = this.sessionService.get<UserSession>('User');
-    } catch (error) {
-      // Session may have been destroyed or expired
-      // Render the logout page to let oidc-provider complete the logout flow
-      ctx.body = `<!DOCTYPE html>
+  logoutSource(ctx: OidcCtx, form: string): void {
+    ctx.body = `<!DOCTYPE html>
         <head>
           <title>Déconnexion</title>
         </head>
@@ -65,80 +49,6 @@ export class OidcProviderConfigAppService {
           </script>
         </body>
       </html>`;
-
-      return;
-    }
-
-    /**
-     * Save to current session minimal informations to:
-     * - allow logout
-     * - keep track according to legal requirements
-     */
-    const {
-      browsingSessionId,
-      reusesActiveSession,
-      interactionId,
-      idpId,
-      idpName,
-      idpLabel,
-      idpAcr,
-      idpIdToken,
-      idpIdentity,
-      spEssentialAcr,
-      spId,
-      spName,
-    } = userSession;
-
-    this.sessionService.set('User', {
-      browsingSessionId,
-      reusesActiveSession,
-      interactionId,
-      idpId,
-      idpName,
-      idpLabel,
-      idpAcr,
-      idpIdToken,
-      idpIdentity: { sub: idpIdentity.sub },
-      spEssentialAcr,
-      spId,
-      spName,
-    });
-
-    const params = await this.getLogoutParams(idpId);
-
-    this.logger.track(TrackedEvent.SP_REQUESTED_LOGOUT);
-
-    await this.logoutFormSessionDestroy(ctx, form, params);
-  }
-
-  private async getLogoutParams(
-    idpId: string,
-  ): Promise<LogoutFormParamsInterface> {
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-
-    const hasIdpLogoutUrl = await this.hasIdpLogoutUrl(idpId);
-
-    if (hasIdpLogoutUrl) {
-      return {
-        method: 'POST',
-        uri: `${urlPrefix}${Routes.DISCONNECT_FROM_IDP}`,
-        title: 'Déconnexion du FI',
-      };
-    }
-
-    return {
-      method: 'GET',
-      uri: `${urlPrefix}${Routes.CLIENT_LOGOUT_CALLBACK}`,
-      title: 'Déconnexion FC',
-    };
-  }
-
-  private async hasIdpLogoutUrl(idpId: string): Promise<boolean> {
-    if (!idpId) {
-      return false;
-    }
-
-    return await this.oidcClient.hasEndSessionUrl(idpId);
   }
 
   postLogoutSuccessSource(ctx: KoaContextWithOIDC) {
@@ -203,29 +113,6 @@ export class OidcProviderConfigAppService {
 
   setProvider(provider: Provider): void {
     this.provider = provider;
-  }
-
-  async logoutFormSessionDestroy(
-    ctx: OidcCtx,
-    form: any,
-    { method, uri, title }: LogoutFormParamsInterface,
-  ): Promise<void> {
-    this.sessionService.set('User', 'oidcProviderLogoutForm', form);
-    await this.sessionService.commit();
-
-    ctx.body = `<!DOCTYPE html>
-      <head>
-        <title>${title}</title>
-      </head>
-      <body>
-        <form method="${method}" action="${uri}">
-        </form>
-        <script>
-          var form = document.forms[0];
-          form.submit();
-        </script>
-      </body>
-    </html>`;
   }
 
   renderError: Configuration['renderError'] = (

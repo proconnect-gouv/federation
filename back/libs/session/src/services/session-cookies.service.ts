@@ -31,15 +31,13 @@ export class SessionCookiesService {
   }
 
   remove(res: Response) {
-    const { cookieOptions, sessionCookieName } =
-      this.config.get<SessionConfig>('Session');
+    const { sessionCookieName } = this.config.get<SessionConfig>('Session');
 
-    const removeCookieOptions = {
-      ...cookieOptions,
-      maxAge: -1,
-      signed: false, // Not mandatory, but avoids sending a signature for an empty cookie
-    };
-
-    res.clearCookie(sessionCookieName, removeCookieOptions);
+    // This function is only called through userSession.destroy()
+    // The userSession service needs the session middleware to be called to work.
+    // The session middleware systematically adds a Set-Cookie header to the response if no cookie is already set.
+    // We need to remove the previously added header for the clearCookie instruction to work.
+    res.removeHeader('Set-Cookie');
+    res.clearCookie(sessionCookieName);
   }
 }
