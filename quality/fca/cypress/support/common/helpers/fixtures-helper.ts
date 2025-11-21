@@ -1,26 +1,26 @@
 import { cloneDeep } from 'lodash';
 
+// Docker
+import apiCommonForDockerEnv from '../../../fixtures/fca-low/docker/api-common.json';
+import environmentForDockerEnv from '../../../fixtures/fca-low/docker/environment.json';
 import idpConfigsForDockerEnv from '../../../fixtures/fca-low/docker/identity-provider-configs.json';
 import idpForDockerEnv from '../../../fixtures/fca-low/docker/identity-providers.json';
 import spConfigsForDockerEnv from '../../../fixtures/fca-low/docker/service-provider-configs.json';
-import apiCommonForDockerEnv from './../../../fixtures/fca-low/docker/api-common.json';
-import environnementForDockerEnv from './../../../fixtures/fca-low/docker/environment.json';
-import spForDockerEnv from './../../../fixtures/fca-low/docker/service-providers.json';
-
+import spForDockerEnv from '../../../fixtures/fca-low/docker/service-providers.json';
+// Integ01
+import apiCommonForIntegEnv from '../../../fixtures/fca-low/integ01/api-common.json';
+import environmentForIntegEnv from '../../../fixtures/fca-low/integ01/environment.json';
 import idpConfigsForIntegEnv from '../../../fixtures/fca-low/integ01/identity-provider-configs.json';
 import idpForIntegEnv from '../../../fixtures/fca-low/integ01/identity-providers.json';
 import spConfigsForIntegEnv from '../../../fixtures/fca-low/integ01/service-provider-configs.json';
-import apiCommonForIntegEnv from './../../../fixtures/fca-low/integ01/api-common.json';
-import environnementForIntegEnv from './../../../fixtures/fca-low/integ01/environment.json';
-import spForIntegEnv from './../../../fixtures/fca-low/integ01/service-providers.json';
-
+import spForIntegEnv from '../../../fixtures/fca-low/integ01/service-providers.json';
+// Kube MVP0
+import apiCommonForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/api-common.json';
+import environmentForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/environment.json';
 import idpConfigsForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/identity-provider-configs.json';
 import idpForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/identity-providers.json';
 import spConfigsForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/service-provider-configs.json';
-import apiCommonForKubeMvp0Env from './../../../fixtures/fca-low/kube-mvp0/api-common.json';
-import environnementForKubeMvp0Env from './../../../fixtures/fca-low/kube-mvp0/environment.json';
-import spForKubeMvp0Env from './../../../fixtures/fca-low/kube-mvp0/service-providers.json';
-
+import spForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/service-providers.json';
 import {
   Environment,
   IdentityProvider,
@@ -30,39 +30,40 @@ import {
 } from '../types';
 
 type EnvKey = 'docker' | 'integ01' | 'kube-mvp0';
+
 type FixturesConfiguration = {
-  sp: ServiceProvider[];
-  idp: IdentityProvider[];
-  idpConfig: Record<string, IdentityProviderConfig>;
-  spConfig: Record<string, ServiceProviderConfig>;
   apiCommon: Record<string, unknown>;
   environment: Environment;
+  idpConfigs: Record<string, IdentityProviderConfig>;
+  idpList: IdentityProvider[];
+  spConfigs: Record<string, ServiceProviderConfig>;
+  spList: ServiceProvider[];
 };
 
 const fixturesByEnv: Record<EnvKey, FixturesConfiguration> = {
   docker: {
-    sp: spForDockerEnv,
-    idp: idpForDockerEnv,
-    idpConfig: idpConfigsForDockerEnv,
-    spConfig: spConfigsForDockerEnv,
     apiCommon: apiCommonForDockerEnv,
-    environment: environnementForDockerEnv,
+    environment: environmentForDockerEnv,
+    idpConfigs: idpConfigsForDockerEnv,
+    idpList: idpForDockerEnv,
+    spConfigs: spConfigsForDockerEnv,
+    spList: spForDockerEnv,
   },
   integ01: {
-    sp: spForIntegEnv,
-    idp: idpForIntegEnv,
-    idpConfig: idpConfigsForIntegEnv,
-    spConfig: spConfigsForIntegEnv,
     apiCommon: apiCommonForIntegEnv,
-    environment: environnementForIntegEnv,
+    environment: environmentForIntegEnv,
+    idpConfigs: idpConfigsForIntegEnv,
+    idpList: idpForIntegEnv,
+    spConfigs: spConfigsForIntegEnv,
+    spList: spForIntegEnv,
   },
   'kube-mvp0': {
-    sp: spForKubeMvp0Env,
-    idp: idpForKubeMvp0Env,
-    idpConfig: idpConfigsForKubeMvp0Env,
-    spConfig: spConfigsForKubeMvp0Env,
     apiCommon: apiCommonForKubeMvp0Env,
-    environment: environnementForKubeMvp0Env,
+    environment: environmentForKubeMvp0Env,
+    idpConfigs: idpConfigsForKubeMvp0Env,
+    idpList: idpForKubeMvp0Env,
+    spConfigs: spConfigsForKubeMvp0Env,
+    spList: spForKubeMvp0Env,
   },
 };
 
@@ -71,14 +72,8 @@ const TEST_ENV = Cypress.env('TEST_ENV') as EnvKey;
 const currentFixtures = fixturesByEnv[TEST_ENV];
 if (!currentFixtures) throw new Error(`Unsupported TEST_ENV: ${TEST_ENV}`);
 
-const {
-  sp: spList,
-  idp: idpList,
-  spConfig: spConfigs,
-  idpConfig: idpConfigs,
-  apiCommon,
-  environment: environnement,
-} = currentFixtures;
+const { apiCommon, environment, idpConfigs, idpList, spConfigs, spList } =
+  currentFixtures;
 
 export const getServiceProviderByDescription = (
   description: string,
@@ -121,5 +116,5 @@ export const getApiRequests = (requestKey: string): Record<string, unknown> => {
 };
 
 export const getEnv = (): Environment => {
-  return cloneDeep(environnement);
+  return cloneDeep(environment);
 };
