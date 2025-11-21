@@ -93,6 +93,9 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsBoolean()
   readonly isRoutingEnabled: boolean;
+
+  @IsBoolean()
+  readonly isEntraID: boolean;
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
