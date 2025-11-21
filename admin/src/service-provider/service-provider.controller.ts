@@ -130,10 +130,14 @@ export class ServiceProviderController {
     @Res() res,
   ) {
     try {
-      await this.serviceProviderService.createServiceProvider(
-        createServiceProviderDto,
-        req.user.username,
-      );
+      const { hasGristPublicationSucceeded } =
+        await this.serviceProviderService.createServiceProvider(
+          createServiceProviderDto,
+          req.user.username,
+        );
+      if (!hasGristPublicationSucceeded) {
+        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+      }
     } catch (error) {
       req.flash(
         'globalError',
@@ -216,11 +220,15 @@ export class ServiceProviderController {
     @Res() res,
   ) {
     try {
-      await this.serviceProviderService.update(
-        id,
-        updateServiceProviderDto,
-        req.user.username,
-      );
+      const { hasGristPublicationSucceeded } =
+        await this.serviceProviderService.update(
+          id,
+          updateServiceProviderDto,
+          req.user.username,
+        );
+      if (!hasGristPublicationSucceeded) {
+        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+      }
     } catch (error) {
       req.flash('globalError', 'Impossible de mettre à jour le FS');
       return res.redirect(`${res.locals.APP_ROOT}/service-provider/${id}`);
@@ -246,10 +254,14 @@ export class ServiceProviderController {
     @Body() body,
   ) {
     try {
-      await this.serviceProviderService.deleteServiceProviderById(
-        id,
-        req.user.username,
-      );
+      const { hasGristPublicationSucceeded } =
+        await this.serviceProviderService.deleteServiceProviderById(
+          id,
+          req.user.username,
+        );
+      if (!hasGristPublicationSucceeded) {
+        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+      }
     } catch (error) {
       req.flash('globalError', error.message);
       return res.status(500);
@@ -274,10 +286,14 @@ export class ServiceProviderController {
   ) {
     const { deleteItems = [], name } = body;
     try {
-      await this.serviceProviderService.deleteManyServiceProvidersById(
-        deleteItems,
-        req.user.username,
-      );
+      const { hasGristPublicationSucceeded } =
+        await this.serviceProviderService.deleteManyServiceProvidersById(
+          deleteItems,
+          req.user.username,
+        );
+      if (!hasGristPublicationSucceeded) {
+        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+      }
     } catch (error) {
       req.flash('globalError', error.message);
       return res.status(500);

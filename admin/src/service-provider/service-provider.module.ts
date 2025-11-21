@@ -12,6 +12,7 @@ import { ScopesModule } from '../scopes';
 import { ServiceProviderService } from './service-provider.service';
 import { ServiceProviderController } from './service-provider.controller';
 import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
+import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
     SecretManagerService,
     FileStorageService,
     SecretAdapter,
+    GristPublisherService,
   ],
 })
 export class ServiceProviderModule {}

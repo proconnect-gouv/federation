@@ -11,9 +11,9 @@ import { SecretAdapter } from '../utils/secret.adapter';
 import { ServiceProviderService } from './service-provider.service';
 import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ICrudTrack } from '../interfaces';
-import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { PaginationService } from '../pagination';
 import { serviceProviderFactory } from './fixtures';
+import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 describe('ServiceProviderService', () => {
   let module: TestingModule;
@@ -49,6 +49,11 @@ describe('ServiceProviderService', () => {
     businessEvent: jest.fn(),
   };
 
+  const gristPublisherServiceMock = {
+    publishServiceProviders: jest.fn(),
+    publishIdentityProviders: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
 
@@ -61,6 +66,7 @@ describe('ServiceProviderService', () => {
         SecretAdapter,
         LoggerService,
         PaginationService,
+        GristPublisherService,
       ],
     })
       .overrideProvider(getRepositoryToken(ServiceProviderFromDb, 'fc-mongo'))
@@ -71,6 +77,8 @@ describe('ServiceProviderService', () => {
       .useValue(secretAdapterMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(GristPublisherService)
+      .useValue(gristPublisherServiceMock)
       .compile();
 
     serviceProviderService = await module.get<ServiceProviderService>(

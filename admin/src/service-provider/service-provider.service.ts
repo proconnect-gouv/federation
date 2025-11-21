@@ -12,6 +12,7 @@ import { SecretAdapter } from '../utils/secret.adapter';
 import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { PaginationOptions, PaginationService } from '../pagination';
+import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 @Injectable()
 export class ServiceProviderService {
@@ -22,6 +23,7 @@ export class ServiceProviderService {
     private readonly secretAdapter: SecretAdapter,
     private readonly logger: LoggerService,
     private readonly paginationService: PaginationService,
+    private readonly gristPublisherService: GristPublisherService,
   ) {}
 
   private track(log: ICrudTrack) {
@@ -49,7 +51,10 @@ export class ServiceProviderService {
       id: saveOperation.identifiers[0].id,
     });
 
-    return saveOperation;
+    const hasGristPublicationSucceeded =
+      await this.publishServiceProvidersToGrist();
+
+    return { hasGristPublicationSucceeded };
   }
 
   async findById(id: string): Promise<ServiceProviderFromDb> {
@@ -116,7 +121,12 @@ export class ServiceProviderService {
       name: serviceProvider.key,
     });
 
-    return this.serviceProviderRepository.save(serviceProvider);
+    await this.serviceProviderRepository.save(serviceProvider);
+
+    const hasGristPublicationSucceeded =
+      await this.publishServiceProvidersToGrist();
+
+    return { hasGristPublicationSucceeded };
   }
 
   /**
@@ -126,12 +136,16 @@ export class ServiceProviderService {
    * Dirty costly solution: iterate through given ids
    */
   async deleteManyServiceProvidersById(ids: string[], user: string) {
-    return Promise.all(
+    await Promise.all(
       ids.map((id) => this.deleteServiceProviderById(id, user)),
     );
+
+    const hasGristPublicationSucceeded =
+      await this.publishServiceProvidersToGrist();
+    return { hasGristPublicationSucceeded };
   }
 
-  async deleteServiceProviderById(id: string, user: string): Promise<boolean> {
+  async deleteServiceProviderById(id: string, user: string) {
     const serviceProvider =
       await this.serviceProviderRepository.findOneByOrFail({
         _id: new ObjectId(id),
@@ -140,6 +154,7 @@ export class ServiceProviderService {
     const result = await this.serviceProviderRepository.delete({
       _id: new ObjectId(id),
     });
+    const hasDeletionSucceeded = result.affected === 1;
 
     this.track({
       entity: 'service-provider',
@@ -149,7 +164,10 @@ export class ServiceProviderService {
       name: serviceProvider.key,
     });
 
-    return result.affected === 1;
+    const hasGristPublicationSucceeded =
+      await this.publishServiceProvidersToGrist();
+
+    return { hasGristPublicationSucceeded, hasDeletionSucceeded };
   }
 
   async generateNewSecret(
@@ -226,5 +244,12 @@ export class ServiceProviderService {
       secretUpdatedBy: user,
       key,
     };
+  }
+
+  private async publishServiceProvidersToGrist() {
+    const allServiceProviders = await this.serviceProviderRepository.find();
+    return this.gristPublisherService.publishServiceProviders(
+      allServiceProviders,
+    );
   }
 }

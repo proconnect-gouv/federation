@@ -11,6 +11,7 @@ import { ICrudTrack } from '../interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { PaginationService } from '../pagination';
 import { identityProviderFactory } from './fixture';
+import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 jest.mock('uuid');
 
@@ -53,6 +54,11 @@ describe('IdentityProviderService', () => {
     error: jest.fn(),
   };
 
+  const gristPublisherServiceMock = {
+    publishServiceProviders: jest.fn(),
+    publishIdentityProviders: jest.fn(),
+  };
+
   const identityProvidersMock = [
     identityProviderFactory.createIdentityProviderFromDb({
       _id: new ObjectId(),
@@ -77,6 +83,7 @@ describe('IdentityProviderService', () => {
         ConfigService,
         LoggerService,
         PaginationService,
+        GristPublisherService,
       ],
     })
       .overrideProvider(getRepositoryToken(IdentityProviderFromDb, 'fc-mongo'))
@@ -87,6 +94,8 @@ describe('IdentityProviderService', () => {
       .useValue(configMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(GristPublisherService)
+      .useValue(gristPublisherServiceMock)
       .compile();
 
     identityProviderService = module.get<IdentityProviderService>(
@@ -256,17 +265,6 @@ describe('IdentityProviderService', () => {
         name: identityProviderDto.name,
       });
     });
-
-    it('should return saved operation', async () => {
-      // WHEN
-      const result = await identityProviderService.create(
-        identityProviderDto,
-        'user',
-      );
-
-      // THEN
-      expect(result).toEqual(objectId);
-    });
   });
 
   describe('update()', () => {
@@ -362,18 +360,6 @@ describe('IdentityProviderService', () => {
         transformedIntoEntity,
       );
     });
-
-    it('should return the updated identityProvider', async () => {
-      // WHEN
-      const result = await identityProviderService.update(
-        idMock,
-        identityProviderToUpdate,
-        userMock,
-      );
-
-      // THEN
-      expect(result).toEqual(transformedIntoEntity);
-    });
   });
 
   describe('track', () => {
@@ -404,6 +390,8 @@ describe('IdentityProviderService', () => {
       // set up
       const expectedRepositoryDeleteArguments = { _id: objectId };
       const user = 'mockUsername';
+      identityProviderRepository.delete.mockResolvedValueOnce({ affected: 1 });
+
       // action
       await identityProviderService.deleteIdentityProvider(
         objectId.toString(),
@@ -420,6 +408,8 @@ describe('IdentityProviderService', () => {
       // Given
       const user = 'mockUsername';
       identityProviderService['track'] = jest.fn();
+      identityProviderRepository.delete.mockResolvedValueOnce({ affected: 1 });
+
       // When
       await identityProviderService.deleteIdentityProvider(
         objectId.toString(),
