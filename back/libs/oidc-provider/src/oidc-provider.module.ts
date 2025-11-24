@@ -7,7 +7,7 @@ import { LoggerModule } from '@fc/logger';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcAcrModule } from '@fc/oidc-acr';
-import { IIdentityProviderAdapter, OidcClientModule } from '@fc/oidc-client';
+import { IIdentityProviderAdapter } from '@fc/oidc-client';
 import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
 import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
@@ -47,10 +47,6 @@ export class OidcProviderModule {
         IdentityProviderAdapterMongoModule,
         OidcAcrModule,
         SessionModule,
-        OidcClientModule.register(
-          IdentityProviderAdapterMongoService,
-          IdentityProviderAdapterMongoModule,
-        ),
         ExceptionsModule,
         LoggerModule,
       ],
