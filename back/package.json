@@ -47,7 +47,7 @@
     "amqplib": "^0.10.9",
     "apache-ignite-client": "^1.0.0",
     "axios": "^1.12.0",
-    "body-parser": "^2.2.0",
+    "body-parser": "^2.2.1",
     "class-transformer": "^0.5.1",
     "class-validator": "proconnect-gouv/class-validator#build-0.14.2-proconnect.1",
     "cookie-parser": "^1.4.7",
