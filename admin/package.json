@@ -45,7 +45,7 @@
     "@nest-middlewares/csurf": "^10.0.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.8",
-    "@nestjs/core": "^11.1.6",
+    "@nestjs/core": "^11.1.9",
     "@nestjs/microservices": "^11.1.9",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.6",
