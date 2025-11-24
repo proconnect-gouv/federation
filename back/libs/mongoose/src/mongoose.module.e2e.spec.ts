@@ -107,7 +107,7 @@ describe('MongooseProvider with MongoMemoryReplSet', () => {
     await CatModel.create({ name: 'Felix' });
 
     // We wait for the watcher to be triggered
-    await new Promise((resolve) => setTimeout(resolve, 11));
+    await new Promise((resolve) => setTimeout(resolve, 111));
 
     // The service did play cache-cache with Felix le chat ;)
     expect(service.cache).toEqual(['Felix']);
@@ -167,7 +167,7 @@ describe('MongooseProvider with MongoMemoryReplSet', () => {
 
     await CatModel.create({ name: 'Felix' });
     // We wait for the watcher to be triggered
-    await new Promise((resolve) => setTimeout(resolve, 11));
+    await new Promise((resolve) => setTimeout(resolve, 111));
     // The service did play cache-cache with Felix le chat ;)
     expect(service.cache).toEqual(['Felix']);
   });
