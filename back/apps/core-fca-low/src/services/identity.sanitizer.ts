@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
 import { cloneDeep } from 'lodash';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -107,7 +107,7 @@ export class IdentitySanitizer {
   }
 
   private async throwIfInvalid(
-    validationErrors,
+    validationErrors: ValidationError[],
     idpId: string,
     statusCode: HttpStatus,
   ) {
@@ -124,6 +124,7 @@ export class IdentitySanitizer {
         this.config.get<AppConfig>('App').supportEmail;
 
       const exception = new CoreFcaInvalidIdentityException(
+        validationErrors.toString(),
         contact,
         JSON.stringify(validationErrors.map((error) => error?.constraints)),
         JSON.stringify(validationErrors[0]?.target),

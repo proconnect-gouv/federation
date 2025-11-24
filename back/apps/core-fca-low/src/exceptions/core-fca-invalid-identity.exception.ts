@@ -17,6 +17,7 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
 
   constructor(
+    public message: string,
     public contact: string,
     public validationConstraints = 'Les champs en erreur ne sont pas connus.',
     public validationTarget: string = '',

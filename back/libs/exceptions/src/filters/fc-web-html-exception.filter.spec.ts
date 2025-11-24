@@ -116,7 +116,10 @@ describe('FcWebHtmlExceptionFilter', () => {
 
     it('should render the error template with a UI-less static CoreFca exception', () => {
       // When
-      const coreFcaException = new CoreFcaInvalidIdentityException('anyone');
+      const coreFcaException = new CoreFcaInvalidIdentityException(
+        'error_msg',
+        'anyone',
+      );
       const inputMock = {
         ...paramsMock,
         exception: coreFcaException,
