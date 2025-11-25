@@ -9,4 +9,5 @@ export interface IdentityProviderGristRecord {
   SIRET_par_defaut: string;
   Alg_ID_token: string;
   Alg_userinfo: string;
+  Routage_active: 'Oui' | 'Non';
 }
