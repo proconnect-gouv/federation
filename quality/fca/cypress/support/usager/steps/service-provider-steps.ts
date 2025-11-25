@@ -122,7 +122,11 @@ When('je clique sur le bouton ProConnect deux facteurs', function () {
 });
 
 When('je clique sur le bouton de déconnexion', function () {
-  cy.get('[action="/logout"] button').click();
+  cy.contains('Se déconnecter (avec redirection vers le service)').click();
+});
+
+When('je clique sur le bouton de déconnexion sans redirection', function () {
+  cy.contains('Se déconnecter (sans redirection vers le service)').click();
 });
 
 When('je clique sur le bouton FranceConnect', function () {
