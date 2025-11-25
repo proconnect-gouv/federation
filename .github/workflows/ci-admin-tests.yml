@@ -44,7 +44,7 @@ jobs:
         working-directory: ./admin
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v3
