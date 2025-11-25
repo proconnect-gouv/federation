@@ -112,6 +112,13 @@ export default {
       is_service_public: ['is_service_public'],
       groups: ['groups'],
       custom: ['custom'],
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      lasuite_visio: ['lasuite_visio'],
+      'lasuite_visio:rooms:create': ['lasuite_visio:rooms:create'],
+      'lasuite_visio:rooms:list': ['lasuite_visio:rooms:list'],
+      'lasuite_visio:rooms:retrieve': ['lasuite_visio:rooms:retrieve'],
+      'lasuite_visio:rooms:update': ['lasuite_visio:rooms:update'],
+      'lasuite_visio:rooms:delete': ['lasuite_visio:rooms:delete'],
     },
     clientDefaults: {
       grant_types: ['authorization_code', 'refresh_token'],
