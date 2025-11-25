@@ -10,6 +10,7 @@ describe('CoreFcaInvalidIdentityException', () => {
 
       // When
       const result = new CoreFcaInvalidIdentityException(
+        'error_msg',
         contact,
         validationConstraints,
         validationTarget,
@@ -26,7 +27,7 @@ describe('CoreFcaInvalidIdentityException', () => {
       const contact = 'contact@email.fr';
 
       // When
-      const result = new CoreFcaInvalidIdentityException(contact);
+      const result = new CoreFcaInvalidIdentityException('error_msg', contact);
 
       // Then
       expect(result.contact).toBe(contact);
