@@ -98,7 +98,7 @@
     "@types/node": "^24.2.1",
     "@types/passport": "^1.0.17",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
-    "@typescript-eslint/parser": "^8.46.4",
+    "@typescript-eslint/parser": "^8.48.0",
     "cypress": "^15.5.0",
     "eslint": "^9.39.0",
     "eslint-config-prettier": "^10.1.8",
