@@ -72,7 +72,7 @@ export class CoreFcaControllerService {
     res: Response,
     idpId: string,
   ): Promise<void> {
-    const { spId, idpLoginHint, spName, rememberMe } =
+    const { spId, idpLoginHint, spName, spSiretHint, rememberMe } =
       this.session.get<AfterRedirectToIdpWithEmailSessionDto>('User');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
@@ -96,6 +96,7 @@ export class CoreFcaControllerService {
         },
       },
       login_hint: idpLoginHint,
+      siret_hint: spSiretHint,
       sp_id: spId,
       sp_name: spName,
       remember_me: rememberMe,

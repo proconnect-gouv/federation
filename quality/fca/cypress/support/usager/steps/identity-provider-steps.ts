@@ -101,6 +101,13 @@ Then(
 );
 
 Then(
+  /la page du FI affiche le siret_hint "([^"]*)"/,
+  function (expectedValue: string) {
+    cy.contains(`"siret_hint": "${expectedValue}"`);
+  },
+);
+
+Then(
   /la page du FI affiche remember_me "([^"]*)"/,
   function (expectedValue: string) {
     cy.contains(`"remember_me": "${expectedValue}"`);

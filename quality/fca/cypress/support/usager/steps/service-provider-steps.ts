@@ -23,6 +23,7 @@ import {
   setPrompt,
   setRedirectUri,
   setScope,
+  setSiretHint,
 } from '../../common/helpers';
 
 When('je navigue sur la page fournisseur de service', function () {
@@ -70,6 +71,13 @@ Given(
   'le fournisseur de service envoie le login_hint {string}',
   function (loginHint: string) {
     setLoginHint(loginHint);
+  },
+);
+
+Given(
+  'le fournisseur de service envoie le siret_hint {string}',
+  function (siretHint: string) {
+    setSiretHint(siretHint);
   },
 );
 

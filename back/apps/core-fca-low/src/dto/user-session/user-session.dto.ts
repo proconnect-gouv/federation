@@ -148,6 +148,10 @@ export class UserSession {
   readonly idpLoginHint?: string;
 
   @IsOptional()
+  @IsString()
+  readonly spSiretHint?: string;
+
+  @IsOptional()
   @IsBoolean()
   readonly rememberMe?: boolean;
 }

@@ -50,6 +50,14 @@ export const setLoginHint = (loginHint: string): void => {
   });
 };
 
+export const setSiretHint = (siretHint: string): void => {
+  updateCustomParams((customParams) => {
+    customParams['siret_hint'] = siretHint;
+
+    return customParams;
+  });
+};
+
 export const setRedirectUri = (redirectUri: string): void => {
   updateCustomParams((customParams) => {
     customParams['redirect_uri'] = redirectUri;
