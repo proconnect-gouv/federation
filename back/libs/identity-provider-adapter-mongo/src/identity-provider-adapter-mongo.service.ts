@@ -53,8 +53,6 @@ export class IdentityProviderAdapterMongoService
 {
   private listCache: IdentityProviderMetadata[];
 
-  // Dependency injection can require more than 4 parameters
-  /* eslint-disable-next-line max-params */
   constructor(
     @InjectModel('IdentityProvider')
     private readonly identityProviderModel: Model<IdentityProvider>,

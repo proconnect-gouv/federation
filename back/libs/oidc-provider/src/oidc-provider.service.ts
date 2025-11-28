@@ -38,8 +38,6 @@ export class OidcProviderService {
   private callback: ReturnType<Provider['callback']>;
   private configuration;
 
-  // Dependency injection can require more than 4 parameters
-
   constructor(
     readonly logger: LoggerService,
     readonly redis: RedisService,
@@ -80,7 +78,7 @@ export class OidcProviderService {
 
     oidcProviderErrorEvents.forEach((event) => {
       /* istanbul ignore next */
-      // eslint-disable-next-line max-nested-callbacks
+
       this.provider.on(event, (_any, err) => {
         if (
           [

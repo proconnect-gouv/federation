@@ -105,7 +105,6 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
     res.render('error', errorPageParams);
   }
 
-  // eslint-disable-next-line complexity
   protected getDefaultContactHref(error: {
     code: string;
     id: string;

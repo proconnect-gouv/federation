@@ -138,7 +138,6 @@ export default {
       },
     ],
   },
-  // eslint-disable-next-line complexity
   loadExistingGrant: async (ctx) => {
     // We want to skip the consent
     // inspired from https://github.com/panva/node-oidc-provider/blob/main/recipes/skip_consent.md

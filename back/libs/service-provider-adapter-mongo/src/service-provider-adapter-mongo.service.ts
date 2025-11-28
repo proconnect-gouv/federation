@@ -23,8 +23,6 @@ export class ServiceProviderAdapterMongoService
 {
   private listCache: ServiceProviderMetadata[];
 
-  // Dependency injection can require more than 4 parameters
-  /* eslint-disable-next-line max-params */
   constructor(
     @InjectModel('ServiceProvider')
     private readonly serviceProviderModel: Model<ServiceProvider>,

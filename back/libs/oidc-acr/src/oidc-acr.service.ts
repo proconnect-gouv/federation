@@ -63,7 +63,6 @@ export class OidcAcrService {
     return intersection(acrValuesAsArray, supportedAcrValues);
   }
 
-  // eslint-disable-next-line complexity
   isEssentialAcrSatisfied({
     prompt,
   }: {
@@ -80,7 +79,6 @@ export class OidcAcrService {
     return true;
   }
 
-  // eslint-disable-next-line complexity
   getFilteredAcrParamsFromInteraction({
     params,
     prompt,

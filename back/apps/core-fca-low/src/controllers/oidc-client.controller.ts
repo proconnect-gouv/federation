@@ -41,8 +41,6 @@ import {
 
 @Controller()
 export class OidcClientController {
-  // Dependency injection can require more than 4 parameters
-  /* eslint-disable-next-line max-params */
   constructor(
     private readonly accountService: AccountFcaService,
     private readonly config: ConfigService,

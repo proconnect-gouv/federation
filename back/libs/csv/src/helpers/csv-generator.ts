@@ -6,7 +6,6 @@ export const generateCSVContent = <T extends object>(data: T[]): string => {
   const headers = Object.keys(data[0]);
 
   const dataRows = data.map((entry) => {
-    // eslint-disable-next-line max-nested-callbacks
     const values = headers.map((header) => formatCSVValue(entry[header]));
     return values.join(',');
   });

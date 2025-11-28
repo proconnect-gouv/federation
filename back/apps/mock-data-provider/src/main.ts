@@ -78,7 +78,6 @@ app.use((err, req, res, _next) => {
   });
 });
 
-/* eslint-disable max-nested-callbacks */
 app.listen(port, async () => {
   const relevantJwks = jwks.filter((jwk) => jwk.alg === encryptAlg);
 
@@ -94,4 +93,3 @@ app.listen(port, async () => {
 
   console.log(`App listening on port ${port}`);
 });
-/* eslint-enable max-nested-callbacks */

@@ -28,7 +28,6 @@ const provider = new Provider(`https://${FQDN}`, {
 });
 provider.proxy = true;
 
-// eslint-disable-next-line complexity
 app.get('/interaction/:uid', async (req, res, next) => {
   try {
     const { uid, prompt, params, session } = await provider.interactionDetails(

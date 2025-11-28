@@ -84,7 +84,6 @@ export const createUser = (body) => {
   return id;
 };
 
-// eslint-disable-next-line complexity
 export const parseFormDataValue = (value: string) => {
   switch (value) {
     case 'true':

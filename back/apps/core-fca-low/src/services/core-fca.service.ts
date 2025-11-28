@@ -15,7 +15,6 @@ import {
 
 @Injectable()
 export class CoreFcaService {
-  // Dependency injection can require more than 4 parameters
   constructor(
     private readonly config: ConfigService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,

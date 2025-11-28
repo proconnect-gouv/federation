@@ -488,7 +488,7 @@ describe('CryptographyService', () => {
       // setup
       jest.spyOn(crypto, 'pbkdf2').mockImplementationOnce(
         // mocking a native function
-        // eslint-disable-next-line max-params
+
         (_password, _salt, _iterations, _keylen, _digest, callback) => {
           callback(undefined, mockDerivatedKey);
         },
@@ -505,7 +505,7 @@ describe('CryptographyService', () => {
       // setup
       const mockPbkdf2 = jest.spyOn(crypto, 'pbkdf2').mockImplementationOnce(
         // mocking a native function
-        // eslint-disable-next-line max-params
+
         (_password, _salt, _iterations, _keylen, _digest, callback) => {
           callback(undefined, mockDerivatedKey);
         },
@@ -532,7 +532,7 @@ describe('CryptographyService', () => {
       const failure = new Error('password hash failed');
       jest.spyOn(crypto, 'pbkdf2').mockImplementationOnce(
         // mocking a native function
-        // eslint-disable-next-line max-params
+
         (_password, _salt, _iterations, _keylen, _digest, callback) => {
           callback(failure, undefined);
         },
