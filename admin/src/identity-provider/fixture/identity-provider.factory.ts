@@ -37,6 +37,7 @@ function createIdentityProviderFromDb(
     fqdns: [],
     ...partial,
     isRoutingEnabled: true,
+    isEntraID: false,
   };
 }
 
@@ -72,6 +73,7 @@ function createIdentityProviderDto(
     supportEmail: 'support@email.fr',
     ...partial,
     isRoutingEnabled: true,
+    isEntraID: false,
   };
 }
 

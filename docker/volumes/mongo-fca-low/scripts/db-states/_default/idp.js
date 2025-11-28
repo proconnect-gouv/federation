@@ -35,6 +35,7 @@ const fia = {
     ],
     fqdns: ['fia1.fr', 'polyfi.fr', 'polyfi2.fr', 'abcd.com'],
     isRoutingEnabled: true,
+    isEntraID: false,
   },
 
   // -- FIA - FIA2-LOW - Activated No support Email
@@ -73,6 +74,7 @@ const fia = {
     ],
     fqdns: ['fia2.fr', 'polyfi.fr', 'polyfi2.fr'],
     isRoutingEnabled: true,
+    isEntraID: false,
   },
 
   // -- Fia3-low - Deactivated
@@ -111,6 +113,7 @@ const fia = {
     ],
     fqdns: ['fia3.fr'],
     isRoutingEnabled: true,
+    isEntraID: false,
   },
 
   // -- FIA - MonComptePro - Activated
@@ -148,6 +151,7 @@ const fia = {
     ],
     fqdns: ['moncomptepro.fr', 'polyfi.fr'],
     isRoutingEnabled: true,
+    isEntraID: false,
   },
   // RIE
 
@@ -187,6 +191,7 @@ const fia = {
     ],
     fqdns: ['fi-rie.fr'],
     isRoutingEnabled: true,
+    isEntraID: false,
   },
 
   // -- FIA using LemonLDAP
@@ -224,7 +229,9 @@ const fia = {
     ],
     fqdns: [],
     isRoutingEnabled: true,
+    isEntraID: false,
   },
+
 };
 
 // -- Idps ----------

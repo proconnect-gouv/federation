@@ -406,6 +406,27 @@
                   </select>
                 </div>
               </section>
+              <%
+                let isEntraIDChecked = false
+                if (locals.messages.values && messages.values[0].isEntraID !== undefined) {
+                  isEntraIDChecked = messages.values[0].isEntraID
+                } else {
+                  isEntraIDChecked = false
+                }
+              %>
+              <div class="mb-3 row">
+                <label class="col-2 col-form-label">Serveur EntraID Microsoft :</label>
+                <div class="mb-3 col-4 d-flex align-items-end">
+                  <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input is-valid" id="entra" name="isEntraID" value="true" required <%= isEntraIDChecked ? 'checked' : '' %>>
+                      <label class="form-check-label" for="entra">oui</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input is-valid" id="regular" name="isEntraID" value="false" required <%= isEntraIDChecked ? '' : 'checked' %>>
+                      <label class="form-check-label" for="regular">non</label>
+                  </div>
+                </div>
+              </div>
 
             </details>
 
