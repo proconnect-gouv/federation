@@ -8,8 +8,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/core/dto';
 
-import { CoreFcaAgentAccountBlockedException } from '../exceptions';
-import { IIdpAgentKeys } from '../interfaces';
 import { AccountFca } from '../schemas';
 
 @Injectable()
@@ -19,26 +17,25 @@ export class AccountFcaService {
     @InjectModel('AccountFca') private model: Model<AccountFca>,
   ) {}
 
-  async getAccountByIdpAgentKeys(
-    idpIdentityKeys: IIdpAgentKeys,
-  ): Promise<AccountFca> {
-    return await this.model.findOne({
+  async getAccountBySub(sub: string) {
+    return await this.model.findOne<AccountFca>({ sub });
+  }
+
+  async getAccountByIdpAgentKeys(idpSub: string, idpUid: string) {
+    return await this.model.findOne<AccountFca>({
       idpIdentityKeys: {
         $elemMatch: {
-          idpSub: idpIdentityKeys.idpSub,
-          idpUid: idpIdentityKeys.idpUid,
+          idpSub,
+          idpUid,
         },
       },
     });
   }
 
-  private async getReconciledAccount(
-    idpUid: string,
-    idpMail: string,
-  ): Promise<AccountFca> {
+  private async getReconciledAccount(idpUid: string, idpMail: string) {
     const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
     if (idpUid !== defaultIdpId) {
-      return await this.model.findOne({
+      return await this.model.findOne<AccountFca>({
         idpIdentityKeys: {
           $elemMatch: {
             idpMail,
@@ -65,21 +62,13 @@ export class AccountFcaService {
     );
   }
 
-  async getOrCreateAccount(
-    idpUid: string,
-    idpSub: string,
-    idpMail: string,
-  ): Promise<AccountFca> {
+  async getOrCreateAccount(idpUid: string, idpSub: string, idpMail: string) {
     const idpAgentKeys = { idpUid, idpSub };
     const idpFullKeys = { idpUid, idpSub, idpMail };
 
-    let account = await this.getAccountByIdpAgentKeys(idpAgentKeys);
+    let account = await this.getAccountByIdpAgentKeys(idpSub, idpUid);
     account = account || (await this.getReconciledAccount(idpUid, idpMail));
     account = account || this.createAccount();
-
-    if (!account.active) {
-      throw new CoreFcaAgentAccountBlockedException();
-    }
 
     account.idpIdentityKeys = filter(
       account.idpIdentityKeys,
@@ -94,7 +83,7 @@ export class AccountFcaService {
     return account;
   }
 
-  async checkEmailExists(idpMail: string): Promise<boolean> {
+  async checkEmailExists(idpMail: string) {
     const account = await this.model.exists({
       idpIdentityKeys: { $elemMatch: { idpMail } },
     });

@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { CsrfService } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -17,7 +18,10 @@ import { getLoggerMock } from '@mocks/logger';
 
 // --- Mocks for external dependencies ---
 import { AfterGetOidcCallbackSessionDto, UserSession } from '../dto';
-import { CoreFcaAgentNotFromPublicServiceException } from '../exceptions';
+import {
+  CoreFcaAgentAccountBlockedException,
+  CoreFcaAgentNotFromPublicServiceException,
+} from '../exceptions';
 import { CoreFcaControllerService } from '../services';
 import { InteractionController } from './interaction.controller';
 
@@ -44,6 +48,7 @@ describe('InteractionController', () => {
   let coreFcaControllerMock: any;
   let csrfServiceMock: any;
   let loggerMock: any;
+  let accountFcaMock: any;
 
   beforeEach(async () => {
     oidcProviderMock = {
@@ -79,12 +84,16 @@ describe('InteractionController', () => {
     csrfServiceMock = {
       renew: jest.fn(),
     };
+    accountFcaMock = {
+      getAccountBySub: jest.fn(),
+    };
     loggerMock = getLoggerMock();
 
     // Create the testing module
     const module: TestingModule = await Test.createTestingModule({
       controllers: [InteractionController],
       providers: [
+        AccountFcaService,
         OidcProviderService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
@@ -97,6 +106,8 @@ describe('InteractionController', () => {
         LoggerService,
       ],
     })
+      .overrideProvider(AccountFcaService)
+      .useValue(accountFcaMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderMock)
       .overrideProvider(OidcAcrService)
@@ -364,11 +375,15 @@ describe('InteractionController', () => {
   });
 
   describe('getVerify()', () => {
+    beforeEach(() => {
+      accountFcaMock.getAccountBySub.mockResolvedValue({ active: true });
+    });
     it('should successfully complete the interaction when the IdP is active and conditions are satisfied', async () => {
       const req = { sessionId: 'session1' } as unknown as Request;
       const res: Partial<Response> = { redirect: jest.fn() };
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          spIdentity: { sub: 'user1' },
           interactionId: 'interaction123',
           idpAcr: 'high',
           spEssentialAcr: 'high',
@@ -416,6 +431,7 @@ describe('InteractionController', () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          spIdentity: { sub: 'user1' },
           isSilentAuthentication: true,
           idpId: 'idp123',
         }),
@@ -433,6 +449,7 @@ describe('InteractionController', () => {
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          spIdentity: { sub: 'user1' },
           isSilentAuthentication: false,
           interactionId: 'interaction123',
           idpId: 'idp123',
@@ -454,6 +471,7 @@ describe('InteractionController', () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          spIdentity: { sub: 'user1' },
           spId: 'sp123',
           idpId: 'idp123',
           idpIdentity: { is_service_public: false },
@@ -468,11 +486,33 @@ describe('InteractionController', () => {
       ).rejects.toThrow(CoreFcaAgentNotFromPublicServiceException);
     });
 
+    it('should throw CoreFcaAgentAccountBlockedException if the account is inactive', async () => {
+      const req = {} as Request;
+      const res = {} as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          spIdentity: { sub: 'user1' },
+          spId: 'sp123',
+          idpId: 'idp123',
+          idpIdentity: { is_service_public: false },
+        }),
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
+      accountFcaMock.getAccountBySub.mockResolvedValue({ active: false });
+
+      identityProviderMock.isActiveById.mockResolvedValue(true);
+      serviceProviderMock.getById.mockResolvedValue({ type: 'public' });
+
+      await expect(
+        controller.getVerify(req, res, {} as any, userSessionService),
+      ).rejects.toThrow(CoreFcaAgentAccountBlockedException);
+    });
+
     it('should call abort interaction when interactionAcr is not satisfied', async () => {
       const req = {} as Request;
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          spIdentity: { sub: 'user1' },
           spEssentialAcr: 'high',
           idpAcr: 'low',
         }),

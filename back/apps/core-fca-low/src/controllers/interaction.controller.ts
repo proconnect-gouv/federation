@@ -14,6 +14,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
+import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { CsrfService } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -33,12 +34,16 @@ import {
   UserSession,
 } from '../dto';
 import { Routes } from '../enums';
-import { CoreFcaAgentNotFromPublicServiceException } from '../exceptions';
+import {
+  CoreFcaAgentAccountBlockedException,
+  CoreFcaAgentNotFromPublicServiceException,
+} from '../exceptions';
 import { CoreFcaControllerService } from '../services';
 
 @Controller()
 export class InteractionController {
   constructor(
+    private readonly accountService: AccountFcaService,
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcAcr: OidcAcrService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
@@ -194,6 +199,7 @@ export class InteractionController {
     userSessionService: ISessionService<AfterGetOidcCallbackSessionDto>,
   ) {
     const {
+      spIdentity: { sub },
       amr,
       idpAcr,
       idpId,
@@ -203,6 +209,11 @@ export class InteractionController {
       spEssentialAcr,
       spId,
     } = userSessionService.get();
+
+    const account = await this.accountService.getAccountBySub(sub);
+    if (!account || !account.active) {
+      throw new CoreFcaAgentAccountBlockedException();
+    }
 
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
     if (!isIdpActive) {
