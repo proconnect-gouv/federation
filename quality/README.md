@@ -101,12 +101,6 @@ yarn start:low
 "FC_ACCESS_PASS": "<ProConnect access password for HTTP Basic Authentication>",
 ```
 
-1. Start the proxy to access `https://docker.dev-franceconnect.fr/integ01/fca.html`
-
-```shell
-docker-stack up rp-all
-```
-
 4. Open Cypress UI to run tests on FCA-LOW against integ01 environment
 
 ```shell
