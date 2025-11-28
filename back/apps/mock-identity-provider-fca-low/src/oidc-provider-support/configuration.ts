@@ -1,5 +1,11 @@
+import * as dotenvFlow from 'dotenv-flow';
+
 import policy from '../oidc-provider-support/policy';
 import { findUserById } from '../user-data';
+
+dotenvFlow.config({
+  pattern: '.env/[node_env][.local].env',
+});
 
 const {
   ServiceProviderAdapterEnv_CLIENT_ID: client_id,
