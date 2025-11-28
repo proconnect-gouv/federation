@@ -1,4 +1,5 @@
 import * as otplib from 'otplib';
+
 interface TotpArgs {
   totpSecret: string;
 }
