@@ -36,8 +36,6 @@ import { OidcClientIssuerService } from './oidc-client-issuer.service';
 
 @Injectable()
 export class OidcClientUtilsService {
-  // Dependency injection can require more than 4 parameters
-  /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
     private readonly issuer: OidcClientIssuerService,

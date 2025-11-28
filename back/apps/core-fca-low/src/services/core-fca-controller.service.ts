@@ -22,8 +22,6 @@ import { SessionService } from '@fc/session';
 
 @Injectable()
 export class CoreFcaControllerService {
-  // Dependency injection can require more than 4 parameters
-  /* eslint-disable-next-line max-params */
   constructor(
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
@@ -66,7 +64,6 @@ export class CoreFcaControllerService {
     return this.redirectToIdpWithIdpId(req, res, idpsFromEmail[0].uid);
   }
 
-  // eslint-disable-next-line complexity
   async redirectToIdpWithIdpId(
     req: Request,
     res: Response,

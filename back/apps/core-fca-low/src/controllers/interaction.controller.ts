@@ -38,8 +38,6 @@ import { CoreFcaControllerService } from '../services';
 
 @Controller()
 export class InteractionController {
-  // More than 4 parameters authorized for a controller
-  /* eslint-disable-next-line max-params */
   constructor(
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcAcr: OidcAcrService,
@@ -63,7 +61,6 @@ export class InteractionController {
   @Get(Routes.INTERACTION)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  // eslint-disable-next-line complexity
   async getInteraction(
     @Req() req: Request,
     @Res() res: Response,
@@ -189,7 +186,6 @@ export class InteractionController {
   @Get(Routes.INTERACTION_VERIFY)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  // eslint-disable-next-line complexity
   async getVerify(
     @Req() req: Request,
     @Res() res: Response,

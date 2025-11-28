@@ -18,7 +18,6 @@ export class EmailValidatorService {
     private readonly accountFcaService: AccountFcaService,
   ) {}
 
-  // eslint-disable-next-line complexity
   async validate(email: string) {
     try {
       const idps =

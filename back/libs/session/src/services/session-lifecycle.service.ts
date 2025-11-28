@@ -15,8 +15,6 @@ import { SessionLocalStorageService } from './session-local-storage.service';
 
 @Injectable()
 export class SessionLifecycleService {
-  // Dependency injection can require more than 4 parameters
-  // eslint-disable-next-line max-params
   constructor(
     private readonly config: ConfigService,
     private readonly cryptography: CryptographyService,

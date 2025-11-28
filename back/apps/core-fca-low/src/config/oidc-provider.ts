@@ -65,7 +65,6 @@ export default {
       // https://github.com/panva/node-oidc-provider/blob/v8.x/docs/README.md#ttl
       Grant: 12 * 60 * 60, // 12h - same as session lifetime
       Session: 12 * 60 * 60, // 12h - same as session lifetime
-      // eslint-disable-next-line complexity
       RefreshToken: function RefreshTokenTTL(ctx, token, client) {
         if (
           ctx &&

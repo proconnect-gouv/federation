@@ -24,8 +24,6 @@ import { SessionService } from '@fc/session';
 
 @Injectable()
 export class CoreFcaMiddlewareService {
-  // Dependency injection can require more than 4 parameters
-  // eslint-disable-next-line max-params
   constructor(
     protected readonly logger: LoggerService,
     protected readonly config: ConfigService,

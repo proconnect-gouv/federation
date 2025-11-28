@@ -269,22 +269,19 @@ app.post('/fetch-userdata', async (req, res, next) => {
       req.session?.oauth2token?.access_token,
       'utf-8',
     ).toString('base64');
-    const userdataPromises = dataProviderConfigs.map(
-      // eslint-disable-next-line max-nested-callbacks
-      async ({ name, url }) => {
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${encodedAccessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        return {
-          name,
-          response: await response.json(),
-        };
-      },
-    );
+    const userdataPromises = dataProviderConfigs.map(async ({ name, url }) => {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${encodedAccessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return {
+        name,
+        response: await response.json(),
+      };
+    });
     req.session.userdata = await Promise.all(userdataPromises);
 
     res.redirect('/');
