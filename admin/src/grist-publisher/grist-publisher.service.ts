@@ -96,24 +96,28 @@ export class GristPublisherService {
         Environnement: record.Environnement,
       },
     }));
-
     try {
-      await fetch(gristDocUrl, {
+      const response = await fetch(gristDocUrl, {
         method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${gristApiKey}`,
         },
         body: JSON.stringify({ records: recordUpdates }),
       });
+
+      if (response.ok) {
+        return true;
+      } else {
+        const responseText = await response.text();
+        this.logger.error(
+          `Could not update Grist: ${response.statusText} (${responseText})`,
+        );
+        return false;
+      }
     } catch (error) {
-      this.logger.error(
-        'Error during PUT request to Grist:',
-        error?.response?.data
-          ? JSON.stringify(error.response.data)
-          : error.message,
-      );
+      this.logger.error(`Could not update Grist: ${error}`);
       return false;
     }
-    return true;
   }
 }
