@@ -43,9 +43,6 @@ _up() {
       ${DOCKER_COMPOSE} exec identity-provider-llng bash /scripts/init.sh
       echo "Loaded !"
       ;;
-    *"mongo-fca-low"*)
-      _reset_mongodb "$app"
-      ;;
     *"pg-admin")
        _hook_admin "admin"
       ;;

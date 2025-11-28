@@ -12,5 +12,7 @@ RUN chmod 400 /mongo-key-file /mongo.pem && \
 COPY ./builds/mongodb/healthcheck.sh /
 HEALTHCHECK --interval=2s --timeout=2s --start-period=5s --retries=3 CMD [ "bash", "/healthcheck.sh" ]
 
+COPY ./builds/mongodb/scripts /opt/scripts
+
 CMD [ "--replSet", "rs0", "--keyFile", "/mongo-key-file", "--enableMajorityReadConcern", \
     "--tlsMode", "requireTLS", "--tlsCertificateKeyFile", "/mongo.pem" ]

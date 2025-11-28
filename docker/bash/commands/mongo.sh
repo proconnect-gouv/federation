@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 
 _reset_mongodb() {
-  local db_container_name=$1
-  echo "Reseting database ${db_container_name} to default state..."
-  $DOCKER_COMPOSE exec ${NO_TTY} ${db_container_name} /opt/scripts/manage.sh --reset-db
-}
-
-_reset_mongodb_as_prod() {
-  local db_container_name=$1
-  echo "Reseting database ${db_container_name} to some production states"
-  cd ${WORKING_DIR} && $DOCKER_COMPOSE exec ${NO_TTY} ${db_container_name} /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
+  echo "Reseting mongo database to default state..."
+  ${DOCKER_COMPOSE} restart seed-mongo
+  ${DOCKER_COMPOSE} logs --follow --no-log-prefix seed-mongo
 }
 
 _mongo_core_shell() {
@@ -33,9 +27,4 @@ _mongo_script() {
   script=$2
 
   $DOCKER_COMPOSE exec -T ${container} /opt/scripts/run.sh "${script}"
-}
-
-# Presets for backward compatibility
-_reset_db_core_fca_low() {
-  _reset_mongodb "mongo-fca-low"
 }

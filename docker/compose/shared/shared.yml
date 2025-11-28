@@ -42,10 +42,28 @@ services:
       - data
     command: 'yarn run migrate up'
 
+  seed-mongo:
+    depends_on:
+      init-core:
+        condition: service_completed_successfully
+      mongo-fca-low:
+        condition: service_started
+    build:
+      context: '../..'
+      dockerfile: 'builds/mongodb/Dockerfile'
+      args:
+        MONGO_VERSION: '5.0.23'
+    command: ./manage.sh --reset-db
+    env_file:
+      - '../fca-low/.env/mongo-fca-low.env'
+    networks:
+      - data
+    working_dir: /opt/scripts
+
   base-core:
     extends: base-nodejs
     depends_on:
-      init-core:
+      seed-mongo:
         condition: service_completed_successfully
       rp-all:
         condition: service_started

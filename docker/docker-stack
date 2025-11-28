@@ -16,10 +16,7 @@ source "${DOCKER_BASH_DIR}/commands/index.sh"
 _command_register "reset-pg" "_hook_admin" "Init postgres Admin"
 
 ### Mongo
-_command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" ""             # Description to be defined # Deprecated
-_command_register "reset-db" "_reset_db_core_fca_low" "Alias to reset-db-core-fca-low" # Backward compatibility entry
-_command_register "reset-mongo" "_reset_mongodb" "reset-mongo <mongo-service-name> : Reset given mongodb container"
-_command_register "reset-mongo-as-prod" "_reset_mongodb_as_prod" "reset-mongo-as-prod <mongo-service-name> : Reset given mongodb container with production IDPs"
+_command_register "reset-mongo" "_reset_mongodb" "Reset mongodb container with local seeds" # Backward compatibility entry
 _command_register "mongo" "_mongo_core_shell" "Open mongo shell for core"
 
 ## Nodejs apps
