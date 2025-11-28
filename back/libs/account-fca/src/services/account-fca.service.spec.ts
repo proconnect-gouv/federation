@@ -8,7 +8,6 @@ import { LoggerService } from '@fc/logger';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { CoreFcaAgentAccountBlockedException } from '../exceptions';
 import { AccountFcaService } from './account-fca.service';
 
 jest.mock('uuid');
@@ -31,7 +30,6 @@ describe('AccountFcaService', () => {
 
     modelMock = jest.fn().mockImplementation((data) => ({
       ...data,
-      active: true,
       idpIdentityKeys: [],
     }));
     modelMock.findOne = jest.fn();
@@ -59,15 +57,23 @@ describe('AccountFcaService', () => {
     service = module.get<AccountFcaService>(AccountFcaService);
   });
 
+  describe('getAccountBySub', () => {
+    it('should return an account when one is found with matching sub', async () => {
+      const mockAccount = { idpIdentityKeys: { idpSub: 'sub', idpUid: 'uid' } };
+      modelMock.findOne.mockResolvedValue(mockAccount);
+
+      const result = await service.getAccountBySub('sub');
+
+      expect(result).toEqual(mockAccount);
+    });
+  });
+
   describe('getAccountByIdpAgentKeys', () => {
     it('should return an account when one is found with matching idpIdentityKeys', async () => {
       const mockAccount = { idpIdentityKeys: { idpSub: 'sub', idpUid: 'uid' } };
       modelMock.findOne.mockResolvedValue(mockAccount);
 
-      const result = await service.getAccountByIdpAgentKeys({
-        idpSub: 'sub',
-        idpUid: 'uid',
-      });
+      const result = await service.getAccountByIdpAgentKeys('sub', 'uid');
 
       expect(modelMock.findOne).toHaveBeenCalledWith({
         idpIdentityKeys: {
@@ -83,10 +89,7 @@ describe('AccountFcaService', () => {
     it('should return null if no account is found', async () => {
       modelMock.findOne.mockResolvedValue(null);
 
-      const result = await service.getAccountByIdpAgentKeys({
-        idpSub: 'sub',
-        idpUid: 'uid',
-      });
+      const result = await service.getAccountByIdpAgentKeys('sub', 'uid');
 
       expect(result).toBeNull();
     });
@@ -238,19 +241,6 @@ describe('AccountFcaService', () => {
         idpSub: 'sub',
         idpMail: 'email@fqdn',
       });
-    });
-
-    it('should throw an exception if the account is inactive', async () => {
-      const inactiveAccount = {
-        active: false,
-        sub: '12345',
-        idpIdentityKeys: [],
-      };
-      modelMock.findOne.mockResolvedValue(inactiveAccount);
-
-      await expect(
-        service.getOrCreateAccount('uid', 'sub', 'email@fqdn'),
-      ).rejects.toThrow(CoreFcaAgentAccountBlockedException);
     });
 
     it('should push a new idpIdentityKey if not already present', async () => {
