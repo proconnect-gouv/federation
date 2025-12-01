@@ -33,6 +33,7 @@ export const Fia1IdentityProviderDocument = {
   userinfo_encrypted_response_alg: '',
   userinfo_encrypted_response_enc: '',
   userinfo_signed_response_alg: 'ES256',
+  isEntraID: false,
 };
 
 /**

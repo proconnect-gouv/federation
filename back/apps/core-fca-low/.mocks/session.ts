@@ -178,6 +178,7 @@ export class SessionBuilder {
       idp_id: user.idpId,
       custom: user.spIdentity?.custom ?? {},
     };
+    user.interactionAcr = 'eidas1';
 
     return this;
   }

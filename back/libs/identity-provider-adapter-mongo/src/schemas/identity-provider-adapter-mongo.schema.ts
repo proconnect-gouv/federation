@@ -73,6 +73,9 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: Boolean })
   isRoutingEnabled: boolean;
+
+  @Prop({ type: Boolean })
+  isEntraID: boolean;
 }
 
 export const IdentityProviderSchema =
