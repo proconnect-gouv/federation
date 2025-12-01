@@ -4,8 +4,14 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ collection: 'provider', strict: true })
 export class IdentityProvider extends Document {
+  @Prop({ type: Boolean })
+  active: boolean;
+
   @Prop({ type: String })
   name: string;
+
+  @Prop({ type: [String], required: false })
+  post_logout_redirect_uris?: string[];
 
   // Note that this will create the index if not present
   @Prop({ index: true, type: String })
@@ -19,6 +25,12 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: String })
   discoveryUrl: string;
+
+  @Prop({ type: String, required: false })
+  endSessionURL: string;
+
+  @Prop({ type: [String], required: false })
+  fqdns?: string[];
 
   @Prop({ type: [String] })
   response_types: string[];
@@ -56,8 +68,14 @@ export class IdentityProvider extends Document {
   @Prop({ type: String, required: false })
   supportEmail: string;
 
+  @Prop({ type: String })
+  title: string;
+
   @Prop({ type: Boolean })
   isRoutingEnabled: boolean;
+
+  @Prop({ type: Boolean })
+  isEntraID: boolean;
 }
 
 export const IdentityProviderSchema =
