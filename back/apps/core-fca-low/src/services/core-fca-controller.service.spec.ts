@@ -71,6 +71,7 @@ describe('CoreFcaControllerService', () => {
     name: 'nameMockValue',
     title: 'titleMockValue',
     active: true,
+    isEntraID: false,
   };
 
   beforeEach(async () => {
@@ -257,6 +258,36 @@ describe('CoreFcaControllerService', () => {
       await expect(
         service.redirectToIdpWithIdpId(reqMock, resMock, 'any'),
       ).rejects.toThrow(Error);
+    });
+
+    it('should use a smaller set of scopes when IdP is Entra ID', async () => {
+      (
+        coreFcaServiceMock.safelyGetExistingAndEnabledIdp as jest.Mock
+      ).mockReturnValue({ isEntraID: true });
+      (
+        oidcAcrMock.getFilteredAcrParamsFromInteraction as jest.Mock
+      ).mockReturnValueOnce({});
+
+      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
+
+      const params = (oidcClientMock.utils.getAuthorizeUrl as jest.Mock).mock
+        .calls[0][1];
+      expect(params).toMatchObject({ scope: 'openid email profile' });
+    });
+
+    it('should not pass any claims to authorize when IdP is Entra ID', async () => {
+      (
+        coreFcaServiceMock.safelyGetExistingAndEnabledIdp as jest.Mock
+      ).mockReturnValue({ isEntraID: true });
+      (
+        oidcAcrMock.getFilteredAcrParamsFromInteraction as jest.Mock
+      ).mockReturnValueOnce({});
+
+      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
+
+      const params = (oidcClientMock.utils.getAuthorizeUrl as jest.Mock).mock
+        .calls[0][1];
+      expect(params.claims).toBeUndefined();
     });
   });
 

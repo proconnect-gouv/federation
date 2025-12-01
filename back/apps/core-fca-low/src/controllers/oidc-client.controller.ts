@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { isEmpty } from 'lodash';
+import { filter, isEmpty } from 'lodash';
 
 import {
   Body,
@@ -18,7 +18,12 @@ import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { LoggerService, TrackedEvent } from '@fc/logger';
-import { OidcClientService } from '@fc/oidc-client';
+import { IdentityProviderMetadata } from '@fc/oidc';
+import {
+  OidcClientConfig,
+  OidcClientService,
+  TokenResultClaimsDto,
+} from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 import { ISessionService, SessionService } from '@fc/session';
 
@@ -28,6 +33,7 @@ import {
   AfterRedirectToIdpWithEmailSessionDto,
   AfterRedirectToIdpWithIdpIdSessionDto,
   AppConfig,
+  IdentityFromIdpDto,
   RedirectToIdp,
   UserSession,
 } from '../dto';
@@ -156,15 +162,29 @@ export class OidcClientController {
       sp_name: spName,
     };
 
-    const { accessToken, idToken, acr, amr } = await this.oidcClient.getToken(
+    const { accessToken, idToken, claims } = await this.oidcClient.getToken(
       idpId,
       tokenParams,
       req,
       extraParams,
     );
 
+    const idp = await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
+
+    let acr;
+    if (idp.isEntraID && claims['acrs']) {
+      // This behavior is specific to MS Entra ID's authentication contexts
+      // We consider only values of the form c1, c2, c3, mutually exclusive,
+      // and map them to equivalent eidas levels
+      const acrs = filter(claims['acrs'], (x) => x.startsWith('c'));
+      acr = acrs.toString().replace('c', 'eidas');
+    } else {
+      // Otherwise, use the 'acr' claim, defaulting to eidas1 (weak)
+      acr = claims['acr'] || 'eidas1';
+    }
+
     userSession.set({
-      amr,
+      amr: claims.amr,
       idpIdToken: idToken,
       idpAcr: acr,
     });
@@ -178,6 +198,9 @@ export class OidcClientController {
 
     const plainIdpIdentity = await this.oidcClient.getUserinfo(userInfoParams);
 
+    // Augment user info with any claims from ID Token
+    this.augmentIdentityFromIdToken(claims, plainIdpIdentity, idp);
+
     const idpIdentity = await this.sanitizer.getValidatedIdentityFromIdp(
       plainIdpIdentity,
       idpId,
@@ -187,14 +210,7 @@ export class OidcClientController {
       idpIdentity,
     });
 
-    const isAllowedIdpForEmail = await this.coreFcaService.isAllowedIdpForEmail(
-      idpId,
-      idpIdentity.email,
-    );
-
-    if (!isAllowedIdpForEmail) {
-      this.logger.warn({ code: 'fqdn_mismatch' });
-    }
+    await this.checkIdPAllowed(idpId, idpIdentity);
 
     this.logger.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO);
 
@@ -235,5 +251,34 @@ export class OidcClientController {
     }
 
     res.redirect(url);
+  }
+
+  private async checkIdPAllowed(
+    idpId: string,
+    idpIdentity: IdentityFromIdpDto,
+  ) {
+    const isAllowedIdpForEmail = await this.coreFcaService.isAllowedIdpForEmail(
+      idpId,
+      idpIdentity.email,
+    );
+
+    if (!isAllowedIdpForEmail) {
+      this.logger.warn({ code: 'fqdn_mismatch' });
+    }
+  }
+
+  private augmentIdentityFromIdToken(
+    claims: TokenResultClaimsDto,
+    plainIdpIdentity: any,
+    idp: IdentityProviderMetadata,
+  ) {
+    if (!idp.isEntraID) return;
+
+    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
+    for (const key of scope.split(' ')) {
+      if (claims[key] && !plainIdpIdentity[key]) {
+        plainIdpIdentity[key] = claims[key];
+      }
+    }
   }
 }

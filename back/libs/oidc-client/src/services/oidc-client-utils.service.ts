@@ -100,11 +100,11 @@ export class OidcClientUtilsService {
 
   async getTokenSet(
     req: Request,
-    ipdId: string,
+    idpId: string,
     params: TokenParams,
     extraParams?: ExtraTokenParams,
   ): Promise<TokenSet> {
-    const client = await this.issuer.getClient(ipdId);
+    const client = await this.issuer.getClient(idpId);
     const { state } = params;
 
     const callbackParams = client.callbackParams(req);

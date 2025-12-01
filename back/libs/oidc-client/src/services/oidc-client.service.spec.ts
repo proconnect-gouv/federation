@@ -46,8 +46,10 @@ describe('OidcClientService', () => {
         accessToken: 'accessToken',
         idToken: jwtMock,
         refreshToken: 'refreshToken',
-        acr: 'acrMock',
-        amr: undefined,
+        claims: {
+          acr: 'acrMock',
+          amr: undefined,
+        },
       });
     });
 
