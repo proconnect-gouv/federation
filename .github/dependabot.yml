@@ -13,8 +13,8 @@ updates:
       - dependencies
     schedule:
       interval: "weekly"
-    time-based-releases:
-      interval: "7 days"
+    cooldown:
+      default-days: 7
     versioning-strategy: increase
     ignore:
       - dependency-name: "@types/node"
@@ -27,8 +27,8 @@ updates:
       - dependencies
     schedule:
       interval: "weekly"
-    time-based-releases:
-      interval: "7 days"
+    cooldown:
+      default-days: 7
     versioning-strategy: increase
     ignore:
       - dependency-name: "@types/node"
@@ -42,8 +42,8 @@ updates:
     schedule:
       interval: "weekly"
     versioning-strategy: increase
-    time-based-releases:
-      interval: "7 days"
+    cooldown:
+      default-days: 7
     ignore:
       - dependency-name: "@types/node"
         update-types:
