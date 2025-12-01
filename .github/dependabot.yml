@@ -13,6 +13,8 @@ updates:
       - dependencies
     schedule:
       interval: "weekly"
+    time-based-releases:
+      interval: "7 days"
     versioning-strategy: increase
     ignore:
       - dependency-name: "@types/node"
@@ -25,6 +27,8 @@ updates:
       - dependencies
     schedule:
       interval: "weekly"
+    time-based-releases:
+      interval: "7 days"
     versioning-strategy: increase
     ignore:
       - dependency-name: "@types/node"
@@ -38,6 +42,8 @@ updates:
     schedule:
       interval: "weekly"
     versioning-strategy: increase
+    time-based-releases:
+      interval: "7 days"
     ignore:
       - dependency-name: "@types/node"
         update-types:
