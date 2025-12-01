@@ -191,7 +191,7 @@ yarn test
 
 ```bash
 cd $PC_ROOT/federation/quality/fca
-yarn install
+yarn install --frozen-lockfile
 ```
 
 ### Run tests from the Cypress UI
@@ -284,7 +284,6 @@ $ docker compose run --rm init-core
 > It will run the migration script every time the `core-fca-low` container is started.  
 > No need to do it manually when using the `dks switch`
 
-
 ## Generate a new version of class-validator-0.14.2
 
 We forked the class-validator package because we needed inhertiance features and is not yet merged [into the main branch](https://github.com/typestack/class-validator/pull/2641).
@@ -292,11 +291,13 @@ We forked the class-validator package because we needed inhertiance features and
 To update the package, follow these steps.
 
 Get and update the project:
+
 ```bash
 git clone git@github.com:proconnect-gouv/class-validator.git
 ```
 
 Update the version attribute of `class-validator/package.json`:
+
 ```json
 {
   "name": "class-validator",
@@ -306,6 +307,7 @@ Update the version attribute of `class-validator/package.json`:
 ```
 
 Build the new package:
+
 ```bash
 rm -rf build
 npm ci --ignore-scripts
@@ -324,6 +326,7 @@ npm pack ./build
 ```
 
 Then push the built package in a dedicated branch:
+
 ```bash
 git checkout -b build-0.14.2-proconnect.1
 find . -mindepth 1 -maxdepth 1 \
@@ -344,7 +347,7 @@ Update `federation/back/package.json`:
 ```json
 {
   "dependencies": {
-    "class-validator": "git+https://github.com/proconnect-gouv/class-validator.git#build-0.14.2-proconnect.1",
+    "class-validator": "git+https://github.com/proconnect-gouv/class-validator.git#build-0.14.2-proconnect.1"
   }
 }
 ```
