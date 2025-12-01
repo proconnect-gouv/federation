@@ -22,7 +22,7 @@ import {
   CoreFcaAgentAccountBlockedException,
   CoreFcaAgentNotFromPublicServiceException,
 } from '../exceptions';
-import { CoreFcaControllerService } from '../services';
+import { CoreFcaControllerService, CoreFcaService } from '../services';
 import { InteractionController } from './interaction.controller';
 
 jest.mock('uuid', () => ({
@@ -49,6 +49,7 @@ describe('InteractionController', () => {
   let csrfServiceMock: any;
   let loggerMock: any;
   let accountFcaMock: any;
+  let coreFcaMock: any;
 
   beforeEach(async () => {
     oidcProviderMock = {
@@ -88,12 +89,16 @@ describe('InteractionController', () => {
       getAccountBySub: jest.fn(),
     };
     loggerMock = getLoggerMock();
+    coreFcaMock = {
+      ensureEmailIsAuthorizedForSp: jest.fn(),
+    };
 
     // Create the testing module
     const module: TestingModule = await Test.createTestingModule({
       controllers: [InteractionController],
       providers: [
         AccountFcaService,
+        CoreFcaService,
         OidcProviderService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
@@ -108,6 +113,8 @@ describe('InteractionController', () => {
     })
       .overrideProvider(AccountFcaService)
       .useValue(accountFcaMock)
+      .overrideProvider(CoreFcaService)
+      .useValue(coreFcaMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderMock)
       .overrideProvider(OidcAcrService)

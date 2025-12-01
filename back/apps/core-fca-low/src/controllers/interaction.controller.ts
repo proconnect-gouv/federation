@@ -38,12 +38,13 @@ import {
   CoreFcaAgentAccountBlockedException,
   CoreFcaAgentNotFromPublicServiceException,
 } from '../exceptions';
-import { CoreFcaControllerService } from '../services';
+import { CoreFcaControllerService, CoreFcaService } from '../services';
 
 @Controller()
 export class InteractionController {
   constructor(
     private readonly accountService: AccountFcaService,
+    private readonly coreFcaService: CoreFcaService,
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcAcr: OidcAcrService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
@@ -204,6 +205,7 @@ export class InteractionController {
       idpAcr,
       idpId,
       idpIdentity,
+      spIdentity: { email },
       interactionId,
       isSilentAuthentication,
       spEssentialAcr,
@@ -214,6 +216,8 @@ export class InteractionController {
     if (!account || !account.active) {
       throw new CoreFcaAgentAccountBlockedException();
     }
+
+    this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, email);
 
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
     if (!isIdpActive) {
