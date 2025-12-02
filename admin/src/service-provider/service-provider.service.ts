@@ -140,8 +140,10 @@ export class ServiceProviderService {
       ids.map((id) => this.deleteServiceProviderById(id, user)),
     );
 
-    // we do not know how to update grist after a deletion
-    return { hasGristPublicationSucceeded: false };
+    const hasGristPublicationSucceeded =
+      await this.publishServiceProvidersToGrist();
+
+    return { hasGristPublicationSucceeded };
   }
 
   async deleteServiceProviderById(id: string, user: string) {
@@ -163,8 +165,10 @@ export class ServiceProviderService {
       name: serviceProvider.key,
     });
 
-    // we do not know how to update grist after a deletion
-    return { hasGristPublicationSucceeded: false, hasDeletionSucceeded };
+    const hasGristPublicationSucceeded =
+      await this.publishServiceProvidersToGrist();
+
+    return { hasGristPublicationSucceeded, hasDeletionSucceeded };
   }
 
   async generateNewSecret(
