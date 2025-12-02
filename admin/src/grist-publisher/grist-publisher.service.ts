@@ -245,6 +245,7 @@ export class GristPublisherService {
   private async upsertGristRecords<
     providerT extends { UID: string; Reseau: string; Environnement: string },
   >(records: providerT[], tableId: string) {
+    const MAX_RECORDS_PER_REQUEST = 100;
     const { gristDomain, gristDocId, gristApiKey } = this.config.get('grist');
     const gristDocUrl = `https://${gristDomain}/api/docs/${gristDocId}/tables/${tableId}/records`;
     const recordUpdates = records.map((record) => ({
@@ -256,6 +257,37 @@ export class GristPublisherService {
       },
     }));
 
+    for (let i = 0; i < recordUpdates.length; i += MAX_RECORDS_PER_REQUEST) {
+      const recordUpdatesChunk = recordUpdates.slice(
+        i,
+        i + MAX_RECORDS_PER_REQUEST,
+      );
+      const success = await this.performGristUpsertRequest<providerT>({
+        gristDocUrl,
+        gristApiKey,
+        recordUpdates: recordUpdatesChunk,
+      });
+      if (!success) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private async performGristUpsertRequest<providerT>({
+    gristDocUrl,
+    gristApiKey,
+    recordUpdates,
+  }: {
+    gristDocUrl: string;
+    gristApiKey: string;
+    recordUpdates: Array<{
+      fields: providerT;
+      require: { UID: string; Reseau: string; Environnement: string };
+    }>;
+  }) {
+    console.log(`Upserting ${recordUpdates.length} records to Grist...`);
     try {
       const response = await fetch(gristDocUrl, {
         method: 'PUT',
