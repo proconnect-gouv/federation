@@ -31,7 +31,7 @@
                     <% }) %>
                   </p>
                   <% } else { %>
-                  Veuillez mettre un nom valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )
+                  Veuillez mettre un nom valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )
                   <% } %>
                 </div>
               </div>
@@ -49,14 +49,14 @@
                     <% }) %>
                   </p>
                   <% } else { %>
-                  Veuillez mettre un titre valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )
+                  Veuillez mettre un titre valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )
                   <% } %>
                 </div>
               </div>
             </div>
 
             <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="fqdns">Noms de domaines (un fqdn par ligne) :</label>
+              <label class="col-2 col-form-label" for="fqdns">Domaines email associés (un domaine par ligne) :</label>
               <div class="col-10">
                 <textarea id="fqdns" rows="3" name="fqdns" class="form-control <%= locals.messages.errors && messages.errors[0].fqdns && 'is-invalid' %>" pattern="^([\da-z\.-]+)\.([a-z\.]{2,10})$"><%= locals.messages.values && messages.values[0].fqdns instanceof Array ? messages.values[0].fqdns.join('\n') : '' %></textarea>
                 <div class="invalid-feedback">
@@ -68,22 +68,70 @@
                     <% }) %>
                   </p>
                   <% } else { %>
-                  Veuillez saisir un nom de domaine complet valide (optionel.nom-de-dmonaine.fr, tld obligatoire)
+                  Veuillez saisir un nom de domaine email complet valide (chiffres, lettres minuscules, tiret et point, tld obligatoire)
                   <% } %>
                 </div>
               </div>
             </div>
 
+            <%
+              let isRoutingEnabledChecked = false
+              if (locals.messages.values && messages.values[0].isRoutingEnabled !== undefined) {
+                isRoutingEnabledChecked = messages.values[0].isRoutingEnabled
+              } else {
+                isRoutingEnabledChecked = true
+              }
+            %>
             <div class="mb-3 row">
-              <label class="col-2 col-form-label">Activer le routage * :</label>
+              <label class="col-2 col-form-label">Activer le routage pour ces domaines :</label>
               <div class="mb-3 col-4 d-flex align-items-end">
                 <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid" id="enableRouting" name="isRoutingEnabled" value="true" required <%= locals.messages.values && messages.values[0].isRoutingEnabled === true ? 'checked' : '' %>>
-                  <label class="form-check-label" for="enableRouting">oui</label>
+                    <input type="radio" class="form-check-input is-valid" id="enableRouting" name="isRoutingEnabled" value="true" required <%= isRoutingEnabledChecked ? 'checked' : '' %>>
+                    <label class="form-check-label" for="enableRouting">oui</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid" id="disableRouting" name="isRoutingEnabled" value="false" required <%= locals.messages.values && messages.values[0].isRoutingEnabled === false ? 'checked' : '' %>>
-                  <label class="form-check-label" for="disableRouting">non</label>
+                    <input type="radio" class="form-check-input is-valid" id="disableRouting" name="isRoutingEnabled" value="false" required <%= isRoutingEnabledChecked ? '' : 'checked' %>>
+                    <label class="form-check-label" for="disableRouting">non</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label class="col-2 col-form-label" for="extraAcceptedEmailDomains">Noms de domaines email supplémentaires acceptés (un domaine par ligne) :</label>
+              <div class="col-10">
+                <textarea id="extraAcceptedEmailDomains" rows="3" name="extraAcceptedEmailDomains" class="form-control <%= locals.messages.errors && messages.errors[0].extraAcceptedEmailDomains && 'is-invalid' %>" pattern="^([\da-z\.-]+)\.([a-z\.]{2,10})$"><%= locals.messages.values && messages.values[0].extraAcceptedEmailDomains instanceof Array ? messages.values[0].extraAcceptedEmailDomains.join('\n') : '' %></textarea>
+                <div class="invalid-feedback">
+                  <% if (locals.messages.errors && messages.errors[0].extraAcceptedEmailDomains) { %>
+                  <p>
+                    <% messages.errors[0].extraAcceptedEmailDomains.forEach((error) => { %>
+                    <%= error %>
+                    <br>
+                    <% }) %>
+                  </p>
+                  <% } else { %>
+                  Veuillez saisir un nom de domaine email complet valide (chiffres, lettres minuscules, tiret et point, tld obligatoire)                  <% } %>
+                </div>
+              </div>
+            </div>
+
+            <%
+              let isBlockingForUnlistedEmailDomainsEnabledChecked = false
+              if (locals.messages.values && messages.values[0].isBlockingForUnlistedEmailDomainsEnabled !== undefined) {
+                isBlockingForUnlistedEmailDomainsEnabledChecked = messages.values[0].isBlockingForUnlistedEmailDomainsEnabled
+              } else {
+                isBlockingForUnlistedEmailDomainsEnabledChecked = false
+              }
+            %>
+            <div class="mb-3 row">
+          <label class="col-2 col-form-label">Bloquer les domaines email en dehors des deux listes :</label>
+              <div class="mb-3 col-4 d-flex align-items-end">
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input is-valid" id="enableBlocking" name="isBlockingForUnlistedEmailDomainsEnabled" value="true" required <%= isBlockingForUnlistedEmailDomainsEnabledChecked ? 'checked' : '' %>>
+                    <label class="form-check-label" for="enableBlocking">oui</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input is-valid" id="disableBlocking" name="isBlockingForUnlistedEmailDomainsEnabled" value="false" required <%= isBlockingForUnlistedEmailDomainsEnabledChecked ? '' : 'checked' %>>
+                    <label class="form-check-label" for="disableBlocking">non</label>
                 </div>
               </div>
             </div>

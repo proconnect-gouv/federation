@@ -22,6 +22,8 @@ describe('Identity Provider (Data Transfer Object)', () => {
     token_endpoint_auth_method: 'client_secret_post',
     isRoutingEnabled: 'true',
     isEntraID: 'false',
+    extraAcceptedEmailDomains: [],
+    isBlockingForUnlistedEmailDomainsEnabled: 'false',
   };
 
   const idpDiscoveryMock = {
@@ -39,6 +41,8 @@ describe('Identity Provider (Data Transfer Object)', () => {
     token_endpoint_auth_method: 'client_secret_post',
     isRoutingEnabled: 'true',
     isEntraID: 'false',
+    extraAcceptedEmailDomains: [],
+    isBlockingForUnlistedEmailDomainsEnabled: 'false',
   };
 
   describe('should validate', () => {

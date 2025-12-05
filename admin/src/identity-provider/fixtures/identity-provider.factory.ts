@@ -35,9 +35,11 @@ function createIdentityProviderFromDb(
     userInfoURL: 'https://default.userinfo-url.fr',
     uid: 'default_uid',
     fqdns: [],
-    ...partial,
     isRoutingEnabled: true,
     isEntraID: false,
+    extraAcceptedEmailDomains: [],
+    isBlockingForUnlistedEmailDomainsEnabled: true,
+    ...partial,
   };
 }
 
@@ -71,9 +73,11 @@ function createIdentityProviderDto(
     redirect_uris: [],
     siret: '',
     supportEmail: 'support@email.fr',
-    ...partial,
     isRoutingEnabled: true,
     isEntraID: false,
+    extraAcceptedEmailDomains: [],
+    isBlockingForUnlistedEmailDomainsEnabled: true,
+    ...partial,
   };
 }
 

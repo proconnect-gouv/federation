@@ -275,7 +275,7 @@ describe('Identity provider update', () => {
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
 
       cy.contains(
-        `Veuillez mettre un titre valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+        `Veuillez mettre un titre valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
       ).should('exist');
 
       cy.contains(
@@ -313,7 +313,7 @@ describe('Identity provider update', () => {
 
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
       cy.contains(
-        `Veuillez mettre un titre valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+        `Veuillez mettre un titre valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
       )
         .scrollIntoView()
         .should('exist');
@@ -325,9 +325,7 @@ describe('Identity provider update', () => {
       };
 
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
-      cy.contains(
-        `siret must be longer than or equal to 14 characters`,
-      )
+      cy.contains(`siret must be longer than or equal to 14 characters`)
         .scrollIntoView()
         .should('exist');
     });

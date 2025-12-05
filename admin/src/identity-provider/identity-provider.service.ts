@@ -212,6 +212,9 @@ export class IdentityProviderService {
       isRoutingEnabled: identityProviderDto.isRoutingEnabled,
       isEntraID: identityProviderDto.isEntraID,
       fqdns: identityProviderDto.fqdns,
+      extraAcceptedEmailDomains: identityProviderDto.extraAcceptedEmailDomains,
+      isBlockingForUnlistedEmailDomainsEnabled:
+        identityProviderDto.isBlockingForUnlistedEmailDomainsEnabled,
     };
 
     if (mode === 'create') {
@@ -261,6 +264,9 @@ export class IdentityProviderService {
       isRoutingEnabled: inputProvider.isRoutingEnabled,
       isEntraID: inputProvider.isEntraID,
       fqdns: inputProvider.fqdns,
+      extraAcceptedEmailDomains: inputProvider.extraAcceptedEmailDomains,
+      isBlockingForUnlistedEmailDomainsEnabled:
+        inputProvider.isBlockingForUnlistedEmailDomainsEnabled,
     };
   }
 

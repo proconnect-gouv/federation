@@ -32,6 +32,8 @@ describe('Identity Provider (Data Transfer Object)', () => {
     siret: '81801912700021',
     isRoutingEnabled: true,
     isEntraID: true,
+    extraAcceptedEmailDomains: [],
+    isBlockingForUnlistedEmailDomainsEnabled: false,
   };
 
   const discoveryIdpAdapterMongoMock = {

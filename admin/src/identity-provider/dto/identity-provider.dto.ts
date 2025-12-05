@@ -18,12 +18,12 @@ const FQDN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 
 export class IdentityProviderDTO {
   @IsValidInputString({
-    message: `Veuillez mettre un nom valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+    message: `Veuillez mettre un nom valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
   })
   readonly name: string;
 
   @IsValidInputString({
-    message: `Veuillez mettre un titre valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+    message: `Veuillez mettre un titre valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
   })
   readonly title: string;
 
@@ -182,11 +182,7 @@ export class IdentityProviderDTO {
   @Transform(({ value }) =>
     linesToArray({ value }, { shouldDeleteDuplicates: true }),
   )
-  @Matches(FQDN_REGEX, {
-    each: true,
-    message:
-      'Veuillez mettre des fqdns valides ( Ex: nom.de-domaine-complet.com )',
-  })
+  @Matches(FQDN_REGEX, { each: true })
   readonly fqdns?: string[];
 
   @IsOptionalExtended()
@@ -205,4 +201,15 @@ export class IdentityProviderDTO {
   @Transform(toBoolean)
   @IsBoolean()
   readonly isEntraID: boolean;
+
+  @IsOptional()
+  @Transform(({ value }) =>
+    linesToArray({ value }, { shouldDeleteDuplicates: true }),
+  )
+  @Matches(FQDN_REGEX, { each: true })
+  readonly extraAcceptedEmailDomains?: string[];
+
+  @Transform(toBoolean)
+  @IsBoolean()
+  readonly isBlockingForUnlistedEmailDomainsEnabled: boolean;
 }
