@@ -33,7 +33,6 @@ import {
   AfterRedirectToIdpWithEmailSessionDto,
   AfterRedirectToIdpWithIdpIdSessionDto,
   AppConfig,
-  IdentityFromIdpDto,
   RedirectToIdp,
   UserSession,
 } from '../dto';
@@ -212,7 +211,10 @@ export class OidcClientController {
       idpIdentity,
     });
 
-    await this.checkIdPAllowed(idpId, idpIdentity);
+    await this.coreFcaService.ensureIdpCanServeThisEmail(
+      idpId,
+      idpIdentity.email,
+    );
 
     this.logger.track(TrackedEvent.FC_REQUESTED_IDP_USERINFO);
 
@@ -253,20 +255,6 @@ export class OidcClientController {
     }
 
     res.redirect(url);
-  }
-
-  private async checkIdPAllowed(
-    idpId: string,
-    idpIdentity: IdentityFromIdpDto,
-  ) {
-    const isAllowedIdpForEmail = await this.coreFcaService.isAllowedIdpForEmail(
-      idpId,
-      idpIdentity.email,
-    );
-
-    if (!isAllowedIdpForEmail) {
-      this.logger.warn({ code: 'fqdn_mismatch' });
-    }
   }
 
   private augmentIdentityFromIdToken(

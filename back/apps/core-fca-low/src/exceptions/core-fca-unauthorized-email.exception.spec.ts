@@ -5,7 +5,7 @@ describe('CoreFcaUnauthorizedEmailException', () => {
     it('should use default properties', () => {
       const result = new CoreFcaUnauthorizedEmailException('', '');
 
-      expect(result['authorizedFqdns']).toEqual([]);
+      expect(result['description']).toContain('✅ \n❌ gmail, yahoo, orange');
     });
   });
 });

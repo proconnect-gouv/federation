@@ -17,17 +17,19 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
   public displayContact = true;
 
   constructor(
-    private spName: string,
-    private spContact: string,
-    private authorizedFqdns: string[] = [],
+    spName: string,
+    spContact: string,
+    authorizedFqdns: string[] = [],
   ) {
     super();
-    this.description =
-      `Vous essayez de vous connecter à ${this.spName}.\n\n` +
-      `Réessayez en utilisant votre adresse email professionnelle :\n\n` +
-      `✅ ${this.authorizedFqdns.join(', ')}\n` +
-      `❌ gmail, yahoo, orange`;
-    this.contactMessage = `Si cela ne fonctionne pas, contactez le support utilisateur du service ${this.spName} pour régler le problème.`;
-    this.contactHref = `mailto:${encodeURIComponent(this.spContact)}`;
+    this.description = `Vous essayez de vous connecter à ${spName}.
+
+Réessayez en utilisant votre adresse email professionnelle :
+
+✅ ${authorizedFqdns.join(', ')}
+❌ gmail, yahoo, orange`;
+
+    this.contactMessage = `Si cela ne fonctionne pas, contactez le support utilisateur du service ${spName} pour régler le problème.`;
+    this.contactHref = `mailto:${encodeURIComponent(spContact)}`;
   }
 }

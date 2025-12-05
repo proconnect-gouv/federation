@@ -96,7 +96,7 @@
             </div>
 
             <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="extraAcceptedEmailDomains">Noms de domaines email supplémentaires acceptés (un domaine par ligne) :</label>
+              <label class="col-2 col-form-label" for="extraAcceptedEmailDomains">Domaines email supplémentaires acceptés en retour (un domaine par ligne) :</label>
               <div class="col-10">
                 <textarea id="extraAcceptedEmailDomains" rows="3" name="extraAcceptedEmailDomains" class="form-control <%= locals.messages.errors && messages.errors[0].extraAcceptedEmailDomains && 'is-invalid' %>" pattern="^([\da-z\.-]+)\.([a-z\.]{2,10})$"><%= locals.messages.values && messages.values[0].extraAcceptedEmailDomains instanceof Array ? messages.values[0].extraAcceptedEmailDomains.join('\n') : '' %></textarea>
                 <div class="invalid-feedback">
