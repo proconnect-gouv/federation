@@ -2,13 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from 'nestjs-config';
 import { GristPublisherService } from './grist-publisher.service';
 import { LoggerService } from '../logger/logger.service';
+import { identityProviderFactory } from '../identity-provider/fixtures';
+import { serviceProviderFactory } from '../service-provider/fixtures';
 
 describe('GristPublisherService', () => {
   let service: GristPublisherService;
   let configService: ConfigService;
   let loggerService: LoggerService;
 
-  const mockGristConfig = {
+  const baseMockGristConfig = {
     gristDomain: 'test.grist.com',
     gristDocId: 'test-doc-id',
     gristApiKey: 'test-api-key',
@@ -21,7 +23,7 @@ describe('GristPublisherService', () => {
         {
           provide: ConfigService,
           useValue: {
-            get: jest.fn().mockReturnValue(mockGristConfig),
+            get: jest.fn().mockReturnValue(baseMockGristConfig),
           },
         },
         {
@@ -37,6 +39,8 @@ describe('GristPublisherService', () => {
     configService = module.get<ConfigService>(ConfigService);
     loggerService = module.get<LoggerService>(LoggerService);
 
+    loggerService.info = jest.fn();
+
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue({}),
@@ -45,6 +49,243 @@ describe('GristPublisherService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('publishIdentityProviders', () => {
+    it('should add a new identity provider when it does not exist in Grist', async () => {
+      const mockGristConfig = {
+        ...baseMockGristConfig,
+        gristIdentityProvidersTableId: 'identity-providers-table',
+        gristNetworkName: 'test-network',
+        gristEnvironmentName: 'test-env',
+      };
+      (configService.get as jest.Mock).mockReturnValue(mockGristConfig);
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ records: [] }),
+      });
+
+      const identityProviders = [
+        {
+          uid: 'new-idp',
+          title: 'New Identity Provider',
+          active: true,
+          discoveryUrl: 'https://example.com/.well-known',
+          fqdns: ['example.com'],
+          siret: '12345678901234',
+          id_token_signed_response_alg: 'RS256' as const,
+          userinfo_signed_response_alg: 'RS256' as const,
+        },
+      ].map(identityProviderFactory.createIdentityProviderFromDb);
+
+      await service.publishIdentityProviders(identityProviders);
+
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      const upsertCall = (global.fetch as jest.Mock).mock.calls[1];
+      const upsertBody = JSON.parse(upsertCall[1].body);
+      expect(upsertBody.records).toHaveLength(1);
+      expect(upsertBody.records[0].fields.UID).toBe('new-idp');
+    });
+
+    it('should delete an identity provider when it no longer exists locally', async () => {
+      const mockGristConfig = {
+        ...baseMockGristConfig,
+        gristIdentityProvidersTableId: 'identity-providers-table',
+        gristNetworkName: 'test-network',
+        gristEnvironmentName: 'test-env',
+      };
+      (configService.get as jest.Mock).mockReturnValue(mockGristConfig);
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          records: [
+            {
+              id: 123,
+              fields: {
+                UID: 'old-idp',
+                Reseau: 'test-network',
+                Environnement: 'test-env',
+                Titre: 'Old Provider',
+              },
+            },
+          ],
+        }),
+      });
+
+      await service.publishIdentityProviders([]);
+
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      const deleteCall = (global.fetch as jest.Mock).mock.calls[1];
+      expect(deleteCall[0]).toContain('/records/delete');
+      const deleteBody = JSON.parse(deleteCall[1].body);
+      expect(deleteBody).toEqual([123]);
+    });
+
+    it('should update an identity provider when fields have changed', async () => {
+      const mockGristConfig = {
+        ...baseMockGristConfig,
+        gristIdentityProvidersTableId: 'identity-providers-table',
+        gristNetworkName: 'test-network',
+        gristEnvironmentName: 'test-env',
+      };
+      (configService.get as jest.Mock).mockReturnValue(mockGristConfig);
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          records: [
+            {
+              id: 456,
+              fields: {
+                UID: 'existing-idp',
+                Reseau: 'test-network',
+                Environnement: 'test-env',
+                Titre: 'Old Title',
+                Actif: 'Oui',
+              },
+            },
+          ],
+        }),
+      });
+
+      const identityProviders = [
+        {
+          uid: 'existing-idp',
+          title: 'Updated Title',
+          active: true,
+          discoveryUrl: 'https://example.com/.well-known',
+          fqdns: ['example.com'],
+          siret: '12345678901234',
+          id_token_signed_response_alg: 'RS256' as const,
+          userinfo_signed_response_alg: 'RS256' as const,
+        },
+      ].map(identityProviderFactory.createIdentityProviderFromDb);
+
+      await service.publishIdentityProviders(identityProviders);
+
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      const upsertCall = (global.fetch as jest.Mock).mock.calls[1];
+      const upsertBody = JSON.parse(upsertCall[1].body);
+      expect(upsertBody.records).toHaveLength(1);
+      expect(upsertBody.records[0].fields.Titre).toBe('Updated Title');
+    });
+  });
+
+  describe('publishServiceProviders', () => {
+    it('should add a new service provider when it does not exist in Grist', async () => {
+      const mockGristConfig = {
+        ...baseMockGristConfig,
+        gristServiceProvidersTableId: 'service-providers-table',
+        gristNetworkName: 'test-network',
+        gristEnvironmentName: 'test-env',
+      };
+      (configService.get as jest.Mock).mockReturnValue(mockGristConfig);
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ records: [] }),
+      });
+
+      const serviceProviders = [
+        {
+          key: 'new-sp',
+          name: 'New Service Provider',
+          active: true,
+          redirect_uris: ['https://example.com'],
+        },
+      ].map(serviceProviderFactory.createServiceProviderFromDb);
+
+      await service.publishServiceProviders(serviceProviders);
+
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      const upsertCall = (global.fetch as jest.Mock).mock.calls[1];
+      const upsertBody = JSON.parse(upsertCall[1].body);
+      expect(upsertBody.records).toHaveLength(1);
+      expect(upsertBody.records[0].fields.UID).toBe('new-sp');
+    });
+
+    it('should delete a service provider when it no longer exists locally', async () => {
+      const mockGristConfig = {
+        ...baseMockGristConfig,
+        gristServiceProvidersTableId: 'service-providers-table',
+        gristNetworkName: 'test-network',
+        gristEnvironmentName: 'test-env',
+      };
+      (configService.get as jest.Mock).mockReturnValue(mockGristConfig);
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          records: [
+            {
+              id: 123,
+              fields: {
+                UID: 'old-sp',
+                Reseau: 'test-network',
+                Environnement: 'test-env',
+                Nom: 'Old Provider',
+              },
+            },
+          ],
+        }),
+      });
+
+      await service.publishServiceProviders([]);
+
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      const deleteCall = (global.fetch as jest.Mock).mock.calls[1];
+      expect(deleteCall[0]).toContain('/records/delete');
+      const deleteBody = JSON.parse(deleteCall[1].body);
+      expect(deleteBody).toEqual([123]);
+    });
+
+    it('should update a service provider when fields have changed', async () => {
+      const mockGristConfig = {
+        ...baseMockGristConfig,
+        gristServiceProvidersTableId: 'service-providers-table',
+        gristNetworkName: 'test-network',
+        gristEnvironmentName: 'test-env',
+      };
+      (configService.get as jest.Mock).mockReturnValue(mockGristConfig);
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          records: [
+            {
+              id: 456,
+              fields: {
+                UID: 'existing-sp',
+                Reseau: 'test-network',
+                Environnement: 'test-env',
+                Nom: 'Old Title',
+                Actif: 'Oui',
+                Liste_des_URL_de_callback: 'https://example.com',
+              },
+            },
+          ],
+        }),
+      });
+
+      const serviceProviders = [
+        {
+          key: 'existing-sp',
+          name: 'Updated Title',
+          active: true,
+          redirect_uris: ['https://example.com'],
+        },
+      ].map(serviceProviderFactory.createServiceProviderFromDb);
+
+      await service.publishServiceProviders(serviceProviders);
+
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      const upsertCall = (global.fetch as jest.Mock).mock.calls[1];
+      const upsertBody = JSON.parse(upsertCall[1].body);
+      expect(upsertBody.records).toHaveLength(1);
+      expect(upsertBody.records[0].fields.Nom).toBe('Updated Title');
+    });
   });
 
   describe('computeRecordUpdates', () => {

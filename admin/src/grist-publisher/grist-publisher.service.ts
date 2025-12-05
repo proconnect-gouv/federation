@@ -119,7 +119,7 @@ export class GristPublisherService {
             previousProviderRecord.fields.Environnement,
       );
       if (!stillExists) {
-        console.log('Deleting record:', previousProviderRecord.fields.UID);
+        this.logger.info('Deleting record:', previousProviderRecord.fields.UID);
         recordIdsToDelete.push(previousProviderRecord.id);
       }
     }
@@ -132,7 +132,7 @@ export class GristPublisherService {
           prevRecord.fields.Environnement === nextProviderRecord.Environnement,
       );
       if (!previousRecord) {
-        console.log('Adding record:', nextProviderRecord.UID);
+        this.logger.info('Adding record:', nextProviderRecord.UID);
 
         recordsToUpsert.push(nextProviderRecord);
       } else {
@@ -142,7 +142,7 @@ export class GristPublisherService {
             previousRecord.fields[key as keyof providerT],
         );
         if (hasChanges) {
-          console.log('Updating record:', nextProviderRecord.UID);
+          this.logger.info('Updating record:', nextProviderRecord.UID);
 
           recordsToUpsert.push(nextProviderRecord);
         }
@@ -287,7 +287,7 @@ export class GristPublisherService {
       require: { UID: string; Reseau: string; Environnement: string };
     }>;
   }) {
-    console.log(`Upserting ${recordUpdates.length} records to Grist...`);
+    this.logger.info(`Upserting ${recordUpdates.length} records to Grist...`);
     try {
       const response = await fetch(gristDocUrl, {
         method: 'PUT',
