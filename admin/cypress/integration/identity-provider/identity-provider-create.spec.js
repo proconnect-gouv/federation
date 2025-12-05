@@ -192,12 +192,12 @@ describe('Identity provider creation', () => {
       createIdentityProvider(idp, basicConfiguration);
       cy.url().should('eq', `${BASE_URL}/identity-provider/create`);
       cy.contains(
-        `Veuillez mettre un titre valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+        `Veuillez mettre un titre valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
       )
         .scrollIntoView()
         .should('exist');
       cy.contains(
-        `Veuillez mettre un nom valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+        `Veuillez mettre un nom valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
       )
         .scrollIntoView()
         .should('exist');
@@ -238,7 +238,7 @@ describe('Identity provider creation', () => {
       createIdentityProvider(idp, basicConfiguration);
       cy.url().should('eq', `${BASE_URL}/identity-provider/create`);
       cy.contains(
-        `Veuillez mettre un titre valide ( majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
+        `Veuillez mettre un titre valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
       ).should('exist');
     });
 

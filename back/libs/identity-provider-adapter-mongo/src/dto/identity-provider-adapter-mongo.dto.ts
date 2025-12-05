@@ -96,6 +96,15 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsBoolean()
   readonly isEntraID: boolean;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(({ value }) => value || undefined)
+  readonly extraAcceptedEmailDomains?: string[];
+
+  @IsBoolean()
+  readonly isBlockingForUnlistedEmailDomainsEnabled: boolean;
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
