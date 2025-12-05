@@ -230,6 +230,7 @@ export class ServiceProviderController {
         req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
       }
     } catch (error) {
+      console.error(error);
       req.flash('globalError', 'Impossible de mettre à jour le FS');
       return res.redirect(`${res.locals.APP_ROOT}/service-provider/${id}`);
     }
