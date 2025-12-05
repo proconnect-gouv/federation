@@ -8,7 +8,7 @@ import { IdentityProviderController } from './identity-provider.controller';
 import { IdentityProviderService } from './identity-provider.service';
 
 import * as classTransformer from 'class-transformer';
-import { identityProviderFactory } from './fixture';
+import { identityProviderFactory } from './fixtures';
 
 describe('IdentityProviderController', () => {
   let identityProviderController;
