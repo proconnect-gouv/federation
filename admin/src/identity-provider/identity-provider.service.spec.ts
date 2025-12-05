@@ -10,7 +10,7 @@ import { SecretManagerService } from '../utils/secret-manager.service';
 import { ICrudTrack } from '../interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { PaginationService } from '../pagination';
-import { identityProviderFactory } from './fixture';
+import { identityProviderFactory } from './fixtures';
 import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
 
 jest.mock('uuid');
