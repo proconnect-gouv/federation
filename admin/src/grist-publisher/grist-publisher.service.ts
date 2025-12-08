@@ -119,7 +119,9 @@ export class GristPublisherService {
             previousProviderRecord.fields.Environnement,
       );
       if (!stillExists) {
-        this.logger.info('Deleting record:', previousProviderRecord.fields.UID);
+        this.logger.info(
+          `Deleting record: ${previousProviderRecord.fields.UID}`,
+        );
         recordIdsToDelete.push(previousProviderRecord.id);
       }
     }
@@ -132,7 +134,7 @@ export class GristPublisherService {
           prevRecord.fields.Environnement === nextProviderRecord.Environnement,
       );
       if (!previousRecord) {
-        this.logger.info('Adding record:', nextProviderRecord.UID);
+        this.logger.info(`Adding record: ${nextProviderRecord.UID}`);
 
         recordsToUpsert.push(nextProviderRecord);
       } else {
@@ -142,7 +144,7 @@ export class GristPublisherService {
             previousRecord.fields[key as keyof providerT],
         );
         if (hasChanges) {
-          this.logger.info('Updating record:', nextProviderRecord.UID);
+          this.logger.info(`Updating record: ${nextProviderRecord.UID}`);
 
           recordsToUpsert.push(nextProviderRecord);
         }
