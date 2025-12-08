@@ -44,6 +44,8 @@ export class InvalidSessionExceptionFilter extends HttpExceptionFilter {
     // (the `oidc-provider` has lost its own independent session),
     // our session will have been cleared already.
     this.session.clear();
+    // A "quick response" fix to a bug resulting in an infinite redirect loop
+    await this.session.commit();
 
     // Restart the oidc-provider interaction
     // (which may fail if it also has lost its session)
