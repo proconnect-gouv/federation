@@ -39,13 +39,8 @@ Given(
 );
 
 Then('le bouton {string} est {string}', (buttonText, state) => {
-  const expectedPointer = state === 'désactivé' ? 'none' : 'auto';
-
-  cy.contains('button', buttonText).should(
-    'have.css',
-    'pointer-events',
-    expectedPointer,
-  );
+  const assertion = state === 'désactivé' ? 'be.disabled' : 'not.be.disabled';
+  cy.contains('button', buttonText).should(assertion);
 });
 
 Then('je suis redirigé vers la page de déconnexion', function () {
