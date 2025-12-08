@@ -112,4 +112,10 @@ export class IdentityProviderFromDb {
 
   @Column()
   fqdns: string[];
+
+  @Column()
+  extraAcceptedEmailDomains: string[];
+
+  @Column()
+  isBlockingForUnlistedEmailDomainsEnabled: boolean;
 }

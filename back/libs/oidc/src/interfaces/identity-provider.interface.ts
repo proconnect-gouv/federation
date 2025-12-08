@@ -15,4 +15,6 @@ export type IdentityProviderMetadata = {
   fqdns?: string[];
   isRoutingEnabled: boolean;
   isEntraID: boolean;
+  extraAcceptedEmailDomains?: string[];
+  isBlockingForUnlistedEmailDomainsEnabled: boolean;
 };

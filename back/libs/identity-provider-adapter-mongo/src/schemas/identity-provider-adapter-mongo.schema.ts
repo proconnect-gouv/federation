@@ -58,6 +58,15 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: Boolean })
   isRoutingEnabled: boolean;
+
+  @Prop({ type: Boolean })
+  isEntraID: boolean;
+
+  @Prop({ type: [String] })
+  extraAcceptedEmailDomains: string[];
+
+  @Prop({ type: Boolean })
+  isBlockingForUnlistedEmailDomainsEnabled: boolean;
 }
 
 export const IdentityProviderSchema =
