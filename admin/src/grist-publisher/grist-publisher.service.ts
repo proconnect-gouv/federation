@@ -166,27 +166,12 @@ export class GristPublisherService {
     },
     tableId: string,
   ) {
-    if (recordIdsToDelete.length > 0) {
-      const deleteSuccess = await this.deleteGristRecords(
-        recordIdsToDelete,
-        tableId,
-      );
-      if (!deleteSuccess) {
-        return false;
-      }
-    }
+    const successes = await Promise.all([
+      this.deleteGristRecords(recordIdsToDelete, tableId),
+      this.upsertGristRecords(recordsToUpsert, tableId),
+    ]);
 
-    if (recordsToUpsert.length > 0) {
-      const upsertSuccess = await this.upsertGristRecords(
-        recordsToUpsert,
-        tableId,
-      );
-      if (!upsertSuccess) {
-        return false;
-      }
-    }
-
-    return true;
+    return successes.every((success) => success);
   }
 
   private async getProviderRecordsFromGrist<providerT>(tableId: string) {
@@ -217,6 +202,9 @@ export class GristPublisherService {
   }
 
   private async deleteGristRecords(recordIds: number[], tableId: string) {
+    if (recordIds.length === 0) {
+      return true;
+    }
     const { gristDomain, gristDocId, gristApiKey } = this.config.get('grist');
     const gristDocUrl = `https://${gristDomain}/api/docs/${gristDocId}/tables/${tableId}/records/delete`;
     try {
@@ -247,6 +235,9 @@ export class GristPublisherService {
   private async upsertGristRecords<
     providerT extends { UID: string; Reseau: string; Environnement: string },
   >(records: providerT[], tableId: string) {
+    if (records.length === 0) {
+      return true;
+    }
     const MAX_RECORDS_PER_REQUEST = 100;
     const { gristDomain, gristDocId, gristApiKey } = this.config.get('grist');
     const gristDocUrl = `https://${gristDomain}/api/docs/${gristDocId}/tables/${tableId}/records`;
