@@ -58,21 +58,31 @@
               <% } %>
             </div>
 
-            <%  if (locals.exceptionDisplay.displayContact)  { %>
-              <% var contactMessage = locals.exceptionDisplay.contactMessage || 'Vous pouvez nous signaler cette erreur en nous écrivant.' %>
+            <% if (locals.exceptionDisplay.displayContact || locals.interactionErrorUrl) { %>
               <section>
-                <hr>
-
-                <div class="fr-pt-1w">
-                  <p class="fr-text--sm">
-                    <%= locals.exceptionDisplay.contactMessage %>
-                  </p>
-                </div>
-
-                <div class="fr-pt-1w">
-                  <a class="fr-btn fr-btn--tertiary fr-icon-flag-line fr-btn--icon-right" href="<%= locals.exceptionDisplay.contactHref %>">
-                    Signaler l'erreur
-                  </a>
+                <div class="fr-mt-4w">
+                  <% if (locals.exceptionDisplay.displayContact) { %>
+                    <hr>
+                    <p class="fr-text--sm fr-mb-1w">
+                      <%  if (locals.exceptionDisplay.contactMessage)  { %>
+                        <%= locals.exceptionDisplay.contactMessage %>
+                      <% } else { %>
+                        Vous pouvez nous signaler cette erreur en nous écrivant.
+                      <% } %>
+                    </p>
+                  <% } %>
+                  <div>
+                    <% if (locals.exceptionDisplay.displayContact) { %>
+                      <a class="fr-btn fr-btn--tertiary fr-icon-flag-line fr-btn--icon-right fr-mr-1w" href="<%= locals.exceptionDisplay.contactHref %>">
+                        Signaler l'erreur
+                      </a>
+                    <% } %>
+                    <% if (locals.interactionErrorUrl) { %>
+                      <a class="fr-btn fr-mt-1w fr-mt-md-0" href="<%= locals.interactionErrorUrl %>">
+                        Retour au service
+                      </a>
+                    <% } %>
+                  </div>
                 </div>
               </section>
             <% } %>
@@ -80,9 +90,7 @@
           </div>
 
           <aside class="fr-col-lg-4 fr-col-md-5 error-aside">
-            <% var imageSrc = 'default-error' %>
-            <%  if (locals.exceptionDisplay.illustration) imageSrc = locals.exceptionDisplay.illustration; %>
-            <img src="/img/<%= imageSrc %>.svg" alt="" />
+            <img src="/img/<%= locals.exceptionDisplay.illustration || 'default-error' %>.svg" alt="" />
           </aside>
         </section>
       </section>

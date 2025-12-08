@@ -534,4 +534,15 @@ describe('InteractionController', () => {
       expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
     });
   });
+
+  describe('getVerify()', () => {
+    it('should call abortInteraction', async () => {
+      const req = {} as Request;
+      const res = {} as Response;
+
+      await controller.getError(req, res, {} as any);
+
+      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
+    });
+  });
 });

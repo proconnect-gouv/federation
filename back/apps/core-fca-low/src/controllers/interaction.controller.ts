@@ -273,4 +273,18 @@ export class InteractionController {
       acr: interactionAcr,
     });
   }
+
+  @Get(Routes.INTERACTION_ERROR)
+  @Header('cache-control', 'no-store')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getError(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param() _params: Interaction,
+  ) {
+    return await this.oidcProvider.abortInteraction(req, res, {
+      error: 'server_error',
+      error_description: 'An unexpected error occurred',
+    });
+  }
 }
