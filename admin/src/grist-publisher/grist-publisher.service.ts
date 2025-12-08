@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from 'nestjs-config';
-import { isString } from 'lodash';
+import { chunk, isString } from 'lodash';
 import { LoggerService } from '../logger/logger.service';
 import { IdentityProviderFromDb } from '../identity-provider/identity-provider.mongodb.entity';
 import { ServiceProviderFromDb } from '../service-provider/service-provider.mongodb.entity';
@@ -250,11 +250,8 @@ export class GristPublisherService {
       },
     }));
 
-    for (let i = 0; i < recordUpdates.length; i += MAX_RECORDS_PER_REQUEST) {
-      const recordUpdatesChunk = recordUpdates.slice(
-        i,
-        i + MAX_RECORDS_PER_REQUEST,
-      );
+    const recordUpdatesChunks = chunk(recordUpdates, MAX_RECORDS_PER_REQUEST);
+    for (const recordUpdatesChunk of recordUpdatesChunks) {
       const success = await this.performGristUpsertRequest<providerT>({
         gristDocUrl,
         gristApiKey,
