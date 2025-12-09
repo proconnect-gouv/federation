@@ -34,28 +34,43 @@
           </div>
         <% } %>
         <form action="/api/v2/redirect-to-idp" method="POST" class="interaction-main-content-form" name="email-check">
-          <label class="fr-label fr-mt-1v" for="email-input">
-            Email professionnel
-            <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
-          </label>
+          <div class="<% if (locals.isEmailInvalid) { %> fr-input-group fr-input-group--error<% } %>">
+            <label class="fr-label fr-mt-1v" for="email-input">
+              Email professionnel
+              <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
+            </label>
 
-          <input class="fr-input fr-bx-1v" type="email" id="email-input" spellcheck="off" autocomplete="email" name="email"
-                 required />
-          <div class="fr-fieldset__element fr-mt-2w">
-            <div class="fr-checkbox-group fr-checkbox-group--sm">
-                <input name="rememberMe" id="remember-me" type="checkbox" aria-describedby="remember-me-messages">
-                <label class="fr-label" for="remember-me">
-                    Se souvenir de moi
-                </label>
-                <div class="fr-messages-group" id="remember-me-messages" aria-live="assertive">
-                </div>
+            <input class="fr-input fr-bx-1v" type="email" id="email-input" spellcheck="off" autocomplete="email" name="email"
+                  required />
+            <% if (locals.isEmailInvalid) { %>
+              <p class="fr-error-text">Adresse e-mail invalide.</p>
+            <% } %>
+            <% if (locals.emailSuggestion) { %>
+                  <p id="email-suggestion-element" class="fr-info-text">
+                      <span>
+                      Vouliez-vous dire
+                      <a id="email-suggestion-link" href="#" title="<%= locals.emailSuggestion %> (cliquer pour remplir le champ)"><%= locals.emailSuggestion %></a> ?
+                      </span>
+                  </p>
+                  <script type="module" src="/js/email-suggestion.js" ></script>
+              <% } %>
             </div>
-          </div>
-          <div class="fr-btns-group">
-            <button id="email-submit-button" onclick="" type="submit" class="fr-mb-0 fr-btn" data-testid="interaction-connection-button">
-              Continuer
-            </button>
-          </div>
+            <div class="fr-fieldset__element fr-mt-2w">
+              <div class="fr-checkbox-group fr-checkbox-group--sm">
+                  <input name="rememberMe" id="remember-me" type="checkbox" aria-describedby="remember-me-messages">
+                  <label class="fr-label" for="remember-me">
+                      Se souvenir de moi
+                  </label>
+                  <div class="fr-messages-group" id="remember-me-messages" aria-live="assertive">
+                  </div>
+              </div>
+            </div>
+            <div class="fr-btns-group">
+              <button id="email-submit-button" onclick="" type="submit" class="fr-mb-0 fr-btn" data-testid="interaction-connection-button">
+                Continuer
+              </button>
+            </div>  
+
           <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
         </form>
         <% if (locals.defaultEmailRenater) { %>

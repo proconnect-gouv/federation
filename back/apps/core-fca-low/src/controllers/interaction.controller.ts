@@ -8,6 +8,7 @@ import {
   Get,
   Header,
   Param,
+  Query,
   Req,
   Res,
   UsePipes,
@@ -31,6 +32,7 @@ import {
   AfterGetOidcCallbackSessionDto,
   AppConfig,
   Interaction,
+  InteractionParamsDto,
   UserSession,
 } from '../dto';
 import { Routes } from '../enums';
@@ -70,6 +72,7 @@ export class InteractionController {
   async getInteraction(
     @Req() req: Request,
     @Res() res: Response,
+    @Query() query: InteractionParamsDto,
     @Param() _params: Interaction,
     @UserSessionDecorator()
     userSession: ISessionService<UserSession>,
@@ -180,11 +183,15 @@ export class InteractionController {
     const csrfToken = this.csrfService.renew();
     this.sessionService.set('Csrf', { csrfToken });
 
+    const isEmailInvalid = query.error === 'invalid_email';
+
     res.render('interaction', {
       csrfToken,
       defaultEmailRenater,
       notificationMessage: notification?.message,
       spName,
+      isEmailInvalid,
+      emailSuggestion: query.email_suggestion,
       loginHint: spLoginHint,
     });
   }

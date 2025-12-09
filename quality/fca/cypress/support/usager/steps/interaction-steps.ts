@@ -14,6 +14,10 @@ When('je clique sur le bouton de connexion', function () {
   cy.get('[data-testid="interaction-connection-button"]').click();
 });
 
+When("je clique sur la suggestion d'email corrigé", function () {
+  cy.get('a#email-suggestion-link').click();
+});
+
 Then('le champ email correspond à {string}', function (email: string) {
   cy.get('#email-input').invoke('val').should('be.equal', email);
 });

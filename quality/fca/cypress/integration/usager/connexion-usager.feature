@@ -18,7 +18,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     @ignoreInteg01
     Exemples:
       | email                        | idpDescription |
-      | albus.dumbledore@hogwarts.uk | moncomptepro   |
+      | albus.dumbledore@example.com | moncomptepro   |
 
   @ignoreDocker
   Plan du Scénario: Connexion d'un usager - fqdn <idpDescription> (redirection vers FI seulement)
@@ -30,14 +30,14 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
 
     Exemples:
       | email                               | idpDescription |
-      | albus.dumbledore@hogwarts.uk        | moncomptepro   |
+      | albus.dumbledore@example.com        | moncomptepro   |
       | hades@developpement-durable.gouv.fr | cerbere        |
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - fqdn non reconnu et non service public
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "albus.dumbledore@hogwarts.uk"
+    Et que j'entre l'email "albus.dumbledore@example.com"
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page login du fournisseur d'identité "moncomptepro"
     Et j'utilise un compte usager privé
@@ -49,7 +49,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
   Scénario: Connexion d'un usager - fqdn non reconnu et non service public mais FS acceptant le privé
     Etant donné que je navigue sur la page fournisseur de service "acceptant le privé"
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "albus.dumbledore@hogwarts.uk"
+    Et que j'entre l'email "albus.dumbledore@example.com"
     Quand je clique sur le bouton de connexion
     Et j'utilise un compte usager privé
     Et je m'authentifie
@@ -63,3 +63,12 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Quand je clique sur le bouton de connexion
     Quand je reviens en arrière
     Alors je suis redirigé vers la page interaction
+
+  Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse e-mail
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@gendramerie.interieur.gouv.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page interaction
+    Et que je clique sur la suggestion d'email corrigé
+    Alors le champ email correspond à "test@gendarmerie.interieur.gouv.fr"
