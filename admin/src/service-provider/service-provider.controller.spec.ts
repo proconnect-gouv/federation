@@ -456,6 +456,10 @@ describe('ServiceProviderController', () => {
 
   describe('serviceProviderUpdate()', () => {
     it('should update a servicerProvider and return to the serviceProvider page', async () => {
+      serviceProviderServiceMock.update.mockResolvedValue({
+        hasGristPublicationSucceeded: true,
+      });
+
       await serviceProviderController.serviceProviderUpdate(
         ServiceProviderDtoMock,
         idParam,
@@ -469,6 +473,10 @@ describe('ServiceProviderController', () => {
     });
 
     it('should call serviceProviderService.update()', async () => {
+      serviceProviderServiceMock.update.mockResolvedValue({
+        hasGristPublicationSucceeded: true,
+      });
+
       // When
       await serviceProviderController.serviceProviderUpdate(
         ServiceProviderDtoMock,
@@ -505,6 +513,9 @@ describe('ServiceProviderController', () => {
     });
 
     it('should update a servicerProvider with URIScheme for redirectUri field and return to the serviceProvider page', async () => {
+      serviceProviderServiceMock.update.mockResolvedValue({
+        hasGristPublicationSucceeded: true,
+      });
       ((ServiceProviderDtoMock.redirectUri = [
         'https://url.com',
         'fc+app01://openid_redirect_url',
@@ -524,6 +535,9 @@ describe('ServiceProviderController', () => {
     });
 
     it('should update a servicerProvider with URIScheme for redirectUriLogout field and return to the serviceProvider page', async () => {
+      serviceProviderServiceMock.update.mockResolvedValue({
+        hasGristPublicationSucceeded: true,
+      });
       ((ServiceProviderDtoMock.redirectUriLogout = [
         'https://url.com',
         'fc+app01://openid_redirect_url',
