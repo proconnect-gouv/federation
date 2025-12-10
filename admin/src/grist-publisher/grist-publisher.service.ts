@@ -79,6 +79,7 @@ export class GristPublisherService {
       SIRET_par_defaut: identityProviderFromDb.siret,
       Alg_ID_token: identityProviderFromDb.id_token_signed_response_alg || '',
       Alg_userinfo: identityProviderFromDb.userinfo_signed_response_alg || '',
+      Routage_active: identityProviderFromDb.isRoutingEnabled ? 'Oui' : 'Non',
     };
   }
 
