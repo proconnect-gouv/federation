@@ -80,6 +80,7 @@ export class GristPublisherService {
       Alg_ID_token: identityProviderFromDb.id_token_signed_response_alg || '',
       Alg_userinfo: identityProviderFromDb.userinfo_signed_response_alg || '',
       Routage_active: identityProviderFromDb.isRoutingEnabled ? 'Oui' : 'Non',
+      Adresse_e_mail_de_support: identityProviderFromDb.supportEmail || '',
     };
   }
 
