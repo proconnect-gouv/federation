@@ -182,12 +182,13 @@ export class OidcClientController {
       // Otherwise, use the 'acr' claim
       acr = claims['acr'];
     }
+    // Default the acr value to eidas1 (weak)
+    acr = acr || 'eidas1';
 
     userSession.set({
       amr: claims.amr,
       idpIdToken: idToken,
-      // Default the acr value to eidas1 (weak)
-      idpAcr: acr || 'eidas1',
+      idpAcr: acr,
     });
 
     this.logger.track(TrackedEvent.FC_REQUESTED_IDP_TOKEN);
