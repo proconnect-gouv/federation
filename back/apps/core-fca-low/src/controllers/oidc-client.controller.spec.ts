@@ -389,6 +389,28 @@ describe('OidcClientController', () => {
       );
     });
 
+    it('should provide a default acr if missing', async () => {
+      oidcClient.getToken.mockResolvedValue({
+        idToken: 'id-token',
+        claims: {},
+      });
+
+      configService.get.mockReturnValueOnce({ scope: 'openid email' });
+
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+
+      expect(sanitizer.transformIdentity).toHaveBeenCalledWith(
+        { email: 'user@example.com', sub: 'sub123' },
+        'idp123',
+        'accountSub',
+        'eidas1',
+      );
+    });
+
     it('should process OIDC callback when identity validation errors occur (sanitization branch and FQDN mismatch)', async () => {
       // Simulate errors so that the sanitizer is called
       const sanitizedIdentity = {
