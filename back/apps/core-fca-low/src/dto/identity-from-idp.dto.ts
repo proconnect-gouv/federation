@@ -27,6 +27,7 @@ export class IdentityFromIdpDto {
   usual_name: string;
 
   @IsEmail()
+  @Transform(({ value }) => value.toLowerCase().trim())
   email: string;
 
   @MinLength(1)

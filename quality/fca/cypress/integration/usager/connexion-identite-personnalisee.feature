@@ -77,3 +77,11 @@ Fonctionnalité: Connexion Usager personnalisé
     Et que je m'authentifie
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500006"
+
+  Scénario: Connexion d'un usager - email en majuscule
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "TEST@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je m'authentifie
+    Alors l'email transmis au fournisseur de service est le suivant "test@fia1.fr"
