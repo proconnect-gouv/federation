@@ -5,11 +5,13 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/core/dto';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 
 import {
   CoreFcaAgentIdpDisabledException,
   CoreFcaIdpConfigurationException,
+  CoreFcaInvalidEmailDomainException,
   CoreFcaUnauthorizedEmailException,
 } from '../exceptions';
 
@@ -18,6 +20,7 @@ export class CoreFcaService {
   constructor(
     private readonly config: ConfigService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly logger: LoggerService,
   ) {}
 
   hasDefaultIdp(providersUid: string[]): boolean {
@@ -80,18 +83,43 @@ export class CoreFcaService {
   }
 
   // check if the idp is allowed to authenticate the user with this email
-  async isAllowedIdpForEmail(idpId: string, email: string): Promise<boolean> {
+  async ensureIdpCanServeThisEmail(
+    idpId: string,
+    email: string,
+  ): Promise<boolean> {
     const identityProvider = await this.identityProvider.getById(idpId);
 
     const emailFqdn = this.identityProvider.getFqdnFromEmail(email);
 
-    if (identityProvider.fqdns?.some((fqdn) => fqdn === emailFqdn)) {
-      return true;
+    if (identityProvider.fqdns?.includes(emailFqdn)) {
+      return;
+    }
+
+    if (identityProvider.extraAcceptedEmailDomains?.includes(emailFqdn)) {
+      return;
     }
 
     // if no idp explicitly handles the domain, the only idp allowed is the default one
     const { defaultIdpId } = this.config.get<AppConfig>('App');
-    return defaultIdpId === idpId;
+    if (defaultIdpId === idpId) {
+      return;
+    }
+
+    if (!identityProvider.isBlockingForUnlistedEmailDomainsEnabled) {
+      this.logger.warn({ code: 'fqdn_mismatch' });
+
+      return;
+    }
+
+    const contact =
+      identityProvider.supportEmail ||
+      this.config.get<AppConfig>('App').supportEmail;
+
+    throw new CoreFcaInvalidEmailDomainException(
+      identityProvider.name,
+      email,
+      contact,
+    );
   }
 
   /**

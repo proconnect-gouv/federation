@@ -56,7 +56,7 @@ describe('OidcClientController', () => {
     };
     coreFcaService = {
       hasDefaultIdp: jest.fn(),
-      isAllowedIdpForEmail: jest.fn(),
+      ensureIdpCanServeThisEmail: jest.fn(),
       selectIdpsFromEmail: jest.fn(),
       getSortedDisplayableIdentityProviders: jest.fn(),
       safelyGetExistingAndEnabledIdp: jest.fn(),
@@ -257,7 +257,7 @@ describe('OidcClientController', () => {
         sub: 'sub123',
       });
       (validateDto as jest.Mock).mockResolvedValue([]);
-      coreFcaService['isAllowedIdpForEmail'].mockResolvedValue(true);
+      coreFcaService['ensureIdpCanServeThisEmail'].mockResolvedValue(true);
       configService.get.mockReturnValue({ urlPrefix: '/app' });
       sanitizer.getValidatedIdentityFromIdp.mockResolvedValue({
         email: 'user@example.com',
@@ -303,7 +303,7 @@ describe('OidcClientController', () => {
         3,
         'FC_REQUESTED_IDP_USERINFO',
       );
-      expect(coreFcaService['isAllowedIdpForEmail']).toHaveBeenCalledWith(
+      expect(coreFcaService['ensureIdpCanServeThisEmail']).toHaveBeenCalledWith(
         'idp123',
         'user@example.com',
       );
@@ -420,7 +420,7 @@ describe('OidcClientController', () => {
       sanitizer.getValidatedIdentityFromIdp.mockResolvedValue(
         sanitizedIdentity,
       );
-      coreFcaService['isAllowedIdpForEmail'].mockResolvedValue(false);
+      coreFcaService['ensureIdpCanServeThisEmail'].mockResolvedValue(false);
 
       await controller.getOidcCallback(
         req as Request,
@@ -432,7 +432,6 @@ describe('OidcClientController', () => {
         { email: 'user@example.com', sub: 'sub123' },
         'idp123',
       );
-      expect(logger.warn).toHaveBeenCalledWith({ code: 'fqdn_mismatch' });
       expect(userSession.set).toHaveBeenCalledWith({
         amr: 'amr-value',
         idpIdToken: 'id-token',

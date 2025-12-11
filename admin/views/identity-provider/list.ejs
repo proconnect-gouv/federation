@@ -34,6 +34,9 @@
           <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "isRoutingEnabled", fieldName: "Routage" }); %>
           </th>
+          <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
+            <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "isBlockingForUnlistedEmailDomainsEnabled", fieldName: "Blocage" }); %>
+          </th>
           <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">Actions</th>
         </tr>
         </thead>
@@ -70,6 +73,9 @@
             </td>
             <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <i class="fa fa-toggle-<%= identityProvider.isRoutingEnabled ? "on" : "off" %>"></i>
+            </td>
+            <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
+              <i class="fa fa-toggle-<%= identityProvider.isBlockingForUnlistedEmailDomainsEnabled ? "on" : "off" %>"></i>
             </td>
             <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <% if (CURRENT_USER.roles.includes('operator')) { %>

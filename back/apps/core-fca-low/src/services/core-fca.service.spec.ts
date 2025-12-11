@@ -2,18 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
-import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientService } from '@fc/oidc-client';
-import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
-import { getSessionServiceMock } from '@mocks/session';
+import { getLoggerMock } from '@mocks/logger';
 
 import {
   CoreFcaAgentIdpDisabledException,
   CoreFcaIdpConfigurationException,
+  CoreFcaInvalidEmailDomainException,
 } from '../exceptions';
 import { CoreFcaService } from './core-fca.service';
 
@@ -22,24 +20,9 @@ describe('CoreFcaService', () => {
 
   const configServiceMock = getConfigMock();
 
-  const sessionServiceMock = getSessionServiceMock();
-
-  const oidcMock = {
-    utils: {
-      buildAuthorizeParameters: jest.fn(),
-      getAuthorizeUrl: jest.fn(),
-    },
-  };
-  const oidcProviderServiceMock = {
-    getInteraction: jest.fn(),
-    finishInteraction: jest.fn(),
-  };
-
-  const oidcAcrMock = {
-    getFilteredAcrParamsFromInteraction: jest.fn(),
-  };
-
   const spIdMock = 'spIdMockValue';
+
+  const loggerMock = getLoggerMock();
 
   const identityProviderMock = {
     getById: jest.fn(),
@@ -54,15 +37,6 @@ describe('CoreFcaService', () => {
     active: true,
   };
 
-  const nonceMock = Symbol('nonceMockValue');
-  const stateMock = Symbol('stateMockValue');
-
-  const authorizeUrlMock = Symbol('authorizeUrlMockValue');
-
-  const coreAuthorizationServiceMock = {
-    getAuthorizeUrl: jest.fn(),
-  };
-
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -70,46 +44,23 @@ describe('CoreFcaService', () => {
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         CoreFcaService,
-        OidcProviderService,
-        OidcAcrService,
         ConfigService,
-        OidcClientService,
         IdentityProviderAdapterMongoService,
-        SessionService,
+        LoggerService,
       ],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(OidcClientService)
-      .useValue(oidcMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProviderServiceMock)
-      .overrideProvider(OidcAcrService)
-      .useValue(oidcAcrMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
       .compile();
 
     service = app.get<CoreFcaService>(CoreFcaService);
 
-    oidcProviderServiceMock.getInteraction.mockResolvedValueOnce({
-      prompt: {},
-    });
-    oidcMock.utils.buildAuthorizeParameters.mockResolvedValue({
-      nonce: nonceMock,
-      state: stateMock,
-    });
-    oidcMock.utils.getAuthorizeUrl.mockResolvedValue({
-      nonce: nonceMock,
-      state: stateMock,
-    });
     identityProviderMock.getById.mockResolvedValue(
       identityProviderMockResponse,
-    );
-    coreAuthorizationServiceMock.getAuthorizeUrl.mockResolvedValue(
-      authorizeUrlMock,
     );
   });
 
@@ -405,68 +356,89 @@ describe('CoreFcaService', () => {
     });
   });
 
-  describe('isAllowedIdpForEmail', () => {
-    it('should allow a fqdn listed in one of the fqdns of an idp', async () => {
-      // Given
+  describe('ensureIdpCanServeThisEmail', () => {
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValue({
+        defaultIdpId: 'default-idp',
+        supportEmail: 'support@example.com',
+      });
+      identityProviderMock.getFqdnFromEmail.mockReturnValue('hogwarts.uk');
+    });
+
+    it('should not throw if idp can serve email domain', async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: 'idp1',
         fqdns: ['hogwarts.uk'],
-      });
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
-      configServiceMock.get.mockReturnValueOnce({
-        defaultIdpId: 'default-idp',
+        isBlockingForUnlistedEmailDomainsEnabled: true,
       });
 
-      // When
-      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+      const res = await service.ensureIdpCanServeThisEmail(
         'idp1',
         'hermione.granger@hogwarts.uk',
       );
 
-      // Then
-      expect(isAllowedIdpForEmail).toEqual(true);
+      expect(res).toBeUndefined();
     });
 
-    it('should not allow a fqdn listed in one of the fqdns of only others idps', async () => {
-      // Given
+    it('should not throw if blocking is disabled for idp', async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: 'idp1',
         fqdns: ['fqdn1.fr', 'fqdn1bis.fr'],
-      });
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
-      configServiceMock.get.mockReturnValueOnce({
-        defaultIdpId: 'default-idp',
+        isBlockingForUnlistedEmailDomainsEnabled: false,
       });
 
-      // When
-      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+      const res = await service.ensureIdpCanServeThisEmail(
         'idp1',
         'hermione.granger@hogwarts.uk',
       );
 
-      // Then
-      expect(isAllowedIdpForEmail).toEqual(false);
+      expect(res).toBeUndefined();
     });
 
-    it('should allow an unknown fqdn when using the default identity provider', async () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        defaultIdpId: 'default-idp',
+    it('should not throw when domain is listed in extraDomainList', async () => {
+      identityProviderMock.getById.mockResolvedValueOnce({
+        uid: 'idp1',
+        fqdns: ['fqdn1.fr', 'fqdn1bis.fr'],
+        extraAcceptedEmailDomains: ['hogwarts.uk'],
+        isBlockingForUnlistedEmailDomainsEnabled: true,
       });
+
+      const res = await service.ensureIdpCanServeThisEmail(
+        'idp1',
+        'hermione.granger@hogwarts.uk',
+      );
+
+      expect(res).toBeUndefined();
+    });
+
+    it('should not throw when using default fqdn', async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: 'default-idp',
-        fqdns: [],
+        fqdns: ['fqdn1.fr'],
+        isBlockingForUnlistedEmailDomainsEnabled: true,
       });
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce('hogwarts.uk');
 
-      // When
-      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+      const res = await service.ensureIdpCanServeThisEmail(
         'default-idp',
         'hermione.granger@hogwarts.uk',
       );
 
-      // Then
-      expect(isAllowedIdpForEmail).toEqual(true);
+      expect(res).toBeUndefined();
+    });
+
+    it('should throw when none of the above conditions is fulfilled', async () => {
+      identityProviderMock.getById.mockResolvedValueOnce({
+        uid: 'idp1',
+        fqdns: ['fqdn1.fr'],
+        isBlockingForUnlistedEmailDomainsEnabled: true,
+      });
+
+      await expect(
+        service.ensureIdpCanServeThisEmail(
+          'idp1',
+          'hermione.granger@hogwarts.uk',
+        ),
+      ).rejects.toThrow(CoreFcaInvalidEmailDomainException);
     });
   });
 
