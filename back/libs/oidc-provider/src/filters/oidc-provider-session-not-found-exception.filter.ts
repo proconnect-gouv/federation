@@ -30,9 +30,9 @@ export class OidcProviderSessionNotFoundExceptionFilter extends BaseExceptionFil
         message,
       },
       exceptionDisplay: {
-        description:
-          'Nous n’arrivons pas à vous connecter à votre service en ligne pour l’instant. \n' +
-          'Fermez cette page et essayez de vous reconnecter depuis le site sur lequel vous étiez.',
+        description: `Nous n’arrivons pas à vous connecter à votre service en ligne pour l’instant.
+
+<b>Fermez cette page et essayez de vous reconnecter</b> depuis le site sur lequel vous étiez.`,
       },
     };
 
