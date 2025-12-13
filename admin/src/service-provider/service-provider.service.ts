@@ -212,7 +212,6 @@ export class ServiceProviderService {
     const key = this.secretAdapter.generateKey();
 
     return {
-      title: serviceProviderDto.name,
       name: serviceProviderDto.name,
       redirect_uris: serviceProviderDto.redirectUri,
       post_logout_redirect_uris: serviceProviderDto.redirectUriLogout,
