@@ -261,13 +261,6 @@ Then(
 );
 
 Then(
-  "l'email transmis au fournisseur de service est le suivant {string}",
-  function (email: string) {
-    getUserInfoProperty('email').should('be.equal', email);
-  },
-);
-
-Then(
   /le idp_id transmis au fournisseur de service est celui du fournisseur d'identité "([^"]+)"/,
   function (idpDescription: string) {
     const { id: idpId } = getIdentityProviderByDescription(idpDescription);

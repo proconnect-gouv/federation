@@ -123,7 +123,7 @@ describe('IdentitySanitizer', () => {
       const acr = 'acr1';
       const identityFromIdp = {
         aud: 'aud123',
-        email: 'test.TEST@test.com',
+        email: 'test@test.com',
         extra: 'extra',
         given_name: 'John',
         sub: '123',
@@ -140,7 +140,7 @@ describe('IdentitySanitizer', () => {
 
       expect(result).toEqual({
         custom: { extra: 'extra' },
-        email: 'test.test@test.com',
+        email: 'test@test.com',
         given_name: 'John',
         idp_acr: acr,
         idp_id: idpId,
