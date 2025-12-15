@@ -40,20 +40,6 @@ Then(
 );
 
 Then(
-  "la copie d'écran {string} correspond à l'élément web {string} sur {string}",
-  function (name: string, selector: string, device: string) {
-    const { title: scenarioName } = this.test;
-    // Wait for the page to be still before taking a screenshot
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(750);
-    prepareScreenshot();
-    getSnapshotName(scenarioName, name, device).then((snapshotName) =>
-      cy.get(selector).matchImageSnapshot(snapshotName),
-    );
-  },
-);
-
-Then(
   "la copie d'écran {string} sans {string} correspond à la page actuelle sur {string}",
   function (name: string, hiddenSelector: string, device: string) {
     const { title: scenarioName } = this.test;
