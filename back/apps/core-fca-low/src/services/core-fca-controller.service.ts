@@ -73,10 +73,9 @@ export class CoreFcaControllerService {
       this.session.get<AfterRedirectToIdpWithEmailSessionDto>('User');
 
     const idp = await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
-    const idpIsEntra = idp.isEntraID;
 
     const entraConfig = { scope: 'openid email profile' };
-    const { scope } = idpIsEntra
+    const { scope } = idp.isEntraID
       ? entraConfig
       : this.config.get<OidcClientConfig>('OidcClient');
 
@@ -116,7 +115,7 @@ export class CoreFcaControllerService {
       authorizeParams['acr_values'] = acrValues;
     }
 
-    if (!idpIsEntra) {
+    if (!idp.isEntraID) {
       authorizeParams.claims = claims;
     }
 
@@ -125,7 +124,8 @@ export class CoreFcaControllerService {
     // these specific behaviors are legacy implementations and should be homogenized in the future
     if (idpId === defaultIdpId && !idp.isEntraID) {
       authorizeParams['scope'] += ' is_service_public';
-    } else if (!acrValues && !acrClaims) {
+    }
+    if (idpId !== defaultIdpId && !acrValues && !acrClaims) {
       authorizeParams['acr_values'] = 'eidas1';
     }
 
