@@ -112,6 +112,7 @@ export class OidcProviderService {
           claims,
           response_type,
           idp_hint,
+          acr_values,
         },
         jti,
       } = interaction;
@@ -128,6 +129,7 @@ export class OidcProviderService {
           scope,
           claims,
           idp_hint,
+          acr_values,
           id: jti,
         },
       });
