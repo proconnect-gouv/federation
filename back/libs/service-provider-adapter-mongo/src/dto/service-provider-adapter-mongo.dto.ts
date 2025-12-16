@@ -22,9 +22,6 @@ export class ServiceProviderAdapterMongoDTO {
   readonly name: string;
 
   @IsString()
-  readonly title: string;
-
-  @IsString()
   @MinLength(32)
   readonly client_secret: string;
 

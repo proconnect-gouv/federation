@@ -39,9 +39,6 @@ export class ServiceProvider extends Document {
   jwks_uri: string;
 
   @Prop({ type: String })
-  title: string;
-
-  @Prop({ type: String })
   type: string;
 }
 
