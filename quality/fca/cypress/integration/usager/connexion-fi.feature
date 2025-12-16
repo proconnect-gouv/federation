@@ -50,7 +50,7 @@ Fonctionnalité: Connexion à un FI
     Et que je clique sur le bouton de connexion
     Alors je suis redirigé vers la page erreur technique
     Et le titre de la page d'erreur est "Accès impossible"
-    Et le message d'erreur est "Client network socket disconnected before secure TLS connection was established"
+    Et le message d'erreur est "Failed to establish tunnel"
     Et le code d'erreur est "Y020031"
 
   @ignoreInteg01
