@@ -50,10 +50,14 @@ export class CoreFcaControllerService {
         res,
       );
       const { urlPrefix } = this.config.get<AppConfig>('App');
-      const url = `${urlPrefix}${Routes.INTERACTION.replace(
+      let url = `${urlPrefix}${Routes.INTERACTION.replace(
         ':uid',
         interactionId,
-      )}?error=invalid_email&email_suggestion=${encodeURIComponent(suggestion)}`;
+      )}?error=invalid_email`;
+
+      if (!!suggestion) {
+        url += `&email_suggestion=${encodeURIComponent(suggestion)}`;
+      }
       this.logger.warn({
         code: 'email_not_safe_to_send',
         emailSuggestion: suggestion,
