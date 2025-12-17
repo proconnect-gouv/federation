@@ -12,6 +12,9 @@ export class CoreFcaAgentIdpDisabledException extends CoreFcaBaseException {
   public error_description =
     'authentication aborted due to a technical error on the authorization server';
 
+  public crispLink =
+    'https://proconnect.crisp.help/fr/article/code-500017-service-temporairement-indisponible-1a52w52/';
+
   public illustration = 'temporary-restricted-error';
   public title = 'Accès indisponible';
   public description =

@@ -6,4 +6,6 @@ export class CsrfBadTokenException extends CsrfBaseException {
   public error = 'server_error';
   public error_description =
     'authentication aborted due to a technical error on the authorization server';
+  public crispLink =
+    'https://proconnect.crisp.help/fr/article/code-470001-session-expiree-ou-invalide-1tpi0l2/';
 }

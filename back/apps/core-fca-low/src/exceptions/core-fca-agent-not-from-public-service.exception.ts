@@ -11,6 +11,9 @@ export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseExcept
   public error = 'access_denied';
   public error_description = 'authentication aborted due to invalid identity';
 
+  public crispLink =
+    'https://proconnect.crisp.help/fr/article/code-500015-vous-netes-pas-reconnu-comme-agent-1juilrr/';
+
   public illustration = 'access-restricted-error';
   public title = 'Email non autorisé';
   public description =

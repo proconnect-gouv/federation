@@ -100,6 +100,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
         displayContact,
         contactMessage,
         illustration,
+        crispLink,
       } = exception;
       errorPageParams.exceptionDisplay = {
         contactHref: displayContact
@@ -110,6 +111,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
         displayContact,
         contactMessage,
         illustration,
+        crispLink,
       };
     }
 

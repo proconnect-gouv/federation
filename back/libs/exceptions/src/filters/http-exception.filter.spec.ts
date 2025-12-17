@@ -113,4 +113,60 @@ describe('HttpExceptionFilter', () => {
       expect(resMock.render).toHaveBeenCalledOnce();
     });
   });
+
+  describe('errorOutput', () => {
+    it('should render error page with crispLink when present', () => {
+      const testCases = [
+        new BadRequestException('Bad request error'),
+        new HttpException('Internal server error', 500),
+        new HttpException('Not found', 404),
+      ];
+      const error = {
+        code: 'code-123',
+        id: 'id-123',
+        message: 'message-123',
+      };
+
+      testCases.forEach((exception) => {
+        jest.clearAllMocks();
+
+        filter['errorOutput']({
+          error,
+          exception,
+          res: resMock as any,
+        });
+
+        expect(resMock.render).toHaveBeenCalledOnce();
+        expect(resMock.render).toHaveBeenCalledWith('error', {
+          error,
+          exceptionDisplay: expect.objectContaining({
+            crispLink: expect.anything(),
+          }),
+        });
+      });
+    });
+
+    it('should render error page without crispLink when not present', () => {
+      const exception = new HttpException('Custom error', 418);
+      const error = {
+        code: 'code-456',
+        id: 'id-456',
+        message: 'message-456',
+      };
+
+      jest.clearAllMocks();
+
+      filter['errorOutput']({
+        error,
+        exception,
+        res: resMock as any,
+      });
+
+      expect(resMock.render).toHaveBeenCalledOnce();
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        error,
+        exceptionDisplay: {},
+      });
+    });
+  });
 });

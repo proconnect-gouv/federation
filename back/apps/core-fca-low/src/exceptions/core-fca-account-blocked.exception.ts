@@ -11,6 +11,9 @@ export class CoreFcaAgentAccountBlockedException extends CoreFcaBaseException {
   public error = 'access_denied';
   public error_description = 'authentication aborted due to invalid identity';
 
+  public crispLink =
+    'https://proconnect.crisp.help/fr/article/code-500024-compte-bloque-18ylybk/';
+
   public illustration = 'access-restricted-error';
   public title = 'Accès impossible';
   public description =

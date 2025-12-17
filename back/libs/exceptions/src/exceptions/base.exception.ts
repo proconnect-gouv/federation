@@ -7,6 +7,8 @@ export class BaseException extends Error {
   public error?: string;
   public error_description?: string;
 
+  public crispLink?: string;
+
   public originalError?: Error;
   public log: unknown;
 
