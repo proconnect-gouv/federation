@@ -10,7 +10,7 @@ Fonctionnalité: Connexion Usager - ACR with PCI
     Et que je rentre un mot de passe valide sur ProConnect Identité
     Alors je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
-    Et la cinématique a utilisé le niveau de sécurité "eidas1"
+    Et la cinématique a utilisé le niveau de sécurité "https://proconnect.gouv.fr/assurance/self-asserted"
 
   Scénario: Déclenche une mfa dans ProConnect Identité si demandé par le FS
     Etant donné que je navigue sur la page fournisseur de service
