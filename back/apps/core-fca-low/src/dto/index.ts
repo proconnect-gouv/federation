@@ -5,6 +5,7 @@ export * from './core-fca-session.dto';
 export * from './identity-for-sp.dto';
 export * from './identity-from-idp.dto';
 export * from './interaction.dto';
+export * from './interaction-params.dto';
 export * from './logout-params.dto';
 export * from './redirect-to-idp.dto';
 export * from './revocation-token-params.dto';

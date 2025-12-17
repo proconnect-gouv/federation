@@ -22,6 +22,7 @@ describe(EmailValidatorService.name, () => {
   const identityProviderAdapterMongoMock = {
     getIdpsByEmail: jest.fn(),
     getFqdnFromEmail: jest.fn(),
+    getList: jest.fn(),
   };
   const accountFcaServiceMock = {
     checkEmailExists: jest.fn(),
@@ -71,6 +72,53 @@ describe(EmailValidatorService.name, () => {
     service = app.get<EmailValidatorService>(EmailValidatorService);
   });
 
+  describe('getIdpDomains', () => {
+    it('should return a list of domains from IdPs', async () => {
+      // Given
+      const mockIdps = [
+        { fqdns: ['idp1.example.com', 'idp2.example.com'] },
+        { fqdns: ['idp3.example.com'] },
+        { fqdns: [] }, // IdP with no domains
+        { fqdns: null }, // IdP with null domains
+      ];
+      identityProviderAdapterMongoMock.getList.mockResolvedValue(mockIdps);
+
+      // When
+      const domains = await service['getIdpDomains']();
+
+      // Then
+      expect(identityProviderAdapterMongoMock.getList).toHaveBeenCalled();
+      expect(domains).toEqual([
+        'idp1.example.com',
+        'idp2.example.com',
+        'idp3.example.com',
+      ]);
+    });
+  });
+
+  describe('getEmailSuggestion', () => {
+    it('should return a suggested email when a close match is found', () => {
+      // Given
+      const tests = [
+        {
+          emails: ['test@gendramerie.interieur.gouv.fr'],
+          expected: 'test@gendarmerie.interieur.gouv.fr',
+        },
+      ];
+      const idpDomains = ['gendarmerie.interieur.gouv.fr'];
+
+      // When
+      tests.forEach(({ emails, expected }) => {
+        emails.forEach((email) => {
+          const suggestion = service['getEmailSuggestion'](email, idpDomains);
+
+          // Then
+          expect(suggestion).toBe(expected);
+        });
+      });
+    });
+  });
+
   describe('validate', () => {
     it('should call config.get with correct parameter', async () => {
       await service.validate(testEmail);
@@ -95,7 +143,7 @@ describe(EmailValidatorService.name, () => {
       const result = await service.validate(testEmail);
 
       // Then
-      expect(result).toBe(true);
+      expect(result).toEqual({ isEmailValid: true });
       expect(accountFcaServiceMock.checkEmailExists).not.toHaveBeenCalled();
       expect(resolveMx).not.toHaveBeenCalled();
       expect(loggerServiceMock.warn).not.toHaveBeenCalled();
@@ -121,7 +169,7 @@ describe(EmailValidatorService.name, () => {
         testEmail,
       );
       expect(resolveMx).not.toHaveBeenCalled();
-      expect(result).toBe(true);
+      expect(result).toEqual({ isEmailValid: true });
       expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
@@ -137,7 +185,7 @@ describe(EmailValidatorService.name, () => {
         identityProviderAdapterMongoMock.getFqdnFromEmail,
       ).toHaveBeenCalledWith(testEmail);
       expect(resolveMx).not.toHaveBeenCalled();
-      expect(result).toBe(true);
+      expect(result).toEqual({ isEmailValid: true });
     });
 
     it('should call resolveMx with domain and return true when MX records are found', async () => {
@@ -154,7 +202,7 @@ describe(EmailValidatorService.name, () => {
         identityProviderAdapterMongoMock.getFqdnFromEmail,
       ).toHaveBeenCalledWith(testEmail);
       expect(resolveMx).toHaveBeenCalledWith(testDomain);
-      expect(result).toBe(true);
+      expect(result).toEqual({ isEmailValid: true });
       expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
@@ -167,10 +215,7 @@ describe(EmailValidatorService.name, () => {
 
       // Then
       expect(resolveMx).toHaveBeenCalledWith(testDomain);
-      expect(result).toBe(false);
-      expect(loggerServiceMock.warn).toHaveBeenCalledWith({
-        code: 'email_not_safe_to_send',
-      });
+      expect(result).toEqual({ isEmailValid: false, suggestion: '' });
     });
 
     it('should return true and log the error when a top-level error occurs', async () => {
@@ -183,11 +228,45 @@ describe(EmailValidatorService.name, () => {
       const result = await service.validate(testEmail);
 
       // Then
-      expect(result).toBe(true);
+      expect(result).toEqual({ isEmailValid: true });
       expect(loggerServiceMock.error).toHaveBeenCalled();
       expect(loggerServiceMock.error).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'db down' }),
       );
+    });
+
+    it('should return false without suggestion when email domain is invalid and no suggestion is available', async () => {
+      // Given
+      (resolveMx as jest.Mock).mockRejectedValue(
+        new Error('No MX records found'),
+      ); // No MX records found
+
+      identityProviderAdapterMongoMock.getList.mockResolvedValue([]);
+
+      // When
+      const result = await service.validate('user@test.exmple.com');
+
+      // Then
+      expect(result.isEmailValid).toBe(false);
+      expect(result.suggestion).toBe('');
+    });
+
+    it('should return false with suggestion when email domain is invalid', async () => {
+      // Given
+      (resolveMx as jest.Mock).mockRejectedValue(
+        new Error('No MX records found'),
+      ); // No MX records found
+
+      identityProviderAdapterMongoMock.getList.mockResolvedValue([
+        { fqdns: ['test.example.com'] },
+      ]);
+
+      // When
+      const result = await service.validate('user@test.exmple.com');
+
+      // Then
+      expect(result.isEmailValid).toBe(false);
+      expect(result.suggestion).toBe('user@test.example.com');
     });
   });
 });

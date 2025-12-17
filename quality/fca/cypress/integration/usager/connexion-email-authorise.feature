@@ -15,7 +15,7 @@ Fonctionnalité: Connexion Usager - Email autorisé
     Etant donné que je navigue sur la page fournisseur de service "avec une restriction de fqdn"
     Et que le fournisseur de service requiert l'accès aux informations du scope "obligatoires"
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@nonautorise.fr"
+    Et que j'entre l'email "test@example.com"
     Quand je clique sur le bouton de connexion
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500025"
@@ -23,7 +23,7 @@ Fonctionnalité: Connexion Usager - Email autorisé
   Scénario: Connexion à un FS qui limite les email avec un email non authorisé après une connexion réussie
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@nonautorise.fr"
+    Et que j'entre l'email "test@example.com"
     Et que je clique sur le bouton de connexion
     Et que je m'authentifie
     Et que je navigue sur la page fournisseur de service "avec une restriction de fqdn"

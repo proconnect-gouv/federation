@@ -41,9 +41,25 @@ export class CoreFcaControllerService {
   ): Promise<void> {
     this.session.set('User', { rememberMe: rememberMe, idpLoginHint: email });
 
-    // TODO(douglasduteil): temporary solution to avoid blocking the user
-    // We are testing the email validity without breaking the flow here
-    await this.emailValidatorService.validate(email);
+    const { isEmailValid, suggestion } =
+      await this.emailValidatorService.validate(email);
+
+    if (!isEmailValid) {
+      const { uid: interactionId } = await this.oidcProvider.getInteraction(
+        req,
+        res,
+      );
+      const { urlPrefix } = this.config.get<AppConfig>('App');
+      const url = `${urlPrefix}${Routes.INTERACTION.replace(
+        ':uid',
+        interactionId,
+      )}?error=invalid_email&email_suggestion=${encodeURIComponent(suggestion)}`;
+      this.logger.warn({
+        code: 'email_not_safe_to_send',
+        emailSuggestion: suggestion,
+      });
+      return res.redirect(url);
+    }
 
     const idpsFromEmail = await this.coreFcaService.selectIdpsFromEmail(email);
 

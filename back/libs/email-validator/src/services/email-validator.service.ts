@@ -1,3 +1,10 @@
+import {
+  gouvfrDomains,
+  mostUsedFreeEmailDomains,
+  otherGouvDomains,
+} from '@proconnect-gouv/proconnect.core/data';
+import { run as spellCheckEmail } from '@zootools/email-spell-checker';
+import { chain, uniq } from 'lodash';
 import { resolveMx } from 'node:dns/promises';
 
 import { Injectable } from '@nestjs/common';
@@ -23,27 +30,62 @@ export class EmailValidatorService {
       const idps =
         await this.identityProviderAdapterMongoService.getIdpsByEmail(email);
       if (idps.length > 0) {
-        return true;
+        return { isEmailValid: true };
       }
 
       const accountFcaExists =
         await this.accountFcaService.checkEmailExists(email);
       if (accountFcaExists) {
-        return true;
+        return { isEmailValid: true };
       }
 
       const isEmailValid = await this.isEmailDomainValid(email);
-      if (!isEmailValid) {
-        this.logger.warn({ code: 'email_not_safe_to_send' });
+      if (isEmailValid) {
+        return { isEmailValid: true };
       }
 
-      return isEmailValid;
+      const idpDomains = await this.getIdpDomains();
+
+      const suggestion = this.getEmailSuggestion(email, idpDomains);
+      return { isEmailValid: false, suggestion };
     } catch (error) {
       this.logger.error(error);
-      // NOTE(douglasduteil): Non-blocking validation
-      // We don't want to block the user if an error occurs on the http level
-      return true;
+      return { isEmailValid: true };
     }
+  }
+
+  private getEmailSuggestion(email: string, idpDomains: string[]): string {
+    const { domainWhitelist } =
+      this.config.get<EmailValidatorConfig>('EmailValidator');
+
+    const domains = uniq([
+      ...gouvfrDomains,
+      ...otherGouvDomains,
+      ...mostUsedFreeEmailDomains,
+      ...idpDomains,
+      ...domainWhitelist,
+    ]);
+
+    const suggestedEmail = spellCheckEmail({
+      domains,
+      domainThreshold: 3,
+      topLevelDomains: ['fr', 'com', 'net'],
+      secondLevelDomains: ['gouv'],
+      email,
+    });
+    return suggestedEmail ? suggestedEmail.full : '';
+  }
+
+  private async getIdpDomains() {
+    const idps = await this.identityProviderAdapterMongoService.getList();
+    const domains = chain(idps)
+      .map((idp) => idp.fqdns)
+      .flatten()
+      .filter(Boolean)
+      .uniq()
+      .value();
+
+    return domains;
   }
 
   private async isEmailDomainValid(email: string) {

@@ -25,7 +25,7 @@ Fonctionnalité: Connexion avec LocalStorage
 
     Exemples:
       | email                        | idpDescription |
-      | albus.dumbledore@hogwarts.uk | moncomptepro   |
+      | albus.dumbledore@example.com | moncomptepro   |
       | albus.dumbledore@fia1.fr     | par défaut     |
 
   @ignoreDocker

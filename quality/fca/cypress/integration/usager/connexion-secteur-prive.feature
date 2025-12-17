@@ -4,7 +4,7 @@ Fonctionnalité: Connexion Partenaires
   Scénario: Erreur "privé non autorisé" Y500015
     Étant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "albus.dumbledore@hogwarts.uk"
+    Et que j'entre l'email "albus.dumbledore@example.com"
     Et que je clique sur le bouton de connexion
     Et que j'utilise un compte usager privé
     Quand je m'authentifie

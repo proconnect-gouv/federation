@@ -298,6 +298,9 @@ describe('CoreFcaControllerService', () => {
       (
         coreFcaServiceMock.selectIdpsFromEmail as jest.Mock
       ).mockResolvedValueOnce([]);
+      (emailValidatorServiceMock.validate as jest.Mock).mockResolvedValueOnce({
+        isEmailValid: true,
+      });
 
       await expect(
         service.redirectToIdpWithEmail(reqMock, resMock, email, true),
@@ -315,6 +318,9 @@ describe('CoreFcaControllerService', () => {
       (
         coreFcaServiceMock.selectIdpsFromEmail as jest.Mock
       ).mockResolvedValueOnce([{ uid: 'idp1' }, { uid: 'idp2' }]);
+      (emailValidatorServiceMock.validate as jest.Mock).mockResolvedValueOnce({
+        isEmailValid: true,
+      });
 
       await service.redirectToIdpWithEmail(reqMock, resMock, email, false);
 
@@ -332,6 +338,9 @@ describe('CoreFcaControllerService', () => {
       (
         coreFcaServiceMock.selectIdpsFromEmail as jest.Mock
       ).mockResolvedValueOnce([{ uid: 'unique-idp' }]);
+      (emailValidatorServiceMock.validate as jest.Mock).mockResolvedValueOnce({
+        isEmailValid: true,
+      });
 
       const spy = jest
         .spyOn(service, 'redirectToIdpWithIdpId')
@@ -346,6 +355,28 @@ describe('CoreFcaControllerService', () => {
       });
       expect(spy).toHaveBeenCalledWith(reqMock, resMock, 'unique-idp');
       expect(resMock.redirect).not.toHaveBeenCalled();
+    });
+
+    it('should redirect to interaction with error when ', async () => {
+      (
+        coreFcaServiceMock.selectIdpsFromEmail as jest.Mock
+      ).mockResolvedValueOnce([{ uid: 'unique-idp' }]);
+      (emailValidatorServiceMock.validate as jest.Mock).mockResolvedValueOnce({
+        isEmailValid: false,
+        suggestion: 'user@valid-example.com',
+      });
+      (
+        oidcProviderServiceMock.getInteraction as jest.Mock
+      ).mockResolvedValueOnce({
+        uid: 'mock-interaction-id',
+      });
+
+      await service.redirectToIdpWithEmail(reqMock, resMock, email, true);
+
+      expect(emailValidatorServiceMock.validate).toHaveBeenCalledWith(email);
+      expect(resMock.redirect).toHaveBeenCalledWith(
+        `/app/interaction/mock-interaction-id?error=invalid_email&email_suggestion=user%40valid-example.com`,
+      );
     });
   });
 });

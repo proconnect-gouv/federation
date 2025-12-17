@@ -167,7 +167,7 @@ describe('InteractionController', () => {
     });
 
     it('should clear user session if there is no active session', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({}),
@@ -187,6 +187,7 @@ describe('InteractionController', () => {
       await controller.getInteraction(
         req,
         res as Response,
+        {},
         {} as any,
         userSessionService,
       );
@@ -195,7 +196,7 @@ describe('InteractionController', () => {
     });
 
     it('should clear user session if login_hint is different from the email in the current session', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockImplementation((key) => {
@@ -223,6 +224,7 @@ describe('InteractionController', () => {
       await controller.getInteraction(
         req,
         res as Response,
+        {},
         {} as any,
         userSessionService,
       );
@@ -231,7 +233,7 @@ describe('InteractionController', () => {
     });
 
     it('should redirect to INTERACTION_VERIFY when session is reused', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({ interactionId: 'interaction123' }),
@@ -247,6 +249,7 @@ describe('InteractionController', () => {
       await controller.getInteraction(
         req,
         res as Response,
+        {},
         {} as any,
         userSessionService,
       );
@@ -275,6 +278,7 @@ describe('InteractionController', () => {
       await controller.getInteraction(
         req,
         res as Response,
+        {},
         {} as any,
         userSessionService,
       );
@@ -288,7 +292,7 @@ describe('InteractionController', () => {
     });
 
     it('should call abort interaction for invalid IdP hints', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn(),
@@ -305,6 +309,7 @@ describe('InteractionController', () => {
       await controller.getInteraction(
         req,
         res as Response,
+        {},
         {} as any,
         userSessionService,
       );
@@ -331,6 +336,7 @@ describe('InteractionController', () => {
       await controller.getInteraction(
         req,
         res as Response,
+        {},
         {} as any,
         userSessionService,
       );
@@ -344,7 +350,7 @@ describe('InteractionController', () => {
     });
 
     it('should render the interaction page if no hints are provided', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = { render: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({}),
@@ -368,6 +374,7 @@ describe('InteractionController', () => {
       await controller.getInteraction(
         req,
         res as Response,
+        {},
         {} as any,
         userSessionService,
       );
@@ -376,6 +383,7 @@ describe('InteractionController', () => {
         csrfToken: 'csrfToken',
         defaultEmailRenater: 'email',
         notificationMessage: 'notification',
+        isEmailInvalid: false,
         spName: 'spName',
       });
     });
@@ -434,7 +442,7 @@ describe('InteractionController', () => {
     });
 
     it('should call abort interaction when IdP is inactive and in silent authentication mode', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
@@ -474,7 +482,7 @@ describe('InteractionController', () => {
     });
 
     it('should throw CoreFcaAgentNotFromPublicServiceException for private sector identity not allowed by SP', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
@@ -494,7 +502,7 @@ describe('InteractionController', () => {
     });
 
     it('should throw CoreFcaAgentAccountBlockedException if the account is inactive', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
@@ -515,7 +523,7 @@ describe('InteractionController', () => {
     });
 
     it('should call abort interaction when interactionAcr is not satisfied', async () => {
-      const req = {} as Request;
+      const req = { query: {} } as Request;
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({

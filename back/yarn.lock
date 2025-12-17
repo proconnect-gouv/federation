@@ -1110,6 +1110,20 @@
   resolved "https://registry.npmjs.org/@panva/asn1.js/-/asn1.js-1.0.0.tgz"
   integrity sha512-UdkG3mLEqXgnlKsWanWcgb6dOjUzJ+XC5f+aWw30qrtjxeNUSfKX1cd5FBzOaXQumoe9nIqeZUvrRJS03HCCtw==
 
+"@proconnect-gouv/proconnect.core@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.core/-/proconnect.core-1.0.0.tgz#d111b241afd59e4211aa38a93bcfb88157eaf49e"
+  integrity sha512-ZDZ14nq+evqThLUr+u8mbW9N4o2NIC+KtYfLH6awAUh/D3B5bW/e4J7ZCynVSRLigmZ50aLZkxFeAwoxQDgVsw==
+  dependencies:
+    "@types/lodash-es" "^4.17.12"
+    "@types/oidc-provider" "^9.1.1"
+    "@zootools/email-spell-checker" "^1.12.0"
+    bcryptjs "^3.0.2"
+    is-disposable-email-domain "^1.0.7"
+    lodash-es "^4.17.21"
+    nanoid "^5.1.5"
+    tld-extract "^2.1.0"
+
 "@rtsao/scc@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@rtsao/scc/-/scc-1.1.0.tgz#927dd2fae9bc3361403ac2c7a00c32ddce9ad7e8"
@@ -1447,6 +1461,18 @@
     "@types/koa-compose" "*"
     "@types/node" "*"
 
+"@types/lodash-es@^4.17.12":
+  version "4.17.12"
+  resolved "https://registry.yarnpkg.com/@types/lodash-es/-/lodash-es-4.17.12.tgz#65f6d1e5f80539aa7cfbfc962de5def0cf4f341b"
+  integrity sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.21.tgz#b806831543d696b14f8112db600ea9d3a1df6ea4"
+  integrity sha512-FOvQ0YPD5NOfPgMzJihoT+Za5pdkDJWcbpuj1DjaKZIr/gxodQjY/uWEFlTNqW2ugXHUiL8lRQgw63dzKHZdeQ==
+
 "@types/lodash@^4.17.20":
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.20.tgz#1ca77361d7363432d29f5e55950d9ec1e1c6ea93"
@@ -1470,6 +1496,15 @@
   integrity sha512-n//6fAayvlOD3sKAUo5/LjI41tS3E4nfqRefckpcqh2nsyc4PbAEmhDVlE55PNSZonO9k4fW7mmHbsMNU28v3g==
   dependencies:
     "@types/koa" "*"
+
+"@types/oidc-provider@^9.1.1":
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/@types/oidc-provider/-/oidc-provider-9.5.0.tgz#1bea34a3b062834923928876b677bc5ce9f080fe"
+  integrity sha512-eEzCRVTSqIHD9Bo/qRJ4XQWQ5Z/zBcG+Z2cGJluRsSuWx1RJihqRyPxhIEpMXTwPzHYRTQkVp7hwisQOwzzSAg==
+  dependencies:
+    "@types/keygrip" "*"
+    "@types/koa" "*"
+    "@types/node" "*"
 
 "@types/qs@*":
   version "6.9.16"
@@ -1760,6 +1795,11 @@
   version "4.2.2"
   resolved "https://registry.npmjs.org/@xtuc/long/-/long-4.2.2.tgz"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
+
+"@zootools/email-spell-checker@^1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@zootools/email-spell-checker/-/email-spell-checker-1.12.0.tgz#b69e14995b62c7405bb3e1ca5c92f7f4002dab3c"
+  integrity sha512-yM0lH4yjg+jZG5QubtvpHE+ahSnsHbw9ilnQgKgOF3fk6OBVQLRsEq4NR+/nRvrwG8Vo+29bzKwhXk5y1b/FwA==
 
 accepts@^1.3.5, accepts@~1.3.8:
   version "1.3.8"
@@ -2154,6 +2194,11 @@ base64-js@^1.3.1:
   version "1.5.1"
   resolved "https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
+
+bcryptjs@^3.0.2:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-3.0.3.tgz#4b93d6a398c48bfc9f32ee65d301174a8a8ea56f"
+  integrity sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==
 
 bl@^4.1.0:
   version "4.1.0"
@@ -4174,6 +4219,13 @@ is-date-object@^1.0.5, is-date-object@^1.1.0:
     call-bound "^1.0.2"
     has-tostringtag "^1.0.2"
 
+is-disposable-email-domain@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/is-disposable-email-domain/-/is-disposable-email-domain-1.0.7.tgz#15f4304ce39f9c493ecc33734d2628de2e6bd0ba"
+  integrity sha512-hqPsR8T+T4O1IZ2JzGQoY0FQXVhqKKHaN0si0XYz11vUgO7PcJkNi/Cjtw3pigFxaOMjpHpkskG7IxEi2gPcKQ==
+  dependencies:
+    tldjs "^2.3.1"
+
 is-extglob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.npmjs.org/is-extglob/-/is-extglob-2.1.1.tgz"
@@ -5035,6 +5087,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
 lodash.defaults@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmjs.org/lodash.defaults/-/lodash.defaults-4.2.0.tgz"
@@ -5474,6 +5531,11 @@ nanoid@^5.0.9:
   version "5.1.0"
   resolved "https://registry.npmjs.org/nanoid/-/nanoid-5.1.0.tgz"
   integrity sha512-zDAl/llz8Ue/EblwSYwdxGBYfj46IM1dhjVi8dyp9LQffoIGxJEAHj2oeZ4uNcgycSRcQ83CnfcZqEJzVDLcDw==
+
+nanoid@^5.1.5:
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-5.1.6.tgz#30363f664797e7d40429f6c16946d6bd7a3f26c9"
+  integrity sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -6120,9 +6182,9 @@ pump@^3.0.0:
     end-of-stream "^1.1.0"
     once "^1.3.1"
 
-punycode@^2.1.0, punycode@^2.3.1:
+punycode@^2.0.0, punycode@^2.1.0, punycode@^2.3.1:
   version "2.3.1"
-  resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
 pure-rand@^6.0.0:
@@ -6968,6 +7030,18 @@ thread-stream@^3.0.0:
   integrity sha512-OqyPZ9u96VohAyMfJykzmivOrY2wfMSf3C5TtFJVgN+Hm6aj+voFhlK+kZEIv2FBh1X6Xp3DlnCOfEQ3B2J86A==
   dependencies:
     real-require "^0.2.0"
+
+tld-extract@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tld-extract/-/tld-extract-2.1.0.tgz#2f4aff65c6042ada4fa88da4a452a11b17810f45"
+  integrity sha512-Y9QHWIoDQPJJVm3/pOC7kOfOj7vsNSVZl4JGoEHb605FiwZgIfzSMyU0HC0wYw5Cx8435vaG1yGZtIm1yiQGOw==
+
+tldjs@^2.3.1:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/tldjs/-/tldjs-2.3.2.tgz#46bc9b7ec7d8d5afc01ece590914c208b7f308d2"
+  integrity sha512-EORDwFMSZKrHPUVDhejCMDeAovRS5d8jZKiqALFiPp3cjKjEldPkxBY39ZSx3c45awz3RpKwJD1cCgGxEfy8/A==
+  dependencies:
+    punycode "^2.0.0"
 
 tmp@^0.0.33:
   version "0.0.33"

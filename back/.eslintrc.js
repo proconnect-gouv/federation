@@ -46,6 +46,7 @@ const allowedSnakeCaseParameters = [
   'is_service_public',
   'jwks_uri',
   'login_hint',
+  'email_suggestion',
   'siret_hint',
   'middle_name',
   'organizational_unit',
