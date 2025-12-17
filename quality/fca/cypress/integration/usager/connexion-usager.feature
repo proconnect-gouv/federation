@@ -64,7 +64,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Quand je reviens en arrière
     Alors je suis redirigé vers la page interaction
 
-  Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse e-mail
+  Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse e-mail avec suggestion
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@gendramerie.interieur.gouv.fr"
@@ -72,3 +72,11 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et que je suis redirigé vers la page interaction
     Et que je clique sur la suggestion d'email corrigé
     Alors le champ email correspond à "test@gendarmerie.interieur.gouv.fr"
+
+  Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse e-mail sans suggestion
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@gendramerie.gouv.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page interaction
+    Alors je vois l'erreur "Adresse e-mail invalide."
