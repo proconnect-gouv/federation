@@ -116,9 +116,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
             "updatedAt": datetime.now(),
             "secretUpdatedAt": datetime.now(),
             "updatedBy": "espace-partenaires",
-            # TODO: fix these fields?
-            "title": "Nouvelle application",
-            # Generate IDs in correct format, 64 hex chars
+            # format must be 64 hexadecimal characters
             "key": secrets.token_hex(32),
             "client_secret": encrypt_symetric(
                 CONFIG["client_secret_cipher_pass"], secrets.token_hex(32)
