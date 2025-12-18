@@ -164,7 +164,9 @@ export class InteractionController {
       );
     }
 
-    if (spLoginHint) {
+    const isEmailInvalid = query.error === 'invalid_email';
+
+    if (spLoginHint && !isEmailInvalid) {
       this.logger.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_LOGIN);
 
       return this.coreFcaControllerService.redirectToIdpWithEmail(
@@ -182,8 +184,6 @@ export class InteractionController {
 
     const csrfToken = this.csrfService.renew();
     this.sessionService.set('Csrf', { csrfToken });
-
-    const isEmailInvalid = query.error === 'invalid_email';
 
     res.render('interaction', {
       csrfToken,
