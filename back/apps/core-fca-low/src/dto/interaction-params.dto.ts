@@ -9,4 +9,9 @@ export class InteractionParamsDto {
   @IsEmail()
   @IsOptional()
   readonly email_suggestion?: string;
+
+  @IsString()
+  @IsEmail()
+  @IsOptional()
+  readonly user_email?: string;
 }
