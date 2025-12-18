@@ -192,7 +192,7 @@ export class InteractionController {
       spName,
       isEmailInvalid,
       emailSuggestion: query.email_suggestion,
-      loginHint: spLoginHint,
+      loginHint: query.user_email,
     });
   }
 

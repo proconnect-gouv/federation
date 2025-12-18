@@ -53,7 +53,7 @@ export class CoreFcaControllerService {
       let url = `${urlPrefix}${Routes.INTERACTION.replace(
         ':uid',
         interactionId,
-      )}?error=invalid_email`;
+      )}?error=invalid_email&user_email=${encodeURIComponent(email)}`;
 
       if (!!suggestion) {
         url += `&email_suggestion=${encodeURIComponent(suggestion)}`;

@@ -375,7 +375,7 @@ describe('CoreFcaControllerService', () => {
 
       expect(emailValidatorServiceMock.validate).toHaveBeenCalledWith(email);
       expect(resMock.redirect).toHaveBeenCalledWith(
-        `/app/interaction/mock-interaction-id?error=invalid_email&email_suggestion=user%40valid-example.com`,
+        `/app/interaction/mock-interaction-id?error=invalid_email&user_email=user%40example.com&email_suggestion=user%40valid-example.com`,
       );
     });
   });

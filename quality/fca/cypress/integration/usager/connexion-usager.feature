@@ -80,3 +80,12 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page interaction
     Alors je vois l'erreur "Adresse e-mail invalide."
+
+  Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse email sans option "se souvenir de moi"
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@gendramerie.interieur.gouv.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page interaction
+    Alors je vois l'erreur "Adresse e-mail invalide."
+    Et le champ email correspond à "test@gendramerie.interieur.gouv.fr"
