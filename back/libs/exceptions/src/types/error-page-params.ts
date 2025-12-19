@@ -11,6 +11,7 @@ export interface ErrorPageParams {
     contactMessage?: string;
     contactHref?: string;
     illustration?: string;
+    crispLink?: string;
   };
   interactionErrorUrl?: string;
 }

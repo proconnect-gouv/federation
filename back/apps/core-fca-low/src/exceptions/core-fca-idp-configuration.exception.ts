@@ -11,6 +11,9 @@ export class CoreFcaIdpConfigurationException extends CoreFcaBaseException {
   public error_description =
     'authentication aborted due to a technical error on the authorization server';
 
+  public crispLink =
+    'https://proconnect.crisp.help/fr/article/code-500026-probleme-de-configuration-du-service-1ubru2i/';
+
   public illustration = 'temporary-restricted-error';
   public title = 'Accès impossible';
   public description =

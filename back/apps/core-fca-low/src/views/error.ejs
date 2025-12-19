@@ -39,6 +39,18 @@
                 <p>Nous n'arrivons pas à vous connecter à votre service en ligne pour l'instant.</p>
               <% } %>
 
+              <% if(locals.exceptionDisplay.crispLink) { %>
+                <p>
+                  Pour en savoir plus sur cette erreur, consultez
+                  <a
+                    class="fr-link"
+                    rel="noopener external"
+                    target="_blank"
+                    href="<%= locals.exceptionDisplay.crispLink %>"
+                  >la page d'aide correspondante<span class="visually-hidden"> - nouvelle fenêtre</span></a>.
+                </p>
+            <% } %>
+
               <% if (locals.error.code) { %>
                 <p class="fr-text--xs fr-mt-0 fr-mb-1v" data-testid="error-code">
                   code erreur : <%= locals.error.code %>

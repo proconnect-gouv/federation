@@ -19,6 +19,8 @@ export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
   public error = 'server_error';
   public error_description =
     'authentication aborted due to a technical error on the authorization server';
+  public crispLink =
+    'https://proconnect.crisp.help/fr/article/code-y500001-fournisseur-didentite-indisponible-sur-le-rie-4frofp/';
   public illustration = 'access-restricted-error';
   public title = 'Accès impossible';
   public displayContact = false;

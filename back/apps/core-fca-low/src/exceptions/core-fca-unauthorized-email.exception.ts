@@ -12,6 +12,9 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
   public error_description =
     'authentication aborted due to a configuration limitation';
 
+  public crispLink =
+    'https://proconnect.crisp.help/fr/article/code-500025-acces-refuse-au-service-uniforces-x40x12/';
+
   public illustration = 'unauthorized-email-error';
   public title = 'Email non autorisé';
   public displayContact = true;
