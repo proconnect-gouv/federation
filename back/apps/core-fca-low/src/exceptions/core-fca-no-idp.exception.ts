@@ -12,7 +12,12 @@ export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
     public email: string,
   ) {
     super();
-    this.description = `Votre organisation n’autorise pas l’utilisation de ProConnect sur ce service. Merci de créer un compte directement sur ${escape(this.spName)}, sans passer par le bouton ProConnect. Si ce comportement vous paraît anormal, vérifiez que l’adresse e-mail utilisée (${escape(this.email)}) est correcte. Si elle ne l’est pas, recommencez le parcours de connexion. Dans le cas contraire, vous pouvez consulter le <a href="https://proconnect.crisp.help/fr/article/quest-ce-que-lerreur-y500001-4frofp/">centre d'aide</a>.`;
+    this.description = `Votre organisation n’autorise pas l’utilisation de ProConnect sur ce service.
+
+Merci de créer un compte directement sur ${escape(this.spName)}, sans passer par le bouton ProConnect.
+
+Si ce comportement vous paraît anormal, vérifiez que l’adresse e-mail utilisée (${escape(this.email)}) est correcte. Si elle ne l’est pas, recommencez le parcours de connexion. Dans le cas contraire, vous pouvez consulter le <a href="https://proconnect.crisp.help/fr/article/quest-ce-que-lerreur-y500001-4frofp/">centre d'aide</a>.
+`;
   }
   public code = ErrorCode.NO_IDP;
   public http_status_code = HttpStatus.BAD_REQUEST;
