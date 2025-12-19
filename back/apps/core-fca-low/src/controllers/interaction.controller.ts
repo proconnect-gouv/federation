@@ -8,6 +8,7 @@ import {
   Get,
   Header,
   Param,
+  Query,
   Req,
   Res,
   UsePipes,
@@ -16,6 +17,7 @@ import {
 
 import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
+import { InteractionErrorQuery } from '@fc/core/dto/interaction_error_query.dto';
 import { CsrfService } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService, TrackedEvent } from '@fc/logger';
@@ -281,10 +283,13 @@ export class InteractionController {
     @Req() req: Request,
     @Res() res: Response,
     @Param() _params: Interaction,
+    @Query() query: InteractionErrorQuery,
   ) {
+    const { error, error_description } = query;
+
     return await this.oidcProvider.abortInteraction(req, res, {
-      error: 'server_error',
-      error_description: 'An unexpected error occurred',
+      error: error || 'server_error',
+      error_description: error_description || 'An unexpected error occurred',
     });
   }
 }

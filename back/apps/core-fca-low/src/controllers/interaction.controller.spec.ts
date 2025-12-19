@@ -540,7 +540,20 @@ describe('InteractionController', () => {
       const req = {} as Request;
       const res = {} as Response;
 
-      await controller.getError(req, res, {} as any);
+      await controller.getError(
+        req,
+        res,
+        {} as any,
+        { error: 'error', error_description: 'error_description' } as any,
+      );
+
+      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
+    });
+    it('should call abortInteraction with no error messages', async () => {
+      const req = {} as Request;
+      const res = {} as Response;
+
+      await controller.getError(req, res, {} as any, {} as any);
 
       expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
     });
