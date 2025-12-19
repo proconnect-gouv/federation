@@ -61,6 +61,7 @@ export class CoreFcaControllerService {
       this.logger.warn({
         code: 'email_not_safe_to_send',
         emailSuggestion: suggestion,
+        emailSuggestionFqdn: suggestion?.split('@').pop().toLowerCase(),
       });
       return res.redirect(url);
     }
