@@ -28,6 +28,8 @@ Fonctionnalité: Connexion à un FI
     Alors je suis redirigé vers la page erreur technique
     Et le titre de la page d'erreur est "Accès indisponible"
     Et le code d'erreur est "Y500017"
+    Et je clique sur le bouton Retour au service
+    Et je suis redirigé vers la page erreur du fournisseur de service
 
   # use this test only when using core-fca-rie
   @ignore

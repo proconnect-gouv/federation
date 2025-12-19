@@ -12,4 +12,5 @@ export interface ErrorPageParams {
     contactHref?: string;
     illustration?: string;
   };
+  interactionErrorUrl?: string;
 }

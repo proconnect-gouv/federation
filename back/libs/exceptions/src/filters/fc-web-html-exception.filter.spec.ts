@@ -105,6 +105,9 @@ describe('FcWebHtmlExceptionFilter', () => {
   });
 
   describe('errorOutput', () => {
+    beforeEach(() => {
+      sessionMock.get.mockReturnValue({ interactionId: 'interactionId' });
+    });
     it('should set the status to 500', () => {
       // When
       filter['errorOutput'](paramsMock as any);

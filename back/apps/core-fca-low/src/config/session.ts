@@ -30,6 +30,7 @@ export default {
     Routes.REDIRECT_TO_IDP,
     Routes.OIDC_CALLBACK,
     Routes.INTERACTION_VERIFY,
+    Routes.INTERACTION_ERROR,
     OidcProviderRoutes.REDIRECT_TO_SP,
     Routes.IDENTITY_PROVIDER_SELECTION,
 

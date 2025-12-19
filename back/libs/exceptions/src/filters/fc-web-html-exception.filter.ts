@@ -3,7 +3,10 @@ import { Response } from 'express';
 import { ArgumentsHost, Catch, Injectable } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 
+import { AppConfig } from '@fc/bridge-http-proxy/dto/app-config.dto';
 import { ConfigService } from '@fc/config';
+import { UserSession } from '@fc/core/dto/user-session/user-session.dto';
+import { Routes } from '@fc/core/enums/routes.enum';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
@@ -75,9 +78,18 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
     exception: BaseException;
     res: Response;
   }): void {
+    const { interactionId } = this.session.get<UserSession>('User');
+
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    const interactionErrorUrl = `${urlPrefix}${Routes.INTERACTION_ERROR.replace(
+      ':uid',
+      interactionId,
+    )}?error=${encodeURIComponent(exception.error)}&error_description=${encodeURIComponent(exception.error_description)}`;
+
     const errorPageParams: ErrorPageParams = {
       error,
       exceptionDisplay: {},
+      interactionErrorUrl,
     };
 
     if (exception instanceof CoreFcaBaseException) {

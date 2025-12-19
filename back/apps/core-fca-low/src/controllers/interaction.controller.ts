@@ -17,6 +17,7 @@ import {
 
 import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
+import { InteractionErrorQuery } from '@fc/core/dto/interaction_error_query.dto';
 import { CsrfService } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService, TrackedEvent } from '@fc/logger';
@@ -278,6 +279,23 @@ export class InteractionController {
     return this.oidcProvider.finishInteraction(req, res, {
       amr,
       acr: interactionAcr,
+    });
+  }
+
+  @Get(Routes.INTERACTION_ERROR)
+  @Header('cache-control', 'no-store')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getError(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param() _params: Interaction,
+    @Query() query: InteractionErrorQuery,
+  ) {
+    const { error, error_description } = query;
+
+    return await this.oidcProvider.abortInteraction(req, res, {
+      error: error || 'server_error',
+      error_description: error_description || 'An unexpected error occurred',
     });
   }
 }
