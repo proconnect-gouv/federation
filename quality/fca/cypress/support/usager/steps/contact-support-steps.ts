@@ -28,8 +28,10 @@ Then(
         const body = decodeURIComponent(matches[2]);
 
         expect(subject).to.contains(`Signaler l’erreur ${errorCode}`);
+        // eslint-disable-next-line no-irregular-whitespace
         expect(body).to.contains(`Je souhaitais me connecter à « ${spName} ».`);
         expect(body).to.contains(
+          // eslint-disable-next-line no-irregular-whitespace
           `Mon fournisseur d’identité est « ${idpName} ».`,
         );
       });

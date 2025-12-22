@@ -4,7 +4,6 @@ import { type OperatorUser } from '../../exploitation/helpers';
 import { Environment } from './environment';
 
 // Cypress Alias
-// eslint-disable-next-line no-undef
 export type ChainableElement = Cypress.Chainable<JQuery<HTMLElement>>;
 
 declare global {
