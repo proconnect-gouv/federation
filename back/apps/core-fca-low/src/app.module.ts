@@ -1,5 +1,3 @@
-import { bootstrap } from 'global-agent';
-
 import { DynamicModule, Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -50,12 +48,6 @@ import {
 
 @Module({})
 export class AppModule {
-  onModuleInit() {
-    // Temporary workaround to prevent the app from crashing when the proxy returns an error.
-    // This should be removed after upgrading oidc-client to version >6.
-    void bootstrap();
-  }
-
   static forRoot(configService: ConfigService): DynamicModule {
     return {
       module: AppModule,
