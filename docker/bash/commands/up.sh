@@ -28,15 +28,7 @@ _up() {
       _reset_mongodb "$app"
       ;;
     *"pg-admin")
-      echo "  Fixtures for admin app..."
-      cd ${WORKING_DIR}
-      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn typeorm schema:drop
-      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn migrations:run
-      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn fixtures:load
-
-      (cd ${FEDERATION_DIR}/admin/cypress/support/ && ./db.sh "admin" create)
-      ;;
-    *)
+      (cd ${FEDERATION_DIR}/admin/cypress/support/ && docker exec pc-pg-"admin"-1 bash -c "$(cat create-db-backup.sh)")
       ;;
     esac
   done

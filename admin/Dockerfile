@@ -1,7 +1,8 @@
 ARG NODE_VERSION=24.11.0
 ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
 
-FROM ${NODE_IMAGE} AS dev
+# -- dev_dependencies
+FROM ${NODE_IMAGE} AS dev_dependencies
 
 RUN apk add --no-cache bash python3 make g++ lscpu
 
@@ -14,9 +15,15 @@ RUN --mount=type=cache,target=/usr/local/share/.cache,id=admin-yarn-cache,sharin
 
 COPY . ./
 
-CMD yarn start:dev
+# -- postgres-migrator
+FROM dev_dependencies AS postgres-migrator
+CMD ["yarn", "migrations:run"]
 
+# -- dev
+FROM dev_dependencies AS dev
+CMD ["yarn", "start:dev"]
 
+# -- builder
 FROM ${NODE_IMAGE} AS builder
 
 COPY . /tmp/admin
@@ -26,7 +33,6 @@ RUN apk add --no-cache python3 make g++ lscpu
 WORKDIR /tmp/admin
 RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
 
-## build fc-exploitation
 WORKDIR /tmp/admin
 RUN yarn run build
 
@@ -42,7 +48,7 @@ RUN mv /tmp/admin/yarn.lock ./ && \
 RUN mkdir /etc/pm2
 COPY deploy/pm2/app.json /etc/pm2/
 
-
+# -- production
 FROM ${NODE_IMAGE} AS production
 
 RUN yarn global add pm2@6.0.8

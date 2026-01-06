@@ -42,6 +42,34 @@ services:
       - data
     command: 'yarn run migrate up'
 
+  postgres-migrator:
+    build:
+      context: '../../../admin'
+      target: postgres-migrator
+    working_dir: /var/www/app
+    user: ${CURRENT_UID}
+    depends_on:
+      postgres:
+        condition: service_started
+    volumes:
+      - '../../../admin/src:/var/www/app/src:ro'
+      - '../../../admin/views:/var/www/app/views:ro'
+      - '../../volumes/app:/opt/scripts'
+      - '../../volumes/.home:/home'
+      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
+      - '../../volumes/log:/var/log/app'
+    env_file:
+      - '../shared/.env/base-app.env'
+      - '../shared/.env/postgres.env'
+      - '../shared/.env/pc-mongo.env'
+      - '../fca-low/.env/admin.env'
+    environment:
+      - NODE_OPTIONS=--experimental-strip-types
+    tty: true
+    networks:
+      - exploitation
+      - data
+    command: ['sh', '-c', 'yarn typeorm schema:drop && yarn migrations:run && yarn fixtures:load']
   base-core:
     extends: base-nodejs
     depends_on:

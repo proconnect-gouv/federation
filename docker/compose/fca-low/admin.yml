@@ -16,6 +16,8 @@ services:
         condition: service_healthy
       redis-pwd:
         condition: service_healthy
+      postgres-migrator:
+        condition: service_completed_successfully
     volumes:
       - '../../../admin/src:/var/www/app/src:ro'
       - '../../../admin/views:/var/www/app/views:ro'

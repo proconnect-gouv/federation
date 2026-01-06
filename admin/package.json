@@ -14,7 +14,7 @@
     "fixtures:load": "fixtures load fixtures --dataSource src/dataSource.ts --require=ts-node/register --require=tsconfig-paths/register",
     "format": "prettier --write \"src/**/*.ts\" \"cypress/**/*.js\" \"public/**/*.js\" ",
     "lint": "eslint",
-    "migrations:run": "yarn typeorm migration:run && echo '\n\n ***Make sure to load fixtures and create backup DB for E2E***\n from you host run:\n > ./cypress/support/db.sh exploitation create'",
+    "migrations:run": "yarn typeorm migration:run",
     "prestart": "yarn run prebuild",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:dev": "yarn run prestart && ts-node-dev --inspect=0.0.0.0:9329 -r tsconfig-paths/register src/main.ts",

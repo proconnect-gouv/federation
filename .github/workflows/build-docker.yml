@@ -99,6 +99,7 @@ jobs:
           - mock-service-provider-fca-low
           - api-partner
           - fc-exploitation-v2
+          - postgres-migrator
         include:
           - instance: bridge-http-proxy-rie
             context: ./back
@@ -116,6 +117,9 @@ jobs:
             context: ./pcdbapi
           - instance: fc-exploitation-v2
             context: ./admin
+          - instance: postgres-migrator
+            context: ./admin
+            target: postgres-migrator
         arch:
           - amd64
           - arm64
