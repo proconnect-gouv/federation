@@ -64,13 +64,13 @@ Then(
 );
 
 Then(
-  'le fournisseur d\'identité "Autre" est positionné en dernier dans la liste des fournisseurs d\'identité',
-  function () {
+  "le fournisseur d'identité {string} est positionné en dernier dans la liste des fournisseurs d'identité",
+  function (idpLabel: string) {
     cy.get('#radio-hint label').then((labels) => {
       const texts = Array.from(labels).map((label) =>
         label.textContent?.trim(),
       );
-      const autreIndex = texts.indexOf('Autre');
+      const autreIndex = texts.indexOf(idpLabel);
       expect(autreIndex).to.equal(texts.length - 1);
     });
   },

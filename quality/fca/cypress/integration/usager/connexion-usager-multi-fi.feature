@@ -38,7 +38,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et que j'entre l'email "test@polyfi.fr"
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
-    Et je choisis le fournisseur d'identité "Autre"
+    Et je choisis le fournisseur d'identité "Autre (via ProConnect Identité)"
     Alors je suis redirigé vers la page login du fournisseur d'identité "moncomptepro"
 
   @ignoreInteg01
@@ -61,7 +61,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et que j'entre l'email "test@polyfi.fr"
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
-    Alors le fournisseur d'identité "Autre" est affiché
+    Alors le fournisseur d'identité "Autre (via ProConnect Identité)" est affiché
 
   @ignoreInteg01
   Scénario: FI par défaut n'est pas accepté par l'un des fqdnToIdp
@@ -70,16 +70,16 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et que j'entre l'email "many@polyfi2.fr"
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
-    Alors le fournisseur d'identité "Autre" n'est pas affiché
+    Alors le fournisseur d'identité "Autre (via ProConnect Identité)" n'est pas affiché
 
   @ignoreInteg01
-  Scénario: Le FI "Autre" est toujours positionné en dernier
+  Scénario: Le FI "Autre (via ProConnect Identité)" est toujours positionné en dernier
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@polyfi.fr"
     Et que je clique sur le bouton de connexion
     Quand je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
-    Alors le fournisseur d'identité "Autre" est positionné en dernier dans la liste des fournisseurs d'identité
+    Alors le fournisseur d'identité "Autre (via ProConnect Identité)" est positionné en dernier dans la liste des fournisseurs d'identité
 
   @ignoreInteg01
   Scénario: Retour en arrière après une connexion multi FI réussie

@@ -38,15 +38,15 @@ export class CoreFcaService {
         ...identityProvider,
         title:
           identityProvider.uid === defaultIdpId
-            ? 'Autre'
-            : identityProvider.title, // rename default IdP to "Autre"
+            ? 'Autre (via ProConnect Identité)'
+            : identityProvider.title,
       }),
     );
 
-    // sort providers by title alphabetically with "Autre" at the end of the list
+    // sort providers by title alphabetically with the default IdP at the end of the list
     return filteredIdentityProviders.sort((a, b) => {
-      if (a.title === 'Autre') return 1;
-      if (b.title === 'Autre') return -1;
+      if (a.uid === defaultIdpId) return 1;
+      if (b.uid === defaultIdpId) return -1;
       return a.title.localeCompare(b.title, 'fr');
     });
   }

@@ -443,7 +443,7 @@ describe('CoreFcaService', () => {
   });
 
   describe('getSortedDisplayableIdentityProviders', () => {
-    it('should sort identity providers alphabetically with "Autre" at the end of the list', () => {
+    it('should sort providers by title alphabetically with the default IdP at the end of the list', () => {
       // Given
       configServiceMock.get.mockReturnValue({
         defaultIdpId: 'idp2',
@@ -463,7 +463,7 @@ describe('CoreFcaService', () => {
       expect(sortedProviders).toEqual([
         { uid: 'idp3', title: 'Beta' },
         { uid: 'idp1', title: 'Zeta' },
-        { uid: 'idp2', title: 'Autre' },
+        { uid: 'idp2', title: 'Autre (via ProConnect Identité)' },
       ]);
     });
 
@@ -483,7 +483,7 @@ describe('CoreFcaService', () => {
       expect(sortedProviders).toEqual([]);
     });
 
-    it('should convert default idp title to "Autre"', () => {
+    it('should convert default idp title to "Autre (via ProConnect Identité)"', () => {
       // Given
       configServiceMock.get.mockReturnValue({
         defaultIdpId: 'idp1',
@@ -498,7 +498,9 @@ describe('CoreFcaService', () => {
         service.getSortedDisplayableIdentityProviders(identityProviders);
 
       // Then
-      expect(sortedProviders).toEqual([{ uid: 'idp1', title: 'Autre' }]);
+      expect(sortedProviders).toEqual([
+        { uid: 'idp1', title: 'Autre (via ProConnect Identité)' },
+      ]);
     });
   });
 

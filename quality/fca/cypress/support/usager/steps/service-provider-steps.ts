@@ -371,3 +371,11 @@ Given(
 When('je clique sur la checkbox "se souvenir de moi"', function () {
   cy.contains('Se souvenir de moi').click();
 });
+
+When('je ferme la modal nouvelle interface si elle est affichée', () => {
+  cy.get('body').then(($body) => {
+    if ($body.find('#new-interface-modal[open]').length > 0) {
+      cy.get('#new-interface-modal-continue').click();
+    }
+  });
+});

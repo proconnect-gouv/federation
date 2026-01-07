@@ -77,7 +77,7 @@ export class OidcClientController {
 
     const csrfToken = this.csrfService.getOrCreate();
 
-    return res.render('interaction-identity-provider', {
+    return res.render('identity-provider-selection', {
       csrfToken,
       identityProviders: displayableIdps,
       hasDefaultIdp: this.coreFcaService.hasDefaultIdp(
