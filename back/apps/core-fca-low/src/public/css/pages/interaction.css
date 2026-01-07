@@ -50,6 +50,7 @@ main {
 /* https://stackoverflow.com/questions/62075401/safari-grid-in-flexbox-produces-height-overflow */
 /* selector for safari 9+ (see https://browserstrangeness.bitbucket.io/css_hacks.html#safari) */
 @supports (-webkit-hyphens: none) {
+
   html,
   body,
   main {
