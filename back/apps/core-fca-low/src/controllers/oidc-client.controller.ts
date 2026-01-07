@@ -78,7 +78,7 @@ export class OidcClientController {
     const csrfToken = this.csrfService.renew();
     this.sessionService.set('Csrf', { csrfToken });
 
-    return res.render('interaction-identity-provider', {
+    return res.render('multi-idp', {
       csrfToken,
       identityProviders: displayableIdps,
       hasDefaultIdp: this.coreFcaService.hasDefaultIdp(
