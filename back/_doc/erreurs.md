@@ -40,11 +40,6 @@
 | [<b>190013</b>](../libs/session/src/exceptions/session-cannot-commit-undefined-session.exception.ts) | [SessionCannotCommitUndefinedSession](../libs/session/src/exceptions/session-cannot-commit-undefined-session.exception.ts) | 500 | access_denied | user authentication aborted |
 | [<b>190014</b>](../libs/session/src/exceptions/session-alias-not-found.exception.ts) | [SessionAliasNotFoundException](../libs/session/src/exceptions/session-alias-not-found.exception.ts) | 500 | access_denied | user authentication aborted |
 
-## @fc/csv
-| Code d'erreur | Classe | Code HTTP | error | error_description |
-|---|---|---|---|---|
-| [<b>250001</b>](../libs/csv/src/exceptions/csv-parsing.exception.ts) | [CsvParsingException](../libs/csv/src/exceptions/csv-parsing.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
-
 ## @fc/bridge-http-proxy-rie
 | Code d'erreur | Classe | Code HTTP | error | error_description |
 |---|---|---|---|---|
