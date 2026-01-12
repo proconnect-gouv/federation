@@ -3,6 +3,8 @@ import { Client, custom, Issuer } from 'openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ConfigService } from '@fc/config';
+
 import {
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
@@ -21,6 +23,10 @@ describe('OidcClientIssuerService', () => {
   customMock.setHttpOptionsDefaults = jest.fn();
 
   const oidcClientConfigServiceMock = {
+    get: jest.fn(),
+  };
+
+  const configServiceMock = {
     get: jest.fn(),
   };
 
@@ -53,6 +59,8 @@ describe('OidcClientIssuerService', () => {
     userinfo_signed_response_alg: 'HS256',
   };
 
+  const pcfSupportEmail = 'support-pcf@example.com';
+
   const idpMetadataMock = {
     jwks: [],
     httpOptions: {},
@@ -62,6 +70,7 @@ describe('OidcClientIssuerService', () => {
         name: 'idpNameMock',
         response_types: ['response', 'types'],
         discoveryUrl: 'mock well-known url',
+        supportEmail: 'support-fi@example.com',
       },
     ],
     redirectUri: ['redirect', 'uris'],
@@ -75,10 +84,16 @@ describe('OidcClientIssuerService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OidcClientIssuerService, OidcClientConfigService],
+      providers: [
+        OidcClientIssuerService,
+        OidcClientConfigService,
+        ConfigService,
+      ],
     })
       .overrideProvider(OidcClientConfigService)
       .useValue(oidcClientConfigServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .compile();
 
     service = module.get<OidcClientIssuerService>(OidcClientIssuerService);
@@ -192,6 +207,9 @@ describe('OidcClientIssuerService', () => {
   describe('getIssuer', () => {
     beforeEach(() => {
       service['getIdpMetadata'] = jest.fn().mockResolvedValue(idpMetadataMock);
+      configServiceMock.get.mockReturnValue({
+        supportEmail: pcfSupportEmail,
+      });
     });
     it('should call getIdpMetadata', async () => {
       // Given
@@ -264,6 +282,11 @@ describe('OidcClientIssuerService', () => {
     } as unknown as ClientMetadata;
     const providers = [providerMock1, providerMock2, providerMock3];
 
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValue({
+        supportEmail: pcfSupportEmail,
+      });
+    });
     it('should return provider in config', async () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValue({

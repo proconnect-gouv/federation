@@ -12,7 +12,7 @@ import { SessionService } from '@fc/session';
 
 import { ExceptionsConfig } from '../dto';
 import { BaseException } from '../exceptions/base.exception';
-import { CoreFcaBaseException } from '../exceptions/core-fca-base.exception';
+import { UserBaseException } from '../exceptions/user-base.exception';
 import { generateErrorId, getCode, getStackTraceArray } from '../helpers';
 import { ErrorPageParams } from '../types';
 
@@ -92,7 +92,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
       interactionErrorUrl,
     };
 
-    if (exception instanceof CoreFcaBaseException) {
+    if (exception instanceof UserBaseException) {
       const {
         contactHref,
         title,
