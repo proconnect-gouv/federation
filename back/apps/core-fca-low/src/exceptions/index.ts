@@ -1,5 +1,6 @@
 export * from './core-fca-account-blocked.exception';
 export * from './core-fca-agent-not-from-public-service.exception';
+export * from './core-fca-base.exception';
 export * from './core-fca-idp-configuration.exception';
 export * from './core-fca-idp-disabled.exception';
 export * from './core-fca-invalid-email-domain.exception';

@@ -1,8 +1,10 @@
 import { JWK } from 'jose-v4';
 import { Client, custom, Issuer } from 'openid-client';
 
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 
+import { ConfigService } from '@fc/config';
+import { AppConfig } from '@fc/core/dto';
 import { IdentityProviderMetadata } from '@fc/oidc';
 
 import { OidcClientClass } from '../enums';
@@ -11,16 +13,23 @@ import {
   OidcClientIdpNotFoundException,
   OidcClientIssuerDiscoveryFailedException,
 } from '../exceptions';
+import { IIdentityProviderAdapter } from '../interfaces';
+import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
 import { OidcClientConfigService } from './oidc-client-config.service';
 
 @Injectable()
 export class OidcClientIssuerService implements OnModuleInit {
   private IssuerProxy = Issuer;
 
-  constructor(private readonly config: OidcClientConfigService) {}
+  constructor(
+    private readonly oidcClientConfigService: OidcClientConfigService,
+    private readonly config: ConfigService,
+    @Inject(IDENTITY_PROVIDER_SERVICE)
+    private readonly identityProvider: IIdentityProviderAdapter,
+  ) {}
 
   async onModuleInit() {
-    const { httpOptions } = await this.config.get();
+    const { httpOptions } = await this.oidcClientConfigService.get();
 
     custom.setHttpOptionsDefaults(httpOptions);
   }
@@ -33,17 +42,18 @@ export class OidcClientIssuerService implements OnModuleInit {
   private async getIdpMetadata(
     issuerId: string,
   ): Promise<IdentityProviderMetadata> {
-    const configuration = await this.config.get();
+    const configuration = await this.oidcClientConfigService.get();
     const idpMetadata = configuration.providers.find(
       ({ uid }) => uid === issuerId,
     );
+    const supportEmail = await this.getSupportEmail(issuerId);
 
     if (!idpMetadata) {
-      throw new OidcClientIdpNotFoundException();
+      throw new OidcClientIdpNotFoundException(supportEmail);
     }
 
     if (!idpMetadata.active) {
-      throw new OidcClientIdpDisabledException();
+      throw new OidcClientIdpDisabledException(supportEmail);
     }
 
     const { redirectUri, postLogoutRedirectUri } = configuration;
@@ -61,6 +71,13 @@ export class OidcClientIssuerService implements OnModuleInit {
     return result;
   }
 
+  async getSupportEmail(idpId: string) {
+    const { supportEmail: pcfSupportEmail } = this.config.get<AppConfig>('App');
+
+    const idpMetadata = await this.identityProvider.getById(idpId);
+    return idpMetadata.supportEmail || pcfSupportEmail;
+  }
+
   /**
    * @param issuerId identifier used to indicate Chosen IdP
    * @returns providers metadata
@@ -74,7 +91,9 @@ export class OidcClientIssuerService implements OnModuleInit {
       try {
         return await this.IssuerProxy.discover(idpMetadata.discoveryUrl);
       } catch (error) {
-        throw new OidcClientIssuerDiscoveryFailedException(error);
+        const supportEmail = await this.getSupportEmail(issuerId);
+
+        throw new OidcClientIssuerDiscoveryFailedException(supportEmail, error);
       }
     }
 
@@ -82,7 +101,7 @@ export class OidcClientIssuerService implements OnModuleInit {
   }
 
   private async getClientClass(): Promise<OidcClientClass> {
-    const { fapi } = await this.config.get();
+    const { fapi } = await this.oidcClientConfigService.get();
     const clientClass = fapi ? OidcClientClass.FAPI : OidcClientClass.STANDARD;
 
     return clientClass;
@@ -92,7 +111,7 @@ export class OidcClientIssuerService implements OnModuleInit {
     const idpMetadata = await this.getIdpMetadata(issuerId);
 
     const issuer = await this.getIssuer(issuerId);
-    const { jwks } = await this.config.get();
+    const { jwks } = await this.oidcClientConfigService.get();
     const clientClass = await this.getClientClass();
 
     const client = new issuer[clientClass](

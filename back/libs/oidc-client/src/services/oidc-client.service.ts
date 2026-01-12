@@ -15,12 +15,14 @@ import {
   TokenResults,
   UserInfosParams,
 } from '../interfaces';
+import { OidcClientIssuerService } from './oidc-client-issuer.service';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 
 @Injectable()
 export class OidcClientService {
   constructor(
     public readonly utils: OidcClientUtilsService,
+    private readonly issuer: OidcClientIssuerService,
     private readonly logger: LoggerService,
   ) {}
 
@@ -59,7 +61,9 @@ export class OidcClientService {
     const tokenValidationErrors = await validate(tokenResult as object);
 
     if (tokenValidationErrors.length) {
+      const supportEmail = await this.issuer.getSupportEmail(idpId);
       throw new OidcClientTokenResultFailedException(
+        supportEmail,
         tokenValidationErrors.toString(),
       );
     }

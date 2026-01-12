@@ -13,7 +13,7 @@ import {
   TokenSet,
 } from 'openid-client';
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
@@ -25,12 +25,7 @@ import {
   OidcClientTokenFailedException,
   OidcClientUserinfoFailedException,
 } from '../exceptions';
-import {
-  ExtraTokenParams,
-  IIdentityProviderAdapter,
-  TokenParams,
-} from '../interfaces';
-import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
+import { ExtraTokenParams, TokenParams } from '../interfaces';
 import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
 
@@ -41,8 +36,6 @@ export class OidcClientUtilsService {
     private readonly issuer: OidcClientIssuerService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly crypto: CryptographyService,
-    @Inject(IDENTITY_PROVIDER_SERVICE)
-    private readonly identityProvider: IIdentityProviderAdapter,
   ) {}
 
   async buildAuthorizeParameters() {
@@ -71,21 +64,28 @@ export class OidcClientUtilsService {
     return client.authorizationUrl(authorizationParams);
   }
 
-  checkState(callbackParams, stateFromSession: string): void {
+  async checkState(
+    idpId: string,
+    callbackParams,
+    stateFromSession: string,
+  ): Promise<void> {
     if (!callbackParams.state) {
-      throw new OidcClientMissingStateException();
+      const supportEmail = await this.issuer.getSupportEmail(idpId);
+      throw new OidcClientMissingStateException(supportEmail);
     }
 
     if (callbackParams.state !== stateFromSession) {
-      throw new OidcClientInvalidStateException();
+      const supportEmail = await this.issuer.getSupportEmail(idpId);
+      throw new OidcClientInvalidStateException(supportEmail);
     }
   }
 
-  private extractParams(
+  private async extractParams(
+    idpId: string,
     callbackParams: CallbackParamsType,
     stateFromSession: string,
-  ): any {
-    this.checkState(callbackParams, stateFromSession);
+  ): Promise<any> {
+    await this.checkState(idpId, callbackParams, stateFromSession);
 
     return callbackParams;
   }
@@ -108,7 +108,11 @@ export class OidcClientUtilsService {
     const { state } = params;
 
     const callbackParams = client.callbackParams(req);
-    const receivedParams = this.extractParams(callbackParams, state);
+    const receivedParams = await this.extractParams(
+      idpId,
+      callbackParams,
+      state,
+    );
 
     let tokenSet: TokenSet;
 
@@ -124,7 +128,9 @@ export class OidcClientUtilsService {
         this.buildExtraParameters(extraParams),
       );
     } catch (error) {
-      throw new OidcClientTokenFailedException(error);
+      const contactEmail = await this.issuer.getSupportEmail(idpId);
+
+      throw new OidcClientTokenFailedException(contactEmail, error);
     }
 
     return tokenSet;
@@ -142,7 +148,8 @@ export class OidcClientUtilsService {
     try {
       return await client.userinfo<T>(accessToken);
     } catch (error) {
-      throw new OidcClientUserinfoFailedException(error);
+      const supportEmail = await this.issuer.getSupportEmail(idpId);
+      throw new OidcClientUserinfoFailedException(supportEmail, error);
     }
   }
 
@@ -189,7 +196,8 @@ export class OidcClientUtilsService {
         state: stateFromSession,
       });
     } catch (error) {
-      throw new OidcClientGetEndSessionUrlException(error);
+      const supportEmail = await this.issuer.getSupportEmail(idpId);
+      throw new OidcClientGetEndSessionUrlException(supportEmail, error);
     }
 
     /**
