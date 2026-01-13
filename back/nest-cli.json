@@ -219,15 +219,6 @@
         "tsConfigPath": "libs/notifications/tsconfig.lib.json"
       }
     },
-    "csv": {
-      "type": "library",
-      "root": "libs/csv",
-      "entryFile": "index",
-      "sourceRoot": "libs/csv/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/csv/tsconfig.lib.json"
-      }
-    },
     "hybridge-http-proxy": {
       "type": "library",
       "root": "libs/hybridge-http-proxy",
