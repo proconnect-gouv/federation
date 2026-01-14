@@ -19,7 +19,9 @@ describe('OidcClientService', () => {
       getUserInfo: jest.fn(),
       getEndSessionUrl: jest.fn(),
       hasEndSessionUrl: jest.fn(),
+      getSupportEmail: jest.fn(),
     } as unknown as jest.Mocked<OidcClientUtilsService>;
+    utilsMock.getSupportEmail.mockResolvedValue('support-pcf@example.com');
 
     service = new OidcClientService(utilsMock, loggerMock);
   });

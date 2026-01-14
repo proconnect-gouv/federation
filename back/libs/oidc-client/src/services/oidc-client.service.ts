@@ -54,7 +54,9 @@ export class OidcClientService {
     const tokenValidationErrors = await validate(tokenResult as object);
 
     if (tokenValidationErrors.length) {
+      const supportEmail = await this.utils.getSupportEmail(idpId);
       throw new OidcClientTokenResultFailedException(
+        supportEmail,
         tokenValidationErrors.toString(),
       );
     }

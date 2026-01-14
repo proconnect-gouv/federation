@@ -1,15 +1,5 @@
-import { FcException } from '../exceptions/fc.exception';
+import { UserBaseException } from './user-base.exception';
 
-export class CoreFcaBaseException extends FcException {
+export class CoreFcaBaseException extends UserBaseException {
   public scope = 50;
-
-  public title = 'Accès impossible';
-  public description =
-    'Nous n’arrivons pas à vous connecter à votre service en ligne pour l’instant.';
-  public illustration = 'default-error';
-
-  public displayContact = true;
-  public contactMessage =
-    'Vous pouvez nous signaler cette erreur en nous écrivant.';
-  public contactHref: string;
 }

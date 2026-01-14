@@ -4,8 +4,12 @@ import { ArgumentsHost } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CoreFcaInvalidIdentityException } from '@fc/core';
+import {
+  CoreFcaAgentNotFromPublicServiceException,
+  CoreFcaInvalidIdentityException,
+} from '@fc/core';
 import { LoggerService } from '@fc/logger';
+import { OidcClientTokenResultFailedException } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
@@ -192,6 +196,72 @@ describe('FcWebHtmlExceptionFilter', () => {
             illustration: 'default-error',
             title: 'Accès impossible',
           },
+        }),
+      );
+    });
+    it('should render the error template with displayContact and contactHref', () => {
+      // When
+      const coreFcaException = new OidcClientTokenResultFailedException(
+        'support-fi@example.com',
+        'error_msg',
+      );
+      const inputMock = {
+        ...paramsMock,
+        exception: coreFcaException,
+        error: {
+          ...paramsMock.error,
+          message: undefined,
+        },
+      };
+      filter['errorOutput'](inputMock as any);
+
+      // Then
+      expect(resMock.render).toHaveBeenCalledTimes(1);
+      const [, renderParams] = resMock.render.mock.calls[0];
+      expect(resMock.render).toHaveBeenCalledWith('error', expect.any(Object));
+      expect(renderParams).toEqual(
+        expect.objectContaining({
+          error: inputMock.error,
+          exceptionDisplay: expect.objectContaining({
+            title: expect.any(String),
+            description: expect.any(String),
+            displayContact: true,
+            contactHref: expect.any(String),
+          }),
+        }),
+      );
+    });
+
+    it('should render the error template with displayContact and no contactHref', () => {
+      // When
+      const coreFcaException = new CoreFcaAgentNotFromPublicServiceException(
+        'error_msg',
+      );
+      const inputMock = {
+        ...paramsMock,
+        exception: coreFcaException,
+        error: {
+          ...paramsMock.error,
+          message: undefined,
+        },
+      };
+      filter['errorOutput'](inputMock as any);
+
+      // Then
+      expect(resMock.render).toHaveBeenCalledTimes(1);
+      const [, renderParams] = resMock.render.mock.calls[0];
+      expect(resMock.render).toHaveBeenCalledWith('error', expect.any(Object));
+      expect(renderParams).toEqual(
+        expect.objectContaining({
+          error: inputMock.error,
+          exceptionDisplay: expect.objectContaining({
+            title: expect.any(String),
+            description: expect.any(String),
+            displayContact: true,
+            contactHref: expect.stringMatching(
+              /^mailto:support%2Bfederation%40proconnect.gouv.fr/,
+            ),
+          }),
         }),
       );
     });
