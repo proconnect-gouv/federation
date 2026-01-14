@@ -64,8 +64,6 @@
       "@fc/app/*": ["libs/app/src/*"],
       "@fc/notifications": ["libs/notifications/src"],
       "@fc/notifications/*": ["libs/notifications/src/*"],
-      "@fc/csv": ["libs/csv/src"],
-      "@fc/csv/*": ["libs/csv/src/*"],
       "@fc/bridge-http-proxy": ["apps/bridge-http-proxy-rie/src"],
       "@fc/bridge-http-proxy/*": ["apps/bridge-http-proxy-rie/src/*"],
       "@fc/hybridge-http-proxy": ["libs/hybridge-http-proxy/src"],
