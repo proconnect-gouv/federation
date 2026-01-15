@@ -5,15 +5,15 @@
 ## @fc/oidc-client
 | Code d'erreur | Classe | Code HTTP | error | error_description |
 |---|---|---|---|---|
-| [<b>020017</b>](../libs/oidc-client/src/exceptions/oidc-client-idp-disabled.exception.ts) | [OidcClientIdpDisabledException](../libs/oidc-client/src/exceptions/oidc-client-idp-disabled.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
-| [<b>020019</b>](../libs/oidc-client/src/exceptions/oidc-client-idp-not-found.exception.ts) | [OidcClientIdpNotFoundException](../libs/oidc-client/src/exceptions/oidc-client-idp-not-found.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
-| [<b>020021</b>](../libs/oidc-client/src/exceptions/oidc-client-missing-state.exception.ts) | [OidcClientMissingStateException](../libs/oidc-client/src/exceptions/oidc-client-missing-state.exception.ts) | 400 | invalid_request | authentication aborted due to a technical error on the authorization server |
-| [<b>020022</b>](../libs/oidc-client/src/exceptions/oidc-client-invalid-state.exception.ts) | [OidcClientInvalidStateException](../libs/oidc-client/src/exceptions/oidc-client-invalid-state.exception.ts) | 403 | invalid_request | invalid state parameter |
-| [<b>020026</b>](../libs/oidc-client/src/exceptions/oidc-client-token-failed.exception.ts) | [OidcClientTokenFailedException](../libs/oidc-client/src/exceptions/oidc-client-token-failed.exception.ts) | 502 | server_error | authentication aborted due to a technical error on the authorization server |
-| [<b>020027</b>](../libs/oidc-client/src/exceptions/oidc-client-userinfo-failed.exception.ts) | [OidcClientUserinfoFailedException](../libs/oidc-client/src/exceptions/oidc-client-userinfo-failed.exception.ts) | 502 | server_error | authentication aborted due to a technical error on the authorization server |
-| [<b>020028</b>](../libs/oidc-client/src/exceptions/oidc-client-get-end-session-url.exception.ts) | [OidcClientGetEndSessionUrlException](../libs/oidc-client/src/exceptions/oidc-client-get-end-session-url.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
-| [<b>020030</b>](../libs/oidc-client/src/exceptions/oidc-client-token-result-failed.exception.ts) | [OidcClientTokenResultFailedException](../libs/oidc-client/src/exceptions/oidc-client-token-result-failed.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
-| [<b>020031</b>](../libs/oidc-client/src/exceptions/oidc-client-issuer-discovery-failed.exception.ts) | [OidcClientIssuerDiscoveryFailedException](../libs/oidc-client/src/exceptions/oidc-client-issuer-discovery-failed.exception.ts) | 502 | server_error | authentication aborted due to a technical error on the authorization server |
+| [<b>020017</b>](../libs/oidc-client/src/exceptions/oidc-client-idp-disabled.exception.ts) | [OidcClientIdpDisabledException](../libs/oidc-client/src/exceptions/oidc-client-idp-disabled.exception.ts) | 500 | Identity provider disabled | The identity provider is currently disabled. |
+| [<b>020019</b>](../libs/oidc-client/src/exceptions/oidc-client-idp-not-found.exception.ts) | [OidcClientIdpNotFoundException](../libs/oidc-client/src/exceptions/oidc-client-idp-not-found.exception.ts) | 500 | Identity provider not found | The specified identity provider could not be found. |
+| [<b>020021</b>](../libs/oidc-client/src/exceptions/oidc-client-missing-state.exception.ts) | [OidcClientMissingStateException](../libs/oidc-client/src/exceptions/oidc-client-missing-state.exception.ts) | 400 | Missing state | The state parameter is missing from the authorization request. |
+| [<b>020022</b>](../libs/oidc-client/src/exceptions/oidc-client-invalid-state.exception.ts) | [OidcClientInvalidStateException](../libs/oidc-client/src/exceptions/oidc-client-invalid-state.exception.ts) | 403 | Invalid state | The provided state parameter does not match the state currently stored in the session. |
+| [<b>020026</b>](../libs/oidc-client/src/exceptions/oidc-client-token-failed.exception.ts) | [OidcClientTokenFailedException](../libs/oidc-client/src/exceptions/oidc-client-token-failed.exception.ts) | 502 | Token request failed | The token request to the authorization server failed. |
+| [<b>020027</b>](../libs/oidc-client/src/exceptions/oidc-client-userinfo-failed.exception.ts) | [OidcClientUserinfoFailedException](../libs/oidc-client/src/exceptions/oidc-client-userinfo-failed.exception.ts) | 502 | Userinfo request failed | The userinfo request to the authorization server failed. |
+| [<b>020028</b>](../libs/oidc-client/src/exceptions/oidc-client-get-end-session-url.exception.ts) | [OidcClientGetEndSessionUrlException](../libs/oidc-client/src/exceptions/oidc-client-get-end-session-url.exception.ts) | 500 | End session URL error | Could not retrieve the end session URL from the identity provider. |
+| [<b>020030</b>](../libs/oidc-client/src/exceptions/oidc-client-token-result-failed.exception.ts) | [OidcClientTokenResultFailedException](../libs/oidc-client/src/exceptions/oidc-client-token-result-failed.exception.ts) | 500 | Token validation failed | The validation of the token result from the authorization server failed. |
+| [<b>020031</b>](../libs/oidc-client/src/exceptions/oidc-client-issuer-discovery-failed.exception.ts) | [OidcClientIssuerDiscoveryFailedException](../libs/oidc-client/src/exceptions/oidc-client-issuer-discovery-failed.exception.ts) | 502 | Call to discovery endpoint failed | The call to the identity provider discovery endpoint failed. |
 
 ## @fc/oidc-provider
 | Code d'erreur | Classe | Code HTTP | error | error_description |
@@ -55,8 +55,8 @@
 ## @fc/csrf
 | Code d'erreur | Classe | Code HTTP | error | error_description |
 |---|---|---|---|---|
-| [<b>470001</b>](../libs/csrf/src/exceptions/csrf-bad-token.exception.ts) | [CsrfBadTokenException](../libs/csrf/src/exceptions/csrf-bad-token.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
-| [<b>470002</b>](../libs/csrf/src/exceptions/csrf-missing-token.exception.ts) | [CsrfMissingTokenException](../libs/csrf/src/exceptions/csrf-missing-token.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
+| [<b>470001</b>](../libs/csrf/src/exceptions/csrf-bad-token.exception.ts) | [CsrfBadTokenException](../libs/csrf/src/exceptions/csrf-bad-token.exception.ts) | 500 | Bad CSRF token | The provided CSRF token does not match the token currently stored in the session. |
+| [<b>470002</b>](../libs/csrf/src/exceptions/csrf-missing-token.exception.ts) | [CsrfMissingTokenException](../libs/csrf/src/exceptions/csrf-missing-token.exception.ts) | 500 | Missing CSRF token | The CSRF token is missing from the request body. |
 
 ## @fc/core-fca-low
 | Code d'erreur | Classe | Code HTTP | error | error_description |
