@@ -7,6 +7,6 @@ export class OidcClientUserinfoFailedException extends OidcClientBaseException {
   public code = ErrorCode.USERINFO_FAILED;
   public error = 'server_error';
   public error_description =
-    'authentication aborted due to a technical error on the authorization server';
+    'The userinfo request to the authorization server failed.';
   public http_status_code = HttpStatus.BAD_GATEWAY;
 }

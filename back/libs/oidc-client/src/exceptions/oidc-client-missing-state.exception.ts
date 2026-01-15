@@ -7,6 +7,6 @@ export class OidcClientMissingStateException extends OidcClientBaseException {
   public code = ErrorCode.MISSING_STATE;
   public error = 'invalid_request';
   public error_description =
-    'authentication aborted due to a technical error on the authorization server';
+    'The state parameter is missing from the authorization request.';
   public http_status_code = HttpStatus.BAD_REQUEST;
 }

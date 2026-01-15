@@ -5,5 +5,5 @@ export class OidcClientIdpNotFoundException extends OidcClientBaseException {
   public code = ErrorCode.MISSING_PROVIDER;
   public error = 'server_error';
   public error_description =
-    'authentication aborted due to a technical error on the authorization server';
+    'The specified identity provider could not be found.';
 }
