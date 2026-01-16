@@ -124,12 +124,6 @@ export class OidcClientUtilsService {
         this.buildExtraParameters(extraParams),
       );
     } catch (error) {
-      this.logger.debug({
-        client: { ...client, client_secret: '***' },
-        receivedParams,
-        params,
-      });
-
       throw new OidcClientTokenFailedException(error);
     }
 

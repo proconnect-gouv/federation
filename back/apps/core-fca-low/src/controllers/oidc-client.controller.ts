@@ -168,6 +168,11 @@ export class OidcClientController {
       extraParams,
     );
 
+    this.logger.info({
+      code: `oidc-client-info:get-token`,
+      claims,
+    });
+
     const idp = await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
 
     let acr;
@@ -198,6 +203,11 @@ export class OidcClientController {
     };
 
     const plainIdpIdentity = await this.oidcClient.getUserinfo(userInfoParams);
+
+    this.logger.info({
+      code: `oidc-client-info:get-userinfo`,
+      plainIdpIdentity,
+    });
 
     // Augment user info with any claims from ID Token
     this.augmentIdentityFromIdToken(claims, plainIdpIdentity, idp);
