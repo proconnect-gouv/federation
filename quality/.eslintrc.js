@@ -109,6 +109,7 @@ module.exports = {
     es6: true,
   },
   rules: {
+    'no-undef': 'off',
     'no-console': 2,
     '@eslint-community/eslint-comments/no-unused-disable': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 2,
