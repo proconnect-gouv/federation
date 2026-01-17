@@ -3,11 +3,11 @@ import { Client, custom, Issuer } from 'openid-client';
 
 import { Injectable, OnModuleInit } from '@nestjs/common';
 
+import { CoreFcaAgentIdpDisabledException } from '@fc/core';
 import { IdentityProviderMetadata } from '@fc/oidc';
 
 import { OidcClientClass } from '../enums';
 import {
-  OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientIssuerDiscoveryFailedException,
 } from '../exceptions';
@@ -43,7 +43,7 @@ export class OidcClientIssuerService implements OnModuleInit {
     }
 
     if (!idpMetadata.active) {
-      throw new OidcClientIdpDisabledException();
+      throw new CoreFcaAgentIdpDisabledException();
     }
 
     const { redirectUri, postLogoutRedirectUri } = configuration;
