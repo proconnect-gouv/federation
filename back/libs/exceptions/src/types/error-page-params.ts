@@ -12,6 +12,7 @@ export interface ErrorPageParams {
     contactHref?: string;
     illustration?: string;
     crispLink?: string;
+    mainAction?: 'contact' | 'goBack';
   };
   interactionErrorUrl?: string;
 }

@@ -85,12 +85,12 @@
                   <% } %>
                   <div>
                     <% if (locals.exceptionDisplay.displayContact) { %>
-                      <a class="fr-btn fr-btn--tertiary fr-icon-flag-line fr-btn--icon-right fr-mr-1w" href="<%= locals.exceptionDisplay.contactHref %>">
+                      <a class="fr-btn <%= locals.exceptionDisplay.mainAction !== 'goBack' && 'fr-btn--tertiary' %> fr-icon-flag-line fr-btn--icon-right fr-mr-1w" href="<%= locals.exceptionDisplay.contactHref %>">
                         Signaler l'erreur
                       </a>
                     <% } %>
                     <% if (locals.interactionErrorUrl) { %>
-                      <a class="fr-btn fr-mt-1w fr-mt-md-0" href="<%= locals.interactionErrorUrl %>">
+                      <a class="fr-btn <%= locals.exceptionDisplay.mainAction !== 'goBack' && 'fr-btn--tertiary' %> fr-mt-1w fr-mt-md-0" href="<%= locals.interactionErrorUrl %>">
                         Retour au service
                       </a>
                     <% } %>
