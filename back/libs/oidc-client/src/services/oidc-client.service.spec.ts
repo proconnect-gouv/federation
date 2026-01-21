@@ -4,11 +4,13 @@ import { getLoggerMock } from '@mocks/logger';
 
 import { OidcClientTokenResultFailedException } from '../exceptions';
 import { OidcClientService } from './oidc-client.service';
+import { OidcClientIssuerService } from './oidc-client-issuer.service';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 
 describe('OidcClientService', () => {
   let service: OidcClientService;
   let utilsMock: jest.Mocked<OidcClientUtilsService>;
+  let issuerServiceMock: jest.Mocked<OidcClientIssuerService>;
   const loggerMock = getLoggerMock();
   const jwtMock =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -19,9 +21,16 @@ describe('OidcClientService', () => {
       getUserInfo: jest.fn(),
       getEndSessionUrl: jest.fn(),
       hasEndSessionUrl: jest.fn(),
+      getSupportEmail: jest.fn(),
     } as unknown as jest.Mocked<OidcClientUtilsService>;
+    issuerServiceMock = {
+      getSupportEmail: jest.fn(),
+    } as unknown as jest.Mocked<OidcClientIssuerService>;
+    issuerServiceMock.getSupportEmail.mockResolvedValue(
+      'support-pcf@example.com',
+    );
 
-    service = new OidcClientService(utilsMock, loggerMock);
+    service = new OidcClientService(utilsMock, issuerServiceMock, loggerMock);
   });
 
   describe('getToken', () => {

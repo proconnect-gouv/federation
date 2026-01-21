@@ -11,8 +11,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
 import { ExceptionsConfig } from '../dto';
-import { BaseException } from '../exceptions/base.exception';
-import { CoreFcaBaseException } from '../exceptions/core-fca-base.exception';
+import { BaseException, EnrichedDisplayBaseException } from '../exceptions';
 import { generateErrorId, getCode, getStackTraceArray } from '../helpers';
 import { ErrorPageParams } from '../types';
 
@@ -92,7 +91,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
       interactionErrorUrl,
     };
 
-    if (exception instanceof CoreFcaBaseException) {
+    if (exception instanceof EnrichedDisplayBaseException) {
       const {
         contactHref,
         title,

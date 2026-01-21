@@ -9,6 +9,7 @@ import { CallbackParamsType, errors } from 'openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 
@@ -59,11 +60,18 @@ describe('OidcClientUtilsService', () => {
 
   const oidcClientIssuerServiceMock = {
     getClient: jest.fn(),
+    getSupportEmail: jest.fn(),
   };
 
   const oidcClientConfigServiceMock = {
     get: jest.fn(),
     reload: jest.fn(),
+  };
+
+  const idpSupportEmailMock = 'support-fi@example.com';
+
+  const configServiceMock = {
+    get: jest.fn(),
   };
 
   const authorizationUrlMock = jest.fn();
@@ -100,6 +108,7 @@ describe('OidcClientUtilsService', () => {
         OidcClientUtilsService,
         LoggerService,
         CryptographyService,
+        ConfigService,
         OidcClientConfigService,
         OidcClientIssuerService,
         {
@@ -112,6 +121,8 @@ describe('OidcClientUtilsService', () => {
       .useValue(oidcClientIssuerServiceMock)
       .overrideProvider(OidcClientConfigService)
       .useValue(oidcClientConfigServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptoServiceMock)
       .overrideProvider(LoggerService)
@@ -122,6 +133,10 @@ describe('OidcClientUtilsService', () => {
 
     jest.resetAllMocks();
 
+    identityProviderServiceMock.getById.mockResolvedValue({
+      supportEmail: idpSupportEmailMock,
+    });
+
     IdentityProviderServiceMock.getList.mockResolvedValue(
       'IdentityProviderServiceMock Resolve Value',
     );
@@ -131,6 +146,10 @@ describe('OidcClientUtilsService', () => {
     callbackParamsMock.mockResolvedValue({
       state: 'callbackParamsState',
       code: 'callbackParamsCode',
+    });
+
+    configServiceMock.get.mockReturnValue({
+      supportEmail: 'support-pcf@example.com',
     });
 
     callbackMock.mockResolvedValue('callbackMock Resolve Value');
@@ -315,7 +334,7 @@ describe('OidcClientUtilsService', () => {
     };
 
     beforeEach(() => {
-      service['extractParams'] = jest.fn().mockReturnValue(callbackParams);
+      service['extractParams'] = jest.fn().mockResolvedValue(callbackParams);
     });
 
     it('should call extractParams with callbackParams', async () => {
@@ -384,38 +403,43 @@ describe('OidcClientUtilsService', () => {
   });
 
   describe('extractParams()', () => {
+    const mockProviderUid = 'providerUidMockValue';
     const params = {
       state: Symbol('state'),
       code: Symbol('code'),
     } as unknown as CallbackParamsType;
     const state = params.state;
 
-    it('should throw if state is not provided in url', () => {
+    it('should throw if state is not provided in url', async () => {
       // Given
       const missingStateParams = {
         code: params.code,
       };
       // Then
-      expect(() => service['extractParams'](missingStateParams, state)).toThrow(
-        OidcClientMissingStateException,
-      );
+      await expect(
+        service['extractParams'](mockProviderUid, missingStateParams, state),
+      ).rejects.toThrow(OidcClientMissingStateException);
     });
 
-    it('should throw if state in url does not match state in session', () => {
+    it('should throw if state in url does not match state in session', async () => {
       // Given
       const wrongStateParams = {
         code: params.code,
         state: 'wrongState',
       };
       // Then
-      expect(() => service['extractParams'](wrongStateParams, state)).toThrow(
-        OidcClientInvalidStateException,
-      );
+      await expect(
+        service['extractParams'](mockProviderUid, wrongStateParams, state),
+      ).rejects.toThrow(OidcClientInvalidStateException);
     });
 
-    it('should return given params', () => {
+    it('should return given params', async () => {
       // When
-      const result = service['extractParams'](params, state);
+      const result = await service['extractParams'](
+        mockProviderUid,
+        params,
+        state,
+      );
 
       // Then
       expect(result).toBe(params);
@@ -525,6 +549,7 @@ describe('OidcClientUtilsService', () => {
         throw new Error('Unknown Error');
       });
       const expectedError = new OidcClientGetEndSessionUrlException(
+        idpSupportEmailMock,
         'Unknown Error',
       );
       // When
