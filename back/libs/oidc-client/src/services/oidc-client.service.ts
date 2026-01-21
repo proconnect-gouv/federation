@@ -45,6 +45,11 @@ export class OidcClientService {
     } = tokenSet;
     const claims: IdTokenClaims = tokenSet.claims();
 
+    this.logger.info({
+      code: `oidc-client-info:get-token`,
+      claims,
+    });
+
     const tokenResult = plainToInstance(TokenResultDto, {
       accessToken,
       idToken,
@@ -64,7 +69,14 @@ export class OidcClientService {
 
   async getUserinfo({ accessToken, idpId }: UserInfosParams): Promise<any> {
     // OIDC: call idp's /userinfo endpoint
-    return await this.utils.getUserInfo(accessToken, idpId);
+    const plainIdpIdentity = await this.utils.getUserInfo(accessToken, idpId);
+
+    this.logger.info({
+      code: `oidc-client-info:get-userinfo`,
+      plainIdpIdentity,
+    });
+
+    return plainIdpIdentity;
   }
 
   async getEndSessionUrl(
