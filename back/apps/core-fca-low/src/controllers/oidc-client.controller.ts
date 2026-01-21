@@ -76,7 +76,6 @@ export class OidcClientController {
       );
 
     const csrfToken = this.csrfService.renew();
-    this.sessionService.set('Csrf', { csrfToken });
 
     return res.render('interaction-identity-provider', {
       csrfToken,
