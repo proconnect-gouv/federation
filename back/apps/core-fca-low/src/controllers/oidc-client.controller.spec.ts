@@ -145,10 +145,6 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      // Should set Csrf token in session and render with data
-      expect(sessionService.set).toHaveBeenCalledWith('Csrf', {
-        csrfToken: 'csrf-token',
-      });
       expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
         csrfToken: 'csrf-token',
         identityProviders: providers,

@@ -184,7 +184,6 @@ export class InteractionController {
     const { defaultEmailRenater } = this.config.get<AppConfig>('App');
 
     const csrfToken = this.csrfService.renew();
-    this.sessionService.set('Csrf', { csrfToken });
 
     res.render('interaction', {
       csrfToken,
