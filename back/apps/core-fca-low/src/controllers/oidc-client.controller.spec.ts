@@ -149,7 +149,7 @@ describe('OidcClientController', () => {
       expect(sessionService.set).toHaveBeenCalledWith('Csrf', {
         csrfToken: 'csrf-token',
       });
-      expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
+      expect(res.render).toHaveBeenCalledWith('multi-idp', {
         csrfToken: 'csrf-token',
         identityProviders: providers,
         hasDefaultIdp: true,
