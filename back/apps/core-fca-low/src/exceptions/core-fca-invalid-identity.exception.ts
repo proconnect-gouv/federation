@@ -15,6 +15,7 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
     'Nous ne pouvons pas vérifier votre identité auprès de la source officielle : certains éléments ont un format invalide. Nous vous conseillons de contacter le service informatique de votre organisation ou ministère.';
   public displayContact = true;
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
+  public mainAction = 'contact' as const;
 
   constructor(
     public message: string,

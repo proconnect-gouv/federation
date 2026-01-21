@@ -191,6 +191,7 @@ describe('FcWebHtmlExceptionFilter', () => {
             displayContact: false,
             illustration: 'default-error',
             title: 'Accès impossible',
+            mainAction: 'goBack',
           },
         }),
       );

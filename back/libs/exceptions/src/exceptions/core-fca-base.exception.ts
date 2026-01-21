@@ -12,4 +12,6 @@ export class CoreFcaBaseException extends FcException {
   public contactMessage =
     'Vous pouvez nous signaler cette erreur en nous écrivant.';
   public contactHref: string;
+
+  public mainAction: 'contact' | 'goBack' = 'goBack';
 }
