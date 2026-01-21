@@ -5,7 +5,6 @@
 ## @fc/oidc-client
 | Code d'erreur | Classe | Code HTTP | error | error_description |
 |---|---|---|---|---|
-| [<b>020017</b>](../libs/oidc-client/src/exceptions/oidc-client-idp-disabled.exception.ts) | [OidcClientIdpDisabledException](../libs/oidc-client/src/exceptions/oidc-client-idp-disabled.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
 | [<b>020019</b>](../libs/oidc-client/src/exceptions/oidc-client-idp-not-found.exception.ts) | [OidcClientIdpNotFoundException](../libs/oidc-client/src/exceptions/oidc-client-idp-not-found.exception.ts) | 500 | server_error | authentication aborted due to a technical error on the authorization server |
 | [<b>020021</b>](../libs/oidc-client/src/exceptions/oidc-client-missing-state.exception.ts) | [OidcClientMissingStateException](../libs/oidc-client/src/exceptions/oidc-client-missing-state.exception.ts) | 400 | invalid_request | authentication aborted due to a technical error on the authorization server |
 | [<b>020022</b>](../libs/oidc-client/src/exceptions/oidc-client-invalid-state.exception.ts) | [OidcClientInvalidStateException](../libs/oidc-client/src/exceptions/oidc-client-invalid-state.exception.ts) | 403 | invalid_request | invalid state parameter |

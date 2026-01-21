@@ -3,8 +3,9 @@ import { Client, custom, Issuer } from 'openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CoreFcaAgentIdpDisabledException } from '@fc/core';
+
 import {
-  OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientIssuerDiscoveryFailedException,
 } from '../exceptions';
@@ -294,7 +295,7 @@ describe('OidcClientIssuerService', () => {
       oidcClientConfigServiceMock.get.mockResolvedValue({ providers });
       // Then
       await expect(service['getIdpMetadata']('p3')).rejects.toThrow(
-        OidcClientIdpDisabledException,
+        CoreFcaAgentIdpDisabledException,
       );
     });
   });

@@ -1,5 +1,4 @@
 export enum ErrorCode {
-  DISABLED_PROVIDER = 17,
   MISSING_PROVIDER = 19,
   MISSING_STATE = 21,
   INVALID_STATE = 22,
