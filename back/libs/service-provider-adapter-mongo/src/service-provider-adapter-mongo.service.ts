@@ -18,9 +18,7 @@ import {
 import { ServiceProvider } from './schemas';
 
 @Injectable()
-export class ServiceProviderAdapterMongoService
-  implements IServiceProviderAdapter
-{
+export class ServiceProviderAdapterMongoService implements IServiceProviderAdapter {
   private listCache: ServiceProviderMetadata[];
 
   constructor(

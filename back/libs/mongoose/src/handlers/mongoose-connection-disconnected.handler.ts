@@ -4,9 +4,7 @@ import { MongooseConnectionDisconnectedEvent } from '../events';
 import { MongooseCollectionOperationWatcherHelper } from '../helpers/mongoose-collection-update-watcher.helper';
 
 @EventsHandler(MongooseConnectionDisconnectedEvent)
-export class MongooseConnectionDisconnectedHandler
-  implements IEventHandler<MongooseConnectionDisconnectedEvent>
-{
+export class MongooseConnectionDisconnectedHandler implements IEventHandler<MongooseConnectionDisconnectedEvent> {
   constructor(
     private readonly mongooseHelper: MongooseCollectionOperationWatcherHelper,
   ) {}

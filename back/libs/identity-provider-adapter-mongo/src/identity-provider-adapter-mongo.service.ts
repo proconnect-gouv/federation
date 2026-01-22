@@ -48,9 +48,7 @@ const ISSUER_METADATA = [
   'end_session_endpoint',
 ];
 @Injectable()
-export class IdentityProviderAdapterMongoService
-  implements IIdentityProviderAdapter
-{
+export class IdentityProviderAdapterMongoService implements IIdentityProviderAdapter {
   private listCache: IdentityProviderMetadata[];
 
   constructor(

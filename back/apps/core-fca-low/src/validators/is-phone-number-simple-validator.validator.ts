@@ -17,9 +17,7 @@ const phoneRegex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/;
 // cover multiple regions and the validator is not very flexible.
 @ValidatorConstraint({ name: 'IsPhoneNumberSimpleValidator' })
 @Injectable()
-export class IsPhoneNumberSimpleValidatorConstraint
-  implements ValidatorConstraintInterface
-{
+export class IsPhoneNumberSimpleValidatorConstraint implements ValidatorConstraintInterface {
   constructor(public readonly config: ConfigService) {}
   validate(value: string): boolean {
     return typeof value === 'string' && phoneRegex.test(value);

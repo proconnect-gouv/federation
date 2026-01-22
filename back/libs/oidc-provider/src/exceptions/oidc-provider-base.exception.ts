@@ -11,5 +11,5 @@ export class OidcProviderBaseException extends BaseException {
   public error = 'server_error';
   public error_description = 'something bad happened';
 
-  public declare originalError?: OriginalError;
+  declare public originalError?: OriginalError;
 }
