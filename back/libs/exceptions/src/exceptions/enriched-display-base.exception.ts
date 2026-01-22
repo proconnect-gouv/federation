@@ -1,6 +1,6 @@
-import { FcException } from './fc.exception';
+import { BaseException } from './base.exception';
 
-export class EnrichedDisplayBaseException extends FcException {
+export class EnrichedDisplayBaseException extends BaseException {
   public title = 'Accès impossible';
   public description =
     'Nous n’arrivons pas à vous connecter à votre service en ligne pour l’instant.';

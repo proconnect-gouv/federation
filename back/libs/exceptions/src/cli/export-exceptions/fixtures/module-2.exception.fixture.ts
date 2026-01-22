@@ -1,6 +1,6 @@
-import { FcException } from '../../../exceptions';
+import { BaseException } from '../../../exceptions';
 
-export class ImportFixture2 extends FcException {
+export class ImportFixture2 extends BaseException {
   public documentation = 'documentation';
   public scope = 2;
   public code = 2;

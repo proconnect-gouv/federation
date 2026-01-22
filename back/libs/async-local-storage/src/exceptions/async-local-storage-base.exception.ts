@@ -1,5 +1,5 @@
-import { FcException } from '@fc/exceptions/exceptions';
+import { BaseException } from '@fc/exceptions/exceptions';
 
-export class AsyncLocalStorageBaseException extends FcException {
+export class AsyncLocalStorageBaseException extends BaseException {
   public scope = 45;
 }
