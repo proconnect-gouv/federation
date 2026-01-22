@@ -267,22 +267,4 @@ describe('FcWebHtmlExceptionFilter', () => {
       );
     });
   });
-
-  describe('getDefaultContactHref', () => {
-    it('should render href with params', () => {
-      // When
-      const input = { code: 'code', id: 'id', message: 'message' };
-
-      // Then
-      expect(filter['getDefaultContactHref'](input)).toBeString();
-    });
-
-    it('should render href without params', () => {
-      // When
-      const input = { code: null, id: null, message: null };
-
-      // Then
-      expect(filter['getDefaultContactHref'](input)).toBeString();
-    });
-  });
 });

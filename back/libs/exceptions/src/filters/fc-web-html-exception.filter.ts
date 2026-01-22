@@ -12,7 +12,12 @@ import { SessionService } from '@fc/session';
 
 import { ExceptionsConfig } from '../dto';
 import { BaseException, EnrichedDisplayBaseException } from '../exceptions';
-import { generateErrorId, getCode, getStackTraceArray } from '../helpers';
+import {
+  generateErrorId,
+  getCode,
+  getDefaultContactHref,
+  getStackTraceArray,
+} from '../helpers';
 import { ErrorPageParams } from '../types';
 
 @Catch(BaseException)
@@ -92,6 +97,8 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
     };
 
     if (exception instanceof EnrichedDisplayBaseException) {
+      const idpName = this.session.get('User', 'idpName');
+      const spName = this.session.get('User', 'spName');
       const {
         contactHref,
         title,
@@ -104,7 +111,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
       } = exception;
       errorPageParams.exceptionDisplay = {
         contactHref: displayContact
-          ? contactHref || this.getDefaultContactHref(error)
+          ? contactHref || getDefaultContactHref(error, { spName, idpName })
           : undefined,
         title,
         description,
@@ -118,43 +125,5 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
 
     res.status(exception.http_status_code);
     res.render('error', errorPageParams);
-  }
-
-  protected getDefaultContactHref(error: {
-    code: string;
-    id: string;
-    message: string;
-  }): string {
-    const notProvided = 'non renseigné';
-
-    const idpName = this.session.get('User', 'idpName') ?? notProvided;
-    const spName = this.session.get('User', 'spName') ?? notProvided;
-
-    const errorCode = error.code ?? notProvided;
-    const errorId = error.id ?? notProvided;
-    const errorMessage = error.message ?? notProvided;
-
-    const defaultEmailBody = encodeURIComponent(`Bonjour,
-
-Je vous signale que j’ai rencontré une erreur sur ProConnect :
-
-- Code de l’erreur : « ${errorCode} » ;
-- Identifiant de l’erreur : « ${errorId} » ;
-- Message d’erreur : « ${errorMessage} ».
-
-Je souhaitais me connecter à « ${spName} ».
-
-Mon fournisseur d’identité est « ${idpName} ».
-
-Cordialement,
-`);
-    const defaultEmailSubject = encodeURIComponent(
-      `Signaler l’erreur ${errorCode} sur ProConnect`,
-    );
-    const defaultEmailAddress = encodeURIComponent(
-      'support+federation@proconnect.gouv.fr',
-    );
-
-    return `mailto:${defaultEmailAddress}?subject=${defaultEmailSubject}&body=${defaultEmailBody}`;
   }
 }
