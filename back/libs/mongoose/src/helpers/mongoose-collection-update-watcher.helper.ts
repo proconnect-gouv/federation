@@ -12,9 +12,7 @@ import type { MongooseConfig } from '../dto';
 const DEFAULT_OPERATIONS = ['insert', 'update', 'delete', 'rename', 'replace'];
 
 @Injectable()
-export class MongooseCollectionOperationWatcherHelper
-  implements OnModuleDestroy
-{
+export class MongooseCollectionOperationWatcherHelper implements OnModuleDestroy {
   private static listeners: {
     callback: DebouncedFunc<any>;
     model: Model<any>;
