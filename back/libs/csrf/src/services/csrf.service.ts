@@ -13,7 +13,11 @@ export class CsrfService {
     private readonly session: SessionService,
   ) {}
 
-  renew(): string {
+  getOrCreate(): string {
+    const existingToken = this.session.get<CsrfSession>('Csrf')?.csrfToken;
+    if (existingToken) {
+      return existingToken;
+    }
     const csrfTokenLength = 32;
     const csrfToken: string =
       this.cryptography.genRandomString(csrfTokenLength);
