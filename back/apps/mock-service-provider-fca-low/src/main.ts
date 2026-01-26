@@ -1,4 +1,5 @@
 import * as bodyParser from 'body-parser';
+import * as dotenvFlow from 'dotenv-flow';
 import * as express from 'express';
 import * as session from 'express-session';
 import { chain, isObject } from 'lodash';
@@ -20,6 +21,10 @@ declare module 'express-session' {
     code_verifier?: string;
   }
 }
+
+dotenvFlow.config({
+  pattern: '.env/[node_env][.local].env',
+});
 
 const HOST = `https://${process.env.FQDN}`;
 const PORT = parseInt(process.env.PORT, 10) || 3000;
