@@ -183,7 +183,7 @@ export class InteractionController {
     const notification = await this.notifications.getNotificationToDisplay();
     const { defaultEmailRenater } = this.config.get<AppConfig>('App');
 
-    const csrfToken = this.csrfService.renew();
+    const csrfToken = this.csrfService.getOrCreate();
 
     res.render('interaction', {
       csrfToken,

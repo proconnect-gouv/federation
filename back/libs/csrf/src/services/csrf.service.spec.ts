@@ -44,28 +44,25 @@ describe('CsrfService', () => {
     sessionServiceMock.get.mockReturnValue(sessionDataMock);
   });
 
-  describe('renew()', () => {
-    it('should return the CSRF Token string value', () => {
+  describe('getOrCreate()', () => {
+    it('should return the stored CSRF Token string value if present', () => {
       // Given
-      const randomMockValue = 'randomStringMockValue';
+      sessionServiceMock.get.mockReturnValue(sessionDataMock);
+
       // When
-      const result = service.renew();
+      const result = service.getOrCreate();
       // Then
-      expect(result).toBe(randomMockValue);
+      expect(result).toBe(sessionDataMock.csrfToken);
     });
-  });
 
-  it('should update the sessions with the CSRF value', () => {
-    // Given
-    const randomMockValue = 'randomStringMockValue';
+    it('should return a generated CSRF Token string value if not present', () => {
+      // Given
+      sessionServiceMock.get.mockReturnValue(undefined);
 
-    // When
-    service.renew();
-
-    // Then
-    expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-    expect(sessionServiceMock.set).toHaveBeenCalledWith('Csrf', {
-      csrfToken: randomMockValue,
+      // When
+      const result = service.getOrCreate();
+      // Then
+      expect(result).toBe(randomStringMockValue);
     });
   });
 

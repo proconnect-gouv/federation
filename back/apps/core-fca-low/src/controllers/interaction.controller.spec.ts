@@ -83,7 +83,7 @@ describe('InteractionController', () => {
       redirectToIdpWithIdpId: jest.fn(),
     };
     csrfServiceMock = {
-      renew: jest.fn(),
+      getOrCreate: jest.fn(),
     };
     accountFcaMock = {
       getAccountBySub: jest.fn(),
@@ -366,7 +366,7 @@ describe('InteractionController', () => {
         uid: 'interaction123',
         params: { client_id: 'sp123' },
       });
-      csrfServiceMock.renew.mockReturnValue('csrfToken');
+      csrfServiceMock.getOrCreate.mockReturnValue('csrfToken');
       (validate as jest.Mock).mockReturnValue([
         new Error('not a valid session'),
       ]);

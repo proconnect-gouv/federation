@@ -71,7 +71,7 @@ describe('OidcClientController', () => {
       getValidatedIdentityFromIdp: jest.fn(),
       transformIdentity: jest.fn(),
     };
-    csrfService = { renew: jest.fn() };
+    csrfService = { getOrCreate: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OidcClientController],
@@ -135,7 +135,7 @@ describe('OidcClientController', () => {
         defaultIdpId: 'default-idp',
         scope: 'openid',
       });
-      csrfService.renew.mockReturnValue('csrf-token');
+      csrfService.getOrCreate.mockReturnValue('csrf-token');
       coreFcaService.getSortedDisplayableIdentityProviders.mockReturnValueOnce(
         providers,
       );
