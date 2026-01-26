@@ -21,6 +21,7 @@ export const httpErrorDisplays: {
       'https://proconnect.crisp.help/fr/article/code-y000400-requete-invalide-1hxxwn4/',
   },
   [HttpStatus.INTERNAL_SERVER_ERROR]: {
+    displayContact: true,
     crispLink:
       'https://proconnect.crisp.help/fr/article/code-y000500-erreur-technique-interne-1l1ggn/',
   },
