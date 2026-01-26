@@ -5,7 +5,7 @@ import * as glob from 'glob';
 
 import { HttpStatus } from '@nestjs/common';
 
-import { FcException } from '../../exceptions';
+import { BaseException } from '../../exceptions';
 import { ExceptionClass } from '../../types';
 import MarkdownGenerator from './markdown-generator';
 import Runner from './runner';
@@ -24,10 +24,10 @@ describe('Runner', () => {
 
   const path = '/my/file/is/here.exception.ts';
   describe('extractException', () => {
-    it('should return the path of the exception and the Class extending FcException from a module', () => {
+    it('should return the path of the exception and the Class extending BaseException from a module', () => {
       // Given
       const MockAbstractFunction = jest.fn();
-      class MockException extends FcException {}
+      class MockException extends BaseException {}
       const module = {
         MockException,
         MockAbstractFunction,
@@ -195,7 +195,7 @@ describe('Runner', () => {
       // Given
       const expected = null;
       // When
-      class MockException extends FcException {}
+      class MockException extends BaseException {}
       const result = Runner.inflateException({
         path,
         Exception: MockException,
@@ -206,7 +206,7 @@ describe('Runner', () => {
 
     it('should return the path of the error, the class of Error if Exception has valid SCOPE and CODE', () => {
       // When
-      class MockException extends FcException {
+      class MockException extends BaseException {
         public code = 1;
         public scope = 1;
         public error = 'error';
@@ -226,7 +226,7 @@ describe('Runner', () => {
 
     it('should return the path and class even if SCOPE = 0 and CODE = 0', () => {
       // When
-      class MockException extends FcException {
+      class MockException extends BaseException {
         public code = 0;
         public scope = 0;
         public error = 'error';

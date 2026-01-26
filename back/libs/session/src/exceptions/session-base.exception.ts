@@ -1,5 +1,5 @@
-import { FcException } from '@fc/exceptions/exceptions';
+import { BaseException } from '@fc/exceptions/exceptions';
 
-export class SessionBaseException extends FcException {
+export class SessionBaseException extends BaseException {
   public scope = 19;
 }
