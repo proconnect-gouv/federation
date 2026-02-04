@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccountFcaService } from '@fc/account-fca';
+import { CachedOrganizationService } from '@fc/cached-organization';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CsrfService } from '@fc/csrf';
@@ -38,12 +39,24 @@ describe('OidcClientController', () => {
   let sessionService: any;
   let sanitizer: any;
   let csrfService: any;
+  let cachedOrganizationService: any;
 
   beforeEach(async () => {
     accountService = {
       getOrCreateAccount: jest.fn(),
     };
-    configService = { get: jest.fn().mockReturnValue({ urlPrefix: '/app' }) };
+    configService = {
+      get: jest.fn().mockImplementation((key: string) => {
+        switch (key) {
+          case 'OidcClient':
+            return { scope: 'openid email' };
+          case 'App':
+            return { urlPrefix: '/app' };
+          case 'ApiEntreprise':
+            return { featureFetchOrganizationData: true };
+        }
+      }),
+    };
     logger = getLoggerMock();
     oidcClient = {
       getToken: jest.fn(),
@@ -72,6 +85,9 @@ describe('OidcClientController', () => {
       transformIdentity: jest.fn(),
     };
     csrfService = { getOrCreate: jest.fn() };
+    cachedOrganizationService = {
+      upsertCachedOrganizationBySiretIfNeeded: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OidcClientController],
@@ -85,6 +101,7 @@ describe('OidcClientController', () => {
         SessionService,
         IdentitySanitizer,
         CsrfService,
+        CachedOrganizationService,
       ],
     })
       .overrideProvider(AccountFcaService)
@@ -105,6 +122,8 @@ describe('OidcClientController', () => {
       .useValue(sanitizer)
       .overrideProvider(CsrfService)
       .useValue(csrfService)
+      .overrideProvider(CachedOrganizationService)
+      .useValue(cachedOrganizationService)
       .compile();
 
     controller = module.get<OidcClientController>(OidcClientController);
@@ -256,7 +275,6 @@ describe('OidcClientController', () => {
       });
       (validateDto as jest.Mock).mockResolvedValue([]);
       coreFcaService['ensureIdpCanServeThisEmail'].mockResolvedValue(true);
-      configService.get.mockReturnValue({ urlPrefix: '/app' });
       sanitizer.getValidatedIdentityFromIdp.mockResolvedValue({
         email: 'user@example.com',
         sub: 'sub123',
@@ -268,8 +286,6 @@ describe('OidcClientController', () => {
     });
 
     it('should process OIDC callback when identity is valid (no validation errors)', async () => {
-      configService.get.mockReturnValueOnce({ urlPrefix: '/app' });
-
       await controller.getOidcCallback(
         req as Request,
         res as Response,
@@ -316,9 +332,63 @@ describe('OidcClientController', () => {
       expect(userSession.set).toHaveBeenNthCalledWith(4, {
         spIdentity: { given_name: 'John' },
       });
-      expect(configService.get).toHaveBeenNthCalledWith(1, 'App');
+      expect(
+        cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded,
+      ).toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledWith(
         '/app/interaction/interaction123/verify',
+      );
+    });
+
+    it('should not call cachedOrganizationService if featureFetchOrganizationData is false', async () => {
+      configService.get.mockImplementation((key: string) => {
+        switch (key) {
+          case 'OidcClient':
+            return { scope: 'openid email' };
+          case 'App':
+            return { urlPrefix: '/app' };
+          case 'ApiEntreprise':
+            return { featureFetchOrganizationData: false };
+        }
+      });
+
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+      expect(
+        cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should call cachedOrganizationService and logger error if featureFetchOrganizationData is true and upsert fails', async () => {
+      configService.get.mockImplementation((key: string) => {
+        switch (key) {
+          case 'OidcClient':
+            return { scope: 'openid email' };
+          case 'App':
+            return { urlPrefix: '/app' };
+          case 'ApiEntreprise':
+            return { featureFetchOrganizationData: true };
+        }
+      });
+      cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded.mockRejectedValue(
+        new Error('upsert failed'),
+      );
+
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+      expect(
+        cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded,
+      ).toHaveBeenCalled();
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: 'oidc-client-upsert-cached-organization-error',
+        }),
       );
     });
 
@@ -329,8 +399,16 @@ describe('OidcClientController', () => {
       });
 
       // …claims that correspond to requested scopes…
-      configService.get.mockReturnValueOnce({ scope: 'openid arbitrary' });
-
+      configService.get.mockImplementation((key: string) => {
+        switch (key) {
+          case 'OidcClient':
+            return { scope: 'openid arbitrary' };
+          case 'App':
+            return { urlPrefix: '/app' };
+          case 'ApiEntreprise':
+            return { featureFetchOrganizationData: true };
+        }
+      });
       // …and that appear in the ID token…
       oidcClient.getToken.mockResolvedValue({
         idToken: 'id-token',
@@ -371,8 +449,6 @@ describe('OidcClientController', () => {
         },
       });
 
-      configService.get.mockReturnValueOnce({ scope: 'openid email' });
-
       await controller.getOidcCallback(
         req as Request,
         res as Response,
@@ -392,8 +468,6 @@ describe('OidcClientController', () => {
         idToken: 'id-token',
         claims: {},
       });
-
-      configService.get.mockReturnValueOnce({ scope: 'openid email' });
 
       await controller.getOidcCallback(
         req as Request,
