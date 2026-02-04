@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccountFcaService } from '@fc/account-fca';
+import { CachedOrganizationService } from '@fc/cached-organization';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CsrfService } from '@fc/csrf';
@@ -38,6 +39,7 @@ describe('OidcClientController', () => {
   let sessionService: any;
   let sanitizer: any;
   let csrfService: any;
+  let cachedOrganizationService: any;
 
   beforeEach(async () => {
     accountService = {
@@ -72,6 +74,7 @@ describe('OidcClientController', () => {
       transformIdentity: jest.fn(),
     };
     csrfService = { getOrCreate: jest.fn() };
+    cachedOrganizationService = { getCachedOrganizationBySiret: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OidcClientController],
@@ -85,6 +88,7 @@ describe('OidcClientController', () => {
         SessionService,
         IdentitySanitizer,
         CsrfService,
+        CachedOrganizationService,
       ],
     })
       .overrideProvider(AccountFcaService)
@@ -105,6 +109,8 @@ describe('OidcClientController', () => {
       .useValue(sanitizer)
       .overrideProvider(CsrfService)
       .useValue(csrfService)
+      .overrideProvider(CachedOrganizationService)
+      .useValue(cachedOrganizationService)
       .compile();
 
     controller = module.get<OidcClientController>(OidcClientController);
