@@ -31,7 +31,9 @@ const config: Config = {
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!uuid)'],
+  transformIgnorePatterns: [
+    '/node_modules/@proconnect-gouv/(?!(proconnect.identite|proconnect.api_entreprise|uuid)/)',
+  ],
   coverageDirectory: './coverage',
   coverageThreshold: {
     global: {

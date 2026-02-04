@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsObject, ValidateNested } from 'class-validator';
 
+import { ApiEntrepriseConfig } from '@fc/api-entreprise';
 import { EmailValidatorConfig } from '@fc/email-validator/dto';
 import { ExceptionsConfig } from '@fc/exceptions/dto';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
@@ -19,6 +20,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => AppConfig)
   readonly App: AppConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ApiEntrepriseConfig)
+  readonly ApiEntreprise: ApiEntrepriseConfig;
 
   @IsObject()
   @ValidateNested()
