@@ -2,6 +2,7 @@ import {
   ArgumentsHost,
   BadRequestException,
   HttpException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -165,7 +166,35 @@ describe('HttpExceptionFilter', () => {
       expect(resMock.render).toHaveBeenCalledOnce();
       expect(resMock.render).toHaveBeenCalledWith('error', {
         error,
-        exceptionDisplay: {},
+        exceptionDisplay: expect.not.objectContaining({
+          crispLink: expect.anything(),
+        }),
+      });
+    });
+
+    it('should render error page with contact for 500', () => {
+      const exception = new InternalServerErrorException();
+      const error = {
+        code: 'code-456',
+        id: 'id-456',
+        message: 'message-456',
+      };
+
+      jest.clearAllMocks();
+
+      filter['errorOutput']({
+        error,
+        exception,
+        res: resMock as any,
+      });
+
+      expect(resMock.render).toHaveBeenCalledOnce();
+      expect(resMock.render).toHaveBeenCalledWith('error', {
+        error,
+        exceptionDisplay: expect.objectContaining({
+          displayContact: true,
+          contactHref: expect.toStartWith('mailto:'),
+        }),
       });
     });
   });

@@ -15,7 +15,12 @@ import { SessionService } from '@fc/session';
 
 import { httpErrorDisplays } from '../config/http-error-display';
 import { ExceptionsConfig } from '../dto';
-import { generateErrorId, getCode, getStackTraceArray } from '../helpers';
+import {
+  generateErrorId,
+  getCode,
+  getDefaultContactHref,
+  getStackTraceArray,
+} from '../helpers';
 import { ErrorPageParams } from '../types/error-page-params';
 
 @Catch(HttpException)
@@ -93,8 +98,18 @@ export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
     res: Response;
   }): void {
     res.status(exception.getStatus());
+    const idpName = this.session.get('User', 'idpName');
+    const spName = this.session.get('User', 'spName');
+    const contactHref = getDefaultContactHref(error, {
+      idpName,
+      spName,
+    });
+
     const errorPageParams: ErrorPageParams = {
-      exceptionDisplay: httpErrorDisplays[exception.getStatus()] || {},
+      exceptionDisplay: {
+        ...httpErrorDisplays[exception.getStatus()],
+        contactHref,
+      },
       error,
     };
     res.render('error', errorPageParams);
