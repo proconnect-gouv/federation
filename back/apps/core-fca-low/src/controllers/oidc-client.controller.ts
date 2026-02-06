@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 
 import { AccountFcaService } from '@fc/account-fca';
+import { CachedOrganizationService } from '@fc/cached-organization';
 import { ConfigService } from '@fc/config';
 import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
 import { LoggerService, TrackedEvent } from '@fc/logger';
@@ -56,6 +57,7 @@ export class OidcClientController {
     private readonly sessionService: SessionService,
     private readonly sanitizer: IdentitySanitizer,
     private readonly csrfService: CsrfService,
+    private readonly cachedOrganizationService: CachedOrganizationService,
   ) {}
 
   @Get(Routes.IDENTITY_PROVIDER_SELECTION)
@@ -228,6 +230,10 @@ export class OidcClientController {
       idpId,
       account.sub,
       acr,
+    );
+
+    await this.cachedOrganizationService.getCachedOrganizationBySiret(
+      spIdentity.siret,
     );
 
     userSession.set({
