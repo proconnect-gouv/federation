@@ -33,9 +33,7 @@ export class AccountFca extends Document {
   @Prop({ type: String, default: uuid })
   declare id: string;
 
-  // Note that this will create the index if not present
-  // /!\ This also delete the entry after 3 years (see https://www.mongodb.com/docs/v5.0/core/index-ttl/)
-  @Prop({ type: Date, default: Date.now, index: { expires: '3y' } })
+  @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 
   @Prop({ type: Date, default: Date.now })
