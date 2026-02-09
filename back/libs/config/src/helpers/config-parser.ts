@@ -20,7 +20,7 @@ export class ConfigParser {
     return this.source.hasOwnProperty(fullPath);
   }
 
-  boolean(path: string): boolean {
+  boolean(path: string): boolean | undefined {
     const fullPath = this.getFullPath(path);
     return parseBoolean(this.source[fullPath]);
   }

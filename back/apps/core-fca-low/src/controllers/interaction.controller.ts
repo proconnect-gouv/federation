@@ -181,7 +181,8 @@ export class InteractionController {
     this.logger.track(TrackedEvent.FC_SHOWED_IDP_CHOICE);
 
     const notification = await this.notifications.getNotificationToDisplay();
-    const { defaultEmailRenater } = this.config.get<AppConfig>('App');
+    const { defaultEmailRenater, displayTestEnvWarning } =
+      this.config.get<AppConfig>('App');
 
     const csrfToken = this.csrfService.getOrCreate();
 
@@ -193,6 +194,7 @@ export class InteractionController {
       isEmailInvalid,
       emailSuggestion: query.email_suggestion,
       loginHint: query.user_email,
+      displayTestEnvWarning,
     });
   }
 

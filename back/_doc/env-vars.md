@@ -40,6 +40,7 @@
 | App_DEFAULT_EMAIL_RENATER | string |
 | App_DEFAULT_IDP_UID | string |
 | App_DSFR_ASSETS_PATHS | json |
+| App_FEATURE_DISPLAY_TEST_ENV_WARNING | boolean |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_SP_AUTHORIZED_FQDNS_CONFIGS | json |
