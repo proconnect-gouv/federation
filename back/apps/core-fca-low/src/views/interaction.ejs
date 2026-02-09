@@ -13,7 +13,16 @@
     <main class="onboarding-container" role="main" id="content">
       <div>
         <h1 class="fr-mb-1w fr-h3">Se connecter à <%= locals.spName %></h1>
-        <% if (locals.notificationMessage) { %>
+        <% if (locals.displayTestEnvWarning) { %>
+          <div class="fr-alert fr-alert--warning fr-mb-3w">
+            <h2 class="fr-alert__title">Vous êtes sur une instance de test</h2>
+            <p>
+              Afin de limiter le risque de divulguer vos informations personnelles,
+              merci de ne pas utiliser votre adresse email.
+              Pour vos tests, utilisez des adresses <a target="_blank" rel="noopener noreferrer" href="https://yopmail.com/">yopmail</a>.
+            </p>
+          </div>
+        <% } else if (locals.notificationMessage) { %>
           <div
             class="fr-notice fr-notice--info background-alt-blue-france ac-color-alt-grey fr-my-8v"
           >
@@ -69,7 +78,7 @@
               <button id="email-submit-button" onclick="" type="submit" class="fr-mb-0 fr-btn" data-testid="interaction-connection-button">
                 Continuer
               </button>
-            </div>  
+            </div>
 
           <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
         </form>
