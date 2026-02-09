@@ -1,8 +1,8 @@
 // Inputs to be casted as `true`
-const truthy = ['true', 'on', '1', true, 1];
+const truthy = ['True', 'true', 'on', '1', true, 1];
 
 // Inputs to be casted as `false`
-const falsy = ['false', 'off', '0', false, 0];
+const falsy = ['False', 'false', 'off', '0', false, 0];
 
 /**
  * parese input and return the boolean value according to mappging defined
