@@ -10,18 +10,16 @@ export class OidcClientBaseException extends EnrichedDisplayBaseException {
   constructor(contactEmail: string, error?: Error | string) {
     super(error);
 
-    const emailSubject = encodeURIComponent(
-      'Correction implémentation ProConnect',
-    );
+    const emailSubject = encodeURIComponent('Erreur de connexion');
     const emailBody = encodeURIComponent(`
 Bonjour,
 
-Voici une erreur remontée par ProConnect suite à une tentative de connexion infructueuse :
-- error: ${this.error}
-- error_description: ${this.error_description}
-- message: ${this.message}
+Je vous signale une erreur que j’ai rencontrée sur le fournisseur d’identité lors d’une tentative de connexion avec ProConnect.
 
-ProConnect a vérifié que l'erreur ne venait pas de leur côté.
+Voici le message d’erreur reçu par ProConnect :
+
+- timestamp: "${new Date().toISOString()}"
+- message: "${this.message}"
 
 Cordialement,
 `);

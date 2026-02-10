@@ -34,8 +34,6 @@ Voici l'identité telle que reçue par ProConnect :
 
 ${this.validationTarget}
 
-ProConnect a vérifié que l'erreur ne venait pas de leur côté.
-
 Merci de corriger mes informations d'identité afin que ProConnect reconnaisse mon identité et que je puisse me connecter.
 
 Cordialement,

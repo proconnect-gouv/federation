@@ -20,11 +20,11 @@ export const getDefaultContactHref = (
 
   const defaultEmailBody = encodeURIComponent(`Bonjour,
 
-Je vous signale que j’ai rencontré une erreur sur ProConnect :
+Je vous signale une erreur que j’ai rencontrée sur ProConnect :
 
-- Code de l’erreur : « ${errorCode} » ;
-- Identifiant de l’erreur : « ${errorId} » ;
-- Message d’erreur : « ${errorMessage} ».
+- Code de l’erreur : "${errorCode}" ;
+- Identifiant de l’erreur : "${errorId}" ;
+- Message d’erreur : "${errorMessage}".
 
 Je souhaitais me connecter à « ${spName} ».
 
