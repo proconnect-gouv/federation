@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "target": "es2023",
+    "esModuleInterop": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "sourceMap": true,
     "declaration": true,
+    "isolatedModules": true,
     "removeComments": true,
     "resolveJsonModule": true,
     "emitDecoratorMetadata": true,

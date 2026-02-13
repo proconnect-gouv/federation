@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import * as deepFreeze from 'deep-freeze';
+import deepFreeze from 'deep-freeze';
 import { cloneDeep } from 'lodash';
 import { Model } from 'mongoose';
 

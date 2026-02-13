@@ -1,4 +1,4 @@
-import * as deepFreeze from 'deep-freeze';
+import deepFreeze from 'deep-freeze';
 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';

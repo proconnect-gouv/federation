@@ -1,5 +1,5 @@
 import { Given } from '@badeball/cypress-cucumber-preprocessor';
-import * as OTPAuth from 'otpauth';
+import { TOTP } from 'otpauth';
 
 const defaultTotpSecret = 'din5ncvbluqpx7xfzqcybmibmtjocnsf';
 
@@ -9,7 +9,7 @@ Given('je rentre un mot de passe valide sur ProConnect Identité', function () {
 });
 
 Given('je rentre un totp valide sur ProConnect Identité', function () {
-  const totp = new OTPAuth.TOTP({
+  const totp = new TOTP({
     secret: defaultTotpSecret,
   });
   cy.get('[name=totpToken]').type(totp.generate());

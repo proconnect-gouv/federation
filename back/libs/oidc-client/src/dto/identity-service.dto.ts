@@ -9,7 +9,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { IdTokenClaims } from 'openid-client';
+import { type IdTokenClaims } from 'openid-client';
 
 import { TokenResults } from '../interfaces';
 

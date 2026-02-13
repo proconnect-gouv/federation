@@ -23,7 +23,7 @@ import { TrackedEvent } from '@fc/logger/enums';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
 import { OidcProviderService } from '@fc/oidc-provider/oidc-provider.service';
-import { ISessionService } from '@fc/session';
+import { type ISessionService } from '@fc/session';
 
 import { UserSessionDecorator } from '../decorators';
 import {

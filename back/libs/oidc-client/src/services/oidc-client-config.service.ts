@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 
 import { OidcClientConfig } from '../dto';
-import { IIdentityProviderAdapter } from '../interfaces';
+import { type IIdentityProviderAdapter } from '../interfaces';
 import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
 
 @Injectable()

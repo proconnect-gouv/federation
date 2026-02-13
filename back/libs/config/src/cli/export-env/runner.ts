@@ -1,6 +1,6 @@
-import * as ejs from 'ejs';
+import ejs from 'ejs';
 import { readFile, writeFile } from 'fs/promises';
-import * as glob from 'glob';
+import glob from 'glob';
 
 import { MarkdownGenerator } from './markdown-generator';
 

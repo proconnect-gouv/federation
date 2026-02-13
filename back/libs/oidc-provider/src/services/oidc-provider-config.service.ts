@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import {
-  IServiceProviderAdapter,
+  type IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from '@fc/oidc';
 

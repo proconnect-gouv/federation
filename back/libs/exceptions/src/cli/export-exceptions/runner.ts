@@ -1,7 +1,8 @@
-import * as fs from 'fs';
+import fs from 'fs';
 
-import * as ejs from 'ejs';
-import * as glob from 'glob';
+import ejs from 'ejs';
+import glob from 'glob';
+import { pathToFileURL } from 'node:url';
 
 import { HttpStatus } from '@nestjs/common';
 
@@ -115,7 +116,8 @@ export default class Runner {
   static async loadExceptions(
     paths: string[],
   ): Promise<ExceptionDocumentationInterface[]> {
-    const infos = paths.map((path) => import(path));
+    const infos = paths.map((p) => import(pathToFileURL(p).pathname));
+
     const modules = await Promise.all(infos);
 
     return modules
@@ -127,12 +129,16 @@ export default class Runner {
       .map(Runner.buildException);
   }
 
-  static getExceptionsFilesPath(
-    basePath = '@(libs|apps)',
-    searchPattern = '/**/*.exception.ts',
-  ): string[] {
-    const pattern = `${basePath}${searchPattern}`;
-    const paths = glob.sync(pattern);
+  static getExceptionsFilesPath(basePaths: string[], searchPattern: string) {
+    const paths: string[] = [];
+    for (const basePath of basePaths) {
+      const pattern = `${basePath}${searchPattern}`;
+      const relativePaths = glob.sync(pattern);
+      for (const relativePath of relativePaths) {
+        paths.push(relativePath);
+      }
+    }
+
     return paths;
   }
 
@@ -147,7 +153,10 @@ export default class Runner {
 
   static async run(): Promise<void> {
     console.log('Generating documentation for exceptions...');
-    const paths = Runner.getExceptionsFilesPath();
+    const paths = Runner.getExceptionsFilesPath(
+      ['libs', 'apps'],
+      '/**/*.exception.ts',
+    );
     const loaded = await Runner.loadExceptions(paths);
 
     const mainList = loaded.filter(

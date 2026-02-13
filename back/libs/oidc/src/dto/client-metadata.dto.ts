@@ -1,5 +1,5 @@
 import { IsArray, IsBoolean, IsIn, IsNumber, IsString } from 'class-validator';
-import { ClientAuthMethod, ResponseType } from 'openid-client';
+import { type ClientAuthMethod, ResponseType } from 'openid-client';
 
 import { SUPPORTED_SIG_ALG } from '@fc/cryptography';
 

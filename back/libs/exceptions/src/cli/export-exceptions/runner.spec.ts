@@ -1,7 +1,7 @@
-import * as fs from 'fs';
+import fs from 'fs';
 
-import * as ejs from 'ejs';
-import * as glob from 'glob';
+import ejs from 'ejs';
+import glob from 'glob';
 
 import { HttpStatus } from '@nestjs/common';
 
@@ -13,7 +13,6 @@ import Runner from './runner';
 jest.mock('fs');
 jest.mock('console');
 jest.mock('ejs');
-jest.mock('glob');
 jest.mock('./markdown-generator');
 
 describe('Runner', () => {
@@ -35,7 +34,10 @@ describe('Runner', () => {
       // When
       const result = Runner.extractException({ path, module });
       // Then
-      expect(result).toStrictEqual({ path, Exception: MockException });
+      expect(result).toStrictEqual({
+        path,
+        Exception: MockException,
+      });
     });
 
     it('should return undefined if no exception is found in module', () => {
@@ -287,9 +289,10 @@ describe('Runner', () => {
     it('should return an array of instances of ExceptionDocumentationInterface', async () => {
       // Given
       const paths = [
-        './fixtures/module.exception.fixture',
-        './fixtures/module-2.exception.fixture',
+        'libs/exceptions/src/cli/export-exceptions/fixtures/module.exception.fixture',
+        'libs/exceptions/src/cli/export-exceptions/fixtures/module-2.exception.fixture',
       ];
+
       // When
       const result = await Runner.loadExceptions(paths);
       // Then
@@ -319,27 +322,17 @@ describe('Runner', () => {
   });
 
   describe('getExceptionsFilesPath', () => {
-    it('should call glob.sync', () => {
+    it('should call return glob.sync result', () => {
       // Given
-      jest.spyOn(glob, 'sync').mockImplementation();
-      const basePath = 'foobar';
+      jest
+        .spyOn(glob, 'sync')
+        .mockReturnValue(['/my/file/is/here.exception.ts']);
       const pattern = '/**/*.exception.ts';
-      const filePaths = `${basePath}${pattern}`;
       // When
-      Runner.getExceptionsFilesPath(basePath, pattern);
+      const result = Runner.getExceptionsFilesPath(['/'], pattern);
       // Then
-      expect(glob.sync).toHaveBeenCalledTimes(1);
-      expect(glob.sync).toHaveBeenCalledWith(filePaths);
-    });
 
-    it('should return result of glob.sync', () => {
-      // Given
-      const globSyncResult = ['globSyncResult'];
-      jest.spyOn(glob, 'sync').mockImplementation(() => globSyncResult);
-      // When
-      const result = Runner.getExceptionsFilesPath();
-      // Then
-      expect(result).toBe(globSyncResult);
+      expect(result).toEqual(['/my/file/is/here.exception.ts']);
     });
   });
 
