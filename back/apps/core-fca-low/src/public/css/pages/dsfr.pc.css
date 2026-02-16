@@ -1,28 +1,7 @@
-/* CUSTOMIZE CALLOUT BORDER COLOR */
-.ac-callout {
-  background-image: linear-gradient(
-    0deg,
-    var(--text-title-blue-france),
-    var(--text-title-blue-france)
-  ) !important;
-}
-/* CUSTOMIZE CALLOUT ICON */
-.ac-icon-information-line:after,
-.ac-icon-information-line:before {
-  color: var(--text-title-blue-france);
-  -webkit-mask-image: url(/icons/others/lightbulb-line.svg) !important;
-  mask-image: url(/icons/others/lightbulb-line.svg) !important;
-  mask-repeat: no-repeat;
-}
-
-@media screen and (min-width: 993px) {
-  .ac-survey {
-    background: linear-gradient(
-      to right,
-      white 50%,
-      var(--background-default-grey-hover) 50%
-    );
-  }
+.pc-hr-or {
+  text-transform: none;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* -----------------------------------------------------------------
@@ -33,4 +12,25 @@
 
 .fr-footer__bottom-link {
   white-space: nowrap;
+}
+
+.fr-header__service-title {
+  display: flex;
+  align-items: center;
+  color: var(--text-action-high-blue-france);
+}
+
+/* Delete the shadow and reduces the size of the header  */
+.fr-header {
+  background-color: transparent !important;
+  filter: none !important;
+}
+
+.fr-header__brand {
+  background-color: transparent !important;
+  filter: none !important;
+}
+
+.fr-header__body-row {
+  padding: 0.5rem 0 !important;
 }

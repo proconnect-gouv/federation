@@ -145,11 +145,13 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
+      expect(res.render).toHaveBeenCalledWith('identity-provider-selection', {
         csrfToken: 'csrf-token',
         identityProviders: providers,
         hasDefaultIdp: true,
       });
+
+      expect(csrfService.getOrCreate).toHaveBeenCalled();
     });
   });
 

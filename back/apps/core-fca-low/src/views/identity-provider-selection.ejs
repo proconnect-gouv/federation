@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="light">
+
+<head>
+  <%- include('includes/head.ejs') %>
+  <link rel="stylesheet" href="/css/pages/interaction.css" />
+  <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
+  <title>Choix du compte - ProConnect</title>
+</head>
+
+<body>
+  <%- include('includes/skiplinks.ejs') %>
+  <%- include('includes/header.ejs') %>
+  <main role="main" id="content" class="fr-py-2w">
+    <div class="fr-container">
+      <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-12 fr-col-md-8 fr-col-lg-4">
+          <h1 class="fr-my-4w fr-h2">Choisir votre accès</h1>
+          <form action="/api/v2/identity-provider-selection" method="POST" name="fs-request">
+            <fieldset aria-labelledby="radio-hint-legend radio-hint-messages" class="fr-fieldset" id="radio-hint">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="radio-hint-legend">
+                Quel accès voulez-vous utiliser aujourd’hui ?
+                <% if (locals.hasDefaultIdp) { %>
+                <span class="fr-hint-text">
+                  Si votre administration n'est pas répertoriée, sélectionnez
+                  "Autre".
+                </span>
+                <% } %>
+              </legend>
+              <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
+              <% locals.identityProviders.forEach((provider) => { %>
+              <div class="fr-fieldset__element">
+                <div class="fr-radio-group">
+                  <input type="radio" id="idp-<%= provider.uid %>" name="identityProviderUid" value="<%= provider.uid %>" required />
+                  <label class="fr-label" for="idp-<%= provider.uid %>">
+                    <%= provider.title %>
+                  </label>
+                </div>
+              </div>
+              <% }); %>
+
+            </fieldset>
+
+            <button class="fr-btn btn--fullwidth" type="submit">
+              Continuer
+            </button>
+            <div class="fr-mt-2w fr-grid-row fr-grid-row--center">
+            <a href="javascript:history.back()" class="fr-btn fr-btn--tertiary-no-outline go-back-link">
+              Revenir à l'étape précédente
+            </a>
+          </div>
+          </form>
+          <hr class="fr-mt-2w" />
+          <p class="centered-content">
+
+            <a href="https://proconnect.crisp.help/fr/article/quel-fournisseur-didentite-dois-je-choisir-lors-de-ma-connexion-178e860/" target="_blank" class="fr-link">Consulter l'aide associée</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <%- include('includes/footer.ejs') %> <%- include('includes/scripts.ejs') %>
+</body>
+
+</html>
