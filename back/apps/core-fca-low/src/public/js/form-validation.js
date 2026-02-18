@@ -1,17 +1,24 @@
 document.addEventListener('DOMContentLoaded', function () {
   var forms = document.querySelectorAll('form');
 
+  function updateAllForms() {
+    forms.forEach(function (form) {
+      var submitButton = form.querySelector('button.fr-btn');
+      if (!submitButton) return;
+
+      submitButton.disabled = !form.checkValidity();
+    });
+  }
+
   forms.forEach(function (form) {
     var submitButton = form.querySelector('button.fr-btn');
+    if (!submitButton) return;
 
-    if (!submitButton) {
-      return;
-    }
-    function checkFormValidity() {
-      submitButton.disabled = !form.checkValidity();
-    }
-    form.addEventListener('input', checkFormValidity);
-    form.addEventListener('change', checkFormValidity);
-    checkFormValidity();
+    form.addEventListener('input', updateAllForms);
+    form.addEventListener('change', updateAllForms);
   });
+
+  updateAllForms();
+
+  window.addEventListener('pageshow', updateAllForms);
 });
