@@ -22,8 +22,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/exceptions/src/cli/export-exceptions",
-    "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env",
+    "doc:exceptions": "tsx libs/exceptions/src/cli/export-exceptions",
+    "doc:env": "tsx libs/config/src/cli/export-env",
     "doc": "yarn doc:exceptions && yarn doc:env",
     "static": "yarn doc && yarn lint --fix && yarn prettier --write && yarn tsc --noEmit"
   },
@@ -105,6 +105,7 @@
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "4.2.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "webpack-stats-plugin": "^1.1.3"
   },

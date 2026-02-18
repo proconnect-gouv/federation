@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 import { filter, isEmpty } from 'lodash';
 
 import {
@@ -25,7 +25,7 @@ import {
   TokenResultClaimsDto,
 } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
-import { ISessionService, SessionService } from '@fc/session';
+import { type ISessionService, SessionService } from '@fc/session';
 
 import { UserSessionDecorator } from '../decorators';
 import {

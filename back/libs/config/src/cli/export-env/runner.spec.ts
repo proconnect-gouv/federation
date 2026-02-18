@@ -1,6 +1,6 @@
 import { renderFile } from 'ejs';
 import { readFile } from 'fs/promises';
-import * as glob from 'glob';
+import glob from 'glob';
 
 import { MarkdownGenerator } from './markdown-generator';
 import { Runner } from './runner';

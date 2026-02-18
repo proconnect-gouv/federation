@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 import { isEmpty } from 'lodash';
 
 import {
@@ -25,7 +25,7 @@ import { NotificationsService } from '@fc/notifications';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { ISessionService, SessionService } from '@fc/session';
+import { type ISessionService, SessionService } from '@fc/session';
 
 import { UserSessionDecorator } from '../decorators';
 import {

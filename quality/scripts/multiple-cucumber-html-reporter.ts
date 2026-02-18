@@ -2,7 +2,7 @@
  * Generate a HTML report
  * @link https://github.com/WasiqB/multiple-cucumber-html-reporter
  */
-import * as reporter from 'multiple-cucumber-html-reporter';
+import reporter from 'multiple-cucumber-html-reporter';
 
 const gitLabProjectUrl =
   'https://gitlab.dev-franceconnect.fr/france-connect/fc';

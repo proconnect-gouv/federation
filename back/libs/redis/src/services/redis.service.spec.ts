@@ -8,9 +8,7 @@ import { getConfigMock } from '@mocks/config';
 
 import { RedisService } from './redis.service';
 
-jest.mock('ioredis', () => ({
-  default: class RedisMock {},
-}));
+jest.mock('ioredis');
 
 describe('RedisService', () => {
   let service: RedisService;

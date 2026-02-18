@@ -1,6 +1,6 @@
 import { IsObject, IsOptional } from 'class-validator';
 
-import { TemplateExposedType } from '../types';
+import { type TemplateExposedType } from '../types';
 
 export class ConfigConfig {
   @IsObject()

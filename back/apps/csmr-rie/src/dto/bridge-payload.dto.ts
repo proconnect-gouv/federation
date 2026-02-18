@@ -1,4 +1,4 @@
-import { AxiosResponseHeaders } from 'axios';
+import { type AxiosResponseHeaders } from 'axios';
 import { Transform } from 'class-transformer';
 import { IsIn, IsObject, IsOptional, IsString, IsUrl } from 'class-validator';
 

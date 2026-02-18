@@ -1,7 +1,7 @@
 import { plainToInstance } from 'class-transformer';
 import { isString, validateSync, ValidatorOptions } from 'class-validator';
-import * as deepFreeze from 'deep-freeze';
-import * as lodash from 'lodash';
+import deepFreeze from 'deep-freeze';
+import lodash from 'lodash';
 
 import { Injectable } from '@nestjs/common';
 
@@ -13,7 +13,7 @@ import { Injectable } from '@nestjs/common';
 import { AppHelper } from '@fc/app/helpers/app-helper';
 
 import { UnknownConfigurationNameError } from './errors';
-import { IConfigOptions } from './interfaces';
+import { type IConfigOptions } from './interfaces';
 
 export const validationOptions: ValidatorOptions = {
   forbidNonWhitelisted: true,

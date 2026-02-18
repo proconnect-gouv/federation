@@ -6,6 +6,7 @@ import { compilerOptions } from './tsconfig.json';
 const config: Config = {
   setupFiles: ['./jest-setup-file.ts'],
   setupFilesAfterEnv: ['jest-extended/all'],
+  coverageProvider: 'babel',
   collectCoverageFrom: ['libs/**/*.ts', 'apps/**/*.ts'],
   coveragePathIgnorePatterns: [
     'migrations/.+.ts',
@@ -22,7 +23,13 @@ const config: Config = {
   rootDir: '.',
   testRegex: '.spec.ts$',
   transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
+    '^.+\\.(t|j)s$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.spec.json',
+        diagnostics: { ignoreCodes: [151002] },
+      },
+    ],
   },
   coverageDirectory: './coverage',
   coverageThreshold: {

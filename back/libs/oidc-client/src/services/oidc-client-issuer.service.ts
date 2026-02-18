@@ -13,7 +13,7 @@ import {
   OidcClientIdpNotFoundException,
   OidcClientIssuerDiscoveryFailedException,
 } from '../exceptions';
-import { IIdentityProviderAdapter } from '../interfaces';
+import { type IIdentityProviderAdapter } from '../interfaces';
 import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
 import { OidcClientConfigService } from './oidc-client-config.service';
 

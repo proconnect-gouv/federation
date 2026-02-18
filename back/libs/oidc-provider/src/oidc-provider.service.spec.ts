@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import * as OidcProvider from 'oidc-provider';
+import OidcProvider from 'oidc-provider';
 
 import { Test, TestingModule } from '@nestjs/testing';
 

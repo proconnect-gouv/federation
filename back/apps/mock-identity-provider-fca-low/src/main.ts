@@ -1,8 +1,7 @@
-import * as express from 'express';
-import { urlencoded } from 'express';
+import express, { urlencoded } from 'express';
 import { get } from 'lodash';
 import { strict as assert } from 'node:assert';
-import * as path from 'node:path';
+import path from 'node:path';
 import Provider from 'oidc-provider-v8';
 
 import configuration from './oidc-provider-support/configuration';

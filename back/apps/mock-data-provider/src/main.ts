@@ -1,9 +1,8 @@
-import * as express from 'express';
+import express from 'express';
 import { importJWK, JWK } from 'jose-v6';
-import * as crypto from 'node:crypto';
-import { JsonWebKey } from 'node:crypto';
-import * as process from 'node:process';
-import * as client from 'openid-client-v6';
+import crypto, { JsonWebKey } from 'node:crypto';
+import process from 'node:process';
+import client from 'openid-client-v6';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const {

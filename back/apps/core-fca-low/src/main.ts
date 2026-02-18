@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import * as CookieParser from 'cookie-parser';
+import CookieParser from 'cookie-parser';
 import { renderFile } from 'ejs';
 import { urlencoded } from 'express';
 import helmet from 'helmet';
