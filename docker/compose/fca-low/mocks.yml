@@ -10,7 +10,9 @@ services:
       service: base-sp-mock
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fsa1-low.env'
+    environment:
+      NESTJS_INSTANCE: mock-service-provider-fca-low
+      NODE_ENV: fsa1-low
 
   fsa2-low:
     hostname: fsa2-low
@@ -19,7 +21,9 @@ services:
       service: base-sp-mock
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fsa2-low.env'
+    environment:
+      NESTJS_INSTANCE: mock-service-provider-fca-low
+      NODE_ENV: fsa2-low
 
   fsa3-low:
     hostname: fsa3-low
@@ -28,7 +32,9 @@ services:
       service: base-sp-mock
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fsa3-low.env'
+    environment:
+      NESTJS_INSTANCE: mock-service-provider-fca-low
+      NODE_ENV: fsa3-low
 
   fsa4-low:
     hostname: fsa4-low
@@ -37,7 +43,9 @@ services:
       service: base-sp-mock
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fsa4-low.env'
+    environment:
+      NESTJS_INSTANCE: mock-service-provider-fca-low
+      NODE_ENV: fsa4-low
 
   ####################
   # IDP Mocks
@@ -50,7 +58,9 @@ services:
       service: base-idp-mock
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fia1-low.env'
+    environment:
+      NESTJS_INSTANCE: mock-identity-provider-fca-low
+      NODE_ENV: fia1-low
 
   fia2-low:
     hostname: fia2-low
@@ -59,7 +69,9 @@ services:
       service: base-idp-mock
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fia2-low.env'
+    environment:
+      NESTJS_INSTANCE: mock-identity-provider-fca-low
+      NODE_ENV: fia2-low
 
   moncomptepro:
     hostname: moncomptepro
@@ -68,7 +80,9 @@ services:
       service: base-idp-mock
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/moncomptepro.env'
+    environment:
+      NESTJS_INSTANCE: mock-identity-provider-fca-low
+      NODE_ENV: moncomptepro
 
   fia-rie-low:
     hostname: fia-rie-low
@@ -77,7 +91,9 @@ services:
       service: base-idp-mock
     env_file:
       - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fia-rie-low.env'
+    environment:
+      NESTJS_INSTANCE: mock-identity-provider-fca-low
+      NODE_ENV: fia-rie-low
     networks:
       - rie
 

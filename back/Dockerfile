@@ -66,6 +66,7 @@ VOLUME ["/data/log", "/etc/ssl/client_certs"]
 
 COPY --from=dependencies /var/www/app/node_modules /var/www/app/node_modules
 COPY --from=builder /build/back/dist/apps/${INSTANCE} /var/www/app/dist/instances/app
+COPY --from=builder /build/back/.env /var/www/app/.env
 
 WORKDIR /var/www/app
 
