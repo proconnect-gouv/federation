@@ -654,10 +654,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@noble/hashes@1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.8.0.tgz#cee43d801fcef9644b11b8194857695acd5f815a"
-  integrity sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==
+"@noble/hashes@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-2.0.1.tgz#fc1a928061d1232b0a52bb754393c37a5216c89e"
+  integrity sha512-XlOlEbQcE9fmuXxrVTXCTlG2nlRXa9Rj3rr5Ue/+tX+nmkgbX720YHh0VR3hBF9xDvwnb8D2shVGOwNx+ulArw==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
@@ -4316,12 +4316,12 @@ ospath@^1.2.2:
   resolved "https://registry.yarnpkg.com/ospath/-/ospath-1.2.2.tgz#1276639774a3f8ef2572f7fe4280e0ea4550c07b"
   integrity sha1-EnZjl3Sj+O8lcvf+QoDg6kVQwHs=
 
-otpauth@^9.4.1:
-  version "9.4.1"
-  resolved "https://registry.yarnpkg.com/otpauth/-/otpauth-9.4.1.tgz#6c5d8cf82b441b2f9f2a2a64ba5e00b992f5f31f"
-  integrity sha512-+iVvys36CFsyXEqfNftQm1II7SW23W1wx9RwNk0Cd97lbvorqAhBDksb/0bYry087QMxjiuBS0wokdoZ0iUeAw==
+otpauth@^9.5.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/otpauth/-/otpauth-9.5.0.tgz#17a19eee2e8598cc8d16242ec640fe40b6cf3f52"
+  integrity sha512-Ldhc6UYl4baR5toGr8nfKC+L/b8/RgHKoIixAebgoNGzUUCET02g04rMEZ2ZsPfeVQhMHcuaOgb28nwMr81zCA==
   dependencies:
-    "@noble/hashes" "1.8.0"
+    "@noble/hashes" "2.0.1"
 
 otplib@^12.0.1:
   version "12.0.1"
