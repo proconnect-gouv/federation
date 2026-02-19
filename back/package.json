@@ -39,7 +39,7 @@
     "@nestjs/cqrs": "^11.0.3",
     "@nestjs/microservices": "^10.2.3",
     "@nestjs/mongoose": "^11.0.3",
-    "@nestjs/platform-express": "^10.4.20",
+    "@nestjs/platform-express": "^10.4.22",
     "@proconnect-gouv/proconnect.core": "^1.0.0",
     "@types/ejs": "^3.1.2",
     "@types/retry": "^0.12.2",
