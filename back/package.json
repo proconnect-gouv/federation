@@ -57,7 +57,7 @@
     "express": "^4.21.1",
     "express-session": "^1.18.2",
     "helmet": "^8.1.0",
-    "ioredis": "^5.8.2",
+    "ioredis": "^5.9.3",
     "jose-v2": "npm:jose@^2.0.5",
     "jose-v4": "npm:jose@^4.14.4",
     "jose-v6": "npm:jose@^6.0.12",
