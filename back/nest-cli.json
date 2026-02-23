@@ -23,7 +23,6 @@
           "../../../apps/core-fca-low/**/*.png",
           "../../../apps/core-fca-low/**/*.ico",
           "../../../apps/core-fca-low/**/*.woff2",
-          "../../../apps/core-fca-low/**/*.webmanifest",
           "../../../apps/core-fca-low/**/robots.txt"
         ]
       }
