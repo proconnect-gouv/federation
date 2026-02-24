@@ -3,16 +3,15 @@
     "name": "Fournisseur de service 1",
     "descriptions": ["par défaut", "premier FS", "éligible au scope groups"],
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
-    "url": "https://sp-dev-nubo12.proconnect.bacasable.opicloud.fr",
+    "url": "https://sp1-local.proconnect.127.0.0.1.nip.io",
     "userinfo_signed_response_alg": null
   },
   {
     "name": "Fournisseur de service 2",
     "descriptions": ["second FS", "acceptant le privé"],
     "clientId": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
-    "url": "https://sp2-dev-nubo12.proconnect.bacasable.opicloud.fr",
+    "url": "https://sp2-local.proconnect.127.0.0.1.nip.io",
     "userinfo_signed_response_alg": "ES256"
-
   },
   {
     "name": "Fournisseur de service 3",
@@ -22,8 +21,7 @@
       "avec une restriction de fqdn"
     ],
     "clientId": "6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77",
-    "url": "https://sp3-dev-nubo12.proconnect.bacasable.opicloud.fr/",
+    "url": "https://sp3-local.proconnect.127.0.0.1.nip.io",
     "userinfo_signed_response_alg": "RS256"
-
   }
 ]

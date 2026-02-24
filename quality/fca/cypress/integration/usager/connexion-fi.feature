@@ -1,7 +1,7 @@
 #language: fr
 Fonctionnalité: Connexion à un FI
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Je me rends sur la page du FI et je récupère correctement le sp_id
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect

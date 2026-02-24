@@ -7,7 +7,7 @@
       "FI bdd basé sur les URLs de fia1"
     ],
     "title": "Identity Provider 1 - eIDAS faible - ES256",
-    "url": "https://idp-dev-nubo12.proconnect.bacasable.opicloud.fr",
+    "url": "https://idp1-local.proconnect.127.0.0.1.nip.io",
     "signature": "ES256",
     "fqdn": "fia1.fr"
   }
