@@ -62,7 +62,7 @@
     "clipboard": "^2.0.11",
     "commander": "^14.0.1",
     "cookie-parser": "^1.4.4",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "ejs": "^4.0.1",
     "express-flash": "0.0.2",
     "express-session": "^1.16.1",
