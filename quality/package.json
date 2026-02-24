@@ -44,7 +44,7 @@
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "jose": "^6.1.3",
     "lodash": "^4.17.23",
-    "multiple-cucumber-html-reporter": "^3.9.3",
+    "multiple-cucumber-html-reporter": "^3.10.0",
     "otpauth": "^9.5.0",
     "otplib": "^12.0.1",
     "prettier": "^3.6.2",
