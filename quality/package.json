@@ -34,7 +34,7 @@
     "cypress-on-fix": "^1.1.0",
     "cypress-plugin-api": "^2.11.2",
     "ejs": "^3.1.10",
-    "eslint": "^8.57.0",
+    "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^3.6.0",
     "eslint-plugin-import": "^2.32.0",
