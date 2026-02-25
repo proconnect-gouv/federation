@@ -39,7 +39,7 @@ const getProviderConfig = async () => {
 };
 
 app.get('/api/v1/jwks', (req, res, _next) => {
-  return res.json({ keys: publicJwks });
+  res.json({ keys: publicJwks });
 });
 
 app.get('/api/v1/data', async (req, res, next) => {
@@ -55,7 +55,7 @@ app.get('/api/v1/data', async (req, res, next) => {
       accessToken,
     );
 
-    return res.json({ token_introspection: introspectionResponse });
+    res.json({ token_introspection: introspectionResponse });
   } catch (e) {
     next(e);
   }
