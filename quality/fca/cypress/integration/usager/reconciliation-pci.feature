@@ -41,3 +41,22 @@ Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est
     Et que je retire la valeur "example.com" du champ "fqdns" du formulaire de modification de FI
     Quand je valide le formulaire de modification de FI
     Alors le message de confirmation de modification du FI "fia2-low" est affiché
+
+  Scénario: La réconciliation ignore la casse de l'adresse email
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "minerva@example.com"
+    Quand je clique sur le bouton de connexion
+    Et je suis redirigé vers la page login du fournisseur d'identité "moncomptepro"
+    Et je m'authentifie
+    Et je mémorise le sub envoyé au fournisseur de service
+    Et je clique sur le bouton de déconnexion
+
+    Etant donné que je clique sur le bouton ProConnect
+    Et que j'entre l'email "minerva@fia1.fr"
+    Quand je clique sur le bouton de connexion
+    Et je suis redirigé vers la page login du fournisseur d'identité "premier FI"
+    Et j'utilise le compte usager avec l'email "MINERVA@example.com"
+    Et je m'authentifie
+    Alors je suis connecté au fournisseur de service
+    Et le sub transmis au fournisseur de service est identique au sub mémorisé
