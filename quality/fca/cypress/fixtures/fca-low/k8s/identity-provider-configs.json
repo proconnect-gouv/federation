@@ -2,8 +2,8 @@
   "bdd-idp-default": {
     "name": "bdd-idp-default",
     "title": "FI de test 1",
-    "issuer": "https://idp-dev-nubo12.proconnect.bacasable.opicloud.fr",
-    "discoveryUrl": "https://idp-dev-nubo12.proconnect.bacasable.opicloud.fr/.well-known/openid-configuration",
+    "issuer": "https://idp1-local.proconnect.127.0.0.1.nip.io",
+    "discoveryUrl": "https://idp1-local.proconnect.127.0.0.1.nip.io/.well-known/openid-configuration",
     "discovery": "true",
     "clientId": "myclientidforfia1-low",
     "client_secret": "7ae4fef2aab63fb78d777fe657b7536f",

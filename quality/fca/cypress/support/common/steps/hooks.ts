@@ -18,10 +18,10 @@ Before(function () {
   }
 
   switch (testEnv) {
-    case 'kube-mvp0':
+    case 'k8s':
       // Setup interceptions to override set-cookie samesite values
       forceSameSiteNone({
-        AC: 'dev-agentconnect.fr',
+        AC: 'proconnect.127.0.0.1.nip.io',
       });
       break;
     case 'integ01':
@@ -47,13 +47,21 @@ After(function () {
 });
 
 Before({ tags: '@ignoreDocker' }, function () {
-  if (['docker', 'kube-mvp0'].includes(Cypress.env('TEST_ENV'))) {
+  if (Cypress.env('TEST_ENV') === 'docker') {
     this.skip();
   }
 });
 
 Before({ tags: '@ignoreInteg01' }, function () {
   if (Cypress.env('TEST_ENV') === 'integ01') {
+    this.skip();
+  }
+});
+
+// only execute tests with @k8s tag on k8s environment
+// this tests are used by k8s CI
+Before({ tags: 'not @k8s' }, function () {
+  if (Cypress.env('TEST_ENV') === 'k8s') {
     this.skip();
   }
 });

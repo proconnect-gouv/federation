@@ -15,12 +15,12 @@ import idpForIntegEnv from '../../../fixtures/fca-low/integ01/identity-providers
 import spConfigsForIntegEnv from '../../../fixtures/fca-low/integ01/service-provider-configs.json';
 import spForIntegEnv from '../../../fixtures/fca-low/integ01/service-providers.json';
 // Kube MVP0
-import apiCommonForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/api-common.json';
-import environmentForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/environment.json';
-import idpConfigsForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/identity-provider-configs.json';
-import idpForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/identity-providers.json';
-import spConfigsForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/service-provider-configs.json';
-import spForKubeMvp0Env from '../../../fixtures/fca-low/kube-mvp0/service-providers.json';
+import apiCommonForKubeMvp0Env from '../../../fixtures/fca-low/k8s/api-common.json';
+import environmentForKubeMvp0Env from '../../../fixtures/fca-low/k8s/environment.json';
+import idpConfigsForKubeMvp0Env from '../../../fixtures/fca-low/k8s/identity-provider-configs.json';
+import idpForKubeMvp0Env from '../../../fixtures/fca-low/k8s/identity-providers.json';
+import spConfigsForKubeMvp0Env from '../../../fixtures/fca-low/k8s/service-provider-configs.json';
+import spForKubeMvp0Env from '../../../fixtures/fca-low/k8s/service-providers.json';
 import {
   Environment,
   IdentityProvider,
@@ -29,7 +29,7 @@ import {
   ServiceProviderConfig,
 } from '../types';
 
-type EnvKey = 'docker' | 'integ01' | 'kube-mvp0';
+type EnvKey = 'docker' | 'integ01' | 'k8s';
 
 type FixturesConfiguration = {
   apiCommon: Record<string, unknown>;
@@ -57,7 +57,7 @@ const fixturesByEnv: Record<EnvKey, FixturesConfiguration> = {
     spConfigs: spConfigsForIntegEnv,
     spList: spForIntegEnv,
   },
-  'kube-mvp0': {
+  k8s: {
     apiCommon: apiCommonForKubeMvp0Env,
     environment: environmentForKubeMvp0Env,
     idpConfigs: idpConfigsForKubeMvp0Env,

@@ -18,14 +18,14 @@ FCA end-to-end tests are implemented using a testing framework based on Cypress 
 
 | Environment Variable | Description                       | Comment                                      |
 | -------------------- | --------------------------------- | -------------------------------------------- |
-| TEST_ENV             | Test environment                  | `docker`, `kube-mvp0` or `integ01`, etc.     |
+| TEST_ENV             | Test environment                  | `docker`, `k8s` or `integ01`, etc.           |
 | TAGS                 | Tags expression                   | `not @ignore`                                |
-| EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/kube-mvp0            |
-| EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/kube-mvp0            |
-| EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/kube-mvp0            |
-| EXPLOIT_USER_NAME    | Exploitation operator username    | needed only for integ01/kube-mvp0            |
-| EXPLOIT_USER_PASS    | Exploitation operator password    | needed only for integ01/kube-mvp0            |
-| EXPLOIT_USER_TOTP    | Exploitation operator totp secret | needed only for integ01/kube-mvp0            |
+| EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/k8s                  |
+| EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/k8s                  |
+| EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/k8s                  |
+| EXPLOIT_USER_NAME    | Exploitation operator username    | needed only for integ01/k8s                  |
+| EXPLOIT_USER_PASS    | Exploitation operator password    | needed only for integ01/k8s                  |
+| EXPLOIT_USER_TOTP    | Exploitation operator totp secret | needed only for integ01/k8s                  |
 | FC_ACCESS_USER       | FranceConnect network username    | needed on recette/integ01 outside FC network |
 | FC_ACCESS_PASS       | FranceConnect network password    | needed on recette/integ01 outside FC network |
 
