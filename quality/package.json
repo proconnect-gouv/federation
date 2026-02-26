@@ -46,7 +46,7 @@
     "lodash": "^4.17.23",
     "multiple-cucumber-html-reporter": "^3.10.0",
     "otpauth": "^9.5.0",
-    "otplib": "^12.0.1",
+    "otplib": "^13.3.0",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "5.9.3"
