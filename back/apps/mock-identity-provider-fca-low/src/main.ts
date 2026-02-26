@@ -1,4 +1,5 @@
 import express, { urlencoded } from 'express';
+import { rateLimit } from 'express-rate-limit';
 import { get } from 'lodash';
 import { strict as assert } from 'node:assert';
 import path from 'node:path';
@@ -26,6 +27,16 @@ const provider = new Provider(`https://${FQDN}`, {
   ...configuration,
 });
 provider.proxy = true;
+
+const rateLimiter = rateLimit({
+  windowMs: 900000, // 15 minutes
+  limit: 100,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+});
+
+app.use(rateLimiter);
 
 app.get('/interaction/:uid', async (req, res, next) => {
   try {

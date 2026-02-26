@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import express from 'express';
+import { rateLimit } from 'express-rate-limit';
 import session from 'express-session';
 import { chain, isObject } from 'lodash';
 import path from 'node:path';
@@ -93,6 +94,16 @@ const AUTHORIZATION_DEFAULT_PARAMS = {
     },
   },
 };
+
+const rateLimiter = rateLimit({
+  windowMs: 900000, // 15 minutes
+  limit: 100,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+});
+
+app.use(rateLimiter);
 
 app.get('/', (req, res, next) => {
   try {
