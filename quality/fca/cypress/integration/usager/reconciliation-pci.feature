@@ -48,6 +48,7 @@ Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est
     Et que j'entre l'email "minerva@example.com"
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page login du fournisseur d'identité "moncomptepro"
+    Et j'utilise l'identité avec le sub "minerva-mcp-sub"
     Et je m'authentifie
     Et je mémorise le sub envoyé au fournisseur de service
     Et je clique sur le bouton de déconnexion
@@ -57,6 +58,7 @@ Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page login du fournisseur d'identité "premier FI"
     Et j'utilise le compte usager avec l'email "MINERVA@example.com"
+    Et j'utilise l'identité avec le sub "minerva-fia1-sub"
     Et je m'authentifie
     Alors je suis connecté au fournisseur de service
     Et le sub transmis au fournisseur de service est identique au sub mémorisé
