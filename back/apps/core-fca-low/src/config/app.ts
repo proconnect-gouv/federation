@@ -24,6 +24,7 @@ export default {
     scriptSrc: env.json('CSP_SCRIPT_SRC'),
     connectSrc: env.json('CSP_CONNECT_SRC'),
     frameAncestors: env.json('CSP_FRAME_ANCESTORS'),
+    frameSrc: env.json('CSP_FRAME_SRC'),
     imgSrc: env.json('CSP_IMG_SRC'),
   },
   displayTestEnvWarning: env.boolean('FEATURE_DISPLAY_TEST_ENV_WARNING'),
