@@ -31,6 +31,9 @@ const config: Config = {
       },
     ],
   },
+  transformIgnorePatterns: [
+    '/node_modules/@proconnect-gouv/(?!(proconnect.identite|proconnect.api_entreprise)/)',
+  ],
   coverageDirectory: './coverage',
   coverageThreshold: {
     global: {

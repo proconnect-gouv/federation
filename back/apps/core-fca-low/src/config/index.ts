@@ -1,5 +1,6 @@
 import { CoreFcaConfig } from '@fc/core';
 
+import ApiEntreprise from './api-entreprise';
 import App from './app';
 import EmailValidator from './email-validator';
 import Exceptions from './exceptions';
@@ -14,6 +15,7 @@ import ServiceProviderAdapterMongo from './service-provider-adapter-mongo';
 import Session from './session';
 
 export default {
+  ApiEntreprise,
   App,
   EmailValidator,
   Exceptions,
