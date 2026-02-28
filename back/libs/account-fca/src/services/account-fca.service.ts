@@ -38,7 +38,10 @@ export class AccountFcaService {
       return await this.model.findOne<AccountFca>({
         idpIdentityKeys: {
           $elemMatch: {
-            idpMail,
+            // We lowercase the email because the email case might change across different identity providers
+            // Note that this works because all emails from PCI (e.g. the default idp) are lowercase.
+            // This approach is limited to matching identities from the default identity provider only.
+            idpMail: idpMail.toLowerCase(),
             idpUid: defaultIdpId,
           },
         },
