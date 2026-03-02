@@ -32,6 +32,12 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
       | Identity Provider 1 - HS256 | par défaut | tous les scopes |
       | Identity Provider 2 - ES256 | second FI  | tous les scopes |
 
+    @k8s @ignoreDocker @ignoreInteg01
+    Exemples:
+      | idpLabel                 | idpName    | scope           |
+      | Fournisseur d'identité 1 | par défaut | tous les scopes |
+      | Fournisseur d'identité 2 | second FI  | tous les scopes |
+
   Scénario: Fournisseur d'identité autre
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -42,17 +48,27 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Alors je suis redirigé vers la page login du fournisseur d'identité "moncomptepro"
 
   @ignoreInteg01
-  Scénario: Retour en arrière après redirection vers FI
+  Plan du Scénario: Retour en arrière après redirection vers FI
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@polyfi.fr"
     Quand je clique sur le bouton de connexion
-    Et je choisis le fournisseur d'identité "Identity Provider 1 - eIDAS faible - ES256"
+    Et je choisis le fournisseur d'identité "<idpLabel>"
     Et je suis redirigé vers la page login du fournisseur d'identité "par défaut"
     Quand je reviens en arrière
     Alors je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Quand je reviens en arrière
     Alors je suis redirigé vers la page interaction
+
+    @ignoreInteg01
+    Exemples:
+      | idpLabel                                   |
+      | Identity Provider 1 - eIDAS faible - ES256 |
+
+    @k8s @ignoreDocker @ignoreInteg01
+    Exemples:
+      | idpLabel                 |
+      | Fournisseur d'identité 1 |
 
   @ignoreInteg01
   Scénario: FI par défaut est accepté par tous les fqdnToIdp
@@ -82,12 +98,12 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Alors le fournisseur d'identité "Autre (via ProConnect Identité)" est positionné en dernier dans la liste des fournisseurs d'identité
 
   @ignoreInteg01
-  Scénario: Retour en arrière après une connexion multi FI réussie
+  Plan du Scénario: Retour en arrière après une connexion multi FI réussie
     Étant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@polyfi.fr"
     Et que je clique sur le bouton de connexion
-    Et je choisis le fournisseur d'identité "Identity Provider 1 - eIDAS faible - ES256"
+    Et je choisis le fournisseur d'identité "<idpLabel>"
     Et que je m'authentifie
     Et que je suis connecté au fournisseur de service
     Quand je reviens en arrière
@@ -96,3 +112,13 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Quand je reviens en arrière
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "oidc-provider-error:session-not-found"
+
+    @ignoreInteg01
+    Exemples:
+      | idpLabel                                   |
+      | Identity Provider 1 - eIDAS faible - ES256 |
+
+    @k8s @ignoreDocker @ignoreInteg01
+    Exemples:
+      | idpLabel                 |
+      | Fournisseur d'identité 1 |

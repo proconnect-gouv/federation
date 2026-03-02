@@ -1,5 +1,6 @@
 #language: fr
 @ignoreInteg01
+@k8s
 Fonctionnalité: Erreur redirect uri invalide
 
   Plan du Scénario: Erreur <error> redirect_uri=<redirectUri>

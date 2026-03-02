@@ -1,5 +1,6 @@
 #language: fr
 Fonctionnalité: Connexion Usager - Redirection vers FI avec email
+
   Plan du Scénario: Connexion d'un usager - fqdn <idpDescription>
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -8,7 +9,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et je suis redirigé vers la page login du fournisseur d'identité "<idpDescription>"
     Et je m'authentifie
     Alors je suis connecté au fournisseur de service
-
+    @k8s
     Exemples:
       | email                  | idpDescription |
       | iknowthisemail@fia1.fr | par défaut     |
@@ -55,7 +56,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et je m'authentifie
     Alors je suis redirigé vers la page fournisseur de service "acceptant le privé"
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Connexion d'un usager - retour en arrière après redirection vers FI
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
@@ -64,6 +65,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Quand je reviens en arrière
     Alors je suis redirigé vers la page interaction
 
+  @k8s
   Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse e-mail avec suggestion
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
@@ -73,6 +75,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et que je clique sur la suggestion d'email corrigé
     Alors le champ email correspond à "test@gendarmerie.interieur.gouv.fr"
 
+  @k8s
   Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse e-mail sans suggestion
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
@@ -81,6 +84,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et que je suis redirigé vers la page interaction
     Alors je vois l'erreur "Adresse e-mail invalide."
 
+  @k8s
   Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse email sans option "se souvenir de moi"
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect

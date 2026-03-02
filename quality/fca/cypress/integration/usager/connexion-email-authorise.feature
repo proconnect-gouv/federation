@@ -1,6 +1,7 @@
 #language: fr
 @ignoreInteg01
 Fonctionnalité: Connexion Usager - Email autorisé
+  @k8s
   Scénario: Connexion à un FS qui limite les emails avec un email authorisé
     Etant donné que je navigue sur la page fournisseur de service "avec une restriction de fqdn"
     Et que le fournisseur de service requiert l'accès aux informations du scope "obligatoires"

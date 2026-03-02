@@ -1,4 +1,5 @@
 #language: fr
+@k8s
 Fonctionnalité: Connexion Usager - idp_hint
 
   @ignoreInteg01

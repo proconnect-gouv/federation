@@ -1,5 +1,6 @@
 #language: fr
 Fonctionnalité: Connexion avec Claims
+  @k8s
   Scénario: demande claim amr essential
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert le claim "amr"
@@ -9,6 +10,7 @@ Fonctionnalité: Connexion avec Claims
     Quand je m'authentifie
     Alors la cinématique a renvoyé l'amr "pwd"
 
+  @k8s
   Scénario: pas de demande du claim amr
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service ne requiert pas le claim "amr"
@@ -18,6 +20,7 @@ Fonctionnalité: Connexion avec Claims
     Quand je m'authentifie
     Alors la cinématique n'a pas renvoyé d'amr
 
+  @k8s
   Scénario: demande de claim amr mais FI qui n'en renvoie pas
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service demande le claim "amr"
@@ -39,6 +42,7 @@ Fonctionnalité: Connexion avec Claims
     # Currently, the default amr: ["pwd"] is returned
     Alors la cinématique n'a pas renvoyé d'amr
 
+  @k8s
   Scénario: demande du claim given_name essential
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert le claim "given_name"

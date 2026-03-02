@@ -1,4 +1,5 @@
 #language: fr
+@k8s
 Fonctionnalité: Connexion avec manipulation du paramêtre prompt
   Scénario: Prompt=none pour un utilisateur déjà connecté
     Etant donné que je navigue sur la page fournisseur de service "premier FS"

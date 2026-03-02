@@ -1,6 +1,6 @@
 [
   {
-    "id": "9c716f61-b8a1-435c-a407-ef4d677ec270",
+    "id": "myclientidforfia1-low",
     "descriptions": [
       "premier FI",
       "par défaut",
@@ -10,5 +10,13 @@
     "url": "https://idp1-local.proconnect.127.0.0.1.nip.io",
     "signature": "ES256",
     "fqdn": "fia1.fr"
+  },
+  {
+    "id": "myclientidforfia2-low",
+    "descriptions": ["second FI", "FI bdd basé sur les URLs de fia2"],
+    "title": "Identity Provider 2 - eIDAS faible - ES256",
+    "url": "https://idp2-local.proconnect.127.0.0.1.nip.io",
+    "signature": "ES256",
+    "fqdn": "fia2.fr"
   }
 ]

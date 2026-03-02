@@ -1,4 +1,5 @@
 #language: fr
+@k8s
 Fonctionnalité: Connexion Usager - session absente
   Scénario: Connexion OK - session inconnue lors de l'appel authorize
     Etant donné que je force un sessionId inexistant dans le cookie de session AgentConnect

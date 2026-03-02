@@ -78,9 +78,9 @@ export const checkExpectedUserClaims = (
       .forEach((claimName) => {
         expect(userInfo[claimName]).to.deep.equal(
           userClaims[claimName],
-          `The claim ${claimName} should be ${JSON.stringify(
+          `The claim "${claimName}" should be "${JSON.stringify(
             userClaims[claimName],
-          )}`,
+          )}"`,
         );
       });
   });

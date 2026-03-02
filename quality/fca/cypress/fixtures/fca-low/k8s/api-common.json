@@ -12,7 +12,7 @@
       "nonce": "f23f6cebd994466d1de0975d21471294fd729a2a6e5b16dbf0d6f6247a2f6917"
     },
     "method": "GET",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/authorize"
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/authorize"
   },
   "token-introspection": {
     "body": {
@@ -22,14 +22,14 @@
     },
     "form": true,
     "method": "POST",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/token/introspection",
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/token/introspection",
     "headers": {
       "Accept": "application/token-introspection+jwt"
     }
   },
   "discovery": {
     "method": "GET",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/.well-known/openid-configuration"
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/.well-known/openid-configuration"
   },
   "oidc-callback": {
     "qs": {
@@ -37,7 +37,7 @@
       "state": "93f3526894944aebb3163e50b776fc2e7d904e7a2e0e4ca4808992115ed058e5"
     },
     "method": "GET",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/oidc-callback"
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/oidc-callback"
   },
   "token": {
     "body": {
@@ -49,7 +49,7 @@
     },
     "form": true,
     "method": "POST",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/token"
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/token"
   },
   "token-pkce": {
     "body": {
@@ -62,7 +62,7 @@
     },
     "form": true,
     "method": "POST",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/token"
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/token"
   },
   "revoke": {
     "body": {
@@ -72,7 +72,7 @@
     },
     "form": true,
     "method": "POST",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/token/revocation"
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/token/revocation"
   },
   "token-from-refresh-token": {
     "body": {
@@ -84,11 +84,11 @@
     },
     "form": true,
     "method": "POST",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/token"
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/token"
   },
   "redirect-to-idp": {
     "method": "POST",
-    "url": "https://fca-dev-nubo12.proconnect.bacasable.opicloud.fr/api/v2/redirect-to-idp",
+    "url": "https://fca-local.proconnect.127.0.0.1.nip.io/api/v2/redirect-to-idp",
     "form": true,
     "body": {
       "email": "test@fia1.fr",

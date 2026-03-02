@@ -1,4 +1,5 @@
 #language: fr
+@k8s
 Fonctionnalité: Connexion Usager - SSO
 
   Plan du Scénario: Deux FS avec accès au même FI

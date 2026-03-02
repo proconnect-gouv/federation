@@ -1,6 +1,7 @@
 #language: fr
+@k8s
 Fonctionnalité: Connexion Usager avec FI (user info non signé)
-  Scénario: Connexion OK 
+  Scénario: Connexion OK
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
     Et j'entre l'email "test@fia2.fr"
