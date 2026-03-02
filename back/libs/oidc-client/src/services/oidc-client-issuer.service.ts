@@ -78,6 +78,11 @@ export class OidcClientIssuerService implements OnModuleInit {
     return idpMetadata.supportEmail || pcfSupportEmail;
   }
 
+  isDefaultIdp(idpId: string): boolean {
+    const { defaultIdpId } = this.config.get<AppConfig>('App');
+    return idpId === defaultIdpId;
+  }
+
   /**
    * @param issuerId identifier used to indicate Chosen IdP
    * @returns providers metadata

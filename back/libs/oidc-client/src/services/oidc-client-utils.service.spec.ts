@@ -61,6 +61,7 @@ describe('OidcClientUtilsService', () => {
   const oidcClientIssuerServiceMock = {
     getClient: jest.fn(),
     getSupportEmail: jest.fn(),
+    isDefaultIdp: jest.fn(),
   };
 
   const oidcClientConfigServiceMock = {
@@ -399,6 +400,36 @@ describe('OidcClientUtilsService', () => {
       await expect(
         service.getTokenSet(req, providerId, params),
       ).rejects.toThrow(OidcClientTokenFailedException);
+    });
+
+    it('should set displayContact to false when the IdP is the default one', async () => {
+      // Given
+      callbackMock.mockRejectedValueOnce(new Error('server_error'));
+      oidcClientIssuerServiceMock.isDefaultIdp.mockReturnValue(true);
+
+      // Then
+      try {
+        await service.getTokenSet(req, providerId, params);
+        fail('should have thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(OidcClientTokenFailedException);
+        expect(error.displayContact).toBe(false);
+      }
+    });
+
+    it('should keep displayContact as true when the IdP is not the default one', async () => {
+      // Given
+      callbackMock.mockRejectedValueOnce(new Error('server_error'));
+      oidcClientIssuerServiceMock.isDefaultIdp.mockReturnValue(false);
+
+      // Then
+      try {
+        await service.getTokenSet(req, providerId, params);
+        fail('should have thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(OidcClientTokenFailedException);
+        expect(error.displayContact).toBe(true);
+      }
     });
   });
 
