@@ -79,7 +79,7 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@eslint-community/eslint-plugin-eslint-comments": "^4.4.1",
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.6.0",
     "@nestjs/cli": "^11.0.7",
     "@nestjs/testing": "^10.4.20",
     "@types/deep-freeze": "^0.1.2",
