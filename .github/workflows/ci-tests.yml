@@ -101,7 +101,7 @@ jobs:
 
       # Workaround for https://github.com/docker/compose/issues/12892
       - name: Upgrade Docker Compose
-        uses: docker/setup-compose-action@v1
+        uses: docker/setup-compose-action@v2
         with:
           version: latest
 
@@ -165,7 +165,7 @@ jobs:
 
       # Workaround for https://github.com/docker/compose/issues/12892
       - name: Upgrade Docker Compose
-        uses: docker/setup-compose-action@v1
+        uses: docker/setup-compose-action@v2
         with:
           version: latest
 
