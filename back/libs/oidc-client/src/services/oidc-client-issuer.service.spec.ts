@@ -152,6 +152,35 @@ describe('OidcClientIssuerService', () => {
     });
   });
 
+  describe('isDefaultIdp', () => {
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValue({
+        defaultIdpId: 'default-idp-uid',
+      });
+    });
+    it('should return true when idpId matches defaultIdpId', () => {
+      // Given
+      const idpIdToTest = 'default-idp-uid';
+
+      // When
+      const result = service.isDefaultIdp(idpIdToTest);
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it('should return false when idpId does not match defaultIdpId', () => {
+      // Given
+      const idpIdToTest = 'other-idp-uid';
+
+      // When
+      const result = service.isDefaultIdp(idpIdToTest);
+
+      // Then
+      expect(result).toBe(false);
+    });
+  });
+
   describe('getClientClass', () => {
     it('should return "Client"', async () => {
       // Given

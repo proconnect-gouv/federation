@@ -129,8 +129,11 @@ export class OidcClientUtilsService {
       );
     } catch (error) {
       const contactEmail = await this.issuer.getSupportEmail(idpId);
-
-      throw new OidcClientTokenFailedException(contactEmail, error);
+      const isDefaultIdp = this.issuer.isDefaultIdp(idpId);
+      throw new OidcClientTokenFailedException(
+        { contactEmail, isDefaultIdp },
+        error,
+      );
     }
 
     return tokenSet;
