@@ -19,7 +19,19 @@
             <section class="mb-3 row">
               <label class="col-2 col-form-label" for="name">Nom du fournisseur de service (mire) : </label>
               <div class="col-10">
-                <input id="name" type="text" required class="form-control <%= locals.messages.errors && messages.errors[0].name && 'is-invalid' %>" placeholder="<%= locals.messages.values && messages.values[0].name %>" name="name" value="<%= locals.messages.values && messages.values[0].name %>" pattern="<%= VALID_INPUT_STRING_REGEX %>">
+                <input
+                  id="name"
+                  type="text"
+                  required
+                  class="form-control <%= locals.messages.errors && messages.errors[0].name && 'is-invalid' %>"
+                  placeholder="<%= locals.messages.values && messages.values[0].name %>"
+                  name="name"
+                  value="<%= locals.messages.values && messages.values[0].name %>"
+                  pattern="<%= VALID_INPUT_STRING_REGEX %>"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].name) { %>
                   <p>
@@ -74,7 +86,16 @@
             <section class="mb-3 row">
               <label class="col-2 col-form-label" for="emails">Email(s) de contact (un par ligne)</label>
               <div class="col-10">
-                <textarea id="emails" class="form-control  <%= locals.messages.errors && messages.errors[0].emails && 'is-invalid' %>" placeholder="email@email.com" name="emails" pattern="^$|^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$"><%= locals.messages.values && messages.values[0].emails %></textarea>
+                <textarea
+                  id="emails"
+                  class="form-control  <%= locals.messages.errors && messages.errors[0].emails && 'is-invalid' %>"
+                  placeholder="email@email.com"
+                  name="emails"
+                  pattern="^$|^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other"><%= locals.messages.values && messages.values[0].emails %></textarea>
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].emails) { %>
                   <p>
@@ -165,7 +186,14 @@
             <section class="mb-3 row">
               <label class="col-2 col-form-label" for="confirm-2FAuthentication">Code TOTP</label>
               <div class="col-10">
-                <input id="_totp" type="text" required class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>" name="_totp">
+                <input
+                  id="_totp"
+                  type="text"
+                  required
+                  class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>"
+                  name="_totp"
+                  inputmode="numeric"
+                  autocomplete="one-time-code">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0]._totp) { %>
                   <p>
