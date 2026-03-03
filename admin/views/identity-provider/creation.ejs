@@ -38,7 +38,18 @@
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="title">Titre (tel qu'il apparaîtra aux utilisateurs FC) * : </label>
               <div class="col-10">
-                <input id="title" type="text" required class="form-control <%= locals.messages.errors && messages.errors[0].title && 'is-invalid' %>" name="title" value="<%= locals.messages.values && messages.values[0].title %>" pattern="<%= VALID_INPUT_STRING_REGEX %>">
+                <input
+                  id="title"
+                  type="text"
+                  required
+                  class="form-control <%= locals.messages.errors && messages.errors[0].title && 'is-invalid' %>"
+                  name="title"
+                  value="<%= locals.messages.values && messages.values[0].title %>"
+                  pattern="<%= VALID_INPUT_STRING_REGEX %>"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].title) { %>
                   <p>
@@ -57,7 +68,16 @@
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="fqdns">Domaines email associés (un domaine par ligne) :</label>
               <div class="col-10">
-                <textarea id="fqdns" rows="3" name="fqdns" class="form-control <%= locals.messages.errors && messages.errors[0].fqdns && 'is-invalid' %>" pattern="^([\da-z\.-]+)\.([a-z\.]{2,10})$"><%= locals.messages.values && messages.values[0].fqdns instanceof Array ? messages.values[0].fqdns.join('\n') : '' %></textarea>
+                <textarea
+                  id="fqdns"
+                  rows="3"
+                  name="fqdns"
+                  class="form-control <%= locals.messages.errors && messages.errors[0].fqdns && 'is-invalid' %>"
+                  pattern="^([\da-z\.-]+)\.([a-z\.]{2,10})$"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other"><%= locals.messages.values && messages.values[0].fqdns instanceof Array ? messages.values[0].fqdns.join('\n') : '' %></textarea>
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].fqdns) { %>
                   <p>
@@ -98,7 +118,16 @@
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="extraAcceptedEmailDomains">Domaines email supplémentaires acceptés en retour (un domaine par ligne) :</label>
               <div class="col-10">
-                <textarea id="extraAcceptedEmailDomains" rows="3" name="extraAcceptedEmailDomains" class="form-control <%= locals.messages.errors && messages.errors[0].extraAcceptedEmailDomains && 'is-invalid' %>" pattern="^([\da-z\.-]+)\.([a-z\.]{2,10})$"><%= locals.messages.values && messages.values[0].extraAcceptedEmailDomains instanceof Array ? messages.values[0].extraAcceptedEmailDomains.join('\n') : '' %></textarea>
+                <textarea
+                  id="extraAcceptedEmailDomains"
+                  rows="3"
+                  name="extraAcceptedEmailDomains"
+                  class="form-control <%= locals.messages.errors && messages.errors[0].extraAcceptedEmailDomains && 'is-invalid' %>"
+                  pattern="^([\da-z\.-]+)\.([a-z\.]{2,10})$"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other"><%= locals.messages.values && messages.values[0].extraAcceptedEmailDomains instanceof Array ? messages.values[0].extraAcceptedEmailDomains.join('\n') : '' %></textarea>
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].extraAcceptedEmailDomains) { %>
                   <p>
@@ -296,7 +325,17 @@
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="clientId">Client ID * :</label>
               <div class="col-10">
-                <input id="clientId" type="text" required class="form-control <%= locals.messages.errors && messages.errors[0].clientId && 'is-invalid' %>" name="clientId" value="<%= locals.messages.values && messages.values[0].clientId %>">
+                <input
+                  id="clientId"
+                  type="text"
+                  required
+                  class="form-control <%= locals.messages.errors && messages.errors[0].clientId && 'is-invalid' %>"
+                  name="clientId"
+                  value="<%= locals.messages.values && messages.values[0].clientId %>"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].clientId) { %>
                   <p>
@@ -474,7 +513,16 @@
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="supportEmail">Email du support :</label>
               <div class="col-10">
-                <input id="supportEmail" type="email" class="form-control <%= locals.messages.errors && messages.errors[0].supportEmail && 'is-invalid' %>" name="supportEmail" value="<%= locals.messages.values && messages.values[0].supportEmail %>">
+                <input
+                  id="supportEmail"
+                  type="email"
+                  class="form-control <%= locals.messages.errors && messages.errors[0].supportEmail && 'is-invalid' %>"
+                  name="supportEmail"
+                  value="<%= locals.messages.values && messages.values[0].supportEmail %>"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other">
               </div>
 
               <div class="invalid-feedback">
@@ -494,7 +542,14 @@
             <div class="mb-3 row">
               <label class="col-lg-2 col-lg-form-label" for="_totp">Code TOTP</label>
               <div class="col-lg-10">
-                <input id="_totp" type="text" required class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>" name="_totp">
+                <input
+                  id="_totp"
+                  type="text"
+                  required
+                  class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>"
+                  name="_totp"
+                  inputmode="numeric"
+                  autocomplete="one-time-code">
                 <% if (locals.messages.errors && messages.errors[0]._totp) { %>
                 <div class="invalid-feedback">
                   <% messages.errors[0]._totp.forEach((error) => { %>
