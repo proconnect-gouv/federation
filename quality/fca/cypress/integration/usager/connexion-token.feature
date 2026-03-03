@@ -1,10 +1,14 @@
 #language: fr
 Fonctionnalité: Connexion Usager - Token
 
-  # todo: debug this test and restore it
-  # we have commented this test because we cannot prioritize its debug
-  # and we don't want to take the habit to valid the staging CI with a
-  # failing test
+  # We only check the `WWWAuthenticateChallengeError` message in Docker and CI:
+  # Depending on the value of the NODE_ENV environment variable,
+  # the `WWWAuthenticateChallengeError` may be replaced in an `Unauthorized` error.
+  # Because we force NODE_ENV=development locally and in CI when starting the app,
+  # the test works in both cases. However, in K8S CI, INTEGRATION (and PRODUCTION),
+  # where we start the app with pm2-runtime without setting this variable, it does not work,
+  # because the error is replaced and only an `Unauthorized` message is returned.
+
   @ignoreInteg01
   Scénario: Token non valide après révocation
     Etant donné que je navigue sur la page fournisseur de service
