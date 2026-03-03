@@ -63,7 +63,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et le titre de l'erreur fournisseur de service est "invalid_request"
     Et la description de l'erreur fournisseur de service est "openid%20scope%20must%20be%20requested%20when%20using%20the%20claims%20parameter"
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Connexion d'un usager - erreur FS non habilité pour ce scope
     Etant donné que je navigue sur la page fournisseur de service "non habilité à demander le scope belonging_population"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires et belonging_population"
