@@ -1,5 +1,5 @@
 #language: fr
-@ignoreInteg01
+@ignoreInteg01 @k8s
 Fonctionnalité: Connexion Usager - ACR
 
   Plan du Scénario: Authentification avec acr "<acr>" exigé

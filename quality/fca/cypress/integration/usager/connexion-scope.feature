@@ -1,5 +1,6 @@
 #language: fr
 Fonctionnalité: Connexion Usager - Scope
+  @k8s
   Plan du Scénario: Connexion d'un usager - scope <scopeType>
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "<scopeType>"
@@ -10,8 +11,8 @@ Fonctionnalité: Connexion Usager - Scope
     Alors le fournisseur de service "par défaut" a accès aux informations des scopes "<scopeType>" en provenance du FI "par défaut"
 
     Exemples:
-      | scopeType                                 |
-      | tous les scopes                           |
+      | scopeType       |
+      | tous les scopes |
 
     @ignoreInteg01
     Exemples:
@@ -25,7 +26,7 @@ Fonctionnalité: Connexion Usager - Scope
       | email                                     |
       | chorusdt                                  |
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Connexion d'un usager - scope anonyme
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations du scope "anonyme"
@@ -35,7 +36,7 @@ Fonctionnalité: Connexion Usager - Scope
     Quand je m'authentifie
     Alors le fournisseur de service "par défaut" a accès aux informations du scope "anonyme" en provenance du FI "par défaut"
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Connexion d'un usager - attribut scope inconnu ignoré
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "email avec scope inconnu"
@@ -45,7 +46,7 @@ Fonctionnalité: Connexion Usager - Scope
     Quand je m'authentifie
     Alors le fournisseur de service "par défaut" a accès aux informations des scopes "email" en provenance du FI "par défaut"
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Connexion d'un usager - erreur scope vide
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "vide"
@@ -53,7 +54,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y000400"
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Connexion d'un usager - erreur scope openid manquant
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires sans openid"

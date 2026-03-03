@@ -1,5 +1,5 @@
 #language: fr
-@ignoreInteg01
+@ignoreInteg01 @k8s
 Fonctionnalité: Affichage de l'erreur 404
   Scénario: Je vois une page d'erreur 404
     Etant donné que je navigue sur la page "/api/v2/not-found"

@@ -1,5 +1,5 @@
 #language: fr
-@ignoreInteg01
+@ignoreInteg01 @k8s
 Fonctionnalité: Connexion Usager - login_hint
 
   Scénario: ProConnect fournit le login_hint au FI
@@ -29,9 +29,9 @@ Fonctionnalité: Connexion Usager - login_hint
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
 
   Scénario: Le FS fournit un login_hint incorrect
-  Etant donné que je navigue sur la page fournisseur de service
-  Et que le fournisseur de service envoie le login_hint "test@polyfi.rf"
-  Et que je clique sur le bouton ProConnect
-  Et que je suis redirigé vers la page interaction
-  Et que je clique sur la suggestion d'email corrigé
-  Alors le champ email correspond à "test@polyfi.fr"
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service envoie le login_hint "test@polyfi.rf"
+    Et que je clique sur le bouton ProConnect
+    Et que je suis redirigé vers la page interaction
+    Et que je clique sur la suggestion d'email corrigé
+    Alors le champ email correspond à "test@polyfi.fr"
