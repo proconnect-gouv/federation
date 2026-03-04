@@ -86,49 +86,6 @@ const fsa = {
     userinfo_signed_response_alg: 'ES256',
   },
 
-  // -- FSA - FSA3-LOW - Deactivated
-  'FSA3-LOW': {
-    name: 'Service Provider Example 3 deactivated',
-    title: 'FSA - FSA3-LOW Title',
-    redirect_uris: [
-      'https://fsa3-low.docker.dev-franceconnect.fr/oidc-callback',
-    ],
-    post_logout_redirect_uris: [
-      'https://fsa3-low.docker.dev-franceconnect.fr/',
-    ],
-    client_secret:
-      '+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=',
-    key: 'my-service-provider-deactivated',
-    email: 'fsa3@franceconnect.loc',
-    IPServerAddressesAndRanges: ['1.1.1.1'],
-    active: false,
-    type: 'public',
-    __v: 4,
-    updatedAt: new Date('2019-04-24 17:09:17'),
-    updatedBy: 'admin',
-    scopes: [
-      'uid',
-      'openid',
-      'given_name',
-      'email',
-      'phone',
-      'organizational_unit',
-      'siren',
-      'siret',
-      'usual_name',
-      'belonging_population',
-      'chorusdt',
-      'idp_id',
-      'idp_acr',
-      'custom',
-    ],
-    introspection_signed_response_alg: null,
-    introspection_encrypted_response_alg: null,
-    introspection_encrypted_response_enc: null,
-    id_token_signed_response_alg: 'ES256',
-    userinfo_signed_response_alg: 'ES256',
-  },
-
   // -- FSA - FSA4-LOW - Activated - RS256 - encrypted response - not autorized to request amr claim
   'FSA4-LOW': {
     name: 'FSA - FSA4-LOW',
