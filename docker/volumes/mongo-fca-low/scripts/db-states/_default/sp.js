@@ -86,20 +86,20 @@ const fsa = {
     userinfo_signed_response_alg: 'ES256',
   },
 
-  // -- FSA - FSA4-LOW - Activated - RS256 - encrypted response - not autorized to request amr claim
-  'FSA4-LOW': {
-    name: 'FSA - FSA4-LOW',
-    title: 'FSA - FSA4-LOW Title',
+  // -- FSA - FSA3-LOW - Activated - RS256 - encrypted response - not autorized to request amr claim
+  'FSA3-LOW': {
+    name: 'FSA - FSA3-LOW',
+    title: 'FSA - FSA3-LOW Title',
     redirect_uris: [
-      'https://fsa4-low.docker.dev-franceconnect.fr/oidc-callback',
+      'https://fsa3-low.docker.dev-franceconnect.fr/oidc-callback',
     ],
     post_logout_redirect_uris: [
-      'https://fsa4-low.docker.dev-franceconnect.fr/',
+      'https://fsa3-low.docker.dev-franceconnect.fr/',
     ],
     client_secret:
       '+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=',
     key: '6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77',
-    email: 'fsa4@franceconnect.loc',
+    email: 'fsa3@franceconnect.loc',
     IPServerAddressesAndRanges: ['1.1.1.1'],
     active: true,
     type: 'public',

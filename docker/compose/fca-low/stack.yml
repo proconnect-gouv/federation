@@ -24,7 +24,7 @@ services:
       # -- SP
       - 'fsa1-low'
       - 'fsa2-low'
-      - 'fsa4-low'
+      - 'fsa3-low'
       # -- IdP
       - 'fia1-low'
       - 'fia2-low'
