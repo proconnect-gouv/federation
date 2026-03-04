@@ -30,15 +30,6 @@ services:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/fsa3-low.env'
 
-  fsa4-low:
-    hostname: fsa4-low
-    extends:
-      file: ../shared/shared.yml
-      service: base-sp-mock
-    env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fsa4-low.env'
-
   ####################
   # IDP Mocks
   ####################
