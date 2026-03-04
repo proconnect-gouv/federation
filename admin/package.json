@@ -7,7 +7,7 @@
     "url": "git+ssh://git@gitlab.com/proconnect/proconnect-exploitation.git"
   },
   "scripts": {
-    "prebuild": "parcel build -d ./dist/client ./public/javascript/main.js && cp ./public/favicon.ico ./dist/client/ && cp -R ./public/images ./dist/client/ ",
+    "prebuild": "parcel build ./public/javascript/main.js --target=app && cp ./public/favicon.ico ./dist/client/ && cp -R ./public/images ./dist/client/ ",
     "build": "tsc -p tsconfig.build.json",
     "console": "node dist/console.js",
     "console:dev": "ts-node -r tsconfig-paths/register src/console.ts",
@@ -93,6 +93,7 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^11.1.9",
+    "@parcel/transformer-less": "2.16.4",
     "@types/express": "^5.0.5",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.21",
@@ -106,7 +107,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "jest": "^30.2.0",
     "less": "^4.5.1",
-    "parcel-bundler": "1.12.5",
+    "parcel": "^2.16.4",
     "prettier": "^3.8.0",
     "ts-jest": "^29.4.6",
     "ts-node-dev": "^2.0.0",
@@ -116,5 +117,13 @@
   },
   "engines": {
     "node": "24.13.1"
+  },
+  "targets": {
+    "app": {
+      "context": "browser",
+      "outputFormat": "esmodule",
+      "isLibrary": false,
+      "distDir": "dist/client"
+    }
   }
 }

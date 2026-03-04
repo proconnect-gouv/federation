@@ -26,7 +26,6 @@ import { selectScopesGroup } from './select-scopes-group';
 import { validateNotificationCreation } from './modals/validate-notification-creation';
 
 import 'bootstrap/dist/css/bootstrap.css';
-import 'font-awesome/fonts/fontawesome-webfont.ttf';
 import 'font-awesome/css/font-awesome.css';
 import '../style/main.less';
 
