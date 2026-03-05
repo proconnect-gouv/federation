@@ -13,5 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('input', checkFormValidity);
     form.addEventListener('change', checkFormValidity);
     checkFormValidity();
+    setTimeout(checkFormValidity, 100);
   });
 });
