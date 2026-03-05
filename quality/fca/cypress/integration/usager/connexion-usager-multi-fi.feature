@@ -38,6 +38,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
       | Fournisseur d'identité 1 | par défaut | tous les scopes |
       | Fournisseur d'identité 2 | second FI  | tous les scopes |
 
+  @k8s
   Scénario: Fournisseur d'identité autre
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -70,7 +71,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
       | idpLabel                 |
       | Fournisseur d'identité 1 |
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: FI par défaut est accepté par tous les fqdnToIdp
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -79,7 +80,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Alors le fournisseur d'identité "Autre (via ProConnect Identité)" est affiché
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: FI par défaut n'est pas accepté par l'un des fqdnToIdp
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
@@ -88,7 +89,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Alors le fournisseur d'identité "Autre (via ProConnect Identité)" n'est pas affiché
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Le FI "Autre (via ProConnect Identité)" est toujours positionné en dernier
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect

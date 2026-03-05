@@ -1,4 +1,5 @@
 #language: fr
+@k8s
 Fonctionnalité: Connexion avec LocalStorage
 
   @ignoreInteg01
@@ -28,7 +29,7 @@ Fonctionnalité: Connexion avec LocalStorage
       | albus.dumbledore@example.com | moncomptepro   |
       | albus.dumbledore@fia1.fr     | par défaut     |
 
-  @ignoreDocker @k8s
+  @ignoreDocker
   Scénario: Case "se souvenir de moi" cochée puis décochée
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -50,7 +51,6 @@ Fonctionnalité: Connexion avec LocalStorage
     Et que je suis redirigé vers la page interaction
     Alors le champ email correspond à ""
 
-  @k8s
   Scénario: Case "se souvenir de moi" décochée
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -63,7 +63,6 @@ Fonctionnalité: Connexion avec LocalStorage
     Et que je suis redirigé vers la page interaction
     Alors le champ email correspond à ""
 
-  @k8s
   Scénario: Case "se souvenir de moi" puis login_hint
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect

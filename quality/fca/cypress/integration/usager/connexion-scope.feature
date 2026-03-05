@@ -1,6 +1,7 @@
 #language: fr
+@k8s
 Fonctionnalité: Connexion Usager - Scope
-  @k8s
+
   Plan du Scénario: Connexion d'un usager - scope <scopeType>
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "<scopeType>"
@@ -26,7 +27,7 @@ Fonctionnalité: Connexion Usager - Scope
       | email                                     |
       | chorusdt                                  |
 
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: Connexion d'un usager - scope anonyme
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations du scope "anonyme"
@@ -36,7 +37,7 @@ Fonctionnalité: Connexion Usager - Scope
     Quand je m'authentifie
     Alors le fournisseur de service "par défaut" a accès aux informations du scope "anonyme" en provenance du FI "par défaut"
 
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: Connexion d'un usager - attribut scope inconnu ignoré
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "email avec scope inconnu"
@@ -46,7 +47,7 @@ Fonctionnalité: Connexion Usager - Scope
     Quand je m'authentifie
     Alors le fournisseur de service "par défaut" a accès aux informations des scopes "email" en provenance du FI "par défaut"
 
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope vide
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "vide"
@@ -54,7 +55,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y000400"
 
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope openid manquant
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires sans openid"
@@ -63,7 +64,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et le titre de l'erreur fournisseur de service est "invalid_request"
     Et la description de l'erreur fournisseur de service est "openid%20scope%20must%20be%20requested%20when%20using%20the%20claims%20parameter"
 
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: Connexion d'un usager - erreur FS non habilité pour ce scope
     Etant donné que je navigue sur la page fournisseur de service "non habilité à demander le scope belonging_population"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires et belonging_population"
