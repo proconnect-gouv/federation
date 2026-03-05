@@ -9,6 +9,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et je suis redirigé vers la page login du fournisseur d'identité "<idpDescription>"
     Et je m'authentifie
     Alors je suis connecté au fournisseur de service
+
     @k8s
     Exemples:
       | email                  | idpDescription |
@@ -34,7 +35,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
       | albus.dumbledore@example.com        | moncomptepro   |
       | hades@developpement-durable.gouv.fr | cerbere        |
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Connexion d'un usager - fqdn non reconnu et non service public
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -46,7 +47,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500015"
 
-  @ignoreInteg01
+  @ignoreInteg01 @k8s
   Scénario: Connexion d'un usager - fqdn non reconnu et non service public mais FS acceptant le privé
     Etant donné que je navigue sur la page fournisseur de service "acceptant le privé"
     Et que je clique sur le bouton ProConnect

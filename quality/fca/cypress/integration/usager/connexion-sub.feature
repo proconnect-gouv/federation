@@ -1,6 +1,7 @@
 #language: fr
+@k8s
 Fonctionnalité: Connexion Usager - Sub
-  @k8s
+
   Scénario: retourne le même sub à deux FS différents quand j'utilise la même identité
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -21,7 +22,6 @@ Fonctionnalité: Connexion Usager - Sub
     Et que je suis connecté au fournisseur de service
     Alors le sub transmis au fournisseur de service est identique au sub mémorisé
 
-  @k8s
   Scénario: retourne le même sub pour une reconnexion sur un même FS avec la même identité
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -42,7 +42,6 @@ Fonctionnalité: Connexion Usager - Sub
     Et que je suis connecté au fournisseur de service
     Alors le sub transmis au fournisseur de service est identique au sub mémorisé
 
-  @k8s
   Scénario: vérifie qu'un account n'est pas retrouvé si un FI utilise un sub existant dans un autre FI
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -54,7 +53,7 @@ Fonctionnalité: Connexion Usager - Sub
     Et que je m'authentifie
     Alors le sub transmis au fournisseur de service n'est pas le suivant "d68cec59-ed65-48ab-bfbf-1ca65dd807f8"
 
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: retourne le sub déjà enregistré pour deux identités connues qui sont rattachées à un même sub dans ProConnect
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
