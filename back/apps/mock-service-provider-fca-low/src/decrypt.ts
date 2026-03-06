@@ -26,7 +26,7 @@ export const decrypt = (cipher: string, cipherPass: string): any => {
 
   try {
     decipher.final();
-  } catch (err) {
+  } catch {
     throw new Error('Authentication failed !');
   }
 

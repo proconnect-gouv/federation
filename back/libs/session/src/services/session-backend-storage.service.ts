@@ -38,7 +38,7 @@ export class SessionBackendStorageService {
     let serializedSession: string;
     try {
       serializedSession = await this.redis.client.get(sessionKey);
-    } catch (error) {
+    } catch {
       throw new SessionStorageException();
     }
 
@@ -119,7 +119,7 @@ export class SessionBackendStorageService {
     let dataString: string;
     try {
       dataString = JSON.stringify(data);
-    } catch (error) {
+    } catch {
       throw new SessionBadStringifyException();
     }
 
@@ -145,7 +145,7 @@ export class SessionBackendStorageService {
 
     try {
       return JSON.parse(dataString);
-    } catch (error) {
+    } catch {
       throw new SessionBadFormatException();
     }
   }

@@ -62,7 +62,7 @@ export class OidcProviderService {
       });
       this.provider.proxy = true;
       this.callback = this.provider.callback();
-    } catch (error) {
+    } catch {
       throw new OidcProviderInitialisationException();
     }
 

@@ -18,7 +18,7 @@ export function parseJsonProperty(
 
   try {
     return JSON.parse(input[propertyName]);
-  } catch (error) {
+  } catch {
     throw TypeError(
       `property "${propertyName}" is not JSON parsable, value was: ${input[propertyName]}`,
     );

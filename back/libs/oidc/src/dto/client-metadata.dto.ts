@@ -28,27 +28,22 @@ export class ClientMetadata {
 
   @IsNumber()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly default_max_age: number;
 
   @IsBoolean()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly require_auth_time: boolean;
 
   @IsString()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly request_object_signing_alg: string;
 
   @IsString()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly request_object_encryption_alg: string;
 
   @IsString()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly request_object_encryption_enc: string;
 
   @IsString()
@@ -56,7 +51,6 @@ export class ClientMetadata {
 
   @IsString()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly introspection_endpoint_auth_method?: ClientAuthMethod;
 
   @IsString()
@@ -64,22 +58,18 @@ export class ClientMetadata {
 
   @IsString()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly token_endpoint_auth_signing_alg: string;
 
   @IsString()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly introspection_endpoint_auth_signing_alg: string;
 
   @IsString()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly revocation_endpoint_auth_signing_alg: string;
 
   @IsBoolean()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly tls_client_certificate_bound_access_tokens: boolean;
 
   /**

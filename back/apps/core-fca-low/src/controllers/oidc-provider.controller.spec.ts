@@ -212,7 +212,7 @@ describe('OidcProviderController', () => {
 
     it('should terminate locally when IdP has no end-session URL', async () => {
       const { req, res } = buildReqRes('/end-session');
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       req.query = { from_idp: 'false' };
       const query = {} as LogoutParamsDto;
       oidcClientService.hasEndSessionUrl = jest.fn().mockResolvedValue(false);
@@ -240,7 +240,7 @@ describe('OidcProviderController', () => {
 
     it('should not log SP_REQUESTED_LOGOUT when called back from IdP and should terminate locally when user is not connected', async () => {
       const { req, res } = buildReqRes('/end-session');
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       req.query = { from_idp: 'true' };
       const query = {} as LogoutParamsDto;
 
