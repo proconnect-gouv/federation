@@ -4,6 +4,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 
 import { AccountFcaModule } from '@fc/account-fca';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
+import { CachedOrganizationModule } from '@fc/cached-organization';
 import { ConfigModule, ConfigService } from '@fc/config';
 import { CsrfModule, CsrfService } from '@fc/csrf';
 import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
@@ -79,6 +80,7 @@ export class AppModule {
         NotificationsModule,
         CsrfModule,
         AccountFcaModule,
+        CachedOrganizationModule,
       ],
       controllers: [
         InteractionController,
