@@ -115,7 +115,7 @@ export class OidcProviderRedisAdapter implements Adapter {
   private parsedPayload(payload) {
     try {
       return JSON.parse(payload);
-    } catch (error) {
+    } catch {
       throw new OidcProviderParseRedisResponseException();
     }
   }
@@ -125,7 +125,7 @@ export class OidcProviderRedisAdapter implements Adapter {
 
     try {
       dataFormated = JSON.stringify(data);
-    } catch (error) {
+    } catch {
       /**
        * Forced to throw using our helper, since `oidc-provider` catches
        * the exception.

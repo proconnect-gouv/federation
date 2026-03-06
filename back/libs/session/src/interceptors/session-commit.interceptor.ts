@@ -69,7 +69,7 @@ export class SessionCommitInterceptor implements NestInterceptor {
        */
       try {
         await this.session.commit();
-      } catch (error) {
+      } catch {
         this.logger.info('Could not commit session from interceptor');
       }
     }

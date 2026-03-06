@@ -3,8 +3,8 @@
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1024
  * @ticket #FC-1024
  */
-import { isURL } from 'class-validator';
 import { Request } from 'express';
+import { fail } from 'node:assert';
 import { CallbackParamsType, errors } from 'openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -28,20 +28,15 @@ import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 
-jest.mock('class-validator', () => ({
-  ...(jest.requireActual('class-validator') as any),
-  isURL: jest.fn(),
-}));
-
 describe('OidcClientUtilsService', () => {
   let service: OidcClientUtilsService;
 
-  const postLogoutRedirectUriMock = 'https://postLogoutRedirectUriMock';
+  const postLogoutRedirectUriMock = 'https://postLogoutRedirectUriMock.domain';
 
   const providerUidMock = 'providerUidMockValue';
   const stateMock = 'stateMockValue';
   const idTokenMock = 'idTokenMockValue';
-  const endSessionUrlWithParamsMock = `https://endSessionUrlMockMock?id_token_hint=${idTokenMock}&post_logout_redirect_uri=${postLogoutRedirectUriMock}&state=${stateMock}`;
+  const endSessionUrlWithParamsMock = `https://endSessionUrlMockMock.domain?id_token_hint=${idTokenMock}&post_logout_redirect_uri=${postLogoutRedirectUriMock}&state=${stateMock}`;
 
   const loggerServiceMock = getLoggerMock();
 
@@ -630,29 +625,16 @@ describe('OidcClientUtilsService', () => {
     });
 
     it('should returns true if endSessionUrl was found', async () => {
-      // Given
-      const isURLMock = jest.mocked(isURL);
-
       // When
       const result = await service.hasEndSessionUrl(providerUidMock);
 
       // Then
-      expect(isURLMock).toHaveBeenCalledTimes(1);
-      expect(isURLMock).toHaveBeenCalledWith(
-        'https://endSessionUrlMockMock?id_token_hint=idTokenMockValue&post_logout_redirect_uri=https://postLogoutRedirectUriMock&state=stateMockValue',
-        {
-          protocols: ['https'],
-          // Validator.js defined property
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          require_protocol: true,
-        },
-      );
-      expect(result).toBeTrue;
+
+      expect(result).toBeTrue();
     });
 
     it('should returns false if no endSessionUrl was found', async () => {
       // given
-      const isURLMock = jest.mocked(isURL);
       clientMock.endSessionUrl.mockReset().mockImplementationOnce(() => {
         throw new Error('Unknown Error');
       });
@@ -661,8 +643,7 @@ describe('OidcClientUtilsService', () => {
       const result = await service.hasEndSessionUrl(providerUidMock);
 
       // Then
-      expect(isURLMock).toHaveBeenCalledTimes(0);
-      expect(result).toBeFalse;
+      expect(result).toBeFalse();
     });
   });
 });

@@ -132,7 +132,7 @@ export class CryptographyService {
 
     try {
       decipher.final();
-    } catch (err) {
+    } catch {
       /**
        * @TODO #138 throw a specific exception
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/138

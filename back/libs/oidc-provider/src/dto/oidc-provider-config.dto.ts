@@ -367,19 +367,16 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsNumber()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_id_issued_at?: number;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_name?: string;
 
   @IsNumber()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_secret_expires_at?: number;
 
   @IsString()
@@ -389,7 +386,6 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_uri?: string;
 
   @IsArray()
@@ -401,13 +397,11 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsString({ each: true })
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly default_acr_values?: string[];
 
   @IsNumber()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly default_max_age?: number;
 
   @IsOptional()
@@ -416,7 +410,6 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly initiate_login_uri?: string;
 
   @IsString()
@@ -429,13 +422,11 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly logo_uri?: string;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly policy_uri?: string;
 
   @IsArray()
@@ -446,7 +437,6 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsBoolean()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly require_auth_time?: boolean;
 
   @IsString()
@@ -456,12 +446,10 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly sector_identifier_uri?: string;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly subject_type?: SubjectTypes;
 
   @IsOptional()
@@ -470,42 +458,35 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly tos_uri?: string;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly tls_client_auth_subject_dn?: string;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly tls_client_auth_san_dns?: string;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly tls_client_auth_san_uri?: string;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly tls_client_auth_san_ip?: string;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly tls_client_auth_san_email?: string;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly token_endpoint_auth_signing_alg?: SigningAlgorithm;
 
   @IsOptional()
@@ -526,35 +507,29 @@ class AllClientMetadataValidator implements AllClientMetadata {
   @IsBoolean()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly backchannel_logout_session_required?: boolean;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly backchannel_logout_uri?: string;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly request_object_signing_alg?: SigningAlgorithmWithNone;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly request_object_encryption_alg?: EncryptionAlgValues;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly request_object_encryption_enc?: EncryptionEncValues;
 
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly request_uris?: string[];
 
   @IsOptional()
@@ -571,42 +546,35 @@ class AllClientMetadataValidator implements AllClientMetadata {
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly authorization_signed_response_alg?: SigningAlgorithm;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly authorization_encrypted_response_alg?: EncryptionAlgValues;
 
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly authorization_encrypted_response_enc?: EncryptionEncValues;
 
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly web_message_uris?: string[];
 
   @IsBoolean()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly tls_client_certificate_bound_access_tokens?: boolean;
 
   @IsBoolean()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly require_signed_request_object?: boolean;
 
   @IsBoolean()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly require_pushed_authorization_requests?: boolean;
 
   [key: string]: unknown;

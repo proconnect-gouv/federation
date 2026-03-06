@@ -102,7 +102,7 @@ export class EmailValidatorService {
       await resolveMx(emailDomain);
 
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
