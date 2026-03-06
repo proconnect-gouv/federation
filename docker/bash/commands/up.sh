@@ -33,8 +33,6 @@ _up() {
       ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn typeorm schema:drop
       ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn migrations:run
       ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn fixtures:load
-
-      (cd ${FEDERATION_DIR}/admin/cypress/support/ && docker exec pc-pg-"admin"-1 bash -c "$(cat create-db-backup.sh)")
       ;;
     *)
       ;;
