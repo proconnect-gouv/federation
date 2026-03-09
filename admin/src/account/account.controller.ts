@@ -85,7 +85,7 @@ export class AccountController {
   @Roles(UserRole.NEWUSER)
   @Render('account/enrollment')
   public async firstLogin(@Req() req, @Res() res) {
-    const { user, issuer, secret, QRCode, step, algorithm } =
+    const { user, issuer, secret, QRCode, period, algorithm } =
       await this.totpService.generateTotpQRCode(req.user);
     const csrfToken = req.csrfToken();
 
@@ -95,7 +95,7 @@ export class AccountController {
       issuer,
       secret,
       QRCode,
-      step,
+      period,
       algorithm,
     };
   }
@@ -178,7 +178,7 @@ export class AccountController {
   @Render('account/userAccount')
   async showUserAccount(@Req() req) {
     const csrfToken = req.csrfToken();
-    const { user, issuer, secret, QRCode, step, algorithm } =
+    const { user, issuer, secret, QRCode, period, algorithm } =
       await this.totpService.generateTotpQRCode(req.user);
     return {
       csrfToken,
@@ -186,7 +186,7 @@ export class AccountController {
       issuer,
       secret,
       QRCode,
-      step,
+      period,
       algorithm,
     };
   }

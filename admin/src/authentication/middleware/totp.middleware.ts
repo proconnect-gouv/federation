@@ -1,4 +1,4 @@
-import { NestMiddleware, Inject } from '@nestjs/common';
+import { NestMiddleware, Injectable } from '@nestjs/common';
 import { AuthenticationDto } from '../dto/authentication.dto';
 import { AuthenticationService } from '../authentication.service';
 import { UserService } from '../../user/user.service';
@@ -7,31 +7,32 @@ import {
   AuthenticationActions,
   AuthenticationStates,
 } from '../authentication-actions.enum';
+import { TotpService } from '../totp/totp.service';
 
+@Injectable()
 export class TotpMiddleware implements NestMiddleware {
   public constructor(
-    @Inject('otplib') private readonly otplibService,
     private readonly authenticationService: AuthenticationService,
     private readonly userService: UserService,
     private readonly logger: LoggerService,
+    private readonly totpService: TotpService,
   ) {}
 
   async use(req, res, next: () => void): Promise<void> {
     if (req.user) {
-      this.totpInForm(req, next);
+      await this.totpInForm(req, next);
     } else {
       await this.totpInLogging(req, res, next);
     }
   }
 
-  private totpInForm(req, next) {
-    if (
-      !this.otplibService.authenticator.check(req.body._totp, req.user.secret)
-    ) {
-      req.totp = 'invalid';
-    } else {
-      req.totp = 'valid';
-    }
+  private async totpInForm(req, next) {
+    const isTotpValid = await this.totpService.check(
+      req.body._totp,
+      req.user.secret,
+    );
+    req.totp = isTotpValid ? 'valid' : 'invalid';
+
     return next();
   }
 
@@ -51,7 +52,8 @@ export class TotpMiddleware implements NestMiddleware {
       return res.redirect('/login');
     }
 
-    if (!this.otplibService.authenticator.check(_totp, req.userSecret)) {
+    const isTotpValid = await this.totpService.check(_totp, req.userSecret);
+    if (!isTotpValid) {
       const message = await this.handleUserTotpFailure(username);
 
       this.logger.businessEvent({

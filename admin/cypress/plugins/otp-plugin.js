@@ -1,8 +1,6 @@
-const { authenticator } = require('otplib');
+import { generate } from 'otplib';
 
-function getTotp(args) {
+export function getTotp(args) {
   const { secret } = args;
-  return authenticator.generate(secret);
+  return generate({ secret });
 }
-
-module.exports = { getTotp };

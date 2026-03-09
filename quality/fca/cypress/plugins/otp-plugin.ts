@@ -1,4 +1,4 @@
-import { authenticator } from 'otplib';
+import { generate } from 'otplib';
 
 interface TotpArgs {
   totpSecret: string;
@@ -6,5 +6,5 @@ interface TotpArgs {
 
 export function getTotp(args: TotpArgs): Promise<string> {
   const { totpSecret } = args;
-  return new Promise((resolve) => resolve(authenticator.generate(totpSecret)));
+  return new Promise((resolve) => resolve(generate({ secret: totpSecret })));
 }

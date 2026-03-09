@@ -120,7 +120,7 @@ describe('AccountController', () => {
       issuer: 'fce',
       secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD',
       QRCode: 'base64ImageQRCode',
-      step: 30,
+      period: 30,
       algorithm: 'sha1',
     });
     totpService.generateTotpSecret.mockReturnValueOnce(
@@ -335,14 +335,14 @@ describe('AccountController', () => {
   describe('get enrollment', () => {
     it('should generate qr code and return values to enter totp code without scanning qrcode', async () => {
       // action
-      const { user, issuer, secret, QRCode, step, algorithm, csrfToken } =
+      const { user, issuer, secret, QRCode, period, algorithm, csrfToken } =
         await accountController.firstLogin(req, res);
       // assertion
       expect(user).toEqual('toto');
       expect(issuer).toEqual('fce');
       expect(secret).toEqual('KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD');
       expect(QRCode).toEqual('base64ImageQRCode');
-      expect(step).toEqual(30);
+      expect(period).toEqual(30);
       expect(algorithm).toEqual('sha1');
       expect(csrfToken).toEqual('mygreatcsrftoken');
     });
@@ -560,7 +560,7 @@ describe('AccountController', () => {
     describe('get account/me', () => {
       it('showUserAccount', async () => {
         // action
-        const { user, issuer, secret, QRCode, step, algorithm, csrfToken } =
+        const { user, issuer, secret, QRCode, period, algorithm, csrfToken } =
           await accountController.showUserAccount(req);
         // assertion
         expect(totpService.generateTotpQRCode).toHaveBeenCalledTimes(1);
@@ -569,7 +569,7 @@ describe('AccountController', () => {
         expect(issuer).toEqual('fce');
         expect(secret).toEqual('KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD');
         expect(QRCode).toEqual('base64ImageQRCode');
-        expect(step).toEqual(30);
+        expect(period).toEqual(30);
         expect(algorithm).toEqual('sha1');
         expect(csrfToken).toEqual('mygreatcsrftoken');
       });
