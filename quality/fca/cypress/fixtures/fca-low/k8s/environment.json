@@ -1,5 +1,5 @@
 {
   "name": "k8s",
-  "adminRootUrl": "https://exploitation-dev-nubo12.proconnect.bacasable.opicloud.fr",
+  "adminRootUrl": "https://exploitation-local.proconnect.127.0.0.1.nip.io",
   "federationRootUrl": "https://fca-local.proconnect.127.0.0.1.nip.io"
 }

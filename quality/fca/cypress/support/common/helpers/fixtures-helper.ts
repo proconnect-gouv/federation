@@ -118,3 +118,7 @@ export const getApiRequests = (requestKey: string): Record<string, unknown> => {
 export const getEnv = (): Environment => {
   return cloneDeep(environment);
 };
+
+export const getFcaAuthorizeUrl = (): string => {
+  return (apiCommon as { authorize: { url: string } }).authorize.url;
+};

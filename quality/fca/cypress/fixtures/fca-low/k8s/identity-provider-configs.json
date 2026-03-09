@@ -11,5 +11,18 @@
     "id_token_signed_response_alg": "ES256",
     "emails": "test1@yopmail.com\ntest2@yopmail.com",
     "siret": "81801912700021"
+  },
+    "bdd-idp-moncomptepro": {
+    "name": "bdd-idp-moncomptepro",
+    "title": "FI de test 2",
+    "issuer": "http://pci-local.proconnect.127.0.0.1.nip.io",
+    "discoveryUrl": "http://pci-local.proconnect.127.0.0.1.nip.io/.well-known/openid-configuration",
+    "discovery": "true",
+    "clientId": "copyOfMyclientidforMonComptePro-low",
+    "client_secret": "7ae4fef2aab63fb78d777fe657b7536f",
+    "userinfo_signed_response_alg": "ES256",
+    "id_token_signed_response_alg": "ES256",
+    "emails": "test1@yopmail.com\ntest2@yopmail.com",
+    "siret": "81801912700021"
   }
 }
