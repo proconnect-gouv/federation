@@ -11,10 +11,14 @@ export class OidcClientTokenFailedException extends OidcClientBaseException {
   public http_status_code = HttpStatus.BAD_GATEWAY;
 
   constructor(
-    params?: { contactEmail: string; isDefaultIdp: boolean },
+    params?: {
+      idpName: string;
+      contactEmail: string;
+      isDefaultIdp: boolean;
+    },
     error?: Error | string,
   ) {
-    super(params?.contactEmail, error);
+    super(params?.idpName, params?.contactEmail, error);
     if (params?.isDefaultIdp) {
       this.displayContact = false;
       this.contactMessage = undefined;

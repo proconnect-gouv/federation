@@ -70,13 +70,15 @@ export class OidcClientUtilsService {
     stateFromSession: string,
   ): Promise<void> {
     if (!callbackParams.state) {
-      const supportEmail = await this.issuer.getSupportEmail(idpId);
-      throw new OidcClientMissingStateException(supportEmail);
+      const { supportEmail, idpName } =
+        await this.issuer.getIdpDataForError(idpId);
+      throw new OidcClientMissingStateException(supportEmail, idpName);
     }
 
     if (callbackParams.state !== stateFromSession) {
-      const supportEmail = await this.issuer.getSupportEmail(idpId);
-      throw new OidcClientInvalidStateException(supportEmail);
+      const { supportEmail, idpName } =
+        await this.issuer.getIdpDataForError(idpId);
+      throw new OidcClientInvalidStateException(supportEmail, idpName);
     }
   }
 
@@ -128,10 +130,11 @@ export class OidcClientUtilsService {
         this.buildExtraParameters(extraParams),
       );
     } catch (error) {
-      const contactEmail = await this.issuer.getSupportEmail(idpId);
+      const { supportEmail, idpName } =
+        await this.issuer.getIdpDataForError(idpId);
       const isDefaultIdp = this.issuer.isDefaultIdp(idpId);
       throw new OidcClientTokenFailedException(
-        { contactEmail, isDefaultIdp },
+        { contactEmail: supportEmail, isDefaultIdp, idpName },
         error,
       );
     }
@@ -151,8 +154,9 @@ export class OidcClientUtilsService {
     try {
       return await client.userinfo<T>(accessToken);
     } catch (error) {
-      const supportEmail = await this.issuer.getSupportEmail(idpId);
-      throw new OidcClientUserinfoFailedException(supportEmail, error);
+      const { supportEmail, idpName } =
+        await this.issuer.getIdpDataForError(idpId);
+      throw new OidcClientUserinfoFailedException(idpName, supportEmail, error);
     }
   }
 
@@ -199,8 +203,13 @@ export class OidcClientUtilsService {
         state: stateFromSession,
       });
     } catch (error) {
-      const supportEmail = await this.issuer.getSupportEmail(idpId);
-      throw new OidcClientGetEndSessionUrlException(supportEmail, error);
+      const { supportEmail, idpName } =
+        await this.issuer.getIdpDataForError(idpId);
+      throw new OidcClientGetEndSessionUrlException(
+        idpName,
+        supportEmail,
+        error,
+      );
     }
 
     /**
