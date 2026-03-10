@@ -13,7 +13,7 @@
  *
  * Usage:
  *
- * > ts-node parse-business-log.ts '/path/to/file.log' '{"JSON": "string", "test": "object"}'
+ * > tsx parse-business-log.ts '/path/to/file.log' '{"JSON": "string", "test": "object"}'
  */
 
 import { promises as fs } from "fs";
