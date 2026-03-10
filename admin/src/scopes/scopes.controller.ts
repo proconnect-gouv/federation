@@ -16,7 +16,7 @@ import { Roles } from '../authentication/decorator/roles.decorator';
 import { UserRole } from '../user/roles.enum';
 import { FormErrorsInterceptor } from '../form/interceptor/form-errors.interceptor';
 
-import { IScopes } from './interface';
+import { type IScopes } from './interface';
 import { ScopesService } from './scopes.service';
 
 const ACTION_CREATE = 'creation';

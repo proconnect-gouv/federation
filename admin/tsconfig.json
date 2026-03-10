@@ -13,7 +13,8 @@
     "preserveSymlinks": true,
     "allowJs": true,
     "esModuleInterop": true,
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "isolatedModules": true
   },
   "include": ["src/**/*"]
 }
