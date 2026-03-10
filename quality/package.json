@@ -17,18 +17,17 @@
     "node": ">=22",
     "npm": "DO-NOT-USE-NPM"
   },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
+  },
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "24.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
-    "@eslint-community/eslint-plugin-eslint-comments": "^4.6.0",
-    "@eslint/compat": "^2.0.2",
-    "@eslint/eslintrc": "^3.3.4",
-    "@eslint/js": "^10.0.1",
     "@simonsmith/cypress-image-snapshot": "^10.0.3",
     "@types/ejs": "^3.1.5",
     "@types/node": "^24.2.1",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.1",
     "axe-core": "^4.11.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
@@ -37,14 +36,6 @@
     "cypress-on-fix": "^1.1.0",
     "cypress-plugin-api": "^2.11.2",
     "ejs": "^3.1.10",
-    "eslint": "^10.0.2",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-cypress": "^6.1.0",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-sort-destructure-keys": "^3.0.0",
-    "eslint-plugin-sort-keys-fix": "^1.1.2",
     "globals": "^17.4.0",
     "jose": "^6.1.3",
     "lodash": "^4.17.23",
@@ -56,8 +47,11 @@
     "typescript": "5.9.3"
   },
   "scripts": {
-    "prettier": "prettier -c \"{.,fca}/{.,cypress,scripts}/**/*.ts\"",
-    "lint": "eslint 'scripts/**/*.ts'"
+    "format": "prettier --write .",
+    "lint": "tsc --noEmit && prettier --check ."
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "devDependencies": {
+    "prettier-plugin-organize-imports": "^4.3.0"
+  }
 }

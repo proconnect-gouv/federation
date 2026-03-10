@@ -1,15 +1,15 @@
-import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
 
 import {
   getIdentityProviderByDescription,
   getServiceProviderByDescription,
-} from '../../common/helpers';
+} from "../../common/helpers";
 
 Then(
   /je suis redirigé vers la page login du fournisseur d'identité "([^"]*)"/,
   function (description: string) {
     const { url } = getIdentityProviderByDescription(description);
-    cy.url().should('include', url);
+    cy.url().should("include", url);
   },
 );
 
@@ -114,6 +114,6 @@ Then(
   },
 );
 
-Then('le champ identifiant correspond à {string}', function (email: string) {
-  cy.get('input[name="email"]').should('have.value', email);
+Then("le champ identifiant correspond à {string}", function (email: string) {
+  cy.get('input[name="email"]').should("have.value", email);
 });

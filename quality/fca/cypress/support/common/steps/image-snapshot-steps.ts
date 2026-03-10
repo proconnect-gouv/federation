@@ -1,9 +1,9 @@
-import { Then } from '@badeball/cypress-cucumber-preprocessor';
+import { Then } from "@badeball/cypress-cucumber-preprocessor";
 
 const prepareScreenshot = () => {
   cy.document().then((doc) => {
-    const style = doc.createElement('style');
-    style.innerHTML = 'body { caret-color: transparent !important; }';
+    const style = doc.createElement("style");
+    style.innerHTML = "body { caret-color: transparent !important; }";
     doc.head.appendChild(style);
   });
 };
@@ -12,7 +12,7 @@ const createScenarioHash = (
   scenarioName: string,
 ): Cypress.Chainable<string> => {
   const scenarioTrimmed = scenarioName.trim().toLowerCase();
-  return cy.task<string>('createHexaHash', { text: scenarioTrimmed });
+  return cy.task<string>("createHexaHash", { text: scenarioTrimmed });
 };
 
 const getSnapshotName = (
@@ -30,7 +30,6 @@ Then(
   function (name: string, device: string) {
     const { title: scenarioName } = this.test;
     // Wait for the page to be still before taking a screenshot
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(750);
     prepareScreenshot();
     getSnapshotName(scenarioName, name, device).then((snapshotName) =>
@@ -44,17 +43,16 @@ Then(
   function (name: string, hiddenSelector: string, device: string) {
     const { title: scenarioName } = this.test;
     // Wait for the page to be still before taking a screenshot
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(750);
 
     prepareScreenshot();
     // @todo Replace with blackout config when this Cypress defect is fixed
     // @link https://github.com/cypress-io/cypress/issues/5842
-    const blackoutStyle = 'color: black; background-color: black;';
-    cy.get(hiddenSelector).invoke('attr', 'style', blackoutStyle);
+    const blackoutStyle = "color: black; background-color: black;";
+    cy.get(hiddenSelector).invoke("attr", "style", blackoutStyle);
     getSnapshotName(scenarioName, name, device).then((snapshotName) =>
       cy.matchImageSnapshot(snapshotName),
     );
-    cy.get(hiddenSelector).invoke('attr', 'style', '');
+    cy.get(hiddenSelector).invoke("attr", "style", "");
   },
 );

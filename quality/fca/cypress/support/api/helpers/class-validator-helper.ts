@@ -1,5 +1,5 @@
-import { ClassTransformOptions, plainToInstance } from 'class-transformer';
-import { validate, ValidationError, ValidatorOptions } from 'class-validator';
+import { ClassTransformOptions, plainToInstance } from "class-transformer";
+import { validate, ValidationError, ValidatorOptions } from "class-validator";
 
 declare type ClassConstructor<T> = {
   // Type any used in class-validator.validate
