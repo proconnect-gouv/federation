@@ -12,7 +12,6 @@ import { ConsoleModule } from 'nestjs-console';
 import { memoryStorage } from 'multer';
 import { resolve } from 'path';
 import { ConfigModule, ConfigService } from 'nestjs-config';
-import * as otplib from 'otplib';
 
 import { AppController } from './app.controller';
 import { IdentityProviderModule } from './identity-provider/identity-provider.module';
@@ -34,11 +33,7 @@ import { CliModule } from './cli/cli.module';
 import { CsurfMiddleware } from '@nest-middlewares/csurf';
 import { TotpMiddleware } from './authentication/middleware/totp.middleware';
 import { LoggerModule } from './logger/logger.module';
-
-const otplibProvider = {
-  provide: 'otplib',
-  useValue: otplib,
-};
+import { TotpService } from './authentication/totp/totp.service';
 
 @Module({
   imports: [
@@ -64,7 +59,7 @@ const otplibProvider = {
       storage: memoryStorage(),
     }),
   ],
-  providers: [LocalsInterceptor, otplibProvider],
+  providers: [LocalsInterceptor, TotpService],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {

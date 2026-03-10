@@ -7,16 +7,10 @@ import {
 import { LoggerService } from '../../logger/logger.service';
 import { TotpMiddleware } from './totp.middleware';
 import { UserService } from '../../user/user.service';
+import { TotpService } from '../totp/totp.service';
 
 describe('TotpMiddleware', () => {
   let totpMiddleware: TotpMiddleware;
-
-  const optlibServiceMock = {
-    authenticator: {
-      options: {},
-      check: jest.fn(),
-    },
-  };
 
   const authenticationServiceMock = {
     isMaxAuthenticationAttemptLimitReached: jest.fn(),
@@ -30,6 +24,9 @@ describe('TotpMiddleware', () => {
 
   const loggerMock = {
     businessEvent: jest.fn(),
+  };
+  const totpServiceMock = {
+    check: jest.fn(),
   };
 
   const req: any = {
@@ -56,10 +53,10 @@ describe('TotpMiddleware', () => {
     const module = await Test.createTestingModule({
       providers: [
         TotpMiddleware,
-        { provide: 'otplib', useValue: optlibServiceMock },
         AuthenticationService,
         LoggerService,
         UserService,
+        TotpService,
       ],
     })
       .overrideProvider(AuthenticationService)
@@ -68,6 +65,8 @@ describe('TotpMiddleware', () => {
       .useValue(loggerMock)
       .overrideProvider(UserService)
       .useValue(userServiceMock)
+      .overrideProvider(TotpService)
+      .useValue(totpServiceMock)
       .compile();
 
     totpMiddleware = module.get<TotpMiddleware>(TotpMiddleware);
@@ -113,63 +112,63 @@ describe('TotpMiddleware', () => {
   });
 
   describe('totpInForm', () => {
-    it('should call "authenticator.check" with "req.body._totp" and "req.user.secret"', () => {
+    it('should call "authenticator.check" with "req.body._totp" and "req.user.secret"', async () => {
       // action
       // tslint:disable-next-line no-string-literal
-      totpMiddleware['totpInForm'](req, next);
+      await totpMiddleware['totpInForm'](req, next);
 
       // expect
-      expect(optlibServiceMock.authenticator.check).toHaveBeenCalledTimes(1);
-      expect(optlibServiceMock.authenticator.check).toHaveBeenCalledWith(
+      expect(totpServiceMock.check).toHaveBeenCalledTimes(1);
+      expect(totpServiceMock.check).toHaveBeenCalledWith(
         req.body._totp,
         req.user.secret,
       );
     });
 
-    it('should set "req._totp" to "valid" if "otplibService.authenticator.check" returns true', () => {
+    it('should set "req._totp" to "valid" if "totpService.check" returns true', async () => {
       // setup
-      optlibServiceMock.authenticator.check.mockReturnValueOnce(true);
+      totpServiceMock.check.mockReturnValueOnce(true);
 
       // action
       // tslint:disable-next-line: no-string-literal
-      totpMiddleware['totpInForm'](req, next);
+      await totpMiddleware['totpInForm'](req, next);
 
       // expect
       expect(req.totp).toStrictEqual('valid');
     });
 
-    it('should set "req._totp" to "invalid" if "otplibService.authenticator.check" returns false', () => {
+    it('should set "req._totp" to "invalid" if "totpService.check" returns false', async () => {
       // setup
-      optlibServiceMock.authenticator.check.mockReturnValueOnce(false);
+      totpServiceMock.check.mockReturnValueOnce(false);
 
       // action
       // tslint:disable-next-line: no-string-literal
-      totpMiddleware['totpInForm'](req, next);
+      await totpMiddleware['totpInForm'](req, next);
 
       // expect
       expect(req.totp).toStrictEqual('invalid');
     });
 
-    it('should call "next" if "otplibService.authenticator.check" returns true', () => {
+    it('should call "next" if "totpService.check" returns true', async () => {
       // setup
-      optlibServiceMock.authenticator.check.mockReturnValueOnce(true);
+      totpServiceMock.check.mockReturnValueOnce(true);
 
       // action
       // tslint:disable-next-line no-string-literal
-      totpMiddleware['totpInForm'](req, next);
+      await totpMiddleware['totpInForm'](req, next);
 
       // expect
       expect(next).toHaveBeenCalledTimes(1);
       expect(next).toHaveBeenCalledWith();
     });
 
-    it('should call "next" if "otplibService.authenticator.check" returns false', () => {
+    it('should call "next" if "totpService.check" returns false', async () => {
       // setup
-      optlibServiceMock.authenticator.check.mockReturnValueOnce(false);
+      totpServiceMock.check.mockReturnValueOnce(false);
 
       // action
       // tslint:disable-next-line: no-string-literal
-      totpMiddleware['totpInForm'](req, next);
+      await totpMiddleware['totpInForm'](req, next);
 
       // expect
       expect(next).toHaveBeenCalledTimes(1);
@@ -225,7 +224,7 @@ describe('TotpMiddleware', () => {
       expect(res.redirect).toHaveBeenCalledWith('/login');
     });
 
-    it('should call "authenticator.check" with the given "totp" in body and the totp secret found in the database', async () => {
+    it('should call "totpService.check" with the given "totp" in body and the totp secret found in the database', async () => {
       // Setup
       authenticationServiceMock.getUserSecret.mockResolvedValueOnce('toto');
 
@@ -234,8 +233,8 @@ describe('TotpMiddleware', () => {
       await totpMiddleware['totpInLogging'](req, res, next);
 
       // Assertion
-      expect(optlibServiceMock.authenticator.check).toHaveBeenCalledTimes(1);
-      expect(optlibServiceMock.authenticator.check).toHaveBeenCalledWith(
+      expect(totpServiceMock.check).toHaveBeenCalledTimes(1);
+      expect(totpServiceMock.check).toHaveBeenCalledWith(
         req.body._totp,
         req.userSecret,
       );
@@ -244,7 +243,7 @@ describe('TotpMiddleware', () => {
     it('should call "handleUserTotpFailure" to retrieve the error message if the given "totp" in body is invalid', async () => {
       // Setup
       authenticationServiceMock.getUserSecret.mockResolvedValueOnce('toto');
-      optlibServiceMock.authenticator.check.mockReturnValueOnce(false);
+      totpServiceMock.check.mockReturnValueOnce(false);
       // tslint:disable-next-line no-string-literal
       totpMiddleware['handleUserTotpFailure'] = jest.fn();
 
@@ -264,7 +263,7 @@ describe('TotpMiddleware', () => {
     it('should log a "DENIED_TOTP" businessEvent if the given "totp" in body is invalid', async () => {
       // Setup
       authenticationServiceMock.getUserSecret.mockResolvedValueOnce('toto');
-      optlibServiceMock.authenticator.check.mockReturnValueOnce(false);
+      totpServiceMock.check.mockReturnValueOnce(false);
 
       // Action
       // tslint:disable-next-line no-string-literal
@@ -282,7 +281,7 @@ describe('TotpMiddleware', () => {
     it('should redirect the user to /login with an error if the given "totp" in body is invalid', async () => {
       // Setup
       authenticationServiceMock.getUserSecret.mockResolvedValueOnce('toto');
-      optlibServiceMock.authenticator.check.mockReturnValueOnce(false);
+      totpServiceMock.check.mockReturnValueOnce(false);
       // tslint:disable-next-line no-string-literal
       totpMiddleware['handleUserTotpFailure'] = jest
         .fn()
@@ -304,7 +303,7 @@ describe('TotpMiddleware', () => {
     it('should call next if the given "totp" and "username" in body are valid', async () => {
       // Setup
       authenticationServiceMock.getUserSecret.mockResolvedValueOnce('toto');
-      optlibServiceMock.authenticator.check.mockReturnValueOnce(true);
+      totpServiceMock.check.mockReturnValueOnce(true);
 
       // Action
       // tslint:disable-next-line no-string-literal
