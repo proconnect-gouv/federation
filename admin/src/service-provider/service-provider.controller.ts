@@ -28,7 +28,7 @@ import { ServiceProviderService } from './service-provider.service';
 import { ServiceProviderDto } from './dto/service-provider-input.dto';
 import { DeleteServiceProviderDto } from './dto/delete-service-provider.dto';
 import { GenerateNewClientSecretDTO } from './dto/generate-new-client-secret.dto';
-import { PaginationSortDirectionType } from '../pagination';
+import { type PaginationSortDirectionType } from '../pagination';
 
 @Controller('service-provider')
 export class ServiceProviderController {

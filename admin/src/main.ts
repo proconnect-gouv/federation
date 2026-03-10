@@ -5,6 +5,7 @@ import {
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
+import ejs from 'ejs';
 import { AppModule } from './app.module';
 import { join } from 'path';
 import session from 'express-session';
@@ -43,7 +44,7 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
 
   // View engine initialization
-  app.engine('ejs', require('ejs').renderFile);
+  app.engine('ejs', ejs.renderFile);
   app.set('views', [join(__dirname, '..', 'views')]);
 
   app.setViewEngine('ejs');
