@@ -5,10 +5,10 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "lib": ["dom"],
-    "module": "nodenext",
-    "target": "es2023",
-    "types": ["node"]
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "esnext",
+    "types": ["cypress", "cypress-axe", "node"]
   },
-  "include": ["**/*.ts", "*.js"],
-  "exclude": ["fca"]
+  "include": ["**/*.ts", "*.js"]
 }

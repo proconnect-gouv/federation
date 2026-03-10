@@ -4,8 +4,8 @@ import { promisify } from "util";
 const asyncExec = promisify(exec);
 
 // Path to script
-const EXEC_TOOL_PATH = "../scripts/parse-business-log.ts";
-const GET_BUSINESS_LOG_SCRIPT_PATH = "../scripts/get-business-logs.ts";
+const EXEC_TOOL_PATH = "./scripts/parse-business-log.ts";
+const GET_BUSINESS_LOG_SCRIPT_PATH = "./scripts/get-business-logs.ts";
 
 interface clearBusinessLogArgs {
   logFilePath: string;

@@ -1,19 +1,5 @@
 import { Result } from "axe-core";
 
-/**
- * Override function for injectAxe
- * with node_modules folder in /quality
- * @link https://github.com/component-driven/cypress-axe/blob/master/src/index.ts
- */
-export const injectAxeFromQualityModules = (): void => {
-  const fileName = "../node_modules/axe-core/axe.min.js";
-  cy.readFile<string>(fileName).then((source) =>
-    cy.window({ log: false }).then((window) => {
-      window.eval(source);
-    }),
-  );
-};
-
 const severityIndicators = {
   critical: "🔴",
   minor: "⚪️",

@@ -22,7 +22,7 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
     FC_ACCESS_USER: "",
     FC_ACCESS_PASS: "",
     // Other Configuration
-    LOG_FILE_PATH: "../../docker/volumes/log/core-fca-low.log",
+    LOG_FILE_PATH: "../docker/volumes/log/core-fca-low.log",
     // Keys used by the dp mock on the local stack
     EC_ENC_PRIV_KEY: {
       crv: "P-256",

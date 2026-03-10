@@ -1,21 +1,25 @@
 {
   "name": "fc-system-testing",
   "version": "1.0.0",
-  "description": "Cypress/Cucumber Framework Dependencies",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "fca"
-    ]
-  },
+  "description": "Cypress/Cucumber Framework Dependencies",
   "keywords": [
     "Cypress",
     "QA",
     "Cucumber"
   ],
-  "engines": {
-    "node": ">=22",
-    "npm": "DO-NOT-USE-NPM"
+  "scripts": {
+    "clean": "rm -rf cypress/fixtures.out && rm -rf cypress/reports && rm -rf cypress/screenshots && rm -rf cypress/videos",
+    "format": "prettier --write .",
+    "lint": "tsc --noEmit && prettier --check .",
+    "report": "ts-node ./scripts/multiple-cucumber-html-reporter",
+    "start:low": "cypress open --e2e --config-file cypress-fca-low.config.ts",
+    "test:low": "yarn clean && yarn test:low:ci",
+    "test:low:base": "cypress run --config-file cypress-fca-low.config.ts",
+    "test:low:chrome-desktop": "yarn test:low:base --browser chrome --headless",
+    "test:low:chrome-mobile": "yarn test:low:base --browser chrome --headless --config viewportWidth=320,viewportHeight=568",
+    "test:low:ci": "yarn test:low:chrome-desktop --env TAGS='not @ignore'",
+    "test:low:snapshot": "cypress run --headless --config-file cypress-fca-low-visual.config.ts"
   },
   "prettier": {
     "plugins": [
@@ -46,12 +50,12 @@
     "ts-node": "^10.9.2",
     "typescript": "5.9.3"
   },
-  "scripts": {
-    "format": "prettier --write .",
-    "lint": "tsc --noEmit && prettier --check ."
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "devDependencies": {
     "prettier-plugin-organize-imports": "^4.3.0"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "engines": {
+    "node": ">=22",
+    "npm": "DO-NOT-USE-NPM"
   }
 }
