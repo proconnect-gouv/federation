@@ -1,9 +1,9 @@
 import { resolve } from 'path';
-import fs from 'fs';
 import { parseBoolean } from '../utils/transforms/parse-boolean';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export = {
-  type: process.env.FC_DB_TYPE || 'mongodb',
+const mongoDatabaseConfig: TypeOrmModuleOptions = {
+  type: 'mongodb',
   url:
     'mongodb://' +
     `${encodeURIComponent(process.env.FC_DB_USER || 'fcApp')}:` +
@@ -19,7 +19,7 @@ export = {
   tls: parseBoolean(process.env.FC_DB_TLS),
   tlsAllowInvalidCertificates: parseBoolean(process.env.FC_DB_TLS),
   tlsCAFile: process.env.FC_DB_TLS_CA_FILE,
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-  dbName: process.env.FC_DB_DATABASE,
+  name: process.env.FC_DB_DATABASE,
 };
+
+export default mongoDatabaseConfig;
