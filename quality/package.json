@@ -18,7 +18,7 @@
     "npm": "DO-NOT-USE-NPM"
   },
   "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "24.0.0",
+    "@badeball/cypress-cucumber-preprocessor": "24.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.6.0",
     "@eslint/compat": "^2.0.2",
