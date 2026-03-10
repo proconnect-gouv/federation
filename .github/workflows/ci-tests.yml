@@ -56,7 +56,7 @@ jobs:
           node-version-file: ./back/package.json
 
       - name: Install quality dependencies
-        run: yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --frozen-lockfile --no-progress
 
       - name: Check code style
         run: yarn lint
@@ -87,10 +87,17 @@ jobs:
     runs-on: ubuntu-24.04
     defaults:
       run:
-        working-directory: ./quality/fca
+        working-directory: ./quality
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: yarn
+          cache-dependency-path: ./quality/yarn.lock
+          node-version-file: ./quality/package.json
 
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v3
@@ -117,7 +124,7 @@ jobs:
           ./docker-stack up small
 
       - name: Install quality dependencies
-        run: yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --frozen-lockfile --no-progress
 
       - name: Test snapshots
         run: |
@@ -132,8 +139,8 @@ jobs:
         if: failure()
         working-directory: ./docker
         run: |
-          ./docker-stack compose logs --no-color > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
-          docker ps -a > ../quality/fca/artifacts-logs/docker-ps.log 2>&1
+          ./docker-stack compose logs --no-color > ../quality/artifacts-logs/docker-compose.log 2>&1
+          docker ps -a > ../quality/artifacts-logs/docker-ps.log 2>&1
 
       - name: Upload Cypress Artifacts
         if: failure()
@@ -141,20 +148,27 @@ jobs:
         with:
           name: cypress-snapshots-artifacts
           path: |
-            quality/fca/cypress/screenshots
-            quality/fca/cypress/snapshots
-            quality/fca/cypress/logs
-            quality/fca/cypress/reports/cucumber/html-report
-            quality/fca/artifacts-logs
+            quality/cypress/screenshots
+            quality/cypress/snapshots
+            quality/cypress/logs
+            quality/cypress/reports/cucumber/html-report
+            quality/artifacts-logs
 
   test_e2e:
     runs-on: ubuntu-24.04
     defaults:
       run:
-        working-directory: ./quality/fca
+        working-directory: ./quality
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: yarn
+          cache-dependency-path: ./quality/yarn.lock
+          node-version-file: ./quality/package.json
 
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v3
@@ -182,7 +196,7 @@ jobs:
           ./docker-stack up "${{ matrix.stack }}"
 
       - name: Install quality dependencies
-        run: yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --frozen-lockfile --no-progress
 
       - name: Execute e2e tests
         run: |
@@ -197,8 +211,8 @@ jobs:
         if: failure()
         working-directory: ./docker
         run: |
-          ./docker-stack compose logs --no-color > ../quality/fca/artifacts-logs/docker-compose.log 2>&1
-          docker ps -a > ../quality/fca/artifacts-logs/docker-ps.log 2>&1
+          ./docker-stack compose logs --no-color > ../quality/artifacts-logs/docker-compose.log 2>&1
+          docker ps -a > ../quality/artifacts-logs/docker-ps.log 2>&1
 
       - name: Upload Cypress Artifacts
         if: failure()
@@ -206,10 +220,10 @@ jobs:
         with:
           name: cypress-${{ matrix.stack }}-artifacts
           path: |
-            quality/fca/cypress/screenshots
-            quality/fca/cypress/logs
-            quality/fca/cypress/reports/cucumber/html-report
-            quality/fca/artifacts-logs
+            quality/cypress/screenshots
+            quality/cypress/logs
+            quality/cypress/reports/cucumber/html-report
+            quality/artifacts-logs
     strategy:
       fail-fast: false
       matrix:
