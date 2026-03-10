@@ -29,6 +29,10 @@
 |---|---|
 | AdapterMongo_CLIENT_SECRET_CIPHER_PASS | string |
 | AdapterMongo_DECRYPT_CLIENT_SECRET_FEATURE | boolean |
+| ApiEntreprise_API_BASE_URL | string |
+| ApiEntreprise_API_TOKEN | string |
+| ApiEntreprise_FEATURE_FETCH_ORGANIZATION_DATA | boolean |
+| ApiEntreprise_SHOULD_MOCK_API | boolean |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_CSP_CONNECT_SRC | json |
