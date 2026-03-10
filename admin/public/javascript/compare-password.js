@@ -1,4 +1,4 @@
-const UNAUTHORIZED = require('./unauthorized');
+import UNAUTHORIZED from './unauthorized';
 
 export function comparePassword(element) {
   const password = document.getElementById('password');

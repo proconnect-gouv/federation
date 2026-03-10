@@ -97,6 +97,7 @@
   "devDependencies": {
     "@nestjs/testing": "^11.1.14",
     "@parcel/transformer-less": "2.16.4",
+    "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.5",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.21",

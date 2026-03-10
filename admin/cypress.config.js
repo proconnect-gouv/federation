@@ -1,8 +1,7 @@
-const { defineConfig } = require('cypress');
+import { defineConfig } from 'cypress';
+import pluginConfig from './cypress/plugins';
 
-const pluginConfig = require('./cypress/plugins');
-
-module.exports = defineConfig({
+export default defineConfig({
   chromeWebSecurity: false,
   e2e: {
     baseUrl: 'https://exploitation-fca-low.docker.dev-franceconnect.fr',
