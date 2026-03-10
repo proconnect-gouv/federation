@@ -1,6 +1,6 @@
-import { Given, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Given, When } from "@badeball/cypress-cucumber-preprocessor";
 
-import { getApiRequests } from '../../common/helpers';
+import { getApiRequests } from "../../common/helpers";
 
 /**
  * Request Steps
@@ -10,13 +10,13 @@ import { getApiRequests } from '../../common/helpers';
  * from ./api-response-steps.ts
  */
 
-Given('je prépare une requête {string}', function (requestKey: string) {
+Given("je prépare une requête {string}", function (requestKey: string) {
   this.apiRequest = getApiRequests(requestKey);
   expect(this.apiRequest).to.exist;
 });
 
 Given(
-  'je retire le paramètre {string} de la requête',
+  "je retire le paramètre {string} de la requête",
   function (property: string) {
     expect(this.apiRequest.qs[property]).to.exist;
     delete this.apiRequest.qs[property];
@@ -24,29 +24,29 @@ Given(
 );
 
 Given(
-  'je mets {string} dans le paramètre {string} de la requête',
+  "je mets {string} dans le paramètre {string} de la requête",
   function (value: string, property: string) {
     this.apiRequest.qs[property] = value;
   },
 );
 
-Given('je retire {string} du corps de la requête', function (property: string) {
+Given("je retire {string} du corps de la requête", function (property: string) {
   expect(this.apiRequest.body[property]).to.exist;
   delete this.apiRequest.body[property];
 });
 
 Given(
-  'je mets {string} dans la propriété {string} du corps de la requête',
+  "je mets {string} dans la propriété {string} du corps de la requête",
   function (value: string, property: string) {
     this.apiRequest.body[property] = value;
   },
 );
 
 Given(
-  'je mets la donnée mémorisée {string} dans la propriété {string} du corps de la requête',
+  "je mets la donnée mémorisée {string} dans la propriété {string} du corps de la requête",
   function (dataKey: string, property: string) {
     cy.get(`@api:${dataKey}`)
-      .should('exist')
+      .should("exist")
       .then((value) => {
         this.apiRequest.body[property] = value;
       });
@@ -54,16 +54,16 @@ Given(
 );
 
 Given(
-  'je configure la requête pour ne pas suivre les redirections',
+  "je configure la requête pour ne pas suivre les redirections",
   function () {
     this.apiRequest.followRedirect = false;
   },
 );
 
-When('je lance la requête', function () {
+When("je lance la requête", function () {
   const requestOptions: Partial<Cypress.RequestOptions> = {
     ...this.apiRequest,
     failOnStatusCode: false,
   };
-  cy.api(requestOptions).as('apiResponse');
+  cy.api(requestOptions).as("apiResponse");
 });

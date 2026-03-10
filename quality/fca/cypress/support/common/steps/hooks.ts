@@ -1,4 +1,4 @@
-import { After, Before } from '@badeball/cypress-cucumber-preprocessor';
+import { After, Before } from "@badeball/cypress-cucumber-preprocessor";
 
 import {
   addFCBasicAuthorization,
@@ -6,11 +6,11 @@ import {
   forceSameSiteNone,
   getEnv,
   isUsingFCBasicAuthorization,
-} from '../helpers';
+} from "../helpers";
 
 Before(function () {
   // Load environment config and test data
-  const testEnv: string = Cypress.env('TEST_ENV');
+  const testEnv: string = Cypress.env("TEST_ENV");
 
   // Setup interceptions to add basic authorization header on FC requests
   if (isUsingFCBasicAuthorization()) {
@@ -18,19 +18,19 @@ Before(function () {
   }
 
   switch (testEnv) {
-    case 'k8s':
+    case "k8s":
       // Setup interceptions to override set-cookie samesite values
       forceSameSiteNone({
-        AC: 'proconnect.127.0.0.1.nip.io',
+        AC: "proconnect.127.0.0.1.nip.io",
       });
       break;
-    case 'integ01':
+    case "integ01":
       // Setup interceptions to override set-cookie samesite values
       forceSameSiteNone({
-        AC: 'dev-agentconnect.fr',
+        AC: "dev-agentconnect.fr",
       });
       break;
-    case 'docker':
+    case "docker":
     default:
       clearBusinessLog();
   }
@@ -46,27 +46,27 @@ After(function () {
   delete this.operatorUser;
 });
 
-Before({ tags: '@ignoreDocker' }, function () {
-  if (Cypress.env('TEST_ENV') === 'docker') {
+Before({ tags: "@ignoreDocker" }, function () {
+  if (Cypress.env("TEST_ENV") === "docker") {
     this.skip();
   }
 });
 
-Before({ tags: '@ignoreInteg01' }, function () {
-  if (Cypress.env('TEST_ENV') === 'integ01') {
+Before({ tags: "@ignoreInteg01" }, function () {
+  if (Cypress.env("TEST_ENV") === "integ01") {
     this.skip();
   }
 });
 
 // only execute tests with @k8s tag on k8s environment
 // this tests are used by k8s CI
-Before({ tags: 'not @k8s' }, function () {
-  if (Cypress.env('TEST_ENV') === 'k8s') {
+Before({ tags: "not @k8s" }, function () {
+  if (Cypress.env("TEST_ENV") === "k8s") {
     this.skip();
   }
 });
 
-Before({ tags: '@validationVisuelle' }, function () {
+Before({ tags: "@validationVisuelle" }, function () {
   // Clear the localstorage before each visual test
   // @link: https://github.com/cypress-io/cypress/issues/2573
   const { federationRootUrl } = getEnv();

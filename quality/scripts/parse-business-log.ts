@@ -16,7 +16,7 @@
  * > ts-node parse-business-log.ts '/path/to/file.log' '{"JSON": "string", "test": "object"}'
  */
 
-import { promises as fs } from 'fs';
+import { promises as fs } from "fs";
 
 type LogEvent = {
   event: string;
@@ -24,9 +24,9 @@ type LogEvent = {
 };
 
 const loadLog = async (path: string): Promise<LogEvent[]> => {
-  const rawData = await fs.readFile(path, 'utf8');
+  const rawData = await fs.readFile(path, "utf8");
   return rawData
-    .split('\n')
+    .split("\n")
     .filter(Boolean)
     .map((row) => JSON.parse(row))
     .reverse();
@@ -52,8 +52,7 @@ const interactionHasEvent = async ([
     );
 
     if (!foundEvent) {
-      // eslint-disable-next-line no-console
-      console.error('Event not found');
+      console.error("Event not found");
       process.exit(3);
     }
 
@@ -66,7 +65,6 @@ const interactionHasEvent = async ([
     const differences = getDifferences(testEvent, foundEvent);
 
     if (differences.length > 0) {
-      // eslint-disable-next-line no-console
       console.error(
         `
         Event mismatch
@@ -78,11 +76,9 @@ const interactionHasEvent = async ([
       process.exit(4);
     }
 
-    // eslint-disable-next-line no-console
-    console.log('Event found and ok');
+    console.log("Event found and ok");
     process.exit(0);
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(error);
     process.exit(1);
   }
@@ -100,10 +96,10 @@ const getDifferences = (
   test: LogEvent,
   source: LogEvent,
 ): [string, string][] => {
-  const REG_EXP_PREFIX = 'RegExp:';
+  const REG_EXP_PREFIX = "RegExp:";
   const assertions = Object.entries(test).filter(([key, value]) => {
-    if (typeof value === 'string' && value.startsWith(REG_EXP_PREFIX)) {
-      const regExp = new RegExp(value.replace(REG_EXP_PREFIX, ''));
+    if (typeof value === "string" && value.startsWith(REG_EXP_PREFIX)) {
+      const regExp = new RegExp(value.replace(REG_EXP_PREFIX, ""));
       return !regExp.test(source[key]);
     }
     return source[key] !== value;

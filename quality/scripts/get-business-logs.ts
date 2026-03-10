@@ -16,7 +16,7 @@
  * > ts-node get-business-logs.ts '/path/to/file.log' '{"JSON": "string", "test": "object"}'
  */
 
-import { promises as fs } from 'fs';
+import { promises as fs } from "fs";
 
 type LogEvent = {
   event: string;
@@ -24,9 +24,9 @@ type LogEvent = {
 };
 
 const loadLog = async (path: string): Promise<LogEvent[]> => {
-  const rawData = await fs.readFile(path, 'utf8');
+  const rawData = await fs.readFile(path, "utf8");
   return rawData
-    .split('\n')
+    .split("\n")
     .filter(Boolean)
     .map((row) => JSON.parse(row))
     .reverse();
@@ -40,7 +40,6 @@ const getBusinessLogs = async ([
     const logs: LogEvent[] = await loadLog(logFile);
 
     if (!stringifiedTestEvent) {
-      // eslint-disable-next-line no-console
       console.log(JSON.stringify(logs));
       process.exit(0);
     }
@@ -50,11 +49,9 @@ const getBusinessLogs = async ([
       (log) => log.event === testEvent.event,
     );
 
-    // eslint-disable-next-line no-console
     console.log(JSON.stringify(foundEvents));
     process.exit(0);
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(error);
     process.exit(1);
   }

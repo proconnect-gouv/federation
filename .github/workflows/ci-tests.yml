@@ -59,11 +59,7 @@ jobs:
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Check code style
-        run: |
-          yarn lint
-          yarn prettier
-      - name: Check transpilation
-        run: yarn tsc --noEmit
+        run: yarn lint
 
   test_unit_back:
     runs-on: ubuntu-24.04

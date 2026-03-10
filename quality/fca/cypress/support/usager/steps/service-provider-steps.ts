@@ -1,4 +1,4 @@
-import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
 
 import {
   checkExpectedUserClaims,
@@ -24,10 +24,10 @@ import {
   setRedirectUri,
   setScope,
   setSiretHint,
-} from '../../common/helpers';
+} from "../../common/helpers";
 
-When('je navigue sur la page fournisseur de service', function () {
-  const serviceProvider = getServiceProviderByDescription('par défaut');
+When("je navigue sur la page fournisseur de service", function () {
+  const serviceProvider = getServiceProviderByDescription("par défaut");
   cy.visit(serviceProvider.url);
 });
 
@@ -40,65 +40,65 @@ When(
 );
 
 Given(
-  'le fournisseur de service demande le claim {string}',
+  "le fournisseur de service demande le claim {string}",
   function (claim: string) {
     setAsVoluntaryClaims(claim);
   },
 );
 
 Given(
-  'le fournisseur de service requiert le claim {string}',
+  "le fournisseur de service requiert le claim {string}",
   function (claim: string) {
     setAsRequestedClaims(claim);
   },
 );
 
 Given(
-  'le fournisseur de service requiert le claim {string} avec la valeur {string}',
+  "le fournisseur de service requiert le claim {string} avec la valeur {string}",
   function (claim: string, value: string) {
     setAsRequestedClaims(claim, value);
   },
 );
 
 Given(
-  'le fournisseur de service ne requiert pas le claim {string}',
+  "le fournisseur de service ne requiert pas le claim {string}",
   function (claim: string) {
     removeFromRequestedClaims(claim);
   },
 );
 
 Given(
-  'le fournisseur de service envoie le login_hint {string}',
+  "le fournisseur de service envoie le login_hint {string}",
   function (loginHint: string) {
     setLoginHint(loginHint);
   },
 );
 
 Given(
-  'le fournisseur de service envoie le siret_hint {string}',
+  "le fournisseur de service envoie le siret_hint {string}",
   function (siretHint: string) {
     setSiretHint(siretHint);
   },
 );
 
 Given(
-  'le fournisseur de service envoie la redirect_uri {string}',
+  "le fournisseur de service envoie la redirect_uri {string}",
   function (redirectUri: string) {
     setRedirectUri(redirectUri);
   },
 );
 
 Given(
-  'le fournisseur de service demande un niveau de sécurité {string} via acr_values',
+  "le fournisseur de service demande un niveau de sécurité {string} via acr_values",
   function (acrValue: string) {
     setAcrValues(acrValue);
   },
 );
 
 Given(
-  'le fournisseur de service requiert un niveau de sécurité {string}',
+  "le fournisseur de service requiert un niveau de sécurité {string}",
   function (acrValue: string) {
-    setAsRequestedClaims('acr', acrValue);
+    setAsRequestedClaims("acr", acrValue);
   },
 );
 
@@ -109,35 +109,35 @@ Given(
   },
 );
 
-When('je clique sur le bouton ProConnect', function () {
-  cy.get('button#custom-connection').click({ force: true });
+When("je clique sur le bouton ProConnect", function () {
+  cy.get("button#custom-connection").click({ force: true });
 
   if (isUsingFCBasicAuthorization()) {
     checkFCBasicAuthorization();
   }
 });
 
-When('je clique sur le bouton ProConnect PKCE', function () {
-  cy.get('button#login-pkce').click();
+When("je clique sur le bouton ProConnect PKCE", function () {
+  cy.get("button#login-pkce").click();
 
   if (isUsingFCBasicAuthorization()) {
     checkFCBasicAuthorization();
   }
 });
 
-When('je clique sur le bouton ProConnect deux facteurs', function () {
-  cy.get('button#force-2fa').click();
+When("je clique sur le bouton ProConnect deux facteurs", function () {
+  cy.get("button#force-2fa").click();
 });
 
-When('je clique sur le bouton de déconnexion', function () {
-  cy.contains('Se déconnecter (avec redirection vers le service)').click();
+When("je clique sur le bouton de déconnexion", function () {
+  cy.contains("Se déconnecter (avec redirection vers le service)").click();
 });
 
-When('je clique sur le bouton de déconnexion sans redirection', function () {
-  cy.contains('Se déconnecter (sans redirection vers le service)').click();
+When("je clique sur le bouton de déconnexion sans redirection", function () {
+  cy.contains("Se déconnecter (sans redirection vers le service)").click();
 });
 
-When('je clique sur le bouton FranceConnect', function () {
+When("je clique sur le bouton FranceConnect", function () {
   cy.get('[aria-label="S’identifier avec FranceConnect"]').click();
 });
 
@@ -145,19 +145,19 @@ Then(
   /je suis redirigé vers la page fournisseur de service "([^"]+)"/,
   function (description: string) {
     const serviceProvider = getServiceProviderByDescription(description);
-    cy.url().should('include', serviceProvider.url);
+    cy.url().should("include", serviceProvider.url);
   },
 );
 
-Then('je suis connecté au fournisseur de service', function () {
-  cy.contains('Information utilisateur');
+Then("je suis connecté au fournisseur de service", function () {
+  cy.contains("Information utilisateur");
 });
 
-Then('je suis déconnecté du fournisseur de service', function () {
+Then("je suis déconnecté du fournisseur de service", function () {
   // I am on the sp page
-  cy.contains('Se connecter');
+  cy.contains("Se connecter");
   // the userinfo section is not displayed as I am disconnected
-  cy.contains('Information utilisateur').should('not.exist');
+  cy.contains("Information utilisateur").should("not.exist");
 });
 
 Then(
@@ -172,7 +172,7 @@ Then(
     checkMandatoryData(userInfoSignatureAlgorithm !== null);
 
     const idpClaims = {
-      idp_acr: 'eidas1',
+      idp_acr: "eidas1",
       idp_id: getIdentityProviderByDescription(idpDescription).id,
     };
 
@@ -182,16 +182,16 @@ Then(
 );
 
 Then(
-  'la cinématique a utilisé le niveau de sécurité {string}',
+  "la cinématique a utilisé le niveau de sécurité {string}",
   function (acrValue: string) {
     cy.contains(`"acr": "${acrValue}"`);
   },
 );
 
 Then(
-  'la cinématique a renvoyé le claim {string}',
+  "la cinématique a renvoyé le claim {string}",
   function (claimName: string) {
-    cy.contains(new RegExp('  "' + claimName + '": ".*",', 'g'));
+    cy.contains(new RegExp('  "' + claimName + '": ".*",', "g"));
   },
 );
 
@@ -200,63 +200,63 @@ Then("la cinématique a renvoyé l'amr {string}", function (amrValue: string) {
 });
 
 Then("la cinématique n'a pas renvoyé d'amr", function () {
-  cy.get('#idtoken').contains('"amr": ').should('not.exist');
+  cy.get("#idtoken").contains('"amr": ').should("not.exist");
 });
 
 Then(
-  'je suis redirigé vers la page erreur du fournisseur de service',
+  "je suis redirigé vers la page erreur du fournisseur de service",
   function () {
-    cy.url().should('include', '/oidc-callback?error=');
+    cy.url().should("include", "/oidc-callback?error=");
   },
 );
 
 Then(
   "le titre de l'erreur fournisseur de service est {string}",
   function (errorCode: string) {
-    cy.url().should('include', `error=${errorCode}`);
+    cy.url().should("include", `error=${errorCode}`);
   },
 );
 
 Then(
   "la description de l'erreur fournisseur de service est {string}",
   function (errorDescription: string) {
-    cy.url().should('include', `error_description=${errorDescription}`);
+    cy.url().should("include", `error_description=${errorDescription}`);
   },
 );
 
-Given('je mémorise le sub envoyé au fournisseur de service', function () {
-  getUserInfoProperty('sub').as('spSub');
+Given("je mémorise le sub envoyé au fournisseur de service", function () {
+  getUserInfoProperty("sub").as("spSub");
 });
 
 Then(
   /^le sub transmis au fournisseur de service est (identique|différent) [ad]u sub mémorisé$/,
   function (text: string) {
-    const comparison = text === 'identique' ? 'be.equal' : 'not.be.equal';
+    const comparison = text === "identique" ? "be.equal" : "not.be.equal";
 
-    cy.get<string>('@spSub').then((previousSpSub) => {
-      getUserInfoProperty('sub').should(comparison, previousSpSub);
+    cy.get<string>("@spSub").then((previousSpSub) => {
+      getUserInfoProperty("sub").should(comparison, previousSpSub);
     });
   },
 );
 
 Then(
-  'le sub transmis au fournisseur de service est le suivant {string}',
+  "le sub transmis au fournisseur de service est le suivant {string}",
   function (sub: string) {
-    getUserInfoProperty('sub').should('be.equal', sub);
+    getUserInfoProperty("sub").should("be.equal", sub);
   },
 );
 
 Then(
   "le sub transmis au fournisseur de service n'est pas le suivant {string}",
   function (sub: string) {
-    getUserInfoProperty('sub').should('not.be.equal', sub);
+    getUserInfoProperty("sub").should("not.be.equal", sub);
   },
 );
 
 Then(
-  'le siret transmis au fournisseur de service est le suivant {string}',
+  "le siret transmis au fournisseur de service est le suivant {string}",
   function (siret: string) {
-    getUserInfoProperty('siret').should('be.equal', siret);
+    getUserInfoProperty("siret").should("be.equal", siret);
   },
 );
 
@@ -265,14 +265,14 @@ Then(
   function (idpDescription: string) {
     const { id: idpId } = getIdentityProviderByDescription(idpDescription);
 
-    getUserInfoProperty('idp_id').should('be.equal', idpId);
+    getUserInfoProperty("idp_id").should("be.equal", idpId);
   },
 );
 
 Given(
   /je rentre un id qui ne correspond à aucun fournisseur d'identité dans le champ idp_hint/,
   function () {
-    setIdpHint('not-an-idp-id');
+    setIdpHint("not-an-idp-id");
   },
 );
 
@@ -284,8 +284,8 @@ Given(
   },
 );
 
-Given('je rentre {string} dans le champ prompt', function (prompt: string) {
-  if (prompt === 'disabled') {
+Given("je rentre {string} dans le champ prompt", function (prompt: string) {
+  if (prompt === "disabled") {
     removePrompt();
     return;
   }
@@ -293,17 +293,17 @@ Given('je rentre {string} dans le champ prompt', function (prompt: string) {
   setPrompt(prompt);
 });
 
-When('je révoque le token ProConnect', function () {
-  cy.get('#revoke-token').click();
+When("je révoque le token ProConnect", function () {
+  cy.get("#revoke-token").click();
 });
 
-Then('le token ProConnect est révoqué', function () {
+Then("le token ProConnect est révoqué", function () {
   // I am on the sp page
-  cy.contains('Se connecter');
+  cy.contains("Se connecter");
 });
 
 When("je redemande les informations de l'usager", function () {
-  cy.get('#fetch-userinfo').click();
+  cy.get("#fetch-userinfo").click();
 });
 
 Then(/je vois l'erreur "([^"]+)"/, function (errorMessage: string) {
@@ -313,19 +313,19 @@ Then(/je vois l'erreur "([^"]+)"/, function (errorMessage: string) {
 When(
   "le fournisseur de service demande l'accès aux données au fournisseur de données",
   function () {
-    cy.get('#fetch-userdata').click();
+    cy.get("#fetch-userdata").click();
   },
 );
 
 Then(
   "le fournisseur de données vérifie l'access token fourni par le fournisseur de service",
   function () {
-    cy.get('#userdata')
-      .invoke('text')
-      .should('be.ok')
+    cy.get("#userdata")
+      .invoke("text")
+      .should("be.ok")
       .then((tokenText) => {
         const token = JSON.parse(tokenText)[0].response;
-        cy.wrap(token).as('tokenIntrospection');
+        cy.wrap(token).as("tokenIntrospection");
       });
   },
 );
@@ -336,46 +336,46 @@ Given(
     const { url } = getServiceProviderByDescription(description);
     cy.intercept(`${url}/oidc-callback*`, (req) => {
       req.reply({
-        body: '<h1>Intercepted request</h1>',
+        body: "<h1>Intercepted request</h1>",
       });
-    }).as('FS:OidcCallback');
+    }).as("FS:OidcCallback");
   },
 );
 
 Given(
   'je mets le code renvoyé par PC au FS dans la propriété "code" du corps de la requête',
   function () {
-    cy.wait('@FS:OidcCallback')
-      .its('request.query.code')
-      .should('exist')
+    cy.wait("@FS:OidcCallback")
+      .its("request.query.code")
+      .should("exist")
       .then((value: string) => {
-        this.apiRequest.body['code'] = value;
+        this.apiRequest.body["code"] = value;
       });
   },
 );
 
 Given(
-  'le fournisseur de service ne fournit pas le paramètre code_challenge_method',
+  "le fournisseur de service ne fournit pas le paramètre code_challenge_method",
   function () {
     removeCodeChallengeMethod();
   },
 );
 
 Given(
-  'le fournisseur de service utilise le paramètre code_challenge_method {string}',
+  "le fournisseur de service utilise le paramètre code_challenge_method {string}",
   function (codeChallengeMethod: string) {
     setCodeChallengeMethod(codeChallengeMethod);
   },
 );
 
 When('je clique sur la checkbox "se souvenir de moi"', function () {
-  cy.contains('Se souvenir de moi').click();
+  cy.contains("Se souvenir de moi").click();
 });
 
-When('je ferme la modal nouvelle interface si elle est affichée', () => {
-  cy.get('body').then(($body) => {
-    if ($body.find('#new-interface-modal[open]').length > 0) {
-      cy.get('#new-interface-modal-continue').click();
+When("je ferme la modal nouvelle interface si elle est affichée", () => {
+  cy.get("body").then(($body) => {
+    if ($body.find("#new-interface-modal[open]").length > 0) {
+      cy.get("#new-interface-modal-continue").click();
     }
   });
 });

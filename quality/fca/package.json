@@ -10,8 +10,6 @@
   ],
   "scripts": {
     "clean": "rm -rf cypress/fixtures.out && rm -rf cypress/reports && rm -rf cypress/screenshots && rm -rf cypress/videos",
-    "prettier": "prettier -c \"{.,cypress,scripts}/**/*.ts\"",
-    "lint": "eslint \"{.,cypress,scripts}/**/*.ts\"",
     "test:low:base": "cypress run --config-file cypress-fca-low.config.ts",
     "test:low:chrome-desktop": "yarn test:low:base --browser chrome --headless",
     "test:low:chrome-mobile": "yarn test:low:base --browser chrome --headless --config viewportWidth=320,viewportHeight=568",

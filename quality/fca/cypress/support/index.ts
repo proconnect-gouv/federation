@@ -13,35 +13,34 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-import 'reflect-metadata';
-import 'cypress-axe';
-import 'cypress-plugin-api';
+import "cypress-axe";
+import "cypress-plugin-api";
+import "reflect-metadata";
 
-import { addMatchImageSnapshotCommand } from '@simonsmith/cypress-image-snapshot/command';
+import { addMatchImageSnapshotCommand } from "@simonsmith/cypress-image-snapshot/command";
 
-import { injectAxeFromQualityModules } from './common/helpers';
+import { injectAxeFromQualityModules } from "./common/helpers";
 
 // Overwrite injectAxe because not supporting dependencies workspace
-Cypress.Commands.overwrite('injectAxe', injectAxeFromQualityModules);
+Cypress.Commands.overwrite("injectAxe", injectAxeFromQualityModules);
 
 Cypress.Commands.add(
-  'clearThenType',
-  { prevSubject: 'element' },
+  "clearThenType",
+  { prevSubject: "element" },
   (subject, text, options = {}) => {
-    cy.wrap(subject).trigger('keydown');
-    cy.wrap(subject).invoke('val', text, options);
+    cy.wrap(subject).trigger("keydown");
+    cy.wrap(subject).invoke("val", text, options);
     // It is safe to chain those commands as there are no UI changes
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
-    cy.wrap(subject).trigger('keyup').trigger('input').trigger('change');
+    cy.wrap(subject).trigger("keyup").trigger("input").trigger("change");
   },
 );
 
 addMatchImageSnapshotCommand({
-  capture: 'fullPage',
+  capture: "fullPage",
   customDiffConfig: { threshold: 0.3 },
-  customDiffDir: './cypress/snapshots/diff',
-  customSnapshotsDir: './cypress/snapshots/base',
-  e2eSpecDir: 'cypress/integration/visuel',
+  customDiffDir: "./cypress/snapshots/diff",
+  customSnapshotsDir: "./cypress/snapshots/base",
+  e2eSpecDir: "cypress/integration/visuel",
   failureThreshold: 0.1,
-  failureThresholdType: 'percent',
+  failureThresholdType: "percent",
 });

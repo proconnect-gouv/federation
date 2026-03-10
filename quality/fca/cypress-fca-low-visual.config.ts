@@ -1,7 +1,7 @@
-import { defineConfig } from 'cypress';
+import { defineConfig } from "cypress";
 
-import pluginConfig from './cypress/plugins';
-import baseConfig from './cypress-base.config';
+import baseConfig from "./cypress-base.config";
+import pluginConfig from "./cypress/plugins";
 
 export default defineConfig({
   ...baseConfig,
@@ -10,10 +10,10 @@ export default defineConfig({
     async setupNodeEvents(on, config) {
       return await pluginConfig(on, config);
     },
-    specPattern: 'cypress/integration/visuel/*.feature',
+    specPattern: "cypress/integration/visuel/*.feature",
   },
   env: {
     ...baseConfig.env,
-    TAGS: '@validationVisuelle and not @ignore',
+    TAGS: "@validationVisuelle and not @ignore",
   },
 });

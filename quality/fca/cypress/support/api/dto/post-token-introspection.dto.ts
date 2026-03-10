@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsBoolean,
   IsNumber,
@@ -7,7 +7,7 @@ import {
   IsString,
   MinLength,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
 export class ValidTokenIntrospection {
   @IsBoolean()

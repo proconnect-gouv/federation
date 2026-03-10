@@ -1,4 +1,4 @@
-import { authenticator } from 'otplib';
+import { authenticator } from "otplib";
 
 interface TotpArgs {
   totpSecret: string;
