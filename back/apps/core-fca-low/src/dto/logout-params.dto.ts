@@ -26,12 +26,10 @@ export class LogoutParamsDto {
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly logout_hint?: string;
 
   @IsString()
   @IsOptional()
   // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly ui_locales?: string;
 }

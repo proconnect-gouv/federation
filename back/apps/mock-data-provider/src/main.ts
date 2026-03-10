@@ -4,7 +4,6 @@ import crypto, { JsonWebKey } from 'node:crypto';
 import process from 'node:process';
 import client from 'openid-client-v6';
 
-/* eslint-disable @typescript-eslint/naming-convention */
 const {
   DataProviderAdapterCore_CHECKTOKEN_JWT_ENCRYPTED_RESPONSE_ALG: encryptAlg,
   DataProviderAdapterCore_CHECKTOKEN_JWT_ENCRYPTED_RESPONSE_ENC: encryptEnc,
@@ -15,7 +14,6 @@ const {
   DataProviderAdapterCore_JWKS: rawJwks,
   PORT,
 } = process.env;
-/* eslint-enable @typescript-eslint/naming-convention */
 
 const port = parseInt(PORT, 10) || 3000;
 const jwks: JWK[] = rawJwks ? JSON.parse(rawJwks) : [];

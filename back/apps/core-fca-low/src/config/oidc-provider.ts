@@ -111,7 +111,7 @@ export default {
       is_service_public: ['is_service_public'],
       groups: ['groups'],
       custom: ['custom'],
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       lasuite_visio: ['lasuite_visio'],
       'lasuite_visio:rooms:create': ['lasuite_visio:rooms:create'],
       'lasuite_visio:rooms:list': ['lasuite_visio:rooms:list'],

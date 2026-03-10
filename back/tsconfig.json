@@ -5,6 +5,7 @@
     "target": "es2023",
     "esModuleInterop": true,
     "outDir": "./dist",
+    "types": ["node", "jest"],
     "baseUrl": "./",
     "sourceMap": true,
     "declaration": true,

@@ -210,7 +210,7 @@ describe('Runner', () => {
     it('should add all env variables to the map', () => {
       const envMapMock = {};
       // This is the format in environment variables
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       const expected = { instance1: { FQDN: 'string', Toto_PREFIX: 'string' } };
 
       // When
@@ -224,17 +224,17 @@ describe('Runner', () => {
       // Given
       const envMapMock = {
         // This is the format in environment variables
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         instance1: { FQDN: 'string', Toto_PREFIX: 'string' },
       };
       const expected = {
         instance1: {
           FQDN: 'string',
           // This is the format in environment variables
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           Lolo_FOO_BAR_BU: 'json',
           // This is the format in environment variables
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           Toto_PREFIX: 'string',
         },
       };
@@ -250,14 +250,14 @@ describe('Runner', () => {
       // Given
       const envMapMock = {
         // This is the format in environment variables
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         instance1: { FQDN: 'string', Toto_PREFIX: 'string' },
       };
       const expected = {
         instance1: {
           FQDN: 'string',
           // This is the format in environment variables
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           Toto_PREFIX: 'string',
         },
         instance2: {
@@ -276,7 +276,7 @@ describe('Runner', () => {
       // Given
       const envMapMock = {
         // This is the format in environment variables
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         instance1: { FQDN: 'string', Toto_PREFIX: 'string' },
       };
 
@@ -303,7 +303,7 @@ describe('Runner', () => {
       // Given
       const envMapMock = {};
       // This is the format in environment variables
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+
       const expected = { instance3: { EdgeCase_FOO_BAR_BU: 'json' } };
 
       // When

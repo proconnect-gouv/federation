@@ -9,6 +9,6 @@
     "target": "es2023",
     "types": ["node"]
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "*.js"],
   "exclude": ["fca"]
 }

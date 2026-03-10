@@ -42,8 +42,6 @@ describe('OidcProviderConfigAppService', () => {
       entities: {
         IdTokenHint: {
           payload: {
-            // OIDC defined var name
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             at_hash: atHashMock,
           },
         },

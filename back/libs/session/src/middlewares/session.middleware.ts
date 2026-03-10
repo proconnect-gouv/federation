@@ -30,7 +30,7 @@ export class SessionMiddleware implements NestMiddleware {
 
     try {
       await this.session.initCache(sessionId);
-    } catch (error) {
+    } catch {
       return this.session.init(res);
     }
 
