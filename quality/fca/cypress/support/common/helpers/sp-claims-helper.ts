@@ -1,18 +1,18 @@
-import { ChainableElement } from '../types';
-import scopes from './../../../fixtures/fca-low/scopes.json';
-import { getServiceProviderByDescription } from './fixtures-helper';
-import { getDefaultUser } from './user-helper';
+import { ChainableElement } from "../types";
+import scopes from "./../../../fixtures/fca-low/scopes.json";
+import { getServiceProviderByDescription } from "./fixtures-helper";
+import { getDefaultUser } from "./user-helper";
 
 const defaultUserClaims = getDefaultUser();
 
 const getUserInfo = (): ChainableElement =>
-  cy.get('#userinfo').invoke('text').then(JSON.parse);
+  cy.get("#userinfo").invoke("text").then(JSON.parse);
 
 export const getUserInfoProperty = (property: string): ChainableElement =>
   getUserInfo().then((userInfo) => userInfo[property]);
 
 export const getScopeByDescription = (description: string): string =>
-  scopes.find((scope) => scope.description === description).scopes.join(' ');
+  scopes.find((scope) => scope.description === description).scopes.join(" ");
 
 export const getUserInfoSignatureAlgorithmByDescription = (
   description: string,
@@ -48,14 +48,14 @@ export const checkMandatoryData = (isUserinfoSigned: boolean): void => {
 };
 
 const aliasScopesClaims = {
-  chorusdt: ['chorusdt:matricule', 'chorusdt:societe'],
-  openid: ['sub'],
-  phone: ['phone_number'],
+  chorusdt: ["chorusdt:matricule", "chorusdt:societe"],
+  openid: ["sub"],
+  phone: ["phone_number"],
 };
 
 export const getClaims = (scope: string): string[] => {
   const claims = scope
-    .split(' ')
+    .split(" ")
     .map((scope: string): string =>
       aliasScopesClaims[scope] ? aliasScopesClaims[scope] : scope,
     )
@@ -74,7 +74,7 @@ export const checkExpectedUserClaims = (
 
   getUserInfo().then((userInfo) => {
     expectedClaims
-      .filter((claimName) => claimName !== 'sub' && claimName !== 'email')
+      .filter((claimName) => claimName !== "sub" && claimName !== "email")
       .forEach((claimName) => {
         expect(userInfo[claimName]).to.deep.equal(
           userClaims[claimName],
@@ -103,7 +103,7 @@ export const checkNoExtraClaims = (
     );
     expect(extraClaimsName).to.deep.equal(
       [],
-      'No extra claims should be sent.',
+      "No extra claims should be sent.",
     );
   });
 };

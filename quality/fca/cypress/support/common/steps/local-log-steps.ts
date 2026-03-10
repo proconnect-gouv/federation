@@ -1,4 +1,4 @@
-import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
 
 import {
   getBusinessLogs,
@@ -6,7 +6,7 @@ import {
   getValueByKeyFromFirstEvent,
   hasBusinessLog,
   LogResult,
-} from '../helpers';
+} from "../helpers";
 
 /**
  * Those steps are only runnable on local logs
@@ -16,21 +16,21 @@ Then(
   /^l'événement "([^"]+)" (est|n'est pas) journalisé(?: avec )?((?:"[^"]+" "(?:[^"]*)"(?: et )?)+)?$/,
   function (event: string, text: string, info?: string) {
     const { name } = getEnv();
-    if (name !== 'docker') {
+    if (name !== "docker") {
       cy.log(
-        'aucune validation des événements dans les logs possible en dehors de la stack locale',
+        "aucune validation des événements dans les logs possible en dehors de la stack locale",
       );
       return;
     }
 
     const valueMapping = {
       false: false,
-      'non null': 'RegExp:^.+$',
+      "non null": "RegExp:^.+$",
       null: null,
       true: true,
     };
 
-    const DELIMITOR = ' et ';
+    const DELIMITOR = " et ";
     const extraEventVerification = prepareEventVerification(
       info,
       DELIMITOR,
@@ -43,7 +43,7 @@ Then(
     };
 
     const logResult =
-      text === 'est' ? LogResult.EventFound : LogResult.EventNotFound;
+      text === "est" ? LogResult.EventFound : LogResult.EventNotFound;
     hasBusinessLog(expectedEvent, logResult);
   },
 );
@@ -52,9 +52,9 @@ When(
   /^je mémorise la valeur "([^"]+)" de l'événement "([^"]+)"$/,
   function (key: string, event: string) {
     const { name } = getEnv();
-    if (name !== 'docker') {
+    if (name !== "docker") {
       cy.log(
-        'aucune validation des événements dans les logs possible en dehors de la stack locale',
+        "aucune validation des événements dans les logs possible en dehors de la stack locale",
       );
       return;
     }
@@ -72,14 +72,14 @@ Then(
   /^la valeur "([^"]+)" est (identique|différente) dans l'événement "([^"]+)"$/,
   function (key: string, text: string, event: string) {
     const { name } = getEnv();
-    if (name !== 'docker') {
+    if (name !== "docker") {
       cy.log(
-        'aucune validation des événements dans les logs possible en dehors de la stack locale',
+        "aucune validation des événements dans les logs possible en dehors de la stack locale",
       );
       return;
     }
 
-    const equalNotEqual = text === 'identique' ? 'to.equal' : 'not.to.equal';
+    const equalNotEqual = text === "identique" ? "to.equal" : "not.to.equal";
     getBusinessLogs({
       event,
     }).then((logs) => {

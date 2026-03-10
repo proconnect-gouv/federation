@@ -1,7 +1,7 @@
-import { defineConfig } from 'cypress';
+import { defineConfig } from "cypress";
 
-import pluginConfig from './cypress/plugins';
-import baseConfig from './cypress-base.config';
+import baseConfig from "./cypress-base.config";
+import pluginConfig from "./cypress/plugins";
 
 export default defineConfig({
   ...baseConfig,
@@ -11,6 +11,6 @@ export default defineConfig({
       return await pluginConfig(on, config);
     },
     specPattern:
-      'cypress/integration/{accessibilité,api,exploitation,usager}/*.feature',
+      "cypress/integration/{accessibilité,api,exploitation,usager}/*.feature",
   },
 });

@@ -1,7 +1,7 @@
-import { Result } from 'axe-core';
+import { Result } from "axe-core";
 
-import { type OperatorUser } from '../../exploitation/helpers';
-import { Environment } from './environment';
+import { type OperatorUser } from "../../exploitation/helpers";
+import { Environment } from "./environment";
 
 // Cypress Alias
 // eslint-disable-next-line no-undef
@@ -17,7 +17,7 @@ declare global {
 }
 
 // Define Cucumber world interface
-declare module 'mocha' {
+declare module "mocha" {
   export interface Context {
     // Accessibility context
     allViolations?: Result[];
@@ -33,8 +33,8 @@ declare module 'mocha' {
   }
 }
 
-export * from './environment';
-export * from './identity-provider';
-export * from './identity-provider-config';
-export * from './service-provider';
-export * from './service-provider-config';
+export * from "./environment";
+export * from "./identity-provider";
+export * from "./identity-provider-config";
+export * from "./service-provider";
+export * from "./service-provider-config";

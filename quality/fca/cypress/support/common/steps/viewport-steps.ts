@@ -1,10 +1,10 @@
-import { Then } from '@badeball/cypress-cucumber-preprocessor';
+import { Then } from "@badeball/cypress-cucumber-preprocessor";
 
 enum ViewportType {
-  DESKTOP = 'desktop',
-  MOBILE = 'mobile',
-  TABLET_LANDSCAPE = 'tablet landscape',
-  TABLET_PORTRAIT = 'tablet portrait',
+  DESKTOP = "desktop",
+  MOBILE = "mobile",
+  TABLET_LANDSCAPE = "tablet landscape",
+  TABLET_PORTRAIT = "tablet portrait",
 }
 
 interface Viewport {
@@ -24,11 +24,11 @@ const getViewport = (name: ViewportType): Viewport => {
       height: 667,
       width: 375,
     },
-    'tablet landscape': {
+    "tablet landscape": {
       height: 768,
       width: 1024,
     },
-    'tablet portrait': {
+    "tablet portrait": {
       height: 1024,
       width: 768,
     },

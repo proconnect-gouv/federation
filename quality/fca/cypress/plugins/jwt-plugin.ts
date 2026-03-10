@@ -7,7 +7,7 @@ import {
   importSPKI,
   JWK,
   ProtectedHeaderParameters,
-} from 'jose';
+} from "jose";
 
 declare interface JwtContent {
   jweHeader?: ProtectedHeaderParameters;
@@ -49,7 +49,7 @@ export async function isJwsValid({
   jws: string;
   sigPubKey: string;
 }): Promise<boolean> {
-  const sigPubJwk = await importSPKI(sigPubKey, 'ES256');
+  const sigPubJwk = await importSPKI(sigPubKey, "ES256");
 
   try {
     await compactVerify(jws, sigPubJwk);

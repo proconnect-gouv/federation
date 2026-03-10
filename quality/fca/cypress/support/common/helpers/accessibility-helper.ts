@@ -1,4 +1,4 @@
-import { Result } from 'axe-core';
+import { Result } from "axe-core";
 
 /**
  * Override function for injectAxe
@@ -6,7 +6,7 @@ import { Result } from 'axe-core';
  * @link https://github.com/component-driven/cypress-axe/blob/master/src/index.ts
  */
 export const injectAxeFromQualityModules = (): void => {
-  const fileName = '../node_modules/axe-core/axe.min.js';
+  const fileName = "../node_modules/axe-core/axe.min.js";
   cy.readFile<string>(fileName).then((source) =>
     cy.window({ log: false }).then((window) => {
       window.eval(source);
@@ -15,10 +15,10 @@ export const injectAxeFromQualityModules = (): void => {
 };
 
 const severityIndicators = {
-  critical: '🔴',
-  minor: '⚪️',
-  moderate: '🟡',
-  serious: '🟠',
+  critical: "🔴",
+  minor: "⚪️",
+  moderate: "🟡",
+  serious: "🟠",
 };
 
 /**
@@ -29,7 +29,7 @@ const severityIndicators = {
 export const cypressLog = (violations: Result[]): void => {
   violations.forEach((violation) => {
     const targets = violation.nodes.map(({ target }) => target);
-    const nodes = Cypress.$(targets.join(','));
+    const nodes = Cypress.$(targets.join(","));
     const consoleProps = () => violation;
     const { help, helpUrl, impact } = violation;
 
@@ -41,13 +41,13 @@ export const cypressLog = (violations: Result[]): void => {
     });
 
     targets.forEach((target) => {
-      const el = Cypress.$(target.join(','));
+      const el = Cypress.$(target.join(","));
 
       Cypress.log({
         $el: el,
         consoleProps,
         message: target,
-        name: '🔧',
+        name: "🔧",
       });
     });
   });
@@ -61,10 +61,10 @@ export const cypressLog = (violations: Result[]): void => {
 export const terminalLog = (violations: Result[]): void => {
   const isPlural = violations.length > 1;
   const violationsCountMessage = `${violations.length} accessibility violation${
-    isPlural ? 's' : ''
-  } ${isPlural ? 'were' : 'was'} detected`;
+    isPlural ? "s" : ""
+  } ${isPlural ? "were" : "was"} detected`;
 
-  cy.task('log', violationsCountMessage);
+  cy.task("log", violationsCountMessage);
 
   // pluck specific keys to keep the table readable
   const violationData = violations.map(
@@ -76,7 +76,7 @@ export const terminalLog = (violations: Result[]): void => {
     }),
   );
 
-  cy.task('table', violationData);
+  cy.task("table", violationData);
 };
 
 /**

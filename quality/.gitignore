@@ -1,5 +1,13 @@
 coverage
 node_modules
 
+fca/cypress/downloads
+fca/cypress/fixtures.out
+fca/cypress/reports
+fca/cypress/screenshots
+fca/cypress/snapshots/diff
+fca/cypress/videos
+scripts/parse-business-log.js
+
 #### Local History files, extension vscode
 .history/**/* 

@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsString, MinLength } from 'class-validator';
+import { IsArray, IsBoolean, IsString, MinLength } from "class-validator";
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export class GetDiscoveryDto {
