@@ -62,7 +62,7 @@ You can create a test pipeline in Gitlab from a merge request branch
 
 #### Start the local stack for FCA-LOW
 
-- [More information regarding the local development stack](../../docker/_doc/README.md)
+- [More information regarding the local development stack](../README.md)
 
 ```shell
 docker-stack prune && \

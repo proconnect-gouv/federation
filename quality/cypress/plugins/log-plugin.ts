@@ -35,7 +35,7 @@ export const hasBusinessLog = async (
 ): Promise<number> => {
   const { event, logFilePath } = args;
   const stringifiedEvent = JSON.stringify(event);
-  const command = `ts-node ${EXEC_TOOL_PATH} '${logFilePath}' '${stringifiedEvent}'`;
+  const command = `tsx ${EXEC_TOOL_PATH} '${logFilePath}' '${stringifiedEvent}'`;
 
   let exitCode = 0;
   try {
@@ -51,7 +51,7 @@ export const getBusinessLogs = async (
 ): Promise<Record<string, string>> => {
   const { event, logFilePath } = args;
   const stringifiedEvent = JSON.stringify(event);
-  const command = `ts-node ${GET_BUSINESS_LOG_SCRIPT_PATH} '${logFilePath}' '${stringifiedEvent}'`;
+  const command = `tsx ${GET_BUSINESS_LOG_SCRIPT_PATH} '${logFilePath}' '${stringifiedEvent}'`;
 
   const { stdout } = await asyncExec(command);
 

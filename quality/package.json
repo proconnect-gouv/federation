@@ -12,7 +12,7 @@
     "clean": "rm -rf cypress/fixtures.out && rm -rf cypress/reports && rm -rf cypress/screenshots && rm -rf cypress/videos",
     "format": "prettier --write .",
     "lint": "tsc --noEmit && prettier --check .",
-    "report": "ts-node ./scripts/multiple-cucumber-html-reporter",
+    "report": "tsx ./scripts/multiple-cucumber-html-reporter",
     "start:low": "cypress open --e2e --config-file cypress-fca-low.config.ts",
     "test:low": "yarn clean && yarn test:low:ci",
     "test:low:base": "cypress run --config-file cypress-fca-low.config.ts",
@@ -27,7 +27,7 @@
     ]
   },
   "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "24.0.1",
+    "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
     "@simonsmith/cypress-image-snapshot": "^10.0.3",
     "@types/ejs": "^3.1.5",
@@ -47,7 +47,7 @@
     "otpauth": "^9.5.0",
     "otplib": "^13.3.0",
     "prettier": "^3.8.1",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "5.9.3"
   },
   "devDependencies": {
