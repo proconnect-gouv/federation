@@ -11,15 +11,25 @@ export class OidcClientBaseException extends EnrichedDisplayBaseException {
     super(error);
 
     const emailSubject = encodeURIComponent('Erreur de connexion');
+    const idpName = 'Passerelle Fédération Éducation Recherche';
+    const humanReadableCurrentDate = new Date().toLocaleString('fr-FR', {
+      timeZone: 'Europe/Paris',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short',
+    });
     const emailBody = encodeURIComponent(`
 Bonjour,
 
-Je vous signale une erreur que j’ai rencontrée sur le fournisseur d’identité lors d’une tentative de connexion avec ProConnect.
+Je vous signale une erreur que j’ai rencontrée sur le fournisseur d’identité « ${idpName} » lors d’une tentative de connexion avec ProConnect.
 
-Voici le message d’erreur reçu par ProConnect :
+Voici le message d’erreur transmis par le fournisseur d'identité à ProConnect : "${this.message}"
 
-- timestamp: "${new Date().toISOString()}"
-- message: "${this.message}"
+L'erreur a été reçue à la date suivante : "${humanReadableCurrentDate}"
 
 Cordialement,
 `);
