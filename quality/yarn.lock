@@ -112,23 +112,22 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
-"@badeball/cypress-cucumber-preprocessor@24.0.0":
-  version "24.0.0"
-  resolved "https://registry.yarnpkg.com/@badeball/cypress-cucumber-preprocessor/-/cypress-cucumber-preprocessor-24.0.0.tgz#198d1e35af3adc4f2b01e8904b6277ef11b8d42b"
-  integrity sha512-WjmmnjkN49E52vp65TldsbiP3WtgTp7JQDZal8qNCHpnjmGjBW70JjIUL4/RfvxujZIUDx13W/VFiPTlG0FhRw==
+"@badeball/cypress-cucumber-preprocessor@24.0.1":
+  version "24.0.1"
+  resolved "https://registry.yarnpkg.com/@badeball/cypress-cucumber-preprocessor/-/cypress-cucumber-preprocessor-24.0.1.tgz#91422db35080574387d3290ab129e8ad8c9105ad"
+  integrity sha512-pZl/sMXbOHihStjCEDrO5cQbcxJw8QteHGamPg+fAjkg2M6PHYqu7aGToK9P2D4lBP0ChoMIFM2/kbysQRmJyw==
   dependencies:
-    "@cucumber/ci-environment" "^12.0.0"
+    "@cucumber/ci-environment" "^13.0.0"
     "@cucumber/cucumber" "^12.0.0"
-    "@cucumber/cucumber-expressions" "^18.0.0"
-    "@cucumber/gherkin" "^37.0.0"
-    "@cucumber/html-formatter" "^22.2.0"
+    "@cucumber/cucumber-expressions" "^19.0.0"
+    "@cucumber/gherkin" "^38.0.0"
+    "@cucumber/html-formatter" "^23.0.0"
     "@cucumber/message-streams" "^4.0.1"
-    "@cucumber/messages" "^31.0.0"
-    "@cucumber/pretty-formatter" "^1.0.1"
-    "@cucumber/tag-expressions" "^8.0.0"
+    "@cucumber/messages" "^32.0.0"
+    "@cucumber/pretty-formatter" "^3.0.0"
+    "@cucumber/tag-expressions" "^9.0.0"
     "@jridgewell/trace-mapping" "^0.3.31"
     base64-js "^1.5.1"
-    chalk "^4.1.2"
     cli-table "^0.3.11"
     common-ancestor-path "^2.0.0"
     cosmiconfig "^9.0.0"
@@ -167,15 +166,22 @@
   resolved "https://registry.yarnpkg.com/@cucumber/ci-environment/-/ci-environment-10.0.1.tgz#c8584f1d4a619e4318cf60c01b838db096d72ccd"
   integrity sha512-/+ooDMPtKSmvcPMDYnMZt4LuoipfFfHaYspStI4shqw8FyKcfQAmekz6G+QKWjQQrvM+7Hkljwx58MEwPCwwzg==
 
-"@cucumber/ci-environment@^12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/ci-environment/-/ci-environment-12.0.0.tgz#8a7f8a46a88b88fa78beda415fb2c64952208e20"
-  integrity sha512-SqCEnbCNl3zCXCFpqGUuoaSNhLC0jLw4tKeFcAxTw9MD/QRlJjeAC/fyvVLFuXuSq0OunJlFfxLu+Z3HE+oLPg==
+"@cucumber/ci-environment@^13.0.0":
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/ci-environment/-/ci-environment-13.0.0.tgz#0a9c4e279814af864cd1591c4c16f284e14af39b"
+  integrity sha512-cs+3NzfNkGbcmHPddjEv4TKFiBpZRQ6WJEEufB9mw+ExS22V/4R/zpDSEG+fsJ/iSNCd6A2sATdY8PFOyY3YnA==
 
-"@cucumber/cucumber-expressions@18.0.1", "@cucumber/cucumber-expressions@^18.0.0":
+"@cucumber/cucumber-expressions@18.0.1":
   version "18.0.1"
   resolved "https://registry.yarnpkg.com/@cucumber/cucumber-expressions/-/cucumber-expressions-18.0.1.tgz#0899cbda2ed5546dbaa0e40f0c754b6e3bd1bb69"
   integrity sha512-NSid6bI+7UlgMywl5octojY5NXnxR9uq+JisjOrO52VbFsQM6gTWuQFE8syI10KnIBEdPzuEUSVEeZ0VFzRnZA==
+  dependencies:
+    regexp-match-indices "1.0.2"
+
+"@cucumber/cucumber-expressions@^19.0.0":
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/cucumber-expressions/-/cucumber-expressions-19.0.0.tgz#562c932b1e6808485e4a45bf9cbcc93cdc3b1d45"
+  integrity sha512-4FKoOQh2Uf6F6/Ln+1OxuK8LkTg6PyAqekhf2Ix8zqV2M54sH+m7XNJNLhOFOAW/t9nxzRbw2CcvXbCLjcvHZg==
   dependencies:
     regexp-match-indices "1.0.2"
 
@@ -258,22 +264,22 @@
   dependencies:
     "@cucumber/messages" ">=19.1.4 <=26"
 
-"@cucumber/gherkin@^37.0.0":
-  version "37.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-37.0.0.tgz#df64db07e3a31a0444497351cfb490838d48331c"
-  integrity sha512-vKJVJ6h4HCktG870wgYUUskNpFxbFI0WmAkVLPTz1LlLwJX7/KOBqFcr2/L3u0pPoHjbLRW+IpbiXLT2T13/wg==
+"@cucumber/gherkin@^38.0.0":
+  version "38.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-38.0.0.tgz#6c74388f95694e4c92762aeddf3d5638dbedf540"
+  integrity sha512-duEXK+KDfQUzu3vsSzXjkxQ2tirF5PRsc1Xrts6THKHJO6mjw4RjM8RV+vliuDasmhhrmdLcOcM7d9nurNTJKw==
   dependencies:
-    "@cucumber/messages" ">=31.0.0 <32"
+    "@cucumber/messages" ">=31.0.0 <33"
 
 "@cucumber/html-formatter@21.14.0":
   version "21.14.0"
   resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-21.14.0.tgz#beb29b66892189f8e242243aa8b807f7b9dc1c6c"
   integrity sha512-vQqbmQZc0QiN4c+cMCffCItpODJlOlYtPG7pH6We096dBOa7u0ttDMjT6KrMAnQlcln54rHL46r408IFpuznAw==
 
-"@cucumber/html-formatter@^22.2.0":
-  version "22.2.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-22.2.0.tgz#032be6919259a91cb60f14ce51eb0aecb1302ed0"
-  integrity sha512-fUNC/KngTIz+hAQ2Yr4XjdYq+MO60PwK9SidxBQ54jNI1Vw7erlgsPq0TOWneCIvdjU3qp+YDqYG1hw3zuUuDA==
+"@cucumber/html-formatter@^23.0.0":
+  version "23.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-23.0.0.tgz#066f548f55274b58b67b4930836bd73579a9bf07"
+  integrity sha512-WwcRzdM8Ixy4e53j+Frm3fKM5rNuIyWUfy4HajEN+Xk/YcjA6yW0ACGTFDReB++VDZz/iUtwYdTlPRY36NbqJg==
 
 "@cucumber/junit-xml-formatter@0.8.1":
   version "0.8.1"
@@ -310,10 +316,10 @@
     reflect-metadata "0.2.2"
     uuid "10.0.0"
 
-"@cucumber/messages@>=31.0.0 <32", "@cucumber/messages@^31.0.0":
-  version "31.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-31.0.0.tgz#8378fe53183390490b516e3b617137dfbe5a3cab"
-  integrity sha512-Dqhatp4AjMsH9SREfWz3Q8nlGuwJMTW7YAW5L3OzRId86ZUEu/a8vIL1RO2c0agQefuBS2SVH9fEZ66ovrMYRA==
+"@cucumber/messages@>=31.0.0 <33", "@cucumber/messages@^32.0.0":
+  version "32.2.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-32.2.0.tgz#a6cff1646366af60e0202e934d6f43f8ccce877f"
+  integrity sha512-oYp1dgL2TByYWL51Z+rNm+/mFtJhiPU9WS03goes9EALb8d9GFcXRbG1JluFLFaChF1YDqIzLac0kkC3tv1DjQ==
   dependencies:
     class-transformer "0.5.1"
     reflect-metadata "0.2.2"
@@ -328,7 +334,7 @@
     reflect-metadata "0.2.2"
     uuid "11.0.5"
 
-"@cucumber/pretty-formatter@1.0.1", "@cucumber/pretty-formatter@^1.0.1":
+"@cucumber/pretty-formatter@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@cucumber/pretty-formatter/-/pretty-formatter-1.0.1.tgz#65d6c1df436920036a7bd02d08cb44d20e7af0ab"
   integrity sha512-A1lU4VVP0aUWdOTmpdzvXOyEYuPtBDI0xYwYJnmoMDplzxMdhcHk86lyyvYDoMoPzzq6OkOE3isuosvUU4X7IQ==
@@ -337,6 +343,22 @@
     cli-table3 "^0.6.0"
     figures "^3.2.0"
     ts-dedent "^2.0.0"
+
+"@cucumber/pretty-formatter@^3.0.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/pretty-formatter/-/pretty-formatter-3.2.0.tgz#22389a68ed4e1be96e707a970a45de09ba45e5ab"
+  integrity sha512-QN+UwKHMGs/PwDCu/CU6Q9F89SvMgS2Gh9GU05CFNDE/asJjhCYdh0IksfFZfwPcbJ/3WxcqXLuNzUws0npPgw==
+  dependencies:
+    "@cucumber/query" "15.0.1"
+    luxon "^3.7.2"
+
+"@cucumber/query@15.0.1":
+  version "15.0.1"
+  resolved "https://registry.yarnpkg.com/@cucumber/query/-/query-15.0.1.tgz#91b701121ba95caf7d0e6d9de95041ec3396d297"
+  integrity sha512-FMfT3orJblRsOxvU2doECBvQmauizYlj+5JsM8atAKKPbnQTj7v2/OrnuykvQpfZNBf19DYbRq1e832vllRP/g==
+  dependencies:
+    "@teppeis/multimaps" "3.0.0"
+    lodash.sortby "^4.7.0"
 
 "@cucumber/query@^13.0.2":
   version "13.1.0"
@@ -350,10 +372,10 @@
   resolved "https://registry.yarnpkg.com/@cucumber/tag-expressions/-/tag-expressions-6.2.0.tgz#9cd13c242b01b98a08142ed4987860b0b7e1d893"
   integrity sha512-KIF0eLcafHbWOuSDWFw0lMmgJOLdDRWjEL1kfXEWrqHmx2119HxVAr35WuEd9z542d3Yyg+XNqSr+81rIKqEdg==
 
-"@cucumber/tag-expressions@^8.0.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/tag-expressions/-/tag-expressions-8.1.0.tgz#0e83385f24059369b6568e192ad8001da6b8fe94"
-  integrity sha512-UFeOVUyc711/E7VHjThxMwg3jbGod9TlbM1gxNixX/AGDKg82Eha4cE0tKki3GGUs7uB2NyI+hQAuhB8rL2h5A==
+"@cucumber/tag-expressions@^9.0.0":
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/tag-expressions/-/tag-expressions-9.1.0.tgz#5c63cf716b6d688f140d0e4c0cc858bfd5703618"
+  integrity sha512-bvHjcRFZ+J1TqIa9eFNO1wGHqwx4V9ZKV3hYgkuK/VahHx73uiP4rKV3JVrvWSMrwrFvJG6C8aEwnCWSvbyFdQ==
 
 "@cypress/request@^3.0.9":
   version "3.0.9"
@@ -3998,6 +4020,11 @@ lodash.once@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
   integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
+
+lodash.sortby@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
+  integrity sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==
 
 lodash@^4.17.21, lodash@^4.17.23, lodash@^4.17.4:
   version "4.17.23"
