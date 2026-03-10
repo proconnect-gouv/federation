@@ -31,6 +31,7 @@ const config: Config = {
       },
     ],
   },
+  transformIgnorePatterns: ['node_modules/(?!uuid)'],
   coverageDirectory: './coverage',
   coverageThreshold: {
     global: {
