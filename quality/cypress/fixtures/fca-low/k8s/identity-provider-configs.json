@@ -12,7 +12,7 @@
     "emails": "test1@yopmail.com\ntest2@yopmail.com",
     "siret": "81801912700021"
   },
-    "bdd-idp-moncomptepro": {
+  "bdd-idp-moncomptepro": {
     "name": "bdd-idp-moncomptepro",
     "title": "FI de test 2",
     "issuer": "http://pci-local.proconnect.127.0.0.1.nip.io",
