@@ -1,7 +1,7 @@
 #language: fr
 @ignoreInteg01
 Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est préempté
-  Scénario: Chapitre 1: création d'un compte ProConnect Identité (ex MonComptePro)
+  Plan du Scénario: Chapitre 1: création d'un compte ProConnect Identité (ex MonComptePro)
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "albus@example.com"
@@ -17,10 +17,10 @@ Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est
     Etant donné que je navigue sur la page login d'exploitation
     Et que je me connecte à exploitation en tant que "exploitant"
     Et que je navigue vers la page gestion des fournisseurs d'identité
-    Et que je clique sur le bouton de modification du FI "fia2-low"
+    Et que je clique sur le bouton de modification du FI "<idpName>"
     Et que j'ajoute la valeur "example.com" au champ "fqdns" du formulaire de modification de FI
     Quand je valide le formulaire de modification de FI
-    Alors le message de confirmation de modification du FI "fia2-low" est affiché
+    Alors le message de confirmation de modification du FI "<idpName>" est affiché
 
     # Chapitre 3: connexion avec le nouveau FI, mais sub identique
     Etant donné que je navigue sur la page fournisseur de service
@@ -33,15 +33,34 @@ Fonctionnalité: Réconciliation d'identité d'un usager PCI dont le domaine est
     Alors je suis connecté au fournisseur de service
     Et le sub transmis au fournisseur de service est identique au sub mémorisé
 
-  Scénario: Epilogue - nettoyage
+    Exemples:
+      | idpName  |
+      | fia2-low |
+
+    @k8s @ignoreInteg01 @ignoreDocker
+    Exemples:
+      | idpName                  |
+      | Fournisseur d'identité 2 |
+
+  Plan du Scénario: Epilogue - nettoyage
     Etant donné que je navigue sur la page login d'exploitation
     Et que je me connecte à exploitation en tant que "exploitant"
     Et que je navigue vers la page gestion des fournisseurs d'identité
-    Et que je clique sur le bouton de modification du FI "fia2-low"
+    Et que je clique sur le bouton de modification du FI "<idpName>"
     Et que je retire la valeur "example.com" du champ "fqdns" du formulaire de modification de FI
     Quand je valide le formulaire de modification de FI
-    Alors le message de confirmation de modification du FI "fia2-low" est affiché
+    Alors le message de confirmation de modification du FI "<idpName>" est affiché
 
+    Exemples:
+      | idpName  |
+      | fia2-low |
+
+    @k8s @ignoreInteg01 @ignoreDocker
+    Exemples:
+      | idpName                  |
+      | Fournisseur d'identité 2 |
+
+  @k8s
   Scénario: La réconciliation ignore la casse de l'adresse email
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
