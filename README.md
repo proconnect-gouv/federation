@@ -190,7 +190,7 @@ yarn test
 ### Prerequisites
 
 ```bash
-cd $PC_ROOT/federation/quality/fca
+cd $PC_ROOT/federation/quality
 yarn install --frozen-lockfile
 ```
 
@@ -198,7 +198,7 @@ yarn install --frozen-lockfile
 
 ```bash
 dks switch medium
-cd $PC_ROOT/federation/quality/fca
+cd $PC_ROOT/federation/quality
 yarn start:low
 ```
 
@@ -214,7 +214,7 @@ yarn test:e2e:open
 
 ```bash
 dks switch medium
-cd $PC_ROOT/federation/quality/fca
+cd $PC_ROOT/federation/quality
 yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @ignore'
 ```
 
@@ -222,7 +222,7 @@ yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @ignore'
 
 ```bash
 dks switch hybridge
-cd $PC_ROOT/federation/quality/fca
+cd $PC_ROOT/federation/quality
 yarn test:low:chrome-desktop --env TAGS='@hybridge'
 ```
 
@@ -230,14 +230,14 @@ yarn test:low:chrome-desktop --env TAGS='@hybridge'
 
 ```bash
 dks switch small
-cd $PC_ROOT/federation/quality/fca
+cd $PC_ROOT/federation/quality
 yarn test:low:snapshot
 ```
 
 ## Run other tests
 
 ```bash
-cd $PC_ROOT/federation/quality/fca
+cd $PC_ROOT/federation/quality
 yarn lint --fix
 yarn prettier --write
 cd $PC_ROOT/federation/back
@@ -249,7 +249,7 @@ yarn lint --fix
 ## Run test against integ01 env
 
 ```bash
-cd $PC_ROOT/federation/quality/fca
+cd $PC_ROOT/federation/quality
 # Get the credentials from a team member
 CYPRESS_TEST_ENV=integ01 CYPRESS_EXPLOIT_USER_NAME=proconnect-test-local CYPRESS_EXPLOIT_USER_PASS='xxx' CYPRESS_EXPLOIT_USER_TOTP='xxx' yarn start:low
 ```
