@@ -50,7 +50,7 @@
     "axios": "^1.13.5",
     "body-parser": "^2.2.2",
     "class-transformer": "^0.5.1",
-    "class-validator": "proconnect-gouv/class-validator#build-0.14.3-proconnect.1",
+    "class-validator": "proconnect-gouv/class-validator#build-0.15.1-proconnect.1",
     "cookie-parser": "^1.4.7",
     "deep-freeze": "^0.0.1",
     "ejs": "^4.0.1",
