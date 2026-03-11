@@ -564,10 +564,10 @@
     "@eslint/core" "^1.1.0"
     levn "^0.4.1"
 
-"@gouvfr/dsfr@^1.14.1":
-  version "1.14.1"
-  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.14.1.tgz#9e0fb1efbfcb9c21cbb2dfbb6baf15924c8ade1c"
-  integrity sha512-UVR5yE+v2PAr3TVl1xi8B6sboRIbRP4AIwD66KW+AnAUfAKHpJGVhwyNR6v+/L5FXWXli9vuG2WOnJ9FcMTiUg==
+"@gouvfr/dsfr@^1.14.4":
+  version "1.14.4"
+  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.14.4.tgz#8def01691475a67af70df53f3adf46021753b742"
+  integrity sha512-Ca17apmTyAF2tMFwMcLwQN7fTlbfMFeyYSLUIUmjoSg1XVF4vDDkbvvKBpWJWaoTLDSFZBbvvHzcDyxw9wSkLA==
 
 "@humanfs/core@^0.19.1":
   version "0.19.1"
