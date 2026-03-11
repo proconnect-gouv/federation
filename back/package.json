@@ -70,7 +70,7 @@
     "openid-client-v6": "npm:openid-client@^6.8.1",
     "otplib": "^12.0.1",
     "pg": "^8.18.0",
-    "pino": "^9.9.5",
+    "pino": "^10.3.1",
     "quick-lru": "^7.3.0",
     "reflect-metadata": "^0.2.1",
     "retry": "^0.13.1",
