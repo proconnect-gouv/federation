@@ -104,7 +104,7 @@
     "jest-mock": "^30.2.0",
     "mongodb-memory-server": "^11.0.1",
     "prettier": "^3.7.4",
-    "ts-jest": "^29.4.5",
+    "ts-jest": "^29.4.6",
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "4.2.0",
