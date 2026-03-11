@@ -82,7 +82,7 @@
     "@eslint-community/eslint-plugin-eslint-comments": "^4.7.1",
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^10.0.1",
-    "@nestjs/cli": "^11.0.7",
+    "@nestjs/cli": "^11.0.16",
     "@nestjs/testing": "^10.4.22",
     "@types/deep-freeze": "^0.1.2",
     "@types/express": "^5.0.6",
