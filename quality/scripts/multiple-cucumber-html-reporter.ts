@@ -2,10 +2,10 @@
  * Generate a HTML report
  * @link https://github.com/WasiqB/multiple-cucumber-html-reporter
  */
-import reporter from 'multiple-cucumber-html-reporter';
+import reporter from "multiple-cucumber-html-reporter";
 
 const gitLabProjectUrl =
-  'https://gitlab.dev-franceconnect.fr/france-connect/fc';
+  "https://gitlab.dev-franceconnect.fr/france-connect/fc";
 const gitLabJobUrl = `${gitLabProjectUrl}/-/jobs/`;
 const gitLabMergeRequestUrl = `${gitLabProjectUrl}/-/merge_requests/`;
 
@@ -13,41 +13,41 @@ const gitLabMergeRequestUrl = `${gitLabProjectUrl}/-/merge_requests/`;
 const [
   ,
   ,
-  projectDir = '.',
+  projectDir = ".",
   reportPath = `${projectDir}/cypress/reports/cucumber/html-report`,
 ] = process.argv;
 
 // Fetch Test Run Context
-const testEnv = process.env.CYPRESS_TEST_ENV || 'docker';
-const gitBranch = process.env.CI_COMMIT_REF_NAME || '';
-const gitCommit = process.env.CI_COMMIT_SHORT_SHA || '';
-const gitMergeRequest = process.env.CI_OPEN_MERGE_REQUESTS || 'N/A';
-const gitBuild = process.env.CI_JOB_ID || 'local';
-const device = gitBuild === 'local' ? 'Docker Local' : 'Docker GitLab';
+const testEnv = process.env.CYPRESS_TEST_ENV || "docker";
+const gitBranch = process.env.CI_COMMIT_REF_NAME || "";
+const gitCommit = process.env.CI_COMMIT_SHORT_SHA || "";
+const gitMergeRequest = process.env.CI_OPEN_MERGE_REQUESTS || "N/A";
+const gitBuild = process.env.CI_JOB_ID || "local";
+const device = gitBuild === "local" ? "Docker Local" : "Docker GitLab";
 
 // Add metadata
 
 const reportName = `fca-low ${gitBranch} (${testEnv})`;
 
-const gitMergeRequestId = gitMergeRequest.split('!').pop();
+const gitMergeRequestId = gitMergeRequest.split("!").pop();
 const gitMergeRequestLink =
-  gitMergeRequest === 'N/A'
-    ? 'N/A'
+  gitMergeRequest === "N/A"
+    ? "N/A"
     : `<a href="${gitLabMergeRequestUrl}${gitMergeRequestId}">${gitMergeRequest}</a>`;
 const gitBuildLink =
-  gitBuild === 'local'
+  gitBuild === "local"
     ? gitBuild
     : `<a href="${gitLabJobUrl}${gitBuild}">${gitBuild}</a>`;
 const customData = {
   data: [
-    { label: 'Project', value: 'fca-low' },
-    { label: 'Environment', value: testEnv },
-    { label: 'Branch', value: gitBranch },
-    { label: 'Commit', value: gitCommit },
-    { label: 'Merge Request', value: gitMergeRequestLink },
-    { label: 'Build', value: gitBuildLink },
+    { label: "Project", value: "fca-low" },
+    { label: "Environment", value: testEnv },
+    { label: "Branch", value: gitBranch },
+    { label: "Commit", value: gitCommit },
+    { label: "Merge Request", value: gitMergeRequestLink },
+    { label: "Build", value: gitBuildLink },
   ],
-  title: 'Run info',
+  title: "Run info",
 };
 
 /**
@@ -57,13 +57,13 @@ const customData = {
  */
 const metadata = {
   browser: {
-    name: 'chrome',
-    version: '116',
+    name: "chrome",
+    version: "116",
   },
   device,
   platform: {
-    name: 'linux',
-    version: 'Debian 10',
+    name: "linux",
+    version: "Debian 10",
   },
 };
 

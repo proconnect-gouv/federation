@@ -19,17 +19,17 @@ jobs:
           node-version-file: ./back/package.json
 
       - name: Install dependencies
-        working-directory: ./quality/fca
+        working-directory: ./quality
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
 
       - name: Cypress install
-        working-directory: ./quality/fca
+        working-directory: ./quality
         run: |
           yarn cypress install
           yarn cypress verify
 
       - name: Start cypress e2e tests
-        working-directory: ./quality/fca
+        working-directory: ./quality
         env:
           CYPRESS_PLATFORM: 'fca-low'
           CYPRESS_TEST_ENV: 'integ01'
@@ -47,6 +47,6 @@ jobs:
         with:
           name: cypress-integration-artifacts
           path: |
-            quality/fca/cypress/screenshots
-            quality/fca/cypress/videos
-            quality/fca/cypress/logs
+            quality/cypress/screenshots
+            quality/cypress/videos
+            quality/cypress/logs
