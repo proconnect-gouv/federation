@@ -3,4 +3,4 @@ interface GristRecord<T> {
   fields: T;
 }
 
-export { GristRecord };
+export { type GristRecord };
