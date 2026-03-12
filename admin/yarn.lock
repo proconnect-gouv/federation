@@ -945,10 +945,10 @@
   resolved "https://registry.yarnpkg.com/@nestjs/axios/-/axios-4.0.1.tgz#7ff73f47727b67dc04410ac6e9b3329401ebbb65"
   integrity sha512-68pFJgu+/AZbWkGu65Z3r55bTsCPlgyKaV4BSG8yUAD72q1PPuyVRgUwFv6BxdnibTUHlyxm06FmYWNC+bjN7A==
 
-"@nestjs/common@^11.1.15":
-  version "11.1.15"
-  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-11.1.15.tgz#54ae753d59e990bffe5fab13dab6fb7a9196ef1a"
-  integrity sha512-51sqIj83xEhmxi3D+QA+bo+hs+YTnZ5eJvOxa34VFiSlilT8DEF83kZc4t1t3arO8PjfDFI+LaTQQkx0gm1QGA==
+"@nestjs/common@^11.1.16":
+  version "11.1.16"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-11.1.16.tgz#1f4061f66d7ae63e407f8d2be2aaeaf83097332b"
+  integrity sha512-JSIeW+USuMJkkcNbiOdcPkVCeI3TSnXstIVEPpp3HiaKnPRuSbUUKm9TY9o/XpIcPHWUOQItAtC5BiAwFdVITQ==
   dependencies:
     uid "2.0.2"
     file-type "21.3.0"
