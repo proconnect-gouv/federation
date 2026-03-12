@@ -2804,9 +2804,9 @@ class-transformer@^0.5.1:
   resolved "https://registry.npmjs.org/class-transformer/-/class-transformer-0.5.1.tgz"
   integrity sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==
 
-class-validator@proconnect-gouv/class-validator#build-0.14.3-proconnect.1:
-  version "0.14.3-proconnect.1"
-  resolved "https://codeload.github.com/proconnect-gouv/class-validator/tar.gz/9b5510f8344e41721e278e38b9637ae18ea61e1e"
+class-validator@proconnect-gouv/class-validator#build-0.15.1-proconnect.1:
+  version "0.15.1-proconnect.1"
+  resolved "https://codeload.github.com/proconnect-gouv/class-validator/tar.gz/5290ca09bb4a39051d19c4a5ec6cf2f881bec168"
   dependencies:
     "@types/validator" "^13.15.3"
     libphonenumber-js "^1.11.1"
