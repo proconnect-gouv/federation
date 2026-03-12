@@ -51,7 +51,7 @@
     "@nestjs/core": "^11.1.15",
     "@nestjs/microservices": "^11.1.9",
     "@nestjs/passport": "^11.0.5",
-    "@nestjs/platform-express": "^11.1.14",
+    "@nestjs/platform-express": "^11.1.15",
     "@nestjs/typeorm": "^11.0.0",
     "@popperjs/core": "^2.11.8",
     "amqp-connection-manager": "^5.0.0",
