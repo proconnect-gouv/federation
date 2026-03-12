@@ -73,3 +73,11 @@ updates:
       - dependencies
     schedule:
       interval: "weekly"
+  - package-ecosystem: "pip"
+    cooldown:
+      default-days: 7
+    directory: "/pcdbapi"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
