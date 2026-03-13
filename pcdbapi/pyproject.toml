@@ -7,7 +7,7 @@ dependencies = [
     "fastapi==0.135.1",
     "motor==3.7.0",
     "uvicorn==0.34.0",
-    "pydantic==2.10.6",
+    "pydantic==2.12.5",
     "cryptography==46.0.5"
 ]
 
