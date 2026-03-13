@@ -95,7 +95,7 @@
     "validator": "^13.15.26"
   },
   "devDependencies": {
-    "@nestjs/testing": "^11.1.15",
+    "@nestjs/testing": "^11.1.16",
     "@parcel/transformer-less": "2.16.4",
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.6",
