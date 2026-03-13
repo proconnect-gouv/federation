@@ -55,7 +55,7 @@ describe('OidcClientUtilsService', () => {
 
   const oidcClientIssuerServiceMock = {
     getClient: jest.fn(),
-    getSupportEmail: jest.fn(),
+    getIdpDataForError: jest.fn(),
     isDefaultIdp: jest.fn(),
   };
 
@@ -65,6 +65,8 @@ describe('OidcClientUtilsService', () => {
   };
 
   const idpSupportEmailMock = 'support-fi@example.com';
+
+  const idpNameMock = 'Mon fournisseur d’identité';
 
   const configServiceMock = {
     get: jest.fn(),
@@ -158,6 +160,11 @@ describe('OidcClientUtilsService', () => {
     });
 
     oidcClientIssuerServiceMock.getClient.mockResolvedValue(clientMock);
+
+    oidcClientIssuerServiceMock.getIdpDataForError.mockResolvedValue({
+      supportEmail: idpSupportEmailMock,
+      idpName: idpNameMock,
+    });
 
     oidcClientConfigServiceMock.get.mockResolvedValue({
       issuer: 'http://foo.bar',
@@ -575,6 +582,7 @@ describe('OidcClientUtilsService', () => {
         throw new Error('Unknown Error');
       });
       const expectedError = new OidcClientGetEndSessionUrlException(
+        idpNameMock,
         idpSupportEmailMock,
         'Unknown Error',
       );

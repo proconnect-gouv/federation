@@ -7,19 +7,28 @@ export class OidcClientBaseException extends EnrichedDisplayBaseException {
     'authentication aborted due to a technical error on the authorization server';
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
 
-  constructor(contactEmail: string, error?: Error | string) {
+  constructor(idpName: string, contactEmail: string, error?: Error | string) {
     super(error);
 
     const emailSubject = encodeURIComponent('Erreur de connexion');
+    const humanReadableCurrentDate = new Date().toLocaleString('fr-FR', {
+      timeZone: 'Europe/Paris',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short',
+    });
     const emailBody = encodeURIComponent(`
 Bonjour,
 
-Je vous signale une erreur que j’ai rencontrée sur le fournisseur d’identité lors d’une tentative de connexion avec ProConnect.
+Je vous signale une erreur que j’ai rencontrée sur le fournisseur d’identité « ${idpName} » lors d’une tentative de connexion avec ProConnect.
 
-Voici le message d’erreur reçu par ProConnect :
+Voici le message d’erreur transmis par le fournisseur d'identité à ProConnect : « ${this.message} »
 
-- timestamp: "${new Date().toISOString()}"
-- message: "${this.message}"
+L'erreur a été reçue à la date suivante : « ${humanReadableCurrentDate} »
 
 Cordialement,
 `);

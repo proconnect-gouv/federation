@@ -21,14 +21,15 @@ describe('OidcClientService', () => {
       getUserInfo: jest.fn(),
       getEndSessionUrl: jest.fn(),
       hasEndSessionUrl: jest.fn(),
-      getSupportEmail: jest.fn(),
+      getIdpDataForError: jest.fn(),
     } as unknown as jest.Mocked<OidcClientUtilsService>;
     issuerServiceMock = {
-      getSupportEmail: jest.fn(),
+      getIdpDataForError: jest.fn(),
     } as unknown as jest.Mocked<OidcClientIssuerService>;
-    issuerServiceMock.getSupportEmail.mockResolvedValue(
-      'support-pcf@example.com',
-    );
+    issuerServiceMock.getIdpDataForError.mockResolvedValue({
+      supportEmail: 'support-pcf@example.com',
+      idpName: 'someIdpName',
+    });
 
     service = new OidcClientService(utilsMock, issuerServiceMock, loggerMock);
   });

@@ -46,14 +46,14 @@ export class OidcClientIssuerService implements OnModuleInit {
     const idpMetadata = configuration.providers.find(
       ({ uid }) => uid === issuerId,
     );
-    const supportEmail = await this.getSupportEmail(issuerId);
+    const { supportEmail, idpName } = await this.getIdpDataForError(issuerId);
 
     if (!idpMetadata) {
-      throw new OidcClientIdpNotFoundException(supportEmail);
+      throw new OidcClientIdpNotFoundException(idpName, supportEmail);
     }
 
     if (!idpMetadata.active) {
-      throw new OidcClientIdpDisabledException(supportEmail);
+      throw new OidcClientIdpDisabledException(idpName, supportEmail);
     }
 
     const { redirectUri, postLogoutRedirectUri } = configuration;
@@ -71,11 +71,15 @@ export class OidcClientIssuerService implements OnModuleInit {
     return result;
   }
 
-  async getSupportEmail(idpId: string) {
+  async getIdpDataForError(idpId: string) {
     const { supportEmail: pcfSupportEmail } = this.config.get<AppConfig>('App');
 
     const idpMetadata = await this.identityProvider.getById(idpId);
-    return idpMetadata.supportEmail || pcfSupportEmail;
+
+    return {
+      supportEmail: idpMetadata.supportEmail || pcfSupportEmail,
+      idpName: idpMetadata.title,
+    };
   }
 
   isDefaultIdp(idpId: string): boolean {
@@ -96,9 +100,14 @@ export class OidcClientIssuerService implements OnModuleInit {
       try {
         return await this.IssuerProxy.discover(idpMetadata.discoveryUrl);
       } catch (error) {
-        const supportEmail = await this.getSupportEmail(issuerId);
+        const { supportEmail, idpName } =
+          await this.getIdpDataForError(issuerId);
 
-        throw new OidcClientIssuerDiscoveryFailedException(supportEmail, error);
+        throw new OidcClientIssuerDiscoveryFailedException(
+          idpName,
+          supportEmail,
+          error,
+        );
       }
     }
 

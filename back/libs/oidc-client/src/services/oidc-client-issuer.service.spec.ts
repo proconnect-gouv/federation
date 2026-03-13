@@ -134,7 +134,7 @@ describe('OidcClientIssuerService', () => {
     });
   });
 
-  describe('getSupportEmail', () => {
+  describe('getIdpDataForError', () => {
     it('should return pcf support email if not defined', async () => {
       // Given
       const idpId = 'someIdpId';
@@ -142,13 +142,17 @@ describe('OidcClientIssuerService', () => {
 
       identityProviderServiceMock.getById.mockResolvedValueOnce({
         supportEmail: undefined,
+        title: 'Mon fournisseur d’identité',
       });
 
       // When
-      const result = await service.getSupportEmail(idpId);
+      const result = await service.getIdpDataForError(idpId);
 
       // Then
-      expect(result).toBe(pcfSupportEmail);
+      expect(result).toEqual({
+        supportEmail: pcfSupportEmail,
+        idpName: 'Mon fournisseur d’identité',
+      });
     });
   });
 
@@ -296,6 +300,7 @@ describe('OidcClientIssuerService', () => {
       issuerProxyMock['discover'] = jest.fn().mockRejectedValue(new Error());
       identityProviderServiceMock.getById.mockResolvedValueOnce({
         supportEmail: undefined,
+        idpName: 'Mon fournisseur d’identité',
       });
 
       // When
@@ -349,6 +354,7 @@ describe('OidcClientIssuerService', () => {
       });
       identityProviderServiceMock.getById.mockResolvedValueOnce({
         supportEmail: undefined,
+        idpName: 'Mon fournisseur d’identité',
       });
     });
     it('should return provider in config', async () => {
