@@ -6,10 +6,26 @@ const env = new ConfigParser(process.env, 'App');
 export default {
   name: 'CORE_FCA_LOW',
   urlPrefix: '/api/v2',
-  assetsPaths: env.json('ASSETS_PATHS'),
-  assetsDsfrPaths: env.json('DSFR_ASSETS_PATHS'),
+  assetsDsfrPaths: [
+    {
+      assetPath: '../../../node_modules/@gouvfr/dsfr/dist/dsfr',
+      prefix: '/dsfr',
+    },
+    {
+      assetPath: '../../../node_modules/@gouvfr/dsfr/dist/fonts',
+      prefix: '/fonts',
+    },
+    {
+      assetPath: '../../../node_modules/@gouvfr/dsfr/dist/icons',
+      prefix: '/icons',
+    },
+    {
+      assetPath: '../../../node_modules/@gouvfr/dsfr/dist/utility/icons',
+      prefix: '/utility',
+    },
+  ],
+
   assetsCacheTtl: env.number('ASSETS_CACHE_TTL'),
-  viewsPaths: env.json('VIEWS_PATHS'),
   httpsOptions: {
     key: env.file('HTTPS_SERVER_KEY', true),
     cert: env.file('HTTPS_SERVER_CERT', true),
