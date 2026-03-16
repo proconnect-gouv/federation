@@ -55,11 +55,6 @@ export class AppConfig {
   readonly udFqdn?: string;
 
   @IsOptional()
-  @IsString({ each: true })
-  @IsArray()
-  readonly assetsPaths?: string[];
-
-  @IsOptional()
   @ValidateNested()
   @Type(() => DsfrAssets)
   readonly assetsDsfrPaths?: DsfrAssets[];
@@ -68,11 +63,6 @@ export class AppConfig {
   @IsNumber()
   @IsPositive()
   readonly assetsCacheTtl?: number;
-
-  @IsOptional()
-  @IsString({ each: true })
-  @IsArray()
-  readonly viewsPaths?: string[];
 
   @IsOptional()
   @IsString()

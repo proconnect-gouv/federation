@@ -4,30 +4,48 @@
   font-family: 'VT323';
   font-style: normal;
   font-weight: 400;
-  src: local('VT323 Regular'), local('VT323-Regular'), url(../font/vt323/pxiKyp0ihIEF2isRFJXGdg.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src:
+    local('VT323 Regular'),
+    local('VT323-Regular'),
+    url(../font/vt323/pxiKyp0ihIEF2isRFJXGdg.woff2) format('woff2');
+  unicode-range:
+    U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'Comfortaa';
   font-style: normal;
   font-weight: 400;
-  src: url(../font/comfortaa/1Pt_g8LJRfWJmhDAuUsSQamb1W0lwk4S4WjMDr0fIA9c.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url(../font/comfortaa/1Pt_g8LJRfWJmhDAuUsSQamb1W0lwk4S4WjMDr0fIA9c.woff2)
+    format('woff2');
+  unicode-range:
+    U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
 @font-face {
   font-family: 'VT323';
   font-style: normal;
   font-weight: 400;
-  src: local('VT323 Regular'), local('VT323-Regular'), url(../font/vt323/pxiKyp0ihIEF2isfFJU.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src:
+    local('VT323 Regular'),
+    local('VT323-Regular'),
+    url(../font/vt323/pxiKyp0ihIEF2isfFJU.woff2) format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+    U+FFFD;
 }
 @font-face {
   font-family: 'Comfortaa';
   font-style: normal;
   font-weight: 400;
-  src: url(../font/comfortaa/1Pt_g8LJRfWJmhDAuUsSQamb1W0lwk4S4WjMDrMfIA.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url(../font/comfortaa/1Pt_g8LJRfWJmhDAuUsSQamb1W0lwk4S4WjMDrMfIA.woff2)
+    format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+    U+FFFD;
 }
 
 body {
@@ -60,25 +78,31 @@ body {
 
           .error_title {
             font-size: 15rem;
-    
+
             p {
               position: absolute;
               top: 2rem;
               left: 2rem;
-              background-image: radial-gradient(circle closest-side, rgba(white, 0.05), transparent);
+              background-image: radial-gradient(
+                circle closest-side,
+                rgba(white, 0.05),
+                transparent
+              );
               background-position: var(--x) var(--y);
               background-repeat: no-repeat;
-              text-shadow: none; 
-              background-clip: text;  
+              text-shadow: none;
+              background-clip: text;
               transition: all 0.1s ease;
             }
           }
-    
-          .btn{
+
+          .btn {
             padding: 0.8em 1.5em;
-            border-radius: .25rem;
-            background-image: linear-gradient(to top, #007bff, #007bff);;
-            box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2), inset 0px -2px 5px 0px rgba(0,0,0,0.2);
+            border-radius: 0.25rem;
+            background-image: linear-gradient(to top, #007bff, #007bff);
+            box-shadow:
+              0px 2px 5px 0px rgba(0, 0, 0, 0.2),
+              inset 0px -2px 5px 0px rgba(0, 0, 0, 0.2);
             border: none;
             cursor: pointer;
             text-shadow: 0px 1px #343434;
@@ -108,7 +132,7 @@ body {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%,-50%);
+      transform: translate(-50%, -50%);
       text-align: center;
       padding: 10px;
       min-width: 300px;
@@ -153,7 +177,7 @@ body {
         left: 0;
       }
       .bottom {
-        background: #D68910;
+        background: #d68910;
         height: 40px;
         width: 60px;
         display: block;
@@ -182,7 +206,7 @@ body {
     }
     @media (max-width: 420px) {
       .container {
-        transform: translate(-50%,-50%) scale(0.8)
+        transform: translate(-50%, -50%) scale(0.8);
       }
       .lock.generated {
         transform: scale(0.3);
@@ -195,14 +219,14 @@ body {
    ************/
   &#not-found-exception {
     height: auto;
-    background: #5A657A;
+    background: #5a657a;
     color: white;
-  
+
     svg {
       display: block;
       margin: 0 auto;
       overflow: visible !important;
-  
+
       #robot_1_ {
         animation-name: verticalAnimation;
         animation-duration: 1s;
@@ -210,15 +234,15 @@ body {
         animation-direction: alternate;
         animation-timing-function: ease-in-out;
       }
-      
+
       #light_1_ {
         animation-name: blinkLight;
-        animation-duration: .5s;
+        animation-duration: 0.5s;
         animation-iteration-count: infinite;
         animation-direction: alternate;
         animation-timing-function: steps(2);
       }
-      
+
       #leftEye_1_,
       #rightEye_1_ {
         animation-name: blinkEye;
@@ -228,7 +252,7 @@ body {
         animation-timing-function: linear;
         transform-origin: 50% 50%;
       }
-      
+
       #leftArm_1_ {
         animation-name: moveLeftArm;
         animation-duration: 1s;
@@ -238,7 +262,7 @@ body {
         transform-origin: 50% 10%;
         transition: all;
       }
-      
+
       #rightArm_1_ {
         animation-name: moveRightArm;
         animation-duration: 1s;
@@ -247,7 +271,7 @@ body {
         animation-timing-function: ease-in-out;
         transform-origin: 50% 10%;
       }
-      
+
       #shadow_1_ {
         animation-name: shadowAnimation;
         animation-duration: 1s;
@@ -257,58 +281,88 @@ body {
         transform-origin: 50%;
       }
     }
-  
+
     div {
       text-align: center;
-  
+
       h1 {
         margin-bottom: 20px;
       }
-    
+
       p {
         font-size: 18px;
         line-height: 30px;
-    
+
         .not-found-link,
         .not-found-link:hover {
-          color: #FBD160;
+          color: #fbd160;
         }
       }
     }
 
     @keyframes wave {
-      0% { transform: rotate(120deg); }
-      100% { transform: rotate(170deg); }
+      0% {
+        transform: rotate(120deg);
+      }
+      100% {
+        transform: rotate(170deg);
+      }
     }
-    
+
     @keyframes moveLeftArm {
-      0% { transform: rotate(0); }
-      100% { transform: rotate(4deg); }
+      0% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: rotate(4deg);
+      }
     }
-    
+
     @keyframes moveRightArm {
-      0% { transform: rotate(0); }
-      100% { transform: rotate(-4deg); }
+      0% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: rotate(-4deg);
+      }
     }
-    
+
     @keyframes shadowAnimation {
-      0% { transform: scale(1); opacity: .4; }
-      100% { transform: scale(1.15); opacity: .6; }
+      0% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+      100% {
+        transform: scale(1.15);
+        opacity: 0.6;
+      }
     }
-    
+
     @keyframes verticalAnimation {
-      0% { transform: translateY(-10px); }
-      100% { transform: translateY(10px); }
+      0% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(10px);
+      }
     }
-    
+
     @keyframes blinkLight {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
-    
+
     @keyframes blinkEye {
-      0% { transform: scaleY(0) ; }
-      4% { transform: scaleY(1); }
+      0% {
+        transform: scaleY(0);
+      }
+      4% {
+        transform: scaleY(1);
+      }
     }
   }
 
@@ -319,12 +373,16 @@ body {
     background: #0414a7;
 
     .old-font {
-      font: normal 20px/1.25rem 'VT323', monospace;
+      font:
+        normal 20px/1.25rem 'VT323',
+        monospace;
       color: #e0e2f4;
     }
 
     h1 {
-      font: normal 2.75rem/1.05em 'VT323', monospace;
+      font:
+        normal 2.75rem/1.05em 'VT323',
+        monospace;
     }
 
     .bsod {
@@ -362,5 +420,3 @@ body {
     }
   }
 }
-
- 
