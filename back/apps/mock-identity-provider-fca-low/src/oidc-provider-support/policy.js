@@ -1,18 +1,18 @@
-import { get, isEmpty } from 'lodash';
-import { interactionPolicy } from 'oidc-provider';
+import { get, isEmpty } from "lodash";
+import { interactionPolicy } from "oidc-provider";
 
 const { Check, base } = interactionPolicy;
 const basePolicy = base();
 
-const loginPrompt = basePolicy.get('login');
-loginPrompt.checks.remove('essential_acr');
+const loginPrompt = basePolicy.get("login");
+loginPrompt.checks.remove("essential_acr");
 loginPrompt.checks.add(
   new Check(
-    'essential_acr',
-    'requested ACR could not be obtained',
+    "essential_acr",
+    "requested ACR could not be obtained",
     (ctx) => {
       const { oidc } = ctx;
-      const request = get(oidc.claims, 'id_token.acr', {});
+      const request = get(oidc.claims, "id_token.acr", {});
 
       if (!request || !request.essential || !request.value) {
         return Check.NO_NEED_TO_PROMPT;

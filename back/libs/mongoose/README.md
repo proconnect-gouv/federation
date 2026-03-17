@@ -19,7 +19,7 @@ This library provides helpers to watch collections changes and execute arbitrary
 To start a basic Mongo Connection, just add :
 
 ```typescript
-import { MongooseModule } from '@fc/mongoose';
+import { MongooseModule } from "@fc/mongoose";
 
 MongooseModule.forRoot();
 ```
@@ -27,23 +27,23 @@ MongooseModule.forRoot();
 You can specify a specific connection name :
 
 ```typescript
-import { MongooseModule } from '@fc/mongoose';
+import { MongooseModule } from "@fc/mongoose";
 
-MongooseModule.forRoot('MongooseLegacy');
+MongooseModule.forRoot("MongooseLegacy");
 ```
 
 > Caution: your connection name is the exact name of your config apps parameter (default is "Mongoose").
 > Exemple of config:
 
 ```yaml
-- 'Mongoose_HOSTS=host:port'
-- 'Mongoose_DATABASE=DatabaseName'
-- 'Mongoose_USER=MainUser'
-- 'Mongoose_PASSWORD=MainPasword'
-- 'Mongoose_TLS=true'
-- 'Mongoose_TLS_INSECURE=false'
-- 'Mongoose_TLS_CA_FILE=myCertificat.crt'
-- 'Mongoose_TLS_ALLOW_INVALID_HOST_NAME=false'
+- "Mongoose_HOSTS=host:port"
+- "Mongoose_DATABASE=DatabaseName"
+- "Mongoose_USER=MainUser"
+- "Mongoose_PASSWORD=MainPasword"
+- "Mongoose_TLS=true"
+- "Mongoose_TLS_INSECURE=false"
+- "Mongoose_TLS_CA_FILE=myCertificat.crt"
+- "Mongoose_TLS_ALLOW_INVALID_HOST_NAME=false"
 ```
 
 ### Models
@@ -51,17 +51,17 @@ MongooseModule.forRoot('MongooseLegacy');
 Add model with the following module :
 
 ```typescript
-import { MongooseModule } from '@fc/mongoose';
-MongooseModule.forFeature([{ name: 'Account', schema: AccountSchema }]);
+import { MongooseModule } from "@fc/mongoose";
+MongooseModule.forFeature([{ name: "Account", schema: AccountSchema }]);
 ```
 
 You can also add a specific connection name :
 
 ```typescript
-import { MongooseModule } from '@fc/mongoose';
+import { MongooseModule } from "@fc/mongoose";
 MongooseModule.forFeature(
-  [{ name: 'Account', schema: AccountSchema }],
-  'MongooseLegacy',
+  [{ name: "Account", schema: AccountSchema }],
+  "MongooseLegacy",
 );
 ```
 
@@ -78,13 +78,13 @@ watchWith(model: Model<unknown>, callback: Function): void
 The logical way to do such registration is in the NestJS `onModuleInit()` lifecycle function.
 
 ```ts
-import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
+import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
 
 @Injectable()
 class MyService {
   // 1. Inject model and helper service
   constructor(
-    @InjectModel('MyModel')
+    @InjectModel("MyModel")
     private readonly myModel,
     private readonly mongooseHelper: MongooseCollectionOperationWatcherHelper,
   ) {}

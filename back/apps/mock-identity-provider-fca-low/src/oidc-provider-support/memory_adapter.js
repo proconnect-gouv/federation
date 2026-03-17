@@ -1,5 +1,5 @@
 // Source : https://github.com/panva/node-oidc-provider/blob/357ced3924b71819be144f184861a8c78c27fde6/lib/adapters/memory_adapter.js
-import QuickLRU from 'quick-lru';
+import QuickLRU from "quick-lru";
 
 let storage = new QuickLRU({ maxSize: 1000 });
 
@@ -16,11 +16,11 @@ function userCodeKeyFor(userCode) {
 }
 
 const grantable = new Set([
-  'AccessToken',
-  'AuthorizationCode',
-  'RefreshToken',
-  'DeviceCode',
-  'BackchannelAuthenticationRequest',
+  "AccessToken",
+  "AuthorizationCode",
+  "RefreshToken",
+  "DeviceCode",
+  "BackchannelAuthenticationRequest",
 ]);
 
 class MemoryAdapter {
@@ -58,7 +58,7 @@ class MemoryAdapter {
   async upsert(id, payload, expiresIn) {
     const key = this.key(id);
 
-    if (this.model === 'Session') {
+    if (this.model === "Session") {
       storage.set(sessionUidKeyFor(payload.uid), id, expiresIn * 1000);
     }
 

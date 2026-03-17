@@ -22,7 +22,7 @@ Example:
 ```ts
 // /apps/my-app/src/config/config.ts
 
-import { ConfigConfig } from '@fc/config';
+import { ConfigConfig } from "@fc/config";
 
 export default {
   templateExposed: {

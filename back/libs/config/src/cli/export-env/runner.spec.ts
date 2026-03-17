@@ -2,7 +2,6 @@ import { renderFile } from "ejs";
 import { readFile } from "fs/promises";
 import glob from "glob";
 import { format } from "prettier";
-
 import { MarkdownGenerator } from "./markdown-generator";
 import { Runner } from "./runner";
 
