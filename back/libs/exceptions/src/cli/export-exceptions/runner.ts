@@ -3,6 +3,7 @@ import ejs from "ejs";
 import fs from "fs";
 import glob from "glob";
 import { pathToFileURL } from "node:url";
+import { format } from "prettier";
 import { BaseException } from "../../exceptions/base.exception";
 import { getCode } from "../../helpers";
 import {
@@ -12,7 +13,6 @@ import {
   PathAndInstantiatedException,
   ValidExceptionParams,
 } from "../../types";
-import { format } from "prettier";
 import MarkdownGenerator from "./markdown-generator";
 
 const OIDC_PROVIDER_RUNTIME_SCOPE = 4;
