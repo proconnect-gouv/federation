@@ -1,13 +1,19 @@
 import { renderFile } from 'ejs';
 import { readFile } from 'fs/promises';
 import glob from 'glob';
+import { format } from 'prettier';
 
 import { MarkdownGenerator } from './markdown-generator';
 import { Runner } from './runner';
 
+const mockedFormat = jest.mocked(format);
+
 jest.mock('ejs');
 jest.mock('fs/promises');
 jest.mock('glob');
+jest.mock('prettier', () => ({
+  format: jest.fn().mockResolvedValue(''),
+}));
 jest.mock('./markdown-generator');
 
 describe('Runner', () => {
@@ -28,6 +34,7 @@ describe('Runner', () => {
     const renderedFileMock = Symbol('renderedFile') as any;
 
     beforeEach(() => {
+      mockedFormat.mockResolvedValue('');
       jest.spyOn(Runner, 'getConfigFilesPath').mockReturnValue(pathsMock);
       jest.spyOn(Runner, 'loadConfigs').mockReturnValue(configsMock);
       jest.spyOn(Runner, 'buildEnvMap').mockReturnValue(envMapMock);

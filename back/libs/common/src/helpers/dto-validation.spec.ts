@@ -42,7 +42,7 @@ describe('DtoValidation', () => {
       // setup
       jest.spyOn(ClassTransformer, 'plainToInstance');
       // Actual async
-      // eslint-disable-next-line require-await
+
       jest.spyOn(ClassValidator, 'validate').mockImplementation(async () => []);
 
       class TestClass {}
@@ -66,7 +66,7 @@ describe('DtoValidation', () => {
       // setup
       jest.spyOn(ClassTransformer, 'plainToInstance');
       // Actual async
-      // eslint-disable-next-line require-await
+
       jest.spyOn(ClassValidator, 'validate').mockImplementation(async () => []);
 
       class TestClass {}

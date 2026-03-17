@@ -1,7 +1,7 @@
 import ejs from 'ejs';
 import { readFile, writeFile } from 'fs/promises';
 import glob from 'glob';
-
+import { format } from 'prettier';
 import { MarkdownGenerator } from './markdown-generator';
 
 const TEMPLATE_FILE = `${__dirname}/views/env-vars.ejs`;
@@ -26,7 +26,7 @@ export class Runner {
       markdown,
     });
 
-    await writeFile(DEST_FILE, page);
+    await writeFile(DEST_FILE, await format(page, { filepath: DEST_FILE }));
   }
 
   static getConfigFilesPath(searchPattern = FILE_SEARCH_PATTERN): string[] {

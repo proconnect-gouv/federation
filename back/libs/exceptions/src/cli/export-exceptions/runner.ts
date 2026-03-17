@@ -16,6 +16,7 @@ import {
   ValidExceptionParams,
 } from '../../types';
 import MarkdownGenerator from './markdown-generator';
+import { format } from 'prettier';
 
 const OIDC_PROVIDER_RUNTIME_SCOPE = 4;
 
@@ -174,6 +175,9 @@ export default class Runner {
       title: 'Codes d’erreur généraux',
     });
 
-    fs.writeFileSync('_doc/erreurs.md', mainPage);
+    fs.writeFileSync(
+      '_doc/erreurs.md',
+      await format(mainPage, { filepath: '_doc/erreurs.md' }),
+    );
   }
 }

@@ -5,14 +5,20 @@ import glob from 'glob';
 
 import { HttpStatus } from '@nestjs/common';
 
+import { format } from 'prettier';
 import { BaseException } from '../../exceptions';
 import { ExceptionClass } from '../../types';
 import MarkdownGenerator from './markdown-generator';
 import Runner from './runner';
 
+const mockedFormat = jest.mocked(format);
+
 jest.mock('fs');
 jest.mock('console');
 jest.mock('ejs');
+jest.mock('prettier', () => ({
+  format: jest.fn().mockResolvedValue(''),
+}));
 jest.mock('./markdown-generator');
 
 describe('Runner', () => {
@@ -346,6 +352,7 @@ describe('Runner', () => {
 
     beforeEach(() => {
       generatorSpy.mockImplementation(() => markdownGenerateResult);
+      mockedFormat.mockResolvedValue(renderFileResult);
       jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
       jest.spyOn(console, 'log').mockImplementation(() => {});
 
