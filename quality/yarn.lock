@@ -2544,10 +2544,10 @@ jest-image-snapshot@^6.5.1:
     pngjs "^3.4.0"
     ssim.js "^3.1.1"
 
-jose@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-6.2.0.tgz#a26cd03737fc7d7c803522747e47332826682646"
-  integrity sha512-xsfE1TcSCbUdo6U07tR0mvhg0flGxU8tPLbF03mirl2ukGQENhUg4ubGYQnhVH0b5stLlPM+WOqDkEl1R1y5sQ==
+jose@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-6.2.1.tgz#7a6b1de83816deaee9055a558e1278a7b2b9ea1b"
+  integrity sha512-jUaKr1yrbfaImV7R2TN/b3IcZzsw38/chqMpo2XJ7i2F8AfM/lA4G1goC3JVEwg0H7UldTmSt3P68nt31W7/mw==
 
 js-tokens@^4.0.0:
   version "4.0.0"
