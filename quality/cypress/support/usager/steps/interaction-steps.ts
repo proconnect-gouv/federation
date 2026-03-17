@@ -1,5 +1,4 @@
 import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
-
 import { getIdentityProviderByDescription } from "../../common/helpers";
 
 Then("je suis redirigé vers la page interaction", function () {

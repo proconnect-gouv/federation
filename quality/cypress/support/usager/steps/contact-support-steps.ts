@@ -1,5 +1,4 @@
 import { Then } from "@badeball/cypress-cucumber-preprocessor";
-
 import { ChainableElement } from "../../common/types";
 
 function getContactSupportLink(): ChainableElement {

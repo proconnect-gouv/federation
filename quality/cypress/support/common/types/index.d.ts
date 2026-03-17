@@ -1,5 +1,4 @@
 import { Result } from "axe-core";
-
 import { type OperatorUser } from "../../exploitation/helpers";
 import { Environment } from "./environment";
 
