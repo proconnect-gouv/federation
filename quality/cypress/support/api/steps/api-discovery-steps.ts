@@ -1,5 +1,4 @@
 import { Then } from "@badeball/cypress-cucumber-preprocessor";
-
 import { GetDiscoveryDto } from "../dto/get-discovery.dto";
 import { validateDto } from "../helpers/class-validator-helper";
 

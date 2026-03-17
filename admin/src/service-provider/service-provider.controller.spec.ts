@@ -1,15 +1,15 @@
-import { ObjectId } from "mongodb";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
 import {
-  IdentityProviderService,
   identityProviderFactory,
+  IdentityProviderService,
 } from "../identity-provider";
 import { ScopesService } from "../scopes";
+import { serviceProviderFactory } from "./fixtures";
 import { ServiceProviderController } from "./service-provider.controller";
 import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
 import { ServiceProviderService } from "./service-provider.service";
-import { serviceProviderFactory } from "./fixtures";
 
 const id: ObjectId = new ObjectId("5d9c677da8bb151b00720451");
 

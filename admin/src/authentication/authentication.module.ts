@@ -1,17 +1,17 @@
-import passport from "passport";
-import { LocalStrategy } from "./passport/local.strategy";
-import { LocalSerializer } from "./passport/local.serializer";
-import { TotpService } from "./totp/totp.service";
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { PassportModule } from "@nestjs/passport";
-import { LocalAuthGuard } from "./guard/local.guard";
-import { AuthenticationFailures } from "./authentication-failures.sql.entity";
-import { AuthenticationService } from "./authentication.service";
-import { AuthenticationController } from "./authentication.controller";
-import { UserModule } from "../user/user.module";
-import { RolesGuard } from "./guard/roles.guard";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import passport from "passport";
 import { LoggerService } from "../logger/logger.service";
+import { UserModule } from "../user/user.module";
+import { AuthenticationFailures } from "./authentication-failures.sql.entity";
+import { AuthenticationController } from "./authentication.controller";
+import { AuthenticationService } from "./authentication.service";
+import { LocalAuthGuard } from "./guard/local.guard";
+import { RolesGuard } from "./guard/roles.guard";
+import { LocalSerializer } from "./passport/local.serializer";
+import { LocalStrategy } from "./passport/local.strategy";
+import { TotpService } from "./totp/totp.service";
 
 const authenticationServiceProvider = {
   provide: "IAuthenticationService",

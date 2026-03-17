@@ -1,6 +1,6 @@
 import { Test } from "@nestjs/testing";
-import { AppContextMiddleware } from "./app-context.middleware";
 import { ConfigService } from "nestjs-config";
+import { AppContextMiddleware } from "./app-context.middleware";
 
 describe("AppContextMiddleware", () => {
   let appContextMiddleware;

@@ -1,9 +1,9 @@
-import { AuthenticationController } from "./authentication.controller";
 import { LoggerService } from "../logger/logger.service";
 import {
   AuthenticationActions,
   AuthenticationStates,
 } from "./authentication-actions.enum";
+import { AuthenticationController } from "./authentication.controller";
 
 describe("AuthenticationController", () => {
   const businessEventMock = jest.fn();

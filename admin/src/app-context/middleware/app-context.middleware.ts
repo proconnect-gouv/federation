@@ -1,4 +1,4 @@
-import { NestMiddleware, Injectable } from "@nestjs/common";
+import { Injectable, NestMiddleware } from "@nestjs/common";
 import { ConfigService } from "nestjs-config";
 
 @Injectable()

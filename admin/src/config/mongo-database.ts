@@ -1,6 +1,6 @@
+import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { resolve } from "path";
 import { parseBoolean } from "../utils/transforms/parse-boolean";
-import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 
 const mongoDatabaseConfig: TypeOrmModuleOptions = {
   type: "mongodb",

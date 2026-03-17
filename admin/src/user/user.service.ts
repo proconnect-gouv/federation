@@ -1,20 +1,19 @@
-import bcrypt from "bcryptjs";
-import { Repository, DeleteResult, UpdateResult } from "typeorm";
-import { v4 as uuidv4 } from "uuid";
-import { InjectConfig, ConfigService } from "nestjs-config";
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserRole } from "../user/roles.enum";
-import { LoggerService } from "../logger/logger.service";
+import bcrypt from "bcryptjs";
+import { ConfigService, InjectConfig } from "nestjs-config";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
 import { IsPasswordCompliant } from "../account/validator/is-compliant.validator";
-
-import { User } from "./user.sql.entity";
-import { Password } from "./password.sql.entity";
-import { IUserPasswordUpdateDTO } from "./interface/user-password-update-dto.interface";
-import { IEnrollUserDto } from "./interface/enroll-user-dto.interface";
-import { IUserService } from "./interface/user-service.interface";
+import { LoggerService } from "../logger/logger.service";
+import { UserRole } from "../user/roles.enum";
 import { ICreateUserDTO } from "./interface/create-user-dto.interface";
+import { IEnrollUserDto } from "./interface/enroll-user-dto.interface";
+import { IUserPasswordUpdateDTO } from "./interface/user-password-update-dto.interface";
+import { IUserService } from "./interface/user-service.interface";
 import { IUserTrack } from "./interface/user-track.interface";
+import { Password } from "./password.sql.entity";
+import { User } from "./user.sql.entity";
 
 @Injectable()
 export class UserService implements IUserService {

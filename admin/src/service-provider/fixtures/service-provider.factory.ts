@@ -1,6 +1,6 @@
+import { ObjectId } from "mongodb";
 import { ServiceProviderDto } from "../dto/service-provider-input.dto";
 import { ServiceProviderFromDb } from "../service-provider.mongodb.entity";
-import { ObjectId } from "mongodb";
 
 const serviceProviderFactory = {
   createServiceProviderDto,

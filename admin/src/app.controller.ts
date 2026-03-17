@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Req } from "@nestjs/common";
+import { Controller, Get, Req, Res } from "@nestjs/common";
 import { Roles } from "./authentication/decorator/roles.decorator";
 import { UserRole } from "./user/roles.enum";
 

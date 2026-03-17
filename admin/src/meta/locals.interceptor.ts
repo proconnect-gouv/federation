@@ -1,16 +1,16 @@
 import {
+  CallHandler,
+  ExecutionContext,
   Injectable,
   NestInterceptor,
-  ExecutionContext,
-  CallHandler,
 } from "@nestjs/common";
-import { Observable } from "rxjs";
-import { ConfigService } from "nestjs-config";
 import moment from "moment-timezone";
-import { errorCodeTranslations } from "./error-code-translations";
+import { ConfigService } from "nestjs-config";
+import { Observable } from "rxjs";
 import { UserRole } from "../user/roles.enum";
-import { VALID_INPUT_STRING_REGEX } from "../utils/validators/is-valid-input-string";
 import { IP_VALIDATOR_REGEX } from "../utils/ip-validator.constant";
+import { VALID_INPUT_STRING_REGEX } from "../utils/validators/is-valid-input-string";
+import { errorCodeTranslations } from "./error-code-translations";
 
 @Injectable()
 export class LocalsInterceptor implements NestInterceptor {

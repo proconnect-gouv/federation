@@ -1,8 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConsoleModule } from "nestjs-console";
+import { TotpService } from "../authentication/totp/totp.service";
 import { UserService } from "../user/user.service";
 import { CliService } from "./cli.service";
-import { TotpService } from "../authentication/totp/totp.service";
 
 describe("CliService", () => {
   let service: CliService;

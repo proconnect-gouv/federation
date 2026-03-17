@@ -1,5 +1,5 @@
-import { ConfigService } from "nestjs-config";
 import { Test } from "@nestjs/testing";
+import { ConfigService } from "nestjs-config";
 import { UserRole } from "../user/roles.enum";
 import { LocalsInterceptor } from "./locals.interceptor";
 

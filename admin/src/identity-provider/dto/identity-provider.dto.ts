@@ -1,16 +1,16 @@
+import { Transform } from "class-transformer";
 import {
-  IsString,
+  IsArray,
   IsBoolean,
-  Matches,
   IsIn,
   IsOptional,
-  ValidateIf,
-  IsArray,
+  IsString,
   Length,
+  Matches,
+  ValidateIf,
 } from "class-validator";
-import { Transform } from "class-transformer";
+import { linesToArray, toBoolean } from "../../utils/transforms";
 import { IsOptionalExtended, IsValidInputString } from "../../utils/validators";
-import { toBoolean, linesToArray } from "../../utils/transforms";
 
 // tslint:disable-next-line:max-line-length
 const URL_REGEX = /^https?:\/\/[^/].+$/;

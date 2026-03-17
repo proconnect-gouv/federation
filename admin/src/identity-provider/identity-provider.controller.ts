@@ -1,24 +1,24 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Patch,
+  Post,
+  Query,
+  Render,
   Req,
   Res,
-  Render,
-  Query,
-  Post,
-  Param,
-  Body,
-  Delete,
   UseInterceptors,
 } from "@nestjs/common";
-import { Roles } from "../authentication/decorator/roles.decorator";
-import { UserRole } from "../user/roles.enum";
-import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
-import { IdentityProviderService } from "./identity-provider.service";
-import { IdentityProviderDTO } from "./dto/identity-provider.dto";
 import { plainToInstance } from "class-transformer";
+import { Roles } from "../authentication/decorator/roles.decorator";
+import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
 import { type PaginationSortDirectionType } from "../pagination";
+import { UserRole } from "../user/roles.enum";
+import { IdentityProviderDTO } from "./dto/identity-provider.dto";
+import { IdentityProviderService } from "./identity-provider.service";
 
 @Controller("identity-provider")
 export class IdentityProviderController {

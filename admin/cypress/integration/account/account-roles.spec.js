@@ -1,9 +1,9 @@
 import {
-  USER_OPERATOR,
-  USER_ONLY_ADMIN,
-  USER_SECURITY,
-  USER_PASS,
   LIMIT_PAGE,
+  USER_ONLY_ADMIN,
+  USER_OPERATOR,
+  USER_PASS,
+  USER_SECURITY,
 } from "../../support/constants";
 
 describe("Account", () => {

@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { ConfigService } from "nestjs-config";
 import { chunk, isString } from "lodash";
-import { LoggerService } from "../logger/logger.service";
+import { ConfigService } from "nestjs-config";
 import { IdentityProviderFromDb } from "../identity-provider/identity-provider.mongodb.entity";
+import { LoggerService } from "../logger/logger.service";
 import { ServiceProviderFromDb } from "../service-provider/service-provider.mongodb.entity";
+import { GristRecord } from "./interface/grist-record.interface";
 import { IdentityProviderGristRecord } from "./interface/identity-provider-grist-record.interface";
 import { ServiceProviderGristRecord } from "./interface/service-provider-grist-record.interface";
-import { GristRecord } from "./interface/grist-record.interface";
 
 @Injectable()
 export class GristPublisherService {

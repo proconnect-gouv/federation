@@ -1,4 +1,4 @@
-import { USER_ADMIN, LIMIT_PAGE } from "../../support/constants";
+import { LIMIT_PAGE, USER_ADMIN } from "../../support/constants";
 import { deleteUser } from "./account-delete.utils";
 
 /**

@@ -1,5 +1,5 @@
-import moment from "moment-timezone";
 import uniq from "lodash/uniq";
+import moment from "moment-timezone";
 
 export function toDate(format: string) {
   const requiredDateFormat = "YYYY-MM-DD";

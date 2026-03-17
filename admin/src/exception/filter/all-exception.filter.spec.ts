@@ -1,6 +1,6 @@
-import { AllExceptionFilter } from "./all-exception.filter";
-import { ArgumentsHost, HttpStatus, HttpException } from "@nestjs/common";
+import { ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
 import { LoggerService } from "../../logger/logger.service";
+import { AllExceptionFilter } from "./all-exception.filter";
 
 describe("AllExceptionFilter", () => {
   const configurationMock = {

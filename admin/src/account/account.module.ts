@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "../user/user.sql.entity";
-import { FormModule } from "../form/form.module";
-import { AccountController } from "./account.controller";
-import { UserModule } from "../user/user.module";
-import { AccountService } from "./account.service";
+import generatePassword from "generate-password";
 import { AuthenticationModule } from "../authentication/authentication.module";
 import { TotpService } from "../authentication/totp/totp.service";
+import { FormModule } from "../form/form.module";
+import { UserModule } from "../user/user.module";
 import { UserService } from "../user/user.service";
-import generatePassword from "generate-password";
+import { User } from "../user/user.sql.entity";
+import { AccountController } from "./account.controller";
+import { AccountService } from "./account.service";
 
 const generatePasswordProvider = {
   provide: "generatePassword",

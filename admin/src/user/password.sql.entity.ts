@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { UserRole } from "./roles.enum";
 
 @Entity()
 export class Password {

@@ -1,14 +1,14 @@
-import { closeBanner, formType, formFill, formControl, totp } from "./forms";
-import {
-  resetMongo,
-  resetPostgres,
-  resetEventsStats,
-  resetMetricsStats,
-} from "./reset";
-import { firstLogin, forceLogin, login, logout } from "./login";
+import { clearBusinessLog } from "./clear-business-log.command";
+import { closeBanner, formControl, formFill, formType, totp } from "./forms";
 import { getUserActivationToken } from "./get-user-activation-token";
 import { hasBusinessLog } from "./has-business-log.command";
-import { clearBusinessLog } from "./clear-business-log.command";
+import { firstLogin, forceLogin, login, logout } from "./login";
+import {
+  resetEventsStats,
+  resetMetricsStats,
+  resetMongo,
+  resetPostgres,
+} from "./reset";
 
 Cypress.Commands.add("resetEnv", (type) => {
   switch (type) {

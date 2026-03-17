@@ -1,34 +1,34 @@
-import { Repository } from "typeorm";
 import {
-  Controller,
-  Get,
-  Render,
-  Post,
   Body,
-  UseInterceptors,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Render,
   Req,
   Res,
-  Param,
-  Query,
-  Delete,
-  Patch,
+  UseInterceptors,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserRole } from "../user/roles.enum";
+import { Repository } from "typeorm";
 import { Roles } from "../authentication/decorator/roles.decorator";
 import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
+import { type PaginationSortDirectionType } from "../pagination";
+import { ScopesService } from "../scopes";
+import { UserRole } from "../user/roles.enum";
 import {
-  nullableArrayToDefaultNoneOrLines,
   arrayToLines,
+  nullableArrayToDefaultNoneOrLines,
   toEmptiableString,
 } from "../utils/transforms/string.transform";
-import { ScopesService } from "../scopes";
-import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
-import { ServiceProviderService } from "./service-provider.service";
-import { ServiceProviderDto } from "./dto/service-provider-input.dto";
 import { DeleteServiceProviderDto } from "./dto/delete-service-provider.dto";
 import { GenerateNewClientSecretDTO } from "./dto/generate-new-client-secret.dto";
-import { type PaginationSortDirectionType } from "../pagination";
+import { ServiceProviderDto } from "./dto/service-provider-input.dto";
+import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
+import { ServiceProviderService } from "./service-provider.service";
 
 @Controller("service-provider")
 export class ServiceProviderController {

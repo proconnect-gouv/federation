@@ -1,17 +1,17 @@
-import bcrypt from "bcryptjs";
-import { Repository } from "typeorm";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "./user.sql.entity";
-import { Password } from "./password.sql.entity";
-import { UserService } from "./user.service";
-import { UserRole } from "./roles.enum";
-import { IUserPasswordUpdateDTO } from "./interface/user-password-update-dto.interface";
-import { ICreateUserDTO } from "./interface/create-user-dto.interface";
-import { IsPasswordCompliant } from "../account/validator/is-compliant.validator";
+import bcrypt from "bcryptjs";
 import { ConfigService } from "nestjs-config";
+import { Repository } from "typeorm";
 import uuid from "uuid";
+import { IsPasswordCompliant } from "../account/validator/is-compliant.validator";
 import { LoggerService } from "../logger/logger.service";
+import { ICreateUserDTO } from "./interface/create-user-dto.interface";
+import { IUserPasswordUpdateDTO } from "./interface/user-password-update-dto.interface";
+import { Password } from "./password.sql.entity";
+import { UserRole } from "./roles.enum";
+import { UserService } from "./user.service";
+import { User } from "./user.sql.entity";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(),

@@ -1,9 +1,9 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
+import { validateSync } from "class-validator";
 import { of } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { FormValidationErrorsDto } from "../dto/form-validation-errors.dto";
-import { validateSync } from "class-validator";
 
 export class FormErrorsInterceptor implements NestInterceptor {
   /**

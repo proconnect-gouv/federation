@@ -1,7 +1,7 @@
 import { USER_OPERATOR, USER_PASS } from "../../support/constants";
 import {
-  createIdentityProvider,
   assertFormValues,
+  createIdentityProvider,
 } from "./identity-provider.utils";
 
 const BASE_URL = Cypress.config("baseUrl");

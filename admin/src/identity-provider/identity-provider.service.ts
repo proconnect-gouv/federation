@@ -1,15 +1,15 @@
-import { v4 as uuidv4 } from "uuid";
-import { DeleteResult, Repository } from "typeorm";
-import { ObjectId } from "mongodb";
-import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { LoggerService } from "../logger/logger.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
 import { GristPublisherService } from "../grist-publisher/grist-publisher.service";
 import { ICrudTrack } from "../interfaces";
-import { SecretManagerService } from "../utils/secret-manager.service";
-import { IdentityProviderFromDb } from "./identity-provider.mongodb.entity";
+import { LoggerService } from "../logger/logger.service";
 import { PaginationOptions, PaginationService } from "../pagination";
+import { SecretManagerService } from "../utils/secret-manager.service";
 import { IdentityProviderDTO } from "./dto/identity-provider.dto";
+import { IdentityProviderFromDb } from "./identity-provider.mongodb.entity";
 
 @Injectable()
 export class IdentityProviderService {

@@ -1,6 +1,6 @@
 import { Transform } from "class-transformer";
-import { linesToArray } from "../../utils/transforms/string.transform";
 import { IsString } from "class-validator";
+import { linesToArray } from "../../utils/transforms/string.transform";
 
 export class DeleteServiceProviderDto {
   @Transform(linesToArray)

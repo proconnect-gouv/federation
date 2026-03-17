@@ -1,9 +1,8 @@
-import { TestingModule, Test } from "@nestjs/testing";
-import { ConfigService } from "nestjs-config";
-import { SecretAdapter } from "./secret.adapter";
-import { SecretManagerService } from "./secret-manager.service";
-jest.mock("uuid"); // allow to mock all module
+import { Test, TestingModule } from "@nestjs/testing";
 import { v4 as uuidv4 } from "uuid";
+import { SecretManagerService } from "./secret-manager.service";
+import { SecretAdapter } from "./secret.adapter";
+jest.mock("uuid"); // allow to mock all module
 
 describe("SecretAdapter", () => {
   let module: TestingModule;

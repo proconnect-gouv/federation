@@ -1,4 +1,4 @@
-import { inputValid, inputInvalid } from "./addValidClass";
+import { inputInvalid, inputValid } from "./addValidClass";
 
 export function validateAccountCreate(element) {
   const inputs = element.getElementsByTagName("input");

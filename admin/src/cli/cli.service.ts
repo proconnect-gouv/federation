@@ -1,10 +1,10 @@
-import { Console, Command } from "nestjs-console";
 import { validate } from "class-validator";
-import { ICreateUserDTO } from "../user/interface/create-user-dto.interface";
+import { Command, Console } from "nestjs-console";
 import { CreateUserDto } from "../account/dto/create-user.dto";
-import { UserService } from "../user/user.service";
 import { TotpService } from "../authentication/totp/totp.service";
+import { ICreateUserDTO } from "../user/interface/create-user-dto.interface";
 import { UserRole } from "../user/roles.enum";
+import { UserService } from "../user/user.service";
 
 @Console()
 export class CliService {

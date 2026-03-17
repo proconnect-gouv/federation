@@ -1,4 +1,4 @@
-import { IsNotEmpty, Matches, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, Matches } from "class-validator";
 import { IsCompliant } from "../../account/validator/is-compliant.validator";
 
 export class AuthenticationDto {

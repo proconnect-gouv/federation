@@ -1,12 +1,12 @@
-import { NestMiddleware, Injectable } from "@nestjs/common";
-import { AuthenticationDto } from "../dto/authentication.dto";
-import { AuthenticationService } from "../authentication.service";
-import { UserService } from "../../user/user.service";
+import { Injectable, NestMiddleware } from "@nestjs/common";
 import { LoggerService } from "../../logger/logger.service";
+import { UserService } from "../../user/user.service";
 import {
   AuthenticationActions,
   AuthenticationStates,
 } from "../authentication-actions.enum";
+import { AuthenticationService } from "../authentication.service";
+import { AuthenticationDto } from "../dto/authentication.dto";
 import { TotpService } from "../totp/totp.service";
 
 @Injectable()

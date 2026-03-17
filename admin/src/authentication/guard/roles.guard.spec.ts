@@ -1,6 +1,6 @@
-import { RolesGuard } from "./roles.guard";
-import { Reflector } from "@nestjs/core";
 import { ExecutionContext } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { RolesGuard } from "./roles.guard";
 
 describe("RolesGuard", () => {
   const createReflector = (roles): Reflector => ({

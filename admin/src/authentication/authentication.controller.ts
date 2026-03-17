@@ -1,4 +1,3 @@
-import { promisify } from "util";
 import {
   Controller,
   Get,
@@ -8,13 +7,14 @@ import {
   Res,
   UseGuards,
 } from "@nestjs/common";
-import { LocalAuthGuard } from "./guard/local.guard";
-import { IAuthenticationTrack } from "./authentication-track.interface";
+import { promisify } from "util";
+import { LoggerService } from "../logger/logger.service";
 import {
   AuthenticationActions,
   AuthenticationStates,
 } from "./authentication-actions.enum";
-import { LoggerService } from "../logger/logger.service";
+import { IAuthenticationTrack } from "./authentication-track.interface";
+import { LocalAuthGuard } from "./guard/local.guard";
 
 @Controller()
 export class AuthenticationController {

@@ -1,13 +1,13 @@
-import { InjectConfig, ConfigService } from "nestjs-config";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, DeleteResult } from "typeorm";
-import { User } from "../user/user.sql.entity";
-import { UserService } from "../user/user.service";
-import { UserRole } from "../user/roles.enum";
-import { AuthenticationFailures } from "./authentication-failures.sql.entity";
-import { AuthenticationStates } from "./authentication-actions.enum";
+import { ConfigService, InjectConfig } from "nestjs-config";
+import { DeleteResult, Repository } from "typeorm";
 import { LoggerService } from "../logger/logger.service";
+import { UserRole } from "../user/roles.enum";
+import { UserService } from "../user/user.service";
+import { User } from "../user/user.sql.entity";
+import { AuthenticationStates } from "./authentication-actions.enum";
+import { AuthenticationFailures } from "./authentication-failures.sql.entity";
 
 // the "token" parameter is used for the first connection
 export interface IAuthenticationService {

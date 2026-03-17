@@ -1,15 +1,15 @@
-import { PassportStrategy } from "@nestjs/passport";
 import { Inject, Injectable } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-local";
-import { type IAuthenticationService } from "../authentication.service";
-import { User } from "../../user/user.sql.entity";
+import { LoggerService } from "../../logger/logger.service";
 import { UserService } from "../../user/user.service";
-import { IAuthenticationTrack } from "../authentication-track.interface";
+import { User } from "../../user/user.sql.entity";
 import {
   AuthenticationActions,
   AuthenticationStates,
 } from "../authentication-actions.enum";
-import { LoggerService } from "../../logger/logger.service";
+import { IAuthenticationTrack } from "../authentication-track.interface";
+import { type IAuthenticationService } from "../authentication.service";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

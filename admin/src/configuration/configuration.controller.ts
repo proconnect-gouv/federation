@@ -1,22 +1,22 @@
-import moment from "moment-timezone";
-import { plainToInstance } from "class-transformer";
 import {
+  Body,
   Controller,
   Get,
-  Render,
   Post,
-  Body,
+  Render,
   Req,
   Res,
   UseInterceptors,
 } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import moment from "moment-timezone";
 
-import { UserRole } from "../user/roles.enum";
 import { Roles } from "../authentication/decorator/roles.decorator";
 import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
+import { UserRole } from "../user/roles.enum";
 import { ConfigurationService } from "./configuration.service";
-import { Configuration } from "./entity/configuration.mongodb.entity";
 import { IndisponibiliteDTO } from "./dto/indisponibilite.dto";
+import { Configuration } from "./entity/configuration.mongodb.entity";
 
 @Controller("configuration")
 export class ConfigurationController {

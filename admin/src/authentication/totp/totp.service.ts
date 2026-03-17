@@ -1,7 +1,7 @@
+import { Injectable } from "@nestjs/common";
+import { InjectConfig } from "nestjs-config";
 import * as otplib from "otplib";
 import qrcode from "qrcode";
-import { InjectConfig } from "nestjs-config";
-import { Injectable } from "@nestjs/common";
 import { LoggerService } from "../../logger/logger.service";
 
 @Injectable()

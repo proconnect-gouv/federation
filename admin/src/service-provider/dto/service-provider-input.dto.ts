@@ -1,15 +1,17 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { Transform } from "class-transformer";
 import {
-  IsNotEmpty,
-  Matches,
   IsArray,
+  IsIn,
+  IsNotEmpty,
   IsOptional,
   IsString,
-  IsIn,
+  Matches,
 } from "class-validator";
-import { Transform } from "class-transformer";
+import { AlgoValue } from "../../enum";
+import { IP_VALIDATOR_REGEX } from "../../utils/ip-validator.constant";
 import {
   defaultNoneOrLinesToNullableArray,
   linesToArray,
@@ -19,8 +21,6 @@ import {
 } from "../../utils/transforms/string.transform";
 import { IsOptionalExtended } from "../../utils/validators/is-optional-extended.validator";
 import { IsValidInputString } from "../../utils/validators/is-valid-input-string";
-import { AlgoValue } from "../../enum";
-import { IP_VALIDATOR_REGEX } from "../../utils/ip-validator.constant";
 
 const { ES256, RS256, HS256 } = AlgoValue;
 

@@ -1,13 +1,13 @@
-import { ConfigService } from "nestjs-config";
 import { Test } from "@nestjs/testing";
-import { Repository } from "typeorm";
-import { ObjectId } from "mongodb";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { IdentityProviderFromDb } from "./identity-provider.mongodb.entity";
-import { IdentityProviderController } from "./identity-provider.controller";
-import { IdentityProviderService } from "./identity-provider.service";
 import * as classTransformer from "class-transformer";
+import { ObjectId } from "mongodb";
+import { ConfigService } from "nestjs-config";
+import { Repository } from "typeorm";
 import { identityProviderFactory } from "./fixtures";
+import { IdentityProviderController } from "./identity-provider.controller";
+import { IdentityProviderFromDb } from "./identity-provider.mongodb.entity";
+import { IdentityProviderService } from "./identity-provider.service";
 
 describe("IdentityProviderController", () => {
   let identityProviderController;

@@ -1,6 +1,5 @@
 import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
 import { Result } from "axe-core";
-
 import { displayViolations } from "../helpers";
 
 // TODO: Skip the accessibility failures for now

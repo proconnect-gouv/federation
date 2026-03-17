@@ -1,32 +1,32 @@
 import "babel-polyfill";
-import $ from "./jquery_wrapper";
+import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle";
-import { validateForm } from "./validate-form";
-import { changeDiscovery, initForm, changeSignature } from "./change-discovery";
-import { toggleByRadio } from "./toggle-by-radio";
-import { itemPerPage } from "./item-par-page";
-import { generateNewSecret } from "./modals/generate-client-secret.modal";
+import "font-awesome/css/font-awesome.css";
+import "../style/main.less";
+import { changeDiscovery, changeSignature, initForm } from "./change-discovery";
+import { copyText } from "./clipboard";
+import { comparePassword } from "./compare-password";
+import { customFileInput } from "./custom-file-input";
 import {
   displayRemoveButtonEvent,
   submitDeletion,
 } from "./delete-service-provider";
-import { removeItem, updateItem } from "./modals/confirm-form";
-import { customFileInput } from "./custom-file-input";
-import { lazyInit } from "./lazy-init";
-import { validateEnrollment } from "./validate-enrollment";
-import { comparePassword } from "./compare-password";
-import { copyText } from "./clipboard";
-import { validateInputDate } from "./validate-input-date";
-import { validateInputHour } from "./validate-input-hour";
-import { validateAccountUpdate } from "./validateAccountUpdate";
-import { validateAccountCreate } from "./validateAccountCreate";
 import { handleEmail } from "./handle-email";
+import { itemPerPage } from "./item-par-page";
+import $ from "./jquery_wrapper";
+import { lazyInit } from "./lazy-init";
+import { removeItem, updateItem } from "./modals/confirm-form";
+import { generateNewSecret } from "./modals/generate-client-secret.modal";
+import { validateNotificationCreation } from "./modals/validate-notification-creation";
 import { searchReset } from "./search-reset";
 import { selectScopesGroup } from "./select-scopes-group";
-import { validateNotificationCreation } from "./modals/validate-notification-creation";
-import "bootstrap/dist/css/bootstrap.css";
-import "font-awesome/css/font-awesome.css";
-import "../style/main.less";
+import { toggleByRadio } from "./toggle-by-radio";
+import { validateEnrollment } from "./validate-enrollment";
+import { validateForm } from "./validate-form";
+import { validateInputDate } from "./validate-input-date";
+import { validateInputHour } from "./validate-input-hour";
+import { validateAccountCreate } from "./validateAccountCreate";
+import { validateAccountUpdate } from "./validateAccountUpdate";
 
 const initMap = {
   initForm,

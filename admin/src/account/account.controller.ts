@@ -1,28 +1,28 @@
-import { UserRole } from "../user/roles.enum";
 import {
   Body,
   Controller,
-  Get,
-  Post,
   Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
   Patch,
+  Post,
+  Query,
   Render,
   Req,
   Res,
   UseInterceptors,
-  ParseUUIDPipe,
-  Param,
-  Query,
 } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Roles } from "../authentication/decorator/roles.decorator";
+import { TotpService } from "../authentication/totp/totp.service";
+import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
+import { UserRole } from "../user/roles.enum";
 import { UserService } from "../user/user.service";
+import { User } from "../user/user.sql.entity";
+import { AccountService } from "./account.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { EnrollUserDto } from "./dto/enroll-user.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "../user/user.sql.entity";
-import { Roles } from "../authentication/decorator/roles.decorator";
-import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
-import { AccountService } from "./account.service";
-import { TotpService } from "../authentication/totp/totp.service";
 import { UpdateAccountDto } from "./dto/update-account.dto";
 
 @Controller("account")

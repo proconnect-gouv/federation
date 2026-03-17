@@ -1,13 +1,13 @@
 import { Test } from "@nestjs/testing";
-import { AuthenticationService } from "../../authentication/authentication.service";
 import {
   AuthenticationActions,
   AuthenticationStates,
 } from "../../authentication/authentication-actions.enum";
+import { AuthenticationService } from "../../authentication/authentication.service";
 import { LoggerService } from "../../logger/logger.service";
-import { TotpMiddleware } from "./totp.middleware";
 import { UserService } from "../../user/user.service";
 import { TotpService } from "../totp/totp.service";
+import { TotpMiddleware } from "./totp.middleware";
 
 describe("TotpMiddleware", () => {
   let totpMiddleware: TotpMiddleware;

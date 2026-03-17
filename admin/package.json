@@ -44,6 +44,11 @@
       "/node_modules/(?!(@scure|@noble|uuid)/)"
     ]
   },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
+  },
   "dependencies": {
     "@nest-middlewares/csurf": "^10.0.0",
     "@nestjs/axios": "^4.0.1",
@@ -109,6 +114,7 @@
     "less": "^4.5.1",
     "parcel": "^2.16.4",
     "prettier": "^3.8.1",
+    "prettier-plugin-organize-imports": "^4.3.0",
     "ts-jest": "^29.4.6",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",

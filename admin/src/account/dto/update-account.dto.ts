@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
-import { IsSameAs } from "../validator/is-same-as.validator";
 import { IsCompliant } from "../validator/is-compliant.validator";
+import { IsSameAs } from "../validator/is-same-as.validator";
 
 export class UpdateAccountDto {
   @IsNotEmpty({ message: "Le mot de passe doit être renseigné" })

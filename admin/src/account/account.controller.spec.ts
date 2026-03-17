@@ -1,15 +1,15 @@
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { TotpService } from "../authentication/totp/totp.service";
 import { UserRole } from "../user/roles.enum";
 import { UserService } from "../user/user.service";
 import { User } from "../user/user.sql.entity";
+import { AccountController } from "./account.controller";
+import { AccountService } from "./account.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { EnrollUserDto } from "./dto/enroll-user.dto";
 import { UpdateAccountDto } from "./dto/update-account.dto";
-import { AccountController } from "./account.controller";
-import { AccountService } from "./account.service";
-import { TotpService } from "../authentication/totp/totp.service";
 
 describe("AccountController", () => {
   let accountController: AccountController;

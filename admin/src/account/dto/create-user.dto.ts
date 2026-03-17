@@ -1,17 +1,17 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { UserRole } from "../../user/roles.enum";
 import { Transform } from "class-transformer";
 import {
-  IsNotEmpty,
-  IsEmail,
   ArrayNotEmpty,
   ArrayUnique,
-  IsString,
+  IsEmail,
   IsEnum,
+  IsNotEmpty,
+  IsString,
   Matches,
 } from "class-validator";
+import { UserRole } from "../../user/roles.enum";
 import { IsCompliant } from "../validator/is-compliant.validator";
 
 export class CreateUserDto {

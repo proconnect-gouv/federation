@@ -1,5 +1,5 @@
-import { Platform } from "../utils/instance.enum";
 import { IConfig } from "../interfaces";
+import { Platform } from "../utils/instance.enum";
 
 export default {
   appName: process.env.APP_NAME || "FC_EXPLOITATION",

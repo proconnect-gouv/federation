@@ -1,14 +1,14 @@
+import { Test, TestingModule } from "@nestjs/testing";
 import { ObjectId } from "mongodb";
 import { ConfigService } from "nestjs-config";
-import { Test, TestingModule } from "@nestjs/testing";
-import { ScopesService } from "./scopes.service";
-import { ScopesController } from "./scopes.controller";
-import { IScopes } from "./interface/scopes.interface";
 import {
-  scopesMock,
-  scopesListMock,
   scopesListGroupedByFdMock,
+  scopesListMock,
+  scopesMock,
 } from "./fixture";
+import { IScopes } from "./interface/scopes.interface";
+import { ScopesController } from "./scopes.controller";
+import { ScopesService } from "./scopes.service";
 
 const id = new ObjectId("5d9c677da8bb151b00720451");
 

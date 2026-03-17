@@ -1,17 +1,13 @@
-import { ObjectId } from "mongodb";
-import { Repository } from "typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 import { TypeOrmModule, getRepositoryToken } from "@nestjs/typeorm";
-import { Scopes } from "../scopes/scopes.mongodb.entity";
-import { ScopesService } from "./scopes.service";
-import { IScopes } from "./interface";
-import { LoggerService } from "../logger/logger.service";
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
 import { ICrudTrack } from "../interfaces";
-import {
-  scopesMock,
-  scopesListMock,
-  scopesListGroupedByFdMock,
-} from "./fixture";
+import { LoggerService } from "../logger/logger.service";
+import { Scopes } from "../scopes/scopes.mongodb.entity";
+import { scopesListMock, scopesMock } from "./fixture";
+import { IScopes } from "./interface";
+import { ScopesService } from "./scopes.service";
 
 const _id = new ObjectId("5d9c677da8bb151b00720451");
 

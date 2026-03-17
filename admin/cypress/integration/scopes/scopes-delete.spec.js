@@ -1,9 +1,8 @@
 import { USER_OPERATOR, USER_PASS } from "../../support/constants";
-import { scrollToBottom } from "./scopes.utils";
 import {
-  useMenuToFdPage,
   createScopeLabels,
   deleteScopeLabel,
+  useMenuToFdPage,
 } from "./scopes.utils";
 
 const BASE_URL = Cypress.config("baseUrl");

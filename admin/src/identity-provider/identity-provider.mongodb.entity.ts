@@ -1,5 +1,5 @@
-import { Column, Entity, ObjectIdColumn, Unique } from "typeorm";
 import { ObjectId } from "mongodb";
+import { Column, Entity, ObjectIdColumn, Unique } from "typeorm";
 
 @Entity("provider")
 @Unique(["name"])

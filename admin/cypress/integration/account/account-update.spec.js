@@ -1,8 +1,8 @@
-import { USER_ADMIN, USER_PASS, LIMIT_PAGE } from "../../support/constants";
+import { LIMIT_PAGE, USER_ADMIN, USER_PASS } from "../../support/constants";
+import { testIsCompliantPasswordUpdate } from "../../support/request";
 import { createUserAndLogWith } from "./account-create.utils";
 import { deleteUser } from "./account-delete.utils";
 import { updatePassword } from "./account-update.utils";
-import { testIsCompliantPasswordUpdate } from "../../support/request";
 
 describe("Update account", () => {
   before(() => {

@@ -1,26 +1,22 @@
+import { BadRequestException, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import {
-  BadRequestException,
-  ValidationError,
-  ValidationPipe,
-} from "@nestjs/common";
-import ejs from "ejs";
-import { AppModule } from "./app.module";
-import { join } from "path";
-import session from "express-session";
 import cookieParser from "cookie-parser";
+import "dotenv";
+import ejs from "ejs";
 import { json, urlencoded } from "express";
 import flash from "express-flash";
+import session from "express-session";
 import helmet from "helmet";
 import methodOverride from "method-override";
-import "dotenv";
 import { ConfigService } from "nestjs-config";
+import { join } from "path";
+import { AppModule } from "./app.module";
 import { PASSPORT } from "./authentication/authentication.module";
-import { LocalsInterceptor } from "./meta/locals.interceptor";
 import { RolesGuard } from "./authentication/guard/roles.guard";
 import { AllExceptionFilter } from "./exception/filter/all-exception.filter";
 import { LoggerService } from "./logger/logger.service";
+import { LocalsInterceptor } from "./meta/locals.interceptor";
 
 async function bootstrap() {
   /*

@@ -1,12 +1,11 @@
-import { ObjectId } from "mongodb";
-import { Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { LoggerService } from "../logger/logger.service";
-
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
 import { ICrudTrack } from "../interfaces";
-import { Scopes } from "./scopes.mongodb.entity";
+import { LoggerService } from "../logger/logger.service";
 import { IScopes } from "./interface";
+import { Scopes } from "./scopes.mongodb.entity";
 
 @Injectable()
 export class ScopesService {

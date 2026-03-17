@@ -1,16 +1,16 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { PaginationService } from "../pagination";
 import { FileStorage } from "../file-storage/file-storage.mongodb.entity";
+import { FileStorageService } from "../file-storage/file-storage.service";
+import { GristPublisherService } from "../grist-publisher/grist-publisher.service";
 import { IdentityProviderModule } from "../identity-provider";
+import { PaginationService } from "../pagination";
+import { ScopesModule } from "../scopes";
 import { SecretManagerService } from "../utils/secret-manager.service";
 import { SecretAdapter } from "../utils/secret.adapter";
-import { FileStorageService } from "../file-storage/file-storage.service";
-import { ScopesModule } from "../scopes";
-import { ServiceProviderService } from "./service-provider.service";
 import { ServiceProviderController } from "./service-provider.controller";
 import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
-import { GristPublisherService } from "../grist-publisher/grist-publisher.service";
+import { ServiceProviderService } from "./service-provider.service";
 
 @Module({
   imports: [

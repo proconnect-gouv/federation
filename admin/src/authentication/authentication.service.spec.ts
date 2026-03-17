@@ -1,13 +1,13 @@
-import { AuthenticationService } from "./authentication.service";
 import { Test } from "@nestjs/testing";
-import { Repository } from "typeorm";
 import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigService } from "nestjs-config";
-import { AuthenticationFailures } from "./authentication-failures.sql.entity";
-import { UserService } from "../user/user.service";
-import { UserRole } from "../user/roles.enum";
-import { AuthenticationStates } from "./authentication-actions.enum";
+import { Repository } from "typeorm";
 import { LoggerService } from "../logger/logger.service";
+import { UserRole } from "../user/roles.enum";
+import { UserService } from "../user/user.service";
+import { AuthenticationStates } from "./authentication-actions.enum";
+import { AuthenticationFailures } from "./authentication-failures.sql.entity";
+import { AuthenticationService } from "./authentication.service";
 
 describe("AuthenticationService", () => {
   const now = new Date();

@@ -1,12 +1,12 @@
-import { LocalStrategy } from "./local.strategy";
 import { LoggerService } from "../../logger/logger.service";
+import { UserRole } from "../../user/roles.enum";
+import { UserService } from "../../user/user.service";
 import {
   AuthenticationActions,
   AuthenticationStates,
 } from "../authentication-actions.enum";
-import { UserRole } from "../../user/roles.enum";
-import { UserService } from "../../user/user.service";
 import { AuthenticationService } from "../authentication.service";
+import { LocalStrategy } from "./local.strategy";
 
 describe("LocalStrategy", () => {
   const now = new Date();

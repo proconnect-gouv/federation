@@ -1,7 +1,6 @@
-import moment from "moment-timezone";
-import * as classTransformer from "class-transformer";
 import { Test, TestingModule } from "@nestjs/testing";
-
+import * as classTransformer from "class-transformer";
+import moment from "moment-timezone";
 import { ConfigurationController } from "./configuration.controller";
 import { ConfigurationService } from "./configuration.service";
 import { updateData } from "./fixture/configuration.fixtures";

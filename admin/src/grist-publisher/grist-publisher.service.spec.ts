@@ -1,9 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "nestjs-config";
-import { GristPublisherService } from "./grist-publisher.service";
-import { LoggerService } from "../logger/logger.service";
 import { identityProviderFactory } from "../identity-provider/fixtures";
+import { LoggerService } from "../logger/logger.service";
 import { serviceProviderFactory } from "../service-provider/fixtures";
+import { GristPublisherService } from "./grist-publisher.service";
 
 describe("GristPublisherService", () => {
   let service: GristPublisherService;

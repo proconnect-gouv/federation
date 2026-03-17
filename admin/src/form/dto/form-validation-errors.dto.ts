@@ -1,5 +1,5 @@
-import { IsArray, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
+import { IsArray, ValidateNested } from "class-validator";
 import { FormValidationErrorDto } from "./form-validation-error.dto";
 
 export class FormValidationErrorsDto {

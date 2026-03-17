@@ -1,11 +1,11 @@
-import { ConfigService, InjectConfig } from "nestjs-config";
 import { Injectable } from "@nestjs/common";
 import {
-  createDecipheriv,
-  randomBytes,
   createCipheriv,
+  createDecipheriv,
   createHash,
+  randomBytes,
 } from "crypto";
+import { ConfigService, InjectConfig } from "nestjs-config";
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;

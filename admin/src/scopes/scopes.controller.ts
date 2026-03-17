@@ -1,20 +1,20 @@
-import { ObjectId } from "mongodb";
 import {
+  Body,
   Controller,
-  Get,
-  Render,
-  UseInterceptors,
   Delete,
+  Get,
   Param,
+  Patch,
+  Post,
+  Render,
   Req,
   Res,
-  Body,
-  Post,
-  Patch,
+  UseInterceptors,
 } from "@nestjs/common";
+import { ObjectId } from "mongodb";
 import { Roles } from "../authentication/decorator/roles.decorator";
-import { UserRole } from "../user/roles.enum";
 import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
+import { UserRole } from "../user/roles.enum";
 import { type IScopes } from "./interface";
 import { ScopesService } from "./scopes.service";
 

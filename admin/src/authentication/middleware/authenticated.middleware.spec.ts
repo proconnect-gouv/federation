@@ -1,5 +1,5 @@
-import { AuthenticatedMiddleware } from "./authenticated.middleware";
 import { UnauthorizedException } from "@nestjs/common";
+import { AuthenticatedMiddleware } from "./authenticated.middleware";
 
 describe("AuthenticatedMiddleware", () => {
   const authenticatedMiddleware = new AuthenticatedMiddleware();

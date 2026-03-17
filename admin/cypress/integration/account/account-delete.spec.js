@@ -1,6 +1,6 @@
-import { USER_ADMIN, USER_PASS, LIMIT_PAGE } from "../../support/constants";
-import { deleteUser } from "./account-delete.utils";
+import { LIMIT_PAGE, USER_ADMIN, USER_PASS } from "../../support/constants";
 import { createUserAccount } from "./account-create.utils";
+import { deleteUser } from "./account-delete.utils";
 
 describe("Account", () => {
   before(() => {

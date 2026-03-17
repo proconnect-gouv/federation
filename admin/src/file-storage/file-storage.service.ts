@@ -1,8 +1,8 @@
-import { MongoDriver } from "typeorm/driver/mongodb/MongoDriver";
-import { Repository } from "typeorm";
-import { ConfigService } from "nestjs-config";
-import { v4 as uuidv4 } from "uuid";
 import { InjectRepository } from "@nestjs/typeorm";
+import { ConfigService } from "nestjs-config";
+import { Repository } from "typeorm";
+import { MongoDriver } from "typeorm/driver/mongodb/MongoDriver";
+import { v4 as uuidv4 } from "uuid";
 import { FileStorage } from "./file-storage.mongodb.entity";
 
 export class FileStorageService {

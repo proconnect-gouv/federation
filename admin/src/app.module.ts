@@ -1,36 +1,36 @@
+import { CsurfMiddleware } from "@nest-middlewares/csurf";
 import {
   MiddlewareConsumer,
   Module,
   NestModule,
   RequestMethod,
 } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { MulterModule } from "@nestjs/platform-express";
 import { RouteInfo } from "@nestjs/common/interfaces";
-import { ConsoleModule } from "nestjs-console";
+import { MulterModule } from "@nestjs/platform-express";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { memoryStorage } from "multer";
-import { resolve } from "path";
 import { ConfigModule, ConfigService } from "nestjs-config";
-import { AppController } from "./app.controller";
-import { IdentityProviderModule } from "./identity-provider/identity-provider.module";
-import { LocalsInterceptor } from "./meta/locals.interceptor";
-import { IdentityProviderController } from "./identity-provider/identity-provider.controller";
-import { ServiceProviderModule } from "./service-provider/service-provider.module";
-import { ServiceProviderController } from "./service-provider/service-provider.controller";
-import { ConfigurationModule } from "./configuration/configuration.module";
-import { ConfigurationController } from "./configuration/configuration.controller";
-import { ScopesController } from "./scopes/scopes.controller";
-import { AppContextMiddleware } from "./app-context/middleware/app-context.middleware";
-import { AccountModule } from "./account/account.module";
+import { ConsoleModule } from "nestjs-console";
+import { resolve } from "path";
 import { AccountController } from "./account/account.controller";
-import { AuthenticationModule } from "./authentication/authentication.module";
+import { AccountModule } from "./account/account.module";
+import { AppContextMiddleware } from "./app-context/middleware/app-context.middleware";
+import { AppController } from "./app.controller";
 import { AuthenticationController } from "./authentication/authentication.controller";
+import { AuthenticationModule } from "./authentication/authentication.module";
 import { AuthenticatedMiddleware } from "./authentication/middleware/authenticated.middleware";
-import { CliModule } from "./cli/cli.module";
-import { CsurfMiddleware } from "@nest-middlewares/csurf";
 import { TotpMiddleware } from "./authentication/middleware/totp.middleware";
-import { LoggerModule } from "./logger/logger.module";
 import { TotpService } from "./authentication/totp/totp.service";
+import { CliModule } from "./cli/cli.module";
+import { ConfigurationController } from "./configuration/configuration.controller";
+import { ConfigurationModule } from "./configuration/configuration.module";
+import { IdentityProviderController } from "./identity-provider/identity-provider.controller";
+import { IdentityProviderModule } from "./identity-provider/identity-provider.module";
+import { LoggerModule } from "./logger/logger.module";
+import { LocalsInterceptor } from "./meta/locals.interceptor";
+import { ScopesController } from "./scopes/scopes.controller";
+import { ServiceProviderController } from "./service-provider/service-provider.controller";
+import { ServiceProviderModule } from "./service-provider/service-provider.module";
 
 @Module({
   imports: [

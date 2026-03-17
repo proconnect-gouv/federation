@@ -1,12 +1,12 @@
-import { ObjectId } from "mongodb";
-import { ConfigService } from "nestjs-config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
-import { FileStorageService } from "./file-storage.service";
+import { ObjectId } from "mongodb";
+import { ConfigService } from "nestjs-config";
+import { v4 as uuidv4 } from "uuid";
 import { FileStorage } from "./file-storage.mongodb.entity";
+import { FileStorageService } from "./file-storage.service";
 
 jest.mock("uuid");
-import { v4 as uuidv4 } from "uuid";
 
 describe("FileStorageService", () => {
   const originalDateNow = Date.now;
