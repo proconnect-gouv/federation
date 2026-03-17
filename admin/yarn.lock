@@ -3397,12 +3397,10 @@ ejs@^3.1.5:
   dependencies:
     jake "^10.8.5"
 
-ejs@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/ejs/-/ejs-4.0.1.tgz#689227c9f034c06ac75cd64f98b08b85f8922bc1"
-  integrity sha512-krvQtxc0btwSm/nvnt1UpnaFDFVJpJ0fdckmALpCgShsr/iGYHTnJiUliZTgmzq/UxTX33TtOQVKaNigMQp/6Q==
-  dependencies:
-    jake "^10.9.1"
+ejs@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/ejs/-/ejs-5.0.1.tgz#179523a437ed448543ad1b76ca4fb4c2e8950304"
+  integrity sha512-COqBPFMxuPTPspXl2DkVYaDS3HtrD1GpzOGkNTJ1IYkifq/r9h8SVEFrjA3D9/VJGOEoMQcrlhpntcSUrM8k6A==
 
 electron-to-chromium@^1.5.199:
   version "1.5.200"
@@ -4373,7 +4371,7 @@ jackspeak@^3.1.2:
   optionalDependencies:
     "@pkgjs/parseargs" "^0.11.0"
 
-jake@^10.8.5, jake@^10.9.1:
+jake@^10.8.5:
   version "10.9.4"
   resolved "https://registry.yarnpkg.com/jake/-/jake-10.9.4.tgz#d626da108c63d5cfb00ab5c25fadc7e0084af8e6"
   integrity sha512-wpHYzhxiVQL+IV05BLE2Xn34zW1S223hvjtqk0+gsPrwd/8JNLXJgZZM/iPFsYc1xyphF+6M6EvdE5E9MBGkDA==
