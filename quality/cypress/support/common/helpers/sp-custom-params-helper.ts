@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateCustomParams = (updater: (customParams: any) => any): void => {
   cy.get('[name="custom-params"]')
     .invoke("val")
@@ -119,7 +118,6 @@ export const removeFromRequestedClaims = (claim: string): void => {
   });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const interceptAuthorizeParam = (updater: (customParams: any) => any): void => {
   cy.intercept(
     {

@@ -1,5 +1,4 @@
 // Disable sort-keys to separate base configuration and access env variables
-/* eslint-disable sort-keys-fix/sort-keys-fix, sort-keys */
 const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
   chromeWebSecurity: false,
   video: false,
