@@ -83,7 +83,7 @@ export class OidcProviderConfigAppService {
 
     return {
       accountId: spIdentity.sub,
-      // eslint-disable-next-line require-await
+
       async claims() {
         return { ...spIdentity };
       },
