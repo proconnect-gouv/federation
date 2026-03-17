@@ -1295,10 +1295,10 @@
     nanoid "^5.1.5"
     tld-extract "^2.1.0"
 
-"@proconnect-gouv/proconnect.identite@^1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-1.6.2.tgz#ac15093c381ad5e0bc41b3ceadbebd2d258bbe95"
-  integrity sha512-VXANEZhCHuqfiMfx70Yht2rup+g0lFMFQkZXrm1gUrDrM5xQTbnjfV8qBF8r4GMn036+X1Lsiqo1fEiKooScAQ==
+"@proconnect-gouv/proconnect.identite@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-1.7.0.tgz#94ec34909e53645ef5a8420b17a869bce980f48b"
+  integrity sha512-HyHduhKe7KiKAXE12IV8kQD1D+Ga7eJ/4K4wxR2zURbAAcWBg4oRAYwnuO5jv9s3IgDc87UlDiO4qC7FRwffDQ==
   dependencies:
     leven "^4.0.0"
     openid-client "^6.6.4"
