@@ -34,12 +34,15 @@
 | ApiEntreprise_FEATURE_FETCH_ORGANIZATION_DATA | boolean |
 | ApiEntreprise_SHOULD_MOCK_API | boolean |
 | App_ASSETS_CACHE_TTL | number |
+| App_ASSETS_PATHS | json |
 | App_DEFAULT_EMAIL_RENATER | string |
 | App_DEFAULT_IDP_UID | string |
+| App_DSFR_ASSETS_PATHS | json |
 | App_FEATURE_DISPLAY_TEST_ENV_WARNING | boolean |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_SP_AUTHORIZED_FQDNS_CONFIGS | json |
+| App_VIEWS_PATHS | json |
 | EmailValidator_DOMAIN_WHITELIST | stringArray |
 | FQDN | string |
 | LoggerLegacy_FILE | string |
