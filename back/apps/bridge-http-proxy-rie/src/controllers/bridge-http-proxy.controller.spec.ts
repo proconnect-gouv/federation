@@ -1,12 +1,9 @@
-import { ValidationError } from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { validateDto } from "@fc/common";
 import { MessageType } from "@fc/hybridge-http-proxy";
 import { LoggerService } from "@fc/logger";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { ValidationError } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
 import {
   BridgeHttpProxyCsmrException,
   BridgeHttpProxyMissingVariableException,

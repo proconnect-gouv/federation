@@ -1,10 +1,7 @@
-import { Test } from "@nestjs/testing";
-
 import { ConfigModule } from "@fc/config";
 import { LoggerModule } from "@fc/logger";
-
 import { getConfigMock } from "@mocks/config";
-
+import { Test } from "@nestjs/testing";
 import { BridgeHttpProxyModule } from "./bridge-http-proxy.module";
 
 describe("BridgeHttpProxyModule Dependency Validation", () => {

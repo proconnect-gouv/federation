@@ -1,13 +1,10 @@
-import { plainToInstance } from "class-transformer";
-import { validate, ValidationError } from "class-validator";
-import { cloneDeep } from "lodash";
-
-import { HttpStatus, Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
-
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import { validate, ValidationError } from "class-validator";
+import { cloneDeep } from "lodash";
 import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from "../dto";
 import { CoreFcaInvalidIdentityException } from "../exceptions";
 

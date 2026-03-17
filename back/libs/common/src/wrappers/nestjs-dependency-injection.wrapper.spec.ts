@@ -1,7 +1,5 @@
-import { useContainer } from "class-validator";
-
 import { INestApplicationContext } from "@nestjs/common";
-
+import { useContainer } from "class-validator";
 import { NestJsDependencyInjectionWrapper } from "./nestjs-dependency-injection.wrapper";
 
 jest.mock("class-validator");

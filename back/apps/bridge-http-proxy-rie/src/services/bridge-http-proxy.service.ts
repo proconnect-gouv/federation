@@ -1,15 +1,12 @@
-import { lastValueFrom, timeout } from "rxjs";
-
-import { Inject, Injectable } from "@nestjs/common";
-import { ClientProxy } from "@nestjs/microservices";
-
 import { validateDto } from "@fc/common";
 import { ConfigService, validationOptions } from "@fc/config";
 import { BridgePayload, BridgeProtocol } from "@fc/hybridge-http-proxy";
 import { LoggerService } from "@fc/logger";
 import { HttpProxyProtocol } from "@fc/microservices";
 import { RabbitmqConfig } from "@fc/rabbitmq";
-
+import { Inject, Injectable } from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
+import { lastValueFrom, timeout } from "rxjs";
 import { BridgeHttpProxyProtocolDto } from "../dto";
 import {
   BridgeHttpProxyMissingVariableException,

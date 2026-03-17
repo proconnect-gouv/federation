@@ -1,11 +1,9 @@
-import { TokenSet } from "openid-client";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { TokenSet } from "openid-client";
 import { OidcClientTokenResultFailedException } from "../exceptions";
-import { OidcClientService } from "./oidc-client.service";
 import { OidcClientIssuerService } from "./oidc-client-issuer.service";
 import { OidcClientUtilsService } from "./oidc-client-utils.service";
+import { OidcClientService } from "./oidc-client.service";
 
 describe("OidcClientService", () => {
   let service: OidcClientService;

@@ -1,9 +1,7 @@
-import { Module } from "@nestjs/common";
-
 import { ConfigModule } from "@fc/config";
 import { LoggerModule } from "@fc/logger";
 import { SessionModule } from "@fc/session";
-
+import { Module } from "@nestjs/common";
 import {
   FcWebHtmlExceptionFilter,
   HttpExceptionFilter,

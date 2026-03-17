@@ -1,11 +1,9 @@
-import { NestFactory } from "@nestjs/core";
-import { MicroserviceOptions, Transport } from "@nestjs/microservices";
-
 import { ConfigService } from "@fc/config";
 import { CsmrHttpProxyConfig } from "@fc/csmr-http-proxy";
 import { NestLoggerService } from "@fc/logger";
 import { RabbitmqConfig } from "@fc/rabbitmq";
-
+import { NestFactory } from "@nestjs/core";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import { AppModule } from "./app.module";
 import configuration from "./config";
 

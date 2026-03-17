@@ -1,7 +1,5 @@
-import { useContainer } from "class-validator";
-
 import { INestApplicationContext } from "@nestjs/common";
-
+import { useContainer } from "class-validator";
 import { TypeOrToken } from "../types";
 
 export class NestJsDependencyInjectionWrapper {

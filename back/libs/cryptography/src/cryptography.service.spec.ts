@@ -1,9 +1,6 @@
-import crypto from "crypto";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import crypto from "crypto";
 import {
   CryptographyService,
   RANDOM_MIN_ENTROPY,

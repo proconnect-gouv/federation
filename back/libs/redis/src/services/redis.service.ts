@@ -1,9 +1,6 @@
-import Redis from "ioredis";
-
-import { Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
-
+import { Injectable } from "@nestjs/common";
+import Redis from "ioredis";
 import { RedisConfig } from "../dto";
 
 @Injectable()

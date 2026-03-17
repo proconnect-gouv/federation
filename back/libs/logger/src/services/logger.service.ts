@@ -1,10 +1,7 @@
+import { ConfigService } from "@fc/config";
+import { Inject, Injectable, ShutdownSignal } from "@nestjs/common";
 import { isEmpty } from "lodash";
 import pino, { Logger } from "pino";
-
-import { Inject, Injectable, ShutdownSignal } from "@nestjs/common";
-
-import { ConfigService } from "@fc/config";
-
 import { trackedEventSteps } from "../config/tracked-event-steps";
 import { LoggerConfig, LoggerLegacyConfig } from "../dto";
 import { LogLevels, TrackedEvent } from "../enums";

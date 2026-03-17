@@ -1,9 +1,7 @@
-import { DynamicModule, Module } from "@nestjs/common";
-import { ClientProxyFactory, Transport } from "@nestjs/microservices";
-
 import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
-
+import { DynamicModule, Module } from "@nestjs/common";
+import { ClientProxyFactory, Transport } from "@nestjs/microservices";
 import { RabbitmqConfig } from "./dto";
 
 @Module({})

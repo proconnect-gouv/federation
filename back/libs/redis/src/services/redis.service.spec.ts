@@ -1,11 +1,7 @@
-import Redis from "ioredis";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
-
 import { getConfigMock } from "@mocks/config";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import Redis from "ioredis";
 import { RedisService } from "./redis.service";
 
 jest.mock("ioredis");

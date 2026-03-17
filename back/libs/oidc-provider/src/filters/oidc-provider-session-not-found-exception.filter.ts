@@ -1,12 +1,10 @@
-import { errors } from "oidc-provider";
-
-import { ArgumentsHost, Catch, Injectable } from "@nestjs/common";
-import SessionNotFound = errors.SessionNotFound;
-import { BaseExceptionFilter } from "@nestjs/core";
-
 import { generateErrorId, getStackTraceArray } from "@fc/exceptions/helpers";
 import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
 import { LoggerService } from "@fc/logger";
+import { ArgumentsHost, Catch, Injectable } from "@nestjs/common";
+import { BaseExceptionFilter } from "@nestjs/core";
+import { errors } from "oidc-provider";
+import SessionNotFound = errors.SessionNotFound;
 
 @Catch(SessionNotFound)
 @Injectable()

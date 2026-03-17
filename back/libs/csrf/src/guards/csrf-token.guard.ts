@@ -1,5 +1,4 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-
 import { CsrfMissingTokenException } from "../exceptions";
 import { CsrfService } from "../services";
 

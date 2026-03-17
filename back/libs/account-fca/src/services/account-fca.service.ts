@@ -1,13 +1,10 @@
+import { ConfigService } from "@fc/config";
+import { AppConfig } from "@fc/core/dto";
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 import { filter, isEmpty, isEqual } from "lodash";
 import { Model } from "mongoose";
 import { v4 as uuid } from "uuid";
-
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-
-import { ConfigService } from "@fc/config";
-import { AppConfig } from "@fc/core/dto";
-
 import { AccountFca } from "../schemas";
 
 @Injectable()

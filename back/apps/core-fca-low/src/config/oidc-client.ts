@@ -1,6 +1,5 @@
 import { ConfigParser } from "@fc/config";
 import { OidcClientConfig } from "@fc/oidc-client";
-
 import { Routes } from "../enums";
 import app from "./app";
 

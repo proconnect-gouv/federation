@@ -1,15 +1,11 @@
-import { resolveMx } from "node:dns/promises";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { AccountFcaService } from "@fc/account-fca";
 import { ConfigService } from "@fc/config";
 import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
-
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { resolveMx } from "node:dns/promises";
 import { EmailValidatorService } from "./email-validator.service";
 
 jest.mock("node:dns/promises", () => ({

@@ -16,9 +16,8 @@ import {
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1024
  * @ticket #FC-1024
  */
-import { JSONWebKeySet } from "jose-v2";
-
 import { IdentityProviderMetadata } from "@fc/oidc";
+import { JSONWebKeySet } from "jose-v2";
 
 class HttpOptions {
   @IsString()

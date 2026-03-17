@@ -1,3 +1,9 @@
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { SessionService } from "@fc/session";
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
+import { getSessionServiceMock } from "@mocks/session";
 import {
   ArgumentsHost,
   BadRequestException,
@@ -5,15 +11,6 @@ import {
   InternalServerErrorException,
 } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { SessionService } from "@fc/session";
-
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
-import { getSessionServiceMock } from "@mocks/session";
-
 import { generateErrorId } from "../helpers";
 import { HttpExceptionFilter } from "./http-exception.filter";
 

@@ -1,11 +1,8 @@
-import { get, intersection, isArray, isEmpty, isString } from "lodash";
-
-import { Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import { UserSession } from "@fc/core";
 import { OidcProviderConfig } from "@fc/oidc-provider";
-
+import { Injectable } from "@nestjs/common";
+import { get, intersection, isArray, isEmpty, isString } from "lodash";
 import { AcrClaims, AcrValues, ExtendedInteraction } from "./oidc-acr.type";
 
 @Injectable()

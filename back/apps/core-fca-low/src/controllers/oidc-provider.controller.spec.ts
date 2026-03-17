@@ -1,16 +1,12 @@
-import { validate, ValidationError } from "class-validator";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
 import { TrackedEvent } from "@fc/logger/enums";
 import { OidcClientService } from "@fc/oidc-client";
 import { OidcProviderService } from "@fc/oidc-provider/oidc-provider.service";
 import { ISessionService } from "@fc/session";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { validate, ValidationError } from "class-validator";
 import {
   AuthorizeParamsDto,
   LogoutParamsDto,

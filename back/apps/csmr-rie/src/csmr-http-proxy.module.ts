@@ -1,10 +1,8 @@
-import { HttpModule } from "@nestjs/axios";
-import { Module } from "@nestjs/common";
-
 import { AsyncLocalStorageModule } from "@fc/async-local-storage";
 import { ConfigModule, ConfigService } from "@fc/config";
 import { RabbitmqConfig } from "@fc/rabbitmq";
-
+import { HttpModule } from "@nestjs/axios";
+import { Module } from "@nestjs/common";
 import { CsmrHttpProxyController } from "./controllers";
 import { rawTransform, validateStatus } from "./http";
 import { CsmrHttpProxyService } from "./services";

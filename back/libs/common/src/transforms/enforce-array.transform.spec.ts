@@ -1,5 +1,4 @@
 import { TransformFnParams } from "class-transformer";
-
 import { enforceArray } from "./enforce-array.transform";
 
 describe("Enforce array transform", () => {

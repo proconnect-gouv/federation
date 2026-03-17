@@ -10,7 +10,6 @@ import {
 } from "class-validator";
 
 import { AppConfig as AppGenericConfig } from "@fc/app";
-
 import { ContentSecurityPolicy } from "./content-secury-policy.dto";
 import { SpAuthorizedFqdnsConfig } from "./sp-authorized-fqdns-config.dto";
 

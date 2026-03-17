@@ -1,10 +1,7 @@
-import deepFreeze from "deep-freeze";
-
+import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-
-import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
-
+import deepFreeze from "deep-freeze";
 import { NotificationInterface } from "./interfaces";
 
 @Injectable()

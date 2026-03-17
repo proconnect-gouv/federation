@@ -3,7 +3,6 @@ import { get } from "lodash";
 import { strict as assert } from "node:assert";
 import path from "node:path";
 import Provider from "oidc-provider-v8";
-
 import configuration from "./oidc-provider-support/configuration";
 import MemoryAdapter from "./oidc-provider-support/memory_adapter.js";
 import { createUser, getDefaultUser, parseFormDataValue } from "./user-data";

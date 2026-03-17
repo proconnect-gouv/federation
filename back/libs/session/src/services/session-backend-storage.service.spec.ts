@@ -1,17 +1,13 @@
-import { plainToInstance } from "class-transformer";
-import { validate, ValidationError } from "class-validator";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { CryptographyService } from "@fc/cryptography";
 import { LoggerService } from "@fc/logger";
 import { RedisService } from "@fc/redis";
-
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { getRedisServiceMock, getRedisServiceMultiMock } from "@mocks/redis";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { plainToInstance } from "class-transformer";
+import { validate, ValidationError } from "class-validator";
 import {
   SessionAliasNotFoundException,
   SessionBadAliasException,

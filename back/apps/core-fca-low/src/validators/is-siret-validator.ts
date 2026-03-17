@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import {
   registerDecorator,
   ValidationOptions,
@@ -5,8 +6,6 @@ import {
   ValidatorConstraintInterface,
 } from "class-validator";
 import { isString } from "lodash";
-
-import { Injectable } from "@nestjs/common";
 
 @ValidatorConstraint({ name: "isSiret" })
 @Injectable()

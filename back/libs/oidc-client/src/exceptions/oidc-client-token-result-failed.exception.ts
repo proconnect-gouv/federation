@@ -1,5 +1,4 @@
 import { HttpStatus } from "@nestjs/common";
-
 import { ErrorCode } from "../enums";
 import { OidcClientBaseException } from "./oidc-client-base.exception";
 

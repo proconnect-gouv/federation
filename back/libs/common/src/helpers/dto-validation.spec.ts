@@ -1,7 +1,6 @@
 // Needed to use the "spyOn" method of jest
 import * as ClassTransformer from "class-transformer";
 import * as ClassValidator from "class-validator";
-
 import {
   filteredByDto,
   getTransformed,

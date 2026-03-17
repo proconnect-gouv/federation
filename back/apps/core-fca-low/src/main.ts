@@ -1,19 +1,15 @@
-import { join } from "path";
-
-import CookieParser from "cookie-parser";
-import { renderFile } from "ejs";
-import { urlencoded } from "express";
-import helmet from "helmet";
-
-import { NestFactory } from "@nestjs/core";
-import { NestExpressApplication } from "@nestjs/platform-express";
-
 import { NestJsDependencyInjectionWrapper } from "@fc/common";
 import { ConfigService } from "@fc/config";
 import { AppConfig, CoreFcaConfig } from "@fc/core";
 import { NestLoggerService } from "@fc/logger";
 import { SessionConfig } from "@fc/session";
-
+import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import CookieParser from "cookie-parser";
+import { renderFile } from "ejs";
+import { urlencoded } from "express";
+import helmet from "helmet";
+import { join } from "path";
 import { AppModule } from "./app.module";
 import config from "./config";
 

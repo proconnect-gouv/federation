@@ -1,5 +1,4 @@
-import "reflect-metadata";
-
+import { Type } from "@nestjs/common";
 import {
   ClassTransformOptions,
   instanceToPlain,
@@ -11,8 +10,7 @@ import {
   ValidationError,
   ValidatorOptions,
 } from "class-validator";
-
-import { Type } from "@nestjs/common";
+import "reflect-metadata";
 
 /**
  * @todo #428  Supprimer les Type<> et créer un InstanceOf<> identique mais

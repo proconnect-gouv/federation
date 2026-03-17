@@ -1,9 +1,6 @@
-import { Request, Response } from "express";
-
-import { Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
-
+import { Injectable } from "@nestjs/common";
+import { Request, Response } from "express";
 import { SessionConfig } from "../dto";
 import { SessionBadCookieException } from "../exceptions";
 

@@ -1,5 +1,4 @@
 import { validateDto } from "@fc/common";
-
 import {
   DiscoveryIdpAdapterMongoDTO,
   MetadataIdpAdapterMongoDTO,

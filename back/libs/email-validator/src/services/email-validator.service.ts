@@ -1,3 +1,8 @@
+import { AccountFcaService } from "@fc/account-fca";
+import { ConfigService } from "@fc/config";
+import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
+import { LoggerService } from "@fc/logger";
+import { Injectable } from "@nestjs/common";
 import {
   gouvfrDomains,
   mostUsedFreeEmailDomains,
@@ -6,14 +11,6 @@ import {
 import { run as spellCheckEmail } from "@zootools/email-spell-checker";
 import { chain, uniq } from "lodash";
 import { resolveMx } from "node:dns/promises";
-
-import { Injectable } from "@nestjs/common";
-
-import { AccountFcaService } from "@fc/account-fca";
-import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
-
 import { EmailValidatorConfig } from "../dto";
 
 @Injectable()

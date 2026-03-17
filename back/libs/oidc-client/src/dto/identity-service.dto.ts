@@ -10,7 +10,6 @@ import {
   ValidateNested,
 } from "class-validator";
 import { type IdTokenClaims } from "openid-client";
-
 import { TokenResults } from "../interfaces";
 
 export class TokenResultClaimsDto {

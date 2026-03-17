@@ -1,13 +1,9 @@
-import { lastValueFrom } from "rxjs";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { validateDto } from "@fc/common";
 import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { lastValueFrom } from "rxjs";
 import { BridgeHttpProxyProtocolDto } from "../dto";
 import {
   BridgeHttpProxyMissingVariableException,

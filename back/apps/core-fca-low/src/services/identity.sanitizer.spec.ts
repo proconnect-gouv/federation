@@ -1,7 +1,6 @@
 import { ConfigService } from "@fc/config";
 import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
-
 import { IdentityFromIdpDto } from "../dto/identity-from-idp.dto";
 import { CoreFcaInvalidIdentityException } from "../exceptions";
 import { IdentitySanitizer } from "./identity.sanitizer";

@@ -1,12 +1,9 @@
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { Injectable, type OnModuleDestroy } from "@nestjs/common";
 import { debounce, type DebouncedFunc } from "lodash";
 import { type ChangeStream, ChangeStreamDocument } from "mongodb";
 import { Document, Model } from "mongoose";
-
-import { Injectable, type OnModuleDestroy } from "@nestjs/common";
-
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-
 import type { MongooseConfig } from "../dto";
 
 const DEFAULT_OPERATIONS = ["insert", "update", "delete", "rename", "replace"];

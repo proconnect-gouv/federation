@@ -14,11 +14,9 @@ import {
   ValidateNested,
 } from "class-validator";
 
-import { RouteInfo, type Type as Class } from "@nestjs/common/interfaces";
-
 import { IsStringOrRegExp } from "@fc/common";
 import { CoreFcaSession } from "@fc/core";
-
+import { RouteInfo, type Type as Class } from "@nestjs/common/interfaces";
 import { type SameSiteType, type TemplateExposedType } from "../types";
 
 export class CookieOptions {

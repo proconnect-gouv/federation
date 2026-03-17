@@ -1,6 +1,5 @@
-import { Document } from "mongoose";
-
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
 @Schema({ collection: "provider", strict: true })
 export class IdentityProvider extends Document {

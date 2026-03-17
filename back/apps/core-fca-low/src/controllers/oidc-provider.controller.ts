@@ -1,9 +1,10 @@
-import { randomBytes } from "crypto";
-
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { isEmpty } from "lodash";
-
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { TrackedEvent } from "@fc/logger/enums";
+import { OidcClientService } from "@fc/oidc-client";
+import { OidcProviderRoutes } from "@fc/oidc-provider/enums";
+import { OidcProviderService } from "@fc/oidc-provider/oidc-provider.service";
+import { type ISessionService } from "@fc/session";
 import {
   Body,
   Controller,
@@ -16,15 +17,10 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
-
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { TrackedEvent } from "@fc/logger/enums";
-import { OidcClientService } from "@fc/oidc-client";
-import { OidcProviderRoutes } from "@fc/oidc-provider/enums";
-import { OidcProviderService } from "@fc/oidc-provider/oidc-provider.service";
-import { type ISessionService } from "@fc/session";
-
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { randomBytes } from "crypto";
+import { isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
 import {
   ActiveUserSessionDto,

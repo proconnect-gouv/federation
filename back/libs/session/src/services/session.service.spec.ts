@@ -1,12 +1,10 @@
-import { Request, Response } from "express";
-
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { SessionService } from "./session.service";
+import { Request, Response } from "express";
 import { SessionBackendStorageService } from "./session-backend-storage.service";
 import { SessionCookiesService } from "./session-cookies.service";
 import { SessionLifecycleService } from "./session-lifecycle.service";
 import { SessionLocalStorageService } from "./session-local-storage.service";
+import { SessionService } from "./session.service";
 
 describe("SessionService", () => {
   let service: SessionService;

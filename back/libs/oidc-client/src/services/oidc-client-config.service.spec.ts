@@ -1,8 +1,6 @@
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { CryptographyService } from "@fc/cryptography";
-
+import { Test, TestingModule } from "@nestjs/testing";
 import { IDENTITY_PROVIDER_SERVICE } from "../tokens";
 import { OidcClientConfigService } from "./oidc-client-config.service";
 

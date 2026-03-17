@@ -1,6 +1,3 @@
-import { Controller, Get, UsePipes, ValidationPipe } from "@nestjs/common";
-import { MessagePattern, Payload } from "@nestjs/microservices";
-
 import { ValidationException } from "@fc/exceptions";
 import {
   BridgeError,
@@ -10,7 +7,8 @@ import {
 } from "@fc/hybridge-http-proxy";
 import { LoggerService } from "@fc/logger";
 import { HttpProxyProtocol } from "@fc/microservices";
-
+import { Controller, Get, UsePipes, ValidationPipe } from "@nestjs/common";
+import { MessagePattern, Payload } from "@nestjs/microservices";
 import { BridgePayloadDto } from "../dto";
 import { CsmrHttpProxyService } from "../services";
 

@@ -1,12 +1,8 @@
-import { Request, Response } from "express";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
-
 import { getConfigMock } from "@mocks/config";
 import { getSessionServiceMock } from "@mocks/session";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request, Response } from "express";
 import { SessionConfig } from "../dto";
 import { SessionService } from "../services";
 import { SessionMiddleware } from "./session.middleware";

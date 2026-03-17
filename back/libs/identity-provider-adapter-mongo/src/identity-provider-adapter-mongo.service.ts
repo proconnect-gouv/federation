@@ -1,12 +1,3 @@
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import deepFreeze from "deep-freeze";
-import { cloneDeep } from "lodash";
-import { Model } from "mongoose";
-
-import { Injectable, Type } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-
 import { ConfigService } from "@fc/config";
 import { CryptographyService } from "@fc/cryptography";
 import { LoggerService } from "@fc/logger";
@@ -17,7 +8,13 @@ import {
   IssuerMetadata,
 } from "@fc/oidc";
 import { IIdentityProviderAdapter } from "@fc/oidc-client";
-
+import { Injectable, Type } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import deepFreeze from "deep-freeze";
+import { cloneDeep } from "lodash";
+import { Model } from "mongoose";
 import {
   DiscoveryIdpAdapterMongoDTO,
   IdentityProviderAdapterMongoConfig,

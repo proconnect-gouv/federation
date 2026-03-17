@@ -1,13 +1,10 @@
-import { isEmpty } from "lodash";
-
-import { Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import { AppConfig } from "@fc/core/dto";
 import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
 import { IdentityProviderMetadata } from "@fc/oidc";
-
+import { Injectable } from "@nestjs/common";
+import { isEmpty } from "lodash";
 import {
   CoreFcaAgentIdpDisabledException,
   CoreFcaIdpConfigurationException,

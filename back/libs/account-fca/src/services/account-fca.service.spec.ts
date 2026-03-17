@@ -1,13 +1,9 @@
-import { v4 as uuid, Version4Options } from "uuid";
-
-import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { v4 as uuid, Version4Options } from "uuid";
 import { AccountFcaService } from "./account-fca.service";
 
 jest.mock("uuid");

@@ -1,6 +1,5 @@
-import { HttpStatus } from "@nestjs/common";
-
 import { ErrorPageParams } from "@fc/exceptions/types";
+import { HttpStatus } from "@nestjs/common";
 
 export const httpErrorDisplays: {
   [key in HttpStatus]?: ErrorPageParams["exceptionDisplay"];

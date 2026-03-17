@@ -1,9 +1,6 @@
-import { cloneDeep } from "lodash";
-
-import { Injectable } from "@nestjs/common";
-
 import { AsyncLocalStorageService } from "@fc/async-local-storage";
-
+import { Injectable } from "@nestjs/common";
+import { cloneDeep } from "lodash";
 import {
   SessionStoreContentInterface,
   SessionStoreInterface,

@@ -1,10 +1,7 @@
+import { SessionService } from "@fc/session";
+import { getSessionServiceMock } from "@mocks/session";
 import { ModuleRef } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { SessionService } from "@fc/session";
-
-import { getSessionServiceMock } from "@mocks/session";
-
 import { LoggerSessionService } from "./logger-session.service";
 
 describe("LoggerSessionService", () => {

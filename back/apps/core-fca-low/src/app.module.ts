@@ -1,7 +1,3 @@
-import { DynamicModule, Module } from "@nestjs/common";
-import { APP_FILTER } from "@nestjs/core";
-import { CqrsModule } from "@nestjs/cqrs";
-
 import { AccountFcaModule } from "@fc/account-fca";
 import { AsyncLocalStorageModule } from "@fc/async-local-storage";
 import { CachedOrganizationModule } from "@fc/cached-organization";
@@ -33,7 +29,9 @@ import {
   ServiceProviderAdapterMongoService,
 } from "@fc/service-provider-adapter-mongo";
 import { SessionModule } from "@fc/session";
-
+import { DynamicModule, Module } from "@nestjs/common";
+import { APP_FILTER } from "@nestjs/core";
+import { CqrsModule } from "@nestjs/cqrs";
 import {
   InteractionController,
   OidcClientController,

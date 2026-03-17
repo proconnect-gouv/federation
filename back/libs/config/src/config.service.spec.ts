@@ -1,6 +1,5 @@
-import { IsNumber, IsObject } from "class-validator";
-
 import { Test, TestingModule } from "@nestjs/testing";
+import { IsNumber, IsObject } from "class-validator";
 
 /**
  * Config service being manually instanciated (in main.ts), nest dependencies
@@ -8,7 +7,6 @@ import { Test, TestingModule } from "@nestjs/testing";
  * but need to specify the full path to the helper
  */
 import { AppHelper } from "@fc/app/helpers/app-helper";
-
 import { ConfigService } from "./config.service";
 import { UnknownConfigurationNameError } from "./errors";
 

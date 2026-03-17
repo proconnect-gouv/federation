@@ -1,5 +1,4 @@
 import { IsDefined } from "class-validator";
-
 import { UserSession } from "./user-session.dto";
 
 export class AfterGetInteractionSessionDto extends UserSession {

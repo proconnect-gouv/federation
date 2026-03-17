@@ -1,7 +1,3 @@
-import { Request, Response } from "express";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { AppConfig, UserSession } from "@fc/core/dto";
 import { Routes } from "@fc/core/enums";
@@ -12,11 +8,11 @@ import { OidcAcrService } from "@fc/oidc-acr";
 import { OidcClientConfig, OidcClientService } from "@fc/oidc-client";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { SessionService } from "@fc/session";
-
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { getSessionServiceMock } from "@mocks/session";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request, Response } from "express";
 import {
   CoreFcaAgentIdpDisabledException,
   CoreFcaAgentNoIdpException,

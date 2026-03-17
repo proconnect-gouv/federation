@@ -1,5 +1,3 @@
-import { Test, TestingModule } from "@nestjs/testing";
-
 import {
   BridgeError,
   BridgeProtocol,
@@ -7,9 +5,8 @@ import {
   MessageType,
 } from "@fc/hybridge-http-proxy";
 import { LoggerService } from "@fc/logger";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
 import { BridgePayloadDto } from "../dto";
 import { CsmrHttpProxyService } from "../services";
 import { CsmrHttpProxyController } from "./csmr-http-proxy.controller";

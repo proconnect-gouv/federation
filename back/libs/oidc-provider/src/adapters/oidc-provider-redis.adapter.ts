@@ -1,9 +1,7 @@
-import { isEmpty } from "lodash";
-import { Adapter, AdapterConstructor } from "oidc-provider";
-
 import { IServiceProviderAdapter } from "@fc/oidc";
 import { RedisService } from "@fc/redis";
-
+import { isEmpty } from "lodash";
+import { Adapter, AdapterConstructor } from "oidc-provider";
 import {
   OidcProviderParseRedisResponseException,
   OidcProviderStringifyPayloadForRedisException,

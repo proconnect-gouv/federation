@@ -1,7 +1,6 @@
+import { CrsfToken } from "@fc/oidc-client";
 import { Transform } from "class-transformer";
 import { IsBoolean, IsEmail, IsOptional } from "class-validator";
-
-import { CrsfToken } from "@fc/oidc-client";
 
 export class RedirectToIdp extends CrsfToken {
   @IsEmail()

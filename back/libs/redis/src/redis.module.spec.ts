@@ -1,11 +1,8 @@
-import { Test } from "@nestjs/testing";
-
 import { ConfigModule } from "@fc/config";
 import { LoggerService } from "@fc/logger";
-
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test } from "@nestjs/testing";
 import { RedisModule } from "./redis.module";
 
 describe("RedisModule Dependency Validation", () => {

@@ -3,18 +3,14 @@
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1024
  * @ticket #FC-1024
  */
-import { Request } from "express";
-import { fail } from "node:assert";
-import { CallbackParamsType, errors } from "openid-client";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { CryptographyService } from "@fc/cryptography";
 import { LoggerService } from "@fc/logger";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request } from "express";
+import { fail } from "node:assert";
+import { CallbackParamsType, errors } from "openid-client";
 import {
   OidcClientGetEndSessionUrlException,
   OidcClientInvalidStateException,

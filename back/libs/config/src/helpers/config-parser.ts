@@ -1,8 +1,6 @@
-import { existsSync, readFileSync } from "fs";
-
-import { isEmpty } from "lodash";
-
 import { parseBoolean, parseJsonProperty } from "@fc/common";
+import { existsSync, readFileSync } from "fs";
+import { isEmpty } from "lodash";
 
 export class ConfigParser {
   constructor(

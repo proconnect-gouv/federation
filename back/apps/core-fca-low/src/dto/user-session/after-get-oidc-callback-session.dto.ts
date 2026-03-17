@@ -1,6 +1,5 @@
 import { Type } from "class-transformer";
 import { IsDefined, ValidateNested } from "class-validator";
-
 import { IdentityForSpDto } from "../identity-for-sp.dto";
 import { IdentityFromIdpDto } from "../identity-from-idp.dto";
 import { AfterRedirectToIdpWithEmailSessionDto } from "./after-redirect-to-idp-with-email-session.dto";

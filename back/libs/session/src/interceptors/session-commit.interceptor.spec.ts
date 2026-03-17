@@ -1,15 +1,11 @@
-import { Request } from "express";
-
-import { ExecutionContext } from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
-
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { getSessionServiceMock } from "@mocks/session";
-
+import { ExecutionContext } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request } from "express";
 import { SessionService } from "../services";
 import { SessionCommitInterceptor } from "./session-commit.interceptor";
 

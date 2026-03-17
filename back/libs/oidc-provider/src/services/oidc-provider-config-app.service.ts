@@ -6,15 +6,13 @@ import {
   Provider,
 } from "oidc-provider";
 
-import { Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import { UserSession } from "@fc/core";
 import { generateErrorId } from "@fc/exceptions/helpers";
 import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
 import { LoggerService } from "@fc/logger";
 import { SessionService } from "@fc/session";
-
+import { Injectable } from "@nestjs/common";
 import { OidcCtx } from "../interfaces";
 
 /**

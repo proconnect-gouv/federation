@@ -1,7 +1,5 @@
-import { AsyncLocalStorage } from "async_hooks";
-
 import { Injectable } from "@nestjs/common";
-
+import { AsyncLocalStorage } from "async_hooks";
 import { AsyncLocalStorageNotFoundException } from "./exceptions";
 
 @Injectable()

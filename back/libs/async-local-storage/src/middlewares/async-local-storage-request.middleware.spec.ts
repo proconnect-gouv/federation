@@ -1,7 +1,5 @@
-import { Request, Response } from "express";
-
 import { Test, TestingModule } from "@nestjs/testing";
-
+import { Request, Response } from "express";
 import { AsyncLocalStorageService } from "../async-local-storage.service";
 import { AsyncLocalStorageRequestMiddleware } from "./async-local-storage-request.middleware";
 

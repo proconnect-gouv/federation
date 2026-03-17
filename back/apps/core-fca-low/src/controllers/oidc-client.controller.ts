@@ -1,19 +1,3 @@
-import { type Request, type Response } from "express";
-import { filter, isEmpty } from "lodash";
-
-import {
-  Body,
-  Controller,
-  Get,
-  Header,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-} from "@nestjs/common";
-
 import { AccountFcaService } from "@fc/account-fca";
 import { ApiEntrepriseConfig } from "@fc/api-entreprise";
 import { CachedOrganizationService } from "@fc/cached-organization";
@@ -28,7 +12,20 @@ import {
 } from "@fc/oidc-client";
 import { OidcProviderRoutes } from "@fc/oidc-provider";
 import { type ISessionService, SessionService } from "@fc/session";
-
+import {
+  Body,
+  Controller,
+  Get,
+  Header,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from "@nestjs/common";
+import { type Request, type Response } from "express";
+import { filter, isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
 import {
   AfterGetInteractionSessionDto,

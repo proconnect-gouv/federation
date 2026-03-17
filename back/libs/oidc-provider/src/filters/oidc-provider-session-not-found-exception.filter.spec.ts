@@ -1,17 +1,13 @@
-import { errors } from "oidc-provider";
-
-import { ArgumentsHost } from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { generateErrorId } from "@fc/exceptions/helpers";
 import { LoggerService } from "@fc/logger";
 import { SessionService } from "@fc/session";
-
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { getSessionServiceMock } from "@mocks/session";
-
+import { ArgumentsHost } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import { errors } from "oidc-provider";
 import { OidcProviderSessionNotFoundExceptionFilter } from "./oidc-provider-session-not-found-exception.filter";
 import SessionNotFound = errors.SessionNotFound;
 

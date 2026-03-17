@@ -1,10 +1,7 @@
+import { LoggerService } from "@fc/logger";
+import { getLoggerMock } from "@mocks/logger";
 import { ExecutionContext } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { LoggerService } from "@fc/logger";
-
-import { getLoggerMock } from "@mocks/logger";
-
 import { AppInterceptor } from "./app.interceptor";
 
 describe("AppInterceptor", () => {

@@ -1,8 +1,3 @@
-import { validate } from "class-validator";
-import { Request, Response } from "express";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { AccountFcaService } from "@fc/account-fca";
 import { ConfigService } from "@fc/config";
 import { CsrfService } from "@fc/csrf";
@@ -13,8 +8,10 @@ import { OidcAcrService } from "@fc/oidc-acr";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
 import { ISessionService, SessionService } from "@fc/session";
-
 import { getLoggerMock } from "@mocks/logger";
+import { Test, TestingModule } from "@nestjs/testing";
+import { validate } from "class-validator";
+import { Request, Response } from "express";
 
 // --- Mocks for external dependencies ---
 import { AfterGetOidcCallbackSessionDto, UserSession } from "../dto";

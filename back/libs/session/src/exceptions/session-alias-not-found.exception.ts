@@ -1,5 +1,4 @@
 import { HttpStatus } from "@nestjs/common";
-
 import { ErrorCode } from "../enums";
 import { SessionBaseException } from "./session-base.exception";
 

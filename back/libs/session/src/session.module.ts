@@ -1,11 +1,9 @@
-import { Global, MiddlewareConsumer, Module } from "@nestjs/common";
-import { APP_INTERCEPTOR } from "@nestjs/core";
-
 import { AsyncLocalStorageModule } from "@fc/async-local-storage";
 import { ConfigService } from "@fc/config";
 import { CryptographyModule } from "@fc/cryptography";
 import { RedisModule } from "@fc/redis";
-
+import { Global, MiddlewareConsumer, Module } from "@nestjs/common";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 import { SessionConfig } from "./dto";
 import { SessionCommitInterceptor } from "./interceptors";
 import { SessionMiddleware } from "./middlewares";

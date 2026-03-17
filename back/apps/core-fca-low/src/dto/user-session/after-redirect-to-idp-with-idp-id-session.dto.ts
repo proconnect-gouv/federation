@@ -1,5 +1,4 @@
 import { IsDefined } from "class-validator";
-
 import { AfterRedirectToIdpWithEmailSessionDto } from "./after-redirect-to-idp-with-email-session.dto";
 
 export class AfterRedirectToIdpWithIdpIdSessionDto extends AfterRedirectToIdpWithEmailSessionDto {

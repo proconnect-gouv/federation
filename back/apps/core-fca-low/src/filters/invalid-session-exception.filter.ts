@@ -1,19 +1,16 @@
-import { errors } from "oidc-provider";
-
-import {
-  ArgumentsHost,
-  Catch,
-  Injectable,
-  InternalServerErrorException,
-} from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import { HttpExceptionFilter } from "@fc/exceptions";
 import { LoggerService } from "@fc/logger";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { OidcProviderSessionNotFoundExceptionFilter } from "@fc/oidc-provider/filters/oidc-provider-session-not-found-exception.filter";
 import { SessionService } from "@fc/session";
-
+import {
+  ArgumentsHost,
+  Catch,
+  Injectable,
+  InternalServerErrorException,
+} from "@nestjs/common";
+import { errors } from "oidc-provider";
 import { AppConfig } from "../dto";
 import { Routes } from "../enums";
 import { InvalidSessionException } from "../exceptions/invalid-session.exception";

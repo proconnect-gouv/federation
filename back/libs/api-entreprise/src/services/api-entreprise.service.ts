@@ -1,3 +1,5 @@
+import { ConfigService } from "@fc/config";
+import { Injectable } from "@nestjs/common";
 import { findBySiretFactory } from "@proconnect-gouv/proconnect.api_entreprise/api/insee";
 import {
   ApiEntrepriseOpenApiClient,
@@ -5,11 +7,6 @@ import {
 } from "@proconnect-gouv/proconnect.api_entreprise/client";
 import mockData from "@proconnect-gouv/proconnect.api_entreprise/testing/seed/v3-insee-sirene-etablissements-siret";
 import { toOrganizationInfo } from "@proconnect-gouv/proconnect.identite/managers/organization";
-
-import { Injectable } from "@nestjs/common";
-
-import { ConfigService } from "@fc/config";
-
 import { ApiEntrepriseConfig } from "../dto";
 
 @Injectable()

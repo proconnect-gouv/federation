@@ -1,5 +1,3 @@
-import { Body, Controller, Get, Headers, Post, Req, Res } from "@nestjs/common";
-
 import { validateDto } from "@fc/common";
 import { validationOptions } from "@fc/config";
 import {
@@ -9,7 +7,7 @@ import {
   MessageType,
 } from "@fc/hybridge-http-proxy";
 import { LoggerService } from "@fc/logger";
-
+import { Body, Controller, Get, Headers, Post, Req, Res } from "@nestjs/common";
 import { BridgeHttpProxyErrorDto, BridgeHttpProxyResponseDto } from "../dto";
 import { BridgeHttpProxyRoutes } from "../enums";
 import {

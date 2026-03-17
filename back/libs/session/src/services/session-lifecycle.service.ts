@@ -1,12 +1,9 @@
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
+import { Injectable } from "@nestjs/common";
 import { Request, Response } from "express";
 import { cloneDeep } from "lodash";
 import { v4 as uuid } from "uuid";
-
-import { Injectable } from "@nestjs/common";
-
-import { ConfigService } from "@fc/config";
-import { CryptographyService } from "@fc/cryptography";
-
 import { SessionConfig } from "../dto";
 import { SessionCannotCommitUndefinedSession } from "../exceptions";
 import { SessionBackendStorageService } from "./session-backend-storage.service";

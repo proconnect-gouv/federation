@@ -1,9 +1,8 @@
+import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { isString, validateSync, ValidatorOptions } from "class-validator";
 import deepFreeze from "deep-freeze";
 import lodash from "lodash";
-
-import { Injectable } from "@nestjs/common";
 
 /**
  * Config service being manually instanciated (in main.ts), nest dependencies
@@ -11,7 +10,6 @@ import { Injectable } from "@nestjs/common";
  * but need to specify the full path to the helper
  */
 import { AppHelper } from "@fc/app/helpers/app-helper";
-
 import { UnknownConfigurationNameError } from "./errors";
 import { type IConfigOptions } from "./interfaces";
 

@@ -1,8 +1,6 @@
-import { DynamicModule, Module } from "@nestjs/common";
-
 import { ConfigModule, ConfigService } from "@fc/config";
 import { LoggerModule } from "@fc/logger";
-
+import { DynamicModule, Module } from "@nestjs/common";
 import { CsmrHttpProxyModule } from "./csmr-http-proxy.module";
 
 @Module({})

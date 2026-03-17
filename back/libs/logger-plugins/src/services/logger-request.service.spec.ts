@@ -1,8 +1,6 @@
+import { AsyncLocalStorageService } from "@fc/async-local-storage";
 import { ModuleRef } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { AsyncLocalStorageService } from "@fc/async-local-storage";
-
 import { LoggerRequestService } from "./logger-request.service";
 
 describe("LoggerRequestService", () => {

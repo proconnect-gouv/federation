@@ -1,3 +1,7 @@
+import { LoggerService } from "@fc/logger";
+import { ExtendedInteraction } from "@fc/oidc-acr";
+import { RedisService } from "@fc/redis";
+import { Global, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import {
   InteractionResults,
@@ -5,13 +9,6 @@ import {
   Provider,
 } from "oidc-provider";
 import { HttpOptions } from "openid-client";
-
-import { Global, Injectable } from "@nestjs/common";
-
-import { LoggerService } from "@fc/logger";
-import { ExtendedInteraction } from "@fc/oidc-acr";
-import { RedisService } from "@fc/redis";
-
 import {
   OidcProviderEvents,
   OidcProviderMiddlewarePattern,

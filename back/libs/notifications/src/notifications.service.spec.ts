@@ -1,8 +1,6 @@
+import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
-
 import { NotificationInterface } from "./interfaces";
 import { NotificationsService } from "./notifications.service";
 

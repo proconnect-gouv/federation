@@ -1,13 +1,10 @@
-import { ClientMetadata, KoaContextWithOIDC } from "oidc-provider";
-
-import { Inject, Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import {
   type IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from "@fc/oidc";
-
+import { Inject, Injectable } from "@nestjs/common";
+import { ClientMetadata, KoaContextWithOIDC } from "oidc-provider";
 import { OidcProviderRedisAdapter } from "../adapters";
 import { OidcProviderConfig } from "../dto";
 import { OidcProviderService } from "../oidc-provider.service";

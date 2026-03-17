@@ -1,11 +1,8 @@
-import { Model } from "mongoose";
-
-import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
-
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Model } from "mongoose";
 import { CachedOrganization } from "../schemas";
 import { CachedOrganizationService } from "./cached-organization.service";
 

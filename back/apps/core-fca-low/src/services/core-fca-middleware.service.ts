@@ -1,10 +1,3 @@
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { Response } from "express";
-import { AuthorizationParameters } from "openid-client";
-
-import { Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import { ActiveUserSessionDto, UserSession } from "@fc/core/dto";
 import { generateErrorId } from "@fc/exceptions/helpers";
@@ -21,6 +14,11 @@ import {
 } from "@fc/oidc-provider";
 import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
 import { SessionService } from "@fc/session";
+import { Injectable } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { Response } from "express";
+import { AuthorizationParameters } from "openid-client";
 
 @Injectable()
 export class CoreFcaMiddlewareService {

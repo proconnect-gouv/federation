@@ -1,11 +1,7 @@
-import { Request, Response } from "express";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
-
 import { getConfigMock } from "@mocks/config";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request, Response } from "express";
 import { SessionBadCookieException } from "../exceptions";
 import { SessionCookiesService } from "./session-cookies.service";
 

@@ -1,8 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { ModuleRef } from "@nestjs/core";
-
 import { AsyncLocalStorageService } from "@fc/async-local-storage";
 import { LoggerPluginServiceInterface } from "@fc/logger";
+import { Injectable } from "@nestjs/common";
+import { ModuleRef } from "@nestjs/core";
 
 @Injectable()
 export class LoggerRequestService implements LoggerPluginServiceInterface {

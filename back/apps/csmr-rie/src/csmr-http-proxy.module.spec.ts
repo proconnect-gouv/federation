@@ -1,10 +1,7 @@
-import { Test } from "@nestjs/testing";
-
 import { ConfigModule } from "@fc/config";
 import { LoggerModule } from "@fc/logger";
-
 import { getConfigMock } from "@mocks/config";
-
+import { Test } from "@nestjs/testing";
 import { CsmrHttpProxyModule } from "./csmr-http-proxy.module";
 
 describe("CsmrHttpProxyModule Dependency Validation", () => {

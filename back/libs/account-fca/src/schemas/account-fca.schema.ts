@@ -1,7 +1,6 @@
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { v4 as uuid } from "uuid";
-
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 @Schema({
   _id: false,

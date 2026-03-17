@@ -1,7 +1,5 @@
 import { ConfigService } from "@fc/config";
-
 import { getConfigMock } from "@mocks/config";
-
 import { IsPhoneNumberSimpleValidatorConstraint } from "./is-phone-number-simple-validator.validator";
 
 const configMock = getConfigMock() as unknown as ConfigService;

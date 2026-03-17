@@ -1,18 +1,14 @@
-import { plainToInstance } from "class-transformer";
-import { validate, ValidationError } from "class-validator";
-
-import { EventBus } from "@nestjs/cqrs";
-import { getModelToken } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { CryptographyService } from "@fc/cryptography";
 import { LoggerService } from "@fc/logger";
 import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
 import { ServiceProviderMetadata } from "@fc/oidc";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { EventBus } from "@nestjs/cqrs";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { plainToInstance } from "class-transformer";
+import { validate, ValidationError } from "class-validator";
 import { ServiceProvider } from "./schemas";
 import { ServiceProviderAdapterMongoService } from "./service-provider-adapter-mongo.service";
 

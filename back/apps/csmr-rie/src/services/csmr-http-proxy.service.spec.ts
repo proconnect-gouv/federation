@@ -1,10 +1,7 @@
-import { lastValueFrom } from "rxjs";
-
+import { BridgePayload, BridgeResponse } from "@fc/hybridge-http-proxy";
 import { HttpService } from "@nestjs/axios";
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { BridgePayload, BridgeResponse } from "@fc/hybridge-http-proxy";
-
+import { lastValueFrom } from "rxjs";
 import { CsmrHttpProxyService } from "./csmr-http-proxy.service";
 
 jest.mock("rxjs");

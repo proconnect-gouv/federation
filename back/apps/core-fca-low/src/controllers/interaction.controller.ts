@@ -1,20 +1,3 @@
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { type Request, type Response } from "express";
-import { isEmpty } from "lodash";
-
-import {
-  Controller,
-  Get,
-  Header,
-  Param,
-  Query,
-  Req,
-  Res,
-  UsePipes,
-  ValidationPipe,
-} from "@nestjs/common";
-
 import { AccountFcaService } from "@fc/account-fca";
 import { ConfigService } from "@fc/config";
 import { InteractionErrorQuery } from "@fc/core/dto/interaction_error_query.dto";
@@ -26,7 +9,21 @@ import { OidcAcrService } from "@fc/oidc-acr";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
 import { type ISessionService, SessionService } from "@fc/session";
-
+import {
+  Controller,
+  Get,
+  Header,
+  Param,
+  Query,
+  Req,
+  Res,
+  UsePipes,
+  ValidationPipe,
+} from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { type Request, type Response } from "express";
+import { isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
 import {
   ActiveUserSessionDto,

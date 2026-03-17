@@ -13,11 +13,9 @@ import {
   TokenSet,
 } from "openid-client";
 
-import { Injectable } from "@nestjs/common";
-
 import { CryptographyService } from "@fc/cryptography";
 import { LoggerService } from "@fc/logger";
-
+import { Injectable } from "@nestjs/common";
 import {
   OidcClientGetEndSessionUrlException,
   OidcClientInvalidStateException,

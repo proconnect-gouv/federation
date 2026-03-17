@@ -2,13 +2,12 @@ import { DynamicModule, Global, Module } from "@nestjs/common";
 import { CqrsModule, EventBus } from "@nestjs/cqrs";
 import {
   ModelDefinition,
-  MongooseModule as MongooseNativeModule,
   MongooseModuleOptions,
+  MongooseModule as MongooseNativeModule,
 } from "@nestjs/mongoose";
 
 import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
-
 import { MongooseConnectionConnectedHandler } from "./handlers";
 import { MongooseConnectionDisconnectedHandler } from "./handlers/mongoose-connection-disconnected.handler";
 import { MongooseCollectionOperationWatcherHelper } from "./helpers";

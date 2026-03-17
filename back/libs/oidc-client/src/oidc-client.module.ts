@@ -1,9 +1,7 @@
-import { DynamicModule, Module, Type } from "@nestjs/common";
-import { CqrsModule } from "@nestjs/cqrs";
-
 import { CryptographyModule } from "@fc/cryptography";
 import { SessionModule } from "@fc/session";
-
+import { DynamicModule, Module, Type } from "@nestjs/common";
+import { CqrsModule } from "@nestjs/cqrs";
 import { IIdentityProviderAdapter } from "./interfaces";
 import {
   OidcClientConfigService,

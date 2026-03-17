@@ -1,7 +1,3 @@
-import { Request, Response } from "express";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { AccountFcaService } from "@fc/account-fca";
 import { CachedOrganizationService } from "@fc/cached-organization";
 import { validateDto } from "@fc/common";
@@ -10,9 +6,9 @@ import { CsrfService } from "@fc/csrf";
 import { LoggerService } from "@fc/logger";
 import { OidcClientService } from "@fc/oidc-client";
 import { ISessionService, SessionService } from "@fc/session";
-
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request, Response } from "express";
 import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from "../dto";
 import {
   CoreFcaControllerService,

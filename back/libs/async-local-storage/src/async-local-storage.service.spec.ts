@@ -1,7 +1,5 @@
-import { AsyncLocalStorage } from "async_hooks";
-
 import { Test, TestingModule } from "@nestjs/testing";
-
+import { AsyncLocalStorage } from "async_hooks";
 import { AsyncLocalStorageService } from "./async-local-storage.service";
 import { AsyncLocalStorageNotFoundException } from "./exceptions";
 

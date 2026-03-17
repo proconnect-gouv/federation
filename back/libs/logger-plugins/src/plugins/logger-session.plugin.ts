@@ -1,5 +1,4 @@
 import { LoggerPluginInterface } from "@fc/logger";
-
 import { LoggerPluginsModule } from "../logger-plugins.module";
 import { LoggerSessionService } from "../services";
 

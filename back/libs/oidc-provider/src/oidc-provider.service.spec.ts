@@ -1,15 +1,11 @@
-import { Response } from "express";
-import OidcProvider from "oidc-provider";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { LoggerService } from "@fc/logger";
 import { OidcProviderConfigAppService } from "@fc/oidc-provider/services";
 import { RedisService } from "@fc/redis";
-
 import { getLoggerMock } from "@mocks/logger";
 import { getRedisServiceMock } from "@mocks/redis";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { Response } from "express";
+import OidcProvider from "oidc-provider";
 import {
   OidcProviderMiddlewarePattern,
   OidcProviderMiddlewareStep,

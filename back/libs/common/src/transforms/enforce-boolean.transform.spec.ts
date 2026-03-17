@@ -1,5 +1,4 @@
 import { TransformFnParams } from "class-transformer";
-
 import { parseBoolean } from "../helpers";
 import { enforceBoolean } from "./enforce-boolean.transform";
 

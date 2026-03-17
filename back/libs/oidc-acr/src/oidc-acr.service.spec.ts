@@ -1,10 +1,7 @@
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { UserSession } from "@fc/core";
-
 import { getConfigMock } from "@mocks/config";
-
+import { Test, TestingModule } from "@nestjs/testing";
 import { OidcAcrService } from "./oidc-acr.service";
 import { ExtendedInteraction } from "./oidc-acr.type";
 

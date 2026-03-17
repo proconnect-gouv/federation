@@ -1,13 +1,10 @@
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
 import { IdentityProviderMetadata } from "@fc/oidc";
-
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
 import {
   CoreFcaAgentIdpDisabledException,
   CoreFcaIdpConfigurationException,

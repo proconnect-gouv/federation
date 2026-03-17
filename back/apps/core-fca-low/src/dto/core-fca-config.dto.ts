@@ -1,6 +1,3 @@
-import { Type } from "class-transformer";
-import { IsObject, ValidateNested } from "class-validator";
-
 import { ApiEntrepriseConfig } from "@fc/api-entreprise";
 import { EmailValidatorConfig } from "@fc/email-validator/dto";
 import { ExceptionsConfig } from "@fc/exceptions/dto";
@@ -12,7 +9,8 @@ import { OidcProviderConfig } from "@fc/oidc-provider";
 import { RedisConfig } from "@fc/redis";
 import { ServiceProviderAdapterMongoConfig } from "@fc/service-provider-adapter-mongo";
 import { SessionConfig } from "@fc/session";
-
+import { Type } from "class-transformer";
+import { IsObject, ValidateNested } from "class-validator";
 import { AppConfig } from "./app-config.dto";
 
 export class CoreFcaConfig {

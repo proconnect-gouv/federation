@@ -1,14 +1,11 @@
-import { ClientMetadata, KoaContextWithOIDC } from "oidc-provider";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from "@fc/oidc";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { ClientMetadata, KoaContextWithOIDC } from "oidc-provider";
 import { OidcProviderRedisAdapter } from "../adapters";
 import { OidcProviderService } from "../oidc-provider.service";
-import { OidcProviderConfigService } from "./oidc-provider-config.service";
 import { OidcProviderConfigAppService } from "./oidc-provider-config-app.service";
+import { OidcProviderConfigService } from "./oidc-provider-config.service";
 
 describe("OidcProviderConfigService", () => {
   let service: OidcProviderConfigService;

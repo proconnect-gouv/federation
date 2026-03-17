@@ -1,11 +1,8 @@
-import { findBySiretFactory } from "@proconnect-gouv/proconnect.api_entreprise/api/insee";
-import { toOrganizationInfo } from "@proconnect-gouv/proconnect.identite/managers/organization";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import { findBySiretFactory } from "@proconnect-gouv/proconnect.api_entreprise/api/insee";
+import { toOrganizationInfo } from "@proconnect-gouv/proconnect.identite/managers/organization";
 import { ApiEntrepriseService } from "./api-entreprise.service";
 
 jest.mock("@proconnect-gouv/proconnect.api_entreprise/api/insee", () => ({

@@ -1,12 +1,9 @@
-import { JWK } from "jose-v4";
-import { Client, custom, Issuer } from "openid-client";
-
-import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import { AppConfig } from "@fc/core/dto";
 import { IdentityProviderMetadata } from "@fc/oidc";
-
+import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { JWK } from "jose-v4";
+import { Client, custom, Issuer } from "openid-client";
 import { OidcClientClass } from "../enums";
 import {
   OidcClientIdpDisabledException,

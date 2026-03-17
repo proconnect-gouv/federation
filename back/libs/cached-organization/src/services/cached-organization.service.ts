@@ -1,12 +1,9 @@
-import { isEmpty } from "lodash";
-import { Model } from "mongoose";
-
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-
 import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
-
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { isEmpty } from "lodash";
+import { Model } from "mongoose";
 import { CachedOrganization } from "../schemas";
 
 @Injectable()

@@ -1,12 +1,8 @@
-import pino, { Logger } from "pino";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { ConfigService } from "@fc/config";
-
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
+import pino, { Logger } from "pino";
 import { LogLevels } from "../enums";
 import { PLUGIN_SERVICES } from "../tokens";
 import { LoggerService } from "./logger.service";

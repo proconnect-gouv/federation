@@ -1,8 +1,3 @@
-import { Request, Response } from "express";
-import { AuthorizationParameters } from "openid-client";
-
-import { Injectable } from "@nestjs/common";
-
 import { ConfigService } from "@fc/config";
 import {
   AfterGetInteractionSessionDto,
@@ -19,6 +14,9 @@ import { OidcAcrService } from "@fc/oidc-acr";
 import { OidcClientConfig, OidcClientService } from "@fc/oidc-client";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { SessionService } from "@fc/session";
+import { Injectable } from "@nestjs/common";
+import { Request, Response } from "express";
+import { AuthorizationParameters } from "openid-client";
 
 @Injectable()
 export class CoreFcaControllerService {

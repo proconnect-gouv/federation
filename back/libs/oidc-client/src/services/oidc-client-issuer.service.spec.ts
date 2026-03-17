@@ -1,10 +1,7 @@
+import { ConfigService } from "@fc/config";
+import { Test, TestingModule } from "@nestjs/testing";
 import { ClientMetadata } from "oidc-provider";
 import { Client, custom, Issuer } from "openid-client";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
-import { ConfigService } from "@fc/config";
-
 import {
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,

@@ -1,5 +1,4 @@
 import { ExceptionDocumentationInterface } from "@fc/exceptions/types";
-
 import MarkdownGenerator from "./markdown-generator";
 
 describe("MarkdownGenerator", () => {

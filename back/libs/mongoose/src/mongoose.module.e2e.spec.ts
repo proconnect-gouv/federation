@@ -1,7 +1,7 @@
-import { get } from "lodash";
-import { MongoMemoryReplSet } from "mongodb-memory-server";
-import { Document, Model } from "mongoose";
-
+import { ConfigModule, ConfigService } from "@fc/config";
+import { LoggerModule, LoggerService } from "@fc/logger";
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
 import { Injectable, type OnModuleInit } from "@nestjs/common";
 import {
   getModelToken,
@@ -11,13 +11,9 @@ import {
   SchemaFactory,
 } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
-
-import { ConfigModule, ConfigService } from "@fc/config";
-import { LoggerModule, LoggerService } from "@fc/logger";
-
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
-
+import { get } from "lodash";
+import { MongoMemoryReplSet } from "mongodb-memory-server";
+import { Document, Model } from "mongoose";
 import { MongooseCollectionOperationWatcherHelper } from "./helpers";
 import { MongooseModule } from "./mongoose.module";
 

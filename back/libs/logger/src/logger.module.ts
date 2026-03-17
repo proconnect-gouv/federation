@@ -1,5 +1,4 @@
 import { DynamicModule, Global, Module } from "@nestjs/common";
-
 import { LoggerPluginInterface } from "./interfaces";
 import { LoggerService, NestLoggerService } from "./services";
 import { PLUGIN_SERVICES } from "./tokens";

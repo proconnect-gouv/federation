@@ -1,9 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { ModuleRef } from "@nestjs/core";
-
 import { UserSession } from "@fc/core";
 import { LoggerPluginServiceInterface } from "@fc/logger";
 import { SessionService } from "@fc/session";
+import { Injectable } from "@nestjs/common";
+import { ModuleRef } from "@nestjs/core";
 
 @Injectable()
 export class LoggerSessionService implements LoggerPluginServiceInterface {
