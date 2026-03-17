@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
-import { SecretManagerService } from './secret-manager.service';
+import { Injectable } from "@nestjs/common";
+import { v4 as uuidv4 } from "uuid";
+import { SecretManagerService } from "./secret-manager.service";
 
 @Injectable()
 export class SecretAdapter {

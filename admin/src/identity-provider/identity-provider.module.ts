@@ -1,20 +1,20 @@
-import { Module } from '@nestjs/common';
-import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { IdentityProviderController } from './identity-provider.controller';
-import { IdentityProviderService } from './identity-provider.service';
-import { SecretManagerService } from '../utils/secret-manager.service';
-import crypto from 'crypto';
-import { PaginationService } from '../pagination';
-import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
+import { Module } from "@nestjs/common";
+import { IdentityProviderFromDb } from "./identity-provider.mongodb.entity";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { IdentityProviderController } from "./identity-provider.controller";
+import { IdentityProviderService } from "./identity-provider.service";
+import { SecretManagerService } from "../utils/secret-manager.service";
+import crypto from "crypto";
+import { PaginationService } from "../pagination";
+import { GristPublisherService } from "../grist-publisher/grist-publisher.service";
 
 const cryptoProvider = {
-  provide: 'cryptoProvider',
+  provide: "cryptoProvider",
   useValue: crypto,
 };
 
 @Module({
-  imports: [TypeOrmModule.forFeature([IdentityProviderFromDb], 'fc-mongo')],
+  imports: [TypeOrmModule.forFeature([IdentityProviderFromDb], "fc-mongo")],
   controllers: [IdentityProviderController],
   providers: [
     IdentityProviderService,

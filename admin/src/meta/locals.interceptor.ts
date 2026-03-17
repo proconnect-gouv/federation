@@ -3,14 +3,14 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { ConfigService } from 'nestjs-config';
-import moment from 'moment-timezone';
-import { errorCodeTranslations } from './error-code-translations';
-import { UserRole } from '../user/roles.enum';
-import { VALID_INPUT_STRING_REGEX } from '../utils/validators/is-valid-input-string';
-import { IP_VALIDATOR_REGEX } from '../utils/ip-validator.constant';
+} from "@nestjs/common";
+import { Observable } from "rxjs";
+import { ConfigService } from "nestjs-config";
+import moment from "moment-timezone";
+import { errorCodeTranslations } from "./error-code-translations";
+import { UserRole } from "../user/roles.enum";
+import { VALID_INPUT_STRING_REGEX } from "../utils/validators/is-valid-input-string";
+import { IP_VALIDATOR_REGEX } from "../utils/ip-validator.constant";
 
 @Injectable()
 export class LocalsInterceptor implements NestInterceptor {
@@ -23,13 +23,13 @@ export class LocalsInterceptor implements NestInterceptor {
     const req = context.switchToHttp().getRequest();
     const res = context.switchToHttp().getResponse();
 
-    const appConfig = this.configService.get('app');
+    const appConfig = this.configService.get("app");
 
     res.locals.helpers = {};
 
     res.locals.APP_ROOT = appConfig.app_root;
 
-    res.locals.TIMEZONE = 'Europe/Paris';
+    res.locals.TIMEZONE = "Europe/Paris";
 
     res.locals.APP_ENVIRONMENT = appConfig.environment;
 
@@ -53,14 +53,14 @@ export class LocalsInterceptor implements NestInterceptor {
     res.locals.ERROR_CODE_TRANSLATIONS = errorCodeTranslations;
 
     res.locals.USER_ROLES_OPTIONS = [
-      { label: 'Administrateur', value: UserRole.ADMIN },
-      { label: 'Exploitant', value: UserRole.OPERATOR },
-      { label: 'Sécurité', value: UserRole.SECURITY },
-      { label: 'Nouvel utilisateur', value: UserRole.NEWUSER },
-      { label: 'Administrateur inactif', value: UserRole.INACTIVE_ADMIN },
-      { label: 'Exploitant inactif', value: UserRole.INACTIVE_OPERATOR },
-      { label: 'Sécurité inactif', value: UserRole.INACTIVE_SECURITY },
-      { label: 'Utilisateur bloqué', value: UserRole.BLOCKED_USER },
+      { label: "Administrateur", value: UserRole.ADMIN },
+      { label: "Exploitant", value: UserRole.OPERATOR },
+      { label: "Sécurité", value: UserRole.SECURITY },
+      { label: "Nouvel utilisateur", value: UserRole.NEWUSER },
+      { label: "Administrateur inactif", value: UserRole.INACTIVE_ADMIN },
+      { label: "Exploitant inactif", value: UserRole.INACTIVE_OPERATOR },
+      { label: "Sécurité inactif", value: UserRole.INACTIVE_SECURITY },
+      { label: "Utilisateur bloqué", value: UserRole.BLOCKED_USER },
     ];
 
     res.locals.VALID_INPUT_STRING_REGEX = VALID_INPUT_STRING_REGEX.source;

@@ -1,6 +1,6 @@
 export function getUserActivationToken(username) {
   const command = `./cypress/support/get-user-activation-token.sh ${Cypress.env(
-    'APP_NAME',
+    "APP_NAME",
   )} ${username}`;
 
   cy.log(`

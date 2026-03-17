@@ -1,32 +1,32 @@
-import { USER_ADMIN, LIMIT_PAGE } from '../../support/constants';
-import { deleteUser } from './account-delete.utils';
+import { USER_ADMIN, LIMIT_PAGE } from "../../support/constants";
+import { deleteUser } from "./account-delete.utils";
 
 /**
  * The temporary password can be retrieve after the call of this function
  * using cy.get('@tmpPassword')
  */
 export function createUserAccount(userInfo, basicConfiguration) {
-  cy.contains('Comptes utilisateurs').click();
-  cy.contains('Créer un utilisateur').click();
+  cy.contains("Comptes utilisateurs").click();
+  cy.contains("Créer un utilisateur").click();
   cy.wait(1);
 
-  cy.formType('#username', userInfo.username, basicConfiguration);
-  cy.formType('#email', userInfo.email, basicConfiguration);
+  cy.formType("#username", userInfo.username, basicConfiguration);
+  cy.formType("#email", userInfo.email, basicConfiguration);
 
-  cy.get('#tmpPassword')
-    .invoke('text')
-    .then((tmpPassword) => cy.wrap(tmpPassword).as('tmpPassword'));
+  cy.get("#tmpPassword")
+    .invoke("text")
+    .then((tmpPassword) => cy.wrap(tmpPassword).as("tmpPassword"));
 
   if (basicConfiguration.adminRole) {
-    cy.get('form').find('[id="role-admin"]').check();
+    cy.get("form").find('[id="role-admin"]').check();
   }
 
   if (basicConfiguration.operatorRole) {
-    cy.get('form').find('[id="role-operator"]').check();
+    cy.get("form").find('[id="role-operator"]').check();
   }
 
   if (basicConfiguration.securityRole) {
-    cy.get('form').find('[id="role-security"]').check();
+    cy.get("form").find('[id="role-security"]').check();
   }
 
   if (!basicConfiguration.totpNotFilled) {
@@ -36,7 +36,7 @@ export function createUserAccount(userInfo, basicConfiguration) {
   // change csrf token
   if (basicConfiguration.invalidCsrf) {
     cy.get('input[name="_csrf"]').then((csrf) => {
-      csrf[0].value = 'obviouslyBadCSRF';
+      csrf[0].value = "obviouslyBadCSRF";
     });
   }
 
@@ -54,19 +54,19 @@ export function createUserAndLogWith(userInfo, basicConfiguration) {
   createUserAccount(userInfo, configuration);
   cy.logout(USER_ADMIN);
 
-  cy.get('@tmpPassword').then((tmpPassword) => {
+  cy.get("@tmpPassword").then((tmpPassword) => {
     cy.firstLogin(userInfo.username, tmpPassword);
   });
 
-  cy.formType('#password', userInfo.password, basicConfiguration);
+  cy.formType("#password", userInfo.password, basicConfiguration);
   cy.formType(
-    '#confirm-password',
+    "#confirm-password",
     userInfo.confirmPassword,
     basicConfiguration,
   );
 
-  cy.get('#secret > td')
-    .invoke('text')
+  cy.get("#secret > td")
+    .invoke("text")
     .then((secret) =>
       cy.totp({ totp: basicConfiguration.totpFirstLogin }, secret),
     );

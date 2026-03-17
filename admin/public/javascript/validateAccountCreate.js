@@ -1,7 +1,7 @@
-import { inputValid, inputInvalid } from './addValidClass';
+import { inputValid, inputInvalid } from "./addValidClass";
 
 export function validateAccountCreate(element) {
-  const inputs = element.getElementsByTagName('input');
+  const inputs = element.getElementsByTagName("input");
   const inputCheckboxRoles = Object.values(
     document.querySelectorAll('input[name="roles"]'),
   );
@@ -9,7 +9,7 @@ export function validateAccountCreate(element) {
   for (let i = 0; i < inputs.length; ++i) {
     // check if inputs which change are valid
     inputs[i].addEventListener(
-      'input',
+      "input",
       function (event) {
         // check input pattern
         if (inputs[i].checkValidity() === false) {
@@ -22,7 +22,7 @@ export function validateAccountCreate(element) {
         if (inputs[i].checked) {
           inputCheckboxRoles.forEach((chkboxRole) => {
             inputValid(chkboxRole);
-            document.querySelector('.roles-error').innerText = '';
+            document.querySelector(".roles-error").innerText = "";
           });
         } else {
           const countCheckedRole = inputCheckboxRoles.filter(
@@ -32,8 +32,8 @@ export function validateAccountCreate(element) {
             inputCheckboxRoles.forEach((chkboxRole) => {
               inputInvalid(chkboxRole);
             });
-            document.querySelector('.roles-error').innerText =
-              'Veuillez renseigner au moins un rôle';
+            document.querySelector(".roles-error").innerText =
+              "Veuillez renseigner au moins un rôle";
           }
         }
       },
@@ -42,7 +42,7 @@ export function validateAccountCreate(element) {
 
     // check on submit if form is valid
     element.addEventListener(
-      'submit',
+      "submit",
       function (event) {
         const countCheckedRole = inputCheckboxRoles.filter(
           ({ checked }) => checked === true,
@@ -60,12 +60,12 @@ export function validateAccountCreate(element) {
           inputCheckboxRoles.forEach((chkboxRole) => {
             inputInvalid(chkboxRole);
           });
-          document.querySelector('.roles-error').innerText =
-            'Veuillez renseigner au moins un rôle';
+          document.querySelector(".roles-error").innerText =
+            "Veuillez renseigner au moins un rôle";
           event.preventDefault();
           event.stopPropagation();
         } else {
-          document.querySelector('.roles-error').innerText = '';
+          document.querySelector(".roles-error").innerText = "";
         }
       },
       false,

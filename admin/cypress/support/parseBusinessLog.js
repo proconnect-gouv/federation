@@ -17,11 +17,11 @@
  */
 
 // This file is executed without any transpiller
-import fs from 'fs';
+import fs from "fs";
 async function loadLog(path) {
-  const rawData = await fs.readFileSync(path).toString('utf8');
+  const rawData = await fs.readFileSync(path).toString("utf8");
   return rawData
-    .split('\n')
+    .split("\n")
     .filter(Boolean)
     .map((row) => JSON.parse(row));
 }
@@ -41,7 +41,7 @@ async function interactionHasEvent([logFile, stringifiedTestEvent]) {
     const foundEvent = logs.find((log) => log.action === testEvent.action);
 
     if (!foundEvent) {
-      console.error('Event not found');
+      console.error("Event not found");
       process.exit(3);
     }
 
@@ -54,14 +54,14 @@ async function interactionHasEvent([logFile, stringifiedTestEvent]) {
     const differences = getDifferences(testEvent, foundEvent);
 
     if (differences.length > 0) {
-      console.error('Event mismatch');
+      console.error("Event mismatch");
       console.error(`Diff: ${JSON.stringify(differences)}`);
       console.error(`Found event: ${JSON.stringify(foundEvent)}`);
       console.error(`Test event: ${JSON.stringify(testEvent)}`);
       process.exit(4);
     }
 
-    console.log('Event found and ok');
+    console.log("Event found and ok");
     process.exit(0);
   } catch (error) {
     console.error(error);

@@ -2,7 +2,7 @@ import {
   ValidationOptions,
   registerDecorator,
   ValidationArguments,
-} from 'class-validator';
+} from "class-validator";
 
 export function IsSameAs(
   property: string,
@@ -10,7 +10,7 @@ export function IsSameAs(
 ) {
   return (object: object, propertyName: string) => {
     registerDecorator({
-      name: 'isSameAs',
+      name: "isSameAs",
       target: object.constructor,
       propertyName,
       constraints: [property],

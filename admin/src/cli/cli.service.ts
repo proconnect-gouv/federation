@@ -1,10 +1,10 @@
-import { Console, Command } from 'nestjs-console';
-import { validate } from 'class-validator';
-import { ICreateUserDTO } from '../user/interface/create-user-dto.interface';
-import { CreateUserDto } from '../account/dto/create-user.dto';
-import { UserService } from '../user/user.service';
-import { TotpService } from '../authentication/totp/totp.service';
-import { UserRole } from '../user/roles.enum';
+import { Console, Command } from "nestjs-console";
+import { validate } from "class-validator";
+import { ICreateUserDTO } from "../user/interface/create-user-dto.interface";
+import { CreateUserDto } from "../account/dto/create-user.dto";
+import { UserService } from "../user/user.service";
+import { TotpService } from "../authentication/totp/totp.service";
+import { UserRole } from "../user/roles.enum";
 
 @Console()
 export class CliService {
@@ -14,14 +14,14 @@ export class CliService {
   ) {}
 
   @Command({
-    command: 'user:create <username> <email> <roles>',
-    description: 'Creates a new user',
+    command: "user:create <username> <email> <roles>",
+    description: "Creates a new user",
   })
   async createUser(username: string, email: string, roles: string) {
     try {
       const user = await this.getUser(username, email, roles);
 
-      const firstLoginLink = await this.userService.createUser(user, 'cli');
+      const firstLoginLink = await this.userService.createUser(user, "cli");
 
       // We are in a CLI app
       // tslint:disable-next-line no-console
@@ -74,13 +74,13 @@ export class CliService {
           [],
         ),
       )
-      .join('\n');
+      .join("\n");
   }
 
   private getRoles(roles: string): UserRole[] {
     return roles
-      .split(',')
+      .split(",")
       .map((role) => `inactive_${role}`)
-      .concat(['new_account']) as UserRole[];
+      .concat(["new_account"]) as UserRole[];
   }
 }

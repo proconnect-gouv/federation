@@ -1,4 +1,4 @@
-import { SECRET_TOTP } from './constants';
+import { SECRET_TOTP } from "./constants";
 
 /**
  * Set the value of a text input or textarea
@@ -22,7 +22,7 @@ import { SECRET_TOTP } from './constants';
  * @example cy.formType('#myId', 'foo', { fast: true, typeEvent: true });
  */
 export function formType(input, value, config = { fast: true }) {
-  const isCypress = typeof input === 'object' && 'chainerId' in input;
+  const isCypress = typeof input === "object" && "chainerId" in input;
   const cyInput = isCypress ? input : cy.get(input);
 
   if (config.fast === false) {
@@ -31,14 +31,14 @@ export function formType(input, value, config = { fast: true }) {
 
   if (config.typeEvent) {
     return cyInput
-      .trigger('keydown')
-      .invoke('val', value)
-      .trigger('keyup')
-      .trigger('input')
-      .trigger('change');
+      .trigger("keydown")
+      .invoke("val", value)
+      .trigger("keyup")
+      .trigger("input")
+      .trigger("change");
   }
 
-  return cyInput.invoke('val', value);
+  return cyInput.invoke("val", value);
 }
 
 /**
@@ -56,10 +56,10 @@ export function formFill(inputs, configuration) {
     const selector = `[name="${inputName}"]`;
     const input = cy.get(selector);
     input.then(($input) => {
-      switch ($input.prop('tagName')) {
-        case 'TEXTAREA':
-        case 'INPUT':
-          if (['checkbox', 'radio'].indexOf($input.attr('type')) > -1) {
+      switch ($input.prop("tagName")) {
+        case "TEXTAREA":
+        case "INPUT":
+          if (["checkbox", "radio"].indexOf($input.attr("type")) > -1) {
             if (value) {
               return input.check(value, { force: true });
             }
@@ -68,7 +68,7 @@ export function formFill(inputs, configuration) {
 
           return formType(input, value, configuration);
 
-        case 'SELECT':
+        case "SELECT":
           return input.select(value);
 
         default:
@@ -77,7 +77,7 @@ export function formFill(inputs, configuration) {
     });
   });
 
-  if (typeof configuration.totp !== 'undefined') {
+  if (typeof configuration.totp !== "undefined") {
     cy.totp(configuration);
   }
 }
@@ -100,18 +100,18 @@ export function formControl(inputs) {
     const selector = `[name="${inputName}"]`;
     const input = cy.get(selector);
     input.then(($input) => {
-      switch ($input.prop('tagName')) {
-        case 'TEXTAREA':
-        case 'INPUT':
-        case 'SELECT':
-          if (['checkbox', 'radio'].indexOf($input.attr('type')) > -1) {
+      switch ($input.prop("tagName")) {
+        case "TEXTAREA":
+        case "INPUT":
+        case "SELECT":
+          if (["checkbox", "radio"].indexOf($input.attr("type")) > -1) {
             if (value) {
-              return input.should('be.checked', value);
+              return input.should("be.checked", value);
             }
-            return input.should('not.be.checked', value);
+            return input.should("not.be.checked", value);
           }
 
-          return input.should('have.value', value);
+          return input.should("have.value", value);
         default:
           return input;
       }
@@ -135,7 +135,7 @@ export function formControl(inputs) {
 
 export function totp(subject, arg1, arg2) {
   // the subject can be : the input element, a undefined element or ignore and be the first argument of your call
-  const hasSubject = typeof subject === 'object' && 'prevObject' in subject;
+  const hasSubject = typeof subject === "object" && "prevObject" in subject;
   // we inject the arguments based on the possible existence of the subject element
   const input = hasSubject ? subject : 'input[name="_totp"]';
   const configuration =
@@ -144,15 +144,15 @@ export function totp(subject, arg1, arg2) {
     (hasSubject || subject === undefined ? arg2 : arg1) || SECRET_TOTP;
 
   if (configuration.totp === false) {
-    return formType(input, '000000', configuration);
+    return formType(input, "000000", configuration);
   }
 
   // Retrieve the totp when the totp input is present
   cy.get(input)
-    .then(() => cy.task('getTotp', { secret }))
+    .then(() => cy.task("getTotp", { secret }))
     .then((token) => formType(input, token, configuration));
 }
 
 export function closeBanner(target) {
-  cy.get(target + ' > .btn-close').click();
+  cy.get(target + " > .btn-close").click();
 }

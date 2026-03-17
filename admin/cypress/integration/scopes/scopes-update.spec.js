@@ -1,14 +1,14 @@
-import { USER_OPERATOR, USER_PASS } from '../../support/constants';
+import { USER_OPERATOR, USER_PASS } from "../../support/constants";
 import {
   useMenuToFdPage,
   createScopeLabels,
   updateScopeLabel,
-} from './scopes.utils';
+} from "./scopes.utils";
 
-const BASE_URL = Cypress.config('baseUrl');
+const BASE_URL = Cypress.config("baseUrl");
 
-describe('Update a scope label', () => {
-  before(() => cy.resetEnv('mongo'));
+describe("Update a scope label", () => {
+  before(() => cy.resetEnv("mongo"));
   let configuration;
 
   beforeEach(() => {
@@ -19,30 +19,30 @@ describe('Update a scope label', () => {
     useMenuToFdPage();
   });
 
-  describe('Should be successful', () => {
+  describe("Should be successful", () => {
     const scopeLabelsInfo = {
-      label: 'Seldon Label',
+      label: "Seldon Label",
       scope: `Seldon ${Math.random()}`,
-      fd: 'IDENTITY',
+      fd: "IDENTITY",
     };
 
     const scopeLabelsUpdatedInfo = {
-      label: 'Seldon Label',
+      label: "Seldon Label",
       scope: `Seldon ${Math.random()}`,
-      fd: 'IDENTITY',
+      fd: "IDENTITY",
     };
 
-    it('if a valid form is submit', () => {
-      cy.get(`table`).scrollIntoView().should('be.visible');
+    it("if a valid form is submit", () => {
+      cy.get(`table`).scrollIntoView().should("be.visible");
 
       createScopeLabels(scopeLabelsInfo, configuration);
       cy.get('button[type="submit"]').click();
 
-      cy.url().should('eq', `${BASE_URL}/scopes/label`);
+      cy.url().should("eq", `${BASE_URL}/scopes/label`);
       cy.contains(
         `Le label ${scopeLabelsInfo.label} pour le scope ${scopeLabelsInfo.scope} a été créé avec succès !`,
       ).scrollIntoView();
-      cy.closeBanner('.alert-success');
+      cy.closeBanner(".alert-success");
 
       updateScopeLabel(
         scopeLabelsInfo.scope,
@@ -51,37 +51,37 @@ describe('Update a scope label', () => {
       );
       cy.get('button[type="submit"]').click();
 
-      cy.url().should('eq', `${BASE_URL}/scopes/label`);
+      cy.url().should("eq", `${BASE_URL}/scopes/label`);
 
       cy.hasBusinessLog({
-        entity: 'scope',
-        action: 'update',
+        entity: "scope",
+        action: "update",
         user: USER_OPERATOR,
       });
     });
   });
 
-  describe('Should fail', () => {
-    it('if a invalid form is submit with invalid totp', () => {
+  describe("Should fail", () => {
+    it("if a invalid form is submit with invalid totp", () => {
       configuration = {
         totp: true,
       };
 
       const scopeLabelsInfo = {
         scope: `Seldon ${Math.random()}`,
-        label: 'Seldon Label',
-        fd: 'IDENTITY',
+        label: "Seldon Label",
+        fd: "IDENTITY",
       };
 
       const scopeLabelsUpdatedInfo = {
         scope: `Seldon ${Math.random()}`,
-        label: 'Seldon Label',
-        fd: 'IDENTITY',
+        label: "Seldon Label",
+        fd: "IDENTITY",
       };
 
       createScopeLabels(scopeLabelsInfo, configuration);
       cy.get('button[type="submit"]').click();
-      cy.closeBanner('.alert-success');
+      cy.closeBanner(".alert-success");
 
       updateScopeLabel(scopeLabelsInfo.scope, scopeLabelsUpdatedInfo, {
         ...configuration,

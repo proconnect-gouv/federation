@@ -1,16 +1,15 @@
-import { ConfigService } from 'nestjs-config';
-import { Test } from '@nestjs/testing';
-import { Repository } from 'typeorm';
-import { ObjectId } from 'mongodb';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
-import { IdentityProviderController } from './identity-provider.controller';
-import { IdentityProviderService } from './identity-provider.service';
+import { ConfigService } from "nestjs-config";
+import { Test } from "@nestjs/testing";
+import { Repository } from "typeorm";
+import { ObjectId } from "mongodb";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { IdentityProviderFromDb } from "./identity-provider.mongodb.entity";
+import { IdentityProviderController } from "./identity-provider.controller";
+import { IdentityProviderService } from "./identity-provider.service";
+import * as classTransformer from "class-transformer";
+import { identityProviderFactory } from "./fixtures";
 
-import * as classTransformer from 'class-transformer';
-import { identityProviderFactory } from './fixtures';
-
-describe('IdentityProviderController', () => {
+describe("IdentityProviderController", () => {
   let identityProviderController;
   const mockedIdentityProviderRepository = {
     findAndCount: jest.fn(),
@@ -27,24 +26,24 @@ describe('IdentityProviderController', () => {
 
   const identityProviderDTO = identityProviderFactory.createIdentityProviderDto(
     {
-      name: 'trotro',
+      name: "trotro",
     },
   );
 
   const params = {
-    id: '648c1742c74d6a3d84b31943',
+    id: "648c1742c74d6a3d84b31943",
   };
 
   const req = {
     flash: jest.fn(),
     csrfToken: function csrfToken() {
-      return 'mygreatcsrftoken';
+      return "mygreatcsrftoken";
     },
     session: {
       flash: {},
     },
     user: {
-      username: 'jean_moust',
+      username: "jean_moust",
     },
     body: identityProviderDTO,
   };
@@ -53,7 +52,7 @@ describe('IdentityProviderController', () => {
     redirect: jest.fn(),
     status: jest.fn(),
     locals: {
-      APP_ROOT: '/foo/bar',
+      APP_ROOT: "/foo/bar",
     },
   };
 
@@ -73,7 +72,7 @@ describe('IdentityProviderController', () => {
         ConfigService,
       ],
     })
-      .overrideProvider(getRepositoryToken(IdentityProviderFromDb, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(IdentityProviderFromDb, "fc-mongo"))
       .useValue(mockedIdentityProviderRepository)
       .overrideProvider(IdentityProviderService)
       .useValue(serviceMock)
@@ -88,8 +87,8 @@ describe('IdentityProviderController', () => {
     jest.resetAllMocks();
   });
 
-  describe('list', () => {
-    it('should return the list of the available identity providers', async () => {
+  describe("list", () => {
+    it("should return the list of the available identity providers", async () => {
       // Setup
       const page = 0;
       const limit = 10;
@@ -98,7 +97,7 @@ describe('IdentityProviderController', () => {
       const itemId = new ObjectId();
       //
       // //Mocking Items
-      const mockFqdns = ['fqdn1.fr', 'fqdn2.fr'];
+      const mockFqdns = ["fqdn1.fr", "fqdn2.fr"];
 
       const itemTest1 = identityProviderFactory.createIdentityProviderFromDb({
         _id: itemId,
@@ -132,11 +131,11 @@ describe('IdentityProviderController', () => {
     });
   });
 
-  describe('get create', () => {
-    it('should get identity provider creation form', async () => {
+  describe("get create", () => {
+    it("should get identity provider creation form", async () => {
       // setup
       const spy = jest
-        .spyOn(serviceMock, 'countIdentityProviders')
+        .spyOn(serviceMock, "countIdentityProviders")
         .mockResolvedValue(3);
       // action
       await identityProviderController.showCreationForm(req);
@@ -145,12 +144,12 @@ describe('IdentityProviderController', () => {
       expect(serviceMock.countIdentityProviders).toHaveBeenCalledTimes(1);
     });
 
-    it('should keep filled data if the app flashes an error because the totp failed', async () => {
+    it("should keep filled data if the app flashes an error because the totp failed", async () => {
       // Setup
       const idpDtoMock = identityProviderFactory.createIdentityProviderDto({});
-      const uid = 'mock-uid';
+      const uid = "mock-uid";
       const idpMock = identityProviderFactory.createIdentityProviderDto({
-        name: 'fip1',
+        name: "fip1",
       });
 
       serviceMock.findById.mockResolvedValueOnce({
@@ -167,7 +166,7 @@ describe('IdentityProviderController', () => {
       const reqMock = {
         flash: jest.fn(),
         csrfToken: function csrfToken() {
-          return 'mygreatcsrftoken';
+          return "mygreatcsrftoken";
         },
         session: {
           flash: {
@@ -176,13 +175,13 @@ describe('IdentityProviderController', () => {
           },
         },
         user: {
-          username: 'jean_moust',
+          username: "jean_moust",
         },
         body: identityProviderDTO,
       };
 
       jest
-        .spyOn(classTransformer, 'plainToInstance')
+        .spyOn(classTransformer, "plainToInstance")
         .mockReturnValueOnce(resultMock);
 
       // Action
@@ -194,8 +193,8 @@ describe('IdentityProviderController', () => {
     });
   });
 
-  describe('post create', () => {
-    it('should call successfully the service provider create function', async () => {
+  describe("post create", () => {
+    it("should call successfully the service provider create function", async () => {
       // set
       serviceMock.create.mockResolvedValueOnce({
         hasGristPublicationSucceeded: true,
@@ -214,7 +213,7 @@ describe('IdentityProviderController', () => {
       );
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledWith(
-        'success',
+        "success",
         "Le fournisseur d'identité trotro a été créé avec succès !",
       );
       expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -223,10 +222,10 @@ describe('IdentityProviderController', () => {
       );
     });
 
-    it('should fall back in the catch if identityProviderService.create could not handle the request', async () => {
+    it("should fall back in the catch if identityProviderService.create could not handle the request", async () => {
       // setup
       serviceMock.create.mockImplementationOnce(() => {
-        throw new Error('Try again buddy');
+        throw new Error("Try again buddy");
       });
       // action
       await identityProviderController.createIdentityProvider(
@@ -241,8 +240,8 @@ describe('IdentityProviderController', () => {
         req.user.username,
       );
       expect(req.flash).toHaveBeenCalledTimes(2);
-      expect(req.flash).toHaveBeenCalledWith('globalError', 'Try again buddy');
-      expect(req.flash).toHaveBeenCalledWith('values', req.body);
+      expect(req.flash).toHaveBeenCalledWith("globalError", "Try again buddy");
+      expect(req.flash).toHaveBeenCalledWith("values", req.body);
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
         `${res.locals.APP_ROOT}/identity-provider/create`,
@@ -250,9 +249,9 @@ describe('IdentityProviderController', () => {
     });
   });
 
-  describe('get update', () => {
-    it('should get the identity provider from its id and render the update form', async () => {
-      const uid = 'mock-uid';
+  describe("get update", () => {
+    it("should get the identity provider from its id and render the update form", async () => {
+      const uid = "mock-uid";
       const idpMock = identityProviderFactory.createIdentityProviderDto({});
       serviceMock.findById.mockResolvedValueOnce({
         uid: uid,
@@ -268,11 +267,11 @@ describe('IdentityProviderController', () => {
       expect(req.flash).toHaveBeenCalledTimes(1);
     });
 
-    it('should keep filled data if the app flashes an error because the totp failed', async () => {
+    it("should keep filled data if the app flashes an error because the totp failed", async () => {
       // Setup
       const identityProviderDto =
         identityProviderFactory.createIdentityProviderDto({});
-      const uid = 'mock-uid';
+      const uid = "mock-uid";
       serviceMock.findById.mockResolvedValueOnce({
         uid: uid,
         identityProviderDto: identityProviderDto,
@@ -281,7 +280,7 @@ describe('IdentityProviderController', () => {
       const reqMock = {
         flash: jest.fn(),
         csrfToken: function csrfToken() {
-          return 'mygreatcsrftoken';
+          return "mygreatcsrftoken";
         },
         session: {
           flash: {
@@ -290,13 +289,13 @@ describe('IdentityProviderController', () => {
           },
         },
         user: {
-          username: 'jean_moust',
+          username: "jean_moust",
         },
         body: identityProviderDTO,
       };
 
       jest
-        .spyOn(classTransformer, 'plainToInstance')
+        .spyOn(classTransformer, "plainToInstance")
         .mockReturnValueOnce(identityProviderDto);
 
       // Action
@@ -308,8 +307,8 @@ describe('IdentityProviderController', () => {
     });
   });
 
-  describe('post update', () => {
-    it('should call the update function from the identity provider service', async () => {
+  describe("post update", () => {
+    it("should call the update function from the identity provider service", async () => {
       // set
       serviceMock.update.mockResolvedValueOnce({
         hasGristPublicationSucceeded: true,
@@ -331,14 +330,14 @@ describe('IdentityProviderController', () => {
       );
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledWith(
-        'success',
+        "success",
         `Le fournisseur d'identité ${identityProviderDTO.title} a été modifié avec succès !`,
       );
     });
 
-    it('should call req.flash if the service throw an error', async () => {
+    it("should call req.flash if the service throw an error", async () => {
       // setup
-      const error = new Error('something');
+      const error = new Error("something");
       serviceMock.update.mockRejectedValueOnce(error);
 
       // action
@@ -351,15 +350,15 @@ describe('IdentityProviderController', () => {
       // expectation
       expect(serviceMock.update).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledTimes(1);
-      expect(req.flash).toHaveBeenCalledWith('globalError', error.message);
+      expect(req.flash).toHaveBeenCalledWith("globalError", error.message);
     });
   });
 
-  describe('Delete identity provider', () => {
-    it('Should redirect to the identity providers list if it succeed', async () => {
+  describe("Delete identity provider", () => {
+    it("Should redirect to the identity providers list if it succeed", async () => {
       // set up
-      const id = 'id';
-      const body = { name: 'name' };
+      const id = "id";
+      const body = { name: "name" };
 
       // action
       serviceMock.deleteIdentityProvider.mockImplementationOnce(() => {
@@ -383,14 +382,14 @@ describe('IdentityProviderController', () => {
       );
     });
 
-    it('Should not redirect the user but set the res status to 500 for the error handler', async () => {
+    it("Should not redirect the user but set the res status to 500 for the error handler", async () => {
       // set up
-      const id = 'id';
-      const body = { name: 'name' };
+      const id = "id";
+      const body = { name: "name" };
 
       // action
       serviceMock.deleteIdentityProvider.mockImplementationOnce(() => {
-        throw new Error('Try again buddy');
+        throw new Error("Try again buddy");
       });
       await identityProviderController.deleteIdentityProvider(
         id,
@@ -405,7 +404,7 @@ describe('IdentityProviderController', () => {
       );
       expect(serviceMock.deleteIdentityProvider).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledTimes(1);
-      expect(req.flash).toHaveBeenCalledWith('globalError', 'Try again buddy');
+      expect(req.flash).toHaveBeenCalledWith("globalError", "Try again buddy");
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.redirect).toHaveBeenCalledTimes(0);
     });

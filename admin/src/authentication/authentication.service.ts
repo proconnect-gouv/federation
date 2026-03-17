@@ -1,16 +1,13 @@
-import { InjectConfig, ConfigService } from 'nestjs-config';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
-
-import { User } from '../user/user.sql.entity';
-import { UserService } from '../user/user.service';
-import { UserRole } from '../user/roles.enum';
-
-import { AuthenticationFailures } from './authentication-failures.sql.entity';
-import { AuthenticationStates } from './authentication-actions.enum';
-
-import { LoggerService } from '../logger/logger.service';
+import { InjectConfig, ConfigService } from "nestjs-config";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, DeleteResult } from "typeorm";
+import { User } from "../user/user.sql.entity";
+import { UserService } from "../user/user.service";
+import { UserRole } from "../user/roles.enum";
+import { AuthenticationFailures } from "./authentication-failures.sql.entity";
+import { AuthenticationStates } from "./authentication-actions.enum";
+import { LoggerService } from "../logger/logger.service";
 
 // the "token" parameter is used for the first connection
 export interface IAuthenticationService {
@@ -153,7 +150,7 @@ export class AuthenticationService implements IAuthenticationService {
     } catch (e) {
       this.logger.error(e);
       throw new Error(
-        'The authentication attempt could not be saved due to a database error',
+        "The authentication attempt could not be saved due to a database error",
       );
     }
   }
@@ -168,7 +165,7 @@ export class AuthenticationService implements IAuthenticationService {
       return removeUserEntries;
     } catch (e) {
       this.logger.error(e);
-      throw new Error('The authentication attempts could not be deleted');
+      throw new Error("The authentication attempts could not be deleted");
     }
   }
 
@@ -190,7 +187,7 @@ export class AuthenticationService implements IAuthenticationService {
       await this.getAuthenticationAttemptCount(usernameInput);
 
     const userAuthenticationMaxAttempt = this.config.get(
-      'app.userAuthenticationMaxAttempt',
+      "app.userAuthenticationMaxAttempt",
     );
     if (authenticationAttemptLimitReached >= userAuthenticationMaxAttempt) {
       return true;
@@ -210,7 +207,7 @@ export class AuthenticationService implements IAuthenticationService {
     } catch (e) {
       this.logger.error(e);
       throw new Error(
-        'The authentication attempts count could not be retrieved due to a database error',
+        "The authentication attempts count could not be retrieved due to a database error",
       );
     }
   }

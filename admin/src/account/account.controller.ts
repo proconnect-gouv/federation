@@ -1,4 +1,4 @@
-import { UserRole } from '../user/roles.enum';
+import { UserRole } from "../user/roles.enum";
 import {
   Body,
   Controller,
@@ -13,19 +13,19 @@ import {
   ParseUUIDPipe,
   Param,
   Query,
-} from '@nestjs/common';
-import { UserService } from '../user/user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { EnrollUserDto } from './dto/enroll-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../user/user.sql.entity';
-import { Roles } from '../authentication/decorator/roles.decorator';
-import { FormErrorsInterceptor } from '../form/interceptor/form-errors.interceptor';
-import { AccountService } from './account.service';
-import { TotpService } from '../authentication/totp/totp.service';
-import { UpdateAccountDto } from './dto/update-account.dto';
+} from "@nestjs/common";
+import { UserService } from "../user/user.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { EnrollUserDto } from "./dto/enroll-user.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "../user/user.sql.entity";
+import { Roles } from "../authentication/decorator/roles.decorator";
+import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
+import { AccountService } from "./account.service";
+import { TotpService } from "../authentication/totp/totp.service";
+import { UpdateAccountDto } from "./dto/update-account.dto";
 
-@Controller('account')
+@Controller("account")
 export class AccountController {
   constructor(
     @InjectRepository(User)
@@ -35,16 +35,16 @@ export class AccountController {
     private readonly totpService: TotpService,
   ) {}
 
-  @Get('/create')
+  @Get("/create")
   @Roles(UserRole.ADMIN)
-  @Render('account/creation')
+  @Render("account/creation")
   showCreationForm(@Req() req) {
     const csrfToken = req.csrfToken();
     const tmpPassword = this.userService.generateTmpPass();
     return { csrfToken, tmpPassword };
   }
 
-  @Post('create')
+  @Post("create")
   @Roles(UserRole.ADMIN)
   @UseInterceptors(new FormErrorsInterceptor(`/account/create`))
   async createUser(
@@ -53,7 +53,7 @@ export class AccountController {
     @Res() res,
   ) {
     const rolesToRegister = roles.map((role) => `inactive_${role}`);
-    rolesToRegister.push('new_account');
+    rolesToRegister.push("new_account");
 
     const newAccount: CreateUserDto = {
       username,
@@ -63,7 +63,7 @@ export class AccountController {
       secret: this.totpService.generateTotpSecret(),
     };
 
-    let firstLoginLink = '';
+    let firstLoginLink = "";
 
     try {
       firstLoginLink = await this.userService.createUser(
@@ -71,19 +71,19 @@ export class AccountController {
         req.user.username,
       );
     } catch (error) {
-      req.flash('globalError', { code: '23505' });
+      req.flash("globalError", { code: "23505" });
       return res.redirect(`${res.locals.APP_ROOT}/account/create`);
     }
     req.flash(
-      'success',
+      "success",
       `L'utilisateur ${newAccount.username} a été créé avec succès ! Veuillez lui envoyer le lien suivant pour qu'il puisse se connecter : ${firstLoginLink}`,
     );
     return res.redirect(`${res.locals.APP_ROOT}/account`);
   }
 
-  @Get('enrollment')
+  @Get("enrollment")
   @Roles(UserRole.NEWUSER)
-  @Render('account/enrollment')
+  @Render("account/enrollment")
   public async firstLogin(@Req() req, @Res() res) {
     const { user, issuer, secret, QRCode, period, algorithm } =
       await this.totpService.generateTotpQRCode(req.user);
@@ -100,7 +100,7 @@ export class AccountController {
     };
   }
 
-  @Patch('enrollment')
+  @Patch("enrollment")
   @Roles(UserRole.NEWUSER)
   @UseInterceptors(new FormErrorsInterceptor(`/account/enrollment`))
   async enrollUser(
@@ -121,15 +121,15 @@ export class AccountController {
 
     if (isEqualToTemporaryPassword) {
       req.flash(
-        'globalError',
-        'Votre nouveau mot de passe ne peut pas être le mot de passe temporaire.',
+        "globalError",
+        "Votre nouveau mot de passe ne peut pas être le mot de passe temporaire.",
       );
       return res.redirect(`${res.locals.APP_ROOT}/account/enrollment`);
     }
 
     if (!validPassword) {
       req.flash(
-        'globalError',
+        "globalError",
         "Votre nouveau mot de passe contient votre nom d'utilisateur",
       );
       return res.redirect(`${res.locals.APP_ROOT}/account/enrollment`);
@@ -138,25 +138,25 @@ export class AccountController {
     try {
       await this.userService.enrollUser(req.user, enrollUserDto);
     } catch (error) {
-      req.flash('globalError', `L\'utilisateur n'a pas pu être mis à jour`);
+      req.flash("globalError", `L\'utilisateur n'a pas pu être mis à jour`);
       return res.redirect(`${res.locals.APP_ROOT}/account/enrollment`);
     }
-    req.flash('success', `Le mot de passe a bien été mis à jour !`);
+    req.flash("success", `Le mot de passe a bien été mis à jour !`);
     return res.redirect(`${res.locals.APP_ROOT}/`);
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @Roles(UserRole.ADMIN)
-  @UseInterceptors(new FormErrorsInterceptor('/account'))
+  @UseInterceptors(new FormErrorsInterceptor("/account"))
   async deleteUser(
-    @Param('id', new ParseUUIDPipe()) id,
+    @Param("id", new ParseUUIDPipe()) id,
     @Req() req,
     @Res() res,
   ): Promise<any> {
     if (req.user.id === id) {
       req.flash(
-        'globalError',
-        'Merci de ne pas essayer de vous supprimez vous même ;)',
+        "globalError",
+        "Merci de ne pas essayer de vous supprimez vous même ;)",
       );
       return res.redirect(`${res.locals.APP_ROOT}/account`);
     }
@@ -164,18 +164,18 @@ export class AccountController {
     try {
       await this.userService.deleteUserById(id, req.user.username);
       req.flash(
-        'success',
+        "success",
         `Le compte ${req.body.username} a été supprimé avec succès !`,
       );
       return res.redirect(`${res.locals.APP_ROOT}/account`);
     } catch (error) {
-      req.flash('globalError', error);
+      req.flash("globalError", error);
       return res.status(500);
     }
   }
 
-  @Get('me')
-  @Render('account/userAccount')
+  @Get("me")
+  @Render("account/userAccount")
   async showUserAccount(@Req() req) {
     const csrfToken = req.csrfToken();
     const { user, issuer, secret, QRCode, period, algorithm } =
@@ -191,7 +191,7 @@ export class AccountController {
     };
   }
 
-  @Patch('update-account/:username')
+  @Patch("update-account/:username")
   @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.SECURITY)
   @UseInterceptors(new FormErrorsInterceptor(`/account/me`))
   async updateUserPassword(
@@ -206,7 +206,7 @@ export class AccountController {
 
     if (!validPassword) {
       req.flash(
-        'globalError',
+        "globalError",
         "Votre nouveau mot de passe contient votre nom d'utilisateur",
       );
       return res.redirect(`${res.locals.APP_ROOT}/account/me`);
@@ -220,7 +220,7 @@ export class AccountController {
 
     if (isEqualToOneOfTheLastFivePasswords) {
       req.flash(
-        'globalError',
+        "globalError",
         "Votre nouveau mot de passe ne peut être l'un des cinq derniers mots de passe utilisés",
       );
       return res.redirect(`${res.locals.APP_ROOT}/account/me`);
@@ -230,22 +230,22 @@ export class AccountController {
       await this.userService.updateUserAccount(req.user, updateAccountDto);
     } catch (error) {
       req.flash(
-        'globalError',
-        'Nouveau mot de passe non mis à jour, Ancien mot de passe incorrect.',
+        "globalError",
+        "Nouveau mot de passe non mis à jour, Ancien mot de passe incorrect.",
       );
       return res.redirect(`${res.locals.APP_ROOT}/account/me`);
     }
-    req.flash('success', `Le mot de passe a bien été mis à jour !`);
+    req.flash("success", `Le mot de passe a bien été mis à jour !`);
     return res.redirect(`${res.locals.APP_ROOT}/`);
   }
 
   @Get()
   @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.SECURITY)
-  @Render('account/list')
+  @Render("account/list")
   async list(
     @Req() req,
-    @Query('page') pageQuery: string = '1',
-    @Query('limit') limitQuery: string = '10',
+    @Query("page") pageQuery: string = "1",
+    @Query("limit") limitQuery: string = "10",
   ) {
     const page = parseInt(pageQuery, 10);
     const limit = parseInt(limitQuery, 10);

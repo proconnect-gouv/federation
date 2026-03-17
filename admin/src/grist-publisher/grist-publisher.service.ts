@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from 'nestjs-config';
-import { chunk, isString } from 'lodash';
-import { LoggerService } from '../logger/logger.service';
-import { IdentityProviderFromDb } from '../identity-provider/identity-provider.mongodb.entity';
-import { ServiceProviderFromDb } from '../service-provider/service-provider.mongodb.entity';
-import { IdentityProviderGristRecord } from './interface/identity-provider-grist-record.interface';
-import { ServiceProviderGristRecord } from './interface/service-provider-grist-record.interface';
-import { GristRecord } from './interface/grist-record.interface';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "nestjs-config";
+import { chunk, isString } from "lodash";
+import { LoggerService } from "../logger/logger.service";
+import { IdentityProviderFromDb } from "../identity-provider/identity-provider.mongodb.entity";
+import { ServiceProviderFromDb } from "../service-provider/service-provider.mongodb.entity";
+import { IdentityProviderGristRecord } from "./interface/identity-provider-grist-record.interface";
+import { ServiceProviderGristRecord } from "./interface/service-provider-grist-record.interface";
+import { GristRecord } from "./interface/grist-record.interface";
 
 @Injectable()
 export class GristPublisherService {
@@ -16,7 +16,7 @@ export class GristPublisherService {
   ) {}
 
   async publishServiceProviders(serviceProviders: ServiceProviderFromDb[]) {
-    const { gristServiceProvidersTableId } = this.config.get('grist');
+    const { gristServiceProvidersTableId } = this.config.get("grist");
     const previousServiceProviderRecords =
       await this.getProviderRecordsFromGrist<ServiceProviderGristRecord>(
         gristServiceProvidersTableId,
@@ -38,7 +38,7 @@ export class GristPublisherService {
   }
 
   async publishIdentityProviders(identityProviders: IdentityProviderFromDb[]) {
-    const { gristIdentityProvidersTableId } = this.config.get('grist');
+    const { gristIdentityProvidersTableId } = this.config.get("grist");
 
     const previousIdentityProviderRecords =
       await this.getProviderRecordsFromGrist<IdentityProviderGristRecord>(
@@ -64,43 +64,43 @@ export class GristPublisherService {
   private transformIdentityProviderToGristRecord(
     identityProviderFromDb: IdentityProviderFromDb,
   ): IdentityProviderGristRecord {
-    const { gristNetworkName, gristEnvironmentName } = this.config.get('grist');
+    const { gristNetworkName, gristEnvironmentName } = this.config.get("grist");
 
     return {
       Reseau: gristNetworkName,
       Environnement: gristEnvironmentName,
       UID: identityProviderFromDb.uid,
       Titre: identityProviderFromDb.title,
-      Actif: identityProviderFromDb.active ? 'Oui' : 'Non',
+      Actif: identityProviderFromDb.active ? "Oui" : "Non",
       URL_de_decouverte: isString(identityProviderFromDb.discoveryUrl)
         ? identityProviderFromDb.discoveryUrl
-        : '',
-      Liste_des_FQDN: identityProviderFromDb.fqdns.join('\n'),
+        : "",
+      Liste_des_FQDN: identityProviderFromDb.fqdns.join("\n"),
       SIRET_par_defaut: identityProviderFromDb.siret,
-      Alg_ID_token: identityProviderFromDb.id_token_signed_response_alg || '',
-      Alg_userinfo: identityProviderFromDb.userinfo_signed_response_alg || '',
-      Routage_active: identityProviderFromDb.isRoutingEnabled ? 'Oui' : 'Non',
-      Adresse_e_mail_de_support: identityProviderFromDb.supportEmail || '',
+      Alg_ID_token: identityProviderFromDb.id_token_signed_response_alg || "",
+      Alg_userinfo: identityProviderFromDb.userinfo_signed_response_alg || "",
+      Routage_active: identityProviderFromDb.isRoutingEnabled ? "Oui" : "Non",
+      Adresse_e_mail_de_support: identityProviderFromDb.supportEmail || "",
     };
   }
 
   private transformServiceProviderToGristRecord(
     serviceProvider: ServiceProviderFromDb,
   ): ServiceProviderGristRecord {
-    const { gristNetworkName, gristEnvironmentName } = this.config.get('grist');
+    const { gristNetworkName, gristEnvironmentName } = this.config.get("grist");
     return {
       Reseau: gristNetworkName,
       Environnement: gristEnvironmentName,
       UID: serviceProvider.key,
       Nom: serviceProvider.name,
-      Actif: serviceProvider.active ? 'Oui' : 'Non',
-      Accepte_le_prive: serviceProvider.type === 'private' ? 'Oui' : 'Non',
-      Liste_des_URL_de_callback: serviceProvider.redirect_uris.join('\n'),
+      Actif: serviceProvider.active ? "Oui" : "Non",
+      Accepte_le_prive: serviceProvider.type === "private" ? "Oui" : "Non",
+      Liste_des_URL_de_callback: serviceProvider.redirect_uris.join("\n"),
       Liste_des_URL_de_logout:
-        serviceProvider.post_logout_redirect_uris.join('\n'),
-      Alg_ID_token: serviceProvider.id_token_signed_response_alg || '',
-      Alg_userinfo: serviceProvider.userinfo_signed_response_alg || '',
-      Scopes: serviceProvider.scopes.join(', '),
+        serviceProvider.post_logout_redirect_uris.join("\n"),
+      Alg_ID_token: serviceProvider.id_token_signed_response_alg || "",
+      Alg_userinfo: serviceProvider.userinfo_signed_response_alg || "",
+      Scopes: serviceProvider.scopes.join(", "),
     };
   }
 
@@ -183,7 +183,7 @@ export class GristPublisherService {
       gristApiKey,
       gristNetworkName,
       gristEnvironmentName,
-    } = this.config.get('grist');
+    } = this.config.get("grist");
     const gristDocUrl = `https://${gristDomain}/api/docs/${gristDocId}/tables/${tableId}/records`;
     const queryParams = new URLSearchParams({
       filter: JSON.stringify({
@@ -192,7 +192,7 @@ export class GristPublisherService {
       }),
     });
     const response = await fetch(`${gristDocUrl}?${queryParams.toString()}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${gristApiKey}`,
       },
@@ -207,13 +207,13 @@ export class GristPublisherService {
     if (recordIds.length === 0) {
       return true;
     }
-    const { gristDomain, gristDocId, gristApiKey } = this.config.get('grist');
+    const { gristDomain, gristDocId, gristApiKey } = this.config.get("grist");
     const gristDocUrl = `https://${gristDomain}/api/docs/${gristDocId}/tables/${tableId}/records/delete`;
     try {
       const deleteResponse = await fetch(`${gristDocUrl}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${gristApiKey}`,
         },
         body: JSON.stringify(recordIds),
@@ -241,7 +241,7 @@ export class GristPublisherService {
       return true;
     }
     const MAX_RECORDS_PER_REQUEST = 100;
-    const { gristDomain, gristDocId, gristApiKey } = this.config.get('grist');
+    const { gristDomain, gristDocId, gristApiKey } = this.config.get("grist");
     const gristDocUrl = `https://${gristDomain}/api/docs/${gristDocId}/tables/${tableId}/records`;
     const recordUpdates = records.map((record) => ({
       fields: record,
@@ -282,9 +282,9 @@ export class GristPublisherService {
     this.logger.info(`Upserting ${recordUpdates.length} records to Grist...`);
     try {
       const response = await fetch(gristDocUrl, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${gristApiKey}`,
         },
         body: JSON.stringify({ records: recordUpdates }),

@@ -1,22 +1,20 @@
-import bcrypt from 'bcryptjs';
-import { Repository, DeleteResult, UpdateResult } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
-import { InjectConfig, ConfigService } from 'nestjs-config';
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import bcrypt from "bcryptjs";
+import { Repository, DeleteResult, UpdateResult } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
+import { InjectConfig, ConfigService } from "nestjs-config";
+import { Inject, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { UserRole } from "../user/roles.enum";
+import { LoggerService } from "../logger/logger.service";
+import { IsPasswordCompliant } from "../account/validator/is-compliant.validator";
 
-import { UserRole } from '../user/roles.enum';
-import { LoggerService } from '../logger/logger.service';
-
-import { IsPasswordCompliant } from '../account/validator/is-compliant.validator';
-
-import { User } from './user.sql.entity';
-import { Password } from './password.sql.entity';
-import { IUserPasswordUpdateDTO } from './interface/user-password-update-dto.interface';
-import { IEnrollUserDto } from './interface/enroll-user-dto.interface';
-import { IUserService } from './interface/user-service.interface';
-import { ICreateUserDTO } from './interface/create-user-dto.interface';
-import { IUserTrack } from './interface/user-track.interface';
+import { User } from "./user.sql.entity";
+import { Password } from "./password.sql.entity";
+import { IUserPasswordUpdateDTO } from "./interface/user-password-update-dto.interface";
+import { IEnrollUserDto } from "./interface/enroll-user-dto.interface";
+import { IUserService } from "./interface/user-service.interface";
+import { ICreateUserDTO } from "./interface/create-user-dto.interface";
+import { IUserTrack } from "./interface/user-track.interface";
 
 @Injectable()
 export class UserService implements IUserService {
@@ -24,7 +22,7 @@ export class UserService implements IUserService {
   private readonly userTokenExpiresIn;
 
   constructor(
-    @Inject('generatePassword') private readonly generatePassword,
+    @Inject("generatePassword") private readonly generatePassword,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Password)
@@ -33,11 +31,11 @@ export class UserService implements IUserService {
     @InjectConfig() private readonly config: ConfigService,
   ) {
     this.userTokenExpiresIn =
-      this.config.get('app').userTokenExpiresIn * 60 * 1000;
+      this.config.get("app").userTokenExpiresIn * 60 * 1000;
   }
 
   private track(log: IUserTrack) {
-    this.logger.businessEvent({ entity: 'user', ...log });
+    this.logger.businessEvent({ entity: "user", ...log });
   }
 
   callGeneratePassword() {
@@ -53,7 +51,7 @@ export class UserService implements IUserService {
 
   generateTmpPass() {
     const validator = new IsPasswordCompliant();
-    let temporaryPassword = '';
+    let temporaryPassword = "";
     let i = 0;
     while (i < 10) {
       temporaryPassword = this.callGeneratePassword();
@@ -62,7 +60,7 @@ export class UserService implements IUserService {
       }
       i += 1;
     }
-    return 'The password could not be generated, please try again';
+    return "The password could not be generated, please try again";
   }
 
   passwordDoesNotContainUsername(password: string, username: string) {
@@ -75,11 +73,11 @@ export class UserService implements IUserService {
     enrollmentPassword: IEnrollUserDto,
   ): Promise<UpdateResult> {
     const roles = user.roles
-      .filter((role) => role !== 'new_account')
-      .map((role) => role.replace('inactive_', ''));
+      .filter((role) => role !== "new_account")
+      .map((role) => role.replace("inactive_", ""));
 
     this.track({
-      action: 'enroll',
+      action: "enroll",
       user: user.username,
       id: user.id,
       name: user.email,
@@ -91,7 +89,7 @@ export class UserService implements IUserService {
       });
     } catch (err) {
       this.logger.error(err);
-      throw new Error('password could not be updated');
+      throw new Error("password could not be updated");
     }
   }
 
@@ -109,11 +107,11 @@ export class UserService implements IUserService {
         return await this.updatePassword(user, data.password, {});
       } catch (err) {
         this.logger.error(err);
-        throw new Error('password could not be updated');
+        throw new Error("password could not be updated");
       }
     } else {
       throw new Error(
-        'password could not be updated because old password is invalid',
+        "password could not be updated because old password is invalid",
       );
     }
   }
@@ -125,7 +123,7 @@ export class UserService implements IUserService {
       return user;
     } catch (e) {
       this.logger.error(e);
-      throw new Error('The user could not be found due to a database error');
+      throw new Error("The user could not be found due to a database error");
     }
   }
 
@@ -134,7 +132,7 @@ export class UserService implements IUserService {
   }
 
   async createUser(user: ICreateUserDTO, author: string): Promise<string> {
-    const { appFqdn } = this.config.get('app');
+    const { appFqdn } = this.config.get("app");
     const { username, email, roles, secret } = user;
     const token = uuidv4();
 
@@ -144,7 +142,7 @@ export class UserService implements IUserService {
       passwordHash = await bcrypt.hash(user.password, this.SALT_ROUNDS);
     } catch (err) {
       this.logger.error(err);
-      throw new Error('password hash could not be generated');
+      throw new Error("password hash could not be generated");
     }
 
     const firstLoginLink = `https://${appFqdn}/first-login/${token}`;
@@ -167,7 +165,7 @@ export class UserService implements IUserService {
       await this.savePassword(username, passwordHash, updatedAt);
 
       this.track({
-        action: 'create',
+        action: "create",
         user: author,
         name: email,
       });
@@ -176,7 +174,7 @@ export class UserService implements IUserService {
     } catch (err) {
       this.logger.error(err);
 
-      throw new Error('The user could not be saved');
+      throw new Error("The user could not be saved");
     }
   }
 
@@ -192,11 +190,11 @@ export class UserService implements IUserService {
       );
     } catch (e) {
       this.logger.error(e);
-      throw new Error('The user could not be blocked due to a database error');
+      throw new Error("The user could not be blocked due to a database error");
     }
 
     this.track({
-      action: 'block',
+      action: "block",
       user: username,
       id: blockedUser.id,
       name: blockedUser.email,
@@ -211,7 +209,7 @@ export class UserService implements IUserService {
     const result = await this.userRepository.delete({ id });
 
     this.track({
-      action: 'delete',
+      action: "delete",
       user: author,
       id,
       name: user.email,
@@ -226,7 +224,7 @@ export class UserService implements IUserService {
     userData,
   ): Promise<UpdateResult> {
     this.track({
-      action: 'updatePassword',
+      action: "updatePassword",
       user: username,
       id,
       name: email,
@@ -245,7 +243,7 @@ export class UserService implements IUserService {
     } catch (err) {
       this.logger.error(err);
 
-      throw new Error('password could not be updated');
+      throw new Error("password could not be updated");
     }
 
     return userEntity;
@@ -289,7 +287,7 @@ export class UserService implements IUserService {
       });
     } catch (e) {
       this.logger.error(e);
-      throw new Error('The user could not be found due to a database error');
+      throw new Error("The user could not be found due to a database error");
     }
 
     for (const entry of userLastFivePassword) {
@@ -342,7 +340,7 @@ export class UserService implements IUserService {
       });
     } catch (e) {
       this.logger.error(e);
-      throw new Error('The user could not be found due to a database error');
+      throw new Error("The user could not be found due to a database error");
     }
     if (userLastFivePassword.length === passwordRecordLimit) {
       haveFiveEntires = true;
@@ -364,7 +362,7 @@ export class UserService implements IUserService {
           username,
         },
         order: {
-          updatedAt: 'ASC',
+          updatedAt: "ASC",
         },
         take: 1,
       });
@@ -376,7 +374,7 @@ export class UserService implements IUserService {
       oldestPasswordEntity[0].updatedAt = updatedAt;
     } catch (e) {
       this.logger.error(e);
-      throw new Error('The user could not be found due to a database error');
+      throw new Error("The user could not be found due to a database error");
     }
 
     try {

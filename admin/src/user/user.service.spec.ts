@@ -1,26 +1,26 @@
-import bcrypt from 'bcryptjs';
-import { Repository } from 'typeorm';
-import { Test } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user.sql.entity';
-import { Password } from './password.sql.entity';
-import { UserService } from './user.service';
-import { UserRole } from './roles.enum';
-import { IUserPasswordUpdateDTO } from './interface/user-password-update-dto.interface';
-import { ICreateUserDTO } from './interface/create-user-dto.interface';
-import { IsPasswordCompliant } from '../account/validator/is-compliant.validator';
-import { ConfigService } from 'nestjs-config';
-import uuid from 'uuid';
-import { LoggerService } from '../logger/logger.service';
+import bcrypt from "bcryptjs";
+import { Repository } from "typeorm";
+import { Test } from "@nestjs/testing";
+import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
+import { User } from "./user.sql.entity";
+import { Password } from "./password.sql.entity";
+import { UserService } from "./user.service";
+import { UserRole } from "./roles.enum";
+import { IUserPasswordUpdateDTO } from "./interface/user-password-update-dto.interface";
+import { ICreateUserDTO } from "./interface/create-user-dto.interface";
+import { IsPasswordCompliant } from "../account/validator/is-compliant.validator";
+import { ConfigService } from "nestjs-config";
+import uuid from "uuid";
+import { LoggerService } from "../logger/logger.service";
 
-jest.mock('uuid', () => ({
+jest.mock("uuid", () => ({
   v4: jest.fn(),
 }));
 
 const mockValidate = jest.fn();
 IsPasswordCompliant.prototype.validate = mockValidate;
 
-describe('UserService', () => {
+describe("UserService", () => {
   let userService: UserService;
   const userRepositoryMock = {
     findOneBy: jest.fn(),
@@ -44,26 +44,26 @@ describe('UserService', () => {
   };
 
   const generatePasswordProvider = {
-    provide: 'generatePassword',
+    provide: "generatePassword",
     useValue: generatePasswordMock,
   };
 
   const user = {
-    id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
-    username: 'fred',
+    id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
+    username: "fred",
     roles: [
-      'new_account',
-      'inactive_admin',
-      'inactive_operator',
-      'inactive_security',
+      "new_account",
+      "inactive_admin",
+      "inactive_operator",
+      "inactive_security",
     ],
-    email: 'foo@bar.com',
+    email: "foo@bar.com",
     passwordHash:
       // correspond à ce password : 'MyPass20!!'
-      '$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci',
+      "$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci",
   };
 
-  const mockToken = '3a95ebfa-cd28-40f1-ab6e-5eb4cef352e3';
+  const mockToken = "3a95ebfa-cd28-40f1-ab6e-5eb4cef352e3";
 
   const userTokenExpiresIn = 2880;
 
@@ -75,7 +75,7 @@ describe('UserService', () => {
     update: jest.fn(),
   };
 
-  const authorMock = 'authorMockValue';
+  const authorMock = "authorMockValue";
 
   beforeEach(async () => {
     configServiceMock.get.mockReturnValue({
@@ -111,8 +111,8 @@ describe('UserService', () => {
     (uuid.v4 as jest.Mock).mockReturnValue(mockToken);
   });
 
-  describe('callGeneratePassword', () => {
-    it('should be called with the right arguments', () => {
+  describe("callGeneratePassword", () => {
+    it("should be called with the right arguments", () => {
       // setup
 
       const args = {
@@ -131,56 +131,56 @@ describe('UserService', () => {
     });
   });
 
-  describe('generateTmpPass', () => {
-    it('should return a temporary password', () => {
+  describe("generateTmpPass", () => {
+    it("should return a temporary password", () => {
       // Set up
       mockValidate.mockReturnValue(true);
       userService.callGeneratePassword = jest
         .fn()
-        .mockReturnValue('GoodToGo10!!');
+        .mockReturnValue("GoodToGo10!!");
 
       // action
       const result = userService.generateTmpPass();
 
       // assertion
-      expect(result).toEqual('GoodToGo10!!');
+      expect(result).toEqual("GoodToGo10!!");
     });
 
-    it('should return an error message', () => {
+    it("should return an error message", () => {
       // Set up
       mockValidate.mockReturnValue(false);
       userService.callGeneratePassword = jest
         .fn()
-        .mockReturnValue('GoodToGo10!!');
+        .mockReturnValue("GoodToGo10!!");
 
       // action
       const result = userService.generateTmpPass();
 
       // assertion
       expect(result).toEqual(
-        'The password could not be generated, please try again',
+        "The password could not be generated, please try again",
       );
     });
   });
 
-  describe('enrollUser', () => {
-    it('should call updatePassword', async () => {
+  describe("enrollUser", () => {
+    it("should call updatePassword", async () => {
       // setup
       const enrollmentPassword = {
-        password: 'MyPass10!!',
-        passwordConfirmation: 'MyPass10!!',
+        password: "MyPass10!!",
+        passwordConfirmation: "MyPass10!!",
       };
       userService.updatePassword = jest.fn().mockReturnValueOnce({
-        id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
-        username: 'fred',
+        id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
+        username: "fred",
         roles: [
-          'new_account',
-          'inactive_admin',
-          'inactive_operator',
-          'inactive_security',
+          "new_account",
+          "inactive_admin",
+          "inactive_operator",
+          "inactive_security",
         ],
       });
-      const expectedRoles = ['admin', 'operator', 'security'];
+      const expectedRoles = ["admin", "operator", "security"];
 
       // action
       const result = await userService.enrollUser(user, enrollmentPassword);
@@ -195,13 +195,13 @@ describe('UserService', () => {
       expect(result).toBeInstanceOf(Object);
     });
 
-    it('should fall back in else statement', async () => {
+    it("should fall back in else statement", async () => {
       // setup
       const enrollmentPassword = {
-        password: 'MyPass10!!',
-        passwordConfirmation: 'MyPass10!!',
+        password: "MyPass10!!",
+        passwordConfirmation: "MyPass10!!",
       };
-      userService.updatePassword = jest.fn().mockRejectedValue('false');
+      userService.updatePassword = jest.fn().mockRejectedValue("false");
 
       // action
       try {
@@ -216,48 +216,48 @@ describe('UserService', () => {
       expect.hasAssertions();
     });
 
-    it('should call track()', async () => {
+    it("should call track()", async () => {
       // setup
       const enrollmentPassword = {
-        password: 'MyPass10!!',
-        passwordConfirmation: 'MyPass10!!',
+        password: "MyPass10!!",
+        passwordConfirmation: "MyPass10!!",
       };
       userService.updatePassword = jest.fn().mockReturnValueOnce({
-        id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
-        username: 'fred',
+        id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
+        username: "fred",
         roles: [
-          'new_account',
-          'inactive_admin',
-          'inactive_operator',
-          'inactive_security',
+          "new_account",
+          "inactive_admin",
+          "inactive_operator",
+          "inactive_security",
         ],
-        email: 'foo@bar.com',
+        email: "foo@bar.com",
       });
-      const expectedRoles = ['admin', 'operator', 'security'];
+      const expectedRoles = ["admin", "operator", "security"];
       // tslint:disable-next-line:no-string-literal
-      userService['track'] = jest.fn();
+      userService["track"] = jest.fn();
 
       // action
       const result = await userService.enrollUser(user, enrollmentPassword);
 
       // assertion
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledTimes(1);
+      expect(userService["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledWith({
-        action: 'enroll',
-        user: 'fred',
-        id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
+      expect(userService["track"]).toHaveBeenCalledWith({
+        action: "enroll",
+        user: "fred",
+        id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
         name: user.email,
       });
     });
   });
 
-  describe('compareHash', () => {
-    it('resolves true if the hashes match', async () => {
-      const password = 'georgesmoustaki';
+  describe("compareHash", () => {
+    it("resolves true if the hashes match", async () => {
+      const password = "georgesmoustaki";
       const hash =
-        '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e';
+        "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e";
 
       return expect(userService.compareHash(password, hash)).resolves.toBe(
         true,
@@ -265,8 +265,8 @@ describe('UserService', () => {
     });
 
     it("resolves false if the hashes don't match", async () => {
-      const password = 'georgesmoustaki';
-      const hash = 'la barbe de sa femme';
+      const password = "georgesmoustaki";
+      const hash = "la barbe de sa femme";
 
       return expect(userService.compareHash(password, hash)).resolves.toBe(
         false,
@@ -274,40 +274,40 @@ describe('UserService', () => {
     });
   });
 
-  describe('findByUsername', () => {
-    it('calls the repository', async () => {
+  describe("findByUsername", () => {
+    it("calls the repository", async () => {
       userRepositoryMock.findOneBy.mockImplementation(() =>
         Promise.resolve({
-          email: 'toto@toto.com',
-          roles: ['admin'],
-          passwordHash: 'MyPass',
-          secret: 'MySecret',
+          email: "toto@toto.com",
+          roles: ["admin"],
+          passwordHash: "MyPass",
+          secret: "MySecret",
         }),
       );
-      const foundUser = await userService.findByUsername('jean_moust');
+      const foundUser = await userService.findByUsername("jean_moust");
 
       expect(userRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
       expect(userRepositoryMock.findOneBy).toHaveBeenCalledWith({
-        username: 'jean_moust',
+        username: "jean_moust",
       });
-      expect(foundUser).toHaveProperty('email');
-      expect(foundUser).toHaveProperty('roles');
-      expect(foundUser).toHaveProperty('passwordHash');
-      expect(foundUser).toHaveProperty('secret');
+      expect(foundUser).toHaveProperty("email");
+      expect(foundUser).toHaveProperty("roles");
+      expect(foundUser).toHaveProperty("passwordHash");
+      expect(foundUser).toHaveProperty("secret");
     });
 
-    it('fails when the user is not found', async () => {
-      userRepositoryMock.findOneBy.mockRejectedValue('User not found');
+    it("fails when the user is not found", async () => {
+      userRepositoryMock.findOneBy.mockRejectedValue("User not found");
 
       return expect(
-        userService.findByUsername('michael jackson'),
+        userService.findByUsername("michael jackson"),
       ).rejects.toBeDefined();
     });
 
-    it('should fall back in catch statement if the database could not be reached', async () => {
+    it("should fall back in catch statement if the database could not be reached", async () => {
       // setup
-      const username = 'toto';
-      userRepositoryMock.findOneBy.mockRejectedValueOnce('user not found');
+      const username = "toto";
+      userRepositoryMock.findOneBy.mockRejectedValueOnce("user not found");
 
       // action
       try {
@@ -316,7 +316,7 @@ describe('UserService', () => {
         const { message } = e;
         expect(e).toBeInstanceOf(Error);
         expect(message).toEqual(
-          'The user could not be found due to a database error',
+          "The user could not be found due to a database error",
         );
         // expect(loggerMock.error).toHaveBeenCalledWith(e);
         expect(loggerMock.error).toHaveBeenCalled();
@@ -327,35 +327,35 @@ describe('UserService', () => {
     });
   });
 
-  describe('createUser', () => {
+  describe("createUser", () => {
     beforeEach(() => {
       // need to mock the private mthod
       // tslint:disable-next-line: no-string-literal
-      userService['savePassword'] = jest.fn();
+      userService["savePassword"] = jest.fn();
     });
 
-    it('creates the user', async () => {
+    it("creates the user", async () => {
       // setup
       const userMock: ICreateUserDTO = {
-        username: 'jean_moust',
-        email: 'jean@moust.lol',
-        password: 'georgesmoustaki',
+        username: "jean_moust",
+        email: "jean@moust.lol",
+        password: "georgesmoustaki",
         roles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.SECURITY],
-        secret: '1234',
+        secret: "1234",
       };
 
       configServiceMock.get.mockReturnValueOnce({
-        app_root: '/foo/bar',
-        appName: 'Exploitation',
+        app_root: "/foo/bar",
+        appName: "Exploitation",
       });
 
       // Private method testing https://stackoverflow.com/a/35991491/1071169
       userService[
         // tslint:disable-next-line no-string-literal
-        'setAuthenticationTokenExpirationDate'
+        "setAuthenticationTokenExpirationDate"
       ] = jest.fn().mockReturnValue({
-        tokenCreatedAt: '2020-03-03T16:36:56.135Z',
-        tokenExpiresAt: '2020-03-05T16:36:56.135Z',
+        tokenCreatedAt: "2020-03-03T16:36:56.135Z",
+        tokenExpiresAt: "2020-03-05T16:36:56.135Z",
       });
 
       // action
@@ -366,139 +366,139 @@ describe('UserService', () => {
       const { passwordHash } = userRepositoryMock.save.mock.calls[0][0];
       expect(bcrypt.compare(userMock.password, passwordHash)).toBeTruthy();
       expect(userRepositoryMock.save).toHaveBeenCalledWith({
-        email: 'jean@moust.lol',
+        email: "jean@moust.lol",
         passwordHash,
-        roles: ['admin', 'operator', 'security'],
-        secret: '1234',
+        roles: ["admin", "operator", "security"],
+        secret: "1234",
         token: mockToken,
-        tokenCreatedAt: '2020-03-03T16:36:56.135Z',
-        tokenExpiresAt: '2020-03-05T16:36:56.135Z',
-        username: 'jean_moust',
+        tokenCreatedAt: "2020-03-03T16:36:56.135Z",
+        tokenExpiresAt: "2020-03-05T16:36:56.135Z",
+        username: "jean_moust",
       });
     });
 
-    it('call track()', async () => {
+    it("call track()", async () => {
       // setup
       const userMock: ICreateUserDTO = {
-        username: 'jean_moust',
-        email: 'jean@moust.lol',
-        password: 'georgesmoustaki',
+        username: "jean_moust",
+        email: "jean@moust.lol",
+        password: "georgesmoustaki",
         roles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.SECURITY],
-        secret: '1234',
+        secret: "1234",
       };
 
       configServiceMock.get.mockReturnValueOnce({
-        app_root: '/foo/bar',
-        appName: 'Exploitation',
+        app_root: "/foo/bar",
+        appName: "Exploitation",
       });
 
       // Private method testing https://stackoverflow.com/a/35991491/1071169
       userService[
         // tslint:disable-next-line no-string-literal
-        'setAuthenticationTokenExpirationDate'
+        "setAuthenticationTokenExpirationDate"
       ] = jest.fn().mockReturnValue({
-        tokenCreatedAt: '2020-03-03T16:36:56.135Z',
-        tokenExpiresAt: '2020-03-05T16:36:56.135Z',
+        tokenCreatedAt: "2020-03-03T16:36:56.135Z",
+        tokenExpiresAt: "2020-03-05T16:36:56.135Z",
       });
 
       // tslint:disable-next-line:no-string-literal
-      userService['track'] = jest.fn();
+      userService["track"] = jest.fn();
 
       // action
       await userService.createUser(userMock, authorMock);
 
       // expect
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledTimes(1);
+      expect(userService["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledWith({
-        action: 'create',
+      expect(userService["track"]).toHaveBeenCalledWith({
+        action: "create",
         user: authorMock,
         name: userMock.email,
       });
     });
 
-    it('does not create the user because of a database failure', async () => {
+    it("does not create the user because of a database failure", async () => {
       const userMock: ICreateUserDTO = {
-        username: 'jean_moust',
-        email: 'jean@moust.lol',
-        password: 'georgesmoustaki',
+        username: "jean_moust",
+        email: "jean@moust.lol",
+        password: "georgesmoustaki",
         roles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.SECURITY],
-        secret: '1234',
+        secret: "1234",
       };
 
       jest
-        .spyOn(bcrypt, 'hash')
-        .mockImplementationOnce(() => Promise.resolve('toto'));
+        .spyOn(bcrypt, "hash")
+        .mockImplementationOnce(() => Promise.resolve("toto"));
       userRepositoryMock.save = jest
         .fn()
-        .mockRejectedValueOnce(new Error('The user could not be saved'));
+        .mockRejectedValueOnce(new Error("The user could not be saved"));
 
       configServiceMock.get.mockReturnValueOnce({
-        app_root: '/foo/bar',
-        appName: 'Exploitation',
+        app_root: "/foo/bar",
+        appName: "Exploitation",
       });
 
       try {
         await userService.createUser(userMock, authorMock);
       } catch (err) {
         const { message } = err;
-        expect(message).toEqual('The user could not be saved');
+        expect(message).toEqual("The user could not be saved");
       }
       expect.hasAssertions();
     });
 
-    it('does not create the user because of a bcrypt failure', async () => {
+    it("does not create the user because of a bcrypt failure", async () => {
       const userMock: ICreateUserDTO = {
-        username: 'jean_moust',
-        email: 'jean@moust.lol',
-        password: 'georgesmoustaki',
+        username: "jean_moust",
+        email: "jean@moust.lol",
+        password: "georgesmoustaki",
         roles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.SECURITY],
-        secret: '1234',
+        secret: "1234",
       };
       jest
-        .spyOn(bcrypt, 'hash')
+        .spyOn(bcrypt, "hash")
         .mockRejectedValueOnce(
-          new Error('password hash could not be generated') as never,
+          new Error("password hash could not be generated") as never,
         );
       configServiceMock.get.mockReturnValueOnce({
-        app_root: '/foo/bar',
+        app_root: "/foo/bar",
       });
       try {
         await userService.createUser(userMock, authorMock);
       } catch (err) {
         const { message } = err;
-        expect(message).toEqual('password hash could not be generated');
+        expect(message).toEqual("password hash could not be generated");
       }
       expect.hasAssertions();
     });
   });
 
-  describe('setAuthenticationTokenExpirationDate', () => {
-    it('should return an object with two objects of type date', () => {
+  describe("setAuthenticationTokenExpirationDate", () => {
+    it("should return an object with two objects of type date", () => {
       // action
       // tslint:disable-next-line no-string-literal
-      const result = userService['setAuthenticationTokenExpirationDate']();
+      const result = userService["setAuthenticationTokenExpirationDate"]();
       // assert
       expect(result.tokenCreatedAt).toBeInstanceOf(Date);
       expect(result.tokenExpiresAt).toBeInstanceOf(Date);
     });
 
-    it('should return an object with two objects of type date', () => {
+    it("should return an object with two objects of type date", () => {
       // action
       // tslint:disable-next-line no-string-literal
-      const result = userService['setAuthenticationTokenExpirationDate']();
+      const result = userService["setAuthenticationTokenExpirationDate"]();
       // assert
       expect(Object.keys(result)).toMatchObject([
-        'tokenCreatedAt',
-        'tokenExpiresAt',
+        "tokenCreatedAt",
+        "tokenExpiresAt",
       ]);
     });
 
     it('should set "tokenExpiresAt" to "userTokenExpiresIn" minutes after "tokenCreatedAt"', () => {
       // action
       // tslint:disable-next-line no-string-literal
-      const result = userService['setAuthenticationTokenExpirationDate']();
+      const result = userService["setAuthenticationTokenExpirationDate"]();
       // assert
       expect(
         result.tokenExpiresAt.getTime() - result.tokenCreatedAt.getTime(),
@@ -506,23 +506,23 @@ describe('UserService', () => {
     });
   });
 
-  describe('blockUser', () => {
+  describe("blockUser", () => {
     const mockedUserUpdateResponse = {
-      id: 'foo',
+      id: "foo",
     };
     beforeEach(() => {
       userRepositoryMock.update.mockResolvedValue(mockedUserUpdateResponse);
       userRepositoryMock.findOneBy.mockResolvedValue({
-        email: 'toto@toto.com',
-        roles: ['admin'],
-        passwordHash: 'MyPass',
-        secret: 'MySecret',
-        id: 'some-id',
+        email: "toto@toto.com",
+        roles: ["admin"],
+        passwordHash: "MyPass",
+        secret: "MySecret",
+        id: "some-id",
       });
     });
-    it('should block a user', async () => {
+    it("should block a user", async () => {
       // setup
-      const username = 'user';
+      const username = "user";
 
       // action
       const result = await userService.blockUser(username);
@@ -534,31 +534,31 @@ describe('UserService', () => {
       );
     });
 
-    it('call track()', async () => {
+    it("call track()", async () => {
       // setup
-      const username = 'user';
+      const username = "user";
       // tslint:disable-next-line:no-string-literal
-      userService['track'] = jest.fn();
+      userService["track"] = jest.fn();
 
       // action
       await userService.blockUser(username);
 
       // assertion
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledTimes(1);
+      expect(userService["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledWith({
-        action: 'block',
+      expect(userService["track"]).toHaveBeenCalledWith({
+        action: "block",
         user: username,
-        id: 'some-id',
-        name: 'toto@toto.com',
+        id: "some-id",
+        name: "toto@toto.com",
       });
     });
 
-    it('should fall back in catch statement if update failed', async () => {
+    it("should fall back in catch statement if update failed", async () => {
       // setup
-      const username = 'user';
-      userRepositoryMock.update.mockRejectedValueOnce('failed');
+      const username = "user";
+      userRepositoryMock.update.mockRejectedValueOnce("failed");
       // action
       try {
         await userService.blockUser(username);
@@ -566,7 +566,7 @@ describe('UserService', () => {
         const { message } = e;
         expect(e).toBeInstanceOf(Error);
         expect(message).toEqual(
-          'The user could not be blocked due to a database error',
+          "The user could not be blocked due to a database error",
         );
         expect(loggerMock.error).toHaveBeenCalled();
       }
@@ -576,20 +576,20 @@ describe('UserService', () => {
     });
   });
 
-  describe('deleteUserById', () => {
+  describe("deleteUserById", () => {
     beforeEach(() => {
       userRepositoryMock.findOneBy.mockResolvedValue({
-        email: 'toto@toto.com',
-        roles: ['admin'],
-        passwordHash: 'MyPass',
-        secret: 'MySecret',
+        email: "toto@toto.com",
+        roles: ["admin"],
+        passwordHash: "MyPass",
+        secret: "MySecret",
       });
     });
-    it('calls the delete function of the userRepositoryMock', async () => {
+    it("calls the delete function of the userRepositoryMock", async () => {
       // set up
-      const id = '123';
-      const expectedRepositoryDeleteArguments = { id: '123' };
-      const userMock = 'userMockValue';
+      const id = "123";
+      const expectedRepositoryDeleteArguments = { id: "123" };
+      const userMock = "userMockValue";
       // action
       await userService.deleteUserById(id, userMock);
       // assertion
@@ -598,40 +598,40 @@ describe('UserService', () => {
         expectedRepositoryDeleteArguments,
       );
     });
-    it('calls track()', async () => {
+    it("calls track()", async () => {
       // set up
-      const id = '123';
-      const expectedRepositoryDeleteArguments = { id: '123' };
-      const userMock = 'userMockValue';
+      const id = "123";
+      const expectedRepositoryDeleteArguments = { id: "123" };
+      const userMock = "userMockValue";
       // tslint:disable-next-line:no-string-literal
-      userService['track'] = jest.fn();
+      userService["track"] = jest.fn();
 
       // action
       await userService.deleteUserById(id, userMock);
       // assertion
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledTimes(1);
+      expect(userService["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledWith({
-        action: 'delete',
+      expect(userService["track"]).toHaveBeenCalledWith({
+        action: "delete",
         user: userMock,
         id,
-        name: 'toto@toto.com',
+        name: "toto@toto.com",
       });
     });
   });
 
-  describe('updateUserAccount', () => {
-    it('should call updatePassword', async () => {
+  describe("updateUserAccount", () => {
+    it("should call updatePassword", async () => {
       // setup
       const dataMock: IUserPasswordUpdateDTO = {
-        currentPassword: 'MyPass20!!',
-        password: 'MyPasswordIsValid10!!',
-        passwordConfirmation: 'MyPasswordIsValid10!!',
+        currentPassword: "MyPass20!!",
+        password: "MyPasswordIsValid10!!",
+        passwordConfirmation: "MyPasswordIsValid10!!",
       };
       // need to mock private call
       // tslint:disable-next-line: no-string-literal
-      userService['compareHash'] = jest.fn().mockResolvedValueOnce(true);
+      userService["compareHash"] = jest.fn().mockResolvedValueOnce(true);
       userService.updatePassword = jest.fn().mockResolvedValue(true);
 
       // action
@@ -646,16 +646,16 @@ describe('UserService', () => {
       );
     });
 
-    it('should fall back in else statement', async () => {
+    it("should fall back in else statement", async () => {
       // setup
       const dataMock: IUserPasswordUpdateDTO = {
-        currentPassword: 'MyPass20!!',
-        password: 'MyPasswordIsValid10!!',
-        passwordConfirmation: 'MyPasswordIsValid10!!',
+        currentPassword: "MyPass20!!",
+        password: "MyPasswordIsValid10!!",
+        passwordConfirmation: "MyPasswordIsValid10!!",
       };
       // need to mock private call
       // tslint:disable-next-line: no-string-literal
-      userService['compareHash'] = jest.fn().mockResolvedValueOnce(true);
+      userService["compareHash"] = jest.fn().mockResolvedValueOnce(true);
       userService.updatePassword = jest.fn().mockRejectedValue(false);
 
       // action
@@ -666,24 +666,24 @@ describe('UserService', () => {
 
         // assertion
         expect(userService.updatePassword).toHaveBeenCalledTimes(1);
-        expect(message).toEqual('password could not be updated');
+        expect(message).toEqual("password could not be updated");
       }
       expect.hasAssertions();
     });
 
-    it('should not call updatePassword', async () => {
+    it("should not call updatePassword", async () => {
       // setup
       const dataMock: IUserPasswordUpdateDTO = {
-        currentPassword: 'MyPass20!!',
-        password: 'MyPasswordIsValid10!!',
-        passwordConfirmation: 'MyPasswordIsValid10!!',
+        currentPassword: "MyPass20!!",
+        password: "MyPasswordIsValid10!!",
+        passwordConfirmation: "MyPasswordIsValid10!!",
       };
       const userMock = {
-        passwordHash: 'y/cvxrzo6dRMIMD4dgdOGci',
+        passwordHash: "y/cvxrzo6dRMIMD4dgdOGci",
       };
       // need to mock private call
       // tslint:disable-next-line: no-string-literal
-      userService['compareHash'] = jest.fn().mockResolvedValueOnce(false);
+      userService["compareHash"] = jest.fn().mockResolvedValueOnce(false);
       userService.updatePassword = jest.fn().mockResolvedValue(true);
 
       // action
@@ -695,37 +695,37 @@ describe('UserService', () => {
         // assert
         expect(userService.updatePassword).toHaveBeenCalledTimes(0);
         expect(message).toEqual(
-          'password could not be updated because old password is invalid',
+          "password could not be updated because old password is invalid",
         );
       }
       expect.hasAssertions();
     });
   });
 
-  describe('updatePassword', () => {
+  describe("updatePassword", () => {
     beforeEach(() => {
       // need to mock the private mthod
       // tslint:disable-next-line: no-string-literal
-      userService['savePassword'] = jest.fn();
+      userService["savePassword"] = jest.fn();
     });
 
-    it('should call userRepositoryMock.update', async () => {
+    it("should call userRepositoryMock.update", async () => {
       // setup
       const dataMock: IUserPasswordUpdateDTO = {
-        currentPassword: 'MyPass20!!',
-        password: 'MyPasswordIsValid10!!',
-        passwordConfirmation: 'MyPasswordIsValid10!!',
+        currentPassword: "MyPass20!!",
+        password: "MyPasswordIsValid10!!",
+        passwordConfirmation: "MyPasswordIsValid10!!",
       };
       userService.findByUsername = jest.fn().mockResolvedValue({
-        id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
-        username: 'fred',
-        roles: ['admin'],
+        id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
+        username: "fred",
+        roles: ["admin"],
         passwordHash:
-          '$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci',
+          "$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci",
       });
       // need to mock the private mthod
       // tslint:disable-next-line: no-string-literal
-      userService['savePassword'] = jest.fn().mockResolvedValueOnce('ok');
+      userService["savePassword"] = jest.fn().mockResolvedValueOnce("ok");
 
       // action
       const result = await userService.updatePassword(
@@ -741,23 +741,23 @@ describe('UserService', () => {
       expect(result).toBeInstanceOf(Object);
     });
 
-    it('should update a user password in connections failed historic', async () => {
+    it("should update a user password in connections failed historic", async () => {
       // setup
       const dataMock: IUserPasswordUpdateDTO = {
-        currentPassword: 'MyPass20!!',
-        password: 'MyPasswordIsValid10!!',
-        passwordConfirmation: 'MyPasswordIsValid10!!',
+        currentPassword: "MyPass20!!",
+        password: "MyPasswordIsValid10!!",
+        passwordConfirmation: "MyPasswordIsValid10!!",
       };
       userService.findByUsername = jest.fn().mockResolvedValue({
-        id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
-        username: 'fred',
-        roles: ['admin'],
+        id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
+        username: "fred",
+        roles: ["admin"],
         passwordHash:
-          '$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci',
+          "$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci",
       });
       // need to mock the private mthod
       // tslint:disable-next-line: no-string-literal
-      userService['savePassword'] = jest.fn().mockResolvedValueOnce('ok');
+      userService["savePassword"] = jest.fn().mockResolvedValueOnce("ok");
 
       // action
       const result = await userService.updatePassword(
@@ -769,34 +769,34 @@ describe('UserService', () => {
       // assert
       // need to test the private
       // tslint:disable-next-line: no-string-literal
-      expect(userService['savePassword']).toHaveBeenCalledTimes(1);
+      expect(userService["savePassword"]).toHaveBeenCalledTimes(1);
       // need to test the private
       // tslint:disable-next-line: no-string-literal
-      expect(userService['savePassword']).toHaveBeenCalledWith(
-        'fred',
+      expect(userService["savePassword"]).toHaveBeenCalledWith(
+        "fred",
         expect.any(String),
         expect.any(Date),
       );
       expect(result).toBeInstanceOf(Object);
     });
 
-    it('should not update a user password', async () => {
+    it("should not update a user password", async () => {
       // setup
       const dataMock: IUserPasswordUpdateDTO = {
-        currentPassword: 'MyPass20!!',
-        password: 'MyPasswordIsValid10!!',
-        passwordConfirmation: 'MyPasswordIsValid10!!',
+        currentPassword: "MyPass20!!",
+        password: "MyPasswordIsValid10!!",
+        passwordConfirmation: "MyPasswordIsValid10!!",
       };
       userService.findByUsername = jest.fn().mockResolvedValue({
-        id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
-        username: 'fred',
-        roles: ['admin'],
+        id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
+        username: "fred",
+        roles: ["admin"],
         passwordHash:
-          '$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci',
+          "$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci",
       });
       // need to mock the private method
       // tslint:disable-next-line: no-string-literal
-      userService['savePassword'] = jest.fn().mockRejectedValueOnce(false);
+      userService["savePassword"] = jest.fn().mockRejectedValueOnce(false);
 
       // action
       try {
@@ -807,38 +807,38 @@ describe('UserService', () => {
         // assert
         // need to test the private mthod
         // tslint:disable-next-line: no-string-literal
-        expect(userService['savePassword']).toHaveBeenCalledTimes(1);
+        expect(userService["savePassword"]).toHaveBeenCalledTimes(1);
         // need to test the private
         // tslint:disable-next-line: no-string-literal
-        expect(userService['savePassword']).toHaveBeenCalledWith(
-          'fred',
+        expect(userService["savePassword"]).toHaveBeenCalledWith(
+          "fred",
           expect.any(String),
           expect.any(Date),
         );
-        expect(message).toEqual('password could not be updated');
+        expect(message).toEqual("password could not be updated");
       }
       expect.hasAssertions();
     });
 
-    it('calls track()', async () => {
+    it("calls track()", async () => {
       // setup
       const dataMock: IUserPasswordUpdateDTO = {
-        currentPassword: 'MyPass20!!',
-        password: 'MyPasswordIsValid10!!',
-        passwordConfirmation: 'MyPasswordIsValid10!!',
+        currentPassword: "MyPass20!!",
+        password: "MyPasswordIsValid10!!",
+        passwordConfirmation: "MyPasswordIsValid10!!",
       };
       userService.findByUsername = jest.fn().mockResolvedValue({
-        id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
-        username: 'fred',
-        roles: ['admin'],
+        id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
+        username: "fred",
+        roles: ["admin"],
         passwordHash:
-          '$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci',
+          "$2b$10$UeDbulgX0zaMzviq/61wQeFWtpO97py/cvxrzo6dRMIMD4dgdOGci",
       });
       // need to mock the private mthod
       // tslint:disable-next-line: no-string-literal
-      userService['savePassword'] = jest.fn().mockResolvedValueOnce('ok');
+      userService["savePassword"] = jest.fn().mockResolvedValueOnce("ok");
       // tslint:disable-next-line:no-string-literal
-      userService['track'] = jest.fn();
+      userService["track"] = jest.fn();
 
       // action
       const result = await userService.updatePassword(
@@ -849,21 +849,21 @@ describe('UserService', () => {
 
       // assert
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledTimes(1);
+      expect(userService["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(userService['track']).toHaveBeenCalledWith({
-        action: 'updatePassword',
+      expect(userService["track"]).toHaveBeenCalledWith({
+        action: "updatePassword",
         user: user.username,
-        id: 'ae21881b-0bba-4072-93b1-2436b3280c9f',
+        id: "ae21881b-0bba-4072-93b1-2436b3280c9f",
         name: user.email,
       });
     });
   });
 
-  describe('passwordDoesNotContainUsername', () => {
-    it('should return false if username is contained in the password', () => {
+  describe("passwordDoesNotContainUsername", () => {
+    it("should return false if username is contained in the password", () => {
       // given
-      const password = 'fredHasANotSecuredPassword10!!';
+      const password = "fredHasANotSecuredPassword10!!";
       // when
       const result = userService.passwordDoesNotContainUsername(
         password,
@@ -873,9 +873,9 @@ describe('UserService', () => {
       expect(result).toEqual(false);
     });
 
-    it('should return false if username is contained in the password, case insensitively', () => {
+    it("should return false if username is contained in the password, case insensitively", () => {
       // given
-      const password = 'fReDHasANotSecuredPassword10!!';
+      const password = "fReDHasANotSecuredPassword10!!";
       // when
       const result = userService.passwordDoesNotContainUsername(
         password,
@@ -885,9 +885,9 @@ describe('UserService', () => {
       expect(result).toEqual(false);
     });
 
-    it('should return true if username is not contained in the password', () => {
+    it("should return true if username is not contained in the password", () => {
       // given
-      const password = 'thePasswordIsSecured10!!';
+      const password = "thePasswordIsSecured10!!";
       // when
       const result = userService.passwordDoesNotContainUsername(
         password,
@@ -898,21 +898,21 @@ describe('UserService', () => {
     });
   });
 
-  describe('password validation', () => {
-    const username = 'jean_moust';
-    const password = 'georgesmoustaki';
+  describe("password validation", () => {
+    const username = "jean_moust";
+    const password = "georgesmoustaki";
     const passwordHash =
-      '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e';
+      "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e";
 
-    describe('isEqualToTemporaryPassword', () => {
-      it('should exist', () => {
+    describe("isEqualToTemporaryPassword", () => {
+      it("should exist", () => {
         expect(userService.isEqualToTemporaryPassword).toBeDefined();
       });
 
-      it('should return true if temporay password is the same as new password', async () => {
+      it("should return true if temporay password is the same as new password", async () => {
         // Action
         const result = await userService.isEqualToTemporaryPassword(
-          'georgesmoustaki',
+          "georgesmoustaki",
           passwordHash,
         );
 
@@ -920,10 +920,10 @@ describe('UserService', () => {
         expect(result).toStrictEqual(true);
       });
 
-      it('should return false if temporay password is different from new password', async () => {
+      it("should return false if temporay password is different from new password", async () => {
         // Action
         const result = await userService.isEqualToTemporaryPassword(
-          'georges',
+          "georges",
           passwordHash,
         );
 
@@ -932,40 +932,40 @@ describe('UserService', () => {
       });
     });
 
-    describe('isEqualToOneOfTheLastFivePasswords', () => {
-      it('should exist', () => {
+    describe("isEqualToOneOfTheLastFivePasswords", () => {
+      it("should exist", () => {
         expect(userService.isEqualToOneOfTheLastFivePasswords).toBeDefined();
       });
 
-      it('should return true if current password is find in database', async () => {
+      it("should return true if current password is find in database", async () => {
         // Setup
         userRepositoryMock.findOneBy.mockImplementation(() =>
           Promise.resolve({
-            username: 'jean_moust',
-            email: 'toto@toto.com',
-            roles: ['admin'],
+            username: "jean_moust",
+            email: "toto@toto.com",
+            roles: ["admin"],
             passwordHash:
-              '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            secret: 'MySecret',
+              "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            secret: "MySecret",
           }),
         );
 
         passwordRepositoryMock.find.mockImplementation(() =>
           Promise.resolve([
             {
-              username: 'jean_moust',
+              username: "jean_moust",
               passwordHash:
-                '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
+                "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
             },
             {
-              username: 'jean_moust',
+              username: "jean_moust",
               passwordHash:
-                '$2b$10$ZDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
+                "$2b$10$ZDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
             },
             {
-              username: 'jean_moust',
+              username: "jean_moust",
               passwordHash:
-                '$2b$10$ZUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
+                "$2b$10$ZUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
             },
           ]),
         );
@@ -981,34 +981,34 @@ describe('UserService', () => {
         expect(result).toStrictEqual(true);
       });
 
-      it('should return false if current password is not find in database', async () => {
+      it("should return false if current password is not find in database", async () => {
         // Setup
         userRepositoryMock.findOneBy.mockImplementation(() =>
           Promise.resolve({
-            username: 'jean_moust',
-            email: 'toto@toto.com',
-            roles: ['admin'],
+            username: "jean_moust",
+            email: "toto@toto.com",
+            roles: ["admin"],
             passwordHash:
-              '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            secret: 'MySecret',
+              "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            secret: "MySecret",
           }),
         );
 
         passwordRepositoryMock.find.mockResolvedValue([
           {
-            username: 'jean_moust',
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZDOY7VgMYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
+              "$2b$10$ZDOY7VgMYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
           },
           {
-            username: 'jean_moust',
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZDZB7VgGYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
+              "$2b$10$ZDZB7VgGYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
           },
           {
-            username: 'jean_moust',
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZUOB7VgBYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
+              "$2b$10$ZUOB7VgBYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
           },
         ]);
 
@@ -1024,45 +1024,45 @@ describe('UserService', () => {
       });
     });
 
-    describe('savePassword', () => {
-      it('should call checkIfOnlyFivePasswordsEntries', async () => {
+    describe("savePassword", () => {
+      it("should call checkIfOnlyFivePasswordsEntries", async () => {
         // Setup
         userService[
           // need to mock the private method
           // tslint:disable-next-line: no-string-literal
-          'checkIfOnlyFivePasswordsEntries'
+          "checkIfOnlyFivePasswordsEntries"
         ] = jest.fn().mockResolvedValueOnce(false);
         passwordRepositoryMock.save.mockResolvedValueOnce(true);
         const updatedAt = new Date();
 
         // Action
         // tslint:disable-next-line: no-string-literal
-        await userService['savePassword'](username, passwordHash, updatedAt);
+        await userService["savePassword"](username, passwordHash, updatedAt);
 
         // Expected
         expect(
           // tslint:disable-next-line: no-string-literal
-          userService['checkIfOnlyFivePasswordsEntries'],
+          userService["checkIfOnlyFivePasswordsEntries"],
         ).toHaveBeenCalledTimes(1);
         expect(
           // tslint:disable-next-line: no-string-literal
-          userService['checkIfOnlyFivePasswordsEntries'],
+          userService["checkIfOnlyFivePasswordsEntries"],
         ).toHaveBeenCalledWith(username);
       });
 
-      it('should call passwordRepository.save', async () => {
+      it("should call passwordRepository.save", async () => {
         // Setup
         userService[
           // need to mock the private method
           // tslint:disable-next-line: no-string-literal
-          'checkIfOnlyFivePasswordsEntries'
+          "checkIfOnlyFivePasswordsEntries"
         ] = jest.fn().mockResolvedValueOnce(false);
         passwordRepositoryMock.save.mockResolvedValueOnce(true);
         const updatedAt = new Date();
 
         // Action
         // tslint:disable-next-line: no-string-literal
-        await userService['savePassword'](username, passwordHash, updatedAt);
+        await userService["savePassword"](username, passwordHash, updatedAt);
 
         // Expected
         expect(
@@ -1079,20 +1079,20 @@ describe('UserService', () => {
         });
       });
 
-      it('should not call passwordRepositoryMock.save if checkIfOnlyFivePasswordsEntries resolves to true', async () => {
+      it("should not call passwordRepositoryMock.save if checkIfOnlyFivePasswordsEntries resolves to true", async () => {
         // Setup
         userService[
           // need to mock the private method
           // tslint:disable-next-line: no-string-literal
-          'checkIfOnlyFivePasswordsEntries'
+          "checkIfOnlyFivePasswordsEntries"
         ] = jest.fn().mockResolvedValueOnce(true);
-        passwordRepositoryMock.save.mockRejectedValueOnce('failed');
+        passwordRepositoryMock.save.mockRejectedValueOnce("failed");
 
         const updatedAt = new Date();
 
         // action
         // tslint:disable-next-line: no-string-literal
-        await userService['savePassword'](username, passwordHash, updatedAt);
+        await userService["savePassword"](username, passwordHash, updatedAt);
 
         // expect
         expect(
@@ -1101,23 +1101,23 @@ describe('UserService', () => {
         ).toHaveBeenCalledTimes(0);
       });
 
-      it('should throw an error if checkIfOnlyFivePasswordsEntries reject', async () => {
+      it("should throw an error if checkIfOnlyFivePasswordsEntries reject", async () => {
         // Setup
         userService[
           // need to mock the private method
           // tslint:disable-next-line: no-string-literal
-          'checkIfOnlyFivePasswordsEntries'
+          "checkIfOnlyFivePasswordsEntries"
         ] = jest.fn().mockRejectedValueOnce(false);
 
         const updatedAt = new Date();
         // action
         try {
           // tslint:disable-next-line: no-string-literal
-          await userService['savePassword'](username, passwordHash, updatedAt);
+          await userService["savePassword"](username, passwordHash, updatedAt);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
           const { message } = e;
-          expect(message).toEqual('Cannot Save data in database');
+          expect(message).toEqual("Cannot Save data in database");
           expect(loggerMock.error).toHaveBeenCalled();
         }
 
@@ -1125,24 +1125,24 @@ describe('UserService', () => {
         expect.hasAssertions();
       });
 
-      it('should throw an error if passwordHash can be saved in database', async () => {
+      it("should throw an error if passwordHash can be saved in database", async () => {
         // Setup
         userService[
           // need to mock the private method
           // tslint:disable-next-line: no-string-literal
-          'checkIfOnlyFivePasswordsEntries'
+          "checkIfOnlyFivePasswordsEntries"
         ] = jest.fn().mockResolvedValueOnce(false);
-        passwordRepositoryMock.save.mockRejectedValueOnce('failed');
+        passwordRepositoryMock.save.mockRejectedValueOnce("failed");
 
         const updatedAt = new Date();
         // action
         try {
           // tslint:disable-next-line: no-string-literal
-          await userService['savePassword'](username, passwordHash, updatedAt);
+          await userService["savePassword"](username, passwordHash, updatedAt);
         } catch (e) {
           const { message } = e;
           expect(e).toBeInstanceOf(Error);
-          expect(message).toEqual('Cannot Save data in database');
+          expect(message).toEqual("Cannot Save data in database");
           expect(loggerMock.error).toHaveBeenCalled();
         }
 
@@ -1151,58 +1151,58 @@ describe('UserService', () => {
       });
     });
 
-    describe('checkIfOnlyFivePasswordsEntries', () => {
+    describe("checkIfOnlyFivePasswordsEntries", () => {
       const userMockData = {
-        username: 'jean_moust',
-        email: 'toto@toto.com',
-        roles: ['admin'],
+        username: "jean_moust",
+        email: "toto@toto.com",
+        roles: ["admin"],
         passwordHash:
-          '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-        secret: 'MySecret',
+          "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+        secret: "MySecret",
       };
 
-      it('should exist', () => {
+      it("should exist", () => {
         // tslint:disable-next-line: no-string-literal
-        expect(userService['checkIfOnlyFivePasswordsEntries']).toBeDefined();
+        expect(userService["checkIfOnlyFivePasswordsEntries"]).toBeDefined();
       });
 
-      it('should return true if five entries exit for a user', async () => {
+      it("should return true if five entries exit for a user", async () => {
         // Setup
         const userLastFivePassword = [
           {
-            id: '1',
-            username: 'jean_moust',
+            id: "1",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-05-06T12:59:01.436Z'),
+              "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-05-06T12:59:01.436Z"),
           },
           {
-            id: '2',
-            username: 'jean_moust',
+            id: "2",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-05-02T12:59:01.436Z'),
+              "$2b$10$ZDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-05-02T12:59:01.436Z"),
           },
           {
-            id: '3',
-            username: 'jean_moust',
+            id: "3",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-04-30T12:59:01.436Z'),
+              "$2b$10$ZUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-04-30T12:59:01.436Z"),
           },
           {
-            id: '4',
-            username: 'jean_moust',
+            id: "4",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$VDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-05-02T12:59:01.436Z'),
+              "$2b$10$VDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-05-02T12:59:01.436Z"),
           },
           {
-            id: '5',
-            username: 'jean_moust',
+            id: "5",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$AUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-04-30T12:59:01.436Z'),
+              "$2b$10$AUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-04-30T12:59:01.436Z"),
           },
         ];
         userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
@@ -1210,35 +1210,35 @@ describe('UserService', () => {
         // Action
         // tslint:disable-next-line: no-string-literal
         const result =
-          await userService['checkIfOnlyFivePasswordsEntries'](username);
+          await userService["checkIfOnlyFivePasswordsEntries"](username);
 
         // Expected
         expect(result).toStrictEqual(true);
       });
 
-      it('should return false if five entries exit for a user', async () => {
+      it("should return false if five entries exit for a user", async () => {
         // Setup
         const userLastFivePassword = [
           {
-            id: '1',
-            username: 'jean_moust',
+            id: "1",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-05-06T12:59:01.436Z'),
+              "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-05-06T12:59:01.436Z"),
           },
           {
-            id: '2',
-            username: 'jean_moust',
+            id: "2",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-05-02T12:59:01.436Z'),
+              "$2b$10$ZDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-05-02T12:59:01.436Z"),
           },
           {
-            id: '3',
-            username: 'jean_moust',
+            id: "3",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-04-30T12:59:01.436Z'),
+              "$2b$10$ZUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-04-30T12:59:01.436Z"),
           },
         ];
 
@@ -1248,7 +1248,7 @@ describe('UserService', () => {
 
         // Action
         // tslint:disable-next-line: no-string-literal
-        const result = await userService['checkIfOnlyFivePasswordsEntries'](
+        const result = await userService["checkIfOnlyFivePasswordsEntries"](
           userMockData.username,
         );
 
@@ -1256,49 +1256,49 @@ describe('UserService', () => {
         expect(result).toStrictEqual(false);
       });
 
-      it('should return false if five entries exit for a user', async () => {
+      it("should return false if five entries exit for a user", async () => {
         // Setup
         const userLastFivePassword = [
           {
-            id: '1',
-            username: 'jean_moust',
+            id: "1",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-05-06T12:59:01.436Z'),
+              "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-05-06T12:59:01.436Z"),
           },
           {
-            id: '2',
-            username: 'jean_moust',
+            id: "2",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-05-02T12:59:01.436Z'),
+              "$2b$10$ZDZB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-05-02T12:59:01.436Z"),
           },
           {
-            id: '3',
-            username: 'jean_moust',
+            id: "3",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$ZUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-04-30T12:59:01.436Z'),
+              "$2b$10$ZUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-04-30T12:59:01.436Z"),
           },
         ];
 
         userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
         passwordRepositoryMock.find.mockRejectedValueOnce(
-          new Error('The user could not be found due to a database error'),
+          new Error("The user could not be found due to a database error"),
         );
 
         // Action
         try {
           // tslint:disable-next-line: no-string-literal
-          const result = await userService['checkIfOnlyFivePasswordsEntries'](
+          const result = await userService["checkIfOnlyFivePasswordsEntries"](
             userMockData.username,
           );
         } catch (e) {
           const { message } = e;
           expect(e).toBeInstanceOf(Error);
           expect(message).toEqual(
-            'The user could not be found due to a database error',
+            "The user could not be found due to a database error",
           );
           expect(loggerMock.error).toHaveBeenCalled();
         }
@@ -1308,40 +1308,40 @@ describe('UserService', () => {
       });
     });
 
-    describe('replaceOldPasswordsEntries', () => {
+    describe("replaceOldPasswordsEntries", () => {
       const userMockData = {
-        username: 'jean_moust',
-        email: 'toto@toto.com',
-        roles: ['admin'],
+        username: "jean_moust",
+        email: "toto@toto.com",
+        roles: ["admin"],
         passwordHash:
-          '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-        secret: 'MySecret',
+          "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+        secret: "MySecret",
       };
 
-      it('should exist', () => {
+      it("should exist", () => {
         // tslint:disable-next-line: no-string-literal
-        expect(userService['replaceOldPasswordsEntries']).toBeDefined();
+        expect(userService["replaceOldPasswordsEntries"]).toBeDefined();
       });
 
-      it('should replace the oldest password for a user if five entries are found', async () => {
+      it("should replace the oldest password for a user if five entries are found", async () => {
         // Setup
-        const updatedAt = new Date('2020-05-06T12:59:01.436Z');
+        const updatedAt = new Date("2020-05-06T12:59:01.436Z");
 
         const expectedLastFivePassword = {
-          id: '5',
-          username: 'jean_moust',
+          id: "5",
+          username: "jean_moust",
           passwordHash:
-            '$2b$10$AUTB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-          updatedAt: new Date('2020-04-22T16:59:01.436Z'),
+            "$2b$10$AUTB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+          updatedAt: new Date("2020-04-22T16:59:01.436Z"),
         };
 
         const userLastFivePassword = [
           {
-            id: '5',
-            username: 'jean_moust',
+            id: "5",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$AUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-02-30T12:59:01.436Z'),
+              "$2b$10$AUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-02-30T12:59:01.436Z"),
           },
         ];
 
@@ -1354,7 +1354,7 @@ describe('UserService', () => {
         );
 
         // tslint:disable-next-line: no-string-literal
-        const result = await userService['replaceOldPasswordsEntries'](
+        const result = await userService["replaceOldPasswordsEntries"](
           userLastFivePassword[0].username,
           userLastFivePassword[0].passwordHash,
           updatedAt,
@@ -1363,29 +1363,29 @@ describe('UserService', () => {
         expect(result).toStrictEqual(expectedLastFivePassword);
       });
 
-      it('should throw an error if user data not found in password table', async () => {
+      it("should throw an error if user data not found in password table", async () => {
         // Setup
-        const updatedAt = new Date('2020-05-06T12:59:01.436Z');
+        const updatedAt = new Date("2020-05-06T12:59:01.436Z");
 
         const userLastFivePassword = [
           {
-            id: '5',
-            username: 'jean_moust',
+            id: "5",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$AUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-02-30T12:59:01.436Z'),
+              "$2b$10$AUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-02-30T12:59:01.436Z"),
           },
         ];
 
         userRepositoryMock.findOneBy.mockResolvedValueOnce(userMockData);
 
         passwordRepositoryMock.find.mockRejectedValueOnce(
-          new Error('The user could not be found due to a database error'),
+          new Error("The user could not be found due to a database error"),
         );
 
         try {
           // tslint:disable-next-line: no-string-literal
-          await userService['replaceOldPasswordsEntries'](
+          await userService["replaceOldPasswordsEntries"](
             userLastFivePassword[0].username,
             userLastFivePassword[0].passwordHash,
             updatedAt,
@@ -1394,7 +1394,7 @@ describe('UserService', () => {
           const { message } = e;
           expect(e).toBeInstanceOf(Error);
           expect(message).toEqual(
-            'The user could not be found due to a database error',
+            "The user could not be found due to a database error",
           );
           expect(loggerMock.error).toHaveBeenCalled();
         }
@@ -1403,27 +1403,27 @@ describe('UserService', () => {
         expect.hasAssertions();
       });
 
-      it('throw an error if user is not found in user table', async () => {
+      it("throw an error if user is not found in user table", async () => {
         // Setup
-        const updatedAt = new Date('2020-05-06T12:59:01.436Z');
+        const updatedAt = new Date("2020-05-06T12:59:01.436Z");
 
         const userLastFivePassword = [
           {
-            id: '5',
-            username: 'jean_moust',
+            id: "5",
+            username: "jean_moust",
             passwordHash:
-              '$2b$10$AUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e',
-            updatedAt: new Date('2020-02-30T12:59:01.436Z'),
+              "$2b$10$AUOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e",
+            updatedAt: new Date("2020-02-30T12:59:01.436Z"),
           },
         ];
 
         userRepositoryMock.findOneBy.mockRejectedValueOnce(
-          new Error('The user could not be found due to a database error'),
+          new Error("The user could not be found due to a database error"),
         );
 
         try {
           // tslint:disable-next-line: no-string-literal
-          await userService['replaceOldPasswordsEntries'](
+          await userService["replaceOldPasswordsEntries"](
             userLastFivePassword[0].username,
             userLastFivePassword[0].passwordHash,
             updatedAt,
@@ -1432,7 +1432,7 @@ describe('UserService', () => {
           const { message } = e;
           expect(e).toBeInstanceOf(Error);
           expect(message).toEqual(
-            'The user could not be found due to a database error',
+            "The user could not be found due to a database error",
           );
           expect(loggerMock.error).toHaveBeenCalled();
         }

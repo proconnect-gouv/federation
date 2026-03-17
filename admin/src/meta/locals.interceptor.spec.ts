@@ -1,9 +1,9 @@
-import { ConfigService } from 'nestjs-config';
-import { Test } from '@nestjs/testing';
-import { UserRole } from '../user/roles.enum';
-import { LocalsInterceptor } from './locals.interceptor';
+import { ConfigService } from "nestjs-config";
+import { Test } from "@nestjs/testing";
+import { UserRole } from "../user/roles.enum";
+import { LocalsInterceptor } from "./locals.interceptor";
 
-describe('LocalsInterceptor', () => {
+describe("LocalsInterceptor", () => {
   let localsInterceptor;
   const configService = {
     get: jest.fn(),
@@ -19,17 +19,17 @@ describe('LocalsInterceptor', () => {
     localsInterceptor = await module.get<LocalsInterceptor>(LocalsInterceptor);
   });
 
-  describe('intercept', () => {
-    it('should attach meta information to responses ', async () => {
+  describe("intercept", () => {
+    it("should attach meta information to responses ", async () => {
       const req = {
-        user: 'jean_moust',
+        user: "jean_moust",
       };
       const res: any = {
         locals: {},
       };
-      const currentBranch = 'testing';
-      const shortHash = '3f17f344';
-      const longHash = '3f17f344448066d75f9eb33ade5fdcd799d89352';
+      const currentBranch = "testing";
+      const shortHash = "3f17f344";
+      const longHash = "3f17f344448066d75f9eb33ade5fdcd799d89352";
       const context = {
         switchToHttp: jest.fn(() => ({
           getRequest: jest.fn(() => req),
@@ -40,44 +40,44 @@ describe('LocalsInterceptor', () => {
         handle: jest.fn(),
       };
       configService.get.mockReturnValueOnce({
-        environment: 'testing',
+        environment: "testing",
         isProduction: false,
         commitUrlPrefix:
-          'https://gitlab.com/france-connect/FranceConnect/commit/',
+          "https://gitlab.com/france-connect/FranceConnect/commit/",
         currentBranch,
         latestCommitShortHash: shortHash,
         latestCommitLongHash: longHash,
-        app_root: '/foo/bar',
-        instanceFor: 'FCA-LOW',
-        appVersion: 'no-version',
-        appName: 'FC_EXPLOITATION',
+        app_root: "/foo/bar",
+        instanceFor: "FCA-LOW",
+        appVersion: "no-version",
+        appName: "FC_EXPLOITATION",
       });
 
       await localsInterceptor.intercept(context, next);
 
-      expect(configService.get).toHaveBeenCalledWith('app');
-      expect(res.locals.APP_ENVIRONMENT).toBe('testing');
-      expect(res.locals.APP_ROOT).toBe('/foo/bar');
-      expect(res.locals.TIMEZONE).toBe('Europe/Paris');
+      expect(configService.get).toHaveBeenCalledWith("app");
+      expect(res.locals.APP_ENVIRONMENT).toBe("testing");
+      expect(res.locals.APP_ROOT).toBe("/foo/bar");
+      expect(res.locals.TIMEZONE).toBe("Europe/Paris");
       expect(res.locals.IS_PRODUCTION).toBe(false);
-      expect(res.locals.APP_VERSION).toBe('no-version');
+      expect(res.locals.APP_VERSION).toBe("no-version");
       expect(res.locals.COMMIT_URL_PREFIX).toBe(
-        'https://gitlab.com/france-connect/FranceConnect/commit/',
+        "https://gitlab.com/france-connect/FranceConnect/commit/",
       );
       expect(res.locals.GIT_CURRENT_BRANCH).toBe(currentBranch);
       expect(res.locals.GIT_LATEST_COMMIT_SHORT_HASH).toBe(shortHash);
       expect(res.locals.GIT_LATEST_COMMIT_LONG_HASH).toBe(longHash);
       expect(res.locals.CURRENT_USER).toBe(req.user);
-      expect(res.locals.title).toBe('FC_EXPLOITATION');
+      expect(res.locals.title).toBe("FC_EXPLOITATION");
       expect(res.locals.USER_ROLES_OPTIONS).toEqual([
-        { label: 'Administrateur', value: UserRole.ADMIN },
-        { label: 'Exploitant', value: UserRole.OPERATOR },
-        { label: 'Sécurité', value: UserRole.SECURITY },
-        { label: 'Nouvel utilisateur', value: UserRole.NEWUSER },
-        { label: 'Administrateur inactif', value: UserRole.INACTIVE_ADMIN },
-        { label: 'Exploitant inactif', value: UserRole.INACTIVE_OPERATOR },
-        { label: 'Sécurité inactif', value: UserRole.INACTIVE_SECURITY },
-        { label: 'Utilisateur bloqué', value: UserRole.BLOCKED_USER },
+        { label: "Administrateur", value: UserRole.ADMIN },
+        { label: "Exploitant", value: UserRole.OPERATOR },
+        { label: "Sécurité", value: UserRole.SECURITY },
+        { label: "Nouvel utilisateur", value: UserRole.NEWUSER },
+        { label: "Administrateur inactif", value: UserRole.INACTIVE_ADMIN },
+        { label: "Exploitant inactif", value: UserRole.INACTIVE_OPERATOR },
+        { label: "Sécurité inactif", value: UserRole.INACTIVE_SECURITY },
+        { label: "Utilisateur bloqué", value: UserRole.BLOCKED_USER },
       ]);
       expect(next.handle).toHaveBeenCalledTimes(1);
     });

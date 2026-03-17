@@ -1,8 +1,7 @@
-import { IsString, IsBoolean, IsISO8601 } from 'class-validator';
-import { Transform } from 'class-transformer';
-import { toBoolean } from '../../utils/transforms';
-
-import { IsSafeString } from '../../utils/validators';
+import { IsString, IsBoolean, IsISO8601 } from "class-validator";
+import { Transform } from "class-transformer";
+import { toBoolean } from "../../utils/transforms";
+import { IsSafeString } from "../../utils/validators";
 
 export class IndisponibiliteDTO {
   @IsSafeString()

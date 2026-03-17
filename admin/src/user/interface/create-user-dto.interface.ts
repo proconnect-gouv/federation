@@ -1,4 +1,4 @@
-import { UserRole } from '../roles.enum';
+import { UserRole } from "../roles.enum";
 
 export interface ICreateUserDTO {
   username: string;

@@ -6,8 +6,8 @@ export function deleteUser(username, confirmSuppression = true) {
 
   if (confirmSuppression) {
     cy.totp({ totp: true });
-    cy.contains('Confirmer').click();
+    cy.contains("Confirmer").click();
   } else {
-    cy.contains('Annuler').click();
+    cy.contains("Annuler").click();
   }
 }

@@ -1,8 +1,8 @@
-import moment from 'moment-timezone';
-import uniq from 'lodash/uniq';
+import moment from "moment-timezone";
+import uniq from "lodash/uniq";
 
 export function toDate(format: string) {
-  const requiredDateFormat = 'YYYY-MM-DD';
+  const requiredDateFormat = "YYYY-MM-DD";
   return (value: string): Date => {
     if (format !== requiredDateFormat) {
       return undefined;
@@ -13,15 +13,15 @@ export function toDate(format: string) {
 
 export function toBoolean({ value }: { value: string }): boolean | undefined {
   switch (value) {
-    case 'true':
-    case 'on':
-    case '1':
-    case 'yes':
+    case "true":
+    case "on":
+    case "1":
+    case "yes":
       return true;
-    case 'false':
-    case 'off':
-    case '0':
-    case 'no':
+    case "false":
+    case "off":
+    case "0":
+    case "no":
       return false;
     default:
       return undefined;
@@ -53,15 +53,15 @@ export function linesToArray(
 
 export function arrayToLines(value: any) {
   if (Array.isArray(value)) {
-    return value.join('\r\n');
+    return value.join("\r\n");
   }
   return value;
 }
 
 export function defaultNoneOrLinesToNullableArray({ value }: { value: any }) {
-  if (!value || value === 'default') {
+  if (!value || value === "default") {
     return null;
-  } else if (value === 'none') {
+  } else if (value === "none") {
     return [];
   } else {
     return linesToArray({ value });
@@ -70,9 +70,9 @@ export function defaultNoneOrLinesToNullableArray({ value }: { value: any }) {
 
 export function nullableArrayToDefaultNoneOrLines({ value }: { value: any }) {
   if (!value) {
-    return 'default';
+    return "default";
   } else if (Array.isArray(value) && value.length === 0) {
-    return 'none';
+    return "none";
   } else if (Array.isArray(value) && value.length > 0) {
     return arrayToLines(value);
   } else {
@@ -89,5 +89,5 @@ export function toNullableString({ value }: { value: any }) {
 }
 
 export function toEmptiableString({ value }: { value: any }) {
-  return value ? value : '';
+  return value ? value : "";
 }

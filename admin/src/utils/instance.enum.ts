@@ -1,3 +1,3 @@
 export enum Platform {
-  FCA_LOW = 'FCA-LOW',
+  FCA_LOW = "FCA-LOW",
 }

@@ -1,7 +1,7 @@
-import { Entity, ObjectIdColumn, Column } from 'typeorm';
-import { ObjectId } from 'mongodb';
+import { Entity, ObjectIdColumn, Column } from "typeorm";
+import { ObjectId } from "mongodb";
 
-@Entity('file')
+@Entity("file")
 export class FileStorage {
   @ObjectIdColumn()
   id: ObjectId;

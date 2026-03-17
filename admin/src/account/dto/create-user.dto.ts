@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { UserRole } from '../../user/roles.enum';
-import { Transform } from 'class-transformer';
+import { UserRole } from "../../user/roles.enum";
+import { Transform } from "class-transformer";
 import {
   IsNotEmpty,
   IsEmail,
@@ -11,8 +11,8 @@ import {
   IsString,
   IsEnum,
   Matches,
-} from 'class-validator';
-import { IsCompliant } from '../validator/is-compliant.validator';
+} from "class-validator";
+import { IsCompliant } from "../validator/is-compliant.validator";
 
 export class CreateUserDto {
   @IsNotEmpty({ message: "Le nom d'utilisateur doit être renseigné" })
@@ -26,24 +26,24 @@ export class CreateUserDto {
     {},
     {
       message:
-        'Veuillez mettre une adresse email valide ( Ex: email@email.com )',
+        "Veuillez mettre une adresse email valide ( Ex: email@email.com )",
     },
   )
   readonly email: string;
 
-  @IsNotEmpty({ message: 'Le mot de passe doit être renseigné' })
+  @IsNotEmpty({ message: "Le mot de passe doit être renseigné" })
   @IsCompliant({
-    message: 'Le mot de passe saisi est invalide',
+    message: "Le mot de passe saisi est invalide",
   })
   readonly password: string;
 
-  @ArrayNotEmpty({ message: 'Veuillez renseigner au moins un rôle' })
+  @ArrayNotEmpty({ message: "Veuillez renseigner au moins un rôle" })
   @ArrayUnique()
   @IsEnum(UserRole, {
     each: true,
-    message: 'Veuillez renseigner des rôles valides',
+    message: "Veuillez renseigner des rôles valides",
   })
-  @Transform(({ value }) => (typeof value === 'string' ? [value] : value))
+  @Transform(({ value }) => (typeof value === "string" ? [value] : value))
   readonly roles: UserRole[];
 
   @IsString()

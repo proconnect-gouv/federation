@@ -1,5 +1,5 @@
-import { IsNotEmpty, Matches, IsNumber } from 'class-validator';
-import { IsCompliant } from '../../account/validator/is-compliant.validator';
+import { IsNotEmpty, Matches, IsNumber } from "class-validator";
+import { IsCompliant } from "../../account/validator/is-compliant.validator";
 
 export class AuthenticationDto {
   @IsNotEmpty({ message: "Le nom d'utilisateur doit être renseigné" })
@@ -8,13 +8,13 @@ export class AuthenticationDto {
   })
   readonly username: string;
 
-  @IsNotEmpty({ message: 'Le mot de passe doit être renseigné' })
+  @IsNotEmpty({ message: "Le mot de passe doit être renseigné" })
   @IsCompliant({
-    message: 'Le mot de passe saisi est invalide',
+    message: "Le mot de passe saisi est invalide",
   })
   readonly password: string;
 
-  @IsNotEmpty({ message: 'Le TOTP doit être renseigné' })
+  @IsNotEmpty({ message: "Le TOTP doit être renseigné" })
   @IsNumber()
   @Matches(/^\d{6}$/, {
     message: `Le TOTP de passe saisi est invalide`,

@@ -1,26 +1,24 @@
-import passport from 'passport';
-import { LocalStrategy } from './passport/local.strategy';
-import { LocalSerializer } from './passport/local.serializer';
-import { TotpService } from './totp/totp.service';
-
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { PassportModule } from '@nestjs/passport';
-
-import { LocalAuthGuard } from './guard/local.guard';
-import { AuthenticationFailures } from './authentication-failures.sql.entity';
-import { AuthenticationService } from './authentication.service';
-import { AuthenticationController } from './authentication.controller';
-import { UserModule } from '../user/user.module';
-import { RolesGuard } from './guard/roles.guard';
-import { LoggerService } from '../logger/logger.service';
+import passport from "passport";
+import { LocalStrategy } from "./passport/local.strategy";
+import { LocalSerializer } from "./passport/local.serializer";
+import { TotpService } from "./totp/totp.service";
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { PassportModule } from "@nestjs/passport";
+import { LocalAuthGuard } from "./guard/local.guard";
+import { AuthenticationFailures } from "./authentication-failures.sql.entity";
+import { AuthenticationService } from "./authentication.service";
+import { AuthenticationController } from "./authentication.controller";
+import { UserModule } from "../user/user.module";
+import { RolesGuard } from "./guard/roles.guard";
+import { LoggerService } from "../logger/logger.service";
 
 const authenticationServiceProvider = {
-  provide: 'IAuthenticationService',
+  provide: "IAuthenticationService",
   useClass: AuthenticationService,
 };
 
-export const PASSPORT = 'Passport';
+export const PASSPORT = "Passport";
 
 const passportProvider = {
   provide: PASSPORT,
@@ -29,7 +27,7 @@ const passportProvider = {
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'local', session: true }),
+    PassportModule.register({ defaultStrategy: "local", session: true }),
     TypeOrmModule.forFeature([AuthenticationFailures]),
     UserModule,
   ],

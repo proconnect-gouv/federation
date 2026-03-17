@@ -3,10 +3,10 @@ import {
   ObjectIdColumn,
   Column,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { ObjectId } from 'mongodb';
+} from "typeorm";
+import { ObjectId } from "mongodb";
 
-@Entity('client')
+@Entity("client")
 export class ServiceProviderFromDb {
   @ObjectIdColumn()
   _id: ObjectId;
@@ -20,47 +20,47 @@ export class ServiceProviderFromDb {
   @Column()
   type: string;
 
-  @Column({ name: 'IPServerAddressesAndRanges' })
+  @Column({ name: "IPServerAddressesAndRanges" })
   IPServerAddressesAndRanges: string[];
 
-  @Column({ name: 'email' })
+  @Column({ name: "email" })
   email: string;
 
-  @Column({ name: 'redirect_uris' })
+  @Column({ name: "redirect_uris" })
   // tslint:disable-next-line: variable-name
   redirect_uris: string[];
 
-  @Column({ name: 'post_logout_redirect_uris' })
+  @Column({ name: "post_logout_redirect_uris" })
   // tslint:disable-next-line: variable-name
   post_logout_redirect_uris: string[];
 
-  @Column({ name: 'secretCreatedAt' })
+  @Column({ name: "secretCreatedAt" })
   secretCreatedAt: Date;
 
-  @Column({ name: 'createdAt' })
+  @Column({ name: "createdAt" })
   createdAt: Date;
 
-  @Column({ name: 'updatedAt' })
+  @Column({ name: "updatedAt" })
   updatedAt?: Date;
 
-  @Column({ name: 'updatedBy' })
+  @Column({ name: "updatedBy" })
   updatedBy: string;
 
-  @PrimaryGeneratedColumn('uuid')
-  @Column({ name: 'key' })
+  @PrimaryGeneratedColumn("uuid")
+  @Column({ name: "key" })
   key: string;
 
-  @Column({ name: 'client_secret' })
+  @Column({ name: "client_secret" })
   // tslint:disable-next-line: variable-name
   client_secret: string;
 
-  @Column({ name: 'secretUpdatedAt' })
+  @Column({ name: "secretUpdatedAt" })
   secretUpdatedAt?: Date;
 
-  @Column({ name: 'secretUpdatedBy' })
+  @Column({ name: "secretUpdatedBy" })
   secretUpdatedBy?: string;
 
-  @Column({ name: 'scopes' })
+  @Column({ name: "scopes" })
   scopes: string[];
 
   @Column()

@@ -1,4 +1,4 @@
-import { IEnableMails } from './enable-mails.inerface';
+import { IEnableMails } from "./enable-mails.inerface";
 
 export interface IFeatures {
   displayMessageOnLogin?: boolean;

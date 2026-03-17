@@ -1,20 +1,20 @@
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
-import { type ILogger } from '../interface/logger.interface';
-import { type IDebug } from '../interface/debug.interface';
-import { type IBuyan } from '../interface/buyan.interface';
-import { type IFeatures } from '../interface/features.interface';
-import { type IHttpGlobalAgent } from '../interface/http-global-agent.interface';
-import { type IMobileConnect } from '../interface/mobile-connect.interface';
-import { type IRnipp } from '../interface/rnipp.interface';
-import { type IApplicationApiAuthorization } from '../interface/application-api-authorization.interface';
-import { type IMessageOnLogin } from '../interface/message-on-login.interface';
-import { type IFiMappingUserInfosRules } from '../interface/fi-mapping-user-info-rules.interface';
-import { type ICompanyAPI } from '../interface/company-API.interface';
-import { type IMeta } from '../interface/meta.interface';
-import { type IFRIDPIdentity } from '../interface/fridp_indentity.interface';
-import { type IMailjet } from '../interface/mailjet.entity';
+import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
+import { type ILogger } from "../interface/logger.interface";
+import { type IDebug } from "../interface/debug.interface";
+import { type IBuyan } from "../interface/buyan.interface";
+import { type IFeatures } from "../interface/features.interface";
+import { type IHttpGlobalAgent } from "../interface/http-global-agent.interface";
+import { type IMobileConnect } from "../interface/mobile-connect.interface";
+import { type IRnipp } from "../interface/rnipp.interface";
+import { type IApplicationApiAuthorization } from "../interface/application-api-authorization.interface";
+import { type IMessageOnLogin } from "../interface/message-on-login.interface";
+import { type IFiMappingUserInfosRules } from "../interface/fi-mapping-user-info-rules.interface";
+import { type ICompanyAPI } from "../interface/company-API.interface";
+import { type IMeta } from "../interface/meta.interface";
+import { type IFRIDPIdentity } from "../interface/fridp_indentity.interface";
+import { type IMailjet } from "../interface/mailjet.entity";
 
-@Entity('configuration')
+@Entity("configuration")
 export class Configuration {
   @ObjectIdColumn()
   _id: ObjectId;

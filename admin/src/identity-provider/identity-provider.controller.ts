@@ -11,16 +11,16 @@ import {
   Body,
   Delete,
   UseInterceptors,
-} from '@nestjs/common';
-import { Roles } from '../authentication/decorator/roles.decorator';
-import { UserRole } from '../user/roles.enum';
-import { FormErrorsInterceptor } from '../form/interceptor/form-errors.interceptor';
-import { IdentityProviderService } from './identity-provider.service';
-import { IdentityProviderDTO } from './dto/identity-provider.dto';
-import { plainToInstance } from 'class-transformer';
-import { type PaginationSortDirectionType } from '../pagination';
+} from "@nestjs/common";
+import { Roles } from "../authentication/decorator/roles.decorator";
+import { UserRole } from "../user/roles.enum";
+import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
+import { IdentityProviderService } from "./identity-provider.service";
+import { IdentityProviderDTO } from "./dto/identity-provider.dto";
+import { plainToInstance } from "class-transformer";
+import { type PaginationSortDirectionType } from "../pagination";
 
-@Controller('identity-provider')
+@Controller("identity-provider")
 export class IdentityProviderController {
   constructor(
     private readonly identityProviderService: IdentityProviderService,
@@ -31,15 +31,15 @@ export class IdentityProviderController {
    */
   @Get()
   @Roles(UserRole.OPERATOR, UserRole.SECURITY)
-  @Render('identity-provider/list')
+  @Render("identity-provider/list")
   async list(
     @Req() req,
-    @Query('search') querySearch?: string,
-    @Query('sortField') querySortField?: string,
-    @Query('sortDirection')
-    querySortDirection: PaginationSortDirectionType = 'asc',
-    @Query('page') queryPage: string = '1',
-    @Query('limit') queryLimit: string = '10',
+    @Query("search") querySearch?: string,
+    @Query("sortField") querySortField?: string,
+    @Query("sortDirection")
+    querySortDirection: PaginationSortDirectionType = "asc",
+    @Query("page") queryPage: string = "1",
+    @Query("limit") queryLimit: string = "10",
   ) {
     const page = parseInt(queryPage, 10);
     const limit = parseInt(queryLimit, 10);
@@ -50,14 +50,14 @@ export class IdentityProviderController {
         page,
         limit,
         search: querySearch
-          ? { fields: ['name', 'title', 'clientID'], value: querySearch }
+          ? { fields: ["name", "title", "clientID"], value: querySearch }
           : undefined,
         sort: querySortField
           ? { field: querySortField, direction: querySortDirection }
           : undefined,
         defaultSort: {
-          field: 'createdAt',
-          direction: 'desc',
+          field: "createdAt",
+          direction: "desc",
         },
       });
 
@@ -76,9 +76,9 @@ export class IdentityProviderController {
   /**
    * Displays the identity provider creation form
    */
-  @Get('create')
+  @Get("create")
   @Roles(UserRole.OPERATOR)
-  @Render('identity-provider/creation')
+  @Render("identity-provider/creation")
   async showCreationForm(@Req() req) {
     const csrfToken = req.csrfToken();
     const identityProvidersCount =
@@ -104,7 +104,7 @@ export class IdentityProviderController {
   /**
    * Creates an identity provider
    */
-  @Post('create')
+  @Post("create")
   @Roles(UserRole.OPERATOR)
   @UseInterceptors(new FormErrorsInterceptor(`/identity-provider/create`))
   async createIdentityProvider(
@@ -119,15 +119,15 @@ export class IdentityProviderController {
           req.user.username,
         );
       if (!hasGristPublicationSucceeded) {
-        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
       }
     } catch (error) {
-      req.flash('globalError', error.message);
-      req.flash('values', req.body);
+      req.flash("globalError", error.message);
+      req.flash("values", req.body);
       return res.redirect(`${res.locals.APP_ROOT}/identity-provider/create`);
     }
     req.flash(
-      'success',
+      "success",
       `Le fournisseur d'identité ${identityProviderDto.name} a été créé avec succès !`,
     );
     return res.redirect(`${res.locals.APP_ROOT}/identity-provider`);
@@ -136,10 +136,10 @@ export class IdentityProviderController {
   /**
    * Displays the identity provider update form
    */
-  @Get(':id')
+  @Get(":id")
   @Roles(UserRole.OPERATOR)
-  @Render('identity-provider/update')
-  async findOne(@Param('id') id, @Req() req) {
+  @Render("identity-provider/update")
+  async findOne(@Param("id") id, @Req() req) {
     const csrfToken = req.csrfToken();
 
     // we map the entity as a DTO
@@ -157,7 +157,7 @@ export class IdentityProviderController {
       // Keep the user last inputs when displaying an error in the form
       req.session.flash.values[0] = Object.assign({}, postedValues);
     } else {
-      req.flash('values', identityProviderDto);
+      req.flash("values", identityProviderDto);
     }
 
     return {
@@ -170,12 +170,12 @@ export class IdentityProviderController {
    * Updates an identity provider
    * @TODO: Revoir le contrôle fait par le DTO
    */
-  @Patch(':id')
+  @Patch(":id")
   @Roles(UserRole.OPERATOR)
   @UseInterceptors(new FormErrorsInterceptor(`/identity-provider/:id`))
   async identityProviderUpdate(
     @Body() identityProviderDto: IdentityProviderDTO,
-    @Param('id') id,
+    @Param("id") id,
     @Req() req,
     @Res() res,
   ) {
@@ -187,15 +187,15 @@ export class IdentityProviderController {
           req.user.username,
         );
       if (!hasGristPublicationSucceeded) {
-        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
       }
     } catch (error) {
-      req.flash('globalError', error.message);
+      req.flash("globalError", error.message);
       return res.redirect(`${res.locals.APP_ROOT}/identity-provider/${id}`);
     }
 
     req.flash(
-      'success',
+      "success",
       `Le fournisseur d'identité ${identityProviderDto.title} a été modifié avec succès !`,
     );
     return res.redirect(`${res.locals.APP_ROOT}/identity-provider/${id}`);
@@ -204,11 +204,11 @@ export class IdentityProviderController {
   /**
    * Deletes an identity provider
    */
-  @Delete(':id')
+  @Delete(":id")
   @Roles(UserRole.OPERATOR)
-  @UseInterceptors(new FormErrorsInterceptor('/identity-provider'))
+  @UseInterceptors(new FormErrorsInterceptor("/identity-provider"))
   async deleteIdentityProvider(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Req() req,
     @Res() res,
     @Body() body,
@@ -220,15 +220,15 @@ export class IdentityProviderController {
           req.user.username,
         );
       if (!hasGristPublicationSucceeded) {
-        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
       }
     } catch (error) {
-      req.flash('globalError', error.message);
+      req.flash("globalError", error.message);
       return res.status(500);
     }
 
     req.flash(
-      'success',
+      "success",
       `Le fournisseur d'identité ${body.name} a été supprimé avec succès !`,
     );
     return res.redirect(`${res.locals.APP_ROOT}/identity-provider`);

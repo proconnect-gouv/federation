@@ -1,14 +1,13 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { User } from './user.sql.entity';
-import { Password } from './password.sql.entity';
-import { UserService } from './user.service';
-import generatePassword from 'generate-password';
-import { LoggerService } from '../logger/logger.service';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { User } from "./user.sql.entity";
+import { Password } from "./password.sql.entity";
+import { UserService } from "./user.service";
+import generatePassword from "generate-password";
+import { LoggerService } from "../logger/logger.service";
 
 const generatePasswordProvider = {
-  provide: 'generatePassword',
+  provide: "generatePassword",
   useValue: generatePassword,
 };
 

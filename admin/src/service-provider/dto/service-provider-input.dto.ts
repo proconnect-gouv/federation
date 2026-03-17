@@ -8,19 +8,19 @@ import {
   IsOptional,
   IsString,
   IsIn,
-} from 'class-validator';
-import { Transform } from 'class-transformer';
+} from "class-validator";
+import { Transform } from "class-transformer";
 import {
   defaultNoneOrLinesToNullableArray,
   linesToArray,
   toArray,
   toBoolean,
   toNullableString,
-} from '../../utils/transforms/string.transform';
-import { IsOptionalExtended } from '../../utils/validators/is-optional-extended.validator';
-import { IsValidInputString } from '../../utils/validators/is-valid-input-string';
-import { AlgoValue } from '../../enum';
-import { IP_VALIDATOR_REGEX } from '../../utils/ip-validator.constant';
+} from "../../utils/transforms/string.transform";
+import { IsOptionalExtended } from "../../utils/validators/is-optional-extended.validator";
+import { IsValidInputString } from "../../utils/validators/is-valid-input-string";
+import { AlgoValue } from "../../enum";
+import { IP_VALIDATOR_REGEX } from "../../utils/ip-validator.constant";
 
 const { ES256, RS256, HS256 } = AlgoValue;
 
@@ -38,14 +38,14 @@ export class ServiceProviderDto {
   @IsOptionalExtended()
   @Matches(URL_REGEX, {
     each: true,
-    message: 'Veuillez mettre une url valide ( Ex: https://toto.com/ )',
+    message: "Veuillez mettre une url valide ( Ex: https://toto.com/ )",
   })
   readonly redirectUri: string[];
 
   @Transform(linesToArray)
   @Matches(URL_REGEX, {
     each: true,
-    message: ' Veuillez mettre une url valide ( Ex: https://toto.com/ )',
+    message: " Veuillez mettre une url valide ( Ex: https://toto.com/ )",
   })
   readonly redirectUriLogout: string[];
 
@@ -53,7 +53,7 @@ export class ServiceProviderDto {
   @Transform(linesToArray)
   @Matches(/^$|^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, {
     each: true,
-    message: 'Veuillez mettre des emails valides ( Ex: email@email.com )',
+    message: "Veuillez mettre des emails valides ( Ex: email@email.com )",
   })
   readonly emails: string[];
   // match empty string because of optionals parameters
@@ -61,18 +61,18 @@ export class ServiceProviderDto {
   @Transform(linesToArray)
   @Matches(IP_VALIDATOR_REGEX, {
     each: true,
-    message: 'Veuillez mettre des ips valides ( Ex: 1.1.1.1 )',
+    message: "Veuillez mettre des ips valides ( Ex: 1.1.1.1 )",
   })
   readonly ipAddresses: string[];
 
   @IsNotEmpty({
-    message: 'Veuillez faire un choix',
+    message: "Veuillez faire un choix",
   })
   @Transform(toBoolean)
   readonly active: boolean;
 
   @IsNotEmpty({
-    message: 'Veuillez faire un choix',
+    message: "Veuillez faire un choix",
   })
   @IsString()
   readonly type: string;

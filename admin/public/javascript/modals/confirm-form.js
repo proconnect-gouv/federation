@@ -1,14 +1,14 @@
-import { confirmDialogWithTotp } from './confirm-dialog';
+import { confirmDialogWithTotp } from "./confirm-dialog";
 
 const confirmTotp = (element, prefix, action) => {
   const { dataset } = element;
 
-  const elementId = dataset['elementId'];
-  const elementTitle = dataset['elementTitle'];
-  const elementType = dataset['elementType'];
+  const elementId = dataset["elementId"];
+  const elementTitle = dataset["elementTitle"];
+  const elementType = dataset["elementType"];
 
   element.addEventListener(
-    'submit',
+    "submit",
     (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -30,9 +30,9 @@ const confirmTotp = (element, prefix, action) => {
 };
 
 export function removeItem(element) {
-  confirmTotp(element, 'Voulez-vous supprimer', 'delete');
+  confirmTotp(element, "Voulez-vous supprimer", "delete");
 }
 
 export function updateItem(element) {
-  confirmTotp(element, 'Voulez-vous mettre à jour', 'update');
+  confirmTotp(element, "Voulez-vous mettre à jour", "update");
 }

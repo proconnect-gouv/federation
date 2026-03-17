@@ -1,7 +1,7 @@
-import { AuthGuard } from '@nestjs/passport';
-import { ExecutionContext } from '@nestjs/common';
+import { AuthGuard } from "@nestjs/passport";
+import { ExecutionContext } from "@nestjs/common";
 
-export class LocalAuthGuard extends AuthGuard('local') {
+export class LocalAuthGuard extends AuthGuard("local") {
   /* istanbul ignore next */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const can = await super.canActivate(context);

@@ -8,12 +8,12 @@ export enum LogLevels {
 }
 
 export enum LogLevelNames {
-  LOG = 'log',
-  VERBOSE = 'verbose',
-  TRACE = 'trace',
-  DEBUG = 'debug',
-  INFO = 'info',
-  WARN = 'warn',
-  ERROR = 'error',
-  FATAL = 'fatal',
+  LOG = "log",
+  VERBOSE = "verbose",
+  TRACE = "trace",
+  DEBUG = "debug",
+  INFO = "info",
+  WARN = "warn",
+  ERROR = "error",
+  FATAL = "fatal",
 }

@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // Declarative code
-export * from './scopes.fixtures';
+export * from "./scopes.fixtures";

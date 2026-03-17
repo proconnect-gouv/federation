@@ -3,8 +3,8 @@ import {
   Catch,
   ArgumentsHost,
   HttpStatus,
-} from '@nestjs/common';
-import { LoggerService } from '../../logger/logger.service';
+} from "@nestjs/common";
+import { LoggerService } from "../../logger/logger.service";
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -38,9 +38,9 @@ export class AllExceptionFilter implements ExceptionFilter {
      * of Interface available.
      */
     const status =
-      typeof (exception as any).getStatus === 'function'
+      typeof (exception as any).getStatus === "function"
         ? (exception as any).getStatus()
-        : exception.hasOwnProperty('status')
+        : exception.hasOwnProperty("status")
           ? (exception as any).status
           : HttpStatus.INTERNAL_SERVER_ERROR;
 

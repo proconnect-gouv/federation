@@ -1,4 +1,4 @@
-import { promisify } from 'util';
+import { promisify } from "util";
 import {
   Controller,
   Get,
@@ -7,14 +7,14 @@ import {
   Req,
   Res,
   UseGuards,
-} from '@nestjs/common';
-import { LocalAuthGuard } from './guard/local.guard';
-import { IAuthenticationTrack } from './authentication-track.interface';
+} from "@nestjs/common";
+import { LocalAuthGuard } from "./guard/local.guard";
+import { IAuthenticationTrack } from "./authentication-track.interface";
 import {
   AuthenticationActions,
   AuthenticationStates,
-} from './authentication-actions.enum';
-import { LoggerService } from '../logger/logger.service';
+} from "./authentication-actions.enum";
+import { LoggerService } from "../logger/logger.service";
 
 @Controller()
 export class AuthenticationController {
@@ -24,14 +24,14 @@ export class AuthenticationController {
     this.logger.businessEvent(log);
   }
 
-  @Get('first-login/:token')
-  @Render('login')
+  @Get("first-login/:token")
+  @Render("login")
   public firstLoginView(@Req() req) {
     const csrfToken = req.csrfToken();
     return { csrfToken, showTotpField: false };
   }
 
-  @Post('first-login/:token')
+  @Post("first-login/:token")
   @UseGuards(LocalAuthGuard)
   public firstLogin(@Req() req, @Res() res) {
     this.track({
@@ -43,14 +43,14 @@ export class AuthenticationController {
     return res.redirect(`${res.locals.APP_ROOT}/`);
   }
 
-  @Get('login')
-  @Render('login')
+  @Get("login")
+  @Render("login")
   public loginView(@Req() req) {
     const csrfToken = req.csrfToken();
     return { csrfToken, showTotpField: true };
   }
 
-  @Post('login')
+  @Post("login")
   @UseGuards(LocalAuthGuard)
   public login(@Req() req, @Res() res) {
     this.track({
@@ -61,7 +61,7 @@ export class AuthenticationController {
     return res.redirect(`${res.locals.APP_ROOT}/`);
   }
 
-  @Get('logout')
+  @Get("logout")
   public async logout(@Req() req, @Res() res) {
     if (req.user) {
       this.track({

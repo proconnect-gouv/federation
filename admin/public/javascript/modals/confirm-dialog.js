@@ -1,5 +1,5 @@
-import $ from '../jquery_wrapper';
-import 'bootstrap/dist/js/bootstrap.bundle';
+import $ from "../jquery_wrapper";
+import "bootstrap/dist/js/bootstrap.bundle";
 
 export function confirmDialog(message, handler) {
   $(`<div class="modal fade confirm-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"> 
@@ -19,26 +19,26 @@ export function confirmDialog(message, handler) {
         </div>
       </div> 
     </div> 
-  </div>`).appendTo('body');
+  </div>`).appendTo("body");
 
   //Trigger the modal
-  $('.confirm-modal').modal('show');
+  $(".confirm-modal").modal("show");
 
   //Pass true to a callback function
-  $('.btn-yes').on('click', function () {
+  $(".btn-yes").on("click", function () {
     handler(true);
-    $('.confirm-modal').modal('hide');
+    $(".confirm-modal").modal("hide");
   });
 
   //Pass false to a callback function
-  $('.btn-no').on('click', function () {
+  $(".btn-no").on("click", function () {
     handler(false);
-    $('.confirm-modal').modal('hide');
+    $(".confirm-modal").modal("hide");
   });
 
   //Remove the modal once it is closed.
-  $('.confirm-modal').on('hidden.bs.modal', function () {
-    $('.confirm-modal').remove();
+  $(".confirm-modal").on("hidden.bs.modal", function () {
+    $(".confirm-modal").remove();
   });
 }
 
@@ -69,36 +69,36 @@ export function confirmDialogWithTotp(message, handler) {
         </div>
       </div> 
     </div> 
-  </div>`).appendTo('body');
+  </div>`).appendTo("body");
 
   //Trigger the modal
-  $('.confirm-modal-totp').modal('show');
+  $(".confirm-modal-totp").modal("show");
 
   //Pass true to a callback function
-  $('.btn-yes').on('click', function () {
-    const totp = document.getElementById('totpModal');
-    if (totp.value !== '') {
-      totp.classList.remove('is-invalid');
+  $(".btn-yes").on("click", function () {
+    const totp = document.getElementById("totpModal");
+    if (totp.value !== "") {
+      totp.classList.remove("is-invalid");
       handler(true, totp.value);
-      $('.confirm-modal-totp').modal('hide');
+      $(".confirm-modal-totp").modal("hide");
     } else {
-      totp.classList.add('is-invalid');
+      totp.classList.add("is-invalid");
     }
   });
 
   //Pass false to callback function
-  $('.btn-no').on('click', function () {
-    handler(false, '');
-    $('.confirm-modal-totp').modal('hide');
+  $(".btn-no").on("click", function () {
+    handler(false, "");
+    $(".confirm-modal-totp").modal("hide");
   });
 
   // Every time a modal is shown, if it has an autofocus element, focus on it.
-  $('.modal').on('shown.bs.modal', function () {
-    $(this).find('[autofocus]').trigger('focus');
+  $(".modal").on("shown.bs.modal", function () {
+    $(this).find("[autofocus]").trigger("focus");
   });
 
   //Remove the modal once it is closed.
-  $('.confirm-modal-totp').on('hidden.bs.modal', function () {
-    $('.confirm-modal-totp').remove();
+  $(".confirm-modal-totp").on("hidden.bs.modal", function () {
+    $(".confirm-modal-totp").remove();
   });
 }

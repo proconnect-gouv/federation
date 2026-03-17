@@ -7,10 +7,10 @@ import {
   ValidateIf,
   IsArray,
   Length,
-} from 'class-validator';
-import { Transform } from 'class-transformer';
-import { IsOptionalExtended, IsValidInputString } from '../../utils/validators';
-import { toBoolean, linesToArray } from '../../utils/transforms';
+} from "class-validator";
+import { Transform } from "class-transformer";
+import { IsOptionalExtended, IsValidInputString } from "../../utils/validators";
+import { toBoolean, linesToArray } from "../../utils/transforms";
 
 // tslint:disable-next-line:max-line-length
 const URL_REGEX = /^https?:\/\/[^/].+$/;
@@ -29,7 +29,7 @@ export class IdentityProviderDTO {
 
   @Matches(URL_REGEX, {
     message:
-      'Veuillez mettre une url valide ( Ex: https://my-issuer-url.com/ )',
+      "Veuillez mettre une url valide ( Ex: https://my-issuer-url.com/ )",
   })
   readonly issuer: string;
 
@@ -39,7 +39,7 @@ export class IdentityProviderDTO {
    */
   @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
-    message: 'Veuillez mettre une url valide ( Ex: https://my-jwks-url.com/ )',
+    message: "Veuillez mettre une url valide ( Ex: https://my-jwks-url.com/ )",
   })
   @IsOptional()
   readonly jwksUrl?: string;
@@ -47,41 +47,41 @@ export class IdentityProviderDTO {
   @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
     message:
-      'Veuillez mettre une url valide ( Ex: https://my-authorization-url.com/ )',
+      "Veuillez mettre une url valide ( Ex: https://my-authorization-url.com/ )",
   })
   readonly authorizationUrl?: string;
 
   @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
-    message: 'Veuillez mettre une url valide ( Ex: https://my-token-url.com/ )',
+    message: "Veuillez mettre une url valide ( Ex: https://my-token-url.com/ )",
   })
   readonly tokenUrl?: string;
 
   @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
     message:
-      'Veuillez mettre une url valide ( Ex: https://my-user-info-url.com/ )',
+      "Veuillez mettre une url valide ( Ex: https://my-user-info-url.com/ )",
   })
   readonly userInfoUrl?: string;
 
   @IsOptionalExtended()
   @Matches(URL_REGEX, {
     message:
-      'Veuillez mettre une url valide ( Ex: https://my-user-logout.com/ )',
+      "Veuillez mettre une url valide ( Ex: https://my-user-logout.com/ )",
   })
   readonly logoutUrl: string;
 
   @IsOptionalExtended()
   @Matches(URL_REGEX, {
     message:
-      'Veuillez mettre une url valide ( Ex: https://my-status-url.com/ )',
+      "Veuillez mettre une url valide ( Ex: https://my-status-url.com/ )",
   })
   readonly statusUrl: string;
 
   @ValidateIf((i) => i.discovery === true)
   @Matches(URL_REGEX, {
     message:
-      'Veuillez mettre une url valide ( Ex: https://my-user-info-url.com/ )',
+      "Veuillez mettre une url valide ( Ex: https://my-user-info-url.com/ )",
   })
   readonly discoveryUrl?: string;
 
@@ -102,63 +102,63 @@ export class IdentityProviderDTO {
   readonly active: boolean;
 
   @IsOptional()
-  @IsIn(['', 'A256GCM'], {
+  @IsIn(["", "A256GCM"], {
     message:
-      '<strong>userinfo_encrypted_response_enc</strong> doit être une des valeurs suivantes: A256GCM',
+      "<strong>userinfo_encrypted_response_enc</strong> doit être une des valeurs suivantes: A256GCM",
   })
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   readonly userinfo_encrypted_response_enc?: string;
 
   @IsOptional()
-  @IsIn(['', 'ECDH-ES', 'RSA-OAEP', 'RSA-OAEP-256'], {
+  @IsIn(["", "ECDH-ES", "RSA-OAEP", "RSA-OAEP-256"], {
     message:
-      '<strong>userinfo_encrypted_response_alg</strong> doit être une des valeurs suivantes: ECDH-ES, RSA-OAEP, RSA-OAEP-256',
+      "<strong>userinfo_encrypted_response_alg</strong> doit être une des valeurs suivantes: ECDH-ES, RSA-OAEP, RSA-OAEP-256",
   })
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   readonly userinfo_encrypted_response_alg?: string;
 
   @IsOptional()
-  @IsIn(['', 'ES256', 'RS256', 'HS256'], {
+  @IsIn(["", "ES256", "RS256", "HS256"], {
     message:
       '<strong>userinfo_signed_response_alg</strong> doit être une des valeurs suivantes: ES256, RS256, HS256 ou ""',
   })
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
-  readonly userinfo_signed_response_alg?: 'HS256' | 'RS256' | 'ES256' | '';
+  readonly userinfo_signed_response_alg?: "HS256" | "RS256" | "ES256" | "";
 
   @IsOptional()
-  @IsIn(['', 'ES256', 'RS256', 'HS256'], {
+  @IsIn(["", "ES256", "RS256", "HS256"], {
     message:
-      '<strong>id_token_signed_response_alg</strong> doit être une des valeurs suivantes: ES256, RS256 ou HS256',
+      "<strong>id_token_signed_response_alg</strong> doit être une des valeurs suivantes: ES256, RS256 ou HS256",
   })
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
-  readonly id_token_signed_response_alg?: 'HS256' | 'RS256' | 'ES256';
+  readonly id_token_signed_response_alg?: "HS256" | "RS256" | "ES256";
 
   @IsOptional()
-  @IsIn(['', 'ECDH-ES', 'RSA-OAEP', 'RSA-OAEP-256'], {
+  @IsIn(["", "ECDH-ES", "RSA-OAEP", "RSA-OAEP-256"], {
     message:
-      '<strong>id_token_encrypted_response_alg</strong> doit être une des valeurs suivantes: ECDH-ES, RSA-OAEP, RSA-OAEP-256',
+      "<strong>id_token_encrypted_response_alg</strong> doit être une des valeurs suivantes: ECDH-ES, RSA-OAEP, RSA-OAEP-256",
   })
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   readonly id_token_encrypted_response_alg?: string;
 
   @IsOptional()
-  @IsIn(['', 'A256GCM'], {
+  @IsIn(["", "A256GCM"], {
     message:
-      '<strong>id_token_encrypted_response_enc</strong> doit être une des valeurs suivantes: A256GCM',
+      "<strong>id_token_encrypted_response_enc</strong> doit être une des valeurs suivantes: A256GCM",
   })
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   readonly id_token_encrypted_response_enc?: string;
 
   @IsOptional()
-  @IsIn(['client_secret_post'], {
+  @IsIn(["client_secret_post"], {
     message:
-      '<strong>token_endpoint_auth_method</strong> doit être une des valeurs suivantes: client_secret_post',
+      "<strong>token_endpoint_auth_method</strong> doit être une des valeurs suivantes: client_secret_post",
   })
   // oidc defined variable name
   // tslint:disable-next-line: variable-name

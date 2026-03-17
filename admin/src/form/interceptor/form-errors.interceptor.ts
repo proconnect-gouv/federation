@@ -1,9 +1,9 @@
-import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
-import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { FormValidationErrorsDto } from '../dto/form-validation-errors.dto';
-import { validateSync } from 'class-validator';
+import { CallHandler, ExecutionContext, NestInterceptor } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import { of } from "rxjs";
+import { catchError } from "rxjs/operators";
+import { FormValidationErrorsDto } from "../dto/form-validation-errors.dto";
+import { validateSync } from "class-validator";
 
 export class FormErrorsInterceptor implements NestInterceptor {
   /**
@@ -27,9 +27,9 @@ export class FormErrorsInterceptor implements NestInterceptor {
     }
 
     // If the totp middleware is present, we check the result
-    if (req.totp && req.totp === 'invalid') {
-      req.flash('errors', { _totp: ["Le TOTP saisi n'est pas valide"] });
-      req.flash('values', dto);
+    if (req.totp && req.totp === "invalid") {
+      req.flash("errors", { _totp: ["Le TOTP saisi n'est pas valide"] });
+      req.flash("values", dto);
       res.redirect(redirectURL);
       return of(null);
     }
@@ -63,8 +63,8 @@ export class FormErrorsInterceptor implements NestInterceptor {
             {},
           );
 
-        req.flash('errors', flashErrors);
-        req.flash('values', dto);
+        req.flash("errors", flashErrors);
+        req.flash("values", dto);
         res.redirect(redirectURL);
         return of(null);
       }),

@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { GristPublisherService } from './grist-publisher.service';
+import { Module } from "@nestjs/common";
+import { GristPublisherService } from "./grist-publisher.service";
 
 @Module({
   imports: [],

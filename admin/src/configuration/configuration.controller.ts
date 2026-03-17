@@ -1,6 +1,5 @@
-import moment from 'moment-timezone';
-import { plainToInstance } from 'class-transformer';
-
+import moment from "moment-timezone";
+import { plainToInstance } from "class-transformer";
 import {
   Controller,
   Get,
@@ -10,23 +9,22 @@ import {
   Req,
   Res,
   UseInterceptors,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { UserRole } from '../user/roles.enum';
-import { Roles } from '../authentication/decorator/roles.decorator';
-import { FormErrorsInterceptor } from '../form/interceptor/form-errors.interceptor';
+import { UserRole } from "../user/roles.enum";
+import { Roles } from "../authentication/decorator/roles.decorator";
+import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
+import { ConfigurationService } from "./configuration.service";
+import { Configuration } from "./entity/configuration.mongodb.entity";
+import { IndisponibiliteDTO } from "./dto/indisponibilite.dto";
 
-import { ConfigurationService } from './configuration.service';
-import { Configuration } from './entity/configuration.mongodb.entity';
-import { IndisponibiliteDTO } from './dto/indisponibilite.dto';
-
-@Controller('configuration')
+@Controller("configuration")
 export class ConfigurationController {
   constructor(private readonly configurationService: ConfigurationService) {}
 
-  @Get('/indisponibilite')
+  @Get("/indisponibilite")
   @Roles(UserRole.OPERATOR)
-  @Render('configuration/indisponibilite')
+  @Render("configuration/indisponibilite")
   async indisponibilite(@Req() req) {
     const csrfToken = req.csrfToken();
     let data;
@@ -38,10 +36,10 @@ export class ConfigurationController {
     return { csrfToken, data, moment };
   }
 
-  @Post('/indisponibilite')
+  @Post("/indisponibilite")
   @Roles(UserRole.OPERATOR)
   @UseInterceptors(new FormErrorsInterceptor(`/configuration/indisponibilite`))
-  @Render('configuration/indisponibilite')
+  @Render("configuration/indisponibilite")
   async setIndisponibilite(
     @Body() indisponibilite: IndisponibiliteDTO,
     @Req() req,
@@ -56,13 +54,13 @@ export class ConfigurationController {
         req.user.username,
       );
       req.flash(
-        'success',
+        "success",
         `La modification du message d'indisponibilité a été réalisée avec succès !`,
       );
       return { csrfToken, data, moment };
     } catch (err) {
       req.flash(
-        'globalError',
+        "globalError",
         "Suite à une erreur la modification du message d'indisponibilité n'a pas été réalisée !",
       );
     }

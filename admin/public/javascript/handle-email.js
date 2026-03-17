@@ -1,10 +1,10 @@
-import $ from './jquery_wrapper';
-import 'bootstrap/dist/js/bootstrap.bundle';
+import $ from "./jquery_wrapper";
+import "bootstrap/dist/js/bootstrap.bundle";
 
 export function handleEmail() {
   let i = 0;
-  $('#addEmail').click((ev) => {
-    $('.email-list').append(`
+  $("#addEmail").click((ev) => {
+    $(".email-list").append(`
       <li id="email${i}">
         <div class="col-xs-9 col-sm-12 col-md-4">
           <label class="sr-only" for="email">Emails</label>
@@ -28,9 +28,9 @@ export function handleEmail() {
   });
 }
 
-$(document).on('click', '#deleteEmail', function (e) {
+$(document).on("click", "#deleteEmail", function (e) {
   const child = e.target.dataset.reference;
   document
-    .getElementById('email-list')
+    .getElementById("email-list")
     .removeChild(document.getElementById(child));
 });

@@ -1,11 +1,11 @@
-import { AuthenticationController } from './authentication.controller';
-import { LoggerService } from '../logger/logger.service';
+import { AuthenticationController } from "./authentication.controller";
+import { LoggerService } from "../logger/logger.service";
 import {
   AuthenticationActions,
   AuthenticationStates,
-} from './authentication-actions.enum';
+} from "./authentication-actions.enum";
 
-describe('AuthenticationController', () => {
+describe("AuthenticationController", () => {
   const businessEventMock = jest.fn();
   const loggerMock = {
     businessEvent: businessEventMock,
@@ -17,12 +17,12 @@ describe('AuthenticationController', () => {
 
   const authenticationController = new AuthenticationController(loggerMock);
 
-  describe('firstLoginView', () => {
-    it('should return the login page with a csrf token', () => {
+  describe("firstLoginView", () => {
+    it("should return the login page with a csrf token", () => {
       // setup
       const req = {
         csrfToken: function csrfToken() {
-          return 'mygreatcsrftoken';
+          return "mygreatcsrftoken";
         },
       };
 
@@ -30,26 +30,26 @@ describe('AuthenticationController', () => {
       const result = authenticationController.firstLoginView(req);
 
       // assertion
-      expect(result.csrfToken).toEqual('mygreatcsrftoken');
+      expect(result.csrfToken).toEqual("mygreatcsrftoken");
     });
   });
 
-  describe('firstLogin', () => {
-    it('should log in the user, log the action, then redirect to the app root', () => {
+  describe("firstLogin", () => {
+    it("should log in the user, log the action, then redirect to the app root", () => {
       // setup
       const req = {
         params: {
-          token: 'the fantastic token !',
+          token: "the fantastic token !",
         },
         user: {
-          username: 'foo',
+          username: "foo",
         },
       };
 
       const res = {
         redirect: jest.fn(),
         locals: {
-          APP_ROOT: '/foo/bar',
+          APP_ROOT: "/foo/bar",
         },
       };
 
@@ -57,7 +57,7 @@ describe('AuthenticationController', () => {
       authenticationController.firstLogin(req, res);
 
       // assertion
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/");
       expect(loggerMock.businessEvent).toHaveBeenCalledTimes(1);
       expect(loggerMock.businessEvent).toHaveBeenCalledWith({
         action: AuthenticationActions.TOKEN_SIGNUP,
@@ -67,12 +67,12 @@ describe('AuthenticationController', () => {
     });
   });
 
-  describe('loginView', () => {
-    it('should return the login page with a csrf token', () => {
+  describe("loginView", () => {
+    it("should return the login page with a csrf token", () => {
       // setup
       const req = {
         csrfToken: function csrfToken() {
-          return 'mygreatcsrftoken';
+          return "mygreatcsrftoken";
         },
       };
 
@@ -80,23 +80,23 @@ describe('AuthenticationController', () => {
       const result = authenticationController.loginView(req);
 
       // assertion
-      expect(result.csrfToken).toEqual('mygreatcsrftoken');
+      expect(result.csrfToken).toEqual("mygreatcsrftoken");
     });
   });
 
-  describe('login', () => {
-    it('should log in the user, log the action, then redirect to the app root', () => {
+  describe("login", () => {
+    it("should log in the user, log the action, then redirect to the app root", () => {
       // setup
       const req = {
         user: {
-          username: 'foo',
+          username: "foo",
         },
       };
 
       const res = {
         redirect: jest.fn(),
         locals: {
-          APP_ROOT: '/foo/bar',
+          APP_ROOT: "/foo/bar",
         },
       };
 
@@ -110,12 +110,12 @@ describe('AuthenticationController', () => {
         state: AuthenticationStates.GRANTED,
         user: req.user.username,
       });
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/");
     });
   });
 
-  describe('logout method', () => {
-    it('logs out the user and redirects to the homepage', async () => {
+  describe("logout method", () => {
+    it("logs out the user and redirects to the homepage", async () => {
       // setup
       /**
        * Mock the call to callback function
@@ -125,7 +125,7 @@ describe('AuthenticationController', () => {
       const req = {
         logout: jest.fn().mockImplementation(promisiableImplementation),
         user: {
-          username: 'foo',
+          username: "foo",
         },
         session: {
           regenerate: jest.fn().mockImplementation(promisiableImplementation),
@@ -135,7 +135,7 @@ describe('AuthenticationController', () => {
       const res = {
         redirect: jest.fn(),
         locals: {
-          APP_ROOT: '/foo/bar',
+          APP_ROOT: "/foo/bar",
         },
       };
 
@@ -149,7 +149,7 @@ describe('AuthenticationController', () => {
       });
       expect(req.logout).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/login');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/login");
     });
   });
 });

@@ -1,9 +1,9 @@
-import { confirmDialog } from './confirm-dialog';
+import { confirmDialog } from "./confirm-dialog";
 
 export function generateNewSecret(element) {
-  const elmTitle = element.getAttribute('data-element-title');
+  const elmTitle = element.getAttribute("data-element-title");
   element.addEventListener(
-    'submit',
+    "submit",
     function (event) {
       event.preventDefault();
       event.stopPropagation();

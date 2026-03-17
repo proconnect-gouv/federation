@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { FormErrorsInterceptor } from './interceptor/form-errors.interceptor';
+import { Module } from "@nestjs/common";
+import { FormErrorsInterceptor } from "./interceptor/form-errors.interceptor";
 
 @Module({
   providers: [FormErrorsInterceptor],

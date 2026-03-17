@@ -1,20 +1,20 @@
-import { Controller, Get, Res, Req } from '@nestjs/common';
-import { Roles } from './authentication/decorator/roles.decorator';
-import { UserRole } from './user/roles.enum';
+import { Controller, Get, Res, Req } from "@nestjs/common";
+import { Roles } from "./authentication/decorator/roles.decorator";
+import { UserRole } from "./user/roles.enum";
 
 @Controller()
 export class AppController {
   @Get()
   @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.SECURITY, UserRole.NEWUSER)
   async index(@Req() req, @Res() res) {
-    if (req.user.roles.includes('new_account')) {
+    if (req.user.roles.includes("new_account")) {
       return res.redirect(`${res.locals.APP_ROOT}/account/enrollment`);
     } else if (
-      req.user.roles.includes('operator') ||
-      req.user.roles.includes('security')
+      req.user.roles.includes("operator") ||
+      req.user.roles.includes("security")
     ) {
       return res.redirect(`${res.locals.APP_ROOT}/service-provider`);
-    } else if (req.user.roles.includes('admin')) {
+    } else if (req.user.roles.includes("admin")) {
       return res.redirect(`${res.locals.APP_ROOT}/account`);
     }
   }

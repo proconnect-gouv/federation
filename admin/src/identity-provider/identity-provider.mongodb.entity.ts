@@ -1,8 +1,8 @@
-import { Column, Entity, ObjectIdColumn, Unique } from 'typeorm';
-import { ObjectId } from 'mongodb';
+import { Column, Entity, ObjectIdColumn, Unique } from "typeorm";
+import { ObjectId } from "mongodb";
 
-@Entity('provider')
-@Unique(['name'])
+@Entity("provider")
+@Unique(["name"])
 export class IdentityProviderFromDb {
   @ObjectIdColumn()
   _id: ObjectId;
@@ -76,12 +76,12 @@ export class IdentityProviderFromDb {
   @Column()
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
-  userinfo_signed_response_alg?: 'RS256' | 'ES256' | 'HS256' | '';
+  userinfo_signed_response_alg?: "RS256" | "ES256" | "HS256" | "";
 
   @Column()
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
-  id_token_signed_response_alg?: 'RS256' | 'ES256' | 'HS256';
+  id_token_signed_response_alg?: "RS256" | "ES256" | "HS256";
 
   @Column()
   // oidc defined variable name
