@@ -17,7 +17,6 @@
  */
 
 // This file is executed without any transpiller
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 import fs from 'fs';
 async function loadLog(path) {
   const rawData = await fs.readFileSync(path).toString('utf8');
