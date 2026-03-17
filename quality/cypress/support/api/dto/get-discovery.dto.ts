@@ -1,6 +1,5 @@
 import { IsArray, IsBoolean, IsString, MinLength } from "class-validator";
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export class GetDiscoveryDto {
   @IsString({ each: true })
   @IsArray()
@@ -157,4 +156,3 @@ export class GetDiscoveryDto {
   @IsArray()
   readonly request_object_encryption_enc_values_supported: string[];
 }
-/* eslint-enable @typescript-eslint/naming-convention */
