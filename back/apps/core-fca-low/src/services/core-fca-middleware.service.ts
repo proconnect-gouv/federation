@@ -1,16 +1,16 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
-import { Response } from 'express';
-import { AuthorizationParameters } from 'openid-client';
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { Response } from "express";
+import { AuthorizationParameters } from "openid-client";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
-import { ActiveUserSessionDto, UserSession } from '@fc/core/dto';
-import { generateErrorId } from '@fc/exceptions/helpers';
-import { ErrorPageParams } from '@fc/exceptions/types/error-page-params';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService, TrackedEvent } from '@fc/logger';
+import { ConfigService } from "@fc/config";
+import { ActiveUserSessionDto, UserSession } from "@fc/core/dto";
+import { generateErrorId } from "@fc/exceptions/helpers";
+import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
+import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
+import { LoggerService, TrackedEvent } from "@fc/logger";
 import {
   OidcCtx,
   OidcProviderConfig,
@@ -18,9 +18,9 @@ import {
   OidcProviderPrompt,
   OidcProviderRoutes,
   OidcProviderService,
-} from '@fc/oidc-provider';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionService } from '@fc/session';
+} from "@fc/oidc-provider";
+import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
+import { SessionService } from "@fc/session";
 
 @Injectable()
 export class CoreFcaMiddlewareService {
@@ -38,20 +38,20 @@ export class CoreFcaMiddlewareService {
       try {
         await middleware.bind(this)(ctx);
       } catch (err) {
-        const code = 'koa_html_error_formater';
+        const code = "koa_html_error_formater";
         const id = generateErrorId();
 
         this.logger.error({ code, id });
 
         const res = ctx.res as unknown as Response;
-        ctx.type = 'html';
+        ctx.type = "html";
         // the render function is magically available in the koa context
         // as oidc-provider servers is mounted behind the nest server.
         const errorPageParams: ErrorPageParams = {
           exceptionDisplay: {},
           error: { code, id },
         };
-        ctx.body = res.render('error', errorPageParams);
+        ctx.body = res.render("error", errorPageParams);
 
         throw err;
       }
@@ -92,7 +92,7 @@ export class CoreFcaMiddlewareService {
     method,
     req,
   }: OidcCtx): AuthorizationParameters {
-    const isPostMethod = method === 'POST';
+    const isPostMethod = method === "POST";
     return isPostMethod ? req.body : req.query;
   }
 
@@ -103,7 +103,7 @@ export class CoreFcaMiddlewareService {
      * @param ctx
      */
     this.oidcProvider.clearCookies(res);
-    req.headers.cookie = '';
+    req.headers.cookie = "";
   }
 
   /**
@@ -120,21 +120,21 @@ export class CoreFcaMiddlewareService {
    * @param overrideValue
    */
   protected overrideAuthorizePrompt(ctx: OidcCtx): void {
-    if (!['POST', 'GET'].includes(ctx.method)) {
+    if (!["POST", "GET"].includes(ctx.method)) {
       this.logger.warn(`Unsupported method "${ctx.method}".`);
       return;
     }
 
     const { forcedPrompt } =
-      this.config.get<OidcProviderConfig>('OidcProvider');
-    const overrideValue = forcedPrompt.join(' ');
+      this.config.get<OidcProviderConfig>("OidcProvider");
+    const overrideValue = forcedPrompt.join(" ");
 
     /**
      * Support both methods
      * @TODO #137 check what needs to be done if we implement pushedAuthorizationRequests
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/137
      */
-    const isPostMethod = ctx.method === 'POST';
+    const isPostMethod = ctx.method === "POST";
     const data = isPostMethod ? ctx.req.body : ctx.query;
     data.prompt = overrideValue;
   }
@@ -185,15 +185,15 @@ export class CoreFcaMiddlewareService {
 
     // Persist this flag to adjust redirections during '/verify'
     this.sessionService.set(
-      'User',
-      'isSilentAuthentication',
+      "User",
+      "isSilentAuthentication",
       isSilentAuthentication,
     );
     await this.sessionService.commit();
 
     const activeUserSession = plainToInstance(
       ActiveUserSessionDto,
-      this.sessionService.get<UserSession>('User'),
+      this.sessionService.get<UserSession>("User"),
     );
     const activeSessionValidationErrors = await validate(activeUserSession);
 
@@ -207,7 +207,7 @@ export class CoreFcaMiddlewareService {
   }
 
   private isPromptStrictlyEqualNone(prompt: string) {
-    const promptValues = prompt.split(' ');
+    const promptValues = prompt.split(" ");
     return (
       promptValues.length === 1 && promptValues[0] === OidcProviderPrompt.NONE
     );

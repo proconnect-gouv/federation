@@ -1,4 +1,4 @@
-import { Type } from '@nestjs/common';
+import { Type } from "@nestjs/common";
 
 export interface IConfigOptions {
   config: Record<string, any>;

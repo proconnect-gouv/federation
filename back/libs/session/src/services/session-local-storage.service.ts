@@ -1,14 +1,14 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from "lodash";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { AsyncLocalStorageService } from '@fc/async-local-storage';
+import { AsyncLocalStorageService } from "@fc/async-local-storage";
 
 import {
   SessionStoreContentInterface,
   SessionStoreInterface,
-} from '../interfaces';
-import { SESSION_STORE_KEY } from '../tokens';
+} from "../interfaces";
+import { SESSION_STORE_KEY } from "../tokens";
 
 @Injectable()
 export class SessionLocalStorageService {
@@ -58,9 +58,9 @@ export class SessionLocalStorageService {
   set(moduleName: string, keyOrData: string | object, data?: unknown): void {
     const store = this.getStore();
 
-    if (typeof keyOrData === 'string') {
+    if (typeof keyOrData === "string") {
       this.setByKey(moduleName, store.data, keyOrData, data);
-    } else if (typeof keyOrData === 'object') {
+    } else if (typeof keyOrData === "object") {
       this.setModule(moduleName, store.data, keyOrData);
     }
 

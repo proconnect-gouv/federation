@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
+import { ConfigService } from "@fc/config";
 
-import { SessionConfig } from '../dto';
-import { SessionService } from '../services';
+import { SessionConfig } from "../dto";
+import { SessionService } from "../services";
 
 @Injectable()
 export class SessionMiddleware implements NestMiddleware {
@@ -21,7 +21,7 @@ export class SessionMiddleware implements NestMiddleware {
   }
 
   private async handleSession(req: Request, res: Response) {
-    const { slidingExpiration } = this.config.get<SessionConfig>('Session');
+    const { slidingExpiration } = this.config.get<SessionConfig>("Session");
     const sessionId = this.session.getSessionIdFromCookie(req);
 
     if (!sessionId) {

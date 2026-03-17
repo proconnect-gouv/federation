@@ -1,2 +1,2 @@
-export * from './client-metadata.dto';
-export * from './issuer-metadata.dto';
+export * from "./client-metadata.dto";
+export * from "./issuer-metadata.dto";

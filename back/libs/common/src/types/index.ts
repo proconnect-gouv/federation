@@ -1,1 +1,1 @@
-export * from './type-or-token.type';
+export * from "./type-or-token.type";

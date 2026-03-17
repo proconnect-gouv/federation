@@ -1,4 +1,4 @@
-import { Transform } from 'class-transformer';
+import { Transform } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -6,7 +6,7 @@ import {
   IsString,
   Matches,
   MinLength,
-} from 'class-validator';
+} from "class-validator";
 
 const URL_REGEX = /^https?:\/\/[^/].+$/;
 

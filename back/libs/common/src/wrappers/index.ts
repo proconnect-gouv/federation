@@ -1,1 +1,1 @@
-export * from './nestjs-dependency-injection.wrapper';
+export * from "./nestjs-dependency-injection.wrapper";

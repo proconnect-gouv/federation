@@ -1,20 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
 import {
   BridgeError,
   BridgeProtocol,
   BridgeResponse,
   MessageType,
-} from '@fc/hybridge-http-proxy';
-import { LoggerService } from '@fc/logger';
+} from "@fc/hybridge-http-proxy";
+import { LoggerService } from "@fc/logger";
 
-import { getLoggerMock } from '@mocks/logger';
+import { getLoggerMock } from "@mocks/logger";
 
-import { BridgePayloadDto } from '../dto';
-import { CsmrHttpProxyService } from '../services';
-import { CsmrHttpProxyController } from './csmr-http-proxy.controller';
+import { BridgePayloadDto } from "../dto";
+import { CsmrHttpProxyService } from "../services";
+import { CsmrHttpProxyController } from "./csmr-http-proxy.controller";
 
-describe('CsmrHttpProxyController', () => {
+describe("CsmrHttpProxyController", () => {
   let csmrHttpProxyController: CsmrHttpProxyController;
 
   const loggerMock = getLoggerMock();
@@ -42,31 +42,31 @@ describe('CsmrHttpProxyController', () => {
     );
   });
 
-  it('should get the controller defined', () => {
+  it("should get the controller defined", () => {
     // Arrange
     // Action
     // Assert
     expect(csmrHttpProxyController).toBeDefined();
   });
 
-  describe('healthcheck()', () => {
+  describe("healthcheck()", () => {
     it("should return 'ok'", () => {
       const result = csmrHttpProxyController.healthcheck();
-      expect(result).toBe('ok');
+      expect(result).toBe("ok");
     });
   });
 
-  describe('proxyRequest()', () => {
+  describe("proxyRequest()", () => {
     const baseBridgePayloadMock: BridgePayloadDto = Object.freeze({
-      url: 'https://test.com/getToken',
-      method: 'get',
+      url: "https://test.com/getToken",
+      method: "get",
       headers: {
-        test: 'world',
+        test: "world",
       },
       data: null,
     } as unknown as BridgePayloadDto);
 
-    it('should get the data from external service without data params', async () => {
+    it("should get the data from external service without data params", async () => {
       // Arrange
       const payload: BridgePayloadDto = {
         ...baseBridgePayloadMock,
@@ -75,9 +75,9 @@ describe('CsmrHttpProxyController', () => {
       const dataMock = {
         status: 200,
         data: null,
-        statusText: 'Success',
+        statusText: "Success",
         headers: {
-          'content-type': 'text/html; charset=UTF-8',
+          "content-type": "text/html; charset=UTF-8",
         },
       };
 
@@ -86,9 +86,9 @@ describe('CsmrHttpProxyController', () => {
         data: {
           status: 200,
           data: null,
-          statusText: 'Success',
+          statusText: "Success",
           headers: {
-            'content-type': 'text/html; charset=UTF-8',
+            "content-type": "text/html; charset=UTF-8",
           },
         },
       };
@@ -100,19 +100,19 @@ describe('CsmrHttpProxyController', () => {
       expect(result).toStrictEqual(resultMock);
     });
 
-    it('should get the data from external ressources with data params', async () => {
+    it("should get the data from external ressources with data params", async () => {
       // Arrange
       const payload: BridgePayloadDto = {
         ...baseBridgePayloadMock,
-        method: 'post',
+        method: "post",
         data: '{"sarah":"connor"}',
       };
 
       const dataMock = {
         status: 200,
-        statusText: 'Success',
+        statusText: "Success",
         headers: {
-          'content-type': 'text/html; charset=UTF-8',
+          "content-type": "text/html; charset=UTF-8",
         },
         data: "{\nhello: 'world'\n}",
       };
@@ -121,9 +121,9 @@ describe('CsmrHttpProxyController', () => {
         type: MessageType.DATA,
         data: {
           status: 200,
-          statusText: 'Success',
+          statusText: "Success",
           headers: {
-            'content-type': 'text/html; charset=UTF-8',
+            "content-type": "text/html; charset=UTF-8",
           },
           data: "{\nhello: 'world'\n}",
         },
@@ -135,18 +135,18 @@ describe('CsmrHttpProxyController', () => {
       expect(result).toStrictEqual(resultMock);
     });
 
-    it('should fail to get the data from external ressource with unknown error', async () => {
-      const errorMock = new Error('Unknown Error');
+    it("should fail to get the data from external ressource with unknown error", async () => {
+      const errorMock = new Error("Unknown Error");
 
       csmrHttpProxyMock.forwardRequest.mockImplementationOnce(() => {
         throw errorMock;
       });
       // Arrange
       const payload = {
-        url: 'https://test.com/getToken',
-        method: 'post',
+        url: "https://test.com/getToken",
+        method: "post",
         headers: {
-          test: 'world',
+          test: "world",
         },
         data: '{"sarah":"connor"}',
       } as unknown as BridgePayloadDto;
@@ -154,8 +154,8 @@ describe('CsmrHttpProxyController', () => {
       const resultMock: BridgeProtocol<BridgeError> = {
         type: MessageType.ERROR,
         data: {
-          name: 'Error',
-          reason: 'Unknown Error',
+          name: "Error",
+          reason: "Unknown Error",
           code: 1000,
         },
       };

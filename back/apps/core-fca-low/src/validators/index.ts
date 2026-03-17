@@ -1,1 +1,1 @@
-export * from './is-phone-number-simple-validator.validator';
+export * from "./is-phone-number-simple-validator.validator";

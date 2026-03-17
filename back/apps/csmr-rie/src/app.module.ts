@@ -1,9 +1,9 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module } from "@nestjs/common";
 
-import { ConfigModule, ConfigService } from '@fc/config';
-import { LoggerModule } from '@fc/logger';
+import { ConfigModule, ConfigService } from "@fc/config";
+import { LoggerModule } from "@fc/logger";
 
-import { CsmrHttpProxyModule } from './csmr-http-proxy.module';
+import { CsmrHttpProxyModule } from "./csmr-http-proxy.module";
 
 @Module({})
 export class AppModule {

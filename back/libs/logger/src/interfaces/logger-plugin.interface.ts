@@ -1,4 +1,4 @@
-import { DynamicModule, ModuleMetadata, Type } from '@nestjs/common';
+import { DynamicModule, ModuleMetadata, Type } from "@nestjs/common";
 
 export interface LoggerPluginServiceInterface {
   getContext: () => Record<string, unknown>;

@@ -1,26 +1,26 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
+import { ConfigService } from "@fc/config";
 
-import { getConfigMock } from '@mocks/config';
+import { getConfigMock } from "@mocks/config";
 
-import { SessionBadCookieException } from '../exceptions';
-import { SessionCookiesService } from './session-cookies.service';
+import { SessionBadCookieException } from "../exceptions";
+import { SessionCookiesService } from "./session-cookies.service";
 
-jest.mock('@fc/common');
+jest.mock("@fc/common");
 
-describe('SessionCookiesService', () => {
+describe("SessionCookiesService", () => {
   let service: SessionCookiesService;
 
   const configMock = getConfigMock();
   const configDataMock = {
-    cookieOptions: { foo: 'bar' },
-    sessionCookieName: Symbol('sessionCookieName'),
+    cookieOptions: { foo: "bar" },
+    sessionCookieName: Symbol("sessionCookieName"),
   };
 
-  const sessionId = 'sessionId';
+  const sessionId = "sessionId";
 
   const res = {
     cookie: jest.fn(),
@@ -51,21 +51,21 @@ describe('SessionCookiesService', () => {
     configMock.get.mockReturnValue(configDataMock);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('get', () => {
-    it('should call config.get()', () => {
+  describe("get", () => {
+    it("should call config.get()", () => {
       // When
       service.get(req);
 
       // Then
       expect(configMock.get).toHaveBeenCalledTimes(1);
-      expect(configMock.get).toHaveBeenCalledWith('Session');
+      expect(configMock.get).toHaveBeenCalledWith("Session");
     });
 
-    it('should return the session id', () => {
+    it("should return the session id", () => {
       // Given
 
       // When
@@ -75,7 +75,7 @@ describe('SessionCookiesService', () => {
       expect(result).toBe(sessionId);
     });
 
-    it('should throw an error if the session id is not a string', () => {
+    it("should throw an error if the session id is not a string", () => {
       // Given
       req.signedCookies[configDataMock.sessionCookieName] = 1;
 
@@ -87,30 +87,30 @@ describe('SessionCookiesService', () => {
     });
   });
 
-  describe('set', () => {
-    it('should call config.get()', () => {
+  describe("set", () => {
+    it("should call config.get()", () => {
       // When
-      service.set(res, 'sessionId');
+      service.set(res, "sessionId");
 
       // Then
-      expect(configMock.get).toHaveBeenCalledWith('Session');
+      expect(configMock.get).toHaveBeenCalledWith("Session");
     });
 
-    it('should call res.cookie()', () => {
+    it("should call res.cookie()", () => {
       // When
-      service.set(res, 'sessionId');
+      service.set(res, "sessionId");
 
       // Then
       expect(res.cookie).toHaveBeenCalledWith(
         configDataMock.sessionCookieName,
-        'sessionId',
+        "sessionId",
         configDataMock.cookieOptions,
       );
     });
   });
 
-  describe('remove', () => {
-    it('should call config.get()', () => {
+  describe("remove", () => {
+    it("should call config.get()", () => {
       // When
       service.remove(res);
 

@@ -1,23 +1,23 @@
-import { KoaContextWithOIDC, Provider } from 'oidc-provider';
+import { KoaContextWithOIDC, Provider } from "oidc-provider";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { SessionService } from "@fc/session";
 
-import { getLoggerMock } from '@mocks/logger';
-import { getSessionServiceMock } from '@mocks/session';
+import { getLoggerMock } from "@mocks/logger";
+import { getSessionServiceMock } from "@mocks/session";
 
-import { OidcCtx } from '../interfaces';
-import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
+import { OidcCtx } from "../interfaces";
+import { OidcProviderConfigAppService } from "./oidc-provider-config-app.service";
 
-jest.mock('@fc/exceptions/helpers', () => ({
-  ...jest.requireActual('@fc/exceptions/helpers'),
+jest.mock("@fc/exceptions/helpers", () => ({
+  ...jest.requireActual("@fc/exceptions/helpers"),
   throwException: jest.fn(),
 }));
 
-describe('OidcProviderConfigAppService', () => {
+describe("OidcProviderConfigAppService", () => {
   let service: OidcProviderConfigAppService;
 
   const sessionServiceMock = getSessionServiceMock();
@@ -26,8 +26,8 @@ describe('OidcProviderConfigAppService', () => {
     get: jest.fn(),
   };
 
-  const atHashMock = 'at_hash Mock value';
-  const sessionId = 'sessionIdMock value';
+  const atHashMock = "at_hash Mock value";
+  const sessionId = "sessionIdMock value";
 
   const loggerServiceMock = getLoggerMock();
 
@@ -47,13 +47,13 @@ describe('OidcProviderConfigAppService', () => {
         },
       },
       session: {
-        accountId: 'test-sub',
+        accountId: "test-sub",
       },
     },
   } as unknown as OidcCtx;
 
   const appConfigMock = {
-    urlPrefix: '/api/v2',
+    urlPrefix: "/api/v2",
   };
 
   const form =
@@ -89,15 +89,15 @@ describe('OidcProviderConfigAppService', () => {
 
     configServiceMock.get.mockReturnValue(appConfigMock);
 
-    service['provider'] = providerMock as unknown as Provider;
+    service["provider"] = providerMock as unknown as Provider;
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('postLogoutSuccessSource', () => {
-    it('should set a body property to koa context', () => {
+  describe("postLogoutSuccessSource", () => {
+    it("should set a body property to koa context", () => {
       // Given
       const renderMock = jest.fn();
       const ctx = {
@@ -112,8 +112,8 @@ describe('OidcProviderConfigAppService', () => {
     });
   });
 
-  describe('logoutSource', () => {
-    it('should render logout page', () => {
+  describe("logoutSource", () => {
+    it("should render logout page", () => {
       // When
       service.logoutSource(ctxMock, form);
 
@@ -122,15 +122,15 @@ describe('OidcProviderConfigAppService', () => {
     });
   });
 
-  describe('findAccount', () => {
-    it('should return account details with accountId and claims when session is valid', async () => {
+  describe("findAccount", () => {
+    it("should return account details with accountId and claims when session is valid", async () => {
       // Given
-      const sub = 'test-sub';
-      const sessionId = 'test-session-id';
+      const sub = "test-sub";
+      const sessionId = "test-session-id";
       const spIdentityMock = {
-        sub: 'test-sub',
-        given_name: 'John',
-        family_name: 'Doe',
+        sub: "test-sub",
+        given_name: "John",
+        family_name: "Doe",
       };
       sessionServiceMock.getAlias.mockResolvedValueOnce(sessionId);
       sessionServiceMock.initCache.mockResolvedValueOnce(true);
@@ -154,45 +154,45 @@ describe('OidcProviderConfigAppService', () => {
     });
   });
 
-  describe('finishInteraction', () => {
+  describe("finishInteraction", () => {
     // Given
     const reqMock = {
-      fc: { interactionId: 'interactiondMockValue' },
+      fc: { interactionId: "interactiondMockValue" },
     };
     const resMock = {};
-    const spIdentityMock = { sub: 'test-sub' };
+    const spIdentityMock = { sub: "test-sub" };
 
     beforeEach(() => {
-      sessionServiceMock.getId.mockReturnValue('sessionId');
+      sessionServiceMock.getId.mockReturnValue("sessionId");
       sessionServiceMock.get.mockReturnValueOnce({
         spIdentity: spIdentityMock,
       });
     });
 
-    it('should finish interaction with grant', async () => {
+    it("should finish interaction with grant", async () => {
       // Given
       const resultMock = {
         consent: {},
         login: {
           accountId: spIdentityMock.sub,
-          acr: 'acrValue',
-          amr: ['amrValue'],
+          acr: "acrValue",
+          amr: ["amrValue"],
           ts: expect.any(Number),
           remember: false,
         },
       };
-      providerMock.interactionFinished.mockResolvedValueOnce('ignoredValue');
+      providerMock.interactionFinished.mockResolvedValueOnce("ignoredValue");
       // When
       await service.finishInteraction(reqMock, resMock, {
-        amr: ['amrValue'],
-        acr: 'acrValue',
+        amr: ["amrValue"],
+        acr: "acrValue",
       });
 
       // Then
-      expect(sessionServiceMock.get).toHaveBeenCalledWith('User');
+      expect(sessionServiceMock.get).toHaveBeenCalledWith("User");
       expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
         spIdentityMock.sub,
-        'sessionId',
+        "sessionId",
       );
       expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
       expect(providerMock.interactionFinished).toHaveBeenCalledWith(
@@ -203,48 +203,48 @@ describe('OidcProviderConfigAppService', () => {
     });
   });
 
-  describe('setProvider()', () => {
-    it('should set provider value', () => {
+  describe("setProvider()", () => {
+    it("should set provider value", () => {
       // Given
-      const providerMock = 'providerMock' as unknown as Provider;
+      const providerMock = "providerMock" as unknown as Provider;
       // When
       service.setProvider(providerMock);
       // Then
-      expect(service['provider']).toEqual('providerMock');
+      expect(service["provider"]).toEqual("providerMock");
     });
   });
 
-  describe('renderError', () => {
-    it('should set ctx.type to html and render the error template with details', async () => {
+  describe("renderError", () => {
+    it("should set ctx.type to html and render the error template with details", async () => {
       // Given
-      const renderReturnMock = 'rendered-html';
+      const renderReturnMock = "rendered-html";
       const renderMock = jest.fn().mockReturnValue(renderReturnMock);
       const ctx = {
         res: { render: renderMock },
       } as unknown as KoaContextWithOIDC;
 
       const params = {
-        error: 'access_denied',
-        error_description: 'Not allowed',
+        error: "access_denied",
+        error_description: "Not allowed",
       } as unknown as Parameters<
-        OidcProviderConfigAppService['renderError']
+        OidcProviderConfigAppService["renderError"]
       >[1];
 
       // When
-      await service.renderError(ctx, params, new Error('boom'));
+      await service.renderError(ctx, params, new Error("boom"));
 
       // Then
-      expect(ctx).toHaveProperty('type', 'html');
+      expect(ctx).toHaveProperty("type", "html");
       expect(renderMock).toHaveBeenCalledTimes(1);
-      expect(renderMock).toHaveBeenCalledWith('error', {
+      expect(renderMock).toHaveBeenCalledWith("error", {
         error: {
-          code: 'oidc-provider-rendered-error:access_denied',
+          code: "oidc-provider-rendered-error:access_denied",
           id: expect.any(String),
-          message: 'Not allowed',
+          message: "Not allowed",
         },
         exceptionDisplay: {},
       });
-      expect(ctx).toHaveProperty('body', renderReturnMock);
+      expect(ctx).toHaveProperty("body", renderReturnMock);
     });
   });
 });

@@ -1,32 +1,32 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { AccountFcaService } from '@fc/account-fca';
-import { CachedOrganizationService } from '@fc/cached-organization';
-import { validateDto } from '@fc/common';
-import { ConfigService } from '@fc/config';
-import { CsrfService } from '@fc/csrf';
-import { LoggerService } from '@fc/logger';
-import { OidcClientService } from '@fc/oidc-client';
-import { ISessionService, SessionService } from '@fc/session';
+import { AccountFcaService } from "@fc/account-fca";
+import { CachedOrganizationService } from "@fc/cached-organization";
+import { validateDto } from "@fc/common";
+import { ConfigService } from "@fc/config";
+import { CsrfService } from "@fc/csrf";
+import { LoggerService } from "@fc/logger";
+import { OidcClientService } from "@fc/oidc-client";
+import { ISessionService, SessionService } from "@fc/session";
 
-import { getLoggerMock } from '@mocks/logger';
+import { getLoggerMock } from "@mocks/logger";
 
-import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from '../dto';
+import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from "../dto";
 import {
   CoreFcaControllerService,
   CoreFcaService,
   IdentitySanitizer,
-} from '../services';
-import { OidcClientController } from './oidc-client.controller';
+} from "../services";
+import { OidcClientController } from "./oidc-client.controller";
 
-jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
+jest.mock("@fc/common", () => ({
+  ...jest.requireActual("@fc/common"),
   validateDto: jest.fn(),
 }));
 
-describe('OidcClientController', () => {
+describe("OidcClientController", () => {
   let controller: OidcClientController;
 
   // Mocks for injected services
@@ -48,11 +48,11 @@ describe('OidcClientController', () => {
     configService = {
       get: jest.fn().mockImplementation((key: string) => {
         switch (key) {
-          case 'OidcClient':
-            return { scope: 'openid email' };
-          case 'App':
-            return { urlPrefix: '/app' };
-          case 'ApiEntreprise':
+          case "OidcClient":
+            return { scope: "openid email" };
+          case "App":
+            return { urlPrefix: "/app" };
+          case "ApiEntreprise":
             return { featureFetchOrganizationData: true };
         }
       }),
@@ -135,26 +135,26 @@ describe('OidcClientController', () => {
     });
   });
 
-  describe('getIdentityProviderSelection', () => {
-    it('should render the identity provider selection view with proper response', async () => {
+  describe("getIdentityProviderSelection", () => {
+    it("should render the identity provider selection view with proper response", async () => {
       const res: Partial<Response> = { render: jest.fn() };
-      const email = 'user@example.com';
+      const email = "user@example.com";
       const userSession = {
         get: jest.fn().mockReturnValue({ idpLoginHint: email }),
       } as unknown as ISessionService<AfterRedirectToIdpWithEmailSessionDto>;
 
       const providers = [
-        { title: 'Provider One', uid: 'idp1' },
-        { title: 'Autre', uid: 'default-idp' },
+        { title: "Provider One", uid: "idp1" },
+        { title: "Autre", uid: "default-idp" },
       ];
       coreFcaService.selectIdpsFromEmail.mockResolvedValueOnce(providers);
       coreFcaService.hasDefaultIdp.mockReturnValue(true);
 
       configService.get.mockReturnValue({
-        defaultIdpId: 'default-idp',
-        scope: 'openid',
+        defaultIdpId: "default-idp",
+        scope: "openid",
       });
-      csrfService.getOrCreate.mockReturnValue('csrf-token');
+      csrfService.getOrCreate.mockReturnValue("csrf-token");
       coreFcaService.getSortedDisplayableIdentityProviders.mockReturnValueOnce(
         providers,
       );
@@ -164,8 +164,8 @@ describe('OidcClientController', () => {
         userSession,
       );
 
-      expect(res.render).toHaveBeenCalledWith('identity-provider-selection', {
-        csrfToken: 'csrf-token',
+      expect(res.render).toHaveBeenCalledWith("identity-provider-selection", {
+        csrfToken: "csrf-token",
         identityProviders: providers,
         hasDefaultIdp: true,
       });
@@ -174,11 +174,11 @@ describe('OidcClientController', () => {
     });
   });
 
-  describe('postIdentityProviderSelection', () => {
+  describe("postIdentityProviderSelection", () => {
     let req: any;
     let res: Partial<Response>;
     let userSession: any;
-    const email = 'user@example.com';
+    const email = "user@example.com";
 
     beforeEach(() => {
       req = {};
@@ -188,8 +188,8 @@ describe('OidcClientController', () => {
       } as unknown as ISessionService<UserSession>;
     });
 
-    it('should redirect to selected idp when identityProviderUid is provided', async () => {
-      const body = { identityProviderUid: 'idp123' } as any;
+    it("should redirect to selected idp when identityProviderUid is provided", async () => {
+      const body = { identityProviderUid: "idp123" } as any;
 
       await controller.postIdentityProviderSelection(
         req as Request,
@@ -199,10 +199,10 @@ describe('OidcClientController', () => {
 
       expect(
         coreFcaControllerService.redirectToIdpWithIdpId,
-      ).toHaveBeenCalledWith(req, res, 'idp123');
+      ).toHaveBeenCalledWith(req, res, "idp123");
     });
 
-    it('should delegate to service redirectToIdpWithEmail with provided rememberMe', async () => {
+    it("should delegate to service redirectToIdpWithEmail with provided rememberMe", async () => {
       const body = { email, rememberMe: true } as any;
 
       await controller.redirectToIdp(
@@ -217,7 +217,7 @@ describe('OidcClientController', () => {
       ).toHaveBeenCalledWith(req, res, email, true);
     });
 
-    it('should delegate to service with rememberMe defaulting to false when not provided', async () => {
+    it("should delegate to service with rememberMe defaulting to false when not provided", async () => {
       const body = { email } as any;
 
       await controller.redirectToIdp(
@@ -233,18 +233,18 @@ describe('OidcClientController', () => {
     });
   });
 
-  describe('getOidcCallback', () => {
+  describe("getOidcCallback", () => {
     let req: Partial<Request>;
     let res: Partial<Response>;
     let userSession: any;
     const sessionData = {
-      idpId: 'idp123',
-      idpNonce: 'nonce123',
-      idpState: 'state123',
-      interactionId: 'interaction123',
-      spId: 'sp123',
-      spName: 'SP Name',
-      idpLoginHint: 'user@example.com',
+      idpId: "idp123",
+      idpNonce: "nonce123",
+      idpState: "state123",
+      interactionId: "interaction123",
+      spId: "sp123",
+      spName: "SP Name",
+      idpLoginHint: "user@example.com",
     };
 
     beforeEach(() => {
@@ -254,7 +254,7 @@ describe('OidcClientController', () => {
         status: jest.fn(),
         render: jest.fn(),
       } as Partial<Response>;
-      accountService.getOrCreateAccount.mockResolvedValue({ id: '123' });
+      accountService.getOrCreateAccount.mockResolvedValue({ id: "123" });
       userSession = {
         duplicate: jest.fn().mockResolvedValue(undefined),
         get: jest.fn().mockReturnValue(sessionData),
@@ -262,30 +262,30 @@ describe('OidcClientController', () => {
       };
       logger.track.mockResolvedValue(undefined);
       oidcClient.getToken.mockResolvedValue({
-        accessToken: 'access-token',
-        idToken: 'id-token',
+        accessToken: "access-token",
+        idToken: "id-token",
         claims: {
-          acr: 'acr-value',
-          amr: 'amr-value',
+          acr: "acr-value",
+          amr: "amr-value",
         },
       });
       oidcClient.getUserinfo.mockResolvedValue({
-        email: 'user@example.com',
-        sub: 'sub123',
+        email: "user@example.com",
+        sub: "sub123",
       });
       (validateDto as jest.Mock).mockResolvedValue([]);
-      coreFcaService['ensureIdpCanServeThisEmail'].mockResolvedValue(true);
+      coreFcaService["ensureIdpCanServeThisEmail"].mockResolvedValue(true);
       sanitizer.getValidatedIdentityFromIdp.mockResolvedValue({
-        email: 'user@example.com',
-        sub: 'sub123',
+        email: "user@example.com",
+        sub: "sub123",
       });
-      sanitizer.transformIdentity.mockResolvedValue({ given_name: 'John' });
+      sanitizer.transformIdentity.mockResolvedValue({ given_name: "John" });
       accountService.getOrCreateAccount.mockResolvedValue({
-        sub: 'accountSub',
+        sub: "accountSub",
       });
     });
 
-    it('should process OIDC callback when identity is valid (no validation errors)', async () => {
+    it("should process OIDC callback when identity is valid (no validation errors)", async () => {
       await controller.getOidcCallback(
         req as Request,
         res as Response,
@@ -299,55 +299,55 @@ describe('OidcClientController', () => {
         idpNonce: null,
         idpState: null,
       });
-      expect(logger.track).toHaveBeenCalledWith('IDP_CALLEDBACK');
+      expect(logger.track).toHaveBeenCalledWith("IDP_CALLEDBACK");
       expect(oidcClient.getToken).toHaveBeenCalledWith(
-        'idp123',
-        { state: 'state123', nonce: 'nonce123' },
+        "idp123",
+        { state: "state123", nonce: "nonce123" },
         req,
-        { sp_id: 'sp123', sp_name: 'SP Name' },
+        { sp_id: "sp123", sp_name: "SP Name" },
       );
-      expect(logger.track).toHaveBeenCalledWith('FC_REQUESTED_IDP_TOKEN');
+      expect(logger.track).toHaveBeenCalledWith("FC_REQUESTED_IDP_TOKEN");
       expect(oidcClient.getUserinfo).toHaveBeenCalledWith({
-        accessToken: 'access-token',
-        idpId: 'idp123',
+        accessToken: "access-token",
+        idpId: "idp123",
       });
-      expect(logger.track).toHaveBeenNthCalledWith(1, 'IDP_CALLEDBACK');
-      expect(logger.track).toHaveBeenNthCalledWith(2, 'FC_REQUESTED_IDP_TOKEN');
+      expect(logger.track).toHaveBeenNthCalledWith(1, "IDP_CALLEDBACK");
+      expect(logger.track).toHaveBeenNthCalledWith(2, "FC_REQUESTED_IDP_TOKEN");
       expect(logger.track).toHaveBeenNthCalledWith(
         3,
-        'FC_REQUESTED_IDP_USERINFO',
+        "FC_REQUESTED_IDP_USERINFO",
       );
-      expect(coreFcaService['ensureIdpCanServeThisEmail']).toHaveBeenCalledWith(
-        'idp123',
-        'user@example.com',
+      expect(coreFcaService["ensureIdpCanServeThisEmail"]).toHaveBeenCalledWith(
+        "idp123",
+        "user@example.com",
       );
       expect(userSession.set).toHaveBeenNthCalledWith(2, {
-        amr: 'amr-value',
-        idpIdToken: 'id-token',
-        idpAcr: 'acr-value',
+        amr: "amr-value",
+        idpIdToken: "id-token",
+        idpAcr: "acr-value",
       });
       expect(userSession.set).toHaveBeenNthCalledWith(3, {
-        idpIdentity: { email: 'user@example.com', sub: 'sub123' },
+        idpIdentity: { email: "user@example.com", sub: "sub123" },
       });
       expect(userSession.set).toHaveBeenNthCalledWith(4, {
-        spIdentity: { given_name: 'John' },
+        spIdentity: { given_name: "John" },
       });
       expect(
         cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded,
       ).toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledWith(
-        '/app/interaction/interaction123/verify',
+        "/app/interaction/interaction123/verify",
       );
     });
 
-    it('should not call cachedOrganizationService if featureFetchOrganizationData is false', async () => {
+    it("should not call cachedOrganizationService if featureFetchOrganizationData is false", async () => {
       configService.get.mockImplementation((key: string) => {
         switch (key) {
-          case 'OidcClient':
-            return { scope: 'openid email' };
-          case 'App':
-            return { urlPrefix: '/app' };
-          case 'ApiEntreprise':
+          case "OidcClient":
+            return { scope: "openid email" };
+          case "App":
+            return { urlPrefix: "/app" };
+          case "ApiEntreprise":
             return { featureFetchOrganizationData: false };
         }
       });
@@ -362,19 +362,19 @@ describe('OidcClientController', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('should call cachedOrganizationService and logger error if featureFetchOrganizationData is true and upsert fails', async () => {
+    it("should call cachedOrganizationService and logger error if featureFetchOrganizationData is true and upsert fails", async () => {
       configService.get.mockImplementation((key: string) => {
         switch (key) {
-          case 'OidcClient':
-            return { scope: 'openid email' };
-          case 'App':
-            return { urlPrefix: '/app' };
-          case 'ApiEntreprise':
+          case "OidcClient":
+            return { scope: "openid email" };
+          case "App":
+            return { urlPrefix: "/app" };
+          case "ApiEntreprise":
             return { featureFetchOrganizationData: true };
         }
       });
       cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded.mockRejectedValue(
-        new Error('upsert failed'),
+        new Error("upsert failed"),
       );
 
       await controller.getOidcCallback(
@@ -387,12 +387,12 @@ describe('OidcClientController', () => {
       ).toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith(
         expect.objectContaining({
-          code: 'oidc-client-upsert-cached-organization-error',
+          code: "oidc-client-upsert-cached-organization-error",
         }),
       );
     });
 
-    it('should augment userInfo identity with claims in idToken if IdP is Entra', async () => {
+    it("should augment userInfo identity with claims in idToken if IdP is Entra", async () => {
       // When IdP is EntraID…
       coreFcaService.safelyGetExistingAndEnabledIdp.mockReturnValue({
         isEntraID: true,
@@ -401,25 +401,25 @@ describe('OidcClientController', () => {
       // …claims that correspond to requested scopes…
       configService.get.mockImplementation((key: string) => {
         switch (key) {
-          case 'OidcClient':
-            return { scope: 'openid arbitrary' };
-          case 'App':
-            return { urlPrefix: '/app' };
-          case 'ApiEntreprise':
+          case "OidcClient":
+            return { scope: "openid arbitrary" };
+          case "App":
+            return { urlPrefix: "/app" };
+          case "ApiEntreprise":
             return { featureFetchOrganizationData: true };
         }
       });
       // …and that appear in the ID token…
       oidcClient.getToken.mockResolvedValue({
-        idToken: 'id-token',
+        idToken: "id-token",
         claims: {
-          arbitrary: 'user@example.com',
-          ignored: 'ignored',
+          arbitrary: "user@example.com",
+          ignored: "ignored",
         },
       });
       // …but not in the userInfo endpoint…
       oidcClient.getUserinfo.mockResolvedValue({
-        sub: 'sub123',
+        sub: "sub123",
       });
 
       await controller.getOidcCallback(
@@ -430,8 +430,8 @@ describe('OidcClientController', () => {
 
       // …will be used to compose the identity
       expect(sanitizer.getValidatedIdentityFromIdp).toHaveBeenCalledWith(
-        { arbitrary: 'user@example.com', sub: 'sub123' },
-        'idp123',
+        { arbitrary: "user@example.com", sub: "sub123" },
+        "idp123",
       );
     });
 
@@ -442,10 +442,10 @@ describe('OidcClientController', () => {
       });
 
       oidcClient.getToken.mockResolvedValue({
-        idToken: 'id-token',
+        idToken: "id-token",
         claims: {
           // Entra ID can return multiple acr values
-          acrs: ['c2', 'p1', 'urn:user:registersecurityinfo'],
+          acrs: ["c2", "p1", "urn:user:registersecurityinfo"],
         },
       });
 
@@ -456,16 +456,16 @@ describe('OidcClientController', () => {
       );
 
       expect(sanitizer.transformIdentity).toHaveBeenCalledWith(
-        { email: 'user@example.com', sub: 'sub123' },
-        'idp123',
-        'accountSub',
-        'eidas2',
+        { email: "user@example.com", sub: "sub123" },
+        "idp123",
+        "accountSub",
+        "eidas2",
       );
     });
 
-    it('should provide a default acr if missing', async () => {
+    it("should provide a default acr if missing", async () => {
       oidcClient.getToken.mockResolvedValue({
-        idToken: 'id-token',
+        idToken: "id-token",
         claims: {},
       });
 
@@ -476,23 +476,23 @@ describe('OidcClientController', () => {
       );
 
       expect(sanitizer.transformIdentity).toHaveBeenCalledWith(
-        { email: 'user@example.com', sub: 'sub123' },
-        'idp123',
-        'accountSub',
-        'eidas1',
+        { email: "user@example.com", sub: "sub123" },
+        "idp123",
+        "accountSub",
+        "eidas1",
       );
     });
 
-    it('should process OIDC callback when identity validation errors occur (sanitization branch and FQDN mismatch)', async () => {
+    it("should process OIDC callback when identity validation errors occur (sanitization branch and FQDN mismatch)", async () => {
       // Simulate errors so that the sanitizer is called
       const sanitizedIdentity = {
-        email: 'sanitized@example.com',
-        sub: 'sub-sanitized',
+        email: "sanitized@example.com",
+        sub: "sub-sanitized",
       };
       sanitizer.getValidatedIdentityFromIdp.mockResolvedValue(
         sanitizedIdentity,
       );
-      coreFcaService['ensureIdpCanServeThisEmail'].mockResolvedValue(false);
+      coreFcaService["ensureIdpCanServeThisEmail"].mockResolvedValue(false);
 
       await controller.getOidcCallback(
         req as Request,
@@ -501,13 +501,13 @@ describe('OidcClientController', () => {
       );
 
       expect(sanitizer.getValidatedIdentityFromIdp).toHaveBeenCalledWith(
-        { email: 'user@example.com', sub: 'sub123' },
-        'idp123',
+        { email: "user@example.com", sub: "sub123" },
+        "idp123",
       );
       expect(userSession.set).toHaveBeenCalledWith({
-        amr: 'amr-value',
-        idpIdToken: 'id-token',
-        idpAcr: 'acr-value',
+        amr: "amr-value",
+        idpIdToken: "id-token",
+        idpAcr: "acr-value",
       });
       expect(userSession.set).toHaveBeenCalledWith({
         idpIdentity: sanitizedIdentity,
@@ -516,13 +516,13 @@ describe('OidcClientController', () => {
         spIdentity: expect.anything(),
       });
       expect(res.redirect).toHaveBeenCalledWith(
-        '/app/interaction/interaction123/verify',
+        "/app/interaction/interaction123/verify",
       );
     });
   });
 
-  describe('getOidcLogoutCallback', () => {
-    it('should track session termination, destroy the session and render the logout form', () => {
+  describe("getOidcLogoutCallback", () => {
+    it("should track session termination, destroy the session and render the logout form", () => {
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSession = {
         get: jest.fn().mockReturnValue({}),
@@ -532,15 +532,15 @@ describe('OidcClientController', () => {
       expect(res.redirect).toHaveBeenCalled();
     });
 
-    it('should append redirection url if params are stored in session', () => {
+    it("should append redirection url if params are stored in session", () => {
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSession = {
-        get: jest.fn().mockReturnValue('jean'),
+        get: jest.fn().mockReturnValue("jean"),
       } as unknown as ISessionService<UserSession>;
       controller.getOidcLogoutCallback(res, userSession);
 
       expect(res.redirect).toHaveBeenCalledWith(
-        '/app/session/end?from_idp=true&jean',
+        "/app/session/end?from_idp=true&jean",
       );
     });
   });

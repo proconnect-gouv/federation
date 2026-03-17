@@ -3,11 +3,11 @@ import {
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-} from 'class-validator';
+} from "class-validator";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
+import { ConfigService } from "@fc/config";
 
 const phoneRegex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/;
 
@@ -15,12 +15,12 @@ const phoneRegex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/;
 // It is not a full-fledged validator, but it is enough for our use case.
 // We could use the IsPhoneNumberValidator from class-validator, but we need to
 // cover multiple regions and the validator is not very flexible.
-@ValidatorConstraint({ name: 'IsPhoneNumberSimpleValidator' })
+@ValidatorConstraint({ name: "IsPhoneNumberSimpleValidator" })
 @Injectable()
 export class IsPhoneNumberSimpleValidatorConstraint implements ValidatorConstraintInterface {
   constructor(public readonly config: ConfigService) {}
   validate(value: string): boolean {
-    return typeof value === 'string' && phoneRegex.test(value);
+    return typeof value === "string" && phoneRegex.test(value);
   }
 
   defaultMessage(): string {

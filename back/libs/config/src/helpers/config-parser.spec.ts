@@ -1,33 +1,33 @@
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync } from "fs";
 
-import { parseBoolean, parseJsonProperty } from '@fc/common';
+import { parseBoolean, parseJsonProperty } from "@fc/common";
 
-import { ConfigParser } from './config-parser';
+import { ConfigParser } from "./config-parser";
 
-jest.mock('fs', () => ({
+jest.mock("fs", () => ({
   readFileSync: jest.fn(),
   existsSync: jest.fn(),
 }));
 
-jest.mock('@fc/common', () => ({
+jest.mock("@fc/common", () => ({
   parseBoolean: jest.fn(),
   parseJsonProperty: jest.fn(),
 }));
 
-describe('ConfigParser', () => {
+describe("ConfigParser", () => {
   let reader: ConfigParser;
 
   const configMock = {
-    'someprefix/foo': 'bar',
-    'someprefix/bar': '{"fizz":"buzz"}',
-    'someprefix/baz': 'true',
-    'someprefix/list': 'one,two,three',
-    'someprefix/emptyString': '',
-    'someprefix/woo': '42',
-    'someprefix/zin': '/some/path/to/read.txt',
+    "someprefix/foo": "bar",
+    "someprefix/bar": '{"fizz":"buzz"}',
+    "someprefix/baz": "true",
+    "someprefix/list": "one,two,three",
+    "someprefix/emptyString": "",
+    "someprefix/woo": "42",
+    "someprefix/zin": "/some/path/to/read.txt",
   };
-  const prefixMock = 'someprefix';
-  const separatorMock = '/';
+  const prefixMock = "someprefix";
+  const separatorMock = "/";
 
   const parseBooleanMock = jest.mocked(parseBoolean);
   const parseJsonPropertyMock = jest.mocked(parseJsonProperty);
@@ -40,61 +40,61 @@ describe('ConfigParser', () => {
     jest.resetAllMocks();
 
     parseBooleanMock.mockReturnValue(true);
-    parseJsonPropertyMock.mockReturnValue({ fizz: 'baz' });
+    parseJsonPropertyMock.mockReturnValue({ fizz: "baz" });
   });
 
-  describe('constructor', () => {
-    it('should use default separator', () => {
+  describe("constructor", () => {
+    it("should use default separator", () => {
       // Given
       const config = {};
-      const prefix = 'test';
+      const prefix = "test";
       // When
       const result = new ConfigParser(config, prefix);
       // Then
-      expect(result).toHaveProperty('separator');
-      expect(result['separator']).toBe('_');
+      expect(result).toHaveProperty("separator");
+      expect(result["separator"]).toBe("_");
     });
-    it('should use given separator', () => {
+    it("should use given separator", () => {
       // Given
       const config = {};
-      const prefix = 'test';
-      const separator = '#';
+      const prefix = "test";
+      const separator = "#";
       // When
       const result = new ConfigParser(config, prefix, separator);
       // Then
-      expect(result).toHaveProperty('separator');
-      expect(result['separator']).toBe('#');
+      expect(result).toHaveProperty("separator");
+      expect(result["separator"]).toBe("#");
     });
   });
 
-  describe('getFullPath', () => {
-    it('should return prefixed path', () => {
+  describe("getFullPath", () => {
+    it("should return prefixed path", () => {
       // Given
-      const path = 'blah';
+      const path = "blah";
       // When
-      const result = reader['getFullPath'](path);
+      const result = reader["getFullPath"](path);
       // Then
-      expect(result).toBe('someprefix/blah');
+      expect(result).toBe("someprefix/blah");
     });
   });
 
-  describe('boolean', () => {
-    it('should execute parseBoolean with given value', () => {
+  describe("boolean", () => {
+    it("should execute parseBoolean with given value", () => {
       // Given
-      const path = 'baz';
+      const path = "baz";
       // When
       reader.boolean(path);
       // Then
       expect(parseBooleanMock).toHaveBeenCalledTimes(1);
       expect(parseBooleanMock).toHaveBeenCalledWith(
-        configMock['someprefix/baz'],
+        configMock["someprefix/baz"],
       );
     });
 
-    it('should return result from parseBoolean', () => {
+    it("should return result from parseBoolean", () => {
       // Given
-      const path = 'baz';
-      const parseBooleanMockReturnValue = Symbol('true');
+      const path = "baz";
+      const parseBooleanMockReturnValue = Symbol("true");
       parseBooleanMock.mockReturnValue(
         parseBooleanMockReturnValue as unknown as boolean,
       );
@@ -105,24 +105,24 @@ describe('ConfigParser', () => {
     });
   });
 
-  describe('json', () => {
-    it('should execute parseJsonProperty with given value', () => {
+  describe("json", () => {
+    it("should execute parseJsonProperty with given value", () => {
       // Given
-      const path = 'baz';
+      const path = "baz";
       // When
       reader.json(path);
       // Then
       expect(parseJsonPropertyMock).toHaveBeenCalledTimes(1);
       expect(parseJsonPropertyMock).toHaveBeenCalledWith(
         configMock,
-        'someprefix/baz',
+        "someprefix/baz",
       );
     });
 
-    it('should return result from parseJsonProperty', () => {
+    it("should return result from parseJsonProperty", () => {
       // Given
-      const path = 'baz';
-      const parseJsonPropertyMockReturnValue = Symbol('someobject');
+      const path = "baz";
+      const parseJsonPropertyMockReturnValue = Symbol("someobject");
       parseJsonPropertyMock.mockReturnValue(
         parseJsonPropertyMockReturnValue as unknown as object,
       );
@@ -132,9 +132,9 @@ describe('ConfigParser', () => {
       expect(result).toBe(parseJsonPropertyMockReturnValue);
     });
 
-    it('should return undefined', () => {
+    it("should return undefined", () => {
       // Given
-      const path = 'barbar';
+      const path = "barbar";
       // When
       const result = reader.json(path);
       // Then
@@ -142,37 +142,37 @@ describe('ConfigParser', () => {
     });
   });
 
-  describe('string', () => {
-    it('should return simple variable', () => {
+  describe("string", () => {
+    it("should return simple variable", () => {
       // Given
-      const path = 'foo';
+      const path = "foo";
       // When
       const result = reader.string(path);
       // Then
-      expect(result).toBe('bar');
+      expect(result).toBe("bar");
     });
 
-    it('should return simple variable even if undefinedIfEmpty is true', () => {
+    it("should return simple variable even if undefinedIfEmpty is true", () => {
       // Given
-      const path = 'foo';
+      const path = "foo";
       // When
       const result = reader.string(path, true);
       // Then
-      expect(result).toBe('bar');
+      expect(result).toBe("bar");
     });
 
-    it('should return empty string if undefinedIfEmpty is false', () => {
+    it("should return empty string if undefinedIfEmpty is false", () => {
       // Given
-      const path = 'emptyString';
+      const path = "emptyString";
       // When
       const result = reader.string(path, false);
       // Then
-      expect(result).toBe('');
+      expect(result).toBe("");
     });
 
-    it('should return undefined if undefinedIfEmpty is true', () => {
+    it("should return undefined if undefinedIfEmpty is true", () => {
       // Given
-      const path = 'emptyString';
+      const path = "emptyString";
       // When
       const result = reader.string(path, true);
       // Then
@@ -180,28 +180,28 @@ describe('ConfigParser', () => {
     });
   });
 
-  describe('stringArray', () => {
-    it('should return array of strings split by comma', () => {
+  describe("stringArray", () => {
+    it("should return array of strings split by comma", () => {
       // Given
-      const path = 'list';
+      const path = "list";
       // When
       const result = reader.stringArray(path);
       // Then
-      expect(result).toEqual(['one', 'two', 'three']);
+      expect(result).toEqual(["one", "two", "three"]);
     });
 
-    it('should return empty array when value is empty and undefinedIfEmpty is true', () => {
+    it("should return empty array when value is empty and undefinedIfEmpty is true", () => {
       // Given
-      const path = 'emptyString';
+      const path = "emptyString";
       // When
       const result = reader.stringArray(path);
       // Then
       expect(result).toEqual([]);
     });
 
-    it('should return empty array when variable is not defined', () => {
+    it("should return empty array when variable is not defined", () => {
       // Given
-      const path = 'doesNotExist';
+      const path = "doesNotExist";
       // When
       const result = reader.stringArray(path);
       // Then
@@ -209,19 +209,19 @@ describe('ConfigParser', () => {
     });
   });
 
-  describe('number', () => {
-    it('should return a number', () => {
+  describe("number", () => {
+    it("should return a number", () => {
       // Given
-      const path = 'woo';
+      const path = "woo";
       // When
       const result = reader.number(path);
       // Then
-      expect(typeof result).toBe('number');
+      expect(typeof result).toBe("number");
       expect(result).toBe(42);
     });
-    it('should return undefined', () => {
+    it("should return undefined", () => {
       // Given
-      const path = 'emptyString';
+      const path = "emptyString";
       // When
       const result = reader.number(path, true);
       // Then
@@ -229,52 +229,52 @@ describe('ConfigParser', () => {
     });
   });
 
-  describe('exist', () => {
-    it('should return true', () => {
+  describe("exist", () => {
+    it("should return true", () => {
       // Given
-      const path = 'woo';
+      const path = "woo";
       // When
-      const result = reader['exist'](path);
+      const result = reader["exist"](path);
       // Then
-      expect(typeof result).toBe('boolean');
+      expect(typeof result).toBe("boolean");
       expect(result).toBe(true);
     });
 
-    it('should return false', () => {
+    it("should return false", () => {
       // Given
-      const path = 'woowoo';
+      const path = "woowoo";
       // When
-      const result = reader['exist'](path);
+      const result = reader["exist"](path);
       // Then
-      expect(typeof result).toBe('boolean');
+      expect(typeof result).toBe("boolean");
       expect(result).toBe(false);
     });
   });
 
-  describe('file', () => {
-    const fileContentMock = 'fileContentMockValue';
+  describe("file", () => {
+    const fileContentMock = "fileContentMockValue";
     beforeEach(() => {
       readFileSyncMock.mockReturnValue(fileContentMock);
     });
-    it('should call readfilesync with given path', () => {
+    it("should call readfilesync with given path", () => {
       // Given
-      const path = 'zin';
+      const path = "zin";
       existsSyncMock.mockReturnValueOnce(true);
       // When
       const result = reader.file(path);
       // Then
       expect(existsSyncMock).toHaveBeenCalledTimes(1);
-      expect(existsSyncMock).toHaveBeenCalledWith('/some/path/to/read.txt');
+      expect(existsSyncMock).toHaveBeenCalledWith("/some/path/to/read.txt");
       expect(readFileSyncMock).toHaveBeenCalledTimes(1);
       expect(readFileSyncMock).toHaveBeenCalledWith(
-        '/some/path/to/read.txt',
-        'utf-8',
+        "/some/path/to/read.txt",
+        "utf-8",
       );
       expect(result).toBe(fileContentMock);
     });
-    it('should return result null if file is missing and optional', () => {
+    it("should return result null if file is missing and optional", () => {
       // Given
-      const path = 'zin';
+      const path = "zin";
       existsSyncMock.mockReturnValueOnce(false);
       // When
       const result = reader.file(path, true);
@@ -282,16 +282,16 @@ describe('ConfigParser', () => {
       expect(result).toBe(undefined);
     });
 
-    it('should throw an error if file is missing but not optional', () => {
+    it("should throw an error if file is missing but not optional", () => {
       // Given
-      const path = 'zin';
+      const path = "zin";
       existsSyncMock.mockReturnValueOnce(false);
 
       expect(
         // When
         () => reader.file(path, false),
         // Then
-      ).toThrow('file at path /some/path/to/read.txt is missing');
+      ).toThrow("file at path /some/path/to/read.txt is missing");
     });
   });
 });

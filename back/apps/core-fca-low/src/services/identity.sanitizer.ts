@@ -1,15 +1,15 @@
-import { plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
-import { cloneDeep } from 'lodash';
+import { plainToInstance } from "class-transformer";
+import { validate, ValidationError } from "class-validator";
+import { cloneDeep } from "lodash";
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
+import { ConfigService } from "@fc/config";
+import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
+import { LoggerService } from "@fc/logger";
 
-import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from '../dto';
-import { CoreFcaInvalidIdentityException } from '../exceptions';
+import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from "../dto";
+import { CoreFcaInvalidIdentityException } from "../exceptions";
 
 @Injectable()
 export class IdentitySanitizer {
@@ -51,7 +51,7 @@ export class IdentitySanitizer {
 
     // Replace invalid siret with the default siret value for the idp
     const siretValidationErrors = await validate(identityForSp, {
-      groups: ['siret'],
+      groups: ["siret"],
     });
 
     if (siretValidationErrors.length > 0) {
@@ -61,7 +61,7 @@ export class IdentitySanitizer {
 
     // Delete the phone_number property if validation fails
     const phoneNumberValidationErrors = await validate(identityForSp, {
-      groups: ['phone_number'],
+      groups: ["phone_number"],
     });
 
     if (phoneNumberValidationErrors.length > 0) {
@@ -87,7 +87,7 @@ export class IdentitySanitizer {
     Object.keys(identityForSpWithExtraProperties).forEach((key) => {
       if (
         !(key in identityForSp) &&
-        !['aud', 'exp', 'iat', 'iss'].includes(key)
+        !["aud", "exp", "iat", "iss"].includes(key)
       ) {
         identityForSp.custom[key] = identityForSpWithExtraProperties[key];
       }
@@ -121,7 +121,7 @@ export class IdentitySanitizer {
 
       const contact =
         identityProvider.supportEmail ||
-        this.config.get<AppConfig>('App').supportEmail;
+        this.config.get<AppConfig>("App").supportEmail;
 
       const exception = new CoreFcaInvalidIdentityException(
         validationErrors.toString(),

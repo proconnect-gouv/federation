@@ -1,1 +1,1 @@
-export * from './mongoose-collection-update-watcher.helper';
+export * from "./mongoose-collection-update-watcher.helper";

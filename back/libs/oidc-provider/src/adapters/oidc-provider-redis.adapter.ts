@@ -1,22 +1,22 @@
-import { isEmpty } from 'lodash';
-import { Adapter, AdapterConstructor } from 'oidc-provider';
+import { isEmpty } from "lodash";
+import { Adapter, AdapterConstructor } from "oidc-provider";
 
-import { IServiceProviderAdapter } from '@fc/oidc';
-import { RedisService } from '@fc/redis';
+import { IServiceProviderAdapter } from "@fc/oidc";
+import { RedisService } from "@fc/redis";
 
 import {
   OidcProviderParseRedisResponseException,
   OidcProviderStringifyPayloadForRedisException,
-} from '../exceptions';
+} from "../exceptions";
 /** Circular reference for type checking */
-import { OidcProviderService } from '../oidc-provider.service';
+import { OidcProviderService } from "../oidc-provider.service";
 
-const consumable = new Set(['AuthorizationCode', 'RefreshToken', 'DeviceCode']);
+const consumable = new Set(["AuthorizationCode", "RefreshToken", "DeviceCode"]);
 
 /**
  * Prefix everything in redis.
  */
-export const OIDC_PROVIDER_REDIS_PREFIX = 'OIDC-P';
+export const OIDC_PROVIDER_REDIS_PREFIX = "OIDC-P";
 
 /**
  * ⚠️  Warning ⚠️
@@ -138,7 +138,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     const hasContext = consumable.has(this.contextName);
     const store = hasContext ? { payload: dataFormated } : dataFormated;
 
-    const command = hasContext ? 'hmset' : 'set';
+    const command = hasContext ? "hmset" : "set";
     (multi[command] as Function)(key, store);
   }
 
@@ -211,14 +211,14 @@ export class OidcProviderRedisAdapter implements Adapter {
   private async findInRedis(id: string) {
     const key = this.key(id);
 
-    const command = consumable.has(this.contextName) ? 'hgetall' : 'get';
+    const command = consumable.has(this.contextName) ? "hgetall" : "get";
     const data = await this.redis.client[command](key);
 
     if (isEmpty(data)) {
       return void 0;
     }
 
-    const wrappedData = typeof data === 'string' ? { payload: data } : data;
+    const wrappedData = typeof data === "string" ? { payload: data } : data;
     const { payload, ...rest } = wrappedData;
 
     const parsedPayload = this.parsedPayload(payload);
@@ -230,7 +230,7 @@ export class OidcProviderRedisAdapter implements Adapter {
   }
 
   async find(id: string) {
-    if (this.contextName === 'Client') {
+    if (this.contextName === "Client") {
       return await this.findServiceProvider(id);
     }
 
@@ -268,7 +268,7 @@ export class OidcProviderRedisAdapter implements Adapter {
   async consume(id: string) {
     await this.redis.client.hset(
       this.key(id),
-      'consumed',
+      "consumed",
       Math.floor(Date.now() / 1000),
     );
   }
@@ -309,7 +309,7 @@ export class OidcProviderRedisAdapter implements Adapter {
 
     const [[, ttl], [, value]] = result;
 
-    if (typeof ttl !== 'number' || typeof value !== 'string') {
+    if (typeof ttl !== "number" || typeof value !== "string") {
       return { ttl: -1, value: null };
     }
 

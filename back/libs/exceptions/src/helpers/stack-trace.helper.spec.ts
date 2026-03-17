@@ -1,11 +1,11 @@
-import { getStackTraceArray } from './stack-trace.helper';
+import { getStackTraceArray } from "./stack-trace.helper";
 
-describe('getStackTraceArray()', () => {
-  it('should return stack trace as an array', () => {
+describe("getStackTraceArray()", () => {
+  it("should return stack trace as an array", () => {
     // Given
-    const stackMock = ['line1', 'line2', 'line3'];
+    const stackMock = ["line1", "line2", "line3"];
     const errorMock = {
-      stack: stackMock.join('\n'),
+      stack: stackMock.join("\n"),
     };
     // When
     const result = getStackTraceArray(errorMock);
@@ -13,7 +13,7 @@ describe('getStackTraceArray()', () => {
     expect(result).toEqual(stackMock);
   });
 
-  it('should return empty array if not stack is present in error object', () => {
+  it("should return empty array if not stack is present in error object", () => {
     // Given
     const errorMock = {};
     // When
@@ -22,14 +22,14 @@ describe('getStackTraceArray()', () => {
     expect(result).toEqual([]);
   });
 
-  it('should concat with original error stack if provided', () => {
+  it("should concat with original error stack if provided", () => {
     // Given
-    const stackMok = ['A1', 'A2'];
-    const originalErrorStackMock = ['B1', 'B2'];
+    const stackMok = ["A1", "A2"];
+    const originalErrorStackMock = ["B1", "B2"];
     const errorMock = {
-      stack: stackMok.join('\n'),
+      stack: stackMok.join("\n"),
       originalError: {
-        stack: originalErrorStackMock.join('\n'),
+        stack: originalErrorStackMock.join("\n"),
       },
     };
     // When
@@ -38,11 +38,11 @@ describe('getStackTraceArray()', () => {
     expect(result).toEqual([...originalErrorStackMock, ...stackMok]);
   });
 
-  it('should work seamlessly if original original error is provided but does not have a stack', () => {
+  it("should work seamlessly if original original error is provided but does not have a stack", () => {
     // Given
-    const stackMok = ['A1', 'A2'];
+    const stackMok = ["A1", "A2"];
     const errorMock = {
-      stack: stackMok.join('\n'),
+      stack: stackMok.join("\n"),
       originalError: {},
     };
     // When

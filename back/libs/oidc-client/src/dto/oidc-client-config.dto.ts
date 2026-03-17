@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -10,15 +10,15 @@ import {
   Min,
   MinLength,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 /**
  * @TODO #1024 MAJ Jose version 3.X
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1024
  * @ticket #FC-1024
  */
-import { JSONWebKeySet } from 'jose-v2';
+import { JSONWebKeySet } from "jose-v2";
 
-import { IdentityProviderMetadata } from '@fc/oidc';
+import { IdentityProviderMetadata } from "@fc/oidc";
 
 class HttpOptions {
   @IsString()
@@ -70,7 +70,7 @@ export class OidcClientConfig {
   readonly fapi: boolean;
 
   @IsUrl({
-    protocols: ['https'],
+    protocols: ["https"],
     // Validator.js defined property
 
     require_protocol: true,
@@ -78,7 +78,7 @@ export class OidcClientConfig {
   readonly redirectUri: string;
 
   @IsUrl({
-    protocols: ['https'],
+    protocols: ["https"],
     // Validator.js defined property
 
     require_protocol: true,

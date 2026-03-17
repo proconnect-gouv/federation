@@ -1,14 +1,14 @@
-import { validate } from 'class-validator';
+import { validate } from "class-validator";
 
-import { ExecutionContext } from '@nestjs/common';
+import { ExecutionContext } from "@nestjs/common";
 
-import { NestJsDependencyInjectionWrapper } from '@fc/common';
+import { NestJsDependencyInjectionWrapper } from "@fc/common";
 
-import { InvalidSessionException } from '../exceptions';
-import { UserSessionDecoratorFactory } from './user-session.decorator';
+import { InvalidSessionException } from "../exceptions";
+import { UserSessionDecoratorFactory } from "./user-session.decorator";
 
-jest.mock('class-validator', () => ({
-  ...(jest.requireActual('class-validator') as any),
+jest.mock("class-validator", () => ({
+  ...(jest.requireActual("class-validator") as any),
   validate: jest.fn(),
 }));
 
@@ -21,11 +21,11 @@ jest.mock('class-validator', () => ({
  * - Validates the session data against an optional mandatory DTO as well as the UserSession DTO.
  * - Throws a SessionInvalidSessionException when validation errors occur.
  */
-describe('UserSessionDecoratorFactory', () => {
+describe("UserSessionDecoratorFactory", () => {
   let fakeResponse: Record<string, unknown>;
   let fakeExecutionContext: ExecutionContext;
   let fakeSessionService: any;
-  const validSessionData = { dummy: 'value', user: 'test' };
+  const validSessionData = { dummy: "value", user: "test" };
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -45,14 +45,14 @@ describe('UserSessionDecoratorFactory', () => {
       get: jest.fn().mockReturnValue(validSessionData),
       set: jest.fn(),
       commit: jest.fn(),
-      duplicate: jest.fn().mockReturnValue('duplicatedSession'),
+      duplicate: jest.fn().mockReturnValue("duplicatedSession"),
       clear: jest.fn(),
       destroy: jest.fn(),
     };
 
     // Stub NestJsDependencyInjectionWrapper.get to return our fake session service.
     jest
-      .spyOn(NestJsDependencyInjectionWrapper, 'get')
+      .spyOn(NestJsDependencyInjectionWrapper, "get")
       .mockReturnValue(fakeSessionService);
   });
 
@@ -60,7 +60,7 @@ describe('UserSessionDecoratorFactory', () => {
     jest.restoreAllMocks();
   });
 
-  it('should return the bound session service with all methods when validations pass', async () => {
+  it("should return the bound session service with all methods when validations pass", async () => {
     // Define a dummy DTO for mandatory validation.
     class DummyDto {}
 
@@ -75,15 +75,15 @@ describe('UserSessionDecoratorFactory', () => {
     // Call duplicate and ensure that it calls the underlying sessionService.duplicate with the response.
     const duplicateResult = result.duplicate();
     expect(fakeSessionService.duplicate).toHaveBeenCalledWith(fakeResponse);
-    expect(duplicateResult).toBe('duplicatedSession');
+    expect(duplicateResult).toBe("duplicatedSession");
   });
 
-  it('should throw SessionInvalidSessionException if a session DTO validation fails', async () => {
+  it("should throw SessionInvalidSessionException if a session DTO validation fails", async () => {
     class DummyDto {}
     const validationError = [
       {
-        property: 'dummy',
-        constraints: { isDefined: 'dummy must be defined' },
+        property: "dummy",
+        constraints: { isDefined: "dummy must be defined" },
       },
     ];
 
@@ -97,7 +97,7 @@ describe('UserSessionDecoratorFactory', () => {
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
 
-  it('should validate only UserSession when no session DTO is provided', async () => {
+  it("should validate only UserSession when no session DTO is provided", async () => {
     const validateMock = jest.mocked(validate);
     validateMock.mockResolvedValueOnce([]);
 
@@ -106,12 +106,12 @@ describe('UserSessionDecoratorFactory', () => {
       fakeExecutionContext,
     );
     expect(validateMock).toHaveBeenCalledTimes(1);
-    expect(typeof result.get).toBe('function');
+    expect(typeof result.get).toBe("function");
   });
 
-  it('should throw SessionInvalidSessionException if UserSession validation fails when no session DTO is provided', async () => {
+  it("should throw SessionInvalidSessionException if UserSession validation fails when no session DTO is provided", async () => {
     const validationError = [
-      { property: 'user', constraints: { isDefined: 'user must be defined' } },
+      { property: "user", constraints: { isDefined: "user must be defined" } },
     ];
 
     const validateMock = jest.mocked(validate);

@@ -1,24 +1,24 @@
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom } from "rxjs";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { validateDto } from '@fc/common';
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
+import { validateDto } from "@fc/common";
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
 
-import { getLoggerMock } from '@mocks/logger';
+import { getLoggerMock } from "@mocks/logger";
 
-import { BridgeHttpProxyProtocolDto } from '../dto';
+import { BridgeHttpProxyProtocolDto } from "../dto";
 import {
   BridgeHttpProxyMissingVariableException,
   BridgeHttpProxyRabbitmqException,
-} from '../exceptions';
-import { BridgeHttpProxyService } from './bridge-http-proxy.service';
+} from "../exceptions";
+import { BridgeHttpProxyService } from "./bridge-http-proxy.service";
 
-jest.mock('rxjs');
-jest.mock('@fc/common');
+jest.mock("rxjs");
+jest.mock("@fc/common");
 
-describe('BridgeHttpProxyService', () => {
+describe("BridgeHttpProxyService", () => {
   let service: BridgeHttpProxyService;
 
   const loggerServiceMock = getLoggerMock();
@@ -35,17 +35,17 @@ describe('BridgeHttpProxyService', () => {
     pipe: jest.fn(),
   };
 
-  const brokerResponseMock = 'brokerResponseMock';
+  const brokerResponseMock = "brokerResponseMock";
 
-  const originalUrlMock = '/bizz/bud';
+  const originalUrlMock = "/bizz/bud";
   const headersMock = {
-    host: 'foo.fr',
-    'x-forwarded-proto': 'https',
+    host: "foo.fr",
+    "x-forwarded-proto": "https",
   };
 
   const axiosResponseResolvedMock = {
-    headers: { host: 'host' },
-    data: 'foo',
+    headers: { host: "host" },
+    data: "foo",
     status: 200,
   };
 
@@ -69,7 +69,7 @@ describe('BridgeHttpProxyService', () => {
         LoggerService,
         ConfigService,
         {
-          provide: 'BridgeProxyBroker',
+          provide: "BridgeProxyBroker",
           useValue: brokerMock,
         },
       ],
@@ -90,14 +90,14 @@ describe('BridgeHttpProxyService', () => {
     validateDtoMock = jest.mocked(validateDto);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('proxyRequest', () => {
-    const method = 'GET';
+  describe("proxyRequest", () => {
+    const method = "GET";
 
-    describe('', () => {
+    describe("", () => {
       beforeEach(() => {
         // Given
         brokerMock.send.mockReturnValue(messageMock);
@@ -106,11 +106,11 @@ describe('BridgeHttpProxyService', () => {
         validateDtoMock.mockResolvedValueOnce([]);
       });
 
-      it('should call once createMessage() private method', async () => {
+      it("should call once createMessage() private method", async () => {
         // Given
-        service['createMessage'] = jest.fn();
+        service["createMessage"] = jest.fn();
 
-        const bodyMock = 'toto=titi';
+        const bodyMock = "toto=titi";
 
         // When
         await service.proxyRequest(
@@ -121,19 +121,19 @@ describe('BridgeHttpProxyService', () => {
         );
 
         // Then
-        expect(service['createMessage']).toHaveBeenCalledTimes(1);
-        expect(service['createMessage']).toHaveBeenCalledWith(
+        expect(service["createMessage"]).toHaveBeenCalledTimes(1);
+        expect(service["createMessage"]).toHaveBeenCalledWith(
           originalUrlMock,
-          'GET',
+          "GET",
           {
-            host: 'foo.fr',
-            'x-forwarded-proto': 'https',
+            host: "foo.fr",
+            "x-forwarded-proto": "https",
           },
-          'toto=titi',
+          "toto=titi",
         );
       });
 
-      it('should validate the format of the identity received from broker thanks to the dto', async () => {
+      it("should validate the format of the identity received from broker thanks to the dto", async () => {
         // When
         await service.proxyRequest(originalUrlMock, method, headersMock);
 
@@ -146,11 +146,11 @@ describe('BridgeHttpProxyService', () => {
         );
       });
 
-      it('should return result received from broker', async () => {
+      it("should return result received from broker", async () => {
         // Given
         const expected = {
-          headers: { host: 'host' },
-          data: 'foo',
+          headers: { host: "host" },
+          data: "foo",
           status: 200,
         };
 
@@ -166,17 +166,17 @@ describe('BridgeHttpProxyService', () => {
       });
     });
 
-    it('should throw an exception if data are missing', async () => {
+    it("should throw an exception if data are missing", async () => {
       // Given
       const axiosResponseResolvedMock = {
-        headers: { host: 'host' },
+        headers: { host: "host" },
         status: 200,
       };
 
       brokerMock.send.mockReturnValue(messageMock);
       messageMock.pipe.mockReturnValue(brokerResponseMock);
       lastValueMock.mockResolvedValueOnce(axiosResponseResolvedMock);
-      validateDtoMock.mockResolvedValueOnce([{ property: 'invalid param' }]);
+      validateDtoMock.mockResolvedValueOnce([{ property: "invalid param" }]);
 
       // When / Then
       await expect(
@@ -184,12 +184,12 @@ describe('BridgeHttpProxyService', () => {
       ).rejects.toThrow(BridgeHttpProxyMissingVariableException);
     });
 
-    it('should throw an exception if an error occurs when calling the broker', async () => {
+    it("should throw an exception if an error occurs when calling the broker", async () => {
       // Given
       brokerMock.send.mockReturnValue(messageMock);
       messageMock.pipe.mockReturnValue(brokerResponseMock);
       lastValueMock.mockRejectedValue({
-        message: 'error message',
+        message: "error message",
         status: 400,
       });
       validateDtoMock.mockResolvedValueOnce([]);
@@ -201,24 +201,24 @@ describe('BridgeHttpProxyService', () => {
     });
   });
 
-  describe('createMessage', () => {
-    it('should prepare and create message for the broker call', () => {
+  describe("createMessage", () => {
+    it("should prepare and create message for the broker call", () => {
       // Given
-      const method = 'GET';
-      const bodyMock = 'toto=titi';
+      const method = "GET";
+      const bodyMock = "toto=titi";
 
       const expected = {
         headers: {
-          host: 'foo.fr',
-          'x-forwarded-proto': 'https',
+          host: "foo.fr",
+          "x-forwarded-proto": "https",
         },
-        method: 'GET',
-        data: 'toto=titi',
-        url: 'https://foo.fr/bizz/bud',
+        method: "GET",
+        data: "toto=titi",
+        url: "https://foo.fr/bizz/bud",
       };
 
       // When
-      const result = service['createMessage'](
+      const result = service["createMessage"](
         originalUrlMock,
         method,
         headersMock,
@@ -229,22 +229,22 @@ describe('BridgeHttpProxyService', () => {
       expect(result).toStrictEqual(expected);
     });
 
-    it('should prepare and create message for the broker call, even if body is an empty object', () => {
+    it("should prepare and create message for the broker call, even if body is an empty object", () => {
       // Given
-      const method = 'POST';
+      const method = "POST";
 
       const expected = {
         data: undefined,
         headers: {
-          host: 'foo.fr',
+          host: "foo.fr",
         },
-        method: 'POST',
-        url: 'https://foo.fr/bizz/bud',
+        method: "POST",
+        url: "https://foo.fr/bizz/bud",
       };
 
       // When
-      const result = service['createMessage'](originalUrlMock, method, {
-        host: 'foo.fr',
+      const result = service["createMessage"](originalUrlMock, method, {
+        host: "foo.fr",
       });
 
       // Then
@@ -252,8 +252,8 @@ describe('BridgeHttpProxyService', () => {
     });
   });
 
-  describe('setHeaders', () => {
-    it('should set headers value', () => {
+  describe("setHeaders", () => {
+    it("should set headers value", () => {
       // Given
       const resMock = {
         set: jest.fn(),
@@ -264,8 +264,8 @@ describe('BridgeHttpProxyService', () => {
 
       // Then
       expect(resMock.set).toHaveBeenCalledTimes(2);
-      expect(resMock.set).toHaveBeenCalledWith('host', 'foo.fr');
-      expect(resMock.set).toHaveBeenCalledWith('x-forwarded-proto', 'https');
+      expect(resMock.set).toHaveBeenCalledWith("host", "foo.fr");
+      expect(resMock.set).toHaveBeenCalledWith("x-forwarded-proto", "https");
     });
   });
 });

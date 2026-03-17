@@ -1,14 +1,14 @@
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync } from "fs";
 
-import { isEmpty } from 'lodash';
+import { isEmpty } from "lodash";
 
-import { parseBoolean, parseJsonProperty } from '@fc/common';
+import { parseBoolean, parseJsonProperty } from "@fc/common";
 
 export class ConfigParser {
   constructor(
     private readonly source: any,
     private readonly namespace: string,
-    private readonly separator = '_',
+    private readonly separator = "_",
   ) {}
 
   private getFullPath(path: string): string {
@@ -44,7 +44,7 @@ export class ConfigParser {
 
   stringArray(path: string): string[] {
     const parsedString = this.string(path, true);
-    return parsedString?.split(',') || [];
+    return parsedString?.split(",") || [];
   }
 
   number(path: string, undefinedIfEmpty: boolean = false): number {
@@ -63,7 +63,7 @@ export class ConfigParser {
     const fileExists = existsSync(filePath);
 
     if (fileExists) {
-      return readFileSync(filePath, 'utf-8');
+      return readFileSync(filePath, "utf-8");
     }
 
     if (undefinedIfEmpty) {

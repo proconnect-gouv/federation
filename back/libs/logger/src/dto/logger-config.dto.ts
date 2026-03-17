@@ -1,6 +1,6 @@
-import { IsEnum } from 'class-validator';
+import { IsEnum } from "class-validator";
 
-import { LogLevels } from '../enums';
+import { LogLevels } from "../enums";
 
 export class LoggerConfig {
   @IsEnum(LogLevels)

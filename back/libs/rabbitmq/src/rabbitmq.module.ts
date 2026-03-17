@@ -1,10 +1,10 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { DynamicModule, Module } from "@nestjs/common";
+import { ClientProxyFactory, Transport } from "@nestjs/microservices";
 
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
 
-import { RabbitmqConfig } from './dto';
+import { RabbitmqConfig } from "./dto";
 
 @Module({})
 export class RabbitmqModule {
@@ -61,7 +61,7 @@ export class RabbitmqModule {
    *
    *
    */
-  static RABBIT_CLASS_SUFFIX = 'Broker';
+  static RABBIT_CLASS_SUFFIX = "Broker";
 
   static registerFor(moduleName: string): DynamicModule {
     const clientName = `${moduleName}${RabbitmqModule.RABBIT_CLASS_SUFFIX}`;

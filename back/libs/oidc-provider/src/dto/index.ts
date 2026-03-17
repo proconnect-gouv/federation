@@ -1,1 +1,1 @@
-export * from './oidc-provider-config.dto';
+export * from "./oidc-provider-config.dto";

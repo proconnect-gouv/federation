@@ -1,1 +1,1 @@
-export * from './idp-service.token';
+export * from "./idp-service.token";

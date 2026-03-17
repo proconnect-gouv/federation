@@ -1,1 +1,1 @@
-export * from './service-provider-service.token';
+export * from "./service-provider-service.token";

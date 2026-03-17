@@ -1,15 +1,15 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
-import { isEmpty } from 'lodash';
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { isEmpty } from "lodash";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
-import { RedisService } from '@fc/redis';
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
+import { LoggerService } from "@fc/logger";
+import { RedisService } from "@fc/redis";
 
-import { SessionConfig } from '../dto';
+import { SessionConfig } from "../dto";
 import {
   SessionAliasNotFoundException,
   SessionBadAliasException,
@@ -17,8 +17,8 @@ import {
   SessionBadStringifyException,
   SessionNotFoundException,
   SessionStorageException,
-} from '../exceptions';
-import { RedisQueryResult } from './session.service';
+} from "../exceptions";
+import { RedisQueryResult } from "./session.service";
 
 @Injectable()
 export class SessionBackendStorageService {
@@ -51,7 +51,7 @@ export class SessionBackendStorageService {
 
     const rawSession = this.deserialize(serializedSession);
 
-    const { schema } = this.config.get<SessionConfig>('Session');
+    const { schema } = this.config.get<SessionConfig>("Session");
 
     const session = plainToInstance(schema, rawSession);
     const errors = await validate(session, {
@@ -60,7 +60,7 @@ export class SessionBackendStorageService {
 
     if (errors.length > 0) {
       this.logger.error({
-        msg: 'SessionBackendStorageService:validate() Invalid session data from Redis.',
+        msg: "SessionBackendStorageService:validate() Invalid session data from Redis.",
         validationErrors: errors,
       });
     }
@@ -87,7 +87,7 @@ export class SessionBackendStorageService {
     sessionId: string,
     data: Record<string, unknown>,
   ): Promise<boolean> {
-    const { lifetime } = this.config.get<SessionConfig>('Session');
+    const { lifetime } = this.config.get<SessionConfig>("Session");
     const key = this.getSessionKey(sessionId);
 
     const serialized = this.serialize(data);
@@ -110,7 +110,7 @@ export class SessionBackendStorageService {
    * Transform data to encrypted string, easy to persist.
    */
   private serialize(data: Record<string, unknown>): string | never {
-    const { encryptionKey } = this.config.get<SessionConfig>('Session');
+    const { encryptionKey } = this.config.get<SessionConfig>("Session");
     /**
      * @todo #415 should probably have a try/catch with custom error code
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/415
@@ -139,7 +139,7 @@ export class SessionBackendStorageService {
    * @returns object data
    */
   private deserialize(data: string): Record<string, unknown> | never {
-    const session = this.config.get<SessionConfig>('Session');
+    const session = this.config.get<SessionConfig>("Session");
     const { encryptionKey } = session;
     const dataString = this.cryptography.decryptSymetric(encryptionKey, data);
 
@@ -151,7 +151,7 @@ export class SessionBackendStorageService {
   }
 
   private getSessionKey(sessionId: string) {
-    const { prefix } = this.config.get<SessionConfig>('Session');
+    const { prefix } = this.config.get<SessionConfig>("Session");
     return `${prefix}::${sessionId}`;
   }
 
@@ -159,7 +159,7 @@ export class SessionBackendStorageService {
     alias: string,
     sessionId: string,
   ): Promise<RedisQueryResult[]> {
-    const { lifetime } = this.config.get<SessionConfig>('Session');
+    const { lifetime } = this.config.get<SessionConfig>("Session");
     const multi = this.redis.client.multi();
 
     multi.set(alias, sessionId);

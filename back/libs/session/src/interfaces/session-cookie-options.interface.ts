@@ -1,4 +1,4 @@
-import { SameSiteType } from '../types';
+import { SameSiteType } from "../types";
 
 /**
  * @todo This interface is not complete, it should have the right attributes

@@ -1,21 +1,21 @@
-import { join } from 'path';
+import { join } from "path";
 
-import CookieParser from 'cookie-parser';
-import { renderFile } from 'ejs';
-import { urlencoded } from 'express';
-import helmet from 'helmet';
+import CookieParser from "cookie-parser";
+import { renderFile } from "ejs";
+import { urlencoded } from "express";
+import helmet from "helmet";
 
-import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
+import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
-import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import { ConfigService } from '@fc/config';
-import { AppConfig, CoreFcaConfig } from '@fc/core';
-import { NestLoggerService } from '@fc/logger';
-import { SessionConfig } from '@fc/session';
+import { NestJsDependencyInjectionWrapper } from "@fc/common";
+import { ConfigService } from "@fc/config";
+import { AppConfig, CoreFcaConfig } from "@fc/core";
+import { NestLoggerService } from "@fc/logger";
+import { SessionConfig } from "@fc/session";
 
-import { AppModule } from './app.module';
-import config from './config';
+import { AppModule } from "./app.module";
+import config from "./config";
 
 async function bootstrap() {
   const configService = new ConfigService({
@@ -38,7 +38,7 @@ async function bootstrap() {
       frameSrc,
       imgSrc,
     },
-  } = configService.get<AppConfig>('App');
+  } = configService.get<AppConfig>("App");
 
   const appModule = AppModule.forRoot(configService);
 
@@ -70,7 +70,7 @@ async function bootstrap() {
    * @see https://expressjs.com/fr/api.html#app.set
    * @see https://github.com/expressjs/express/issues/3361
    */
-  app.set('query parser', 'simple');
+  app.set("query parser", "simple");
 
   app.setGlobalPrefix(urlPrefix);
   /**
@@ -110,12 +110,12 @@ async function bootstrap() {
    */
   app.use(urlencoded({ extended: false }));
 
-  app.engine('ejs', renderFile);
-  app.setViewEngine('ejs');
+  app.engine("ejs", renderFile);
+  app.setViewEngine("ejs");
   app.set(
-    'views',
+    "views",
     viewsPaths.map((viewsPath) => {
-      return join(__dirname, viewsPath, 'views');
+      return join(__dirname, viewsPath, "views");
     }),
   );
 
@@ -131,12 +131,12 @@ async function bootstrap() {
   });
 
   assetsPaths.forEach((assetsPath) => {
-    app.useStaticAssets(join(__dirname, assetsPath, 'public'), {
+    app.useStaticAssets(join(__dirname, assetsPath, "public"), {
       maxAge: assetsCacheTtl * 1000,
     });
   });
 
-  const { cookieSecrets } = configService.get<SessionConfig>('Session');
+  const { cookieSecrets } = configService.get<SessionConfig>("Session");
   app.use(CookieParser(cookieSecrets));
 
   NestJsDependencyInjectionWrapper.use(app.select(appModule));

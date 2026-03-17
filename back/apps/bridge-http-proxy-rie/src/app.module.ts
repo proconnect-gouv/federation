@@ -1,10 +1,10 @@
-import { BridgeHttpProxyModule } from 'apps/bridge-http-proxy-rie/src';
+import { BridgeHttpProxyModule } from "apps/bridge-http-proxy-rie/src";
 
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module } from "@nestjs/common";
 
-import { ConfigModule, ConfigService } from '@fc/config';
-import { LoggerModule } from '@fc/logger';
-import { LoggerRequestPlugin } from '@fc/logger-plugins';
+import { ConfigModule, ConfigService } from "@fc/config";
+import { LoggerModule } from "@fc/logger";
+import { LoggerRequestPlugin } from "@fc/logger-plugins";
 
 @Module({})
 export class AppModule {

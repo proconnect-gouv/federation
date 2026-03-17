@@ -1,19 +1,19 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from "lodash";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
-import { AppConfig } from '@fc/core/dto';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
-import { IdentityProviderMetadata } from '@fc/oidc';
+import { ConfigService } from "@fc/config";
+import { AppConfig } from "@fc/core/dto";
+import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
+import { LoggerService } from "@fc/logger";
+import { IdentityProviderMetadata } from "@fc/oidc";
 
 import {
   CoreFcaAgentIdpDisabledException,
   CoreFcaIdpConfigurationException,
   CoreFcaInvalidEmailDomainException,
   CoreFcaUnauthorizedEmailException,
-} from '../exceptions';
+} from "../exceptions";
 
 @Injectable()
 export class CoreFcaService {
@@ -24,21 +24,21 @@ export class CoreFcaService {
   ) {}
 
   hasDefaultIdp(providersUid: string[]): boolean {
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+    const defaultIdpId = this.config.get<AppConfig>("App").defaultIdpId;
     return providersUid.includes(defaultIdpId);
   }
 
   getSortedDisplayableIdentityProviders(
     identityProviders: IdentityProviderMetadata[],
   ): IdentityProviderMetadata[] {
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+    const defaultIdpId = this.config.get<AppConfig>("App").defaultIdpId;
 
     const filteredIdentityProviders = identityProviders.map(
       (identityProvider) => ({
         ...identityProvider,
         title:
           identityProvider.uid === defaultIdpId
-            ? 'Autre (via ProConnect Identité)'
+            ? "Autre (via ProConnect Identité)"
             : identityProvider.title,
       }),
     );
@@ -47,7 +47,7 @@ export class CoreFcaService {
     return filteredIdentityProviders.sort((a, b) => {
       if (a.uid === defaultIdpId) return 1;
       if (b.uid === defaultIdpId) return -1;
-      return a.title.localeCompare(b.title, 'fr');
+      return a.title.localeCompare(b.title, "fr");
     });
   }
 
@@ -57,9 +57,9 @@ export class CoreFcaService {
     const idpsFromFqdn = await this.identityProvider.getIdpsByEmail(email);
 
     // we get the part before the last @ to check if it's a "passe-droit" email
-    const emailPrefix = email.substring(0, email.lastIndexOf('@'));
+    const emailPrefix = email.substring(0, email.lastIndexOf("@"));
 
-    const { passeDroitEmailSuffix } = this.config.get<AppConfig>('App');
+    const { passeDroitEmailSuffix } = this.config.get<AppConfig>("App");
     const idpsWithRoutingEnabled = idpsFromFqdn.filter(
       (idp) =>
         idp.isRoutingEnabled || emailPrefix.endsWith(passeDroitEmailSuffix),
@@ -70,7 +70,7 @@ export class CoreFcaService {
     // if yes, we return the default idp
     // if no, we return an empty config and we deduce that the default idp is not accepted
     if (isEmpty(idpsWithRoutingEnabled)) {
-      const { defaultIdpId } = this.config.get<AppConfig>('App');
+      const { defaultIdpId } = this.config.get<AppConfig>("App");
 
       if (!defaultIdpId) {
         return [];
@@ -100,20 +100,20 @@ export class CoreFcaService {
     }
 
     // if no idp explicitly handles the domain, the only idp allowed is the default one
-    const { defaultIdpId } = this.config.get<AppConfig>('App');
+    const { defaultIdpId } = this.config.get<AppConfig>("App");
     if (defaultIdpId === idpId) {
       return;
     }
 
     if (!identityProvider.isBlockingForUnlistedEmailDomainsEnabled) {
-      this.logger.warn({ code: 'fqdn_mismatch' });
+      this.logger.warn({ code: "fqdn_mismatch" });
 
       return;
     }
 
     const contact =
       identityProvider.supportEmail ||
-      this.config.get<AppConfig>('App').supportEmail;
+      this.config.get<AppConfig>("App").supportEmail;
 
     throw new CoreFcaInvalidEmailDomainException(
       identityProvider.name,
@@ -127,7 +127,7 @@ export class CoreFcaService {
    */
   ensureEmailIsAuthorizedForSp(spId: string, email: string): void {
     const fqdnFromEmail = this.identityProvider.getFqdnFromEmail(email);
-    const { spAuthorizedFqdnsConfigs } = this.config.get<AppConfig>('App');
+    const { spAuthorizedFqdnsConfigs } = this.config.get<AppConfig>("App");
 
     const authorizedFqdnsConfig = spAuthorizedFqdnsConfigs.find((config) => {
       return config.spId === spId;

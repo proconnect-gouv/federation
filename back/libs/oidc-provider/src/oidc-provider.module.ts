@@ -1,23 +1,23 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
-import { ModuleMetadata } from '@nestjs/common/interfaces';
+import { DynamicModule, Module, Type } from "@nestjs/common";
+import { ModuleMetadata } from "@nestjs/common/interfaces";
 
-import { ConfigModule } from '@fc/config';
-import { ExceptionsModule, FcWebHtmlExceptionFilter } from '@fc/exceptions';
-import { LoggerModule } from '@fc/logger';
-import { IServiceProviderAdapter } from '@fc/oidc';
-import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
-import { OidcAcrModule } from '@fc/oidc-acr';
-import { IIdentityProviderAdapter } from '@fc/oidc-client';
-import { IDENTITY_PROVIDER_SERVICE } from '@fc/oidc-client/tokens';
-import { RedisModule } from '@fc/redis';
-import { SessionModule } from '@fc/session';
+import { ConfigModule } from "@fc/config";
+import { ExceptionsModule, FcWebHtmlExceptionFilter } from "@fc/exceptions";
+import { LoggerModule } from "@fc/logger";
+import { IServiceProviderAdapter } from "@fc/oidc";
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from "@fc/oidc/tokens";
+import { OidcAcrModule } from "@fc/oidc-acr";
+import { IIdentityProviderAdapter } from "@fc/oidc-client";
+import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
+import { RedisModule } from "@fc/redis";
+import { SessionModule } from "@fc/session";
 
-import { OidcProviderSessionNotFoundExceptionFilter } from './filters/oidc-provider-session-not-found-exception.filter';
-import { OidcProviderService } from './oidc-provider.service';
+import { OidcProviderSessionNotFoundExceptionFilter } from "./filters/oidc-provider-session-not-found-exception.filter";
+import { OidcProviderService } from "./oidc-provider.service";
 import {
   OidcProviderConfigAppService,
   OidcProviderConfigService,
-} from './services';
+} from "./services";
 
 @Module({})
 export class OidcProviderModule {

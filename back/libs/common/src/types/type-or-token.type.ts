@@ -1,3 +1,3 @@
-import { Type } from '@nestjs/common';
+import { Type } from "@nestjs/common";
 
 export type TypeOrToken<T> = string | symbol | Function | Type<T>;

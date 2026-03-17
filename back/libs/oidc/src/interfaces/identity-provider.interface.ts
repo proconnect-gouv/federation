@@ -1,4 +1,4 @@
-import { ClientMetadata, IssuerMetadata } from '../dto';
+import { ClientMetadata, IssuerMetadata } from "../dto";
 
 export type IdentityProviderMetadata = {
   client: ClientMetadata;

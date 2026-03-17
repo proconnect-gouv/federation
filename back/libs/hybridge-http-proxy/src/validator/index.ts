@@ -1,1 +1,1 @@
-export * from './http-headers.validator';
+export * from "./http-headers.validator";

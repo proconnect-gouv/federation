@@ -2,9 +2,9 @@ import {
   ConsoleLogger,
   Injectable,
   LoggerService as LoggerServiceBase,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { LoggerService } from './logger.service';
+import { LoggerService } from "./logger.service";
 
 /**
  * Nest logger service use any as ConsoleLogger from NestJS.

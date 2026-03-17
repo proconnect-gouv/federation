@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware } from "@nestjs/common";
 
-import { AsyncLocalStorageService } from '../async-local-storage.service';
+import { AsyncLocalStorageService } from "../async-local-storage.service";
 
 @Injectable()
 export class AsyncLocalStorageMiddleware implements NestMiddleware {

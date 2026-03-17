@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsAscii,
@@ -8,10 +8,10 @@ import {
   IsString,
   MinLength,
   ValidateNested,
-} from 'class-validator';
-import { type IdTokenClaims } from 'openid-client';
+} from "class-validator";
+import { type IdTokenClaims } from "openid-client";
 
-import { TokenResults } from '../interfaces';
+import { TokenResults } from "../interfaces";
 
 export class TokenResultClaimsDto {
   @IsString()

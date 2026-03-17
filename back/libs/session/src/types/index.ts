@@ -1,2 +1,2 @@
-export * from './samesite.type';
-export * from './template-exposed.type';
+export * from "./samesite.type";
+export * from "./template-exposed.type";

@@ -1,22 +1,22 @@
-import { ValidationError } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { ValidationError } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { validateDto } from '@fc/common';
-import { MessageType } from '@fc/hybridge-http-proxy';
-import { LoggerService } from '@fc/logger';
+import { validateDto } from "@fc/common";
+import { MessageType } from "@fc/hybridge-http-proxy";
+import { LoggerService } from "@fc/logger";
 
-import { getLoggerMock } from '@mocks/logger';
+import { getLoggerMock } from "@mocks/logger";
 
 import {
   BridgeHttpProxyCsmrException,
   BridgeHttpProxyMissingVariableException,
-} from '../exceptions';
-import { BridgeHttpProxyService } from '../services';
-import { BridgeHttpProxyController } from './bridge-http-proxy.controller';
+} from "../exceptions";
+import { BridgeHttpProxyService } from "../services";
+import { BridgeHttpProxyController } from "./bridge-http-proxy.controller";
 
-jest.mock('@fc/common');
+jest.mock("@fc/common");
 
-describe('BrokerProxyController', () => {
+describe("BrokerProxyController", () => {
   let controller: BridgeHttpProxyController;
 
   const bridgeHttpProxyServiceMock = {
@@ -27,16 +27,16 @@ describe('BrokerProxyController', () => {
   const loggerServiceMock = getLoggerMock();
 
   const reqMock = {
-    originalUrl: '/fizz',
-    method: '',
+    originalUrl: "/fizz",
+    method: "",
   };
   const resMock = {
     status: jest.fn(),
   };
   const sendMock = { send: jest.fn() };
 
-  const bodyMock = 'foo=bar&toto=titi';
-  const headersMock = { host: 'url.com', 'x-forwarded-proto': 'https' };
+  const bodyMock = "foo=bar&toto=titi";
+  const headersMock = { host: "url.com", "x-forwarded-proto": "https" };
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -57,28 +57,28 @@ describe('BrokerProxyController', () => {
     );
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 
-  describe('healthcheck()', () => {
+  describe("healthcheck()", () => {
     it("should return 'ok'", () => {
       const result = controller.healthcheck();
-      expect(result).toBe('ok');
+      expect(result).toBe("ok");
     });
   });
 
-  describe('get()', () => {
-    it('should log URL idp called and call allRequest private method', async () => {
+  describe("get()", () => {
+    it("should log URL idp called and call allRequest private method", async () => {
       // Given
-      controller['allRequest'] = jest.fn();
+      controller["allRequest"] = jest.fn();
 
       // When
       await controller.get(reqMock, headersMock, resMock);
 
       // Then
-      expect(controller['allRequest']).toHaveBeenCalledTimes(1);
-      expect(controller['allRequest']).toHaveBeenCalledWith(
+      expect(controller["allRequest"]).toHaveBeenCalledTimes(1);
+      expect(controller["allRequest"]).toHaveBeenCalledWith(
         reqMock,
         headersMock,
         resMock,
@@ -86,17 +86,17 @@ describe('BrokerProxyController', () => {
     });
   });
 
-  describe('post()', () => {
-    it('should log URL idp called and call allRequest private method', async () => {
+  describe("post()", () => {
+    it("should log URL idp called and call allRequest private method", async () => {
       // Given
-      controller['allRequest'] = jest.fn();
+      controller["allRequest"] = jest.fn();
 
       // When
       await controller.get(reqMock, headersMock, resMock);
 
       // Then
-      expect(controller['allRequest']).toHaveBeenCalledTimes(1);
-      expect(controller['allRequest']).toHaveBeenCalledWith(
+      expect(controller["allRequest"]).toHaveBeenCalledTimes(1);
+      expect(controller["allRequest"]).toHaveBeenCalledWith(
         reqMock,
         headersMock,
         resMock,
@@ -104,102 +104,102 @@ describe('BrokerProxyController', () => {
     });
   });
 
-  describe('allRequest()', () => {
+  describe("allRequest()", () => {
     let handleMessageMock;
     let handleErrorMock;
 
     beforeEach(() => {
       handleMessageMock = jest.spyOn<BridgeHttpProxyController, any>(
         controller,
-        'handleMessage',
+        "handleMessage",
       );
       handleMessageMock.mockResolvedValueOnce();
       handleErrorMock = jest.spyOn<BridgeHttpProxyController, any>(
         controller,
-        'handleError',
+        "handleError",
       );
       handleErrorMock.mockResolvedValueOnce();
     });
 
-    it('should log URL idp called', async () => {
+    it("should log URL idp called", async () => {
       // Given
-      reqMock.method = 'GET';
+      reqMock.method = "GET";
       bridgeHttpProxyServiceMock.proxyRequest.mockResolvedValueOnce({
         type: MessageType.DATA,
         data: {
           headers: {
-            fizz: 'bud',
+            fizz: "bud",
           },
           status: 200,
           data: {
-            foo: 'bar',
+            foo: "bar",
           },
         },
       });
 
       // When
-      await controller['allRequest'](reqMock, headersMock, resMock);
+      await controller["allRequest"](reqMock, headersMock, resMock);
 
       // Then
       expect(loggerServiceMock.info).toHaveBeenCalledTimes(1);
       expect(loggerServiceMock.info).toHaveBeenCalledWith(
-        'GET https://url.com/fizz',
+        "GET https://url.com/fizz",
       );
     });
 
-    it('should call broker proxy service without body', async () => {
+    it("should call broker proxy service without body", async () => {
       // Given
-      reqMock.method = 'GET';
+      reqMock.method = "GET";
 
       bridgeHttpProxyServiceMock.proxyRequest.mockResolvedValueOnce({
         type: MessageType.DATA,
         data: {
           headers: {
-            fizz: 'bud',
+            fizz: "bud",
           },
           status: 200,
           data: {
-            foo: 'bar',
+            foo: "bar",
           },
         },
       });
 
       // When
-      await controller['allRequest'](reqMock, { host: 'url.com' }, resMock);
+      await controller["allRequest"](reqMock, { host: "url.com" }, resMock);
 
       // Then
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledTimes(1);
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledWith(
-        '/fizz',
-        'GET',
-        { host: 'url.com' },
+        "/fizz",
+        "GET",
+        { host: "url.com" },
         undefined,
       );
 
       expect(handleMessageMock).toHaveBeenCalledTimes(1);
       expect(handleErrorMock).toHaveBeenCalledTimes(0);
       expect(handleMessageMock).toHaveBeenCalledWith(resMock, {
-        data: { foo: 'bar' },
-        headers: { fizz: 'bud' },
+        data: { foo: "bar" },
+        headers: { fizz: "bud" },
         status: 200,
       });
     });
 
-    it('should call broker proxy service with a body', async () => {
+    it("should call broker proxy service with a body", async () => {
       // Given
-      reqMock.method = 'POST';
+      reqMock.method = "POST";
 
       bridgeHttpProxyServiceMock.proxyRequest.mockResolvedValueOnce({
         type: MessageType.DATA,
         data: {
           headers: {
-            fizz: 'bud',
+            fizz: "bud",
           },
           status: 200,
           data: {
-            access_token: 'access_token',
-            id_token: 'id_token',
-            token_type: 'token_type',
+            access_token: "access_token",
+            id_token: "id_token",
+            token_type: "token_type",
           },
         },
       });
@@ -210,37 +210,37 @@ describe('BrokerProxyController', () => {
       // Then
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledTimes(1);
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledWith(
-        '/fizz',
-        'POST',
-        { host: 'url.com', 'x-forwarded-proto': 'https' },
-        'foo=bar&toto=titi',
+        "/fizz",
+        "POST",
+        { host: "url.com", "x-forwarded-proto": "https" },
+        "foo=bar&toto=titi",
       );
 
       expect(handleMessageMock).toHaveBeenCalledTimes(1);
       expect(handleErrorMock).toHaveBeenCalledTimes(0);
       expect(handleMessageMock).toHaveBeenCalledWith(resMock, {
         headers: {
-          fizz: 'bud',
+          fizz: "bud",
         },
         status: 200,
         data: {
-          access_token: 'access_token',
-          id_token: 'id_token',
-          token_type: 'token_type',
+          access_token: "access_token",
+          id_token: "id_token",
+          token_type: "token_type",
         },
       });
     });
 
-    it('should call Error handler if the request failed on external resource', async () => {
+    it("should call Error handler if the request failed on external resource", async () => {
       // Given
-      reqMock.method = 'POST';
+      reqMock.method = "POST";
 
       bridgeHttpProxyServiceMock.proxyRequest.mockResolvedValueOnce({
         type: MessageType.ERROR,
         data: {
           code: 1000,
-          name: 'UnknownBrokerError',
-          reason: 'Something weird happened and I do not know why',
+          name: "UnknownBrokerError",
+          reason: "Something weird happened and I do not know why",
         },
       });
 
@@ -250,31 +250,31 @@ describe('BrokerProxyController', () => {
       // Then
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledTimes(1);
       expect(bridgeHttpProxyServiceMock.proxyRequest).toHaveBeenCalledWith(
-        '/fizz',
-        'POST',
-        { host: 'url.com', 'x-forwarded-proto': 'https' },
-        'foo=bar&toto=titi',
+        "/fizz",
+        "POST",
+        { host: "url.com", "x-forwarded-proto": "https" },
+        "foo=bar&toto=titi",
       );
 
       expect(handleMessageMock).toHaveBeenCalledTimes(0);
       expect(handleErrorMock).toHaveBeenCalledTimes(1);
       expect(handleErrorMock).toHaveBeenCalledWith({
         code: 1000,
-        name: 'UnknownBrokerError',
-        reason: 'Something weird happened and I do not know why',
+        name: "UnknownBrokerError",
+        reason: "Something weird happened and I do not know why",
       });
     });
   });
 
-  describe('handleMessage()', () => {
+  describe("handleMessage()", () => {
     const validateDtoMock = jest.mocked(validateDto);
 
-    it('should return HTTP message with headers from broker', async () => {
+    it("should return HTTP message with headers from broker", async () => {
       // Given
       const correctMessage = {
         headers: {
-          fizz: 'bud',
-          test: 'testValue',
+          fizz: "bud",
+          test: "testValue",
         },
         status: 200,
         data: null,
@@ -294,15 +294,15 @@ describe('BrokerProxyController', () => {
         correctMessage.headers,
       );
     });
-    it('should return HTTP message from broker message', async () => {
+    it("should return HTTP message from broker message", async () => {
       // Given
       const correctMessage = {
         headers: {
-          fizz: 'bud',
+          fizz: "bud",
         },
         status: 200,
         data: {
-          foo: 'bar',
+          foo: "bar",
         },
       };
       validateDtoMock.mockResolvedValueOnce([
@@ -318,17 +318,17 @@ describe('BrokerProxyController', () => {
       expect(resMock.status).toHaveBeenCalledWith(200);
       expect(sendMock.send).toHaveBeenCalledTimes(1);
       expect(sendMock.send).toHaveBeenCalledWith({
-        foo: 'bar',
+        foo: "bar",
       });
     });
-    it('should fail to return HTTP message from broker message', async () => {
+    it("should fail to return HTTP message from broker message", async () => {
       // Given
       const falsyMessage = {
-        Sarah: 'Connor',
+        Sarah: "Connor",
       };
 
       validateDtoMock.mockResolvedValueOnce([
-        new Error('Unknown Error') as unknown as ValidationError,
+        new Error("Unknown Error") as unknown as ValidationError,
       ]);
       // When
       await expect(
@@ -340,17 +340,17 @@ describe('BrokerProxyController', () => {
     });
   });
 
-  describe('handleError()', () => {
+  describe("handleError()", () => {
     const validateDtoMock = jest.mocked(validateDto);
 
-    it('should throw format Error if Error message from Broker is miss formatted', async () => {
+    it("should throw format Error if Error message from Broker is miss formatted", async () => {
       // Given
       const falsyError = {
-        Sarah: 'Connor',
+        Sarah: "Connor",
       };
 
       validateDtoMock.mockResolvedValueOnce([
-        new Error('Unknown Error') as unknown as ValidationError,
+        new Error("Unknown Error") as unknown as ValidationError,
       ]);
       // When
       await expect(
@@ -360,12 +360,12 @@ describe('BrokerProxyController', () => {
       expect(validateDtoMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should fail to return HTTP message from broker message', async () => {
+    it("should fail to return HTTP message from broker message", async () => {
       // Given
       const successError = {
         code: 1000,
-        name: 'ErrorName',
-        reason: 'Nice try M. Bond !',
+        name: "ErrorName",
+        reason: "Nice try M. Bond !",
       };
 
       validateDtoMock.mockResolvedValueOnce([

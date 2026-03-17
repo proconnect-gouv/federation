@@ -1,15 +1,15 @@
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom } from "rxjs";
 
-import { HttpService } from '@nestjs/axios';
-import { Test, TestingModule } from '@nestjs/testing';
+import { HttpService } from "@nestjs/axios";
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { BridgePayload, BridgeResponse } from '@fc/hybridge-http-proxy';
+import { BridgePayload, BridgeResponse } from "@fc/hybridge-http-proxy";
 
-import { CsmrHttpProxyService } from './csmr-http-proxy.service';
+import { CsmrHttpProxyService } from "./csmr-http-proxy.service";
 
-jest.mock('rxjs');
+jest.mock("rxjs");
 
-describe('CsmrHttpProxyService', () => {
+describe("CsmrHttpProxyService", () => {
   let service: CsmrHttpProxyService;
 
   const httpService = {
@@ -19,7 +19,7 @@ describe('CsmrHttpProxyService', () => {
 
   const lastValueMock = jest.mocked(lastValueFrom);
 
-  const httpResponseMock = Symbol('httpResponseMock');
+  const httpResponseMock = Symbol("httpResponseMock");
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -35,35 +35,35 @@ describe('CsmrHttpProxyService', () => {
     service = module.get<CsmrHttpProxyService>(CsmrHttpProxyService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     // Given
     // When
     // Then
     expect(service).toBeDefined();
   });
 
-  describe('forwardRequest()', () => {
+  describe("forwardRequest()", () => {
     const baseResponseMock = Object.freeze({
       status: 200,
-      statusText: 'statusTextValue',
+      statusText: "statusTextValue",
       headers: {
-        'content-type': 'text/html; charset=UTF-8',
+        "content-type": "text/html; charset=UTF-8",
       },
     });
     const resultMock: BridgeResponse = {
       headers: {
-        'content-type': 'text/html; charset=UTF-8',
+        "content-type": "text/html; charset=UTF-8",
       },
-      statusText: 'statusTextValue',
+      statusText: "statusTextValue",
       status: 200,
       data: undefined,
     };
 
     const options: BridgePayload = Object.freeze({
-      url: 'http://test.com/token?code=33EFGRGRG44556GH6J',
-      method: 'get',
+      url: "http://test.com/token?code=33EFGRGRG44556GH6J",
+      method: "get",
       headers: {
-        hello: 'world',
+        hello: "world",
       },
       data: null,
     });
@@ -73,13 +73,13 @@ describe('CsmrHttpProxyService', () => {
       httpService.post.mockResolvedValueOnce(httpResponseMock);
     });
 
-    it('should resolve without data for given options', async () => {
+    it("should resolve without data for given options", async () => {
       // Given
 
       const requestMock = [
-        'http://test.com/token?code=33EFGRGRG44556GH6J',
+        "http://test.com/token?code=33EFGRGRG44556GH6J",
         {
-          headers: { hello: 'world' },
+          headers: { hello: "world" },
         },
       ];
 
@@ -92,27 +92,27 @@ describe('CsmrHttpProxyService', () => {
       expect(httpService.get).toHaveBeenCalledWith(...requestMock);
     });
 
-    it('should resolve with data for given options', async () => {
+    it("should resolve with data for given options", async () => {
       // Given
 
       const mockResponse = {
         ...baseResponseMock,
         data: {
-          hello: 'world',
+          hello: "world",
         },
       };
 
       const mockOptions = {
         ...options,
-        method: 'post',
+        method: "post",
         data: "{\nexemple: 'example value'\n}",
       };
 
       const requestMock = [
-        'http://test.com/token?code=33EFGRGRG44556GH6J',
+        "http://test.com/token?code=33EFGRGRG44556GH6J",
         "{\nexemple: 'example value'\n}",
         {
-          headers: { hello: 'world' },
+          headers: { hello: "world" },
         },
       ];
 
@@ -125,7 +125,7 @@ describe('CsmrHttpProxyService', () => {
       expect(httpService.post).toHaveBeenCalledWith(...requestMock);
     });
 
-    it('should call lastValueFrom when request is called', async () => {
+    it("should call lastValueFrom when request is called", async () => {
       // Given
       httpService.get.mockReset().mockReturnValueOnce(httpResponseMock);
       lastValueMock.mockResolvedValueOnce(baseResponseMock);
@@ -137,9 +137,9 @@ describe('CsmrHttpProxyService', () => {
       expect(lastValueMock).toHaveBeenCalledWith(httpResponseMock);
     });
 
-    it('should throw an error if request failed', async () => {
+    it("should throw an error if request failed", async () => {
       // Given
-      const errorMock = new Error('Unknown Error');
+      const errorMock = new Error("Unknown Error");
 
       lastValueMock.mockImplementationOnce(() => {
         throw errorMock;

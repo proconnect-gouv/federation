@@ -1,11 +1,11 @@
-import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
+import { Global, MiddlewareConsumer, Module } from "@nestjs/common";
 
 import {
   AsyncLocalStorageMiddleware,
   AsyncLocalStorageRequestMiddleware,
-} from '@fc/async-local-storage';
+} from "@fc/async-local-storage";
 
-import { AsyncLocalStorageService } from './async-local-storage.service';
+import { AsyncLocalStorageService } from "./async-local-storage.service";
 
 @Module({
   providers: [AsyncLocalStorageService],
@@ -16,6 +16,6 @@ export class AsyncLocalStorageModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AsyncLocalStorageMiddleware, AsyncLocalStorageRequestMiddleware)
-      .forRoutes('*');
+      .forRoutes("*");
   }
 }

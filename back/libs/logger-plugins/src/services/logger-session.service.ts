@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import { Injectable } from "@nestjs/common";
+import { ModuleRef } from "@nestjs/core";
 
-import { UserSession } from '@fc/core';
-import { LoggerPluginServiceInterface } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { UserSession } from "@fc/core";
+import { LoggerPluginServiceInterface } from "@fc/logger";
+import { SessionService } from "@fc/session";
 
 @Injectable()
 export class LoggerSessionService implements LoggerPluginServiceInterface {
@@ -32,7 +32,7 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
       idpLabel,
       idpLoginHint,
       idpIdentity,
-    } = sessionService.get<UserSession>('User') || {};
+    } = sessionService.get<UserSession>("User") || {};
 
     const context = {
       amr,
@@ -40,11 +40,11 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
       idpAcr,
       idpBelongingPopulation: idpIdentity?.belonging_population,
       idpEmail: idpIdentity?.email,
-      idpEmailFqdn: idpIdentity?.email?.split('@').pop().toLowerCase(),
+      idpEmailFqdn: idpIdentity?.email?.split("@").pop().toLowerCase(),
       idpId,
       idpLabel,
       idpLoginHint,
-      idpLoginHintFqdn: idpLoginHint?.split('@').pop().toLowerCase(),
+      idpLoginHintFqdn: idpLoginHint?.split("@").pop().toLowerCase(),
       idpName,
       idpOrganizationalUnit: idpIdentity?.organizational_unit,
       idpSiret: idpIdentity?.siret,
@@ -56,7 +56,7 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
       spEssentialAcr,
       spId,
       spLoginHint,
-      spLoginHintFqdn: spLoginHint?.split('@').pop().toLowerCase(),
+      spLoginHintFqdn: spLoginHint?.split("@").pop().toLowerCase(),
       spName,
       spSiret: spIdentity?.siret,
       spSiretHint,

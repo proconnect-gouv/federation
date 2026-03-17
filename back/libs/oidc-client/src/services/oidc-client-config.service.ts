@@ -1,10 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
+import { ConfigService } from "@fc/config";
 
-import { OidcClientConfig } from '../dto';
-import { type IIdentityProviderAdapter } from '../interfaces';
-import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
+import { OidcClientConfig } from "../dto";
+import { type IIdentityProviderAdapter } from "../interfaces";
+import { IDENTITY_PROVIDER_SERVICE } from "../tokens";
 
 @Injectable()
 export class OidcClientConfigService {
@@ -21,7 +21,7 @@ export class OidcClientConfigService {
    */
   public async get(refresh = false): Promise<OidcClientConfig> {
     const providers = await this.identityProvider.getList(refresh);
-    const configuration = this.config.get<OidcClientConfig>('OidcClient');
+    const configuration = this.config.get<OidcClientConfig>("OidcClient");
 
     return {
       ...configuration,

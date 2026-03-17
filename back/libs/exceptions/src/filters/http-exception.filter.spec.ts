@@ -3,26 +3,26 @@ import {
   BadRequestException,
   HttpException,
   InternalServerErrorException,
-} from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+} from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { SessionService } from "@fc/session";
 
-import { getConfigMock } from '@mocks/config';
-import { getLoggerMock } from '@mocks/logger';
-import { getSessionServiceMock } from '@mocks/session';
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
+import { getSessionServiceMock } from "@mocks/session";
 
-import { generateErrorId } from '../helpers';
-import { HttpExceptionFilter } from './http-exception.filter';
+import { generateErrorId } from "../helpers";
+import { HttpExceptionFilter } from "./http-exception.filter";
 
-jest.mock('../helpers', () => ({
-  ...jest.requireActual('../helpers'),
+jest.mock("../helpers", () => ({
+  ...jest.requireActual("../helpers"),
   generateErrorId: jest.fn(),
 }));
 
-describe('HttpExceptionFilter', () => {
+describe("HttpExceptionFilter", () => {
   let filter: HttpExceptionFilter;
 
   const generateErrorIdMock = jest.mocked(generateErrorId);
@@ -44,7 +44,7 @@ describe('HttpExceptionFilter', () => {
     render: jest.fn(),
   } as any;
 
-  const idMock = 'error-id-123';
+  const idMock = "error-id-123";
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -74,17 +74,17 @@ describe('HttpExceptionFilter', () => {
     generateErrorIdMock.mockReturnValue(idMock);
 
     resMock.status.mockReturnThis();
-    configMock.get.mockReturnValue({ prefix: 'Y' });
+    configMock.get.mockReturnValue({ prefix: "Y" });
 
-    exceptionMock = new HttpException('message', 500);
+    exceptionMock = new HttpException("message", 500);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(filter).toBeDefined();
   });
 
-  describe('catch', () => {
-    it('should log the exception with code, id, message and original exception', () => {
+  describe("catch", () => {
+    it("should log the exception with code, id, message and original exception", () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
@@ -92,7 +92,7 @@ describe('HttpExceptionFilter', () => {
       expect(loggerMock.error).toHaveBeenCalledOnce();
     });
 
-    it('should output the error with error object, exception and response', () => {
+    it("should output the error with error object, exception and response", () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
@@ -100,10 +100,10 @@ describe('HttpExceptionFilter', () => {
       expect(resMock.render).toHaveBeenCalledOnce();
     });
 
-    it('should join BadRequestException messages into a single message', () => {
+    it("should join BadRequestException messages into a single message", () => {
       // Given
       const badRequest = new BadRequestException({
-        message: ['first error', 'second error'],
+        message: ["first error", "second error"],
       } as any);
 
       // When
@@ -115,30 +115,30 @@ describe('HttpExceptionFilter', () => {
     });
   });
 
-  describe('errorOutput', () => {
-    it('should render error page with crispLink when present', () => {
+  describe("errorOutput", () => {
+    it("should render error page with crispLink when present", () => {
       const testCases = [
-        new BadRequestException('Bad request error'),
-        new HttpException('Internal server error', 500),
-        new HttpException('Not found', 404),
+        new BadRequestException("Bad request error"),
+        new HttpException("Internal server error", 500),
+        new HttpException("Not found", 404),
       ];
       const error = {
-        code: 'code-123',
-        id: 'id-123',
-        message: 'message-123',
+        code: "code-123",
+        id: "id-123",
+        message: "message-123",
       };
 
       testCases.forEach((exception) => {
         jest.clearAllMocks();
 
-        filter['errorOutput']({
+        filter["errorOutput"]({
           error,
           exception,
           res: resMock as any,
         });
 
         expect(resMock.render).toHaveBeenCalledOnce();
-        expect(resMock.render).toHaveBeenCalledWith('error', {
+        expect(resMock.render).toHaveBeenCalledWith("error", {
           error,
           exceptionDisplay: expect.objectContaining({
             crispLink: expect.anything(),
@@ -147,24 +147,24 @@ describe('HttpExceptionFilter', () => {
       });
     });
 
-    it('should render error page without crispLink when not present', () => {
-      const exception = new HttpException('Custom error', 418);
+    it("should render error page without crispLink when not present", () => {
+      const exception = new HttpException("Custom error", 418);
       const error = {
-        code: 'code-456',
-        id: 'id-456',
-        message: 'message-456',
+        code: "code-456",
+        id: "id-456",
+        message: "message-456",
       };
 
       jest.clearAllMocks();
 
-      filter['errorOutput']({
+      filter["errorOutput"]({
         error,
         exception,
         res: resMock as any,
       });
 
       expect(resMock.render).toHaveBeenCalledOnce();
-      expect(resMock.render).toHaveBeenCalledWith('error', {
+      expect(resMock.render).toHaveBeenCalledWith("error", {
         error,
         exceptionDisplay: expect.not.objectContaining({
           crispLink: expect.anything(),
@@ -172,28 +172,28 @@ describe('HttpExceptionFilter', () => {
       });
     });
 
-    it('should render error page with contact for 500', () => {
+    it("should render error page with contact for 500", () => {
       const exception = new InternalServerErrorException();
       const error = {
-        code: 'code-456',
-        id: 'id-456',
-        message: 'message-456',
+        code: "code-456",
+        id: "id-456",
+        message: "message-456",
       };
 
       jest.clearAllMocks();
 
-      filter['errorOutput']({
+      filter["errorOutput"]({
         error,
         exception,
         res: resMock as any,
       });
 
       expect(resMock.render).toHaveBeenCalledOnce();
-      expect(resMock.render).toHaveBeenCalledWith('error', {
+      expect(resMock.render).toHaveBeenCalledWith("error", {
         error,
         exceptionDisplay: expect.objectContaining({
           displayContact: true,
-          contactHref: expect.toStartWith('mailto:'),
+          contactHref: expect.toStartWith("mailto:"),
         }),
       });
     });

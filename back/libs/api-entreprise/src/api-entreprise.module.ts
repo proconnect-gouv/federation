@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { ApiEntrepriseService } from './services';
+import { ApiEntrepriseService } from "./services";
 
 @Module({
   imports: [],

@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import { Injectable } from "@nestjs/common";
+import { ModuleRef } from "@nestjs/core";
 
-import { AsyncLocalStorageService } from '@fc/async-local-storage';
-import { LoggerPluginServiceInterface } from '@fc/logger';
+import { AsyncLocalStorageService } from "@fc/async-local-storage";
+import { LoggerPluginServiceInterface } from "@fc/logger";
 
 @Injectable()
 export class LoggerRequestService implements LoggerPluginServiceInterface {
@@ -16,7 +16,7 @@ export class LoggerRequestService implements LoggerPluginServiceInterface {
       },
     );
 
-    const req = asyncLocalStorageService.get('request');
+    const req = asyncLocalStorageService.get("request");
 
     if (!req) {
       return {};
@@ -25,11 +25,11 @@ export class LoggerRequestService implements LoggerPluginServiceInterface {
     const { baseUrl, headers = {}, ip, method, path } = req;
     const context = {
       ip,
-      forwardedFor: headers['x-forwarded-for'],
-      userAgent: headers['user-agent'],
+      forwardedFor: headers["x-forwarded-for"],
+      userAgent: headers["user-agent"],
       method,
       path: `${baseUrl}${path}`,
-      requestId: headers['x-request-id'],
+      requestId: headers["x-request-id"],
     };
 
     return context;

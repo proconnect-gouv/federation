@@ -1,12 +1,12 @@
-import ejs from 'ejs';
-import { readFile, writeFile } from 'fs/promises';
-import glob from 'glob';
-import { format } from 'prettier';
-import { MarkdownGenerator } from './markdown-generator';
+import ejs from "ejs";
+import { readFile, writeFile } from "fs/promises";
+import glob from "glob";
+import { format } from "prettier";
+import { MarkdownGenerator } from "./markdown-generator";
 
 const TEMPLATE_FILE = `${__dirname}/views/env-vars.ejs`;
-const FILE_SEARCH_PATTERN = 'apps/*/src/config/*.ts';
-const DEST_FILE = '_doc/env-vars.md';
+const FILE_SEARCH_PATTERN = "apps/*/src/config/*.ts";
+const DEST_FILE = "_doc/env-vars.md";
 
 const CONFIG_PREFIX_REGEX = /new ConfigParser\(process\.env, '(\w+)'\)/;
 const PROCESS_ENV_REGEX = /process\.env[\n\r\s]*\.(\w+)/g;
@@ -14,7 +14,7 @@ const CONFIG_ENV_REGEX = /env\.(\w+)\([\n\r\s]*'(\w+)'/g;
 
 export class Runner {
   static async run(): Promise<void> {
-    console.log('Generating documentation for env vars...');
+    console.log("Generating documentation for env vars...");
 
     const paths = Runner.getConfigFilesPath();
     const configFiles = await Runner.loadConfigs(paths);
@@ -35,7 +35,7 @@ export class Runner {
   }
 
   static async loadConfigs(paths: string[]): Promise<any> {
-    const infos = paths.map((path) => readFile(path, 'utf-8'));
+    const infos = paths.map((path) => readFile(path, "utf-8"));
     const files = await Promise.all(infos);
 
     return files.map((file, index) => ({ path: paths[index], file }));
@@ -48,7 +48,7 @@ export class Runner {
   }
 
   static filesReducer(envMap, { path, file }) {
-    const instanceName = path.split('/')[1];
+    const instanceName = path.split("/")[1];
     const configPrefix = file.match(CONFIG_PREFIX_REGEX)?.[1];
 
     if (!envMap[instanceName]) {
@@ -57,7 +57,7 @@ export class Runner {
 
     const processEnvVars = [...file.matchAll(PROCESS_ENV_REGEX)];
     processEnvVars.forEach(([, name]) => {
-      envMap[instanceName][name] = 'string';
+      envMap[instanceName][name] = "string";
     });
 
     const configEnvVars = [...file.matchAll(CONFIG_ENV_REGEX)];

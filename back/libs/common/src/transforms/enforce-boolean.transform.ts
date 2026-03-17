@@ -1,6 +1,6 @@
-import { TransformFnParams } from 'class-transformer';
+import { TransformFnParams } from "class-transformer";
 
-import { parseBoolean } from '../helpers';
+import { parseBoolean } from "../helpers";
 
 export function enforceBoolean({
   value,

@@ -1,25 +1,25 @@
-import { get } from 'lodash';
-import { MongoMemoryReplSet } from 'mongodb-memory-server';
-import { Document, Model } from 'mongoose';
+import { get } from "lodash";
+import { MongoMemoryReplSet } from "mongodb-memory-server";
+import { Document, Model } from "mongoose";
 
-import { Injectable, type OnModuleInit } from '@nestjs/common';
+import { Injectable, type OnModuleInit } from "@nestjs/common";
 import {
   getModelToken,
   InjectModel,
   Prop,
   Schema,
   SchemaFactory,
-} from '@nestjs/mongoose';
-import { Test } from '@nestjs/testing';
+} from "@nestjs/mongoose";
+import { Test } from "@nestjs/testing";
 
-import { ConfigModule, ConfigService } from '@fc/config';
-import { LoggerModule, LoggerService } from '@fc/logger';
+import { ConfigModule, ConfigService } from "@fc/config";
+import { LoggerModule, LoggerService } from "@fc/logger";
 
-import { getConfigMock } from '@mocks/config';
-import { getLoggerMock } from '@mocks/logger';
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
 
-import { MongooseCollectionOperationWatcherHelper } from './helpers';
-import { MongooseModule } from './mongoose.module';
+import { MongooseCollectionOperationWatcherHelper } from "./helpers";
+import { MongooseModule } from "./mongoose.module";
 
 const loggerMock = getLoggerMock();
 const configServiceMock = getConfigMock();
@@ -56,15 +56,15 @@ class TestWatcherService implements OnModuleInit {
   }
 }
 
-describe('MongooseProvider with MongoMemoryReplSet', () => {
-  it('should properly cleanup ChangeStreams when module is destroyed', async () => {
+describe("MongooseProvider with MongoMemoryReplSet", () => {
+  it("should properly cleanup ChangeStreams when module is destroyed", async () => {
     await using mongo = await MongoMemoryReplSet.create({
       replSet: { count: 1 },
     });
     const configService = {
       configuration: {
         Logger: {
-          threshold: 'debug',
+          threshold: "debug",
         },
         Mongoose: {
           uri: mongo.getUri(),
@@ -104,16 +104,16 @@ describe('MongooseProvider with MongoMemoryReplSet', () => {
 
     // The Model change : Felix le chat arrive ;)
     const CatModel = app.get<Model<Cat>>(getModelToken(Cat.name));
-    await CatModel.create({ name: 'Felix' });
+    await CatModel.create({ name: "Felix" });
 
     // We wait for the watcher to be triggered
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     // The service did play cache-cache with Felix le chat ;)
-    expect(service.cache).toEqual(['Felix']);
+    expect(service.cache).toEqual(["Felix"]);
   });
 
-  it('should properly reconnect the watchers after mongo reconnection', async () => {
+  it("should properly reconnect the watchers after mongo reconnection", async () => {
     await using mongo = await MongoMemoryReplSet.create({
       replSet: { count: 1 },
     });
@@ -121,7 +121,7 @@ describe('MongooseProvider with MongoMemoryReplSet', () => {
     const configService = {
       configuration: {
         Logger: {
-          threshold: 'debug',
+          threshold: "debug",
         },
         Mongoose: {
           uri: mongo.getUri(),
@@ -165,10 +165,10 @@ describe('MongooseProvider with MongoMemoryReplSet', () => {
     await connection.close();
     await connection.openUri(mongo.getUri());
 
-    await CatModel.create({ name: 'Felix' });
+    await CatModel.create({ name: "Felix" });
     // We wait for the watcher to be triggered
     await new Promise((resolve) => setTimeout(resolve, 300));
     // The service did play cache-cache with Felix le chat ;)
-    expect(service.cache).toEqual(['Felix']);
+    expect(service.cache).toEqual(["Felix"]);
   });
 });

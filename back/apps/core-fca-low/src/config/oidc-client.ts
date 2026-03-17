@@ -1,10 +1,10 @@
-import { ConfigParser } from '@fc/config';
-import { OidcClientConfig } from '@fc/oidc-client';
+import { ConfigParser } from "@fc/config";
+import { OidcClientConfig } from "@fc/oidc-client";
 
-import { Routes } from '../enums';
-import app from './app';
+import { Routes } from "../enums";
+import app from "./app";
 
-const env = new ConfigParser(process.env, 'OidcClient');
+const env = new ConfigParser(process.env, "OidcClient");
 
 export default {
   httpOptions: {
@@ -12,7 +12,7 @@ export default {
     timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
   },
   jwks: {
-    keys: env.json('CRYPTO_ENC_LOCALE_PRIV_KEYS'),
+    keys: env.json("CRYPTO_ENC_LOCALE_PRIV_KEYS"),
   },
   stateLength: 32,
   /**
@@ -20,9 +20,9 @@ export default {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/215
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/216
    */
-  scope: env.string('SCOPE'),
+  scope: env.string("SCOPE"),
   // Toggle Financial Grade API
-  fapi: env.boolean('FAPI'),
+  fapi: env.boolean("FAPI"),
   postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_LOGOUT_CALLBACK}`,
   redirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_CALLBACK}`,
 } as OidcClientConfig;

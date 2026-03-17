@@ -1,6 +1,6 @@
-import { IsNumber, IsObject, IsString } from 'class-validator';
+import { IsNumber, IsObject, IsString } from "class-validator";
 
-import { BridgeResponse, ValidateHttpHeaders } from '@fc/hybridge-http-proxy';
+import { BridgeResponse, ValidateHttpHeaders } from "@fc/hybridge-http-proxy";
 
 export class BridgeHttpProxyResponseDto implements BridgeResponse {
   @IsNumber()

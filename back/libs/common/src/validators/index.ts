@@ -1,1 +1,1 @@
-export * from './is-string-or-regexp.validator';
+export * from "./is-string-or-regexp.validator";

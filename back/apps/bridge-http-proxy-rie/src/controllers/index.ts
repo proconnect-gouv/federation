@@ -1,1 +1,1 @@
-export * from './bridge-http-proxy.controller';
+export * from "./bridge-http-proxy.controller";

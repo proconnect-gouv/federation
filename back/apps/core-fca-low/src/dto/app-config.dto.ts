@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -7,12 +7,12 @@ import {
   IsString,
   IsUrl,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
-import { AppConfig as AppGenericConfig } from '@fc/app';
+import { AppConfig as AppGenericConfig } from "@fc/app";
 
-import { ContentSecurityPolicy } from './content-secury-policy.dto';
-import { SpAuthorizedFqdnsConfig } from './sp-authorized-fqdns-config.dto';
+import { ContentSecurityPolicy } from "./content-secury-policy.dto";
+import { SpAuthorizedFqdnsConfig } from "./sp-authorized-fqdns-config.dto";
 
 export class AppConfig extends AppGenericConfig {
   @IsString()

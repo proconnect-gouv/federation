@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { LoggerRequestService, LoggerSessionService } from './services';
+import { LoggerRequestService, LoggerSessionService } from "./services";
 
 @Module({
   providers: [LoggerRequestService, LoggerSessionService],

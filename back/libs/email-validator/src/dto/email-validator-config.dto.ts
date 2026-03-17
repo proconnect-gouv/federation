@@ -1,4 +1,4 @@
-import { IsArray } from 'class-validator';
+import { IsArray } from "class-validator";
 
 export class EmailValidatorConfig {
   @IsArray()

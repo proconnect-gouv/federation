@@ -1,14 +1,14 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus } from "@nestjs/common";
 
-import { ErrorCode } from '../enums';
-import { CoreFcaBaseException } from './core-fca-base.exception';
+import { ErrorCode } from "../enums";
+import { CoreFcaBaseException } from "./core-fca-base.exception";
 
 export class CoreFcaInvalidEmailDomainException extends CoreFcaBaseException {
   public code = ErrorCode.INVALID_EMAIL_DOMAIN;
   public http_status_code = HttpStatus.BAD_REQUEST;
-  public error = 'server_error';
+  public error = "server_error";
   public error_description =
-    'authentication aborted due to a technical error on the authorization server';
+    "authentication aborted due to a technical error on the authorization server";
 
   public displayContact = true;
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
@@ -16,7 +16,7 @@ export class CoreFcaInvalidEmailDomainException extends CoreFcaBaseException {
   constructor(idpName: string, email: string, contact: string) {
     super();
 
-    const emailDomain = email?.split('@').pop().toLowerCase();
+    const emailDomain = email?.split("@").pop().toLowerCase();
 
     this.description = `Le domaine « ${emailDomain} » que vous utilisez ne fait pas partie des domaines autorisés pour ${idpName}.`;
 
@@ -36,7 +36,7 @@ Cordialement,
 `);
 
     const emailSubject = encodeURIComponent(
-      'Mise à jour de mon profil pour compatibilité ProConnect',
+      "Mise à jour de mon profil pour compatibilité ProConnect",
     );
 
     const emailAddress = encodeURIComponent(contact);

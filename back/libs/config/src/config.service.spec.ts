@@ -1,16 +1,16 @@
-import { IsNumber, IsObject } from 'class-validator';
+import { IsNumber, IsObject } from "class-validator";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
 /**
  * Config service being manually instanciated (in main.ts), nest dependencies
  * are not working, therefore, we can't go through barrel files,
  * but need to specify the full path to the helper
  */
-import { AppHelper } from '@fc/app/helpers/app-helper';
+import { AppHelper } from "@fc/app/helpers/app-helper";
 
-import { ConfigService } from './config.service';
-import { UnknownConfigurationNameError } from './errors';
+import { ConfigService } from "./config.service";
+import { UnknownConfigurationNameError } from "./errors";
 
 class Schema {
   @IsNumber()
@@ -19,12 +19,12 @@ class Schema {
   @IsObject()
   readonly I: any;
 }
-jest.mock('@fc/app/helpers/app-helper');
-jest.mock('@fc/common/helpers/dto-validation', () => ({
+jest.mock("@fc/app/helpers/app-helper");
+jest.mock("@fc/common/helpers/dto-validation", () => ({
   getDtoErrors: jest.fn(),
 }));
 
-describe('ConfigService', () => {
+describe("ConfigService", () => {
   let service: ConfigService;
   const options = {
     config: {
@@ -33,7 +33,7 @@ describe('ConfigService', () => {
           my: {
             intentions: {
               are: {
-                bad: 'Harry',
+                bad: "Harry",
               },
             },
           },
@@ -62,80 +62,80 @@ describe('ConfigService', () => {
     service = module.get<ConfigService>(ConfigService);
   });
 
-  describe('constructor', () => {
-    it('should be defined', () => {
+  describe("constructor", () => {
+    it("should be defined", () => {
       // Then
       expect(service).toBeDefined();
     });
   });
 
-  describe('validate', () => {
+  describe("validate", () => {
     let consoleError;
 
     beforeEach(() => {
       consoleError = jest
-        .spyOn(console, 'error')
+        .spyOn(console, "error")
         .mockImplementation((log) => log);
     });
 
-    it('should log that config is not valid', () => {
+    it("should log that config is not valid", () => {
       // Given
       const config = {
-        foo: 'a string instead of a number',
+        foo: "a string instead of a number",
       };
 
       // When
-      ConfigService['validate'](config, Schema);
+      ConfigService["validate"](config, Schema);
 
       // Then
       expect(consoleError).toHaveBeenCalledTimes(3);
-      expect(consoleError).toHaveBeenCalledWith('Invalid configuration Error');
-      expect(consoleError).toHaveBeenCalledWith('Exiting app');
+      expect(consoleError).toHaveBeenCalledWith("Invalid configuration Error");
+      expect(consoleError).toHaveBeenCalledWith("Exiting app");
     });
 
-    it('should call AppHelper.shutdown if config is not valid', () => {
+    it("should call AppHelper.shutdown if config is not valid", () => {
       // Given
       const config = {
-        foo: 'a string instead of a number',
+        foo: "a string instead of a number",
       };
 
       // When
-      ConfigService['validate'](config, Schema);
+      ConfigService["validate"](config, Schema);
 
       // Then
       expect(AppHelper.shutdown).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('get', () => {
-    it('should return asked part of config', () => {
+  describe("get", () => {
+    it("should return asked part of config", () => {
       // Given
-      const part = 'foo';
+      const part = "foo";
       // When
       const config = service.get(part);
       // Then
       expect(config).toBe(options.config.foo);
     });
 
-    it('should return asked part of config based on dot paths', () => {
+    it("should return asked part of config based on dot paths", () => {
       //Given
-      const paths = 'I.swear.my.intentions.are.bad';
+      const paths = "I.swear.my.intentions.are.bad";
 
       // When
       const config = service.get(paths);
 
       // Then
-      expect(config).toBe('Harry');
+      expect(config).toBe("Harry");
     });
 
-    it('should throw if path is not part of config', () => {
+    it("should throw if path is not part of config", () => {
       // Given
-      const part = 'bar';
+      const part = "bar";
       // Then
       expect(() => service.get(part)).toThrow(UnknownConfigurationNameError);
     });
 
-    it('should throw if path is not a string', () => {
+    it("should throw if path is not a string", () => {
       // Given
       const part = 42;
       // Then
@@ -144,23 +144,23 @@ describe('ConfigService', () => {
       );
     });
 
-    it('should throw if path is undefined', () => {
+    it("should throw if path is undefined", () => {
       // Given
       const part = undefined;
       // Then
       expect(() => service.get(part)).toThrow(UnknownConfigurationNameError);
     });
 
-    it('should throw if path is empty', () => {
+    it("should throw if path is empty", () => {
       // Given
-      const part = '';
+      const part = "";
       // Then
       expect(() => service.get(part)).toThrow(UnknownConfigurationNameError);
     });
 
     it("should throw if paths don't exist in config", () => {
       // Given
-      const paths = 'I.swear.my.intentions.are.bad.harry.potter';
+      const paths = "I.swear.my.intentions.are.bad.harry.potter";
 
       // When
       // Then

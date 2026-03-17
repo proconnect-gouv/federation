@@ -36,7 +36,7 @@ export class MarkdownGenerator {
   }
 
   static generateMarkdownContent({ instanceName, envVars }): object {
-    let content = '';
+    let content = "";
 
     envVars.forEach(({ name, type }) => {
       content += `| ${name} | ${type} |\n`;

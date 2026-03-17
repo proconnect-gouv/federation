@@ -1,4 +1,4 @@
-import { AllClientMetadata } from 'oidc-provider';
+import { AllClientMetadata } from "oidc-provider";
 
 export interface CustomClientMetadata extends AllClientMetadata {
   active: boolean;

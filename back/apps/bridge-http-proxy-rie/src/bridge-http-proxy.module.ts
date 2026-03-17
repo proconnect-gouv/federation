@@ -1,14 +1,14 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module } from "@nestjs/common";
 
-import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { RabbitmqModule } from '@fc/rabbitmq';
+import { AsyncLocalStorageModule } from "@fc/async-local-storage";
+import { RabbitmqModule } from "@fc/rabbitmq";
 
-import { BridgeHttpProxyController } from './controllers';
-import { BridgeHttpProxyService } from './services';
+import { BridgeHttpProxyController } from "./controllers";
+import { BridgeHttpProxyService } from "./services";
 
 @Global()
 @Module({
-  imports: [AsyncLocalStorageModule, RabbitmqModule.registerFor('BridgeProxy')],
+  imports: [AsyncLocalStorageModule, RabbitmqModule.registerFor("BridgeProxy")],
   controllers: [BridgeHttpProxyController],
   providers: [BridgeHttpProxyService],
   exports: [],

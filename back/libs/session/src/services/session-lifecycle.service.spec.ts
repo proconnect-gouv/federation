@@ -1,31 +1,31 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
 
-import { getConfigMock } from '@mocks/config';
+import { getConfigMock } from "@mocks/config";
 
-import { SessionCannotCommitUndefinedSession } from '../exceptions';
-import { SessionBackendStorageService } from './session-backend-storage.service';
-import { SessionCookiesService } from './session-cookies.service';
-import { SessionLifecycleService } from './session-lifecycle.service';
-import { SessionLocalStorageService } from './session-local-storage.service';
+import { SessionCannotCommitUndefinedSession } from "../exceptions";
+import { SessionBackendStorageService } from "./session-backend-storage.service";
+import { SessionCookiesService } from "./session-cookies.service";
+import { SessionLifecycleService } from "./session-lifecycle.service";
+import { SessionLocalStorageService } from "./session-local-storage.service";
 
-jest.mock('@fc/common');
+jest.mock("@fc/common");
 
-describe('SessionLifecycleService', () => {
+describe("SessionLifecycleService", () => {
   let service: SessionLifecycleService;
 
   const configMock = getConfigMock();
-  const sessionIdLength = Symbol('sessionIdLength');
+  const sessionIdLength = Symbol("sessionIdLength");
 
   const cryptographyMock = {
     genRandomString: jest.fn(),
   };
 
-  const randomStringValue = Symbol('randomStringValue');
+  const randomStringValue = Symbol("randomStringValue");
 
   const res = {
     cookie: jest.fn(),
@@ -88,12 +88,12 @@ describe('SessionLifecycleService', () => {
     configMock.get.mockReturnValue({ sessionIdLength });
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('init()', () => {
-    it('should call localStorage.setStore()', () => {
+  describe("init()", () => {
+    it("should call localStorage.setStore()", () => {
       // When
       service.init(res);
 
@@ -109,7 +109,7 @@ describe('SessionLifecycleService', () => {
       });
     });
 
-    it('should call cookies.set()', () => {
+    it("should call cookies.set()", () => {
       // When
       service.init(res);
 
@@ -117,7 +117,7 @@ describe('SessionLifecycleService', () => {
       expect(cookiesMock.set).toHaveBeenCalledWith(res, randomStringValue);
     });
 
-    it('should return sessionId', () => {
+    it("should return sessionId", () => {
       // When
       const result = service.init(res);
 
@@ -126,9 +126,9 @@ describe('SessionLifecycleService', () => {
     });
   });
 
-  describe('initCache()', () => {
+  describe("initCache()", () => {
     // Given
-    const sessionId = 'sessionId';
+    const sessionId = "sessionId";
     const store = {
       id: sessionId,
       sync: false,
@@ -137,7 +137,7 @@ describe('SessionLifecycleService', () => {
     beforeEach(() => {
       localStorageMock.getStore.mockReturnValue(store);
     });
-    it('should retrieve data from backendStorage.get() with sessionId', async () => {
+    it("should retrieve data from backendStorage.get() with sessionId", async () => {
       // Given
       backendStorageMock.get.mockResolvedValue(null);
 
@@ -149,7 +149,7 @@ describe('SessionLifecycleService', () => {
       expect(backendStorageMock.get).toHaveBeenCalledWith(sessionId);
     });
 
-    it('should NOT call backendStorage.get() if store.id === sessionId and store.sync is true', async () => {
+    it("should NOT call backendStorage.get() if store.id === sessionId and store.sync is true", async () => {
       // Given
       localStorageMock.getStore.mockReturnValueOnce({
         id: sessionId,
@@ -163,7 +163,7 @@ describe('SessionLifecycleService', () => {
       expect(backendStorageMock.get).not.toHaveBeenCalled();
     });
 
-    it('should call localStorage.setStore() with data from backendStorage.get()', async () => {
+    it("should call localStorage.setStore() with data from backendStorage.get()", async () => {
       // Given
       const backendDataMock = {};
       backendStorageMock.get.mockResolvedValue(backendDataMock);
@@ -181,16 +181,16 @@ describe('SessionLifecycleService', () => {
     });
   });
 
-  describe('clear()', () => {
+  describe("clear()", () => {
     // Given
-    const sessionId = 'sessionId';
+    const sessionId = "sessionId";
 
     beforeEach(() => {
       localStorageMock.getStore.mockReturnValue({ id: sessionId });
-      service['init'] = jest.fn().mockReturnValue(sessionId);
+      service["init"] = jest.fn().mockReturnValue(sessionId);
     });
 
-    it('should call localStorage.getStore()', () => {
+    it("should call localStorage.getStore()", () => {
       // When
       service.clear();
 
@@ -199,13 +199,13 @@ describe('SessionLifecycleService', () => {
     });
   });
 
-  describe('duplicate()', () => {
+  describe("duplicate()", () => {
     // Given
     const storeMock = {
       data: {},
     };
 
-    const initResult = Symbol('initResult');
+    const initResult = Symbol("initResult");
 
     beforeEach(() => {
       service.commit = jest.fn();
@@ -214,7 +214,7 @@ describe('SessionLifecycleService', () => {
       localStorageMock.getStore.mockReturnValue(storeMock);
     });
 
-    it('should call commit()', async () => {
+    it("should call commit()", async () => {
       // When
       await service.duplicate(res);
 
@@ -222,7 +222,7 @@ describe('SessionLifecycleService', () => {
       expect(service.commit).toHaveBeenCalledTimes(1);
     });
 
-    it('should call localStorage.getStore()', async () => {
+    it("should call localStorage.getStore()", async () => {
       // When
       await service.duplicate(res);
 
@@ -230,7 +230,7 @@ describe('SessionLifecycleService', () => {
       expect(localStorageMock.getStore).toHaveBeenCalledTimes(1);
     });
 
-    it('should call session.ini()', async () => {
+    it("should call session.ini()", async () => {
       // When
       await service.duplicate(res);
 
@@ -239,7 +239,7 @@ describe('SessionLifecycleService', () => {
       expect(service.init).toHaveBeenCalledWith(res);
     });
 
-    it('should call localStorage.set()', async () => {
+    it("should call localStorage.set()", async () => {
       // When
       await service.duplicate(res);
 
@@ -253,26 +253,26 @@ describe('SessionLifecycleService', () => {
     });
   });
 
-  describe('refresh()', () => {
+  describe("refresh()", () => {
     // Given
-    const getResult = Symbol('getResult');
-    const configDataMock = { lifetime: Symbol('lifetime') };
+    const getResult = Symbol("getResult");
+    const configDataMock = { lifetime: Symbol("lifetime") };
 
     beforeEach(() => {
       cookiesMock.get.mockReturnValue(getResult);
       configMock.get.mockReturnValue(configDataMock);
     });
 
-    it('should call config.get()', async () => {
+    it("should call config.get()", async () => {
       // When
       await service.refresh(req, res);
 
       // Then
       expect(configMock.get).toHaveBeenCalledTimes(1);
-      expect(configMock.get).toHaveBeenCalledWith('Session');
+      expect(configMock.get).toHaveBeenCalledWith("Session");
     });
 
-    it('should call cookies.get()', async () => {
+    it("should call cookies.get()", async () => {
       // When
       await service.refresh(req, res);
 
@@ -281,7 +281,7 @@ describe('SessionLifecycleService', () => {
       expect(cookiesMock.get).toHaveBeenCalledWith(req);
     });
 
-    it('should call backendStorage.expire()', async () => {
+    it("should call backendStorage.expire()", async () => {
       // When
       await service.refresh(req, res);
 
@@ -293,7 +293,7 @@ describe('SessionLifecycleService', () => {
       );
     });
 
-    it('should call cookies.set()', async () => {
+    it("should call cookies.set()", async () => {
       // When
       await service.refresh(req, res);
 
@@ -302,7 +302,7 @@ describe('SessionLifecycleService', () => {
       expect(cookiesMock.set).toHaveBeenCalledWith(res, getResult);
     });
 
-    it('should return sessionId', async () => {
+    it("should return sessionId", async () => {
       // When
       const result = await service.refresh(req, res);
 
@@ -311,27 +311,27 @@ describe('SessionLifecycleService', () => {
     });
   });
 
-  describe('destroy()', () => {
+  describe("destroy()", () => {
     // Given
     const storeMock = {
-      id: Symbol('idMock'),
+      id: Symbol("idMock"),
     };
 
-    const removeResult = Symbol('removeResult');
+    const removeResult = Symbol("removeResult");
 
     beforeEach(() => {
       localStorageMock.getStore.mockReturnValue(storeMock);
       backendStorageMock.remove.mockReturnValue(removeResult);
     });
 
-    it('should call localStorage.getStore()', async () => {
+    it("should call localStorage.getStore()", async () => {
       // When
       await service.destroy(res);
       // Then
       expect(localStorageMock.getStore).toHaveBeenCalledTimes(1);
     });
 
-    it('should call cookies.remove()', async () => {
+    it("should call cookies.remove()", async () => {
       // When
       await service.destroy(res);
 
@@ -340,7 +340,7 @@ describe('SessionLifecycleService', () => {
       expect(cookiesMock.remove).toHaveBeenCalledWith(res);
     });
 
-    it('should call backendStorage.remove()', async () => {
+    it("should call backendStorage.remove()", async () => {
       // When
       await service.destroy(res);
 
@@ -349,7 +349,7 @@ describe('SessionLifecycleService', () => {
       expect(backendStorageMock.remove).toHaveBeenCalledWith(storeMock.id);
     });
 
-    it('should return result of call to backendStorage.remove()', async () => {
+    it("should return result of call to backendStorage.remove()", async () => {
       // When
       const result = await service.destroy(res);
 
@@ -358,22 +358,22 @@ describe('SessionLifecycleService', () => {
     });
   });
 
-  describe('commit()', () => {
+  describe("commit()", () => {
     // Given
     const storeMock = {
-      id: Symbol('idMock'),
-      data: Symbol('dataMock'),
+      id: Symbol("idMock"),
+      data: Symbol("dataMock"),
       sync: false,
     };
 
-    const saveResult = Symbol('saveResult');
+    const saveResult = Symbol("saveResult");
 
     beforeEach(() => {
       localStorageMock.getStore.mockReturnValue(storeMock);
       backendStorageMock.save.mockReturnValue(saveResult);
     });
 
-    it('should call localStorage.getStore()', async () => {
+    it("should call localStorage.getStore()", async () => {
       // When
       await service.commit();
 
@@ -381,7 +381,7 @@ describe('SessionLifecycleService', () => {
       expect(localStorageMock.getStore).toHaveBeenCalledTimes(1);
     });
 
-    it('should throw if session id is falsy', async () => {
+    it("should throw if session id is falsy", async () => {
       // Given
       localStorageMock.getStore.mockReturnValueOnce({ id: undefined });
 
@@ -391,7 +391,7 @@ describe('SessionLifecycleService', () => {
       );
     });
 
-    it('should call backendStorage.save()', async () => {
+    it("should call backendStorage.save()", async () => {
       // When
       await service.commit();
 
@@ -403,7 +403,7 @@ describe('SessionLifecycleService', () => {
       );
     });
 
-    it('should call localStorage.setStore()', async () => {
+    it("should call localStorage.setStore()", async () => {
       // When
       await service.commit();
 
@@ -416,7 +416,7 @@ describe('SessionLifecycleService', () => {
       });
     });
 
-    it('should return result of call to backendStorage.save()', async () => {
+    it("should return result of call to backendStorage.save()", async () => {
       // When
       const result = await service.commit();
 
@@ -424,7 +424,7 @@ describe('SessionLifecycleService', () => {
       expect(result).toBe(saveResult);
     });
 
-    it('should NOT call backendStorage.save() if sync is true', async () => {
+    it("should NOT call backendStorage.save() if sync is true", async () => {
       // Given
       const syncedStoreMock = {
         id: storeMock.id,
@@ -442,7 +442,7 @@ describe('SessionLifecycleService', () => {
       expect(backendStorageMock.save).not.toHaveBeenCalled();
     });
 
-    it('should return true if sync is true', async () => {
+    it("should return true if sync is true", async () => {
       // Given
       const syncedStoreMock = {
         id: storeMock.id,

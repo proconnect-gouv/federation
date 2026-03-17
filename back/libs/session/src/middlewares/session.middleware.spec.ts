@@ -1,17 +1,17 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
+import { ConfigService } from "@fc/config";
 
-import { getConfigMock } from '@mocks/config';
-import { getSessionServiceMock } from '@mocks/session';
+import { getConfigMock } from "@mocks/config";
+import { getSessionServiceMock } from "@mocks/session";
 
-import { SessionConfig } from '../dto';
-import { SessionService } from '../services';
-import { SessionMiddleware } from './session.middleware';
+import { SessionConfig } from "../dto";
+import { SessionService } from "../services";
+import { SessionMiddleware } from "./session.middleware";
 
-describe('SessionMiddleware', () => {
+describe("SessionMiddleware", () => {
   let middleware: SessionMiddleware;
 
   const configServiceMock = getConfigMock();
@@ -45,44 +45,44 @@ describe('SessionMiddleware', () => {
     configServiceMock.get.mockReturnValue(configMock);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(middleware).toBeDefined();
   });
 
-  describe('use()', () => {
-    it('should call handleSession()', async () => {
+  describe("use()", () => {
+    it("should call handleSession()", async () => {
       // Given
-      middleware['handleSession'] = jest.fn();
+      middleware["handleSession"] = jest.fn();
 
       // When
       await middleware.use(reqMock, resMock, nextMock);
 
       // Then
-      expect(middleware['handleSession']).toHaveBeenCalledTimes(1);
-      expect(middleware['handleSession']).toHaveBeenCalledWith(
+      expect(middleware["handleSession"]).toHaveBeenCalledTimes(1);
+      expect(middleware["handleSession"]).toHaveBeenCalledWith(
         reqMock,
         resMock,
       );
     });
   });
 
-  describe('handleSession()', () => {
+  describe("handleSession()", () => {
     beforeEach(() => {
-      sessionServiceMock.getSessionIdFromCookie.mockReturnValue('sessionId');
+      sessionServiceMock.getSessionIdFromCookie.mockReturnValue("sessionId");
     });
 
-    it('should call config.get()', async () => {
+    it("should call config.get()", async () => {
       // When
-      await middleware['handleSession'](reqMock, resMock);
+      await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('Session');
+      expect(configServiceMock.get).toHaveBeenCalledWith("Session");
     });
 
-    it('should call session.getSessionIdFromCookie()', async () => {
+    it("should call session.getSessionIdFromCookie()", async () => {
       // When
-      await middleware['handleSession'](reqMock, resMock);
+      await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(sessionServiceMock.getSessionIdFromCookie).toHaveBeenCalledTimes(
@@ -93,40 +93,40 @@ describe('SessionMiddleware', () => {
       );
     });
 
-    it('should call session.init() if sessionId from cookie is falsy', async () => {
+    it("should call session.init() if sessionId from cookie is falsy", async () => {
       // Given
       sessionServiceMock.getSessionIdFromCookie.mockReturnValueOnce(null);
 
       // When
-      await middleware['handleSession'](reqMock, resMock);
+      await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(sessionServiceMock.init).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.init).toHaveBeenCalledWith(resMock);
     });
 
-    it('should return the result of call to session.init() if sessionId from cookie is falsy', async () => {
+    it("should return the result of call to session.init() if sessionId from cookie is falsy", async () => {
       // Given
-      const initResult = Symbol('init');
+      const initResult = Symbol("init");
       sessionServiceMock.getSessionIdFromCookie.mockReturnValue(null);
       sessionServiceMock.init.mockReturnValue(initResult);
 
       // When
-      const result = await middleware['handleSession'](reqMock, resMock);
+      const result = await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(result).toEqual(initResult);
     });
 
-    it('should call session.initCache() if sessionId from cookie is truthy', async () => {
+    it("should call session.initCache() if sessionId from cookie is truthy", async () => {
       // Given
-      const getSessionIdFromCookieResult = Symbol('sessionId');
+      const getSessionIdFromCookieResult = Symbol("sessionId");
       sessionServiceMock.getSessionIdFromCookie.mockReturnValue(
         getSessionIdFromCookieResult,
       );
 
       // When
-      await middleware['handleSession'](reqMock, resMock);
+      await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(sessionServiceMock.initCache).toHaveBeenCalledTimes(1);
@@ -135,63 +135,63 @@ describe('SessionMiddleware', () => {
       );
     });
 
-    it('should call session.init() if initCache fails', async () => {
+    it("should call session.init() if initCache fails", async () => {
       // Given
-      const errorMock = new Error('initCache error');
+      const errorMock = new Error("initCache error");
       sessionServiceMock.initCache.mockRejectedValue(errorMock);
 
       // When
-      await middleware['handleSession'](reqMock, resMock);
+      await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(sessionServiceMock.init).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.init).toHaveBeenCalledWith(resMock);
     });
 
-    it('should return the result of call to session.init() if session is not valid', async () => {
+    it("should return the result of call to session.init() if session is not valid", async () => {
       // Given
-      const errorMock = new Error('initCache error');
+      const errorMock = new Error("initCache error");
       sessionServiceMock.initCache.mockRejectedValue(errorMock);
-      const initResult = Symbol('init');
+      const initResult = Symbol("init");
       sessionServiceMock.init.mockReturnValue(initResult);
 
       // When
-      const result = await middleware['handleSession'](reqMock, resMock);
+      const result = await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(result).toEqual(initResult);
     });
 
-    it('should call session.refresh() if session is valid and slidingExpiration is true', async () => {
+    it("should call session.refresh() if session is valid and slidingExpiration is true", async () => {
       // Given
       sessionServiceMock.initCache.mockReturnValueOnce(true);
 
       // When
-      await middleware['handleSession'](reqMock, resMock);
+      await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(sessionServiceMock.refresh).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.refresh).toHaveBeenCalledWith(reqMock, resMock);
     });
 
-    it('should NOT call session.init() if session is valid and slidingExpiration is true', async () => {
+    it("should NOT call session.init() if session is valid and slidingExpiration is true", async () => {
       // Given
       sessionServiceMock.initCache.mockReturnValue(true);
 
       // When
-      await middleware['handleSession'](reqMock, resMock);
+      await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(sessionServiceMock.init).not.toHaveBeenCalled();
     });
 
-    it('should NOT call session.refresh() if session is valid and slidingExpiration is false', async () => {
+    it("should NOT call session.refresh() if session is valid and slidingExpiration is false", async () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({ slidingExpiration: false });
       sessionServiceMock.initCache.mockReturnValueOnce(true);
 
       // When
-      await middleware['handleSession'](reqMock, resMock);
+      await middleware["handleSession"](reqMock, resMock);
 
       // Then
       expect(sessionServiceMock.refresh).not.toHaveBeenCalled();

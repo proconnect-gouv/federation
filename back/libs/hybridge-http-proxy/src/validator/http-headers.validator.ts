@@ -3,12 +3,12 @@ import {
   isObject,
   ValidateBy,
   ValidationOptions,
-} from 'class-validator';
+} from "class-validator";
 
-export const VALIDATE_HTTP_HEADERS = 'ValidateHttpHeaders';
+export const VALIDATE_HTTP_HEADERS = "ValidateHttpHeaders";
 
 export function validateSetCookie(setCookie: string | Array<string>): boolean {
-  if (typeof setCookie === 'string') {
+  if (typeof setCookie === "string") {
     return isAscii(setCookie);
   }
 
@@ -20,11 +20,11 @@ export function validateSetCookie(setCookie: string | Array<string>): boolean {
 }
 
 export function isHttpHeaders(values: object): boolean {
-  const params = Object.entries(values).filter(([key]) => key != 'set-cookie');
+  const params = Object.entries(values).filter(([key]) => key != "set-cookie");
   let check = params.every(([key, value]) => isAscii(key) && isAscii(value));
 
   // Special handler in Headers for set-cookie
-  const cookie = values['set-cookie'];
+  const cookie = values["set-cookie"];
   if (cookie) {
     check &&= validateSetCookie(cookie);
   }
@@ -37,7 +37,7 @@ export class ValidateHttpHeadersConstraint {
   }
 
   defaultMessage() {
-    return 'Please check the HTTP headers values';
+    return "Please check the HTTP headers values";
   }
 }
 

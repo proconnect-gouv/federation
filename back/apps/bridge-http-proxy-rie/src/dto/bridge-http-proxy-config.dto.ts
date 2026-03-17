@@ -1,10 +1,10 @@
-import { Type } from 'class-transformer';
-import { IsObject, ValidateNested } from 'class-validator';
+import { Type } from "class-transformer";
+import { IsObject, ValidateNested } from "class-validator";
 
-import { LoggerConfig, LoggerLegacyConfig } from '@fc/logger';
-import { RabbitmqConfig } from '@fc/rabbitmq';
+import { LoggerConfig, LoggerLegacyConfig } from "@fc/logger";
+import { RabbitmqConfig } from "@fc/rabbitmq";
 
-import { AppConfig } from './app-config.dto';
+import { AppConfig } from "./app-config.dto";
 
 export class BridgeHttpProxyConfig {
   @IsObject()

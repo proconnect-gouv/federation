@@ -1,1 +1,1 @@
-export * from './config-parser';
+export * from "./config-parser";

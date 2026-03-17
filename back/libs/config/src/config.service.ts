@@ -1,19 +1,19 @@
-import { plainToInstance } from 'class-transformer';
-import { isString, validateSync, ValidatorOptions } from 'class-validator';
-import deepFreeze from 'deep-freeze';
-import lodash from 'lodash';
+import { plainToInstance } from "class-transformer";
+import { isString, validateSync, ValidatorOptions } from "class-validator";
+import deepFreeze from "deep-freeze";
+import lodash from "lodash";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 /**
  * Config service being manually instanciated (in main.ts), nest dependencies
  * are not working, therefore, we can't go through barrel files,
  * but need to specify the full path to the helper
  */
-import { AppHelper } from '@fc/app/helpers/app-helper';
+import { AppHelper } from "@fc/app/helpers/app-helper";
 
-import { UnknownConfigurationNameError } from './errors';
-import { type IConfigOptions } from './interfaces';
+import { UnknownConfigurationNameError } from "./errors";
+import { type IConfigOptions } from "./interfaces";
 
 export const validationOptions: ValidatorOptions = {
   forbidNonWhitelisted: true,
@@ -38,9 +38,9 @@ export class ConfigService {
     const errors = validateSync(object, validationOptions);
 
     if (errors.length > 0) {
-      console.error('Invalid configuration Error');
+      console.error("Invalid configuration Error");
       console.error(errors);
-      console.error('Exiting app');
+      console.error("Exiting app");
       AppHelper.shutdown();
     }
   }

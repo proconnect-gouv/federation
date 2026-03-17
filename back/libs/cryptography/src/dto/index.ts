@@ -1,1 +1,1 @@
-export * from './cryptography-config';
+export * from "./cryptography-config";

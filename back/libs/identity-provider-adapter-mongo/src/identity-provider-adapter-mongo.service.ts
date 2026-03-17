@@ -1,58 +1,58 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
-import deepFreeze from 'deep-freeze';
-import { cloneDeep } from 'lodash';
-import { Model } from 'mongoose';
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import deepFreeze from "deep-freeze";
+import { cloneDeep } from "lodash";
+import { Model } from "mongoose";
 
-import { Injectable, Type } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, Type } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
-import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
+import { LoggerService } from "@fc/logger";
+import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
 import {
   ClientMetadata,
   IdentityProviderMetadata,
   IssuerMetadata,
-} from '@fc/oidc';
-import { IIdentityProviderAdapter } from '@fc/oidc-client';
+} from "@fc/oidc";
+import { IIdentityProviderAdapter } from "@fc/oidc-client";
 
 import {
   DiscoveryIdpAdapterMongoDTO,
   IdentityProviderAdapterMongoConfig,
   NoDiscoveryIdpAdapterMongoDTO,
-} from './dto';
-import { IdentityProvider } from './schemas';
+} from "./dto";
+import { IdentityProvider } from "./schemas";
 
 const CLIENT_METADATA = [
-  'client_id',
-  'client_secret',
-  'response_types',
-  'id_token_signed_response_alg',
-  'token_endpoint_auth_method',
-  'revocation_endpoint_auth_method',
-  'id_token_encrypted_response_alg',
-  'id_token_encrypted_response_enc',
-  'userinfo_encrypted_response_alg',
-  'userinfo_encrypted_response_enc',
-  'userinfo_signed_response_alg',
+  "client_id",
+  "client_secret",
+  "response_types",
+  "id_token_signed_response_alg",
+  "token_endpoint_auth_method",
+  "revocation_endpoint_auth_method",
+  "id_token_encrypted_response_alg",
+  "id_token_encrypted_response_enc",
+  "userinfo_encrypted_response_alg",
+  "userinfo_encrypted_response_enc",
+  "userinfo_signed_response_alg",
 ];
 
 const ISSUER_METADATA = [
-  'issuer',
-  'token_endpoint',
-  'authorization_endpoint',
-  'jwks_uri',
-  'userinfo_endpoint',
-  'end_session_endpoint',
+  "issuer",
+  "token_endpoint",
+  "authorization_endpoint",
+  "jwks_uri",
+  "userinfo_endpoint",
+  "end_session_endpoint",
 ];
 @Injectable()
 export class IdentityProviderAdapterMongoService implements IIdentityProviderAdapter {
   private listCache: IdentityProviderMetadata[];
 
   constructor(
-    @InjectModel('IdentityProvider')
+    @InjectModel("IdentityProvider")
     private readonly identityProviderModel: Model<IdentityProvider>,
     private readonly crypto: CryptographyService,
     private readonly config: ConfigService,
@@ -65,7 +65,7 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
       this.identityProviderModel,
       this.refreshCache.bind(this),
     );
-    this.logger.debug('Initializing identity-provider');
+    this.logger.debug("Initializing identity-provider");
 
     // Warm up cache and shows up excluded IdPs
     await this.getList();
@@ -136,7 +136,7 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
   }
 
   getFqdnFromEmail(email: string | undefined): string | undefined {
-    return email?.split('@').pop().toLowerCase();
+    return email?.split("@").pop().toLowerCase();
   }
 
   getIdpsByEmail(email: string): Promise<IdentityProviderMetadata[]> {
@@ -159,13 +159,13 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
   ): IdentityProviderMetadata {
     const mapping = {
       // Oidc provider properties
-      authzURL: 'authorization_endpoint',
-      clientID: 'client_id',
-      endSessionURL: 'end_session_endpoint',
-      jwksURL: 'jwks_uri',
-      tokenURL: 'token_endpoint',
-      url: 'issuer',
-      userInfoURL: 'userinfo_endpoint',
+      authzURL: "authorization_endpoint",
+      clientID: "client_id",
+      endSessionURL: "end_session_endpoint",
+      jwksURL: "jwks_uri",
+      tokenURL: "token_endpoint",
+      url: "issuer",
+      userInfoURL: "userinfo_endpoint",
     };
 
     const result: Partial<IdentityProvider & IdentityProviderMetadata> = {
@@ -180,8 +180,8 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
     result.client_secret = this.decryptClientSecret(source.client_secret);
 
     // default values
-    result.response_types = ['code'];
-    result.revocation_endpoint_auth_method = 'client_secret_post';
+    result.response_types = ["code"];
+    result.revocation_endpoint_auth_method = "client_secret_post";
 
     /**
      * @TODO #326 Fix type issues between legacy model and `oidc-client` library
@@ -219,7 +219,7 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
   private decryptClientSecret(clientSecret: string): string {
     const { clientSecretEncryptKey, decryptClientSecretFeature } =
       this.config.get<IdentityProviderAdapterMongoConfig>(
-        'IdentityProviderAdapterMongo',
+        "IdentityProviderAdapterMongo",
       );
 
     if (!decryptClientSecretFeature) {
@@ -228,7 +228,7 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
 
     return this.crypto.decrypt(
       clientSecretEncryptKey,
-      Buffer.from(clientSecret, 'base64'),
+      Buffer.from(clientSecret, "base64"),
     );
   }
 

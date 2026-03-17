@@ -1,22 +1,22 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
-import { Request } from 'express';
-import { IdTokenClaims, TokenSet } from 'openid-client';
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { Request } from "express";
+import { IdTokenClaims, TokenSet } from "openid-client";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { LoggerService } from '@fc/logger';
+import { LoggerService } from "@fc/logger";
 
-import { TokenResultDto } from '../dto';
-import { OidcClientTokenResultFailedException } from '../exceptions';
+import { TokenResultDto } from "../dto";
+import { OidcClientTokenResultFailedException } from "../exceptions";
 import {
   ExtraTokenParams,
   TokenParams,
   TokenResults,
   UserInfosParams,
-} from '../interfaces';
-import { OidcClientIssuerService } from './oidc-client-issuer.service';
-import { OidcClientUtilsService } from './oidc-client-utils.service';
+} from "../interfaces";
+import { OidcClientIssuerService } from "./oidc-client-issuer.service";
+import { OidcClientUtilsService } from "./oidc-client-utils.service";
 
 @Injectable()
 export class OidcClientService {

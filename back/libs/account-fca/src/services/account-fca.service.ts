@@ -1,20 +1,20 @@
-import { filter, isEmpty, isEqual } from 'lodash';
-import { Model } from 'mongoose';
-import { v4 as uuid } from 'uuid';
+import { filter, isEmpty, isEqual } from "lodash";
+import { Model } from "mongoose";
+import { v4 as uuid } from "uuid";
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 
-import { ConfigService } from '@fc/config';
-import { AppConfig } from '@fc/core/dto';
+import { ConfigService } from "@fc/config";
+import { AppConfig } from "@fc/core/dto";
 
-import { AccountFca } from '../schemas';
+import { AccountFca } from "../schemas";
 
 @Injectable()
 export class AccountFcaService {
   constructor(
     private readonly config: ConfigService,
-    @InjectModel('AccountFca') private model: Model<AccountFca>,
+    @InjectModel("AccountFca") private model: Model<AccountFca>,
   ) {}
 
   async getAccountBySub(sub: string) {
@@ -33,7 +33,7 @@ export class AccountFcaService {
   }
 
   private async getReconciledAccount(idpUid: string, idpMail: string) {
-    const defaultIdpId = this.config.get<AppConfig>('App').defaultIdpId;
+    const defaultIdpId = this.config.get<AppConfig>("App").defaultIdpId;
     if (idpUid !== defaultIdpId) {
       return await this.model.findOne<AccountFca>({
         idpIdentityKeys: {

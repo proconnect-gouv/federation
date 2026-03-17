@@ -1,11 +1,11 @@
-import { ErrorCode } from '../enums';
-import { CryptographyBaseException } from './cryptography-base.exception';
+import { ErrorCode } from "../enums";
+import { CryptographyBaseException } from "./cryptography-base.exception";
 
 export class LowEntropyArgumentException extends CryptographyBaseException {
   public code = ErrorCode.LOW_ENTROPY;
-  public error = 'server_error';
+  public error = "server_error";
   public error_description =
-    'authentication aborted due to a technical error on the authorization server';
+    "authentication aborted due to a technical error on the authorization server";
 
   constructor(length: number) {
     super();

@@ -1,4 +1,4 @@
-import { IsAscii, IsString, Matches, MinLength } from 'class-validator';
+import { IsAscii, IsString, Matches, MinLength } from "class-validator";
 
 const SAFE_STRING_REGEX = /^[^.*?{}()|[\]\s\\]*$/;
 

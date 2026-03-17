@@ -1,10 +1,10 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { lastValueFrom } from 'rxjs';
+import { AxiosRequestConfig, AxiosResponse } from "axios";
+import { lastValueFrom } from "rxjs";
 
-import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { HttpService } from "@nestjs/axios";
+import { Injectable } from "@nestjs/common";
 
-import { BridgePayload, BridgeResponse } from '@fc/hybridge-http-proxy';
+import { BridgePayload, BridgeResponse } from "@fc/hybridge-http-proxy";
 
 @Injectable()
 export class CsmrHttpProxyService {

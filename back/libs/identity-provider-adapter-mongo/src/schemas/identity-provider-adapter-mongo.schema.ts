@@ -1,8 +1,8 @@
-import { Document } from 'mongoose';
+import { Document } from "mongoose";
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-@Schema({ collection: 'provider', strict: true })
+@Schema({ collection: "provider", strict: true })
 export class IdentityProvider extends Document {
   @Prop({ type: String })
   name: string;

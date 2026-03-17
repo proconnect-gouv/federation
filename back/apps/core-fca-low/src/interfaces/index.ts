@@ -1,1 +1,1 @@
-export * from './sp-authorized-fqdns-details';
+export * from "./sp-authorized-fqdns-details";

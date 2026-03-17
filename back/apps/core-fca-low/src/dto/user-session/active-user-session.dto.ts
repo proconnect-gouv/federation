@@ -1,6 +1,6 @@
-import { IsDefined } from 'class-validator';
+import { IsDefined } from "class-validator";
 
-import { AfterGetOidcCallbackSessionDto } from './after-get-oidc-callback-session.dto';
+import { AfterGetOidcCallbackSessionDto } from "./after-get-oidc-callback-session.dto";
 
 export class ActiveUserSessionDto extends AfterGetOidcCallbackSessionDto {
   @IsDefined()

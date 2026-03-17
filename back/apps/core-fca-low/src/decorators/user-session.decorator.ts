@@ -1,15 +1,15 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
-import { Class } from 'type-fest';
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { Class } from "type-fest";
 
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
-import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import { ISessionService } from '@fc/session/interfaces';
-import { SessionService } from '@fc/session/services';
+import { NestJsDependencyInjectionWrapper } from "@fc/common";
+import { ISessionService } from "@fc/session/interfaces";
+import { SessionService } from "@fc/session/services";
 
-import { CoreFcaSession, UserSession } from '../dto';
-import { InvalidSessionException } from '../exceptions';
+import { CoreFcaSession, UserSession } from "../dto";
+import { InvalidSessionException } from "../exceptions";
 
 export const UserSessionDecoratorFactory = async (
   userSessionDto: Class<UserSession> = UserSession,
@@ -21,8 +21,8 @@ export const UserSessionDecoratorFactory = async (
   const res = ctx.switchToHttp().getResponse();
 
   const boundSessionService = {
-    get: sessionService.get.bind(sessionService, 'User'),
-    set: sessionService.set.bind(sessionService, 'User'),
+    get: sessionService.get.bind(sessionService, "User"),
+    set: sessionService.set.bind(sessionService, "User"),
     commit: sessionService.commit.bind(sessionService),
     duplicate: () => {
       const data = sessionService.get.bind(sessionService);

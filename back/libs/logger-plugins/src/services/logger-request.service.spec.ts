@@ -1,11 +1,11 @@
-import { ModuleRef } from '@nestjs/core';
-import { Test, TestingModule } from '@nestjs/testing';
+import { ModuleRef } from "@nestjs/core";
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { AsyncLocalStorageService } from '@fc/async-local-storage';
+import { AsyncLocalStorageService } from "@fc/async-local-storage";
 
-import { LoggerRequestService } from './logger-request.service';
+import { LoggerRequestService } from "./logger-request.service";
 
-describe('LoggerRequestService', () => {
+describe("LoggerRequestService", () => {
   let service: LoggerRequestService;
 
   const moduleRefMock = {
@@ -25,21 +25,21 @@ describe('LoggerRequestService', () => {
     service = module.get<LoggerRequestService>(LoggerRequestService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('getContext', () => {
+  describe("getContext", () => {
     // Given
     const asyncLocalStorageServiceMock = {
       get: jest.fn(),
     };
-    const req = Symbol('req');
+    const req = Symbol("req");
     beforeEach(() => {
       moduleRefMock.get.mockReturnValue(asyncLocalStorageServiceMock);
       asyncLocalStorageServiceMock.get.mockReturnValue(req);
     });
-    it('should fetch AsyncLocalStorage from moduleRef', () => {
+    it("should fetch AsyncLocalStorage from moduleRef", () => {
       // When
       service.getContext();
 
@@ -52,17 +52,17 @@ describe('LoggerRequestService', () => {
       );
     });
 
-    it('should fetch request from async local storage', () => {
+    it("should fetch request from async local storage", () => {
       // When
       service.getContext();
 
       // Then
       expect(asyncLocalStorageServiceMock.get).toHaveBeenCalledExactlyOnceWith(
-        'request',
+        "request",
       );
     });
 
-    it('should return empty object if request is not found', () => {
+    it("should return empty object if request is not found", () => {
       // Given
       asyncLocalStorageServiceMock.get.mockReturnValueOnce(null);
 
@@ -73,17 +73,17 @@ describe('LoggerRequestService', () => {
       expect(result).toEqual({});
     });
 
-    it('should return context with method, path and requestId', () => {
+    it("should return context with method, path and requestId", () => {
       // Given
       const reqMock = {
         headers: {
-          'x-request-id': 'requestId',
-          'x-forwarded-for': '192.168.1.5',
+          "x-request-id": "requestId",
+          "x-forwarded-for": "192.168.1.5",
         },
-        ip: '192.168.1.3',
-        method: 'GET',
-        baseUrl: 'baseUrl',
-        path: '/path',
+        ip: "192.168.1.3",
+        method: "GET",
+        baseUrl: "baseUrl",
+        path: "/path",
       };
       asyncLocalStorageServiceMock.get.mockReturnValueOnce(reqMock);
 
@@ -92,11 +92,11 @@ describe('LoggerRequestService', () => {
 
       // Then
       expect(result).toEqual({
-        method: 'GET',
-        path: 'baseUrl/path',
-        requestId: 'requestId',
-        ip: '192.168.1.3',
-        forwardedFor: '192.168.1.5',
+        method: "GET",
+        path: "baseUrl/path",
+        requestId: "requestId",
+        ip: "192.168.1.3",
+        forwardedFor: "192.168.1.5",
       });
     });
   });

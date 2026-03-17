@@ -1,17 +1,17 @@
-import { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
+import { ClientMetadata, KoaContextWithOIDC } from "oidc-provider";
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
+import { ConfigService } from "@fc/config";
 import {
   type IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
-} from '@fc/oidc';
+} from "@fc/oidc";
 
-import { OidcProviderRedisAdapter } from '../adapters';
-import { OidcProviderConfig } from '../dto';
-import { OidcProviderService } from '../oidc-provider.service';
-import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
+import { OidcProviderRedisAdapter } from "../adapters";
+import { OidcProviderConfig } from "../dto";
+import { OidcProviderService } from "../oidc-provider.service";
+import { OidcProviderConfigAppService } from "./oidc-provider-config-app.service";
 
 @Injectable()
 export class OidcProviderConfigService {
@@ -65,7 +65,7 @@ export class OidcProviderConfigService {
       forcedPrompt,
       allowedPrompt,
       isLocalhostAllowed,
-    } = this.config.get<OidcProviderConfig>('OidcProvider');
+    } = this.config.get<OidcProviderConfig>("OidcProvider");
 
     /**
      * Bind callbacks to this class before passing them to oidc-provider,
@@ -111,7 +111,7 @@ export class OidcProviderConfigService {
         interactions: { url },
         loadExistingGrant: this.loadExistingGrant,
         pkce: {
-          methods: ['S256'],
+          methods: ["S256"],
           required: () => false,
         },
       },

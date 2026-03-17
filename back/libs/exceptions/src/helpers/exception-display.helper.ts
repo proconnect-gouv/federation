@@ -9,7 +9,7 @@ export const getDefaultContactHref = (
     idpName: string | undefined;
   },
 ) => {
-  const notProvided = 'non renseigné';
+  const notProvided = "non renseigné";
 
   const idpName = extraParams?.idpName ?? notProvided;
   const spName = extraParams?.spName ?? notProvided;
@@ -36,7 +36,7 @@ Cordialement,
     `Signaler l’erreur ${errorCode} sur ProConnect`,
   );
   const defaultEmailAddress = encodeURIComponent(
-    'support+federation@proconnect.gouv.fr',
+    "support+federation@proconnect.gouv.fr",
   );
 
   return `mailto:${defaultEmailAddress}?subject=${defaultEmailSubject}&body=${defaultEmailBody}`;

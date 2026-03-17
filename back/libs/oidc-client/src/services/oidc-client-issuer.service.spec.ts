@@ -1,22 +1,22 @@
-import { ClientMetadata } from 'oidc-provider';
-import { Client, custom, Issuer } from 'openid-client';
+import { ClientMetadata } from "oidc-provider";
+import { Client, custom, Issuer } from "openid-client";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
+import { ConfigService } from "@fc/config";
 
 import {
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientIssuerDiscoveryFailedException,
-} from '../exceptions';
-import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
-import { OidcClientConfigService } from './oidc-client-config.service';
-import { OidcClientIssuerService } from './oidc-client-issuer.service';
+} from "../exceptions";
+import { IDENTITY_PROVIDER_SERVICE } from "../tokens";
+import { OidcClientConfigService } from "./oidc-client-config.service";
+import { OidcClientIssuerService } from "./oidc-client-issuer.service";
 
-jest.mock('openid-client');
+jest.mock("openid-client");
 
-describe('OidcClientIssuerService', () => {
+describe("OidcClientIssuerService", () => {
   let service: OidcClientIssuerService;
 
   const customMock = jest.mocked(custom);
@@ -32,54 +32,54 @@ describe('OidcClientIssuerService', () => {
   };
 
   const issuerProxyMock = jest.fn() as unknown as Issuer<Client>;
-  issuerProxyMock['discover'] = jest.fn();
+  issuerProxyMock["discover"] = jest.fn();
 
   const idpMetadataIssuerMock = {
-    issuer: 'https://corev2.docker.dev-franceconnect.fr',
-    token_endpoint: 'https://corev2.docker.dev-franceconnect.fr/api/v2/token',
+    issuer: "https://corev2.docker.dev-franceconnect.fr",
+    token_endpoint: "https://corev2.docker.dev-franceconnect.fr/api/v2/token",
     authorization_endpoint:
-      'https://corev2.docker.dev-franceconnect.fr/api/v2/authorize',
-    jwks_uri: 'https://corev2.docker.dev-franceconnect.fr/api/v2/certs',
+      "https://corev2.docker.dev-franceconnect.fr/api/v2/authorize",
+    jwks_uri: "https://corev2.docker.dev-franceconnect.fr/api/v2/certs",
     userinfo_endpoint:
-      'https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo',
+      "https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo",
     end_session_endpoint:
-      'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
+      "https://corev2.docker.dev-franceconnect.fr/api/v2/session/end",
   };
 
   const idpMetadataClientMock = {
-    client_id: 'clientID',
-    client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-    response_types: ['code'],
-    id_token_signed_response_alg: 'HS256',
-    token_endpoint_auth_method: 'client_secret_post',
-    revocation_endpoint_auth_method: 'client_secret_post',
-    id_token_encrypted_response_alg: 'RSA-OAEP',
-    id_token_encrypted_response_enc: 'A256GCM',
-    userinfo_encrypted_response_alg: 'RSA-OAEP',
-    userinfo_encrypted_response_enc: 'A256GCM',
-    userinfo_signed_response_alg: 'HS256',
+    client_id: "clientID",
+    client_secret: "7vhnwzo1yUVOJT9GJ91gD5oid56effu1",
+    response_types: ["code"],
+    id_token_signed_response_alg: "HS256",
+    token_endpoint_auth_method: "client_secret_post",
+    revocation_endpoint_auth_method: "client_secret_post",
+    id_token_encrypted_response_alg: "RSA-OAEP",
+    id_token_encrypted_response_enc: "A256GCM",
+    userinfo_encrypted_response_alg: "RSA-OAEP",
+    userinfo_encrypted_response_enc: "A256GCM",
+    userinfo_signed_response_alg: "HS256",
   };
 
-  const pcfSupportEmail = 'support-pcf@example.com';
+  const pcfSupportEmail = "support-pcf@example.com";
 
   const idpMetadataMock = {
     jwks: [],
     httpOptions: {},
     providers: [
       {
-        uid: 'idpUidMock',
-        name: 'idpNameMock',
-        response_types: ['response', 'types'],
-        discoveryUrl: 'mock well-known url',
-        supportEmail: 'support-fi@example.com',
+        uid: "idpUidMock",
+        name: "idpNameMock",
+        response_types: ["response", "types"],
+        discoveryUrl: "mock well-known url",
+        supportEmail: "support-fi@example.com",
       },
     ],
-    redirectUri: ['redirect', 'uris'],
-    postLogoutRedirectUri: ['post', 'logout', 'redirect', 'uri'],
+    redirectUri: ["redirect", "uris"],
+    postLogoutRedirectUri: ["post", "logout", "redirect", "uri"],
     client: idpMetadataClientMock,
     issuer: idpMetadataIssuerMock,
     discovery: true,
-    discoveryUrl: 'mock well-known url',
+    discoveryUrl: "mock well-known url",
     fapi: false,
   };
   const identityProviderServiceMock = {
@@ -108,21 +108,21 @@ describe('OidcClientIssuerService', () => {
 
     jest.resetAllMocks();
 
-    service['IssuerProxy'] = issuerProxyMock as any;
+    service["IssuerProxy"] = issuerProxyMock as any;
     configServiceMock.get.mockReturnValue({
-      supportEmail: 'support-pcf@example.com',
+      supportEmail: "support-pcf@example.com",
     });
     oidcClientConfigServiceMock.get.mockResolvedValue(idpMetadataMock);
   });
 
-  describe('constructor', () => {
-    it('should be defined', () => {
+  describe("constructor", () => {
+    it("should be defined", () => {
       expect(service).toBeDefined();
     });
   });
 
-  describe('onModuleInit', () => {
-    it('should set httpOptions on client', async () => {
+  describe("onModuleInit", () => {
+    it("should set httpOptions on client", async () => {
       // When
       await service.onModuleInit();
 
@@ -134,11 +134,11 @@ describe('OidcClientIssuerService', () => {
     });
   });
 
-  describe('getSupportEmail', () => {
-    it('should return pcf support email if not defined', async () => {
+  describe("getSupportEmail", () => {
+    it("should return pcf support email if not defined", async () => {
       // Given
-      const idpId = 'someIdpId';
-      const pcfSupportEmail = 'support-pcf@example.com';
+      const idpId = "someIdpId";
+      const pcfSupportEmail = "support-pcf@example.com";
 
       identityProviderServiceMock.getById.mockResolvedValueOnce({
         supportEmail: undefined,
@@ -152,15 +152,15 @@ describe('OidcClientIssuerService', () => {
     });
   });
 
-  describe('isDefaultIdp', () => {
+  describe("isDefaultIdp", () => {
     beforeEach(() => {
       configServiceMock.get.mockReturnValue({
-        defaultIdpId: 'default-idp-uid',
+        defaultIdpId: "default-idp-uid",
       });
     });
-    it('should return true when idpId matches defaultIdpId', () => {
+    it("should return true when idpId matches defaultIdpId", () => {
       // Given
-      const idpIdToTest = 'default-idp-uid';
+      const idpIdToTest = "default-idp-uid";
 
       // When
       const result = service.isDefaultIdp(idpIdToTest);
@@ -169,9 +169,9 @@ describe('OidcClientIssuerService', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when idpId does not match defaultIdpId', () => {
+    it("should return false when idpId does not match defaultIdpId", () => {
       // Given
-      const idpIdToTest = 'other-idp-uid';
+      const idpIdToTest = "other-idp-uid";
 
       // When
       const result = service.isDefaultIdp(idpIdToTest);
@@ -181,48 +181,48 @@ describe('OidcClientIssuerService', () => {
     });
   });
 
-  describe('getClientClass', () => {
+  describe("getClientClass", () => {
     it('should return "Client"', async () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValueOnce({ fapi: false });
       // When
-      const result = await service['getClientClass']();
+      const result = await service["getClientClass"]();
       // Then
-      expect(result).toBe('Client');
+      expect(result).toBe("Client");
     });
 
     it('should return "FAPI1Client"', async () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValueOnce({ fapi: true });
       // When
-      const result = await service['getClientClass']();
+      const result = await service["getClientClass"]();
       // Then
-      expect(result).toBe('FAPI1Client');
+      expect(result).toBe("FAPI1Client");
     });
   });
 
-  describe('getClient', () => {
+  describe("getClient", () => {
     // Given
     const issuerMock = {
       Client: jest.fn(),
     };
 
-    const issuerId = 'foo';
+    const issuerId = "foo";
 
     beforeEach(() => {
-      service['getIdpMetadata'] = jest.fn().mockResolvedValue(idpMetadataMock);
-      service['getIssuer'] = jest.fn().mockResolvedValue(issuerMock);
+      service["getIdpMetadata"] = jest.fn().mockResolvedValue(idpMetadataMock);
+      service["getIssuer"] = jest.fn().mockResolvedValue(issuerMock);
     });
 
-    it('should call getIssuer', async () => {
+    it("should call getIssuer", async () => {
       // When
       await service.getClient(issuerId);
       // Then
-      expect(service['getIssuer']).toHaveBeenCalledTimes(1);
-      expect(service['getIssuer']).toHaveBeenCalledWith(issuerId);
+      expect(service["getIssuer"]).toHaveBeenCalledTimes(1);
+      expect(service["getIssuer"]).toHaveBeenCalledWith(issuerId);
     });
 
-    it('should instantiate new client', async () => {
+    it("should instantiate new client", async () => {
       // When
       await service.getClient(issuerId);
       // Then
@@ -233,25 +233,25 @@ describe('OidcClientIssuerService', () => {
       );
     });
 
-    it('should call config', async () => {
+    it("should call config", async () => {
       // Given
-      service['getClientClass'] = jest.fn().mockResolvedValue('Client'); // Inhibate getClientClass own calls
+      service["getClientClass"] = jest.fn().mockResolvedValue("Client"); // Inhibate getClientClass own calls
       // When
       await service.getClient(issuerId);
       // Then
       expect(oidcClientConfigServiceMock.get).toHaveBeenCalledTimes(1);
     });
 
-    it('should call getClientClass', async () => {
+    it("should call getClientClass", async () => {
       // Given
-      service['getClientClass'] = jest.fn().mockResolvedValue('Client');
+      service["getClientClass"] = jest.fn().mockResolvedValue("Client");
       // When
       await service.getClient(issuerId);
       // Then
-      expect(service['getClientClass']).toHaveBeenCalledTimes(1);
+      expect(service["getClientClass"]).toHaveBeenCalledTimes(1);
     });
 
-    it('should return created client instance', async () => {
+    it("should return created client instance", async () => {
       // Given
       const clientInstanceMock = {};
       issuerMock.Client.mockReturnValue(clientInstanceMock);
@@ -262,27 +262,27 @@ describe('OidcClientIssuerService', () => {
     });
   });
 
-  describe('getIssuer', () => {
+  describe("getIssuer", () => {
     beforeEach(() => {
-      service['getIdpMetadata'] = jest.fn().mockResolvedValue(idpMetadataMock);
+      service["getIdpMetadata"] = jest.fn().mockResolvedValue(idpMetadataMock);
       configServiceMock.get.mockReturnValue({
         supportEmail: pcfSupportEmail,
       });
     });
-    it('should call getIdpMetadata', async () => {
+    it("should call getIdpMetadata", async () => {
       // Given
-      const issuerId = 'foo';
+      const issuerId = "foo";
       // When
-      await service['getIssuer'](issuerId);
+      await service["getIssuer"](issuerId);
       // Then
-      expect(service['getIdpMetadata']).toHaveBeenCalledTimes(1);
-      expect(service['getIdpMetadata']).toHaveBeenCalledWith(issuerId);
+      expect(service["getIdpMetadata"]).toHaveBeenCalledTimes(1);
+      expect(service["getIdpMetadata"]).toHaveBeenCalledWith(issuerId);
     });
-    it('should call IssuerProxy.discover', async () => {
+    it("should call IssuerProxy.discover", async () => {
       // Given
-      const issuerId = 'foo';
+      const issuerId = "foo";
       // When
-      await service['getIssuer'](issuerId);
+      await service["getIssuer"](issuerId);
       // Then
       expect(issuerProxyMock.discover).toHaveBeenCalledTimes(1);
       expect(issuerProxyMock.discover).toHaveBeenCalledWith(
@@ -290,55 +290,55 @@ describe('OidcClientIssuerService', () => {
       );
     });
 
-    it('should throw OidcClientIssuerDiscoveryFailedException', async () => {
+    it("should throw OidcClientIssuerDiscoveryFailedException", async () => {
       // Given
-      const issuerId = 'foo';
-      issuerProxyMock['discover'] = jest.fn().mockRejectedValue(new Error());
+      const issuerId = "foo";
+      issuerProxyMock["discover"] = jest.fn().mockRejectedValue(new Error());
       identityProviderServiceMock.getById.mockResolvedValueOnce({
         supportEmail: undefined,
       });
 
       // When
-      await expect(service['getIssuer'](issuerId)).rejects.toThrow(
+      await expect(service["getIssuer"](issuerId)).rejects.toThrow(
         OidcClientIssuerDiscoveryFailedException,
       );
     });
 
-    it('should instantiate IssuerProxy', async () => {
+    it("should instantiate IssuerProxy", async () => {
       // Given
-      const issuerId = 'foo';
+      const issuerId = "foo";
       const noDiscoveryMetadata = {
         ...idpMetadataMock,
         discovery: false,
       };
-      service['getIdpMetadata'] = jest
+      service["getIdpMetadata"] = jest
         .fn()
         .mockResolvedValue(noDiscoveryMetadata);
       // When
-      await service['getIssuer'](issuerId);
+      await service["getIssuer"](issuerId);
       // Then
-      expect(service['IssuerProxy']).toHaveBeenCalledTimes(1);
-      expect(service['IssuerProxy']).toHaveBeenCalledWith(
+      expect(service["IssuerProxy"]).toHaveBeenCalledTimes(1);
+      expect(service["IssuerProxy"]).toHaveBeenCalledWith(
         idpMetadataIssuerMock,
       );
     });
   });
 
-  describe('getIdpMetadata', () => {
+  describe("getIdpMetadata", () => {
     // Given
     const providerMock1 = {
-      name: 'provider1',
-      uid: 'p1',
+      name: "provider1",
+      uid: "p1",
       active: true,
     } as unknown as ClientMetadata;
     const providerMock2 = {
-      name: 'provider2',
-      uid: 'p2',
+      name: "provider2",
+      uid: "p2",
       active: true,
     } as unknown as ClientMetadata;
     const providerMock3 = {
-      name: 'provider3',
-      uid: 'p3',
+      name: "provider3",
+      uid: "p3",
       active: false,
     } as unknown as ClientMetadata;
     const providers = [providerMock1, providerMock2, providerMock3];
@@ -351,14 +351,14 @@ describe('OidcClientIssuerService', () => {
         supportEmail: undefined,
       });
     });
-    it('should return provider in config', async () => {
+    it("should return provider in config", async () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValue({
         ...idpMetadataMock,
         providers,
       });
       // When
-      const result = await service['getIdpMetadata']('p2');
+      const result = await service["getIdpMetadata"]("p2");
       // Then
       expect(result).toEqual({
         ...providerMock2,
@@ -368,19 +368,19 @@ describe('OidcClientIssuerService', () => {
         },
       });
     });
-    it('should throw if provider is not in config', async () => {
+    it("should throw if provider is not in config", async () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValue({ providers });
       // Then
-      await expect(service['getIdpMetadata']('p0')).rejects.toThrow(
+      await expect(service["getIdpMetadata"]("p0")).rejects.toThrow(
         OidcClientIdpNotFoundException,
       );
     });
-    it('should throw if provider is not active', async () => {
+    it("should throw if provider is not active", async () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValue({ providers });
       // Then
-      await expect(service['getIdpMetadata']('p3')).rejects.toThrow(
+      await expect(service["getIdpMetadata"]("p3")).rejects.toThrow(
         OidcClientIdpDisabledException,
       );
     });

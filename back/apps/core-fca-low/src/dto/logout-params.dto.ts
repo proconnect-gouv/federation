@@ -1,4 +1,4 @@
-import { IsOptional, IsString, Matches } from 'class-validator';
+import { IsOptional, IsString, Matches } from "class-validator";
 
 const URL_REGEX = /^https?:\/\/[^/].+$/;
 

@@ -1,51 +1,51 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
-import { CqrsModule } from '@nestjs/cqrs';
+import { DynamicModule, Module } from "@nestjs/common";
+import { APP_FILTER } from "@nestjs/core";
+import { CqrsModule } from "@nestjs/cqrs";
 
-import { AccountFcaModule } from '@fc/account-fca';
-import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { CachedOrganizationModule } from '@fc/cached-organization';
-import { ConfigModule, ConfigService } from '@fc/config';
-import { CsrfModule, CsrfService } from '@fc/csrf';
-import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
+import { AccountFcaModule } from "@fc/account-fca";
+import { AsyncLocalStorageModule } from "@fc/async-local-storage";
+import { CachedOrganizationModule } from "@fc/cached-organization";
+import { ConfigModule, ConfigService } from "@fc/config";
+import { CsrfModule, CsrfService } from "@fc/csrf";
+import { EmailValidatorModule } from "@fc/email-validator/email-validator.module";
 import {
   ExceptionsModule,
   FcWebHtmlExceptionFilter,
   HttpExceptionFilter,
   UnknownHtmlExceptionFilter,
-} from '@fc/exceptions';
+} from "@fc/exceptions";
 import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
-} from '@fc/identity-provider-adapter-mongo';
-import { LoggerModule } from '@fc/logger';
-import { LoggerRequestPlugin, LoggerSessionPlugin } from '@fc/logger-plugins';
-import { MongooseModule } from '@fc/mongoose';
-import { NotificationsModule } from '@fc/notifications';
-import { OidcAcrModule } from '@fc/oidc-acr';
-import { IDENTITY_PROVIDER_SERVICE, OidcClientModule } from '@fc/oidc-client';
+} from "@fc/identity-provider-adapter-mongo";
+import { LoggerModule } from "@fc/logger";
+import { LoggerRequestPlugin, LoggerSessionPlugin } from "@fc/logger-plugins";
+import { MongooseModule } from "@fc/mongoose";
+import { NotificationsModule } from "@fc/notifications";
+import { OidcAcrModule } from "@fc/oidc-acr";
+import { IDENTITY_PROVIDER_SERVICE, OidcClientModule } from "@fc/oidc-client";
 import {
   OidcProviderModule,
   OidcProviderSessionNotFoundExceptionFilter,
-} from '@fc/oidc-provider';
+} from "@fc/oidc-provider";
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
-} from '@fc/service-provider-adapter-mongo';
-import { SessionModule } from '@fc/session';
+} from "@fc/service-provider-adapter-mongo";
+import { SessionModule } from "@fc/session";
 
 import {
   InteractionController,
   OidcClientController,
   OidcProviderController,
-} from './controllers';
-import { InvalidSessionExceptionFilter } from './filters';
+} from "./controllers";
+import { InvalidSessionExceptionFilter } from "./filters";
 import {
   CoreFcaControllerService,
   CoreFcaMiddlewareService,
   CoreFcaService,
   IdentitySanitizer,
-} from './services';
+} from "./services";
 
 @Module({})
 export class AppModule {

@@ -3,9 +3,9 @@ import {
   Catch,
   Injectable,
   InternalServerErrorException,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { HttpExceptionFilter } from './http-exception.filter';
+import { HttpExceptionFilter } from "./http-exception.filter";
 
 @Catch()
 @Injectable()

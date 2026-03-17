@@ -1,28 +1,28 @@
-import { errors } from 'oidc-provider';
+import { errors } from "oidc-provider";
 
-import { ArgumentsHost } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { ArgumentsHost } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
-import { generateErrorId } from '@fc/exceptions/helpers';
-import { LoggerService } from '@fc/logger';
-import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
+import { ConfigService } from "@fc/config";
+import { generateErrorId } from "@fc/exceptions/helpers";
+import { LoggerService } from "@fc/logger";
+import { OidcProviderService } from "@fc/oidc-provider";
+import { SessionService } from "@fc/session";
 
-import { getConfigMock } from '@mocks/config';
-import { getLoggerMock } from '@mocks/logger';
-import { getSessionServiceMock } from '@mocks/session';
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
+import { getSessionServiceMock } from "@mocks/session";
 
-import { InvalidSessionException } from '../exceptions';
-import { InvalidSessionExceptionFilter } from './invalid-session-exception.filter';
+import { InvalidSessionException } from "../exceptions";
+import { InvalidSessionExceptionFilter } from "./invalid-session-exception.filter";
 import SessionNotFound = errors.SessionNotFound;
 
-jest.mock('@fc/exceptions/helpers', () => ({
-  ...jest.requireActual('@fc/exceptions/helpers'),
+jest.mock("@fc/exceptions/helpers", () => ({
+  ...jest.requireActual("@fc/exceptions/helpers"),
   generateErrorId: jest.fn(),
 }));
 
-describe('InvalidSessionExceptionFilter', () => {
+describe("InvalidSessionExceptionFilter", () => {
   let filter: InvalidSessionExceptionFilter;
 
   const generateErrorIdMock = jest.mocked(generateErrorId);
@@ -47,7 +47,7 @@ describe('InvalidSessionExceptionFilter', () => {
     render: jest.fn(),
   } as any;
 
-  const idMock = 'error-id-123';
+  const idMock = "error-id-123";
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -82,20 +82,20 @@ describe('InvalidSessionExceptionFilter', () => {
     generateErrorIdMock.mockReturnValue(idMock);
 
     resMock.status.mockReturnThis();
-    configMock.get.mockReturnValue({ prefix: 'Y' });
+    configMock.get.mockReturnValue({ prefix: "Y" });
 
     exceptionMock = new InvalidSessionException();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(filter).toBeDefined();
   });
 
-  describe('catch', () => {
-    it('should log and display an error', async () => {
+  describe("catch", () => {
+    it("should log and display an error", async () => {
       // Given
       oidcProviderServiceMock.getInteraction.mockReturnValue({
-        uid: 'uidMockValue',
+        uid: "uidMockValue",
       });
 
       // When
@@ -106,10 +106,10 @@ describe('InvalidSessionExceptionFilter', () => {
       expect(resMock.render).toHaveBeenCalledOnce();
     });
 
-    it('should log and display an error when getInteraction throw an error', async () => {
+    it("should log and display an error when getInteraction throw an error", async () => {
       // Given
       oidcProviderServiceMock.getInteraction.mockRejectedValueOnce(
-        new SessionNotFound('message', 1),
+        new SessionNotFound("message", 1),
       );
 
       // When

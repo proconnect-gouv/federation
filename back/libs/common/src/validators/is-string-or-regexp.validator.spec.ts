@@ -1,19 +1,19 @@
 import {
   isStringOrRegExp,
   IsStringOrRegExpConstraint,
-} from './is-string-or-regexp.validator';
+} from "./is-string-or-regexp.validator";
 
-describe('IsStringOrRegExpConstraint', () => {
-  describe('isStringOrRegExp', () => {
-    it('should return true if the value is a string', () => {
+describe("IsStringOrRegExpConstraint", () => {
+  describe("isStringOrRegExp", () => {
+    it("should return true if the value is a string", () => {
       // action
-      const result = isStringOrRegExp('a string');
+      const result = isStringOrRegExp("a string");
 
       // expect
       expect(result).toStrictEqual(true);
     });
 
-    it('should return true if the value is a RegExp', () => {
+    it("should return true if the value is a RegExp", () => {
       // action
       const result = isStringOrRegExp(/RegExp/);
 
@@ -21,7 +21,7 @@ describe('IsStringOrRegExpConstraint', () => {
       expect(result).toStrictEqual(true);
     });
 
-    it('should return false if the value is neither a string or a RegExp', () => {
+    it("should return false if the value is neither a string or a RegExp", () => {
       // action
       const result = isStringOrRegExp(42);
 
@@ -30,8 +30,8 @@ describe('IsStringOrRegExpConstraint', () => {
     });
   });
 
-  describe('defaultMessage', () => {
-    it('should return the default message', () => {
+  describe("defaultMessage", () => {
+    it("should return the default message", () => {
       // setup
       const instance = new IsStringOrRegExpConstraint();
 
@@ -39,7 +39,7 @@ describe('IsStringOrRegExpConstraint', () => {
       const result = instance.defaultMessage();
 
       // expect
-      expect(result).toStrictEqual('The value must be a string or RegExp');
+      expect(result).toStrictEqual("The value must be a string or RegExp");
     });
   });
 });

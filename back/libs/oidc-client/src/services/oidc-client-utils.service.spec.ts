@@ -3,17 +3,17 @@
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1024
  * @ticket #FC-1024
  */
-import { Request } from 'express';
-import { fail } from 'node:assert';
-import { CallbackParamsType, errors } from 'openid-client';
+import { Request } from "express";
+import { fail } from "node:assert";
+import { CallbackParamsType, errors } from "openid-client";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
+import { LoggerService } from "@fc/logger";
 
-import { getLoggerMock } from '@mocks/logger';
+import { getLoggerMock } from "@mocks/logger";
 
 import {
   OidcClientGetEndSessionUrlException,
@@ -21,21 +21,21 @@ import {
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
   OidcClientUserinfoFailedException,
-} from '../exceptions';
-import { TokenParams } from '../interfaces';
-import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
-import { OidcClientConfigService } from './oidc-client-config.service';
-import { OidcClientIssuerService } from './oidc-client-issuer.service';
-import { OidcClientUtilsService } from './oidc-client-utils.service';
+} from "../exceptions";
+import { TokenParams } from "../interfaces";
+import { IDENTITY_PROVIDER_SERVICE } from "../tokens";
+import { OidcClientConfigService } from "./oidc-client-config.service";
+import { OidcClientIssuerService } from "./oidc-client-issuer.service";
+import { OidcClientUtilsService } from "./oidc-client-utils.service";
 
-describe('OidcClientUtilsService', () => {
+describe("OidcClientUtilsService", () => {
   let service: OidcClientUtilsService;
 
-  const postLogoutRedirectUriMock = 'https://postLogoutRedirectUriMock.domain';
+  const postLogoutRedirectUriMock = "https://postLogoutRedirectUriMock.domain";
 
-  const providerUidMock = 'providerUidMockValue';
-  const stateMock = 'stateMockValue';
-  const idTokenMock = 'idTokenMockValue';
+  const providerUidMock = "providerUidMockValue";
+  const stateMock = "stateMockValue";
+  const idTokenMock = "idTokenMockValue";
   const endSessionUrlWithParamsMock = `https://endSessionUrlMockMock.domain?id_token_hint=${idTokenMock}&post_logout_redirect_uri=${postLogoutRedirectUriMock}&state=${stateMock}`;
 
   const loggerServiceMock = getLoggerMock();
@@ -47,7 +47,7 @@ describe('OidcClientUtilsService', () => {
     genRandomString: jest.fn(),
   };
 
-  const randomStringMock = 'randomStringMockValue';
+  const randomStringMock = "randomStringMockValue";
 
   const IssuerProxyMock = {
     discover: jest.fn(),
@@ -64,7 +64,7 @@ describe('OidcClientUtilsService', () => {
     reload: jest.fn(),
   };
 
-  const idpSupportEmailMock = 'support-fi@example.com';
+  const idpSupportEmailMock = "support-fi@example.com";
 
   const configServiceMock = {
     get: jest.fn(),
@@ -86,9 +86,9 @@ describe('OidcClientUtilsService', () => {
     refresh: refreshMock,
     endSessionUrl: endSessionUrlMock,
     metadata: {
-      redirect_uris: ['redirect', 'uris'],
-      response_types: ['response', 'types'],
-      discoveryUrl: 'mock well-known url',
+      redirect_uris: ["redirect", "uris"],
+      response_types: ["response", "types"],
+      discoveryUrl: "mock well-known url",
     },
   };
 
@@ -134,24 +134,24 @@ describe('OidcClientUtilsService', () => {
     });
 
     IdentityProviderServiceMock.getList.mockResolvedValue(
-      'IdentityProviderServiceMock Resolve Value',
+      "IdentityProviderServiceMock Resolve Value",
     );
     authorizationUrlMock.mockResolvedValue(
-      'authorizationUrlMock Resolve Value',
+      "authorizationUrlMock Resolve Value",
     );
     callbackParamsMock.mockResolvedValue({
-      state: 'callbackParamsState',
-      code: 'callbackParamsCode',
+      state: "callbackParamsState",
+      code: "callbackParamsCode",
     });
 
     configServiceMock.get.mockReturnValue({
-      supportEmail: 'support-pcf@example.com',
+      supportEmail: "support-pcf@example.com",
     });
 
-    callbackMock.mockResolvedValue('callbackMock Resolve Value');
-    userinfoMock.mockResolvedValue('userinfoMock Resolve Value');
+    callbackMock.mockResolvedValue("callbackMock Resolve Value");
+    userinfoMock.mockResolvedValue("userinfoMock Resolve Value");
     revokeMock.mockResolvedValue(void 0);
-    refreshMock.mockResolvedValue('refreshMock Resolve Value');
+    refreshMock.mockResolvedValue("refreshMock Resolve Value");
 
     IssuerProxyMock.discover.mockResolvedValue({
       Client: IssuerClientMock,
@@ -160,7 +160,7 @@ describe('OidcClientUtilsService', () => {
     oidcClientIssuerServiceMock.getClient.mockResolvedValue(clientMock);
 
     oidcClientConfigServiceMock.get.mockResolvedValue({
-      issuer: 'http://foo.bar',
+      issuer: "http://foo.bar",
       configuration: {},
       jwks: { keys: [] },
     });
@@ -168,21 +168,21 @@ describe('OidcClientUtilsService', () => {
     cryptoServiceMock.genRandomString.mockReturnValue(randomStringMock);
   });
 
-  describe('constructor()', () => {
-    it('should be defined', () => {
+  describe("constructor()", () => {
+    it("should be defined", () => {
       expect(service).toBeDefined();
     });
   });
 
-  describe('getAuthorizeUrl()', () => {
-    it('should call authorizationUrl', async () => {
+  describe("getAuthorizeUrl()", () => {
+    it("should call authorizationUrl", async () => {
       // Given
-      const state = 'someState';
-      const nonce = 'someNonce';
-      const scope = 'foo_scope bar_scope';
-      const providerId = 'myidp';
-      const acr_values = 'eidas1';
-      service['createOidcClient'] = createOidcClientMock;
+      const state = "someState";
+      const nonce = "someNonce";
+      const scope = "foo_scope bar_scope";
+      const providerId = "myidp";
+      const acr_values = "eidas1";
+      service["createOidcClient"] = createOidcClientMock;
       // When
       await service.getAuthorizeUrl(providerId, {
         state,
@@ -194,15 +194,15 @@ describe('OidcClientUtilsService', () => {
       expect(authorizationUrlMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should call authorizationUrl without claims parameters', async () => {
+    it("should call authorizationUrl without claims parameters", async () => {
       // Given
-      const state = 'someState';
-      const nonce = 'someNonce';
-      const scope = 'foo_scope bar_scope';
-      const providerId = 'myidp';
-      const acr_values = 'eidas1';
-      const prompt = 'login';
-      service['createOidcClient'] = createOidcClientMock;
+      const state = "someState";
+      const nonce = "someNonce";
+      const scope = "foo_scope bar_scope";
+      const providerId = "myidp";
+      const acr_values = "eidas1";
+      const prompt = "login";
+      service["createOidcClient"] = createOidcClientMock;
       // When
       await service.getAuthorizeUrl(providerId, {
         state,
@@ -222,16 +222,16 @@ describe('OidcClientUtilsService', () => {
       });
     });
 
-    it('should call authorizationUrl with claims parameters', async () => {
+    it("should call authorizationUrl with claims parameters", async () => {
       // Given
-      const state = 'someState';
-      const nonce = 'someNonce';
-      const scope = 'foo_scope bar_scope';
-      const providerId = 'myidp';
-      const acr_values = 'eidas1';
-      const claims = '{ id_token: { amr: { essential: true } } }';
-      const prompt = 'login';
-      service['createOidcClient'] = createOidcClientMock;
+      const state = "someState";
+      const nonce = "someNonce";
+      const scope = "foo_scope bar_scope";
+      const providerId = "myidp";
+      const acr_values = "eidas1";
+      const claims = "{ id_token: { amr: { essential: true } } }";
+      const prompt = "login";
+      service["createOidcClient"] = createOidcClientMock;
       // When
       await service.getAuthorizeUrl(providerId, {
         state,
@@ -252,14 +252,14 @@ describe('OidcClientUtilsService', () => {
       });
     });
 
-    it('should resolve to object containing state & authorizationUrl', async () => {
+    it("should resolve to object containing state & authorizationUrl", async () => {
       // Given
-      const state = 'randomStateMock';
-      const nonce = 'randomNonceMock';
-      const scope = 'foo_scope bar_scope';
-      const providerId = 'myidp';
-      const acr_values = 'eidas1';
-      service['createOidcClient'] = createOidcClientMock;
+      const state = "randomStateMock";
+      const nonce = "randomNonceMock";
+      const scope = "foo_scope bar_scope";
+      const providerId = "myidp";
+      const acr_values = "eidas1";
+      service["createOidcClient"] = createOidcClientMock;
 
       // When
       const url = await service.getAuthorizeUrl(providerId, {
@@ -269,20 +269,20 @@ describe('OidcClientUtilsService', () => {
         nonce,
       });
       // Then
-      expect(state).toEqual('randomStateMock');
-      expect(url).toBe('authorizationUrlMock Resolve Value');
+      expect(state).toEqual("randomStateMock");
+      expect(url).toBe("authorizationUrlMock Resolve Value");
     });
   });
 
-  describe('buildAuthorizeParameters()', () => {
-    it('should call crypto to generate state', async () => {
+  describe("buildAuthorizeParameters()", () => {
+    it("should call crypto to generate state", async () => {
       // When
       const result = await service.buildAuthorizeParameters();
       // Then
       expect(result.state).toBeDefined();
       expect(result.state).toBe(randomStringMock);
     });
-    it('should return parameters + generated state', async () => {
+    it("should return parameters + generated state", async () => {
       // When
       const result = await service.buildAuthorizeParameters();
       // Then
@@ -293,50 +293,50 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('buildExtraParameters', () => {
-    it('should return empty object', () => {
+  describe("buildExtraParameters", () => {
+    it("should return empty object", () => {
       // Given
       const parametersMock = undefined;
       const expected = {};
       // When
-      const result = service['buildExtraParameters'](parametersMock);
+      const result = service["buildExtraParameters"](parametersMock);
       // Then
       expect(result).toEqual(expected);
     });
 
-    it('should return object with argument in exchangeBody property', () => {
+    it("should return object with argument in exchangeBody property", () => {
       // Given
-      const parametersMock = { foo: 'bar' };
+      const parametersMock = { foo: "bar" };
       const expected = { exchangeBody: parametersMock };
       // When
-      const result = service['buildExtraParameters'](parametersMock);
+      const result = service["buildExtraParameters"](parametersMock);
       // Then
       expect(result).toEqual(expected);
     });
   });
 
-  describe('getTokenSet()', () => {
+  describe("getTokenSet()", () => {
     const req = {
-      session: { codeVerifier: 'codeVerifierValue' },
+      session: { codeVerifier: "codeVerifierValue" },
     } as any as Request;
-    const providerId = 'foo';
+    const providerId = "foo";
     const params: TokenParams = {
-      state: 'callbackParamsState',
-      nonce: 'callbackParamsNonce',
+      state: "callbackParamsState",
+      nonce: "callbackParamsNonce",
     };
     const callbackParams: CallbackParamsType = {
-      state: 'callbackParamsState',
-      code: 'callbackParamsCode',
+      state: "callbackParamsState",
+      code: "callbackParamsCode",
     };
 
     beforeEach(() => {
-      service['extractParams'] = jest.fn().mockResolvedValue(callbackParams);
+      service["extractParams"] = jest.fn().mockResolvedValue(callbackParams);
     });
 
-    it('should call extractParams with callbackParams', async () => {
+    it("should call extractParams with callbackParams", async () => {
       // Given
-      const extraParamsMockedReturn = { mock: 'value' };
-      service['buildExtraParameters'] = jest
+      const extraParamsMockedReturn = { mock: "value" };
+      service["buildExtraParameters"] = jest
         .fn()
         .mockReturnValue(extraParamsMockedReturn);
       // When
@@ -344,30 +344,30 @@ describe('OidcClientUtilsService', () => {
       // Then
       expect(callbackMock).toHaveBeenCalled();
       expect(callbackMock).toHaveBeenCalledWith(
-        'redirect,uris',
+        "redirect,uris",
         {
-          code: 'callbackParamsCode',
-          state: 'callbackParamsState',
+          code: "callbackParamsCode",
+          state: "callbackParamsState",
         },
         {
-          response_type: 'response,types',
-          state: 'callbackParamsState',
-          nonce: 'callbackParamsNonce',
+          response_type: "response,types",
+          state: "callbackParamsState",
+          nonce: "callbackParamsNonce",
         },
         extraParamsMockedReturn,
       );
     });
 
-    it('should return resolve value of client.callback', async () => {
+    it("should return resolve value of client.callback", async () => {
       // When
       const result = await service.getTokenSet(req, providerId, params);
       // Then
-      expect(result).toBe('callbackMock Resolve Value');
+      expect(result).toBe("callbackMock Resolve Value");
     });
 
-    it('should throw OidcClientTokenFailedException if something unexpected goes wrong in extractParams', async () => {
+    it("should throw OidcClientTokenFailedException if something unexpected goes wrong in extractParams", async () => {
       // Given
-      const errorMessage = 'a custom error message';
+      const errorMessage = "a custom error message";
       callbackMock.mockRejectedValueOnce(errorMessage);
       // Then
       await expect(
@@ -375,9 +375,9 @@ describe('OidcClientUtilsService', () => {
       ).rejects.toThrow(OidcClientTokenFailedException);
     });
 
-    it('should throw OidcClientTokenFailedException if oidc-client throws OPError', async () => {
+    it("should throw OidcClientTokenFailedException if oidc-client throws OPError", async () => {
       // Given
-      const exception = new errors.OPError({ error: 'invalid_scope' });
+      const exception = new errors.OPError({ error: "invalid_scope" });
       callbackMock.mockRejectedValueOnce(exception);
       // Then
       await expect(
@@ -385,10 +385,10 @@ describe('OidcClientUtilsService', () => {
       ).rejects.toThrow(OidcClientTokenFailedException);
     });
 
-    it('should throw OidcClientTokenFailedException if oidc-client throws RPError', async () => {
+    it("should throw OidcClientTokenFailedException if oidc-client throws RPError", async () => {
       // Given
       const exception = new errors.RPError({
-        message: 'state missing from the response',
+        message: "state missing from the response",
       });
       callbackMock.mockRejectedValueOnce(exception);
       // Then
@@ -397,30 +397,30 @@ describe('OidcClientUtilsService', () => {
       ).rejects.toThrow(OidcClientTokenFailedException);
     });
 
-    it('should set displayContact to false when the IdP is the default one', async () => {
+    it("should set displayContact to false when the IdP is the default one", async () => {
       // Given
-      callbackMock.mockRejectedValueOnce(new Error('server_error'));
+      callbackMock.mockRejectedValueOnce(new Error("server_error"));
       oidcClientIssuerServiceMock.isDefaultIdp.mockReturnValue(true);
 
       // Then
       try {
         await service.getTokenSet(req, providerId, params);
-        fail('should have thrown');
+        fail("should have thrown");
       } catch (error) {
         expect(error).toBeInstanceOf(OidcClientTokenFailedException);
         expect(error.displayContact).toBe(false);
       }
     });
 
-    it('should keep displayContact as true when the IdP is not the default one', async () => {
+    it("should keep displayContact as true when the IdP is not the default one", async () => {
       // Given
-      callbackMock.mockRejectedValueOnce(new Error('server_error'));
+      callbackMock.mockRejectedValueOnce(new Error("server_error"));
       oidcClientIssuerServiceMock.isDefaultIdp.mockReturnValue(false);
 
       // Then
       try {
         await service.getTokenSet(req, providerId, params);
-        fail('should have thrown');
+        fail("should have thrown");
       } catch (error) {
         expect(error).toBeInstanceOf(OidcClientTokenFailedException);
         expect(error.displayContact).toBe(true);
@@ -428,40 +428,40 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('extractParams()', () => {
-    const mockProviderUid = 'providerUidMockValue';
+  describe("extractParams()", () => {
+    const mockProviderUid = "providerUidMockValue";
     const params = {
-      state: Symbol('state'),
-      code: Symbol('code'),
+      state: Symbol("state"),
+      code: Symbol("code"),
     } as unknown as CallbackParamsType;
     const state = params.state;
 
-    it('should throw if state is not provided in url', async () => {
+    it("should throw if state is not provided in url", async () => {
       // Given
       const missingStateParams = {
         code: params.code,
       };
       // Then
       await expect(
-        service['extractParams'](mockProviderUid, missingStateParams, state),
+        service["extractParams"](mockProviderUid, missingStateParams, state),
       ).rejects.toThrow(OidcClientMissingStateException);
     });
 
-    it('should throw if state in url does not match state in session', async () => {
+    it("should throw if state in url does not match state in session", async () => {
       // Given
       const wrongStateParams = {
         code: params.code,
-        state: 'wrongState',
+        state: "wrongState",
       };
       // Then
       await expect(
-        service['extractParams'](mockProviderUid, wrongStateParams, state),
+        service["extractParams"](mockProviderUid, wrongStateParams, state),
       ).rejects.toThrow(OidcClientInvalidStateException);
     });
 
-    it('should return given params', async () => {
+    it("should return given params", async () => {
       // When
-      const result = await service['extractParams'](
+      const result = await service["extractParams"](
         mockProviderUid,
         params,
         state,
@@ -472,11 +472,11 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('revokeToken()', () => {
-    it('should call client.revoke', async () => {
+  describe("revokeToken()", () => {
+    it("should call client.revoke", async () => {
       // Given
-      const accessToken = 'accessTokenValue';
-      const providerId = 'providerIdValue';
+      const accessToken = "accessTokenValue";
+      const providerId = "providerIdValue";
       // When
       await service.revokeToken(accessToken, providerId);
       // Then
@@ -484,22 +484,22 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('getUserInfo()', () => {
-    it('should return client.userinfo result', async () => {
+  describe("getUserInfo()", () => {
+    it("should return client.userinfo result", async () => {
       // Given
-      const accessToken = 'accessTokenValue';
-      const providerId = 'providerIdValue';
-      service['createOidcClient'] = createOidcClientMock;
+      const accessToken = "accessTokenValue";
+      const providerId = "providerIdValue";
+      service["createOidcClient"] = createOidcClientMock;
       // When
       const result = await service.getUserInfo(accessToken, providerId);
       // Then
-      expect(result).toBe('userinfoMock Resolve Value');
+      expect(result).toBe("userinfoMock Resolve Value");
     });
 
-    it('should throw a OidcClientUserinfoFailedException', async () => {
-      const accessToken = 'accessTokenValue';
-      const providerId = 'providerIdValue';
-      userinfoMock.mockRejectedValueOnce(new Error('mock error'));
+    it("should throw a OidcClientUserinfoFailedException", async () => {
+      const accessToken = "accessTokenValue";
+      const providerId = "providerIdValue";
+      userinfoMock.mockRejectedValueOnce(new Error("mock error"));
 
       await expect(() =>
         service.getUserInfo(accessToken, providerId),
@@ -507,25 +507,25 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('refresh()', () => {
-    it('should return refreshed token set', async () => {
+  describe("refresh()", () => {
+    it("should return refreshed token set", async () => {
       // Given
-      const refreshToken = 'refreshTokenValue';
-      const providerId = 'providerIdValue';
+      const refreshToken = "refreshTokenValue";
+      const providerId = "providerIdValue";
       // When
       const result = await service.refreshTokens(refreshToken, providerId);
       // Then
-      expect(result).toBe('refreshMock Resolve Value');
+      expect(result).toBe("refreshMock Resolve Value");
     });
   });
 
-  describe('getEndSessionUrl()', () => {
+  describe("getEndSessionUrl()", () => {
     beforeEach(() => {
       oidcClientIssuerServiceMock.getClient.mockResolvedValueOnce(clientMock);
       clientMock.endSessionUrl.mockReturnValueOnce(endSessionUrlWithParamsMock);
     });
 
-    it('should retrieves the client instance by calling utils.getClient()', async () => {
+    it("should retrieves the client instance by calling utils.getClient()", async () => {
       // When
       await service.getEndSessionUrl(
         providerUidMock,
@@ -540,7 +540,7 @@ describe('OidcClientUtilsService', () => {
       );
     });
 
-    it('should call client.endSessionUrl() with given parameters', async () => {
+    it("should call client.endSessionUrl() with given parameters", async () => {
       // When
       await service.getEndSessionUrl(
         providerUidMock,
@@ -557,7 +557,7 @@ describe('OidcClientUtilsService', () => {
       });
     });
 
-    it('should returns the endSessionUrl', async () => {
+    it("should returns the endSessionUrl", async () => {
       // When
       const result = await service.getEndSessionUrl(
         providerUidMock,
@@ -569,14 +569,14 @@ describe('OidcClientUtilsService', () => {
       expect(result).toStrictEqual(endSessionUrlWithParamsMock);
     });
 
-    it('should throw an OidcClientGetEndSessionUrlException', async () => {
+    it("should throw an OidcClientGetEndSessionUrlException", async () => {
       // Given
       clientMock.endSessionUrl.mockReset().mockImplementationOnce(() => {
-        throw new Error('Unknown Error');
+        throw new Error("Unknown Error");
       });
       const expectedError = new OidcClientGetEndSessionUrlException(
         idpSupportEmailMock,
-        'Unknown Error',
+        "Unknown Error",
       );
       // When
       await expect(() =>
@@ -590,13 +590,13 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('hasEndSessionUrl()', () => {
+  describe("hasEndSessionUrl()", () => {
     beforeEach(() => {
       oidcClientIssuerServiceMock.getClient.mockResolvedValueOnce(clientMock);
       clientMock.endSessionUrl.mockReturnValueOnce(endSessionUrlWithParamsMock);
     });
 
-    it('should return false if no idpId is provided', async () => {
+    it("should return false if no idpId is provided", async () => {
       // When
       const result = await service.hasEndSessionUrl(undefined);
 
@@ -604,7 +604,7 @@ describe('OidcClientUtilsService', () => {
       expect(result).toBeFalse();
     });
 
-    it('should retrieves the client instance by calling utils.getClient()', async () => {
+    it("should retrieves the client instance by calling utils.getClient()", async () => {
       // When
       await service.hasEndSessionUrl(providerUidMock);
 
@@ -615,7 +615,7 @@ describe('OidcClientUtilsService', () => {
       );
     });
 
-    it('should call client.endSessionUrl() with no parameters', async () => {
+    it("should call client.endSessionUrl() with no parameters", async () => {
       // When
       await service.hasEndSessionUrl(providerUidMock);
 
@@ -624,7 +624,7 @@ describe('OidcClientUtilsService', () => {
       expect(clientMock.endSessionUrl).toHaveBeenCalledWith();
     });
 
-    it('should returns true if endSessionUrl was found', async () => {
+    it("should returns true if endSessionUrl was found", async () => {
       // When
       const result = await service.hasEndSessionUrl(providerUidMock);
 
@@ -633,10 +633,10 @@ describe('OidcClientUtilsService', () => {
       expect(result).toBeTrue();
     });
 
-    it('should returns false if no endSessionUrl was found', async () => {
+    it("should returns false if no endSessionUrl was found", async () => {
       // given
       clientMock.endSessionUrl.mockReset().mockImplementationOnce(() => {
-        throw new Error('Unknown Error');
+        throw new Error("Unknown Error");
       });
 
       // When

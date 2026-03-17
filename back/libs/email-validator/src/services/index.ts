@@ -1,1 +1,1 @@
-export * from './email-validator.service';
+export * from "./email-validator.service";

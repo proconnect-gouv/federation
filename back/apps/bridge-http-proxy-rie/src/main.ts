@@ -1,17 +1,17 @@
-import { BridgeHttpProxyConfig } from 'apps/bridge-http-proxy-rie/src';
-import { text } from 'express';
-import helmet from 'helmet';
+import { BridgeHttpProxyConfig } from "apps/bridge-http-proxy-rie/src";
+import { text } from "express";
+import helmet from "helmet";
 
-import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
+import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
-import { AppConfig } from '@fc/app';
-import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import { ConfigService } from '@fc/config';
-import { NestLoggerService } from '@fc/logger';
+import { AppConfig } from "@fc/app";
+import { NestJsDependencyInjectionWrapper } from "@fc/common";
+import { ConfigService } from "@fc/config";
+import { NestLoggerService } from "@fc/logger";
 
-import { AppModule } from './app.module';
-import config from './config';
+import { AppModule } from "./app.module";
+import config from "./config";
 
 async function bootstrap() {
   const configService = new ConfigService({
@@ -21,7 +21,7 @@ async function bootstrap() {
   const {
     urlPrefix,
     httpsOptions: { key, cert },
-  } = configService.get<AppConfig>('App');
+  } = configService.get<AppConfig>("App");
 
   const appModule = AppModule.forRoot(configService);
 
@@ -53,7 +53,7 @@ async function bootstrap() {
    * @see https://expressjs.com/fr/api.html#app.set
    * @see https://github.com/expressjs/express/issues/3361
    */
-  app.set('query parser', 'simple');
+  app.set("query parser", "simple");
 
   app.setGlobalPrefix(urlPrefix);
   /**
@@ -93,7 +93,7 @@ async function bootstrap() {
    * Desactivate extended "qs" parser to prevent prototype pollution hazard.
    * @see body-parser.md in the project doc folder for further informations.
    */
-  app.use(text({ type: 'application/x-www-form-urlencoded' }));
+  app.use(text({ type: "application/x-www-form-urlencoded" }));
 
   NestJsDependencyInjectionWrapper.use(app.select(appModule));
 

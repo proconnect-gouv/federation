@@ -1,5 +1,5 @@
-import { type Request, type Response } from 'express';
-import { filter, isEmpty } from 'lodash';
+import { type Request, type Response } from "express";
+import { filter, isEmpty } from "lodash";
 
 import {
   Body,
@@ -12,24 +12,24 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { AccountFcaService } from '@fc/account-fca';
-import { ApiEntrepriseConfig } from '@fc/api-entreprise';
-import { CachedOrganizationService } from '@fc/cached-organization';
-import { ConfigService } from '@fc/config';
-import { CsrfService, CsrfTokenGuard } from '@fc/csrf';
-import { LoggerService, TrackedEvent } from '@fc/logger';
-import { IdentityProviderMetadata } from '@fc/oidc';
+import { AccountFcaService } from "@fc/account-fca";
+import { ApiEntrepriseConfig } from "@fc/api-entreprise";
+import { CachedOrganizationService } from "@fc/cached-organization";
+import { ConfigService } from "@fc/config";
+import { CsrfService, CsrfTokenGuard } from "@fc/csrf";
+import { LoggerService, TrackedEvent } from "@fc/logger";
+import { IdentityProviderMetadata } from "@fc/oidc";
 import {
   OidcClientConfig,
   OidcClientService,
   TokenResultClaimsDto,
-} from '@fc/oidc-client';
-import { OidcProviderRoutes } from '@fc/oidc-provider';
-import { type ISessionService, SessionService } from '@fc/session';
+} from "@fc/oidc-client";
+import { OidcProviderRoutes } from "@fc/oidc-provider";
+import { type ISessionService, SessionService } from "@fc/session";
 
-import { UserSessionDecorator } from '../decorators';
+import { UserSessionDecorator } from "../decorators";
 import {
   AfterGetInteractionSessionDto,
   AfterRedirectToIdpWithEmailSessionDto,
@@ -37,14 +37,14 @@ import {
   AppConfig,
   RedirectToIdp,
   UserSession,
-} from '../dto';
-import { PostIdentityProviderSelectionDto } from '../dto/post-identity-provider-selection.dto';
-import { Routes } from '../enums';
+} from "../dto";
+import { PostIdentityProviderSelectionDto } from "../dto/post-identity-provider-selection.dto";
+import { Routes } from "../enums";
 import {
   CoreFcaControllerService,
   CoreFcaService,
   IdentitySanitizer,
-} from '../services';
+} from "../services";
 
 @Controller()
 export class OidcClientController {
@@ -63,7 +63,7 @@ export class OidcClientController {
 
   @Get(Routes.IDENTITY_PROVIDER_SELECTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Header('cache-control', 'no-store')
+  @Header("cache-control", "no-store")
   async getIdentityProviderSelection(
     @Res() res: Response,
     @UserSessionDecorator(AfterRedirectToIdpWithEmailSessionDto)
@@ -80,7 +80,7 @@ export class OidcClientController {
 
     const csrfToken = this.csrfService.getOrCreate();
 
-    return res.render('identity-provider-selection', {
+    return res.render("identity-provider-selection", {
       csrfToken,
       identityProviders: displayableIdps,
       hasDefaultIdp: this.coreFcaService.hasDefaultIdp(
@@ -91,7 +91,7 @@ export class OidcClientController {
 
   @Post(Routes.IDENTITY_PROVIDER_SELECTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Header('cache-control', 'no-store')
+  @Header("cache-control", "no-store")
   @UseGuards(CsrfTokenGuard)
   postIdentityProviderSelection(
     @Req() req: Request,
@@ -109,7 +109,7 @@ export class OidcClientController {
 
   @Post(Routes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Header('cache-control', 'no-store')
+  @Header("cache-control", "no-store")
   @UseGuards(CsrfTokenGuard)
   redirectToIdp(
     @Req() req: Request,
@@ -134,7 +134,7 @@ export class OidcClientController {
    */
 
   @Get(Routes.OIDC_CALLBACK)
-  @Header('cache-control', 'no-store')
+  @Header("cache-control", "no-store")
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getOidcCallback(
     @Req() req: Request,
@@ -173,18 +173,18 @@ export class OidcClientController {
     const idp = await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
 
     let acr;
-    if (idp.isEntraID && claims['acrs']) {
+    if (idp.isEntraID && claims["acrs"]) {
       // This behavior is specific to MS Entra ID's authentication contexts
       // We consider only values of the form c1, c2, c3, mutually exclusive,
       // and map them to equivalent eidas levels
-      const acrs = filter(claims['acrs'], (x) => x.startsWith('c'));
-      acr = acrs.toString().replace('c', 'eidas');
+      const acrs = filter(claims["acrs"], (x) => x.startsWith("c"));
+      acr = acrs.toString().replace("c", "eidas");
     } else {
       // Otherwise, use the 'acr' claim
-      acr = claims['acr'];
+      acr = claims["acr"];
     }
     // Default the acr value to eidas1 (weak)
-    acr = acr || 'eidas1';
+    acr = acr || "eidas1";
 
     userSession.set({
       amr: claims.amr,
@@ -238,7 +238,7 @@ export class OidcClientController {
     });
 
     const { featureFetchOrganizationData } =
-      this.config.get<ApiEntrepriseConfig>('ApiEntreprise');
+      this.config.get<ApiEntrepriseConfig>("ApiEntreprise");
 
     if (featureFetchOrganizationData) {
       try {
@@ -247,13 +247,13 @@ export class OidcClientController {
         );
       } catch (error) {
         this.logger.error({
-          code: 'oidc-client-upsert-cached-organization-error',
+          code: "oidc-client-upsert-cached-organization-error",
           error,
         });
       }
     }
 
-    const { urlPrefix } = this.config.get<AppConfig>('App');
+    const { urlPrefix } = this.config.get<AppConfig>("App");
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 
     res.redirect(url);
@@ -264,10 +264,10 @@ export class OidcClientController {
     @Res() res: Response,
     @UserSessionDecorator() userSession: ISessionService<UserSession>,
   ) {
-    const { urlPrefix } = this.config.get<AppConfig>('App');
+    const { urlPrefix } = this.config.get<AppConfig>("App");
     let url = `${urlPrefix}${OidcProviderRoutes.END_SESSION}?from_idp=true`;
 
-    const searchParams = userSession.get('orginalLogoutUrlSearchParamsFromSp');
+    const searchParams = userSession.get("orginalLogoutUrlSearchParamsFromSp");
     if (!isEmpty(searchParams)) {
       url += `&${searchParams}`;
     }
@@ -282,8 +282,8 @@ export class OidcClientController {
   ) {
     if (!idp.isEntraID) return;
 
-    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
-    for (const key of scope.split(' ')) {
+    const { scope } = this.config.get<OidcClientConfig>("OidcClient");
+    for (const key of scope.split(" ")) {
       if (claims[key] && !plainIdpIdentity[key]) {
         plainIdpIdentity[key] = claims[key];
       }

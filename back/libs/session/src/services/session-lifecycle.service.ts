@@ -1,17 +1,17 @@
-import { Request, Response } from 'express';
-import { cloneDeep } from 'lodash';
-import { v4 as uuid } from 'uuid';
+import { Request, Response } from "express";
+import { cloneDeep } from "lodash";
+import { v4 as uuid } from "uuid";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
 
-import { SessionConfig } from '../dto';
-import { SessionCannotCommitUndefinedSession } from '../exceptions';
-import { SessionBackendStorageService } from './session-backend-storage.service';
-import { SessionCookiesService } from './session-cookies.service';
-import { SessionLocalStorageService } from './session-local-storage.service';
+import { SessionConfig } from "../dto";
+import { SessionCannotCommitUndefinedSession } from "../exceptions";
+import { SessionBackendStorageService } from "./session-backend-storage.service";
+import { SessionCookiesService } from "./session-cookies.service";
+import { SessionLocalStorageService } from "./session-local-storage.service";
 
 @Injectable()
 export class SessionLifecycleService {
@@ -24,7 +24,7 @@ export class SessionLifecycleService {
   ) {}
 
   init(res: Response): string {
-    const { sessionIdLength } = this.config.get<SessionConfig>('Session');
+    const { sessionIdLength } = this.config.get<SessionConfig>("Session");
     const sessionId: string =
       this.cryptography.genRandomString(sessionIdLength);
 
@@ -94,7 +94,7 @@ export class SessionLifecycleService {
   }
 
   async refresh(req: Request, res: Response): Promise<string> {
-    const { lifetime } = this.config.get<SessionConfig>('Session');
+    const { lifetime } = this.config.get<SessionConfig>("Session");
 
     const sessionId = this.cookies.get(req);
 

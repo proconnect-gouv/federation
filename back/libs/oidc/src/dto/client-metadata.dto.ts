@@ -1,7 +1,7 @@
-import { IsArray, IsBoolean, IsIn, IsNumber, IsString } from 'class-validator';
-import { type ClientAuthMethod, ResponseType } from 'openid-client';
+import { IsArray, IsBoolean, IsIn, IsNumber, IsString } from "class-validator";
+import { type ClientAuthMethod, ResponseType } from "openid-client";
 
-import { SUPPORTED_SIG_ALG } from '@fc/cryptography';
+import { SUPPORTED_SIG_ALG } from "@fc/cryptography";
 
 export class ClientMetadata {
   @IsString()
@@ -12,7 +12,7 @@ export class ClientMetadata {
 
   @IsString()
   @IsIn(SUPPORTED_SIG_ALG)
-  readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';
+  readonly id_token_signed_response_alg: "ES256" | "RS256" | "HS256";
 
   @IsString()
   readonly userinfo_signed_response_alg: string;

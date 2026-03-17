@@ -1,13 +1,13 @@
-import { ModuleRef } from '@nestjs/core';
-import { Test, TestingModule } from '@nestjs/testing';
+import { ModuleRef } from "@nestjs/core";
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { SessionService } from '@fc/session';
+import { SessionService } from "@fc/session";
 
-import { getSessionServiceMock } from '@mocks/session';
+import { getSessionServiceMock } from "@mocks/session";
 
-import { LoggerSessionService } from './logger-session.service';
+import { LoggerSessionService } from "./logger-session.service";
 
-describe('LoggerSessionService', () => {
+describe("LoggerSessionService", () => {
   let service: LoggerSessionService;
 
   const moduleRefMock = {
@@ -29,13 +29,13 @@ describe('LoggerSessionService', () => {
     service = module.get<LoggerSessionService>(LoggerSessionService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('getContext', () => {
-    const sessionId = Symbol('sessionId');
-    const browsingSessionId = Symbol('browsingSessionId');
+  describe("getContext", () => {
+    const sessionId = Symbol("sessionId");
+    const browsingSessionId = Symbol("browsingSessionId");
 
     beforeEach(() => {
       moduleRefMock.get.mockReturnValue(sessionMock);
@@ -44,7 +44,7 @@ describe('LoggerSessionService', () => {
       sessionMock.get.mockReturnValue({ browsingSessionId });
     });
 
-    it('should fetch SessionService from moduleRef', () => {
+    it("should fetch SessionService from moduleRef", () => {
       // When
       service.getContext();
 
@@ -57,7 +57,7 @@ describe('LoggerSessionService', () => {
       );
     });
 
-    it('should call sessionService.getId', () => {
+    it("should call sessionService.getId", () => {
       // When
       service.getContext();
 
@@ -65,15 +65,15 @@ describe('LoggerSessionService', () => {
       expect(sessionMock.getId).toHaveBeenCalledOnce();
     });
 
-    it('should call sessionService.get', () => {
+    it("should call sessionService.get", () => {
       // When
       service.getContext();
 
       // Then
-      expect(sessionMock.get).toHaveBeenCalledExactlyOnceWith('User');
+      expect(sessionMock.get).toHaveBeenCalledExactlyOnceWith("User");
     });
 
-    it('should return sessionId and browsingSessionId', () => {
+    it("should return sessionId and browsingSessionId", () => {
       // When
       const result = service.getContext();
 
@@ -84,7 +84,7 @@ describe('LoggerSessionService', () => {
       });
     });
 
-    it('should return undefined for browsingSessionId if not set session part is found', () => {
+    it("should return undefined for browsingSessionId if not set session part is found", () => {
       // Given
       sessionMock.get.mockReturnValue(undefined);
 

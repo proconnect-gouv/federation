@@ -1,4 +1,4 @@
-import { TokenResultClaimsDto } from '../dto';
+import { TokenResultClaimsDto } from "../dto";
 
 export type TokenParams = {
   state: string;

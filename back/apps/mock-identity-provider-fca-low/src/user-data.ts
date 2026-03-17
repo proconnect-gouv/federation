@@ -1,47 +1,47 @@
-import { chain } from 'lodash';
-import QuickLRU from 'quick-lru';
+import { chain } from "lodash";
+import QuickLRU from "quick-lru";
 
 const defaultUser = {
-  sub: '1',
+  sub: "1",
   // standard claims
   address: {
-    country: '000',
-    formatted: '000',
-    locality: '000',
-    postal_code: '000',
-    region: '000',
-    street_address: '000',
+    country: "000",
+    formatted: "000",
+    locality: "000",
+    postal_code: "000",
+    region: "000",
+    street_address: "000",
   },
-  birthdate: '1987-10-16',
-  email: 'johndoe@example.com',
+  birthdate: "1987-10-16",
+  email: "johndoe@example.com",
   email_verified: false,
-  family_name: 'Doe',
-  gender: 'male',
-  given_name: 'John',
-  locale: 'en-US',
-  middle_name: 'Middle',
-  name: 'John Doe',
-  nickname: 'Johny',
-  phone_number: '+49 000 000000',
+  family_name: "Doe",
+  gender: "male",
+  given_name: "John",
+  locale: "en-US",
+  middle_name: "Middle",
+  name: "John Doe",
+  nickname: "Johny",
+  phone_number: "+49 000 000000",
   phone_number_verified: false,
-  picture: 'https://picsum.photos/200',
-  preferred_username: 'johnny',
-  profile: 'https://johnswebsite.com',
+  picture: "https://picsum.photos/200",
+  preferred_username: "johnny",
+  profile: "https://johnswebsite.com",
   // the user information was last updated 7 days ago
   updated_at: Math.floor(new Date().setDate(new Date().getDate() - 7) / 1000),
-  website: 'http://example.com',
-  zoneinfo: 'Europe/Berlin',
+  website: "http://example.com",
+  zoneinfo: "Europe/Berlin",
   // ProConnect claims
-  siret: '13002526500013',
+  siret: "13002526500013",
   // Deprecated ProConnect claims
-  belonging_population: 'agent',
-  'chorusdt:matricule': 'USER_AGC',
-  'chorusdt:societe': 'CHT',
+  belonging_population: "agent",
+  "chorusdt:matricule": "USER_AGC",
+  "chorusdt:societe": "CHT",
   is_service_public: true,
-  organizational_unit: 'comptabilite',
-  siren: '130025265',
-  uid: '1',
-  usual_name: 'Doe',
+  organizational_unit: "comptabilite",
+  siren: "130025265",
+  uid: "1",
+  usual_name: "Doe",
 };
 
 export const getDefaultUser = () => {
@@ -76,7 +76,7 @@ export const createUser = (body) => {
     // as per https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse
     // > If a Claim is not returned, that Claim Name SHOULD be omitted from the JSON object representing the Claims;
     // > it SHOULD NOT be present with a null or empty string value.
-    .omitBy((value) => value === '' || value === null)
+    .omitBy((value) => value === "" || value === null)
     .mapValues(parseFormDataValue)
     .value();
 
@@ -86,17 +86,17 @@ export const createUser = (body) => {
 
 export const parseFormDataValue = (value: string) => {
   switch (value) {
-    case 'true':
+    case "true":
       return true;
-    case 'false':
+    case "false":
       return false;
-    case 'null':
+    case "null":
       return null;
-    case 'undefined':
+    case "undefined":
       return undefined;
-    case 'empty':
-      return '';
-    case 'empty-array':
+    case "empty":
+      return "";
+    case "empty-array":
       return [];
     default:
       return value;

@@ -1,14 +1,14 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { MongooseModule } from '@fc/mongoose';
+import { MongooseModule } from "@fc/mongoose";
 
-import { AccountFcaSchema } from './schemas';
-import { AccountFcaService } from './services';
+import { AccountFcaSchema } from "./schemas";
+import { AccountFcaService } from "./services";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: 'AccountFca', schema: AccountFcaSchema },
+      { name: "AccountFca", schema: AccountFcaSchema },
     ]),
   ],
   providers: [AccountFcaService],

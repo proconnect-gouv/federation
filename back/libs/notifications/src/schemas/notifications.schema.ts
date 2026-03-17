@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 export const NotificationsSchema = new mongoose.Schema(
   {
@@ -11,7 +11,7 @@ export const NotificationsSchema = new mongoose.Schema(
   },
   {
     // Mongoose add 's' at the end of the collection name without this argument
-    collection: 'notifications',
+    collection: "notifications",
     strict: true,
     timestamps: true,
   },

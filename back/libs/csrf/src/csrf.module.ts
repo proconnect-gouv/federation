@@ -1,9 +1,9 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module } from "@nestjs/common";
 
-import { CryptographyModule, CryptographyService } from '@fc/cryptography';
-import { SessionModule } from '@fc/session';
+import { CryptographyModule, CryptographyService } from "@fc/cryptography";
+import { SessionModule } from "@fc/session";
 
-import { CsrfService } from './services';
+import { CsrfService } from "./services";
 
 @Global()
 @Module({

@@ -1,16 +1,16 @@
-import { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
+import { ClientMetadata, KoaContextWithOIDC } from "oidc-provider";
 
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from '@fc/config';
-import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
+import { ConfigService } from "@fc/config";
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from "@fc/oidc";
 
-import { OidcProviderRedisAdapter } from '../adapters';
-import { OidcProviderService } from '../oidc-provider.service';
-import { OidcProviderConfigService } from './oidc-provider-config.service';
-import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
+import { OidcProviderRedisAdapter } from "../adapters";
+import { OidcProviderService } from "../oidc-provider.service";
+import { OidcProviderConfigService } from "./oidc-provider-config.service";
+import { OidcProviderConfigAppService } from "./oidc-provider-config-app.service";
 
-describe('OidcProviderConfigService', () => {
+describe("OidcProviderConfigService", () => {
   let service: OidcProviderConfigService;
 
   const configServiceMock = {
@@ -32,8 +32,8 @@ describe('OidcProviderConfigService', () => {
   const oidcProviderServiceMock = {} as OidcProviderService;
 
   const configOidcProviderMock = {
-    prefix: '/api',
-    issuer: 'http://foo.bar',
+    prefix: "/api",
+    issuer: "http://foo.bar",
     configuration: {
       adapter: oidcProviderRedisAdapterMock,
       jwks: { keys: [] },
@@ -41,7 +41,7 @@ describe('OidcProviderConfigService', () => {
         devInteractions: { enabled: false },
       },
       cookies: {
-        keys: ['foo'],
+        keys: ["foo"],
       },
     },
   };
@@ -69,14 +69,14 @@ describe('OidcProviderConfigService', () => {
 
     configServiceMock.get.mockImplementation((module) => {
       switch (module) {
-        case 'OidcProvider':
+        case "OidcProvider":
           return configOidcProviderMock;
       }
     });
   });
 
-  describe('getConfig()', () => {
-    it('should call several services and concat their outputs', () => {
+  describe("getConfig()", () => {
+    it("should call several services and concat their outputs", () => {
       // Given
       OidcProviderRedisAdapter.getConstructorWithDI = jest
         .fn()
@@ -97,12 +97,12 @@ describe('OidcProviderConfigService', () => {
       );
 
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('OidcProvider');
+      expect(configServiceMock.get).toHaveBeenCalledWith("OidcProvider");
 
       expect(result).toMatchObject(configOidcProviderMock);
     });
 
-    it('should return false to PKCE output if we pass two empty objects', () => {
+    it("should return false to PKCE output if we pass two empty objects", () => {
       // Given
       OidcProviderRedisAdapter.getConstructorWithDI = jest
         .fn()
@@ -113,28 +113,28 @@ describe('OidcProviderConfigService', () => {
       expect(pkceResult).toEqual(false);
     });
 
-    it('should bind methods to config', () => {
+    it("should bind methods to config", () => {
       // When
       const result = service.getConfig(oidcProviderServiceMock);
 
       // Then
       expect(result).toHaveProperty(
-        'configuration.features.rpInitiatedLogout.logoutSource',
+        "configuration.features.rpInitiatedLogout.logoutSource",
       );
       expect(result).toHaveProperty(
-        'configuration.features.rpInitiatedLogout.postLogoutSuccessSource',
+        "configuration.features.rpInitiatedLogout.postLogoutSuccessSource",
       );
-      expect(result).toHaveProperty('configuration.findAccount');
-      expect(result).toHaveProperty('configuration.renderError');
-      expect(result).toHaveProperty('configuration.clientBasedCORS');
-      expect(result).toHaveProperty('configuration.interactions.url');
+      expect(result).toHaveProperty("configuration.findAccount");
+      expect(result).toHaveProperty("configuration.renderError");
+      expect(result).toHaveProperty("configuration.clientBasedCORS");
+      expect(result).toHaveProperty("configuration.interactions.url");
     });
   });
 
-  describe('url()', () => {
-    it('should return a relative interaction url with prefix', () => {
+  describe("url()", () => {
+    it("should return a relative interaction url with prefix", () => {
       // Given
-      const prefix = '/prefix';
+      const prefix = "/prefix";
       const ctx = {
         oidc: {
           entities: {
@@ -147,22 +147,22 @@ describe('OidcProviderConfigService', () => {
       const { interaction } = ctx.oidc.entities;
 
       // When
-      const result = service['url'](prefix, ctx, interaction);
+      const result = service["url"](prefix, ctx, interaction);
 
       // Then
-      expect(result).toEqual('/prefix/interaction/123');
+      expect(result).toEqual("/prefix/interaction/123");
     });
   });
 
-  describe('clientBasedCORS', () => {
-    it('should return false', () => {
+  describe("clientBasedCORS", () => {
+    it("should return false", () => {
       // Given
       const ctx = {} as KoaContextWithOIDC;
       const origin = {};
       const client = {} as ClientMetadata;
 
       // When
-      const result = service['clientBasedCORS'](ctx, origin, client);
+      const result = service["clientBasedCORS"](ctx, origin, client);
 
       // Then
       expect(result).toBe(false);

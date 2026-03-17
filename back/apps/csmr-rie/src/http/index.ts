@@ -1,1 +1,1 @@
-export * from './http-module.config';
+export * from "./http-module.config";

@@ -1,1 +1,1 @@
-export * from './exception-config.dto';
+export * from "./exception-config.dto";

@@ -1,13 +1,13 @@
-import { ExecutionContext } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { ExecutionContext } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { LoggerService } from '@fc/logger';
+import { LoggerService } from "@fc/logger";
 
-import { getLoggerMock } from '@mocks/logger';
+import { getLoggerMock } from "@mocks/logger";
 
-import { AppInterceptor } from './app.interceptor';
+import { AppInterceptor } from "./app.interceptor";
 
-describe('AppInterceptor', () => {
+describe("AppInterceptor", () => {
   let interceptor: AppInterceptor;
 
   const httpContextMock = {
@@ -19,10 +19,10 @@ describe('AppInterceptor', () => {
   } as unknown as ExecutionContext;
 
   const reqMock = {
-    fc: { interactionId: '42' },
-    ip: '123.123.123.123',
-    method: 'GET',
-    path: '/some/path',
+    fc: { interactionId: "42" },
+    ip: "123.123.123.123",
+    method: "GET",
+    path: "/some/path",
   };
 
   const nextMock = {
@@ -47,18 +47,18 @@ describe('AppInterceptor', () => {
     httpContextMock.getRequest.mockReturnValue(reqMock);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(interceptor).toBeDefined();
   });
 
-  describe('intercept', () => {
-    it('should log debug when call is intercepted', () => {
+  describe("intercept", () => {
+    it("should log debug when call is intercepted", () => {
       // When
       interceptor.intercept(contextMock, nextMock);
 
       // Then
       expect(loggerMock.debug).toHaveBeenCalledTimes(1);
-      expect(loggerMock.debug).toHaveBeenCalledWith('GET /some/path');
+      expect(loggerMock.debug).toHaveBeenCalledWith("GET /some/path");
     });
   });
 });
