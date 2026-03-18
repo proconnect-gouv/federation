@@ -186,6 +186,8 @@ export class IdentityProviderService {
       siret: identityProviderDto.siret,
       discoveryUrl: identityProviderDto.discoveryUrl,
       clientID: identityProviderDto.clientId,
+      defaultIsServicePublicValue:
+        identityProviderDto.defaultIsServicePublicValue,
       authzURL: identityProviderDto.authorizationUrl,
       statusURL: identityProviderDto.statusUrl,
       tokenURL: identityProviderDto.tokenUrl,
@@ -267,6 +269,7 @@ export class IdentityProviderService {
       extraAcceptedEmailDomains: inputProvider.extraAcceptedEmailDomains,
       isBlockingForUnlistedEmailDomainsEnabled:
         inputProvider.isBlockingForUnlistedEmailDomainsEnabled,
+      defaultIsServicePublicValue: inputProvider.defaultIsServicePublicValue,
     };
   }
 

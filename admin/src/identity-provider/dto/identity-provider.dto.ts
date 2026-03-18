@@ -212,4 +212,8 @@ export class IdentityProviderDTO {
   @Transform(toBoolean)
   @IsBoolean()
   readonly isBlockingForUnlistedEmailDomainsEnabled: boolean;
+
+  @Transform(toBoolean)
+  @IsBoolean()
+  readonly defaultIsServicePublicValue: boolean;
 }

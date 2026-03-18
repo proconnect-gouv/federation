@@ -44,6 +44,9 @@ describe('Identity provider creation', () => {
         client_secret: '1234567890AZERTYUIOP',
         token_endpoint_auth_method: 'client_secret_post',
         siret: '34047343800034',
+        isEntraID: 'true',
+        defaultIsServicePublicValue: 'false',
+        supportEmail: 'support@issuer.fr',
       };
 
       createIdentityProvider(idp, basicConfiguration);

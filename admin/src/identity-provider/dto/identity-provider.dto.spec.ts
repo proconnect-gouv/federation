@@ -24,6 +24,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
     isEntraID: 'false',
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: 'false',
+    defaultIsServicePublicValue: 'true',
   };
 
   const idpDiscoveryMock = {
@@ -43,6 +44,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
     isEntraID: 'false',
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: 'false',
+    defaultIsServicePublicValue: 'true',
   };
 
   describe('should validate', () => {
