@@ -31,9 +31,9 @@ describe("CachedOrganizationService", () => {
         {
           provide: getModelToken("CachedOrganization"),
           useValue: {
+            findOneAndUpdate: jest.fn(),
             findOne: jest.fn(),
             create: jest.fn(),
-            updateOne: jest.fn(),
           },
         },
       ],
@@ -47,60 +47,71 @@ describe("CachedOrganizationService", () => {
     );
   });
 
-  it("should return early if cached organization exists and TTL is not expired", async () => {
-    const siret = "12345678901234";
-    const now = Date.now();
-    const storedOrganization = {
-      siret,
-      libelle: "Test Org",
-      updatedAt: new Date(now - 60 * 60 * 1000), // 1 hour ago
-    };
+  describe("computeRoles", () => {
+    it("should return agent_public role when organization is public service", () => {
+      const cachedOrganization = {
+        siret: "12345678901234",
+        categorieJuridique: "7210",
+        etatAdministratif: "A",
+      } as CachedOrganization;
 
-    jest.spyOn(model, "findOne").mockResolvedValue(storedOrganization as any);
+      const roles = service.computeRoles(cachedOrganization);
 
-    await service.upsertCachedOrganizationBySiretIfNeeded(siret);
+      expect(roles).toContain("agent_public");
+      expect(roles.length).toBe(1);
+    });
 
-    expect(model.findOne).toHaveBeenCalledWith({ siret });
-    expect(model.create).not.toHaveBeenCalled();
+    it("should return empty roles array when organization is not public service", () => {
+      const cachedOrganization = {
+        siret: "12345678901234",
+        categorieJuridique: "5499",
+        etatAdministratif: "A",
+      } as CachedOrganization;
+
+      const roles = service.computeRoles(cachedOrganization);
+
+      expect(roles).toEqual([]);
+    });
   });
 
-  it("should fetch and create new organization if no cached data exists", async () => {
-    const siret = "12345678901234";
-    const organizationInfo = { libelle: "New Org", siren: "1234567890", siret };
+  describe("getCachedOrganizationBySiret", () => {
+    it("should return early if cached organization exists and TTL is not expired", async () => {
+      const siret = "12345678901234";
+      const now = Date.now();
+      const storedOrganization = {
+        siret,
+        libelle: "Test Org",
+        updatedAt: new Date(now - 60 * 60 * 1000), // 1 hour ago
+      };
 
-    jest.spyOn(model, "findOne").mockResolvedValue(null);
-    jest
-      .spyOn(apiEntrepriseService, "getOrganizationBySiret")
-      .mockResolvedValue(organizationInfo);
-    jest.spyOn(model, "create").mockResolvedValue({} as any);
+      jest.spyOn(model, "findOne").mockResolvedValue(storedOrganization as any);
 
-    await service.upsertCachedOrganizationBySiretIfNeeded(siret);
+      await service.getCachedOrganizationBySiret(siret);
 
-    expect(model.findOne).toHaveBeenCalledWith({ siret });
-    expect(apiEntrepriseService.getOrganizationBySiret).toHaveBeenCalledWith(
-      siret,
-    );
-    expect(model.create).toHaveBeenCalledWith({ ...organizationInfo });
-  });
+      expect(model.findOne).toHaveBeenCalledWith({ siret });
+      expect(model.create).not.toHaveBeenCalled();
+    });
 
-  it("should update organization if cached data exists but TTL is expired", async () => {
-    const siret = "12345678901234";
-    const organizationInfo = { siret, libelle: "Updated Org" };
-    const expiredDate = new Date(Date.now() - 25 * 60 * 60 * 1000); // 25 hours ago
-    jest.spyOn(model, "findOne").mockResolvedValue({
-      ...organizationInfo,
-      updatedAt: expiredDate,
-    } as any);
-    jest
-      .spyOn(apiEntrepriseService, "getOrganizationBySiret")
-      .mockResolvedValue(organizationInfo);
-    jest.spyOn(model, "updateOne").mockResolvedValue({} as any);
+    it("should update organization if cached data exists but TTL is expired", async () => {
+      const siret = "12345678901234";
+      const organizationInfo = { siret, libelle: "Updated Org" };
+      const expiredDate = new Date(Date.now() - 25 * 60 * 60 * 1000); // 25 hours ago
+      jest.spyOn(model, "findOne").mockResolvedValue({
+        ...organizationInfo,
+        updatedAt: expiredDate,
+      } as any);
+      jest
+        .spyOn(apiEntrepriseService, "getOrganizationBySiret")
+        .mockResolvedValue(organizationInfo);
+      jest.spyOn(model, "findOneAndUpdate").mockResolvedValue({} as any);
 
-    await service.upsertCachedOrganizationBySiretIfNeeded(siret);
+      await service.getCachedOrganizationBySiret(siret);
 
-    expect(model.updateOne).toHaveBeenCalledWith(
-      { siret },
-      { ...organizationInfo },
-    );
+      expect(model.findOneAndUpdate).toHaveBeenCalledWith(
+        { siret },
+        { $set: { ...organizationInfo } },
+        { returnDocument: "after", upsert: true },
+      );
+    });
   });
 });

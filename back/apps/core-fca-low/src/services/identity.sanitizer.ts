@@ -1,10 +1,15 @@
-import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
-import { HttpStatus, Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 import { cloneDeep } from "lodash";
+
+import { HttpStatus, Injectable } from "@nestjs/common";
+
+import { ConfigService } from "@fc/config";
+import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
+import { LoggerService } from "@fc/logger";
+
+import { ApiEntrepriseConfig } from "@fc/api-entreprise";
+import { CachedOrganizationService } from "@fc/cached-organization";
 import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from "../dto";
 import { CoreFcaInvalidIdentityException } from "../exceptions";
 
@@ -14,6 +19,7 @@ export class IdentitySanitizer {
     private readonly logger: LoggerService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly config: ConfigService,
+    private readonly cachedOrganizationService: CachedOrganizationService,
   ) {}
 
   async getValidatedIdentityFromIdp(
@@ -54,6 +60,27 @@ export class IdentitySanitizer {
     if (siretValidationErrors.length > 0) {
       const identityProvider = await this.identityProvider.getById(idpId);
       identityForSp.siret = identityProvider.siret || null;
+    }
+
+    const { featureFetchOrganizationData } =
+      this.config.get<ApiEntrepriseConfig>("ApiEntreprise");
+
+    if (featureFetchOrganizationData && !!identityForSp.siret) {
+      try {
+        const cachedOrganization =
+          await this.cachedOrganizationService.getCachedOrganizationBySiret(
+            identityFromIdp.siret,
+          );
+        const roles =
+          this.cachedOrganizationService.computeRoles(cachedOrganization);
+        identityForSp.roles = roles;
+        identityForSp.is_service_public = roles.includes("agent_public");
+      } catch (error) {
+        this.logger.error({
+          code: "identity-sanitizer-cached-organization-error",
+          error,
+        });
+      }
     }
 
     // Delete the phone_number property if validation fails

@@ -1,9 +1,13 @@
-import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
-import { ConfigService } from "@fc/config";
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
 import { isEmpty } from "lodash";
 import { Model } from "mongoose";
+
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { isPublicService } from "@proconnect-gouv/proconnect.identite/services/organization";
+
+import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
+import { ConfigService } from "@fc/config";
+
 import { CachedOrganization } from "../schemas";
 
 @Injectable()
@@ -14,7 +18,24 @@ export class CachedOrganizationService {
     @InjectModel("CachedOrganization") private model: Model<CachedOrganization>,
   ) {}
 
-  async upsertCachedOrganizationBySiretIfNeeded(siret: string) {
+  computeRoles(cachedOrganization: CachedOrganization): string[] {
+    const roles: string[] = [];
+    const isServicePublic = isPublicService({
+      cached_categorie_juridique: cachedOrganization.categorieJuridique,
+      cached_etat_administratif: cachedOrganization.etatAdministratif,
+      siret: cachedOrganization.siret,
+    });
+
+    if (isServicePublic) {
+      roles.push("agent_public");
+    }
+
+    return roles;
+  }
+
+  async getCachedOrganizationBySiret(
+    siret: string,
+  ): Promise<CachedOrganization> {
     const storedCachedOrganization =
       await this.model.findOne<CachedOrganization>({
         siret,
@@ -30,20 +51,19 @@ export class CachedOrganizationService {
     const organizationInfo =
       await this.apiEntrepriseService.getOrganizationBySiret(siret);
 
-    if (!isEmpty(storedCachedOrganization)) {
-      return await this.model.updateOne(
-        {
-          siret,
-        },
-        {
+    const updatedCachedOrganization = await this.model.findOneAndUpdate(
+      {
+        siret,
+      },
+      {
+        $set: {
           ...organizationInfo,
         },
-      );
-    }
+      },
+      { upsert: true, returnDocument: "after" },
+    );
 
-    return await this.model.create({
-      ...organizationInfo,
-    });
+    return updatedCachedOrganization;
   }
 
   private isExpired(cachedOrganization: CachedOrganization) {

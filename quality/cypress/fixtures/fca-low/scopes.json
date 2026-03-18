@@ -15,7 +15,8 @@
       "chorusdt",
       "idp_id",
       "idp_acr",
-      "custom"
+      "custom",
+      "roles"
     ]
   },
   {
@@ -33,7 +34,8 @@
       "chorusdt",
       "idp_id",
       "idp_acr",
-      "custom"
+      "custom",
+      "roles"
     ]
   },
   {

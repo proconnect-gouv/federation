@@ -1,17 +1,3 @@
-import { AccountFcaService } from "@fc/account-fca";
-import { ApiEntrepriseConfig } from "@fc/api-entreprise";
-import { CachedOrganizationService } from "@fc/cached-organization";
-import { ConfigService } from "@fc/config";
-import { CsrfService, CsrfTokenGuard } from "@fc/csrf";
-import { LoggerService, TrackedEvent } from "@fc/logger";
-import { IdentityProviderMetadata } from "@fc/oidc";
-import {
-  OidcClientConfig,
-  OidcClientService,
-  TokenResultClaimsDto,
-} from "@fc/oidc-client";
-import { OidcProviderRoutes } from "@fc/oidc-provider";
-import { type ISessionService, SessionService } from "@fc/session";
 import {
   Body,
   Controller,
@@ -24,6 +10,20 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
+
+import { AccountFcaService } from "@fc/account-fca";
+import { ConfigService } from "@fc/config";
+import { CsrfService, CsrfTokenGuard } from "@fc/csrf";
+import { LoggerService, TrackedEvent } from "@fc/logger";
+import { IdentityProviderMetadata } from "@fc/oidc";
+import {
+  OidcClientConfig,
+  OidcClientService,
+  TokenResultClaimsDto,
+} from "@fc/oidc-client";
+import { OidcProviderRoutes } from "@fc/oidc-provider";
+import { type ISessionService, SessionService } from "@fc/session";
+
 import { type Request, type Response } from "express";
 import { filter, isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
@@ -55,7 +55,6 @@ export class OidcClientController {
     private readonly sessionService: SessionService,
     private readonly sanitizer: IdentitySanitizer,
     private readonly csrfService: CsrfService,
-    private readonly cachedOrganizationService: CachedOrganizationService,
   ) {}
 
   @Get(Routes.IDENTITY_PROVIDER_SELECTION)
@@ -233,22 +232,6 @@ export class OidcClientController {
     userSession.set({
       spIdentity,
     });
-
-    const { featureFetchOrganizationData } =
-      this.config.get<ApiEntrepriseConfig>("ApiEntreprise");
-
-    if (featureFetchOrganizationData) {
-      try {
-        await this.cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded(
-          spIdentity.siret,
-        );
-      } catch (error) {
-        this.logger.error({
-          code: "oidc-client-upsert-cached-organization-error",
-          error,
-        });
-      }
-    }
 
     const { urlPrefix } = this.config.get<AppConfig>("App");
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;

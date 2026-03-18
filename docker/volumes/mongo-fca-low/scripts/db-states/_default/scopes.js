@@ -74,6 +74,11 @@ db.scopes.update(
   { scope: "custom", fd: "IDENTITY", label: "", __v: 0 },
   { upsert: true },
 );
+db.scopes.update(
+  { scope: "roles" },
+  { scope: "roles", fd: "IDENTITY", label: "", __v: 0 },
+  { upsert: true },
+);
 
 // -- Scopes - Desk
 print("Initializing Desk scopes...");

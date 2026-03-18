@@ -1274,12 +1274,17 @@
   resolved "https://registry.yarnpkg.com/@pinojs/redact/-/redact-0.4.0.tgz#c3de060dd12640dcc838516aa2a6803cc7b2e9d6"
   integrity sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==
 
-"@proconnect-gouv/proconnect.api_entreprise@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.api_entreprise/-/proconnect.api_entreprise-1.1.1.tgz#642b9f4a27caeaecc54947d33672d9f443427d7e"
-  integrity sha512-rHwbpvL0UbUAmrIoAyK6DAAOBptXagf/22203HmLLEPInVDkI+Yn/Oxe/RKBhrV2mdWG+W0uvUDJgNyolvP7wQ==
+"@proconnect-gouv/proconnect.annuaire_entreprises@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.annuaire_entreprises/-/proconnect.annuaire_entreprises-1.1.4.tgz#755a7c54464b9590be025869cb0f5e55796241bf"
+  integrity sha512-MQCAG15jFoVkTM9D9uH7c42wnvjwBUCg6Vzh/ZEWVKGcGWr0fmkj9l3QZtu0KFhFHCwBIhsfB1Y0nRRZzs+YpQ==
+
+"@proconnect-gouv/proconnect.api_entreprise@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.api_entreprise/-/proconnect.api_entreprise-2.0.0.tgz#5551d32b940cd883d8f8f90e7d65616a65355c76"
+  integrity sha512-x2AZJNThRV4uGOCrdeDOnVZBFkrFyv6O2Pn5ULH/5D29W+xvP4OgwPM0um3X2bTTptJRMxQsNAai9x4+O+uwyA==
   dependencies:
-    openapi-fetch "^0.15.0"
+    openapi-fetch "^0.17.0"
 
 "@proconnect-gouv/proconnect.core@^1.0.0":
   version "1.0.0"
@@ -1295,10 +1300,10 @@
     nanoid "^5.1.5"
     tld-extract "^2.1.0"
 
-"@proconnect-gouv/proconnect.identite@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-1.7.0.tgz#94ec34909e53645ef5a8420b17a869bce980f48b"
-  integrity sha512-HyHduhKe7KiKAXE12IV8kQD1D+Ga7eJ/4K4wxR2zURbAAcWBg4oRAYwnuO5jv9s3IgDc87UlDiO4qC7FRwffDQ==
+"@proconnect-gouv/proconnect.identite@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-3.0.0.tgz#4d5ed0801097466a4d220d82d520d38abe77a5b6"
+  integrity sha512-gMKQpl+G7uCnWj+0xk+LJJ2Ss9zA0jH+iKlHdMnEhyuqCNbWZK1AWEwl2HkK5Gh/O2MOS3wLwkhaKuHc9PeHQg==
   dependencies:
     leven "^4.0.0"
     openid-client "^6.6.4"
@@ -5048,24 +5053,12 @@ only@~0.0.2:
   resolved "https://registry.npmjs.org/only/-/only-0.0.2.tgz"
   integrity sha512-Fvw+Jemq5fjjyWz6CpKx6w9s7xxqo3+JCyM0WXWeCSOboZ8ABkyvP8ID4CZuChA/wxSx+XSJmdOm8rGVyJ1hdQ==
 
-openapi-fetch@^0.15.0:
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.15.0.tgz#4ec17389d3ea159f9d3761eab06a401c813704f5"
-  integrity sha512-OjQUdi61WO4HYhr9+byCPMj0+bgste/LtSBEcV6FzDdONTs7x0fWn8/ndoYwzqCsKWIxEZwo4FN/TG1c1rI8IQ==
-  dependencies:
-    openapi-typescript-helpers "^0.0.15"
-
 openapi-fetch@^0.17.0:
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.17.0.tgz#0c392afbeed2c95a12056a50a8e6180c77c9ced3"
   integrity sha512-PsbZR1wAPcG91eEthKhN+Zn92FMHxv+/faECIwjXdxfTODGSGegYv0sc1Olz+HYPvKOuoXfp+0pA2XVt2cI0Ig==
   dependencies:
     openapi-typescript-helpers "^0.1.0"
-
-openapi-typescript-helpers@^0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/openapi-typescript-helpers/-/openapi-typescript-helpers-0.0.15.tgz#96ffa762a5e01ef66a661b163d5f1109ed1967ed"
-  integrity sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==
 
 openapi-typescript-helpers@^0.1.0:
   version "0.1.0"

@@ -1,6 +1,8 @@
 import {
   IsDefined,
+  IsEnum,
   IsObject,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -32,4 +34,18 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
 
   @IsString()
   idp_acr: string;
+
+  @IsEnum(
+    [
+      "dirigeant",
+      "agent_public",
+      "agent_public_L100-3",
+      "agent_public_etat",
+      "agent_public_territorial",
+      "agent_public_hospitalier",
+    ],
+    { each: true },
+  )
+  @IsOptional()
+  roles?: string[];
 }

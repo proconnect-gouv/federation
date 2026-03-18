@@ -1,5 +1,4 @@
 import { AccountFcaService } from "@fc/account-fca";
-import { CachedOrganizationService } from "@fc/cached-organization";
 import { validateDto } from "@fc/common";
 import { ConfigService } from "@fc/config";
 import { CsrfService } from "@fc/csrf";
@@ -8,7 +7,7 @@ import { OidcClientService } from "@fc/oidc-client";
 import { ISessionService, SessionService } from "@fc/session";
 import { getLoggerMock } from "@mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from "../dto";
 import {
   CoreFcaControllerService,
@@ -35,7 +34,6 @@ describe("OidcClientController", () => {
   let sessionService: any;
   let sanitizer: any;
   let csrfService: any;
-  let cachedOrganizationService: any;
 
   beforeEach(async () => {
     accountService = {
@@ -81,9 +79,6 @@ describe("OidcClientController", () => {
       transformIdentity: jest.fn(),
     };
     csrfService = { getOrCreate: jest.fn() };
-    cachedOrganizationService = {
-      upsertCachedOrganizationBySiretIfNeeded: jest.fn(),
-    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OidcClientController],
@@ -97,7 +92,6 @@ describe("OidcClientController", () => {
         SessionService,
         IdentitySanitizer,
         CsrfService,
-        CachedOrganizationService,
       ],
     })
       .overrideProvider(AccountFcaService)
@@ -118,8 +112,6 @@ describe("OidcClientController", () => {
       .useValue(sanitizer)
       .overrideProvider(CsrfService)
       .useValue(csrfService)
-      .overrideProvider(CachedOrganizationService)
-      .useValue(cachedOrganizationService)
       .compile();
 
     controller = module.get<OidcClientController>(OidcClientController);
@@ -133,7 +125,7 @@ describe("OidcClientController", () => {
 
   describe("getIdentityProviderSelection", () => {
     it("should render the identity provider selection view with proper response", async () => {
-      const res: Partial<Response> = { render: jest.fn() };
+      const res = { render: jest.fn() };
       const email = "user@example.com";
       const userSession = {
         get: jest.fn().mockReturnValue({ idpLoginHint: email }),
@@ -156,7 +148,7 @@ describe("OidcClientController", () => {
       );
 
       await controller.getIdentityProviderSelection(
-        res as Response,
+        res as unknown as Response,
         userSession,
       );
 
@@ -328,63 +320,8 @@ describe("OidcClientController", () => {
       expect(userSession.set).toHaveBeenNthCalledWith(4, {
         spIdentity: { given_name: "John" },
       });
-      expect(
-        cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded,
-      ).toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledWith(
         "/app/interaction/interaction123/verify",
-      );
-    });
-
-    it("should not call cachedOrganizationService if featureFetchOrganizationData is false", async () => {
-      configService.get.mockImplementation((key: string) => {
-        switch (key) {
-          case "OidcClient":
-            return { scope: "openid email" };
-          case "App":
-            return { urlPrefix: "/app" };
-          case "ApiEntreprise":
-            return { featureFetchOrganizationData: false };
-        }
-      });
-
-      await controller.getOidcCallback(
-        req as Request,
-        res as Response,
-        userSession,
-      );
-      expect(
-        cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded,
-      ).not.toHaveBeenCalled();
-    });
-
-    it("should call cachedOrganizationService and logger error if featureFetchOrganizationData is true and upsert fails", async () => {
-      configService.get.mockImplementation((key: string) => {
-        switch (key) {
-          case "OidcClient":
-            return { scope: "openid email" };
-          case "App":
-            return { urlPrefix: "/app" };
-          case "ApiEntreprise":
-            return { featureFetchOrganizationData: true };
-        }
-      });
-      cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded.mockRejectedValue(
-        new Error("upsert failed"),
-      );
-
-      await controller.getOidcCallback(
-        req as Request,
-        res as Response,
-        userSession,
-      );
-      expect(
-        cachedOrganizationService.upsertCachedOrganizationBySiretIfNeeded,
-      ).toHaveBeenCalled();
-      expect(logger.error).toHaveBeenCalledWith(
-        expect.objectContaining({
-          code: "oidc-client-upsert-cached-organization-error",
-        }),
       );
     });
 

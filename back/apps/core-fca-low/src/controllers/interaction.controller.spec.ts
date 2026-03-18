@@ -483,7 +483,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
+          spIdentity: { sub: "user1", roles: [] },
           spId: "sp123",
           idpId: "idp123",
           idpIdentity: { is_service_public: false },
