@@ -1,4 +1,5 @@
 import $ from "./jquery_wrapper";
+
 export function validateForm(element) {
   const inputs = element.getElementsByTagName("input");
   const txtAreas = element.getElementsByTagName("textarea");

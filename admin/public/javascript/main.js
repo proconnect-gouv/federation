@@ -1,8 +1,8 @@
 import "babel-polyfill";
-import "bootstrap/dist/css/bootstrap.css";
+import $ from "./jquery_wrapper";
+// NOTE: must be imported after jquery_wrapper
 import "bootstrap/dist/js/bootstrap.bundle";
-import "font-awesome/css/font-awesome.css";
-import "../style/main.less";
+
 import { changeDiscovery, changeSignature, initForm } from "./change-discovery";
 import { copyText } from "./clipboard";
 import { comparePassword } from "./compare-password";
@@ -13,7 +13,6 @@ import {
 } from "./delete-service-provider";
 import { handleEmail } from "./handle-email";
 import { itemPerPage } from "./item-par-page";
-import $ from "./jquery_wrapper";
 import { lazyInit } from "./lazy-init";
 import { removeItem, updateItem } from "./modals/confirm-form";
 import { generateNewSecret } from "./modals/generate-client-secret.modal";
@@ -27,6 +26,10 @@ import { validateInputDate } from "./validate-input-date";
 import { validateInputHour } from "./validate-input-hour";
 import { validateAccountCreate } from "./validateAccountCreate";
 import { validateAccountUpdate } from "./validateAccountUpdate";
+
+import "bootstrap/dist/css/bootstrap.css";
+import "font-awesome/css/font-awesome.css";
+import "../style/main.less";
 
 const initMap = {
   initForm,

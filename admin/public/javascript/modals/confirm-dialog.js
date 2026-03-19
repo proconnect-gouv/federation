@@ -1,5 +1,6 @@
-import "bootstrap/dist/js/bootstrap.bundle";
 import $ from "../jquery_wrapper";
+// NOTE: must be imported after jquery_wrapper
+import "bootstrap/dist/js/bootstrap.bundle";
 
 export function confirmDialog(message, handler) {
   $(`<div class="modal fade confirm-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"> 

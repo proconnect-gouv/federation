@@ -1,5 +1,6 @@
-import ClipboardJS from "clipboard";
 import $ from "./jquery_wrapper";
+// NOTE: must be imported after jquery_wrapper
+import ClipboardJS from "clipboard";
 
 const COPY_BUTTON = ".copy-button";
 export function copyText() {
