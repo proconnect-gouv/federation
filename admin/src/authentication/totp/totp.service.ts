@@ -20,7 +20,7 @@ export class TotpService {
       const result = await otplib.verify({
         token: totp,
         secret,
-        counterTolerance: [1, 1],
+        counterTolerance: 30,
       });
       return result.valid;
     } catch (error) {
