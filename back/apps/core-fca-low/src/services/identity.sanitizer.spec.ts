@@ -1,16 +1,15 @@
-import { ConfigService } from '@fc/config';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
+import { ConfigService } from "@fc/config";
+import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
+import { LoggerService } from "@fc/logger";
+import { IdentityFromIdpDto } from "../dto/identity-from-idp.dto";
+import { CoreFcaInvalidIdentityException } from "../exceptions";
+import { IdentitySanitizer } from "./identity.sanitizer";
 
-import { IdentityFromIdpDto } from '../dto/identity-from-idp.dto';
-import { CoreFcaInvalidIdentityException } from '../exceptions';
-import { IdentitySanitizer } from './identity.sanitizer';
+jest.mock("@fc/logger");
+jest.mock("@fc/config");
+jest.mock("@fc/identity-provider-adapter-mongo");
 
-jest.mock('@fc/logger');
-jest.mock('@fc/config');
-jest.mock('@fc/identity-provider-adapter-mongo');
-
-describe('IdentitySanitizer', () => {
+describe("IdentitySanitizer", () => {
   let identitySanitizer: IdentitySanitizer;
   let logger: LoggerService;
   let identityProvider: IdentityProviderAdapterMongoService;
@@ -28,26 +27,26 @@ describe('IdentitySanitizer', () => {
     config = new ConfigService({ config: {}, schema: {} } as any);
     config.get = jest
       .fn()
-      .mockReturnValue({ supportEmail: 'pc-support@test.com' });
+      .mockReturnValue({ supportEmail: "pc-support@test.com" });
     identitySanitizer = new IdentitySanitizer(logger, identityProvider, config);
   });
 
-  describe('getValidatedIdentityFromIdp', () => {
+  describe("getValidatedIdentityFromIdp", () => {
     beforeEach(() => {
       jest
-        .spyOn(identityProvider, 'getById')
-        .mockResolvedValue({ supportEmail: 'support@test.com' } as any);
+        .spyOn(identityProvider, "getById")
+        .mockResolvedValue({ supportEmail: "support@test.com" } as any);
     });
 
-    it('should return validated identity when valid data is provided', async () => {
+    it("should return validated identity when valid data is provided", async () => {
       const validIdentity = {
-        sub: '123',
-        email: 'test@test.com',
-        given_name: 'John',
-        usual_name: 'Doe',
-        uid: 'UID123',
+        sub: "123",
+        email: "test@test.com",
+        given_name: "John",
+        usual_name: "Doe",
+        uid: "UID123",
       };
-      const idpId = 'idp1';
+      const idpId = "idp1";
 
       const result = await identitySanitizer.getValidatedIdentityFromIdp(
         validIdentity,
@@ -56,79 +55,79 @@ describe('IdentitySanitizer', () => {
       expect(result).toEqual(expect.objectContaining(validIdentity));
     });
 
-    it('should throw CoreFcaInvalidIdentityException when validation fails', async () => {
+    it("should throw CoreFcaInvalidIdentityException when validation fails", async () => {
       const invalidIdentity = {
-        sub: '',
-        email: 'invalid',
-        given_name: '',
-        usual_name: '',
-        uid: '',
+        sub: "",
+        email: "invalid",
+        given_name: "",
+        usual_name: "",
+        uid: "",
       };
-      const idpId = 'idp1';
+      const idpId = "idp1";
 
       await expect(
         identitySanitizer.getValidatedIdentityFromIdp(invalidIdentity, idpId),
       ).rejects.toThrow(CoreFcaInvalidIdentityException);
     });
 
-    it('should not throw CoreFcaInvalidIdentityException when phone number is an empty string', async () => {
+    it("should not throw CoreFcaInvalidIdentityException when phone number is an empty string", async () => {
       const invalidIdentity = {
-        sub: '123',
-        email: 'test@test.com',
-        given_name: 'John',
-        usual_name: 'Doe',
-        uid: 'UID123',
-        phone_number: '',
+        sub: "123",
+        email: "test@test.com",
+        given_name: "John",
+        usual_name: "Doe",
+        uid: "UID123",
+        phone_number: "",
       };
-      const idpId = 'idp1';
+      const idpId = "idp1";
 
       const result = await identitySanitizer.getValidatedIdentityFromIdp(
         invalidIdentity,
         idpId,
       );
 
-      expect(result.phone_number).toEqual('');
+      expect(result.phone_number).toEqual("");
     });
 
-    it('should not throw CoreFcaInvalidIdentityException when phone number is an array', async () => {
+    it("should not throw CoreFcaInvalidIdentityException when phone number is an array", async () => {
       const invalidIdentity = {
-        sub: '123',
-        email: 'test@test.com',
-        given_name: 'John',
-        usual_name: 'Doe',
-        uid: 'UID123',
-        phone_number: ['0123456789', '0123456789'],
+        sub: "123",
+        email: "test@test.com",
+        given_name: "John",
+        usual_name: "Doe",
+        uid: "UID123",
+        phone_number: ["0123456789", "0123456789"],
       };
-      const idpId = 'idp1';
+      const idpId = "idp1";
 
       const result = await identitySanitizer.getValidatedIdentityFromIdp(
         invalidIdentity,
         idpId,
       );
 
-      expect(result.phone_number).toEqual(['0123456789', '0123456789']);
+      expect(result.phone_number).toEqual(["0123456789", "0123456789"]);
     });
   });
 
-  describe('transformIdentity', () => {
+  describe("transformIdentity", () => {
     beforeEach(() => {
       jest
-        .spyOn(identityProvider, 'getById')
-        .mockResolvedValue({ siret: '12345678900007' } as any);
+        .spyOn(identityProvider, "getById")
+        .mockResolvedValue({ siret: "12345678900007" } as any);
     });
 
-    it('should transform identity and return IdentityForSpDto object', async () => {
-      const idpId = 'idp1';
-      const sub = 'sub123';
-      const acr = 'acr1';
+    it("should transform identity and return IdentityForSpDto object", async () => {
+      const idpId = "idp1";
+      const sub = "sub123";
+      const acr = "acr1";
       const identityFromIdp = {
-        aud: 'aud123',
-        email: 'test@test.com',
-        extra: 'extra',
-        given_name: 'John',
-        sub: '123',
-        uid: 'UID123',
-        usual_name: 'Doe',
+        aud: "aud123",
+        email: "test@test.com",
+        extra: "extra",
+        given_name: "John",
+        sub: "123",
+        uid: "UID123",
+        usual_name: "Doe",
       };
 
       const result = await identitySanitizer.transformIdentity(
@@ -139,29 +138,29 @@ describe('IdentitySanitizer', () => {
       );
 
       expect(result).toEqual({
-        custom: { extra: 'extra' },
-        email: 'test@test.com',
-        given_name: 'John',
+        custom: { extra: "extra" },
+        email: "test@test.com",
+        given_name: "John",
         idp_acr: acr,
         idp_id: idpId,
-        siret: '12345678900007',
+        siret: "12345678900007",
         sub,
-        uid: 'UID123',
-        usual_name: 'Doe',
+        uid: "UID123",
+        usual_name: "Doe",
       });
     });
 
-    it('should not throw CoreFcaInvalidIdentityException when phone number is invalid', async () => {
-      const idpId = 'idp1';
-      const sub = 'sub123';
-      const acr = 'acr1';
+    it("should not throw CoreFcaInvalidIdentityException when phone number is invalid", async () => {
+      const idpId = "idp1";
+      const sub = "sub123";
+      const acr = "acr1";
       const identityFromIdp = {
-        sub: '123',
-        email: 'test@test.com',
-        given_name: 'John',
-        usual_name: 'Doe',
-        uid: 'UID123',
-        phone_number: '',
+        sub: "123",
+        email: "test@test.com",
+        given_name: "John",
+        usual_name: "Doe",
+        uid: "UID123",
+        phone_number: "",
       };
 
       const result = await identitySanitizer.transformIdentity(
@@ -174,17 +173,17 @@ describe('IdentitySanitizer', () => {
       expect(result.phone_number).toBeUndefined();
     });
 
-    it('should not throw CoreFcaInvalidIdentityException when phone number is an array', async () => {
-      const idpId = 'idp1';
-      const sub = 'sub123';
-      const acr = 'acr1';
+    it("should not throw CoreFcaInvalidIdentityException when phone number is an array", async () => {
+      const idpId = "idp1";
+      const sub = "sub123";
+      const acr = "acr1";
       const identityFromIdp = {
-        sub: '123',
-        email: 'test@test.com',
-        given_name: 'John',
-        usual_name: 'Doe',
-        uid: 'UID123',
-        phone_number: ['0123456789', '0123456789'],
+        sub: "123",
+        email: "test@test.com",
+        given_name: "John",
+        usual_name: "Doe",
+        uid: "UID123",
+        phone_number: ["0123456789", "0123456789"],
       };
 
       const result = await identitySanitizer.transformIdentity(
@@ -197,20 +196,20 @@ describe('IdentitySanitizer', () => {
       expect(result.phone_number).toBeUndefined();
     });
 
-    it('should throw CoreFcaInvalidIdentityException when siret is missing and no default is provided', async () => {
-      const idpId = 'idp1';
-      const sub = 'sub123';
-      const acr = 'acr1';
+    it("should throw CoreFcaInvalidIdentityException when siret is missing and no default is provided", async () => {
+      const idpId = "idp1";
+      const sub = "sub123";
+      const acr = "acr1";
       const identityFromIdp = {
-        sub: '123',
-        email: 'test@test.com',
-        given_name: 'John',
-        usual_name: 'Doe',
-        uid: 'UID123',
+        sub: "123",
+        email: "test@test.com",
+        given_name: "John",
+        usual_name: "Doe",
+        uid: "UID123",
       };
 
       jest
-        .spyOn(identityProvider, 'getById')
+        .spyOn(identityProvider, "getById")
         .mockResolvedValue({ siret: null } as any);
 
       await expect(

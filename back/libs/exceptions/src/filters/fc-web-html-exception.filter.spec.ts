@@ -1,32 +1,28 @@
-import { Response } from 'express';
-
-import { ArgumentsHost } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { ConfigService } from '@fc/config';
+import { ConfigService } from "@fc/config";
 import {
   CoreFcaAgentNotFromPublicServiceException,
   CoreFcaBaseException,
   CoreFcaInvalidIdentityException,
-} from '@fc/core';
-import { LoggerService } from '@fc/logger';
-import { OidcClientTokenResultFailedException } from '@fc/oidc-client';
-import { SessionService } from '@fc/session';
+} from "@fc/core";
+import { LoggerService } from "@fc/logger";
+import { OidcClientTokenResultFailedException } from "@fc/oidc-client";
+import { SessionService } from "@fc/session";
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
+import { getSessionServiceMock } from "@mocks/session";
+import { ArgumentsHost } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Response } from "express";
+import { BaseException } from "../exceptions/base.exception";
+import { generateErrorId } from "../helpers/";
+import { FcWebHtmlExceptionFilter } from "./fc-web-html-exception.filter";
 
-import { getConfigMock } from '@mocks/config';
-import { getLoggerMock } from '@mocks/logger';
-import { getSessionServiceMock } from '@mocks/session';
-
-import { BaseException } from '../exceptions/base.exception';
-import { generateErrorId } from '../helpers/';
-import { FcWebHtmlExceptionFilter } from './fc-web-html-exception.filter';
-
-jest.mock('../helpers/', () => ({
-  ...jest.requireActual('../helpers/'),
+jest.mock("../helpers/", () => ({
+  ...jest.requireActual("../helpers/"),
   generateErrorId: jest.fn(),
 }));
 
-describe('FcWebHtmlExceptionFilter', () => {
+describe("FcWebHtmlExceptionFilter", () => {
   let filter: FcWebHtmlExceptionFilter;
 
   const generateErrorIdMock = jest.mocked(generateErrorId);
@@ -42,8 +38,8 @@ describe('FcWebHtmlExceptionFilter', () => {
   };
 
   class ExceptionMock extends CoreFcaBaseException {
-    message = 'message';
-    code = 'code';
+    message = "message";
+    code = "code";
   }
 
   const resMock = {
@@ -52,11 +48,11 @@ describe('FcWebHtmlExceptionFilter', () => {
   };
 
   const exceptionMock = new ExceptionMock();
-  const idMock = 'id';
+  const idMock = "id";
 
   const paramsMock = {
     exception: exceptionMock,
-    error: { id: idMock, code: 'Y50code (ExceptionMock)', message: 'message' },
+    error: { id: idMock, code: "Y50code (ExceptionMock)", message: "message" },
     res: resMock as unknown as Response,
   };
 
@@ -84,48 +80,48 @@ describe('FcWebHtmlExceptionFilter', () => {
 
     hostMock.switchToHttp.mockReturnThis();
     hostMock.getResponse.mockReturnValue(resMock);
-    configMock.get.mockReturnValue({ prefix: 'Y' });
+    configMock.get.mockReturnValue({ prefix: "Y" });
     generateErrorIdMock.mockReturnValue(idMock as unknown as string);
 
     resMock.status.mockReturnThis();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(filter).toBeDefined();
   });
 
-  describe('catch', () => {
+  describe("catch", () => {
     beforeEach(() => {
-      filter['errorOutput'] = jest.fn();
+      filter["errorOutput"] = jest.fn();
     });
 
-    it('should output the error', () => {
+    it("should output the error", () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
       // Then
-      expect(filter['errorOutput']).toHaveBeenCalledExactlyOnceWith(paramsMock);
+      expect(filter["errorOutput"]).toHaveBeenCalledExactlyOnceWith(paramsMock);
     });
   });
 
-  describe('errorOutput', () => {
+  describe("errorOutput", () => {
     beforeEach(() => {
-      sessionMock.get.mockReturnValue({ interactionId: 'interactionId' });
+      sessionMock.get.mockReturnValue({ interactionId: "interactionId" });
     });
-    it('should set the status to 500', () => {
+    it("should set the status to 500", () => {
       // When
-      filter['errorOutput'](paramsMock as any);
+      filter["errorOutput"](paramsMock as any);
 
       // Then
       expect(resMock.status).toHaveBeenCalledOnce();
       expect(resMock.status).toHaveBeenCalledWith(500);
     });
 
-    it('should render the error template with a UI-less static CoreFca exception', () => {
+    it("should render the error template with a UI-less static CoreFca exception", () => {
       // When
       const coreFcaException = new CoreFcaInvalidIdentityException(
-        'error_msg',
-        'anyone',
+        "error_msg",
+        "anyone",
       );
       const inputMock = {
         ...paramsMock,
@@ -135,12 +131,12 @@ describe('FcWebHtmlExceptionFilter', () => {
           message: undefined,
         },
       };
-      filter['errorOutput'](inputMock as any);
+      filter["errorOutput"](inputMock as any);
 
       // Then
       expect(resMock.render).toHaveBeenCalledTimes(1);
       const [, renderParams] = resMock.render.mock.calls[0];
-      expect(resMock.render).toHaveBeenCalledWith('error', expect.any(Object));
+      expect(resMock.render).toHaveBeenCalledWith("error", expect.any(Object));
       expect(renderParams).toEqual(
         expect.objectContaining({
           error: inputMock.error,
@@ -153,58 +149,58 @@ describe('FcWebHtmlExceptionFilter', () => {
       );
     });
 
-    it('should render the error template even with a missing exception code', () => {
+    it("should render the error template even with a missing exception code", () => {
       // When
       const input = {
         ...paramsMock,
         exception: new BaseException(),
         error: { ...paramsMock.error, code: undefined, message: undefined },
       };
-      filter['errorOutput'](input as any);
+      filter["errorOutput"](input as any);
 
       // Then
       expect(resMock.render).toHaveBeenCalledWith(
-        'error',
+        "error",
         expect.objectContaining({
           error: input.error,
         }),
       );
     });
 
-    it('should render no contactHref', () => {
+    it("should render no contactHref", () => {
       // When
       const inputMock = {
         ...paramsMock,
-        error: { ...paramsMock.error, message: 'invalid_scope' },
+        error: { ...paramsMock.error, message: "invalid_scope" },
         exception: Object.assign(new ExceptionMock(), {
           displayContact: false,
         }),
       };
-      filter['errorOutput'](inputMock as any);
+      filter["errorOutput"](inputMock as any);
 
       // Then
       expect(resMock.render).toHaveBeenCalledWith(
-        'error',
+        "error",
         expect.objectContaining({
           exceptionDisplay: {
             contactHref: undefined,
             contactMessage:
-              'Vous pouvez nous signaler cette erreur en nous écrivant.',
+              "Vous pouvez nous signaler cette erreur en nous écrivant.",
             description:
-              'Nous n’arrivons pas à vous connecter à votre service en ligne pour l’instant.',
+              "Nous n’arrivons pas à vous connecter à votre service en ligne pour l’instant.",
             displayContact: false,
-            illustration: 'default-error',
-            title: 'Accès impossible',
-            mainAction: 'goBack',
+            illustration: "default-error",
+            title: "Accès impossible",
+            mainAction: "goBack",
           },
         }),
       );
     });
-    it('should render the error template with displayContact and contactHref', () => {
+    it("should render the error template with displayContact and contactHref", () => {
       // When
       const coreFcaException = new OidcClientTokenResultFailedException(
-        'support-fi@example.com',
-        'error_msg',
+        "support-fi@example.com",
+        "error_msg",
       );
       const inputMock = {
         ...paramsMock,
@@ -214,12 +210,12 @@ describe('FcWebHtmlExceptionFilter', () => {
           message: undefined,
         },
       };
-      filter['errorOutput'](inputMock as any);
+      filter["errorOutput"](inputMock as any);
 
       // Then
       expect(resMock.render).toHaveBeenCalledTimes(1);
       const [, renderParams] = resMock.render.mock.calls[0];
-      expect(resMock.render).toHaveBeenCalledWith('error', expect.any(Object));
+      expect(resMock.render).toHaveBeenCalledWith("error", expect.any(Object));
       expect(renderParams).toEqual(
         expect.objectContaining({
           error: inputMock.error,
@@ -233,10 +229,10 @@ describe('FcWebHtmlExceptionFilter', () => {
       );
     });
 
-    it('should render the error template with displayContact and no contactHref', () => {
+    it("should render the error template with displayContact and no contactHref", () => {
       // When
       const coreFcaException = new CoreFcaAgentNotFromPublicServiceException(
-        'error_msg',
+        "error_msg",
       );
       const inputMock = {
         ...paramsMock,
@@ -246,12 +242,12 @@ describe('FcWebHtmlExceptionFilter', () => {
           message: undefined,
         },
       };
-      filter['errorOutput'](inputMock as any);
+      filter["errorOutput"](inputMock as any);
 
       // Then
       expect(resMock.render).toHaveBeenCalledTimes(1);
       const [, renderParams] = resMock.render.mock.calls[0];
-      expect(resMock.render).toHaveBeenCalledWith('error', expect.any(Object));
+      expect(resMock.render).toHaveBeenCalledWith("error", expect.any(Object));
       expect(renderParams).toEqual(
         expect.objectContaining({
           error: inputMock.error,

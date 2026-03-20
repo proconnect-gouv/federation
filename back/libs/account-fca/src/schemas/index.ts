@@ -1,1 +1,1 @@
-export * from './account-fca.schema';
+export * from "./account-fca.schema";

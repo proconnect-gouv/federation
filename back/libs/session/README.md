@@ -77,12 +77,12 @@ export class MyModule {
   constructor(private readonly config: ConfigService) {}
 
   configure(consumer: MiddlewareConsumer) {
-    const { excludedRoutes } = this.config.get<SessionConfig>('Session');
+    const { excludedRoutes } = this.config.get<SessionConfig>("Session");
 
     consumer
       .apply(SessionMiddleware, SessionTemplateMiddleware)
       .exclude(...excludedRoutes)
-      .forRoutes('*');
+      .forRoutes("*");
   }
 }
 ```
@@ -133,7 +133,7 @@ Example:
 ```typescript
 const boundSessionContext: ISessionBoundContext = {
   sessionId,
-  moduleName: 'OidcClient',
+  moduleName: "OidcClient",
 };
 this.sessionService.set.bind(
   this.sessionService,

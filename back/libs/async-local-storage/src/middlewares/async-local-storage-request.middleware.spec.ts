@@ -1,11 +1,9 @@
-import { Request, Response } from 'express';
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request, Response } from "express";
+import { AsyncLocalStorageService } from "../async-local-storage.service";
+import { AsyncLocalStorageRequestMiddleware } from "./async-local-storage-request.middleware";
 
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { AsyncLocalStorageService } from '../async-local-storage.service';
-import { AsyncLocalStorageRequestMiddleware } from './async-local-storage-request.middleware';
-
-describe('AsyncLocalStorageRequestMiddleware', () => {
+describe("AsyncLocalStorageRequestMiddleware", () => {
   let middleware: AsyncLocalStorageRequestMiddleware;
 
   const asyncLocalStorageMock = {
@@ -30,13 +28,13 @@ describe('AsyncLocalStorageRequestMiddleware', () => {
     );
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(middleware).toBeDefined();
   });
 
-  describe('use', () => {
+  describe("use", () => {
     const reqMock = {
-      test: 'test',
+      test: "test",
     } as unknown as Request;
 
     const resMock = {} as unknown as Response;
@@ -47,7 +45,7 @@ describe('AsyncLocalStorageRequestMiddleware', () => {
       jest.restoreAllMocks();
     });
 
-    it('should set the request in asyncLocalStorage', () => {
+    it("should set the request in asyncLocalStorage", () => {
       // When
       middleware.use(reqMock, resMock, nextMock);
 
@@ -55,17 +53,17 @@ describe('AsyncLocalStorageRequestMiddleware', () => {
       expect(asyncLocalStorageMock.set).toHaveBeenCalledTimes(2);
       expect(asyncLocalStorageMock.set).toHaveBeenNthCalledWith(
         1,
-        'request',
+        "request",
         reqMock,
       );
       expect(asyncLocalStorageMock.set).toHaveBeenNthCalledWith(
         2,
-        'response',
+        "response",
         resMock,
       );
     });
 
-    it('should call next', () => {
+    it("should call next", () => {
       // When
       middleware.use(reqMock, resMock, nextMock);
 

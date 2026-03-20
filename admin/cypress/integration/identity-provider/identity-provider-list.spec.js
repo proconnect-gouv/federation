@@ -2,38 +2,38 @@ import {
   USER_OPERATOR,
   USER_PASS,
   USER_SECURITY,
-} from '../../support/constants';
-import { createIdentityProvider } from './identity-provider.utils';
+} from "../../support/constants";
+import { createIdentityProvider } from "./identity-provider.utils";
 
-const BASE_URL = Cypress.config('baseUrl');
+const BASE_URL = Cypress.config("baseUrl");
 
 const basicConfiguration = {
   totp: true,
 };
 
 const fi = {
-  name: 'FI1',
-  title: 'Mon Super FI mais mieux écrit',
-  issuer: 'https://issuer.fr',
-  authorizationUrl: 'https://issuer.fr/auth',
-  tokenUrl: 'https://issuer.fr/token',
-  userInfoUrl: 'https://issuer.fr/me',
-  statusUrl: 'https://issuer.fr/state',
-  discovery: 'false',
-  fqdns: 'yopmail.com',
-  discoveryUrl: 'https://issuer.fr/discoveryUrl',
-  jwksUrl: 'https://issuer.fr/discovery',
-  clientId: '09a1a257648c1742c74d6a3d84b31943',
-  client_secret: '1234567890AZERTYUIOP',
-  siret: '34047343800034',
+  name: "FI1",
+  title: "Mon Super FI mais mieux écrit",
+  issuer: "https://issuer.fr",
+  authorizationUrl: "https://issuer.fr/auth",
+  tokenUrl: "https://issuer.fr/token",
+  userInfoUrl: "https://issuer.fr/me",
+  statusUrl: "https://issuer.fr/state",
+  discovery: "false",
+  fqdns: "yopmail.com",
+  discoveryUrl: "https://issuer.fr/discoveryUrl",
+  jwksUrl: "https://issuer.fr/discovery",
+  clientId: "09a1a257648c1742c74d6a3d84b31943",
+  client_secret: "1234567890AZERTYUIOP",
+  siret: "34047343800034",
 };
 
-const fi2 = { ...fi, name: 'FI2' };
-const fi3 = { ...fi, name: 'FI3' };
+const fi2 = { ...fi, name: "FI2" };
+const fi3 = { ...fi, name: "FI3" };
 
-describe('Identity provider creation', () => {
+describe("Identity provider creation", () => {
   before(() => {
-    cy.resetEnv('mongo');
+    cy.resetEnv("mongo");
     cy.login(USER_OPERATOR, USER_PASS);
     cy.visit(`${BASE_URL}/identity-provider`);
     createIdentityProvider(fi, basicConfiguration);
@@ -41,7 +41,7 @@ describe('Identity provider creation', () => {
     createIdentityProvider(fi3, basicConfiguration);
   });
 
-  describe('List FI as Operator', () => {
+  describe("List FI as Operator", () => {
     beforeEach(() => {
       cy.login(USER_OPERATOR, USER_PASS);
       cy.visit(`${BASE_URL}/identity-provider`);
@@ -54,12 +54,12 @@ describe('Identity provider creation', () => {
 
       cy.url().should((urlString) => {
         const url = new URL(urlString);
-        expect(url.pathname).to.eq('/identity-provider');
+        expect(url.pathname).to.eq("/identity-provider");
         const params = url.searchParams;
-        expect(params.get('limit')).to.eq('10');
-        expect(params.get('page')).to.eq('1');
-        expect(params.get('sortField')).to.eq('name');
-        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get("limit")).to.eq("10");
+        expect(params.get("page")).to.eq("1");
+        expect(params.get("sortField")).to.eq("name");
+        expect(params.get("sortDirection")).to.eq("asc");
       });
     });
 
@@ -72,12 +72,12 @@ describe('Identity provider creation', () => {
 
       cy.url().should((urlString) => {
         const url = new URL(urlString);
-        expect(url.pathname).to.eq('/identity-provider');
+        expect(url.pathname).to.eq("/identity-provider");
         const params = url.searchParams;
-        expect(params.get('limit')).to.eq('2');
-        expect(params.get('page')).to.eq('2');
-        expect(params.get('sortField')).to.eq('name');
-        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get("limit")).to.eq("2");
+        expect(params.get("page")).to.eq("2");
+        expect(params.get("sortField")).to.eq("name");
+        expect(params.get("sortDirection")).to.eq("asc");
       });
     });
 
@@ -90,16 +90,16 @@ describe('Identity provider creation', () => {
 
       cy.url().should((urlString) => {
         const url = new URL(urlString);
-        expect(url.pathname).to.eq('/identity-provider');
+        expect(url.pathname).to.eq("/identity-provider");
         const params = url.searchParams;
-        expect(params.get('limit')).to.eq('2');
-        expect(params.get('page')).to.eq('1');
-        expect(params.get('sortField')).to.eq('name');
-        expect(params.get('sortDirection')).to.eq('asc');
+        expect(params.get("limit")).to.eq("2");
+        expect(params.get("page")).to.eq("1");
+        expect(params.get("sortField")).to.eq("name");
+        expect(params.get("sortDirection")).to.eq("asc");
       });
     });
 
-    it('I can click on the name of the FI to go to the update page', () => {
+    it("I can click on the name of the FI to go to the update page", () => {
       cy.visit(
         `${BASE_URL}/identity-provider?sortField=name&sortDirection=asc&page=2&limit=2`,
       );
@@ -107,12 +107,12 @@ describe('Identity provider creation', () => {
       cy.get('[id^="provider-"]:first').click();
 
       cy.url().should(
-        'match',
+        "match",
         new RegExp(`${BASE_URL}\/identity-provider\/[0-9a-f]{24}`),
       );
     });
 
-    it('I can click on the technical name of the FI to go to the update page', () => {
+    it("I can click on the technical name of the FI to go to the update page", () => {
       cy.visit(
         `${BASE_URL}/identity-provider?sortField=name&sortDirection=asc&page=2&limit=2`,
       );
@@ -120,23 +120,23 @@ describe('Identity provider creation', () => {
       cy.get('[id^="technic-"]:first').click();
 
       cy.url().should(
-        'match',
+        "match",
         new RegExp(`${BASE_URL}\/identity-provider\/[0-9a-f]{24}`),
       );
     });
 
-    it('I can see the FQDNs of the FI', () => {
+    it("I can see the FQDNs of the FI", () => {
       cy.visit(
         `${BASE_URL}/identity-provider?sortField=createdAt&sortDirection=asc&page=1&limit=10&search=${fi.name}`,
       );
-      cy.get('#list-table > tbody > tr:first > td:nth-child(3)').should(
-        'contain',
-        'yopmail.com',
+      cy.get("#list-table > tbody > tr:first > td:nth-child(3)").should(
+        "contain",
+        "yopmail.com",
       );
     });
   });
 
-  describe('List FI as Security', () => {
+  describe("List FI as Security", () => {
     beforeEach(() => {
       cy.login(USER_SECURITY, USER_PASS);
       cy.visit(`${BASE_URL}/identity-provider`);
@@ -148,13 +148,13 @@ describe('Identity provider creation', () => {
       );
 
       const first = cy
-        .get('#list-table > tbody > tr:first > *:first')
+        .get("#list-table > tbody > tr:first > *:first")
         .then(($el) => {
-          expect($el).to.not.have.descendants('a');
+          expect($el).to.not.have.descendants("a");
         });
 
       first.next().then(($el) => {
-        expect($el).to.not.have.descendants('a');
+        expect($el).to.not.have.descendants("a");
       });
     });
   });

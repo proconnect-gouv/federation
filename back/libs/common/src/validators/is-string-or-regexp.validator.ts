@@ -1,6 +1,6 @@
-import { isString, ValidateBy, ValidationOptions } from 'class-validator';
+import { isString, ValidateBy, ValidationOptions } from "class-validator";
 
-export const IS_STRING_OR_REGEXP = 'IsStringOrRegExp';
+export const IS_STRING_OR_REGEXP = "IsStringOrRegExp";
 
 export function isStringOrRegExp(values: unknown): boolean {
   return isString(values) || values instanceof RegExp;
@@ -14,7 +14,7 @@ export class IsStringOrRegExpConstraint {
   }
 
   defaultMessage() {
-    return 'The value must be a string or RegExp';
+    return "The value must be a string or RegExp";
   }
 }
 

@@ -4,22 +4,22 @@ import {
   IsString,
   MaxLength,
   MinLength,
-} from 'class-validator';
+} from "class-validator";
 
-import { IsPhoneNumberSimpleValidator } from '../validators/is-phone-number-simple-validator.validator';
-import { IsSiret } from '../validators/is-siret-validator';
-import { IdentityFromIdpDto } from './identity-from-idp.dto';
+import { IsPhoneNumberSimpleValidator } from "../validators/is-phone-number-simple-validator.validator";
+import { IsSiret } from "../validators/is-siret-validator";
+import { IdentityFromIdpDto } from "./identity-from-idp.dto";
 
 export class IdentityForSpDto extends IdentityFromIdpDto {
-  @IsDefined({ groups: ['siret'] })
-  @MinLength(1, { groups: ['siret'] })
-  @IsSiret({ groups: ['siret'] })
+  @IsDefined({ groups: ["siret"] })
+  @MinLength(1, { groups: ["siret"] })
+  @IsSiret({ groups: ["siret"] })
   declare siret: string;
 
-  @IsString({ groups: ['phone_number'] })
-  @MinLength(1, { groups: ['phone_number'] })
-  @MaxLength(256, { groups: ['phone_number'] })
-  @IsPhoneNumberSimpleValidator({ groups: ['phone_number'] })
+  @IsString({ groups: ["phone_number"] })
+  @MinLength(1, { groups: ["phone_number"] })
+  @MaxLength(256, { groups: ["phone_number"] })
+  @IsPhoneNumberSimpleValidator({ groups: ["phone_number"] })
   declare phone_number?: string;
 
   @IsObject()

@@ -1,20 +1,17 @@
+import { AccountFcaService } from "@fc/account-fca";
+import { ConfigService } from "@fc/config";
+import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
+import { LoggerService } from "@fc/logger";
+import { Injectable } from "@nestjs/common";
 import {
   gouvfrDomains,
   mostUsedFreeEmailDomains,
   otherGouvDomains,
-} from '@proconnect-gouv/proconnect.core/data';
-import { run as spellCheckEmail } from '@zootools/email-spell-checker';
-import { chain, uniq } from 'lodash';
-import { resolveMx } from 'node:dns/promises';
-
-import { Injectable } from '@nestjs/common';
-
-import { AccountFcaService } from '@fc/account-fca';
-import { ConfigService } from '@fc/config';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
-
-import { EmailValidatorConfig } from '../dto';
+} from "@proconnect-gouv/proconnect.core/data";
+import { run as spellCheckEmail } from "@zootools/email-spell-checker";
+import { chain, uniq } from "lodash";
+import { resolveMx } from "node:dns/promises";
+import { EmailValidatorConfig } from "../dto";
 
 @Injectable()
 export class EmailValidatorService {
@@ -56,7 +53,7 @@ export class EmailValidatorService {
 
   private getEmailSuggestion(email: string, idpDomains: string[]): string {
     const { domainWhitelist } =
-      this.config.get<EmailValidatorConfig>('EmailValidator');
+      this.config.get<EmailValidatorConfig>("EmailValidator");
 
     const domains = uniq([
       ...gouvfrDomains,
@@ -69,11 +66,11 @@ export class EmailValidatorService {
     const suggestedEmail = spellCheckEmail({
       domains,
       domainThreshold: 3,
-      topLevelDomains: ['fr', 'com', 'net'],
-      secondLevelDomains: ['gouv'],
+      topLevelDomains: ["fr", "com", "net"],
+      secondLevelDomains: ["gouv"],
       email,
     });
-    return suggestedEmail ? suggestedEmail.full : '';
+    return suggestedEmail ? suggestedEmail.full : "";
   }
 
   private async getIdpDomains() {
@@ -90,7 +87,7 @@ export class EmailValidatorService {
 
   private async isEmailDomainValid(email: string) {
     const { domainWhitelist } =
-      this.config.get<EmailValidatorConfig>('EmailValidator');
+      this.config.get<EmailValidatorConfig>("EmailValidator");
     const emailDomain =
       this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
 

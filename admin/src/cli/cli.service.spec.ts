@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConsoleModule } from 'nestjs-console';
-import { UserService } from '../user/user.service';
-import { CliService } from './cli.service';
-import { TotpService } from '../authentication/totp/totp.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ConsoleModule } from "nestjs-console";
+import { TotpService } from "../authentication/totp/totp.service";
+import { UserService } from "../user/user.service";
+import { CliService } from "./cli.service";
 
-describe('CliService', () => {
+describe("CliService", () => {
   let service: CliService;
   let userServiceMock: any;
   let totpServiceMock: any;
@@ -24,12 +24,12 @@ describe('CliService', () => {
       generateTotpSecret: jest.fn(),
     };
 
-    consoleLogMock = jest.spyOn(console, 'log');
+    consoleLogMock = jest.spyOn(console, "log");
 
-    consoleErrorMock = jest.spyOn(console, 'error');
+    consoleErrorMock = jest.spyOn(console, "error");
 
     processExitMock = jest
-      .spyOn(process, 'exit')
+      .spyOn(process, "exit")
       .mockImplementation((code) => code as never);
 
     const module: TestingModule = await Test.createTestingModule({
@@ -46,18 +46,18 @@ describe('CliService', () => {
     jest.resetAllMocks();
   });
 
-  describe('createUser', () => {
-    it('Should return Password and first login link on success', async () => {
+  describe("createUser", () => {
+    it("Should return Password and first login link on success", async () => {
       // Given
-      const name = 'john';
-      const roles = 'admin';
-      const email = 'jhon@doe.com';
-      const firstLoginLink = 'http://localhost:3000/first-login?token=XXXXX';
-      const password = 'Azertyuio34!';
+      const name = "john";
+      const roles = "admin";
+      const email = "jhon@doe.com";
+      const firstLoginLink = "http://localhost:3000/first-login?token=XXXXX";
+      const password = "Azertyuio34!";
 
       userServiceMock.generateTmpPass.mockReturnValueOnce(password);
       userServiceMock.createUser.mockReturnValueOnce(firstLoginLink);
-      totpServiceMock.generateTotpSecret.mockReturnValue('XXXXX');
+      totpServiceMock.generateTotpSecret.mockReturnValue("XXXXX");
       // When
       await service.createUser(name, email, roles);
       // Then
@@ -78,16 +78,16 @@ describe('CliService', () => {
       expect(processExitMock).toHaveBeenCalledWith(0);
     });
 
-    it('Should return error on error', async () => {
+    it("Should return error on error", async () => {
       // Given
-      const name = 'john';
-      const roles = 'admin';
-      const email = 'jhon@doe.com';
-      userServiceMock.generateTmpPass.mockReturnValueOnce('Azertyuio34!');
-      totpServiceMock.generateTotpSecret.mockReturnValue('XXXXX');
+      const name = "john";
+      const roles = "admin";
+      const email = "jhon@doe.com";
+      userServiceMock.generateTmpPass.mockReturnValueOnce("Azertyuio34!");
+      totpServiceMock.generateTotpSecret.mockReturnValue("XXXXX");
       // When
       userServiceMock.createUser.mockRejectedValueOnce({
-        message: 'Something bad',
+        message: "Something bad",
       });
       await service.createUser(name, email, roles);
       // Then
@@ -107,46 +107,46 @@ describe('CliService', () => {
     });
   });
 
-  describe('formatValidationErrors', () => {
-    it('Should return a flatten string of errors', () => {
+  describe("formatValidationErrors", () => {
+    it("Should return a flatten string of errors", () => {
       // Given
       const errors = [
-        { constraints: { foo: 'bar' } },
-        { constraints: { fizz: 'buzz' } },
+        { constraints: { foo: "bar" } },
+        { constraints: { fizz: "buzz" } },
       ];
       // When
       // Private method testing https://stackoverflow.com/a/35991491/1071169
       // tslint:disable-next-line no-string-literal
-      const result = service['formatValidationErrors'](errors);
+      const result = service["formatValidationErrors"](errors);
       // Then
-      expect(result).toEqual('bar\nbuzz');
+      expect(result).toEqual("bar\nbuzz");
     });
   });
 
-  describe('getRoles', () => {
+  describe("getRoles", () => {
     it('Should return roles prefixed by "inactive"', () => {
       // Given
-      const input = 'admin,operator';
+      const input = "admin,operator";
       // When
       // Private method testing https://stackoverflow.com/a/35991491/1071169
       // tslint:disable-next-line no-string-literal
-      const roles = service['getRoles'](input);
+      const roles = service["getRoles"](input);
       // Then
-      expect(roles).toContain('inactive_admin');
-      expect(roles).not.toContain('admin');
-      expect(roles).toContain('inactive_operator');
-      expect(roles).not.toContain('operator&');
+      expect(roles).toContain("inactive_admin");
+      expect(roles).not.toContain("admin");
+      expect(roles).toContain("inactive_operator");
+      expect(roles).not.toContain("operator&");
     });
 
     it('Should append "new_account" role to the list', () => {
       // Given
-      const input = 'admin,operator';
+      const input = "admin,operator";
       // When
       // Private method testing https://stackoverflow.com/a/35991491/1071169
       // tslint:disable-next-line no-string-literal
-      const roles = service['getRoles'](input);
+      const roles = service["getRoles"](input);
       // Then
-      expect(roles).toContain('new_account');
+      expect(roles).toContain("new_account");
     });
   });
 });

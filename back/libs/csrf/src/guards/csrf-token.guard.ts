@@ -1,7 +1,6 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-
-import { CsrfMissingTokenException } from '../exceptions';
-import { CsrfService } from '../services';
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { CsrfMissingTokenException } from "../exceptions";
+import { CsrfService } from "../services";
 
 @Injectable()
 export class CsrfTokenGuard implements CanActivate {

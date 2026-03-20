@@ -8,7 +8,7 @@ export function firstLogin(username, password) {
 }
 
 export function forceLogin(username, password) {
-  cy.visit('/login');
+  cy.visit("/login");
   cy.formFill({ username, password }, { totp: true, fast: true });
   cy.get('button[type="submit"]').click();
 }
@@ -17,7 +17,7 @@ export function login(username, password) {
   cy.session(
     username,
     () => {
-      cy.visit('/login');
+      cy.visit("/login");
       cy.formFill({ username, password }, { totp: true, fast: true });
       cy.get('button[type="submit"]').click();
     },
@@ -25,11 +25,11 @@ export function login(username, password) {
       cacheAcrossSpecs: true,
     },
   );
-  cy.visit('/');
-  cy.get('.login-form').should('not.exist');
+  cy.visit("/");
+  cy.get(".login-form").should("not.exist");
 }
 
 export function logout(username) {
-  cy.get('.dropdown-toggle').contains(username).click();
-  cy.contains('Déconnexion').click();
+  cy.get(".dropdown-toggle").contains(username).click();
+  cy.contains("Déconnexion").click();
 }

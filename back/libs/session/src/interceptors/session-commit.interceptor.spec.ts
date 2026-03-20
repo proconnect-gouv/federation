@@ -1,26 +1,22 @@
-import { Request } from 'express';
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
+import { getSessionServiceMock } from "@mocks/session";
+import { ExecutionContext } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request } from "express";
+import { SessionService } from "../services";
+import { SessionCommitInterceptor } from "./session-commit.interceptor";
 
-import { ExecutionContext } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-
-import { getConfigMock } from '@mocks/config';
-import { getLoggerMock } from '@mocks/logger';
-import { getSessionServiceMock } from '@mocks/session';
-
-import { SessionService } from '../services';
-import { SessionCommitInterceptor } from './session-commit.interceptor';
-
-describe('SessionCommitInterceptor', () => {
+describe("SessionCommitInterceptor", () => {
   let interceptor: SessionCommitInterceptor;
 
   const reqMock = {
     route: {
-      path: '/prefix/some/route',
+      path: "/prefix/some/route",
     },
-    sessionId: 'sessionIdValue',
+    sessionId: "sessionIdValue",
   };
 
   const httpContextMock = {
@@ -71,12 +67,12 @@ describe('SessionCommitInterceptor', () => {
     nextMock.handle.mockReturnValue(handleResult);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(interceptor).toBeDefined();
   });
 
-  describe('intercept', () => {
-    it('should call next.handle', () => {
+  describe("intercept", () => {
+    it("should call next.handle", () => {
       // Given
 
       // When
@@ -88,66 +84,66 @@ describe('SessionCommitInterceptor', () => {
     });
   });
 
-  describe('commit', () => {
-    const routes = ['/some/route', '/some/other/route'];
+  describe("commit", () => {
+    const routes = ["/some/route", "/some/other/route"];
 
     beforeEach(() => {
-      interceptor['getCleanedUpRoutes'] = jest.fn().mockReturnValue(routes);
+      interceptor["getCleanedUpRoutes"] = jest.fn().mockReturnValue(routes);
       configServiceMock.get
         .mockReturnValueOnce({
-          urlPrefix: '/prefix',
+          urlPrefix: "/prefix",
         })
         .mockReturnValueOnce({
           excludedRoutes: [],
         });
     });
 
-    it('should call sessionService.commit', async () => {
+    it("should call sessionService.commit", async () => {
       // When
-      await interceptor['commit'](reqMock as unknown as Request);
+      await interceptor["commit"](reqMock as unknown as Request);
 
       // Then
       expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
     });
 
-    it('should not call sessionService.commit if route is not included', async () => {
+    it("should not call sessionService.commit if route is not included", async () => {
       // Given
-      interceptor['getCleanedUpRoutes'] = jest
+      interceptor["getCleanedUpRoutes"] = jest
         .fn()
-        .mockReturnValueOnce(['/not/that/route']);
+        .mockReturnValueOnce(["/not/that/route"]);
 
       // When
-      await interceptor['commit'](reqMock as unknown as Request);
+      await interceptor["commit"](reqMock as unknown as Request);
 
       // Then
       expect(sessionServiceMock.commit).not.toHaveBeenCalled();
     });
 
-    it('should catch and log error on commit ', async () => {
+    it("should catch and log error on commit ", async () => {
       // Given
-      const error = new Error('commit error');
+      const error = new Error("commit error");
       sessionServiceMock.commit.mockRejectedValueOnce(error);
 
       // When
-      await interceptor['commit'](reqMock as unknown as Request);
+      await interceptor["commit"](reqMock as unknown as Request);
 
       // Then
       expect(loggerMock.info).toHaveBeenCalledWith(
-        'Could not commit session from interceptor',
+        "Could not commit session from interceptor",
       );
     });
   });
 
-  describe('getCleanedUpRoutes', () => {
-    it('should return an array of strings with $ removed', () => {
+  describe("getCleanedUpRoutes", () => {
+    it("should return an array of strings with $ removed", () => {
       // Given
-      const routes = ['/some/route$', '/some/other/$route'];
+      const routes = ["/some/route$", "/some/other/$route"];
 
       // When
-      const result = interceptor['getCleanedUpRoutes'](routes);
+      const result = interceptor["getCleanedUpRoutes"](routes);
 
       // Then
-      expect(result).toEqual(['/some/route', '/some/other/route']);
+      expect(result).toEqual(["/some/route", "/some/other/route"]);
     });
   });
 });

@@ -1,15 +1,12 @@
-import { debounce, type DebouncedFunc } from 'lodash';
-import { type ChangeStream, ChangeStreamDocument } from 'mongodb';
-import { Document, Model } from 'mongoose';
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { Injectable, type OnModuleDestroy } from "@nestjs/common";
+import { debounce, type DebouncedFunc } from "lodash";
+import { type ChangeStream, ChangeStreamDocument } from "mongodb";
+import { Document, Model } from "mongoose";
+import type { MongooseConfig } from "../dto";
 
-import { Injectable, type OnModuleDestroy } from '@nestjs/common';
-
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-
-import type { MongooseConfig } from '../dto';
-
-const DEFAULT_OPERATIONS = ['insert', 'update', 'delete', 'rename', 'replace'];
+const DEFAULT_OPERATIONS = ["insert", "update", "delete", "rename", "replace"];
 
 @Injectable()
 export class MongooseCollectionOperationWatcherHelper implements OnModuleDestroy {
@@ -26,7 +23,7 @@ export class MongooseCollectionOperationWatcherHelper implements OnModuleDestroy
 
   watchWith<T extends Document>(model: Model<T>, callback: Function): void {
     const waitDuration =
-      this.config.get<MongooseConfig>('Mongoose').watcherDebounceWaitDuration;
+      this.config.get<MongooseConfig>("Mongoose").watcherDebounceWaitDuration;
     const debouncedCallback = debounce(callback as any, waitDuration);
     MongooseCollectionOperationWatcherHelper.listeners.push({
       model,
@@ -42,7 +39,7 @@ export class MongooseCollectionOperationWatcherHelper implements OnModuleDestroy
     );
 
     watch.on(
-      'change',
+      "change",
       this.operationTypeWatcher.bind(this, model.modelName, callback),
     );
     return watch;
@@ -90,7 +87,7 @@ export class MongooseCollectionOperationWatcherHelper implements OnModuleDestroy
   }
 
   async onModuleDestroy() {
-    this.logger.debug('Closing all ChangeStreams');
+    this.logger.debug("Closing all ChangeStreams");
 
     await this.disconnectAllWatchers();
 

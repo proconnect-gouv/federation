@@ -2,14 +2,14 @@ import {
   isHttpHeaders,
   ValidateHttpHeadersConstraint,
   validateSetCookie,
-} from './http-headers.validator';
+} from "./http-headers.validator";
 
-describe('isHttpHeaders()', () => {
-  it('should return true if the value is a object with values', () => {
+describe("isHttpHeaders()", () => {
+  it("should return true if the value is a object with values", () => {
     // setup
     const values = {
-      key1: 'key1Value',
-      key2: 'key2Value',
+      key1: "key1Value",
+      key2: "key2Value",
     };
 
     // action
@@ -19,7 +19,7 @@ describe('isHttpHeaders()', () => {
     expect(result).toStrictEqual(true);
   });
 
-  it('should return true if the value is a void object', () => {
+  it("should return true if the value is a void object", () => {
     // setup
     const values = {};
 
@@ -30,10 +30,10 @@ describe('isHttpHeaders()', () => {
     expect(result).toStrictEqual(true);
   });
 
-  it('should return false if the value is a object with non-ascii value', () => {
+  it("should return false if the value is a object with non-ascii value", () => {
     // setup
     const values = {
-      key1: '£',
+      key1: "£",
     };
 
     // action
@@ -43,10 +43,10 @@ describe('isHttpHeaders()', () => {
     expect(result).toStrictEqual(false);
   });
 
-  it('should return false if the value is a object with non-ascii key', () => {
+  it("should return false if the value is a object with non-ascii key", () => {
     // setup
     const values = {
-      '£': 'pounds',
+      "£": "pounds",
     };
 
     // action
@@ -57,11 +57,11 @@ describe('isHttpHeaders()', () => {
   });
 
   describe('special param "set-cookie"', () => {
-    it('should return true if set-cookie has ascii value', () => {
+    it("should return true if set-cookie has ascii value", () => {
       // setup
       const values = {
-        test: 'hello world',
-        'set-cookie': ['hello', 'world'],
+        test: "hello world",
+        "set-cookie": ["hello", "world"],
       };
 
       // action
@@ -70,11 +70,11 @@ describe('isHttpHeaders()', () => {
       // expect
       expect(result).toStrictEqual(true);
     });
-    it('should return false if set-cookie has no-ascii value', () => {
+    it("should return false if set-cookie has no-ascii value", () => {
       // setup
       const values = {
-        test: 'hello world',
-        'set-cookie': ['hello', '£'],
+        test: "hello world",
+        "set-cookie": ["hello", "£"],
       };
 
       // action
@@ -83,11 +83,11 @@ describe('isHttpHeaders()', () => {
       // expect
       expect(result).toStrictEqual(false);
     });
-    it('should return false if set-cookie has a wrong type', () => {
+    it("should return false if set-cookie has a wrong type", () => {
       // setup
       const values = {
-        test: 'hello world',
-        'set-cookie': 42,
+        test: "hello world",
+        "set-cookie": 42,
       };
 
       // action
@@ -98,18 +98,18 @@ describe('isHttpHeaders()', () => {
     });
   });
 });
-describe('ValidateHttpHeadersConstraint', () => {
+describe("ValidateHttpHeadersConstraint", () => {
   let instance;
 
   beforeEach(() => {
     instance = new ValidateHttpHeadersConstraint();
   });
 
-  describe('validate()', () => {
-    it('should validate the values', () => {
+  describe("validate()", () => {
+    it("should validate the values", () => {
       // setup
       const values = {
-        echo: 'echoValue',
+        echo: "echoValue",
       };
 
       // action
@@ -119,7 +119,7 @@ describe('ValidateHttpHeadersConstraint', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true if the value is a void object', () => {
+    it("should return true if the value is a void object", () => {
       // setup
       const values = {};
 
@@ -130,9 +130,9 @@ describe('ValidateHttpHeadersConstraint', () => {
       expect(result).toStrictEqual(true);
     });
 
-    it('should return false if the value is a string', () => {
+    it("should return false if the value is a string", () => {
       // setup
-      const values = 'Sarah Connor';
+      const values = "Sarah Connor";
 
       // action
       const result = instance.validate(values);
@@ -140,7 +140,7 @@ describe('ValidateHttpHeadersConstraint', () => {
       // expect
       expect(result).toStrictEqual(false);
     });
-    it('should return false if the value is a number', () => {
+    it("should return false if the value is a number", () => {
       // setup
       const values = 42;
 
@@ -150,10 +150,10 @@ describe('ValidateHttpHeadersConstraint', () => {
       // expect
       expect(result).toStrictEqual(false);
     });
-    it('should return false if the value is a object with non-ascii value', () => {
+    it("should return false if the value is a object with non-ascii value", () => {
       // setup
       const values = {
-        key1: '£',
+        key1: "£",
       };
       // action
       const result = instance.validate(values);
@@ -163,38 +163,38 @@ describe('ValidateHttpHeadersConstraint', () => {
     });
   });
 
-  describe('defaultMessage()', () => {
-    it('should return the default message', () => {
+  describe("defaultMessage()", () => {
+    it("should return the default message", () => {
       // setup
       // action
       const result = instance.defaultMessage();
 
       // expect
-      expect(result).toStrictEqual('Please check the HTTP headers values');
+      expect(result).toStrictEqual("Please check the HTTP headers values");
     });
   });
 });
 
-describe('validateSetCookie', () => {
-  describe('should validate a string', () => {
+describe("validateSetCookie", () => {
+  describe("should validate a string", () => {
     // When
-    const result = validateSetCookie('an acceptable string');
+    const result = validateSetCookie("an acceptable string");
 
     // Then
     expect(result).toStrictEqual(true);
   });
 
-  describe('should validate an array', () => {
+  describe("should validate an array", () => {
     // When
-    const result = validateSetCookie(['an acceptable string', 'in array']);
+    const result = validateSetCookie(["an acceptable string", "in array"]);
 
     // Then
     expect(result).toStrictEqual(true);
   });
 
-  describe('should return false if it is non-ascii', () => {
+  describe("should return false if it is non-ascii", () => {
     // When
-    const result = validateSetCookie('£');
+    const result = validateSetCookie("£");
 
     // Then
     expect(result).toStrictEqual(false);

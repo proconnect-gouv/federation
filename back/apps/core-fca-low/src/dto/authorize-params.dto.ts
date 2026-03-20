@@ -5,7 +5,7 @@ import {
   IsString,
   Length,
   Matches,
-} from 'class-validator';
+} from "class-validator";
 
 const URL_REGEX = /^https?:\/\/[^/].+$/;
 
@@ -34,16 +34,16 @@ export class AuthorizeParamsDto {
 
   @IsOptional()
   @IsString()
-  @IsAscii({ message: 'Le nonce doit être composé de caractères ASCII' })
+  @IsAscii({ message: "Le nonce doit être composé de caractères ASCII" })
   @Length(1, 512)
   readonly nonce?: string;
 
   @IsOptional()
-  @IsEmail({}, { message: 'Le login_hint doit être une adresse email valide' })
+  @IsEmail({}, { message: "Le login_hint doit être une adresse email valide" })
   readonly login_hint?: string;
 
   @IsOptional()
-  @Length(14, 14, { message: 'Le siret_hint doit contenir 14 caractères' })
+  @Length(14, 14, { message: "Le siret_hint doit contenir 14 caractères" })
   readonly siret_hint?: string;
 
   @IsString()

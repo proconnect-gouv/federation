@@ -13,11 +13,10 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+import { addMatchImageSnapshotCommand } from "@simonsmith/cypress-image-snapshot/command";
 import "cypress-axe";
 import "cypress-plugin-api";
 import "reflect-metadata";
-
-import { addMatchImageSnapshotCommand } from "@simonsmith/cypress-image-snapshot/command";
 
 Cypress.Commands.add(
   "clearThenType",

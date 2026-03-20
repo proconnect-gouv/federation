@@ -1,19 +1,16 @@
-import { ObjectId } from 'mongodb';
-import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { LoggerService } from '../logger/logger.service';
-
-import { ICrudTrack } from '../interfaces';
-
-import { Scopes } from './scopes.mongodb.entity';
-import { IScopes } from './interface';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
+import { ICrudTrack } from "../interfaces";
+import { LoggerService } from "../logger/logger.service";
+import { IScopes } from "./interface";
+import { Scopes } from "./scopes.mongodb.entity";
 
 @Injectable()
 export class ScopesService {
   constructor(
-    @InjectRepository(Scopes, 'fc-mongo')
+    @InjectRepository(Scopes, "fc-mongo")
     private readonly scopesRepository: Repository<Scopes>,
     private readonly logger: LoggerService,
   ) {}
@@ -42,8 +39,8 @@ export class ScopesService {
     const insertedId = result.identifiers[0].id;
 
     this.track({
-      entity: 'scope',
-      action: 'create',
+      entity: "scope",
+      action: "create",
       user,
       id: insertedId,
       name: newScope.scope,
@@ -65,8 +62,8 @@ export class ScopesService {
     newScope: IScopes,
   ): Promise<Scopes> {
     this.track({
-      entity: 'scope',
-      action: 'update',
+      entity: "scope",
+      action: "update",
       user,
       id: _id.toString(),
       name: newScope.scope,
@@ -75,7 +72,7 @@ export class ScopesService {
     const { fd, label, scope } = newScope;
     const oldScope: IScopes = await this.getById(_id);
     const oldFd = ScopesService.getFdNameFromLabel(oldScope.label);
-    const newLabel = newScope.label.replace(`(${oldFd})`, '').trim();
+    const newLabel = newScope.label.replace(`(${oldFd})`, "").trim();
 
     /**
      * @TODO Remove the concatenation of the label + fd.
@@ -103,8 +100,8 @@ export class ScopesService {
     await this.scopesRepository.delete({ _id });
 
     this.track({
-      entity: 'scope',
-      action: 'delete',
+      entity: "scope",
+      action: "delete",
       user,
       id: _id.toString(),
       name: scope.scope,
@@ -164,6 +161,6 @@ export class ScopesService {
   private static getFdNameFromLabel(label: string): string {
     const regExp = /\(([^()]*)\)/;
     const getFd = regExp.exec(label);
-    return getFd && getFd.length > 0 ? getFd[1] : '';
+    return getFd && getFd.length > 0 ? getFd[1] : "";
   }
 }

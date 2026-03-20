@@ -1,31 +1,28 @@
-import crypto from 'crypto';
-
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { ConfigService } from '@fc/config';
-
+import { ConfigService } from "@fc/config";
+import { Test, TestingModule } from "@nestjs/testing";
+import crypto from "crypto";
 import {
   CryptographyService,
   RANDOM_MIN_ENTROPY,
-} from './cryptography.service';
-import { LowEntropyArgumentException, PasswordHashFailure } from './exceptions';
+} from "./cryptography.service";
+import { LowEntropyArgumentException, PasswordHashFailure } from "./exceptions";
 
-describe('CryptographyService', () => {
+describe("CryptographyService", () => {
   let service: CryptographyService;
 
-  const mockEncryptKey = 'p@ss p@rt0ut';
+  const mockEncryptKey = "p@ss p@rt0ut";
   const mockData = {
-    given_name: 'Chuck',
-    family_name: 'NORRIS',
+    given_name: "Chuck",
+    family_name: "NORRIS",
   };
   const mockDataToEncrypt = JSON.stringify(mockData);
   const mockDecryptedData = mockDataToEncrypt;
 
-  const mockRandomBytes12 = Buffer.from('424242424242', 'utf8');
-  const mockAuthTag16 = Buffer.from('2121212121212121', 'utf8');
+  const mockRandomBytes12 = Buffer.from("424242424242", "utf8");
+  const mockAuthTag16 = Buffer.from("2121212121212121", "utf8");
   const mockCiphertext = Buffer.from(
     "Chuck Norris cannot be ciphered, it's the cipher who is chuck-norissed",
-    'utf8',
+    "utf8",
   );
   const mockCipher = Buffer.concat([
     mockRandomBytes12,
@@ -34,7 +31,7 @@ describe('CryptographyService', () => {
   ]);
 
   const mockHashDigestedHash =
-    'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8';
+    "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8";
 
   const mockCrypto = {
     randomBytes: jest.fn(),
@@ -80,13 +77,13 @@ describe('CryptographyService', () => {
     service = module.get<CryptographyService>(CryptographyService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('encryptSymetric', () => {
+  describe("encryptSymetric", () => {
     beforeEach(() => {
-      service['encrypt'] = jest.fn().mockReturnValueOnce(mockCipher);
+      service["encrypt"] = jest.fn().mockReturnValueOnce(mockCipher);
     });
 
     it('should serialize the given data and encrypt it calling "this.encrypt"', () => {
@@ -94,8 +91,8 @@ describe('CryptographyService', () => {
       service.encryptSymetric(mockEncryptKey, mockDataToEncrypt);
 
       // expect
-      expect(service['encrypt']).toHaveBeenCalledTimes(1);
-      expect(service['encrypt']).toHaveBeenCalledWith(
+      expect(service["encrypt"]).toHaveBeenCalledTimes(1);
+      expect(service["encrypt"]).toHaveBeenCalledWith(
         mockEncryptKey,
         mockDataToEncrypt,
       );
@@ -107,7 +104,7 @@ describe('CryptographyService', () => {
         mockRandomBytes12,
         mockAuthTag16,
         mockCiphertext,
-      ]).toString('base64');
+      ]).toString("base64");
 
       // action
       const result = service.encryptSymetric(mockEncryptKey, mockDataToEncrypt);
@@ -117,20 +114,20 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('decryptSymetric', () => {
+  describe("decryptSymetric", () => {
     it('should decrypt the given ciphertext calling "this.decrypt" and deserialize it', () => {
       // setup
-      service['decrypt'] = jest.fn().mockReturnValueOnce(mockDataToEncrypt);
+      service["decrypt"] = jest.fn().mockReturnValueOnce(mockDataToEncrypt);
 
       // action
       const result = service.decryptSymetric(
         mockEncryptKey,
-        mockCipher.toString('base64'),
+        mockCipher.toString("base64"),
       );
 
       // expect
-      expect(service['decrypt']).toHaveBeenCalledTimes(1);
-      expect(service['decrypt']).toHaveBeenCalledWith(
+      expect(service["decrypt"]).toHaveBeenCalledTimes(1);
+      expect(service["decrypt"]).toHaveBeenCalledWith(
         mockEncryptKey,
         mockCipher,
       );
@@ -138,96 +135,96 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('hash', () => {
+  describe("hash", () => {
     beforeEach(() => {
       jest
-        .spyOn(crypto, 'createHash')
+        .spyOn(crypto, "createHash")
         .mockImplementationOnce(mockCrypto.createHash);
       mockCrypto.createHash.mockReturnValueOnce(mockHash);
 
       mockHash.digest.mockReturnValueOnce(mockHashDigestedHash);
     });
 
-    it('should create a Hash instance with the given algorithm', () => {
+    it("should create a Hash instance with the given algorithm", () => {
       // Given
-      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
-      const inputEncoding = 'utf8';
-      const alg = 'sha256';
-      const outputDigest = 'hex';
+      const data = "someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest";
+      const inputEncoding = "utf8";
+      const alg = "sha256";
+      const outputDigest = "hex";
 
       // action
       service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockCrypto.createHash).toHaveBeenCalledTimes(1);
-      expect(mockCrypto.createHash).toHaveBeenCalledWith('sha256');
+      expect(mockCrypto.createHash).toHaveBeenCalledWith("sha256");
     });
 
-    it('should create a Hash instance with sha256 if no algorythm is given', () => {
+    it("should create a Hash instance with sha256 if no algorythm is given", () => {
       // Given
-      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
-      const inputEncoding = 'utf8';
+      const data = "someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest";
+      const inputEncoding = "utf8";
       const alg = undefined;
-      const outputDigest = 'hex';
+      const outputDigest = "hex";
 
       // action
       service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockCrypto.createHash).toHaveBeenCalledTimes(1);
-      expect(mockCrypto.createHash).toHaveBeenCalledWith('sha256');
+      expect(mockCrypto.createHash).toHaveBeenCalledWith("sha256");
     });
 
-    it('should call hash instance update with data and given input encoding', () => {
+    it("should call hash instance update with data and given input encoding", () => {
       // Given
-      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
-      const inputEncoding = 'binary';
-      const alg = 'sha256';
-      const outputDigest = 'hex';
+      const data = "someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest";
+      const inputEncoding = "binary";
+      const alg = "sha256";
+      const outputDigest = "hex";
 
       // action
       service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockHash.update).toHaveBeenCalledTimes(1);
-      expect(mockHash.update).toHaveBeenCalledWith(data, 'binary');
+      expect(mockHash.update).toHaveBeenCalledWith(data, "binary");
     });
 
-    it('should call hash instance update with data and default input encoding', () => {
+    it("should call hash instance update with data and default input encoding", () => {
       // Given
-      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
+      const data = "someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest";
       const inputEncoding = undefined;
-      const alg = 'sha256';
-      const outputDigest = 'hex';
+      const alg = "sha256";
+      const outputDigest = "hex";
 
       // action
       service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockHash.update).toHaveBeenCalledTimes(1);
-      expect(mockHash.update).toHaveBeenCalledWith(data, 'utf8');
+      expect(mockHash.update).toHaveBeenCalledWith(data, "utf8");
     });
 
-    it('should digest the hash to given format', () => {
+    it("should digest the hash to given format", () => {
       // Given
-      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
-      const inputEncoding = 'utf8';
-      const alg = 'sha256';
-      const outputDigest = 'base64';
+      const data = "someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest";
+      const inputEncoding = "utf8";
+      const alg = "sha256";
+      const outputDigest = "base64";
 
       // action
       service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockHash.digest).toHaveBeenCalledTimes(1);
-      expect(mockHash.digest).toHaveBeenCalledWith('base64');
+      expect(mockHash.digest).toHaveBeenCalledWith("base64");
     });
 
-    it('should digest the hash to hex format', () => {
+    it("should digest the hash to hex format", () => {
       // Given
-      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
-      const inputEncoding = 'utf8';
-      const alg = 'sha256';
+      const data = "someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest";
+      const inputEncoding = "utf8";
+      const alg = "sha256";
       const outputDigest = undefined;
 
       // action
@@ -235,15 +232,15 @@ describe('CryptographyService', () => {
 
       // expect
       expect(mockHash.digest).toHaveBeenCalledTimes(1);
-      expect(mockHash.digest).toHaveBeenCalledWith('hex');
+      expect(mockHash.digest).toHaveBeenCalledWith("hex");
     });
 
-    it('should return the digested hash', () => {
+    it("should return the digested hash", () => {
       // Given
-      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
-      const inputEncoding = 'utf8';
-      const alg = 'sha256';
-      const outputDigest = 'hex';
+      const data = "someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest";
+      const inputEncoding = "utf8";
+      const alg = "sha256";
+      const outputDigest = "hex";
 
       // action
       const result = service.hash(data, inputEncoding, alg, outputDigest);
@@ -253,20 +250,20 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('genRandomString', () => {
-    it('should return a string the expected number of bytes', () => {
+  describe("genRandomString", () => {
+    it("should return a string the expected number of bytes", () => {
       // Given
       const lengthMock = 42;
       // When
       const result = service.genRandomString(lengthMock);
       // Then
-      expect(Buffer.from(result, 'hex')).toHaveLength(42);
+      expect(Buffer.from(result, "hex")).toHaveLength(42);
     });
 
-    it('should call crypto.randomBytes with config parameter', () => {
+    it("should call crypto.randomBytes with config parameter", () => {
       // Given
       const lengthMock = 42;
-      const spy = jest.spyOn(crypto, 'randomBytes');
+      const spy = jest.spyOn(crypto, "randomBytes");
       // When
       service.genRandomString(lengthMock);
       // Then
@@ -274,19 +271,19 @@ describe('CryptographyService', () => {
       expect(spy).toHaveBeenCalledWith(42);
     });
 
-    it('should return result from crypto.randomBytes', () => {
+    it("should return result from crypto.randomBytes", () => {
       // Given
       const lengthMock = 32;
-      const value = Buffer.from('foobar', 'utf8');
-      const valueAsHex = value.toString('hex');
-      jest.spyOn(crypto, 'randomBytes').mockImplementationOnce(() => value);
+      const value = Buffer.from("foobar", "utf8");
+      const valueAsHex = value.toString("hex");
+      jest.spyOn(crypto, "randomBytes").mockImplementationOnce(() => value);
       // When
       const result = service.genRandomString(lengthMock);
       // Then
       expect(result).toBe(valueAsHex);
     });
 
-    it('should throw if length is lower than RANDOM_MIN_ENTROPY', () => {
+    it("should throw if length is lower than RANDOM_MIN_ENTROPY", () => {
       // Given
       const lengthMock = RANDOM_MIN_ENTROPY - 1;
       // Then
@@ -296,41 +293,41 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('encrypt', () => {
+  describe("encrypt", () => {
     beforeEach(() => {
       jest
-        .spyOn(crypto, 'randomBytes')
+        .spyOn(crypto, "randomBytes")
         .mockImplementationOnce(mockCrypto.randomBytes);
       mockCrypto.randomBytes.mockReturnValueOnce(mockRandomBytes12);
 
       jest
-        .spyOn(crypto, 'createCipheriv')
+        .spyOn(crypto, "createCipheriv")
         .mockImplementationOnce(mockCrypto.createCipheriv);
       mockCrypto.createCipheriv.mockReturnValueOnce(mockCipherGcm);
       mockCipherGcm.update.mockReturnValueOnce(mockCiphertext);
       mockCipherGcm.getAuthTag.mockReturnValueOnce(mockAuthTag16);
     });
 
-    it('should generate a 12 bytes nonce by calling crypto.randomBytes', () => {
+    it("should generate a 12 bytes nonce by calling crypto.randomBytes", () => {
       // setup
       const randomBytesSize = 12;
 
       // action
-      service['encrypt'](mockEncryptKey, mockDataToEncrypt);
+      service["encrypt"](mockEncryptKey, mockDataToEncrypt);
 
       // expect
       expect(mockCrypto.randomBytes).toHaveBeenCalledTimes(1);
       expect(mockCrypto.randomBytes).toHaveBeenCalledWith(randomBytesSize);
     });
 
-    it('should create a cipher instance with aes-256-gcm and 16 bytes authTag', () => {
+    it("should create a cipher instance with aes-256-gcm and 16 bytes authTag", () => {
       // action
-      service['encrypt'](mockEncryptKey, mockDataToEncrypt);
+      service["encrypt"](mockEncryptKey, mockDataToEncrypt);
 
       // expect
       expect(mockCrypto.createCipheriv).toHaveBeenCalledTimes(1);
       expect(mockCrypto.createCipheriv).toHaveBeenCalledWith(
-        'aes-256-gcm',
+        "aes-256-gcm",
         mockEncryptKey,
         mockRandomBytes12,
         {
@@ -339,22 +336,22 @@ describe('CryptographyService', () => {
       );
     });
 
-    it('should encrypt the given data using the cipher instance', () => {
+    it("should encrypt the given data using the cipher instance", () => {
       // action
-      service['encrypt'](mockEncryptKey, mockDataToEncrypt);
+      service["encrypt"](mockEncryptKey, mockDataToEncrypt);
 
       // expect
       expect(mockCipherGcm.update).toHaveBeenCalledTimes(1);
       expect(mockCipherGcm.update).toHaveBeenCalledWith(
         mockDataToEncrypt,
-        'utf8',
+        "utf8",
       );
       expect(mockCipherGcm.final).toHaveBeenCalledTimes(1);
     });
 
-    it('should get the authTag from the cipher instance', () => {
+    it("should get the authTag from the cipher instance", () => {
       // action
-      service['encrypt'](mockEncryptKey, mockDataToEncrypt);
+      service["encrypt"](mockEncryptKey, mockDataToEncrypt);
 
       // expect
       expect(mockCipherGcm.getAuthTag).toHaveBeenCalledTimes(1);
@@ -362,7 +359,7 @@ describe('CryptographyService', () => {
 
     it('should return a buffer containing "nonce", "authTag" and "ciphertext" in this order', () => {
       // action
-      const result = service['encrypt'](mockEncryptKey, mockDataToEncrypt);
+      const result = service["encrypt"](mockEncryptKey, mockDataToEncrypt);
 
       // expect
       expect(result).toMatchObject(
@@ -371,57 +368,57 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('decrypt', () => {
+  describe("decrypt", () => {
     beforeEach(() => {
       jest
-        .spyOn(crypto, 'createDecipheriv')
+        .spyOn(crypto, "createDecipheriv")
         .mockImplementationOnce(mockCrypto.createDecipheriv);
       mockCrypto.createDecipheriv.mockReturnValueOnce(mockDecipherGcm);
       mockDecipherGcm.update.mockReturnValueOnce(mockDecryptedData);
     });
 
-    it('should throw an error when given cipher length is lower than cipher head length', () => {
+    it("should throw an error when given cipher length is lower than cipher head length", () => {
       //setup
-      const WRONG_CIPHER = Buffer.from('LOWER_THAN_28_BYTES_STRING', 'utf8');
+      const WRONG_CIPHER = Buffer.from("LOWER_THAN_28_BYTES_STRING", "utf8");
 
       // action
       try {
-        service['decrypt'](mockEncryptKey, WRONG_CIPHER);
+        service["decrypt"](mockEncryptKey, WRONG_CIPHER);
       } catch (e) {
         // expect
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe('Authentication failed !');
+        expect(e.message).toBe("Authentication failed !");
       }
 
       // expect
       expect.hasAssertions();
     });
 
-    it('should throw an error when given cipher length is equal to cipher head length', () => {
+    it("should throw an error when given cipher length is equal to cipher head length", () => {
       //setup
-      const WRONG_CIPHER = Buffer.from('------28_BYTES_STRING-------', 'utf8');
+      const WRONG_CIPHER = Buffer.from("------28_BYTES_STRING-------", "utf8");
 
       // action
       try {
-        service['decrypt'](mockEncryptKey, WRONG_CIPHER);
+        service["decrypt"](mockEncryptKey, WRONG_CIPHER);
       } catch (e) {
         // expect
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe('Authentication failed !');
+        expect(e.message).toBe("Authentication failed !");
       }
 
       // expect
       expect.hasAssertions();
     });
 
-    it('should create a decipher instance with aes-256-gcm and 16 bytes authTag', () => {
+    it("should create a decipher instance with aes-256-gcm and 16 bytes authTag", () => {
       // action
-      service['decrypt'](mockEncryptKey, mockCipher);
+      service["decrypt"](mockEncryptKey, mockCipher);
 
       // expect
       expect(mockCrypto.createDecipheriv).toHaveBeenCalledTimes(1);
       expect(mockCrypto.createDecipheriv).toHaveBeenCalledWith(
-        'aes-256-gcm',
+        "aes-256-gcm",
         mockEncryptKey,
         mockRandomBytes12,
         {
@@ -430,43 +427,43 @@ describe('CryptographyService', () => {
       );
     });
 
-    it('should set authenthication tag retrieved from the cipher', () => {
+    it("should set authenthication tag retrieved from the cipher", () => {
       // action
-      service['decrypt'](mockEncryptKey, mockCipher);
+      service["decrypt"](mockEncryptKey, mockCipher);
 
       // expect
       expect(mockDecipherGcm.setAuthTag).toHaveBeenCalledTimes(1);
       expect(mockDecipherGcm.setAuthTag).toHaveBeenCalledWith(mockAuthTag16);
     });
 
-    it('should decrypt the given ciphertext using the cipher instance', () => {
+    it("should decrypt the given ciphertext using the cipher instance", () => {
       // action
-      const result = service['decrypt'](mockEncryptKey, mockCipher);
+      const result = service["decrypt"](mockEncryptKey, mockCipher);
 
       // expect
       expect(mockDecipherGcm.update).toHaveBeenCalledTimes(1);
       expect(mockDecipherGcm.update).toHaveBeenCalledWith(
         mockCiphertext,
         null,
-        'utf8',
+        "utf8",
       );
       expect(mockDecipherGcm.final).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual(mockDataToEncrypt);
     });
 
-    it('should throw authentication error when cipher final fail', () => {
+    it("should throw authentication error when cipher final fail", () => {
       // setup
       mockDecipherGcm.final.mockImplementationOnce(() => {
-        throw new Error('Christmas is cancelled !');
+        throw new Error("Christmas is cancelled !");
       });
 
       // action
       try {
-        service['decrypt'](mockEncryptKey, mockCipher);
+        service["decrypt"](mockEncryptKey, mockCipher);
       } catch (e) {
         // expect
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe('Authentication failed !');
+        expect(e.message).toBe("Authentication failed !");
       }
 
       // expect
@@ -474,19 +471,19 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('passwordHash', () => {
-    const password = 'securedPassword';
-    const passwordSalt = '!&2Q?MT=BlM*XYr';
-    const hashedPassword = '6d6f636b4465726976617465644b6579';
-    const mockDerivatedKey = Buffer.from('mockDerivatedKey');
+  describe("passwordHash", () => {
+    const password = "securedPassword";
+    const passwordSalt = "!&2Q?MT=BlM*XYr";
+    const hashedPassword = "6d6f636b4465726976617465644b6579";
+    const mockDerivatedKey = Buffer.from("mockDerivatedKey");
 
     beforeEach(() => {
       mockConfigService.get.mockReturnValueOnce({ passwordSalt });
     });
 
-    it('should retrieve passwordSalt from config', async () => {
+    it("should retrieve passwordSalt from config", async () => {
       // setup
-      jest.spyOn(crypto, 'pbkdf2').mockImplementationOnce(
+      jest.spyOn(crypto, "pbkdf2").mockImplementationOnce(
         // mocking a native function
 
         (_password, _salt, _iterations, _keylen, _digest, callback) => {
@@ -501,9 +498,9 @@ describe('CryptographyService', () => {
       expect(mockConfigService.get).toHaveBeenCalledTimes(1);
     });
 
-    it('should resolve with a hashed password', async () => {
+    it("should resolve with a hashed password", async () => {
       // setup
-      const mockPbkdf2 = jest.spyOn(crypto, 'pbkdf2').mockImplementationOnce(
+      const mockPbkdf2 = jest.spyOn(crypto, "pbkdf2").mockImplementationOnce(
         // mocking a native function
 
         (_password, _salt, _iterations, _keylen, _digest, callback) => {
@@ -521,16 +518,16 @@ describe('CryptographyService', () => {
         passwordSalt,
         100000,
         64,
-        'sha512',
+        "sha512",
         expect.any(Function),
       );
       expect(result).toEqual(hashedPassword);
     });
 
-    it('should reject with error PasswordHashFailure if the password is not generated', async () => {
+    it("should reject with error PasswordHashFailure if the password is not generated", async () => {
       // setup
-      const failure = new Error('password hash failed');
-      jest.spyOn(crypto, 'pbkdf2').mockImplementationOnce(
+      const failure = new Error("password hash failed");
+      jest.spyOn(crypto, "pbkdf2").mockImplementationOnce(
         // mocking a native function
 
         (_password, _salt, _iterations, _keylen, _digest, callback) => {

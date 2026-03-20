@@ -1,18 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { getLoggerMock } from "@mocks/logger";
+import { Test, TestingModule } from "@nestjs/testing";
+import { LoggerService } from "./logger.service";
+import { NestLoggerService } from "./nest-logger.service";
 
-import { getLoggerMock } from '@mocks/logger';
-
-import { LoggerService } from './logger.service';
-import { NestLoggerService } from './nest-logger.service';
-
-describe('NestLoggerService', () => {
+describe("NestLoggerService", () => {
   let service: NestLoggerService;
 
   const loggerMock = getLoggerMock();
 
-  const message = 'test';
-  const context = 'context';
-  const optionalParams = ['params'];
+  const message = "test";
+  const context = "context";
+  const optionalParams = ["params"];
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -29,12 +27,12 @@ describe('NestLoggerService', () => {
     service = module.get<NestLoggerService>(NestLoggerService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('log', () => {
-    it('should call logger.info', () => {
+  describe("log", () => {
+    it("should call logger.info", () => {
       // When
       service.log(message, context);
 
@@ -45,7 +43,7 @@ describe('NestLoggerService', () => {
       );
     });
 
-    it('should call logger.info with optional params', () => {
+    it("should call logger.info with optional params", () => {
       // When
       service.log(message, ...optionalParams, context);
 
@@ -57,8 +55,8 @@ describe('NestLoggerService', () => {
     });
   });
 
-  describe('fatal', () => {
-    it('should call logger.alert', () => {
+  describe("fatal", () => {
+    it("should call logger.alert", () => {
       // When
       service.fatal(message, context);
 
@@ -69,7 +67,7 @@ describe('NestLoggerService', () => {
       );
     });
 
-    it('should call logger.alert with optional params', () => {
+    it("should call logger.alert with optional params", () => {
       // When
       service.fatal(message, ...optionalParams, context);
 
@@ -81,8 +79,8 @@ describe('NestLoggerService', () => {
     });
   });
 
-  describe('debug', () => {
-    it('should call logger.debug', () => {
+  describe("debug", () => {
+    it("should call logger.debug", () => {
       // When
       service.debug(message, context);
 
@@ -93,7 +91,7 @@ describe('NestLoggerService', () => {
       );
     });
 
-    it('should call logger.debug with optional params', () => {
+    it("should call logger.debug with optional params", () => {
       // When
       service.debug(message, ...optionalParams, context);
 

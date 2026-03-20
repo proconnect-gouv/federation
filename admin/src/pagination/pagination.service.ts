@@ -1,4 +1,4 @@
-import { PaginationOptions } from './interface';
+import { PaginationOptions } from "./interface";
 
 export class PaginationService {
   buildPaginationParams(options: PaginationOptions) {
@@ -12,8 +12,8 @@ export class PaginationService {
       for (const field of options.search.fields) {
         where.$or.push({
           [field]: new RegExp(
-            options.search.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
-            'i',
+            options.search.value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+            "i",
           ),
         });
       }
@@ -23,12 +23,12 @@ export class PaginationService {
     if (options.sort) {
       const { field, direction } = options.sort;
       order = {
-        [field]: direction === 'asc' ? 'ASC' : 'DESC',
+        [field]: direction === "asc" ? "ASC" : "DESC",
       };
     } else {
       order = {
         [options.defaultSort.field]:
-          options.defaultSort.direction === 'asc' ? 'ASC' : 'DESC',
+          options.defaultSort.direction === "asc" ? "ASC" : "DESC",
       };
     }
 

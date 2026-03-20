@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // declarative file
-import { Platform } from '../utils/instance.enum';
+import { Platform } from "../utils/instance.enum";
 
 export type AppInstance = Platform.FCA_LOW;
 export interface IConfig {

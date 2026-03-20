@@ -1,5 +1,4 @@
 import { After, Before } from "@badeball/cypress-cucumber-preprocessor";
-
 import {
   addFCBasicAuthorization,
   clearBusinessLog,

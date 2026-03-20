@@ -1,10 +1,9 @@
-import { TransformFnParams } from 'class-transformer';
+import { TransformFnParams } from "class-transformer";
+import { enforceArray } from "./enforce-array.transform";
 
-import { enforceArray } from './enforce-array.transform';
-
-describe('Enforce array transform', () => {
-  describe('enforceArray', () => {
-    it('should return an empty array from undefined value', () => {
+describe("Enforce array transform", () => {
+  describe("enforceArray", () => {
+    it("should return an empty array from undefined value", () => {
       // Given
       const options = { value: undefined } as TransformFnParams;
 
@@ -15,9 +14,9 @@ describe('Enforce array transform', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return an array from a single string', () => {
+    it("should return an array from a single string", () => {
       // Given
-      const options = { value: 'foo' } as TransformFnParams;
+      const options = { value: "foo" } as TransformFnParams;
 
       // When
       const result = enforceArray(options);
@@ -26,9 +25,9 @@ describe('Enforce array transform', () => {
       expect(result).toEqual([options.value]);
     });
 
-    it('should return an array from array', () => {
+    it("should return an array from array", () => {
       // Given
-      const options = { value: ['foo', 'bar'] } as TransformFnParams;
+      const options = { value: ["foo", "bar"] } as TransformFnParams;
 
       // When
       const result = enforceArray(options);

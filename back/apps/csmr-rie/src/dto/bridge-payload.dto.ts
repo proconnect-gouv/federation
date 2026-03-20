@@ -1,14 +1,13 @@
-import { type AxiosResponseHeaders } from 'axios';
-import { Transform } from 'class-transformer';
-import { IsIn, IsObject, IsOptional, IsString, IsUrl } from 'class-validator';
-
-import { BridgePayload, ValidateHttpHeaders } from '@fc/hybridge-http-proxy';
+import { BridgePayload, ValidateHttpHeaders } from "@fc/hybridge-http-proxy";
+import { type AxiosResponseHeaders } from "axios";
+import { Transform } from "class-transformer";
+import { IsIn, IsObject, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class BridgePayloadDto implements BridgePayload {
   @IsUrl()
   readonly url: string;
 
-  @IsIn(['get', 'post'])
+  @IsIn(["get", "post"])
   @Transform(
     /* istanbul ignore next */
     ({ value }) => value.toLowerCase(),

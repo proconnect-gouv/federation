@@ -1,10 +1,9 @@
-import { ExceptionDocumentationInterface } from '@fc/exceptions/types';
+import { ExceptionDocumentationInterface } from "@fc/exceptions/types";
+import MarkdownGenerator from "./markdown-generator";
 
-import MarkdownGenerator from './markdown-generator';
-
-describe('MarkdownGenerator', () => {
-  describe('MarkdownGenerator.removeExceptionsWithoutCode', () => {
-    it('should remove any error without a code property', () => {
+describe("MarkdownGenerator", () => {
+  describe("MarkdownGenerator.removeExceptionsWithoutCode", () => {
+    it("should remove any error without a code property", () => {
       const errs = [
         { code: 3 },
         {},
@@ -16,8 +15,8 @@ describe('MarkdownGenerator', () => {
     });
   });
 
-  describe('MarkdownGenerator.sortByCode', () => {
-    it('should order errors by scope then by code properties', () => {
+  describe("MarkdownGenerator.sortByCode", () => {
+    it("should order errors by scope then by code properties", () => {
       const errs = [
         { code: 3, scope: 2 },
         { code: 2, scope: 1 },
@@ -33,30 +32,30 @@ describe('MarkdownGenerator', () => {
     });
   });
 
-  describe('MarkdownGenerator.generate', () => {
-    it('should generate a markdown document from a stack of errors', () => {
+  describe("MarkdownGenerator.generate", () => {
+    it("should generate a markdown document from a stack of errors", () => {
       const errors = [
         {
-          errorCode: 'Y0101',
+          errorCode: "Y0101",
           scope: 1,
           code: 1,
-          ui: 'any',
-          description: 'any',
+          ui: "any",
+          description: "any",
           trackable: false,
           loggable: false,
-          path: 'path/to/file.exception.ts',
-          exception: 'notWorkingBuddy',
+          path: "path/to/file.exception.ts",
+          exception: "notWorkingBuddy",
         },
         {
-          errorCode: 'Y0201',
+          errorCode: "Y0201",
           scope: 2,
           code: 1,
-          ui: 'any',
-          description: 'any',
+          ui: "any",
+          description: "any",
           trackable: false,
           loggable: false,
-          path: 'path/to/file.exception.ts',
-          exception: 'notWorkingBuddy',
+          path: "path/to/file.exception.ts",
+          exception: "notWorkingBuddy",
         },
       ];
       const result = MarkdownGenerator.generate(
@@ -65,28 +64,28 @@ describe('MarkdownGenerator', () => {
       const expected = [
         [
           {
-            errorCode: 'Y0101',
+            errorCode: "Y0101",
             scope: 1,
             code: 1,
-            ui: 'any',
-            description: 'any',
+            ui: "any",
+            description: "any",
             trackable: false,
             loggable: false,
-            path: 'path/to/file.exception.ts',
-            exception: 'notWorkingBuddy',
+            path: "path/to/file.exception.ts",
+            exception: "notWorkingBuddy",
           },
         ],
         [
           {
-            errorCode: 'Y0201',
+            errorCode: "Y0201",
             scope: 2,
             code: 1,
-            ui: 'any',
-            description: 'any',
+            ui: "any",
+            description: "any",
             trackable: false,
             loggable: false,
-            path: 'path/to/file.exception.ts',
-            exception: 'notWorkingBuddy',
+            path: "path/to/file.exception.ts",
+            exception: "notWorkingBuddy",
           },
         ],
       ];
@@ -94,15 +93,15 @@ describe('MarkdownGenerator', () => {
     });
   });
 
-  describe('MarkdownGenerator.checkForDuplicatedCodes', () => {
-    it('should throw an error if there are duplicated error codes', () => {
+  describe("MarkdownGenerator.checkForDuplicatedCodes", () => {
+    it("should throw an error if there are duplicated error codes", () => {
       const errors = [
-        { errorCode: 'Y0101' },
-        { errorCode: 'Y0101' },
-        { errorCode: 'Y0201' },
+        { errorCode: "Y0101" },
+        { errorCode: "Y0101" },
+        { errorCode: "Y0201" },
       ];
 
-      jest.spyOn(console, 'log').mockImplementation(() => {});
+      jest.spyOn(console, "log").mockImplementation(() => {});
 
       MarkdownGenerator.checkForDuplicatedCodes(
         errors as unknown as ExceptionDocumentationInterface[],
@@ -120,7 +119,7 @@ describe('MarkdownGenerator', () => {
        * UT for temporary behavior (just log error):
        */
       expect(console.log).toHaveBeenCalledWith(
-        'Error code Y0101 is duplicated',
+        "Error code Y0101 is duplicated",
       );
     });
   });

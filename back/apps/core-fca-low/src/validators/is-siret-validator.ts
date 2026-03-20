@@ -1,14 +1,13 @@
+import { Injectable } from "@nestjs/common";
 import {
   registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-} from 'class-validator';
-import { isString } from 'lodash';
+} from "class-validator";
+import { isString } from "lodash";
 
-import { Injectable } from '@nestjs/common';
-
-@ValidatorConstraint({ name: 'isSiret' })
+@ValidatorConstraint({ name: "isSiret" })
 @Injectable()
 export class IsSiretConstraint implements ValidatorConstraintInterface {
   validate(siret: unknown): boolean {
@@ -21,7 +20,7 @@ export class IsSiretConstraint implements ValidatorConstraintInterface {
     }
 
     // Special case for La Poste SIREN/SIRET which bypasses Luhn's formula
-    if (siret.startsWith('356000000')) {
+    if (siret.startsWith("356000000")) {
       return true;
     }
 

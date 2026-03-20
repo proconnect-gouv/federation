@@ -1,4 +1,4 @@
-import { IsAscii, IsString, Length } from 'class-validator';
+import { IsAscii, IsString, Length } from "class-validator";
 
 export class Interaction {
   @IsString()

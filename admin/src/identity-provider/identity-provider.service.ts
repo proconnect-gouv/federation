@@ -1,24 +1,20 @@
-import { v4 as uuidv4 } from 'uuid';
-import { DeleteResult, Repository } from 'typeorm';
-import { ObjectId } from 'mongodb';
-
-import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
-
-import { LoggerService } from '../logger/logger.service';
-import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
-
-import { ICrudTrack } from '../interfaces';
-import { SecretManagerService } from '../utils/secret-manager.service';
-
-import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
-import { PaginationOptions, PaginationService } from '../pagination';
-import { IdentityProviderDTO } from './dto/identity-provider.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
+import { GristPublisherService } from "../grist-publisher/grist-publisher.service";
+import { ICrudTrack } from "../interfaces";
+import { LoggerService } from "../logger/logger.service";
+import { PaginationOptions, PaginationService } from "../pagination";
+import { SecretManagerService } from "../utils/secret-manager.service";
+import { IdentityProviderDTO } from "./dto/identity-provider.dto";
+import { IdentityProviderFromDb } from "./identity-provider.mongodb.entity";
 
 @Injectable()
 export class IdentityProviderService {
   constructor(
-    @InjectRepository(IdentityProviderFromDb, 'fc-mongo')
+    @InjectRepository(IdentityProviderFromDb, "fc-mongo")
     private readonly identityProviderRepository: Repository<IdentityProviderFromDb>,
     private readonly secretManager: SecretManagerService,
     private readonly logger: LoggerService,
@@ -49,7 +45,7 @@ export class IdentityProviderService {
     const providerToSave = this.transformDtoToEntity(
       identityProviderDto,
       username,
-      'create',
+      "create",
     );
 
     const saveOperation =
@@ -58,8 +54,8 @@ export class IdentityProviderService {
     const identityProviderId = saveOperation.identifiers[0]._id;
 
     this.track({
-      entity: 'identity-provider',
-      action: 'create',
+      entity: "identity-provider",
+      action: "create",
       user: username,
       id: identityProviderId,
       name: identityProviderDto.name,
@@ -102,8 +98,8 @@ export class IdentityProviderService {
     user: string,
   ) {
     this.track({
-      entity: 'identity-provider',
-      action: 'update',
+      entity: "identity-provider",
+      action: "update",
       user,
       id: identityProviderId,
       name: identityProviderDto.name,
@@ -112,7 +108,7 @@ export class IdentityProviderService {
     const providerToSave = this.transformDtoToEntity(
       identityProviderDto,
       user,
-      'update',
+      "update",
     );
 
     const existingProvider =
@@ -139,8 +135,8 @@ export class IdentityProviderService {
       });
 
     this.track({
-      entity: 'identity-provider',
-      action: 'delete',
+      entity: "identity-provider",
+      action: "delete",
       user,
       id,
       name: identityProvider.name,
@@ -168,8 +164,8 @@ export class IdentityProviderService {
   private transformDtoToEntity(
     identityProviderDto: IdentityProviderDTO,
     username: string,
-    mode: 'create' | 'update',
-  ): Omit<IdentityProviderFromDb, '_id'> {
+    mode: "create" | "update",
+  ): Omit<IdentityProviderFromDb, "_id"> {
     const now = new Date();
 
     const clientSecret = this.secretManager.encrypt(
@@ -217,7 +213,7 @@ export class IdentityProviderService {
         identityProviderDto.isBlockingForUnlistedEmailDomainsEnabled,
     };
 
-    if (mode === 'create') {
+    if (mode === "create") {
       Object.assign(entity, {
         uid: uuidv4(),
         createdAt: now,

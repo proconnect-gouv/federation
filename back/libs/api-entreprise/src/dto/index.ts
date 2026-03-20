@@ -1,1 +1,1 @@
-export * from './api-entreprise.config';
+export * from "./api-entreprise.config";

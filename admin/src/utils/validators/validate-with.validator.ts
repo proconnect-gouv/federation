@@ -1,13 +1,13 @@
 import {
-  ValidationOptions,
-  ValidationArguments,
   registerDecorator,
+  ValidationArguments,
+  ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-} from 'class-validator';
-import { LoggerService } from '../../logger/logger.service';
+} from "class-validator";
+import { LoggerService } from "../../logger/logger.service";
 
-export const VALIDATE_WITH = 'ValidateWith';
+export const VALIDATE_WITH = "ValidateWith";
 
 export type Comparator = (instance: any, values: any) => boolean;
 

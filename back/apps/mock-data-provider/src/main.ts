@@ -1,8 +1,8 @@
-import express from 'express';
-import { importJWK, JWK } from 'jose-v6';
-import crypto, { JsonWebKey } from 'node:crypto';
-import process from 'node:process';
-import client from 'openid-client-v6';
+import express from "express";
+import { importJWK, JWK } from "jose-v6";
+import crypto, { JsonWebKey } from "node:crypto";
+import process from "node:process";
+import client from "openid-client-v6";
 
 const {
   DataProviderAdapterCore_CHECKTOKEN_JWT_ENCRYPTED_RESPONSE_ALG: encryptAlg,
@@ -36,15 +36,15 @@ const getProviderConfig = async () => {
   return config;
 };
 
-app.get('/api/v1/jwks', (req, res, _next) => {
+app.get("/api/v1/jwks", (req, res, _next) => {
   res.json({ keys: publicJwks });
 });
 
-app.get('/api/v1/data', async (req, res, next) => {
+app.get("/api/v1/data", async (req, res, next) => {
   try {
     const authorizationHeader = req.headers.authorization;
-    const rawAccessToken = authorizationHeader.split(' ')[1];
-    const accessToken = Buffer.from(rawAccessToken, 'base64').toString('utf-8');
+    const rawAccessToken = authorizationHeader.split(" ")[1];
+    const accessToken = Buffer.from(rawAccessToken, "base64").toString("utf-8");
 
     const config = await getProviderConfig();
 
@@ -62,7 +62,7 @@ app.get('/api/v1/data', async (req, res, next) => {
 app.use((req, res, _next) => {
   res.status(404).json({
     status: 404,
-    message: 'Not found',
+    message: "Not found",
   });
 });
 
@@ -84,8 +84,8 @@ app.listen(port, async () => {
 
   publicJwks = relevantJwks.map((jwk) =>
     crypto
-      .createPublicKey({ key: jwk as JsonWebKey, format: 'jwk' })
-      .export({ format: 'jwk' }),
+      .createPublicKey({ key: jwk as JsonWebKey, format: "jwk" })
+      .export({ format: "jwk" }),
   );
 
   console.log(`App listening on port ${port}`);

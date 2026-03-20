@@ -1,30 +1,27 @@
-import { Response } from 'express';
+import { LoggerService } from "@fc/logger";
+import { ExtendedInteraction } from "@fc/oidc-acr";
+import { RedisService } from "@fc/redis";
+import { Global, Injectable } from "@nestjs/common";
+import { Response } from "express";
 import {
   InteractionResults,
   KoaContextWithOIDC,
   Provider,
-} from 'oidc-provider';
-import { HttpOptions } from 'openid-client';
-
-import { Global, Injectable } from '@nestjs/common';
-
-import { LoggerService } from '@fc/logger';
-import { ExtendedInteraction } from '@fc/oidc-acr';
-import { RedisService } from '@fc/redis';
-
+} from "oidc-provider";
+import { HttpOptions } from "openid-client";
 import {
   OidcProviderEvents,
   OidcProviderMiddlewarePattern,
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
-} from './enums';
-import { OidcProviderInitialisationException } from './exceptions';
+} from "./enums";
+import { OidcProviderInitialisationException } from "./exceptions";
 import {
   OidcProviderConfigAppService,
   OidcProviderConfigService,
-} from './services';
+} from "./services";
 
-export const COOKIES = ['_session', '_interaction', '_interaction_resume'];
+export const COOKIES = ["_session", "_interaction", "_interaction_resume"];
 
 /**
  * Make service global in order to ease retrieval and override from other libraries.
@@ -35,7 +32,7 @@ export const COOKIES = ['_session', '_interaction', '_interaction_resume'];
 export class OidcProviderService {
   private ProviderProxy = Provider;
   private provider: Provider;
-  private callback: ReturnType<Provider['callback']>;
+  private callback: ReturnType<Provider["callback"]>;
   private configuration;
 
   constructor(
@@ -73,7 +70,7 @@ export class OidcProviderService {
 
   private addLogListenerOnProviderEvents() {
     const oidcProviderErrorEvents = OidcProviderEvents.filter((event) =>
-      event.endsWith('.error'),
+      event.endsWith(".error"),
     );
 
     oidcProviderErrorEvents.forEach((event) => {
@@ -82,9 +79,9 @@ export class OidcProviderService {
       this.provider.on(event, (_any, err) => {
         if (
           [
-            'invalid_client',
-            'invalid_redirect_uri',
-            'invalid_client_metadata',
+            "invalid_client",
+            "invalid_redirect_uri",
+            "invalid_client_metadata",
           ].includes(err?.error)
         ) {
           // we do not want to log these errors as they are already logged in the renderError function
@@ -100,13 +97,13 @@ export class OidcProviderService {
     });
 
     /* istanbul ignore next */
-    this.provider.on('interaction.saved', (interaction) => {
+    this.provider.on("interaction.saved", (interaction) => {
       const { params, jti } = interaction;
 
       this.logger.info({
         code: `oidc-provider-info:interaction.saved`,
         interaction: {
-          params: { ...params, nonce: '[OBFUSCATED]', state: '[OBFUSCATED]' },
+          params: { ...params, nonce: "[OBFUSCATED]", state: "[OBFUSCATED]" },
           id: jti,
         },
       });
@@ -122,7 +119,7 @@ export class OidcProviderService {
     return this.provider;
   }
 
-  getCallback(): ReturnType<Provider['callback']> {
+  getCallback(): ReturnType<Provider["callback"]> {
     return this.callback;
   }
 
@@ -197,7 +194,7 @@ export class OidcProviderService {
   }
 
   private isInError(ctx) {
-    return ctx['oidc']?.isError === true;
+    return ctx["oidc"]?.isError === true;
   }
 
   /**
@@ -210,7 +207,7 @@ export class OidcProviderService {
   ): void {
     this.provider.use(async (ctx: KoaContextWithOIDC, next: Function) => {
       // Extract path and oidc.route from ctx
-      const { path, oidc: { route = '' } = {} } = ctx;
+      const { path, oidc: { route = "" } = {} } = ctx;
 
       await this.runMiddlewareBeforePattern(
         { step, path, pattern, ctx },

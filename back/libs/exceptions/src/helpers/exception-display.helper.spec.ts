@@ -1,9 +1,9 @@
-import { getDefaultContactHref } from './exception-display.helper';
+import { getDefaultContactHref } from "./exception-display.helper";
 
-describe('getDefaultContactHref', () => {
-  it('should render href with params', () => {
+describe("getDefaultContactHref", () => {
+  it("should render href with params", () => {
     // When
-    const input = { code: 'code', id: 'id', message: 'message' };
+    const input = { code: "code", id: "id", message: "message" };
 
     const defaultContactHref = getDefaultContactHref(input);
 
@@ -11,7 +11,7 @@ describe('getDefaultContactHref', () => {
     expect(defaultContactHref).toBeString();
   });
 
-  it('should render href without params', () => {
+  it("should render href without params", () => {
     // When
     const input = { code: null, id: null, message: null };
 

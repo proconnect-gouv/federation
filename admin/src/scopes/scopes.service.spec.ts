@@ -1,19 +1,15 @@
-import { ObjectId } from 'mongodb';
-import { Repository } from 'typeorm';
-import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Scopes } from '../scopes/scopes.mongodb.entity';
-import { ScopesService } from './scopes.service';
-import { IScopes } from './interface';
-import { LoggerService } from '../logger/logger.service';
-import { ICrudTrack } from '../interfaces';
-import {
-  scopesMock,
-  scopesListMock,
-  scopesListGroupedByFdMock,
-} from './fixture';
+import { Test, TestingModule } from "@nestjs/testing";
+import { TypeOrmModule, getRepositoryToken } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
+import { ICrudTrack } from "../interfaces";
+import { LoggerService } from "../logger/logger.service";
+import { Scopes } from "../scopes/scopes.mongodb.entity";
+import { scopesListMock, scopesMock } from "./fixture";
+import { IScopes } from "./interface";
+import { ScopesService } from "./scopes.service";
 
-const _id = new ObjectId('5d9c677da8bb151b00720451');
+const _id = new ObjectId("5d9c677da8bb151b00720451");
 
 const scopesRepositoryMock = {
   find: jest.fn(),
@@ -27,22 +23,22 @@ const scopesRepositoryMock = {
 };
 
 const insertResultMock = {
-  identifiers: [{ id: 'insertedIdValueMock' }],
+  identifiers: [{ id: "insertedIdValueMock" }],
 };
 
 const loggerMock = {
   businessEvent: jest.fn(),
 };
 
-describe('ScopesService', () => {
+describe("ScopesService", () => {
   let service: ScopesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([Scopes], 'fc-mongo')],
+      imports: [TypeOrmModule.forFeature([Scopes], "fc-mongo")],
       providers: [ScopesService, Repository, LoggerService],
     })
-      .overrideProvider(getRepositoryToken(Scopes, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(Scopes, "fc-mongo"))
       .useValue(scopesRepositoryMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
@@ -57,29 +53,29 @@ describe('ScopesService', () => {
     scopesRepositoryMock.insert.mockResolvedValueOnce(insertResultMock);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('track', () => {
-    it('should call logger.businessEvent', () => {
+  describe("track", () => {
+    it("should call logger.businessEvent", () => {
       // Given
       const logMock = {} as ICrudTrack;
       // When
       // tslint:disable-next-line:no-string-literal
-      service['track'](logMock);
+      service["track"](logMock);
       // Then
       expect(loggerMock.businessEvent).toHaveBeenCalledTimes(1);
       expect(loggerMock.businessEvent).toHaveBeenCalledWith(logMock);
     });
   });
 
-  describe('getAll()', () => {
-    it('should exist', () => {
+  describe("getAll()", () => {
+    it("should exist", () => {
       expect(service.getAll).toBeDefined();
     });
 
-    it('shoud return the array of all scopes', async () => {
+    it("shoud return the array of all scopes", async () => {
       // Action
       const result = await service.getAll();
 
@@ -88,44 +84,44 @@ describe('ScopesService', () => {
     });
   });
 
-  describe('getbyId()', () => {
-    it('should exist', () => {
+  describe("getbyId()", () => {
+    it("should exist", () => {
       expect(service.getById).toBeDefined();
     });
 
-    it('shoud return a scope entry for a specific ID', async () => {
+    it("shoud return a scope entry for a specific ID", async () => {
       // Action
       const result = await service.getById(_id);
 
       // Expected
       expect(result).toEqual({
         _id,
-        scope: 'Seldon',
-        label: 'Seldon Label',
-        fd: 'Direction générale des Finances publiques',
+        scope: "Seldon",
+        label: "Seldon Label",
+        fd: "Direction générale des Finances publiques",
       });
     });
   });
 
-  describe('create()', () => {
+  describe("create()", () => {
     let scopeAndLabel: IScopes;
 
     beforeEach(() => {
       scopeAndLabel = {
         _id,
-        scope: 'Seldon',
-        label: 'Seldon Label',
-        fd: 'Direction générale des Finances publiques',
+        scope: "Seldon",
+        label: "Seldon Label",
+        fd: "Direction générale des Finances publiques",
       };
     });
 
-    it('should exist', () => {
+    it("should exist", () => {
       expect(service.create).toBeDefined();
     });
 
-    it('should create a new label', async () => {
+    it("should create a new label", async () => {
       // Setup
-      const userMock = 'userMockValue';
+      const userMock = "userMockValue";
       // Action
       const result: Scopes = await service.create(scopeAndLabel, userMock);
 
@@ -140,26 +136,26 @@ describe('ScopesService', () => {
        */
     });
 
-    it('calls the tracking method', async () => {
+    it("calls the tracking method", async () => {
       // Setup
       const saveSpy = jest
-        .spyOn(scopesRepositoryMock, 'save')
+        .spyOn(scopesRepositoryMock, "save")
         .mockResolvedValue(scopeAndLabel);
 
-      const userMock = 'userMockValue';
+      const userMock = "userMockValue";
       // tslint:disable-next-line:no-string-literal
-      service['track'] = jest.fn();
+      service["track"] = jest.fn();
 
       // Action
       await service.create(scopeAndLabel, userMock);
 
       // expect
       // tslint:disable-next-line:no-string-literal
-      expect(service['track']).toHaveBeenCalledTimes(1);
+      expect(service["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(service['track']).toHaveBeenCalledWith({
-        entity: 'scope',
-        action: 'create',
+      expect(service["track"]).toHaveBeenCalledWith({
+        entity: "scope",
+        action: "create",
         user: userMock,
         id: insertResultMock.identifiers[0].id,
         name: scopeAndLabel.scope,
@@ -167,16 +163,16 @@ describe('ScopesService', () => {
     });
   });
 
-  describe('update()', () => {
-    it('should be defined', () => {
+  describe("update()", () => {
+    it("should be defined", () => {
       expect(service.update).toBeDefined();
     });
 
-    it('should update the label matching the id param', async () => {
+    it("should update the label matching the id param", async () => {
       const saveSpy = jest
-        .spyOn(scopesRepositoryMock, 'save')
+        .spyOn(scopesRepositoryMock, "save")
         .mockResolvedValue(scopesMock);
-      const userMock = 'userMockValue';
+      const userMock = "userMockValue";
 
       // Action
       await service.update(_id, userMock, scopesMock);
@@ -185,49 +181,49 @@ describe('ScopesService', () => {
       expect(saveSpy).toHaveBeenCalledTimes(1);
       expect(saveSpy).toHaveBeenCalledWith({
         _id,
-        scope: 'Seldon',
-        label: 'Seldon Label (Direction générale des Finances publiques)',
-        fd: 'Direction générale des Finances publiques',
+        scope: "Seldon",
+        label: "Seldon Label (Direction générale des Finances publiques)",
+        fd: "Direction générale des Finances publiques",
         updatedBy: userMock,
       });
     });
 
-    it('calls the tracking method', async () => {
+    it("calls the tracking method", async () => {
       const saveSpy = jest
-        .spyOn(scopesRepositoryMock, 'save')
+        .spyOn(scopesRepositoryMock, "save")
         .mockResolvedValue(scopesMock);
-      const userMock = 'userMockValue';
+      const userMock = "userMockValue";
       // tslint:disable-next-line:no-string-literal
-      service['track'] = jest.fn();
+      service["track"] = jest.fn();
 
       // Action
       await service.update(_id, userMock, scopesMock);
 
       // expect
       // tslint:disable-next-line:no-string-literal
-      expect(service['track']).toHaveBeenCalledTimes(1);
+      expect(service["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(service['track']).toHaveBeenCalledWith({
-        entity: 'scope',
-        action: 'update',
+      expect(service["track"]).toHaveBeenCalledWith({
+        entity: "scope",
+        action: "update",
         user: userMock,
-        name: 'Seldon',
+        name: "Seldon",
         id: _id.toString(),
       });
     });
   });
 
-  describe('remove()', () => {
-    it('should exist', () => {
+  describe("remove()", () => {
+    it("should exist", () => {
       expect(service.remove).toBeDefined();
     });
 
-    it('should delete the `scope` matching the id', async () => {
+    it("should delete the `scope` matching the id", async () => {
       // Setup
       const deleteSpy = jest
-        .spyOn(scopesRepositoryMock, 'delete')
+        .spyOn(scopesRepositoryMock, "delete")
         .mockResolvedValue({});
-      const userMock = 'userMockValue';
+      const userMock = "userMockValue";
 
       // Action
       await service.remove(_id, userMock);
@@ -237,23 +233,23 @@ describe('ScopesService', () => {
       expect(deleteSpy).toHaveBeenCalledWith({ _id });
     });
 
-    it('calls the tracking method', async () => {
-      const deleteSpy = jest.spyOn(scopesRepositoryMock, 'delete');
-      const userMock = 'userMockValue';
+    it("calls the tracking method", async () => {
+      const deleteSpy = jest.spyOn(scopesRepositoryMock, "delete");
+      const userMock = "userMockValue";
       // tslint:disable-next-line:no-string-literal
-      service['track'] = jest.fn();
+      service["track"] = jest.fn();
 
       // Action
       await service.remove(_id, userMock);
       // expect
       // tslint:disable-next-line:no-string-literal
-      expect(service['track']).toHaveBeenCalledTimes(1);
+      expect(service["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(service['track']).toHaveBeenCalledWith({
-        entity: 'scope',
-        action: 'delete',
+      expect(service["track"]).toHaveBeenCalledWith({
+        entity: "scope",
+        action: "delete",
         user: userMock,
-        name: 'Seldon',
+        name: "Seldon",
         id: _id.toString(),
       });
     });

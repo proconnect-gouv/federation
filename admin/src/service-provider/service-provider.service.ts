@@ -1,23 +1,20 @@
-import { Repository } from 'typeorm';
-import { ObjectId } from 'mongodb';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { LoggerService } from '../logger/logger.service';
-
-import { ICrudTrack } from '../interfaces';
-import { SecretManagerService } from '../utils/secret-manager.service';
-import { SecretAdapter } from '../utils/secret.adapter';
-
-import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
-import { ServiceProviderDto } from './dto/service-provider-input.dto';
-import { PaginationOptions, PaginationService } from '../pagination';
-import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
+import { GristPublisherService } from "../grist-publisher/grist-publisher.service";
+import { ICrudTrack } from "../interfaces";
+import { LoggerService } from "../logger/logger.service";
+import { PaginationOptions, PaginationService } from "../pagination";
+import { SecretManagerService } from "../utils/secret-manager.service";
+import { SecretAdapter } from "../utils/secret.adapter";
+import { ServiceProviderDto } from "./dto/service-provider-input.dto";
+import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
 
 @Injectable()
 export class ServiceProviderService {
   constructor(
-    @InjectRepository(ServiceProviderFromDb, 'fc-mongo')
+    @InjectRepository(ServiceProviderFromDb, "fc-mongo")
     private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
     private readonly secretManager: SecretManagerService,
     private readonly secretAdapter: SecretAdapter,
@@ -44,8 +41,8 @@ export class ServiceProviderService {
     );
 
     this.track({
-      entity: 'service-provider',
-      action: 'create',
+      entity: "service-provider",
+      action: "create",
       user,
       name: serviceProviderDBEntity.key,
       id: saveOperation.identifiers[0].id,
@@ -78,7 +75,7 @@ export class ServiceProviderService {
     serviceProvider.redirect_uris = input.redirectUri;
     serviceProvider.post_logout_redirect_uris = input.redirectUriLogout;
     serviceProvider.type = input.type;
-    serviceProvider.email = input.emails.join('\n');
+    serviceProvider.email = input.emails.join("\n");
     serviceProvider.active = input.active;
     serviceProvider.IPServerAddressesAndRanges = input.ipAddresses;
     serviceProvider.updatedAt = new Date();
@@ -108,14 +105,14 @@ export class ServiceProviderService {
      * - If the user send scope AND the SP doesn't have scopes, we want least the scope "openid".
      */
     if (input.scopes || serviceProvider.scopes) {
-      const uniqueScopes = new Set(['openid', ...(input.scopes || [])]);
+      const uniqueScopes = new Set(["openid", ...(input.scopes || [])]);
 
       serviceProvider.scopes = [...uniqueScopes];
     }
 
     this.track({
-      entity: 'service-provider',
-      action: 'update',
+      entity: "service-provider",
+      action: "update",
       user,
       id,
       name: serviceProvider.key,
@@ -158,8 +155,8 @@ export class ServiceProviderService {
     const hasDeletionSucceeded = result.affected === 1;
 
     this.track({
-      entity: 'service-provider',
-      action: 'delete',
+      entity: "service-provider",
+      action: "delete",
       user,
       id,
       name: serviceProvider.key,
@@ -207,7 +204,7 @@ export class ServiceProviderService {
   private transformDtoIntoEntity(
     serviceProviderDto: ServiceProviderDto,
     user: string,
-  ): Omit<ServiceProviderFromDb, '_id'> {
+  ): Omit<ServiceProviderFromDb, "_id"> {
     const now = new Date();
     const key = this.secretAdapter.generateKey();
 
@@ -216,7 +213,7 @@ export class ServiceProviderService {
       redirect_uris: serviceProviderDto.redirectUri,
       post_logout_redirect_uris: serviceProviderDto.redirectUriLogout,
       type: serviceProviderDto.type,
-      email: serviceProviderDto.emails.join('\n'),
+      email: serviceProviderDto.emails.join("\n"),
       IPServerAddressesAndRanges: serviceProviderDto.ipAddresses,
       scopes: serviceProviderDto.scopes,
       userinfo_signed_response_alg:

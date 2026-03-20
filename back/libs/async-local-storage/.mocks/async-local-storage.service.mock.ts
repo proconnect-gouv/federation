@@ -6,7 +6,7 @@ export function getAsyncLocalStorageMock() {
   };
 
   // This is necessary to mock the getter
-  Object.defineProperty(mock, 'mandatory', {
+  Object.defineProperty(mock, "mandatory", {
     get: jest.fn(),
   });
 

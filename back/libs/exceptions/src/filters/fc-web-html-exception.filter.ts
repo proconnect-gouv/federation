@@ -1,24 +1,21 @@
-import { Response } from 'express';
-
-import { ArgumentsHost, Catch, Injectable } from '@nestjs/common';
-import { BaseExceptionFilter } from '@nestjs/core';
-
-import { AppConfig } from '@fc/bridge-http-proxy/dto/app-config.dto';
-import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core/dto/user-session/user-session.dto';
-import { Routes } from '@fc/core/enums/routes.enum';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
-
-import { ExceptionsConfig } from '../dto';
-import { BaseException, EnrichedDisplayBaseException } from '../exceptions';
+import { AppConfig } from "@fc/bridge-http-proxy/dto/app-config.dto";
+import { ConfigService } from "@fc/config";
+import { UserSession } from "@fc/core/dto/user-session/user-session.dto";
+import { Routes } from "@fc/core/enums/routes.enum";
+import { LoggerService } from "@fc/logger";
+import { SessionService } from "@fc/session";
+import { ArgumentsHost, Catch, Injectable } from "@nestjs/common";
+import { BaseExceptionFilter } from "@nestjs/core";
+import { Response } from "express";
+import { ExceptionsConfig } from "../dto";
+import { BaseException, EnrichedDisplayBaseException } from "../exceptions";
 import {
   generateErrorId,
   getCode,
   getDefaultContactHref,
   getStackTraceArray,
-} from '../helpers';
-import { ErrorPageParams } from '../types';
+} from "../helpers";
+import { ErrorPageParams } from "../types";
 
 @Catch(BaseException)
 @Injectable()
@@ -48,7 +45,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
   }
 
   protected getExceptionCodeFor(exception: BaseException): string {
-    const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
+    const { prefix } = this.config.get<ExceptionsConfig>("Exceptions");
 
     return getCode(exception.scope, exception.code, prefix);
   }
@@ -82,11 +79,11 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
     exception: BaseException;
     res: Response;
   }): void {
-    const { interactionId } = this.session.get<UserSession>('User');
+    const { interactionId } = this.session.get<UserSession>("User");
 
-    const { urlPrefix } = this.config.get<AppConfig>('App');
+    const { urlPrefix } = this.config.get<AppConfig>("App");
     const interactionErrorUrl = `${urlPrefix}${Routes.INTERACTION_ERROR.replace(
-      ':uid',
+      ":uid",
       interactionId,
     )}?error=${encodeURIComponent(exception.error)}&error_description=${encodeURIComponent(exception.error_description)}`;
 
@@ -97,8 +94,8 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
     };
 
     if (exception instanceof EnrichedDisplayBaseException) {
-      const idpName = this.session.get('User', 'idpName');
-      const spName = this.session.get('User', 'spName');
+      const idpName = this.session.get("User", "idpName");
+      const spName = this.session.get("User", "spName");
       const {
         contactHref,
         title,
@@ -124,6 +121,6 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
     }
 
     res.status(exception.http_status_code);
-    res.render('error', errorPageParams);
+    res.render("error", errorPageParams);
   }
 }

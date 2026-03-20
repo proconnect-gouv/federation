@@ -1,4 +1,4 @@
-import { SESSION_STORE_KEY } from '../tokens';
+import { SESSION_STORE_KEY } from "../tokens";
 
 // Declarative file
 export interface SessionStoreContentInterface {

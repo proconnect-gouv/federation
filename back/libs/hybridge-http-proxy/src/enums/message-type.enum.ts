@@ -1,4 +1,4 @@
 export enum MessageType {
-  DATA = 'TYPE::DATA',
-  ERROR = 'TYPE::ERROR',
+  DATA = "TYPE::DATA",
+  ERROR = "TYPE::ERROR",
 }

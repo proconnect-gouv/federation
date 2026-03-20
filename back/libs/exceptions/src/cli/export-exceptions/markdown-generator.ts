@@ -1,4 +1,4 @@
-import { ExceptionDocumentationInterface } from '../../types';
+import { ExceptionDocumentationInterface } from "../../types";
 
 export default class MarkdownGenerator {
   static removeExceptionsWithoutCode(

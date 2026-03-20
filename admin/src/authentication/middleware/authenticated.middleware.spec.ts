@@ -1,12 +1,12 @@
-import { AuthenticatedMiddleware } from './authenticated.middleware';
-import { UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from "@nestjs/common";
+import { AuthenticatedMiddleware } from "./authenticated.middleware";
 
-describe('AuthenticatedMiddleware', () => {
+describe("AuthenticatedMiddleware", () => {
   const authenticatedMiddleware = new AuthenticatedMiddleware();
 
-  it('lets the request pass if the request holds a user', () => {
+  it("lets the request pass if the request holds a user", () => {
     const req = {
-      user: Symbol('user'),
+      user: Symbol("user"),
     };
     const res = jest.fn();
     const next = jest.fn();
@@ -16,7 +16,7 @@ describe('AuthenticatedMiddleware', () => {
     expect(next).toHaveBeenCalledTimes(1);
   });
 
-  it('sends an UnauthenticatedException if no user is found on the request', () => {
+  it("sends an UnauthenticatedException if no user is found on the request", () => {
     const req = {};
     const res = jest.fn();
     const next = jest.fn();

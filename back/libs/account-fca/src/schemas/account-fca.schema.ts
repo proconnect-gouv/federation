@@ -1,11 +1,10 @@
-import { Document } from 'mongoose';
-import { v4 as uuid } from 'uuid';
-
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
+import { v4 as uuid } from "uuid";
 
 @Schema({
   _id: false,
-  collection: 'idpIdentityKeys',
+  collection: "idpIdentityKeys",
 })
 class IdpIdentityKey {
   @Prop({ type: String })
@@ -20,7 +19,7 @@ class IdpIdentityKey {
 
 @Schema({
   strict: true,
-  collection: 'accountFca',
+  collection: "accountFca",
   timestamps: true,
 })
 export class AccountFca extends Document {
@@ -66,16 +65,16 @@ const AccountFcaSchema = SchemaFactory.createForClass(AccountFca);
 // Note that this will create the index if not present
 AccountFcaSchema.index(
   {
-    'idpIdentityKeys.idpUid': 1,
-    'idpIdentityKeys.idpSub': 1,
+    "idpIdentityKeys.idpUid": 1,
+    "idpIdentityKeys.idpSub": 1,
   },
   { unique: true },
 );
 
 // Note that this will create the index if not present
 AccountFcaSchema.index({
-  'idpIdentityKeys.idpMail': 1,
-  'idpIdentityKeys.idpUid': 1,
+  "idpIdentityKeys.idpMail": 1,
+  "idpIdentityKeys.idpUid": 1,
 });
 
 export { AccountFcaSchema };

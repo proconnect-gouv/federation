@@ -1,17 +1,17 @@
-import { Test } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserRole } from '../user/roles.enum';
-import { UserService } from '../user/user.service';
-import { User } from '../user/user.sql.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { EnrollUserDto } from './dto/enroll-user.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
-import { AccountController } from './account.controller';
-import { AccountService } from './account.service';
-import { TotpService } from '../authentication/totp/totp.service';
+import { Test } from "@nestjs/testing";
+import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { TotpService } from "../authentication/totp/totp.service";
+import { UserRole } from "../user/roles.enum";
+import { UserService } from "../user/user.service";
+import { User } from "../user/user.sql.entity";
+import { AccountController } from "./account.controller";
+import { AccountService } from "./account.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { EnrollUserDto } from "./dto/enroll-user.dto";
+import { UpdateAccountDto } from "./dto/update-account.dto";
 
-describe('AccountController', () => {
+describe("AccountController", () => {
   let accountController: AccountController;
   let service: AccountService;
 
@@ -36,7 +36,7 @@ describe('AccountController', () => {
     status: jest.fn(),
     render: jest.fn(),
     locals: {
-      APP_ROOT: '/foo/bar',
+      APP_ROOT: "/foo/bar",
     },
   };
 
@@ -47,20 +47,20 @@ describe('AccountController', () => {
   let req;
 
   const updateAccountDto = new UpdateAccountDto(
-    'georgesmooustaki',
-    'MyPassword10!!',
-    'MyPassword10!!',
+    "georgesmooustaki",
+    "MyPassword10!!",
+    "MyPassword10!!",
   );
   const createUserDto = new CreateUserDto(
-    'jean_moust',
-    'jean@moust.lol',
-    'yolo',
+    "jean_moust",
+    "jean@moust.lol",
+    "yolo",
     [UserRole.OPERATOR],
-    '1234',
+    "1234",
   );
   const enrollUserDto = new EnrollUserDto(
-    'YouWontFindIt#999',
-    'YouWontFindIt#999',
+    "YouWontFindIt#999",
+    "YouWontFindIt#999",
   );
   const userRepository = {
     find: jest.fn(),
@@ -82,7 +82,7 @@ describe('AccountController', () => {
           provide: getRepositoryToken(AccountService),
           useClass: Repository,
         },
-        { provide: 'generatePassword', useValue: mockedGeneratePassword },
+        { provide: "generatePassword", useValue: mockedGeneratePassword },
       ],
     })
       .overrideProvider(UserService)
@@ -101,137 +101,137 @@ describe('AccountController', () => {
     req = {
       flash: jest.fn(),
       user: {
-        id: '05e4fadf-fda6-4ad8-ae75-b7f315843827',
+        id: "05e4fadf-fda6-4ad8-ae75-b7f315843827",
         roles: [],
-        username: 'userNameValue',
+        username: "userNameValue",
       },
       body: {
-        roles: ['admin', 'operator'],
+        roles: ["admin", "operator"],
         secret: jest.fn(),
       },
       csrfToken: function csrfToken() {
-        return 'mygreatcsrftoken';
+        return "mygreatcsrftoken";
       },
     };
 
     jest.resetAllMocks();
     totpService.generateTotpQRCode.mockReturnValueOnce({
-      user: 'toto',
-      issuer: 'fce',
-      secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD',
-      QRCode: 'base64ImageQRCode',
+      user: "toto",
+      issuer: "fce",
+      secret: "KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD",
+      QRCode: "base64ImageQRCode",
       period: 30,
-      algorithm: 'sha1',
+      algorithm: "sha1",
     });
     totpService.generateTotpSecret.mockReturnValueOnce(
-      'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD',
+      "KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD",
     );
     res.status.mockReturnValueOnce(res);
-    mockedGeneratePassword.generate.mockReturnValueOnce('mygreattmppassword');
+    mockedGeneratePassword.generate.mockReturnValueOnce("mygreattmppassword");
   });
 
-  describe('list', () => {
-    it('returns all the users', async () => {
+  describe("list", () => {
+    it("returns all the users", async () => {
       // Setup
-      const page = '0';
-      const limit = '10';
+      const page = "0";
+      const limit = "10";
 
       // Mocking Items
       const itemTest1: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest2: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest3: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest4: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest5: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest6: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest7: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest8: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest9: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest10: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest11: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
       const itemTest12: User = {
-        id: '5d35b91e70332098440d0f85',
-        username: 'kizaru',
-        email: 'kizaru@onepiece.com',
+        id: "5d35b91e70332098440d0f85",
+        username: "kizaru",
+        email: "kizaru@onepiece.com",
         roles: [],
-        passwordHash: '54689adfrt',
-        secret: '1234',
+        passwordHash: "54689adfrt",
+        secret: "1234",
       };
 
       // Actions
@@ -256,7 +256,7 @@ describe('AccountController', () => {
 
       // Mocking the return of service findAll function
       const spy = jest
-        .spyOn(service, 'findAll')
+        .spyOn(service, "findAll")
         .mockImplementation(() => Promise.resolve(result));
 
       // Calling the list function
@@ -269,24 +269,24 @@ describe('AccountController', () => {
     });
   });
 
-  describe('createUser', () => {
-    it('Get create user', () => {
+  describe("createUser", () => {
+    it("Get create user", () => {
       // setup
       userService.generateTmpPass.mockImplementationOnce(() => {
-        return 'mygreattmppassword';
+        return "mygreattmppassword";
       });
       // action
       const { csrfToken, tmpPassword } =
         accountController.showCreationForm(req);
       // assertion
       expect(userService.generateTmpPass).toHaveBeenCalledTimes(1);
-      expect(csrfToken).toEqual('mygreatcsrftoken');
-      expect(tmpPassword).toEqual('mygreattmppassword');
+      expect(csrfToken).toEqual("mygreatcsrftoken");
+      expect(tmpPassword).toEqual("mygreattmppassword");
     });
   });
 
-  describe('Post create user', () => {
-    it('redirects the user when a valid user is provided', async () => {
+  describe("Post create user", () => {
+    it("redirects the user when a valid user is provided", async () => {
       // setup
       userService.createUser.mockImplementation(() => Promise.resolve(true));
       // action
@@ -294,17 +294,17 @@ describe('AccountController', () => {
       // assertion
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account");
     });
 
-    it('uses the user service to create users', async () => {
+    it("uses the user service to create users", async () => {
       // setup
       const expectedUser = {
-        email: 'jean@moust.lol',
-        password: 'yolo',
-        roles: ['inactive_operator', 'new_account'],
-        secret: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD',
-        username: 'jean_moust',
+        email: "jean@moust.lol",
+        password: "yolo",
+        roles: ["inactive_operator", "new_account"],
+        secret: "KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD",
+        username: "jean_moust",
       };
 
       // action
@@ -317,41 +317,41 @@ describe('AccountController', () => {
       );
     });
 
-    it('falls back in the catch when a not valid user is provided', async () => {
+    it("falls back in the catch when a not valid user is provided", async () => {
       // setup
       userService.createUser.mockImplementation(() =>
-        Promise.reject(new Error('wrong, buddy')),
+        Promise.reject(new Error("wrong, buddy")),
       );
       // action
       await accountController.createUser(createUserDto, req, res);
       // assertion
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account/create');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account/create");
       expect(req.flash).toHaveBeenCalledTimes(1);
-      expect(req.flash).toHaveBeenCalledWith('globalError', { code: '23505' });
+      expect(req.flash).toHaveBeenCalledWith("globalError", { code: "23505" });
     });
   });
 
-  describe('get enrollment', () => {
-    it('should generate qr code and return values to enter totp code without scanning qrcode', async () => {
+  describe("get enrollment", () => {
+    it("should generate qr code and return values to enter totp code without scanning qrcode", async () => {
       // action
       const { user, issuer, secret, QRCode, period, algorithm, csrfToken } =
         await accountController.firstLogin(req, res);
       // assertion
-      expect(user).toEqual('toto');
-      expect(issuer).toEqual('fce');
-      expect(secret).toEqual('KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD');
-      expect(QRCode).toEqual('base64ImageQRCode');
+      expect(user).toEqual("toto");
+      expect(issuer).toEqual("fce");
+      expect(secret).toEqual("KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD");
+      expect(QRCode).toEqual("base64ImageQRCode");
       expect(period).toEqual(30);
-      expect(algorithm).toEqual('sha1');
-      expect(csrfToken).toEqual('mygreatcsrftoken');
+      expect(algorithm).toEqual("sha1");
+      expect(csrfToken).toEqual("mygreatcsrftoken");
     });
   });
 
-  describe('Patch enrollment new User', () => {
-    it('should update a new user and redirect to the account page if the user has only the role admin', async () => {
+  describe("Patch enrollment new User", () => {
+    it("should update a new user and redirect to the account page if the user has only the role admin", async () => {
       // setup
-      req.user.roles = ['new_account', 'inactive_admin'];
+      req.user.roles = ["new_account", "inactive_admin"];
       userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
       userService.isEqualToTemporaryPassword.mockReturnValueOnce(false);
       userService.enrollUser.mockImplementation(() => Promise.resolve(true));
@@ -365,20 +365,20 @@ describe('AccountController', () => {
       );
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/");
     });
     it("should fall back in the catch statement if user's updated password and password confirmation do not respect the dto", async () => {
       // setup
       userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
       userService.isEqualToTemporaryPassword.mockReturnValueOnce(false);
       userService.enrollUser.mockImplementation(() =>
-        Promise.reject(new Error('wrong, buddy')),
+        Promise.reject(new Error("wrong, buddy")),
       );
       // action
       await accountController.enrollUser(
         {
-          password: 'mypasswordoesnotrespectthedto',
-          passwordConfirmation: 'mypasswordoesnotrespectthedto',
+          password: "mypasswordoesnotrespectthedto",
+          passwordConfirmation: "mypasswordoesnotrespectthedto",
         },
         req,
         res,
@@ -387,40 +387,40 @@ describe('AccountController', () => {
       expect(userService.enrollUser).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account/enrollment');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account/enrollment");
     });
 
-    it('should call req flash and redirect the user to the enrollment page', async () => {
+    it("should call req flash and redirect the user to the enrollment page", async () => {
       // setup
       const enrollUserDtoMock: EnrollUserDto = {
-        password: 'fredIsNotSecured10!!',
-        passwordConfirmation: 'fredIsNotSecured10!!',
+        password: "fredIsNotSecured10!!",
+        passwordConfirmation: "fredIsNotSecured10!!",
       };
-      req.body.password = 'fredIsNotSecured10!!';
-      req.body.passwordConfirmation = 'fredIsNotSecured10!!';
-      req.user.username = 'fred';
+      req.body.password = "fredIsNotSecured10!!";
+      req.body.passwordConfirmation = "fredIsNotSecured10!!";
+      req.user.username = "fred";
       userService.passwordDoesNotContainUsername.mockReturnValueOnce(false);
       // action
       await accountController.enrollUser(enrollUserDtoMock, req, res);
       // assertion
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledWith(
-        'globalError',
+        "globalError",
         "Votre nouveau mot de passe contient votre nom d'utilisateur",
       );
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account/enrollment');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account/enrollment");
     });
 
-    it('should not call req flash with a globalError', async () => {
+    it("should not call req flash with a globalError", async () => {
       // setup
       const enrollUserDtoMock: EnrollUserDto = {
-        password: 'fredIsNotSecured10!!',
-        passwordConfirmation: 'fredIsNotSecured10!!',
+        password: "fredIsNotSecured10!!",
+        passwordConfirmation: "fredIsNotSecured10!!",
       };
-      req.body.password = 'fredIsNotSecured10!!';
-      req.body.passwordConfirmation = 'fredIsNotSecured10!!';
-      req.user.username = 'fred';
+      req.body.password = "fredIsNotSecured10!!";
+      req.body.passwordConfirmation = "fredIsNotSecured10!!";
+      req.user.username = "fred";
       userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
       userService.enrollUser.mockImplementation(() => Promise.resolve(true));
       // action
@@ -428,26 +428,26 @@ describe('AccountController', () => {
       // assertion
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledWith(
-        'success',
-        'Le mot de passe a bien été mis à jour !',
+        "success",
+        "Le mot de passe a bien été mis à jour !",
       );
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/");
     });
 
-    describe('temporary password check', () => {
-      test('should call req flash if temporary password is reused', async () => {
+    describe("temporary password check", () => {
+      test("should call req flash if temporary password is reused", async () => {
         // setup
-        const password = 'georgesmoustaki';
+        const password = "georgesmoustaki";
         const hash =
-          '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e';
+          "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e";
         const enrollUserDtoMock: EnrollUserDto = {
           password,
           passwordConfirmation: password,
         };
         req.body.password = password;
         req.body.passwordConfirmation = password;
-        req.user.username = 'jean_moust';
+        req.user.username = "jean_moust";
         req.user.passwordHash = hash;
         userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
         userService.isEqualToTemporaryPassword.mockReturnValueOnce(true);
@@ -456,23 +456,23 @@ describe('AccountController', () => {
         // assertion
         expect(req.flash).toHaveBeenCalledTimes(1);
         expect(req.flash).toHaveBeenCalledWith(
-          'globalError',
-          'Votre nouveau mot de passe ne peut pas être le mot de passe temporaire.',
+          "globalError",
+          "Votre nouveau mot de passe ne peut pas être le mot de passe temporaire.",
         );
       });
 
-      test('should call res redirect to the enrollment page  if temporary password is reused', async () => {
+      test("should call res redirect to the enrollment page  if temporary password is reused", async () => {
         // setup
-        const password = 'georgesmoustaki';
+        const password = "georgesmoustaki";
         const hash =
-          '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e';
+          "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e";
         const enrollUserDtoMock: EnrollUserDto = {
           password,
           passwordConfirmation: password,
         };
         req.body.password = password;
         req.body.passwordConfirmation = password;
-        req.user.username = 'jean_moust';
+        req.user.username = "jean_moust";
         req.user.passwordHash = hash;
         userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
         userService.isEqualToTemporaryPassword.mockReturnValueOnce(true);
@@ -481,24 +481,24 @@ describe('AccountController', () => {
         // assertion
         expect(res.redirect).toHaveBeenCalledTimes(1);
         expect(res.redirect).toHaveBeenCalledWith(
-          '/foo/bar/account/enrollment',
+          "/foo/bar/account/enrollment",
         );
       });
     });
 
-    describe('Passwords check', () => {
-      test('should call res redirect to the enrollment page  if temporary password is reused', async () => {
+    describe("Passwords check", () => {
+      test("should call res redirect to the enrollment page  if temporary password is reused", async () => {
         // setup
-        const password = 'georgesmoustaki';
+        const password = "georgesmoustaki";
         const hash =
-          '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e';
+          "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e";
         const enrollUserDtoMock: EnrollUserDto = {
           password,
           passwordConfirmation: password,
         };
         req.body.password = password;
         req.body.passwordConfirmation = password;
-        req.user.username = 'jean_moust';
+        req.user.username = "jean_moust";
         req.user.passwordHash = hash;
         userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
         userService.isEqualToTemporaryPassword.mockReturnValueOnce(true);
@@ -510,16 +510,16 @@ describe('AccountController', () => {
         // assertion
         expect(res.redirect).toHaveBeenCalledTimes(1);
         expect(res.redirect).toHaveBeenCalledWith(
-          '/foo/bar/account/enrollment',
+          "/foo/bar/account/enrollment",
         );
       });
     });
   });
 
-  describe('delete', () => {
-    it('should call deleteUser of the user service with the provided id', async () => {
+  describe("delete", () => {
+    it("should call deleteUser of the user service with the provided id", async () => {
       // set up
-      const id = 'd3d3f8a1-26ea-4a8b-9ed3-336d3777b529';
+      const id = "d3d3f8a1-26ea-4a8b-9ed3-336d3777b529";
       // action
       await accountController.deleteUser(id, req, res);
       // assertion
@@ -528,25 +528,25 @@ describe('AccountController', () => {
         id,
         req.user.username,
       );
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account");
     });
 
-    it('should not call deleteUser of the user service but redirect the user to the /account page', async () => {
+    it("should not call deleteUser of the user service but redirect the user to the /account page", async () => {
       // set up
-      const id = '05e4fadf-fda6-4ad8-ae75-b7f315843827';
+      const id = "05e4fadf-fda6-4ad8-ae75-b7f315843827";
       // action
       await accountController.deleteUser(id, req, res);
       // assertion
-      expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account');
+      expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account");
       expect(userService.deleteUserById).toHaveBeenCalledTimes(0);
     });
 
-    it('should not redirect the user but set the res status to 500 for the error handler', async () => {
+    it("should not redirect the user but set the res status to 500 for the error handler", async () => {
       // set up
       userService.deleteUserById = jest.fn(() => {
         throw Error;
       });
-      const id = '2d1280f1-1611-42fa-968a-47e450e0aeba';
+      const id = "2d1280f1-1611-42fa-968a-47e450e0aeba";
       // action
       await accountController.deleteUser(id, req, res);
       // assertion
@@ -556,33 +556,33 @@ describe('AccountController', () => {
     });
   });
 
-  describe('user account', () => {
-    describe('get account/me', () => {
-      it('showUserAccount', async () => {
+  describe("user account", () => {
+    describe("get account/me", () => {
+      it("showUserAccount", async () => {
         // action
         const { user, issuer, secret, QRCode, period, algorithm, csrfToken } =
           await accountController.showUserAccount(req);
         // assertion
         expect(totpService.generateTotpQRCode).toHaveBeenCalledTimes(1);
         expect(totpService.generateTotpQRCode).toHaveBeenCalledWith(req.user);
-        expect(user).toEqual('toto');
-        expect(issuer).toEqual('fce');
-        expect(secret).toEqual('KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD');
-        expect(QRCode).toEqual('base64ImageQRCode');
+        expect(user).toEqual("toto");
+        expect(issuer).toEqual("fce");
+        expect(secret).toEqual("KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD");
+        expect(QRCode).toEqual("base64ImageQRCode");
         expect(period).toEqual(30);
-        expect(algorithm).toEqual('sha1');
-        expect(csrfToken).toEqual('mygreatcsrftoken');
+        expect(algorithm).toEqual("sha1");
+        expect(csrfToken).toEqual("mygreatcsrftoken");
       });
     });
 
-    describe('patch update-account/:username', () => {
-      it('updates the user account', async () => {
+    describe("patch update-account/:username", () => {
+      it("updates the user account", async () => {
         // setup
         req.body = {
-          __csrf: 'mygreatcsrftoken',
-          currentPassword: 'MyPass10!!',
-          password: 'MyNewPass20!!',
-          passwordConfirmation: 'MyNewPass20!!!!',
+          __csrf: "mygreatcsrftoken",
+          currentPassword: "MyPass10!!",
+          password: "MyNewPass20!!",
+          passwordConfirmation: "MyNewPass20!!!!",
           _totp: 123456,
         };
         userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
@@ -596,14 +596,14 @@ describe('AccountController', () => {
         );
         expect(req.flash).toHaveBeenCalledTimes(1);
         expect(req.flash).toHaveBeenCalledWith(
-          'success',
+          "success",
           `Le mot de passe a bien été mis à jour !`,
         );
         expect(res.redirect).toHaveBeenCalledTimes(1);
-        expect(res.redirect).toHaveBeenCalledWith('/foo/bar/');
+        expect(res.redirect).toHaveBeenCalledWith("/foo/bar/");
       });
 
-      it('does not update the user password', async () => {
+      it("does not update the user password", async () => {
         // setup
         userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
         userService.updateUserAccount = jest.fn(() => {
@@ -619,20 +619,20 @@ describe('AccountController', () => {
         );
         expect(req.flash).toHaveBeenCalledTimes(1);
         expect(req.flash).toHaveBeenCalledWith(
-          'globalError',
-          'Nouveau mot de passe non mis à jour, Ancien mot de passe incorrect.',
+          "globalError",
+          "Nouveau mot de passe non mis à jour, Ancien mot de passe incorrect.",
         );
         expect(res.redirect).toHaveBeenCalledTimes(1);
-        expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account/me');
+        expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account/me");
       });
 
-      it('should call req flash and redirect the user to the update account page', async () => {
+      it("should call req flash and redirect the user to the update account page", async () => {
         // setup
         req.body = {
-          __csrf: 'mygreatcsrftoken',
-          currentPassword: 'MyPass10!!',
-          password: 'MyNewPass20!!',
-          passwordConfirmation: 'MyNewPass20!!!!',
+          __csrf: "mygreatcsrftoken",
+          currentPassword: "MyPass10!!",
+          password: "MyNewPass20!!",
+          passwordConfirmation: "MyNewPass20!!!!",
           _totp: 123456,
         };
         userService.passwordDoesNotContainUsername.mockReturnValueOnce(false);
@@ -642,22 +642,22 @@ describe('AccountController', () => {
         expect(userService.updateUserAccount).toHaveBeenCalledTimes(0);
         expect(req.flash).toHaveBeenCalledTimes(1);
         expect(req.flash).toHaveBeenCalledWith(
-          'globalError',
+          "globalError",
           "Votre nouveau mot de passe contient votre nom d'utilisateur",
         );
         expect(res.redirect).toHaveBeenCalledTimes(1);
-        expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account/me');
+        expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account/me");
       });
 
-      test('should call req flash if one of the last five password is reused', async () => {
+      test("should call req flash if one of the last five password is reused", async () => {
         // setup
-        const password = 'georgesmoustaki';
+        const password = "georgesmoustaki";
         const hash =
-          '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e';
+          "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e";
 
         req.body.password = password;
         req.body.passwordConfirmation = password;
-        req.user.username = 'jean_moust';
+        req.user.username = "jean_moust";
         req.user.passwordHash = hash;
         userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
         userService.isEqualToTemporaryPassword.mockReturnValueOnce(false);
@@ -669,21 +669,21 @@ describe('AccountController', () => {
         // assertion
         expect(req.flash).toHaveBeenCalledTimes(1);
         expect(req.flash).toHaveBeenCalledWith(
-          'globalError',
+          "globalError",
           "Votre nouveau mot de passe ne peut être l'un des cinq derniers mots de passe utilisés",
         );
-        expect(res.redirect).toHaveBeenCalledWith('/foo/bar/account/me');
+        expect(res.redirect).toHaveBeenCalledWith("/foo/bar/account/me");
       });
 
-      test('should not call req flash if none of the last five password is reused', async () => {
+      test("should not call req flash if none of the last five password is reused", async () => {
         // setup
-        const password = 'georgesmoustaki';
+        const password = "georgesmoustaki";
         const hash =
-          '$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e';
+          "$2b$10$ZDOB7VgNYb.L3mTyf2yQduc9X6AItJmYhEFD0ea30kVXEURcJi31e";
 
         req.body.password = password;
         req.body.passwordConfirmation = password;
-        req.user.username = 'jean_moust';
+        req.user.username = "jean_moust";
         req.user.passwordHash = hash;
         userService.passwordDoesNotContainUsername.mockReturnValueOnce(true);
         userService.isEqualToTemporaryPassword.mockReturnValueOnce(false);
@@ -695,11 +695,11 @@ describe('AccountController', () => {
         // assertion
         expect(req.flash).toHaveBeenCalledTimes(1);
         expect(req.flash).toHaveBeenCalledWith(
-          'success',
+          "success",
           `Le mot de passe a bien été mis à jour !`,
         );
         expect(res.redirect).toHaveBeenCalledTimes(1);
-        expect(res.redirect).toHaveBeenCalledWith('/foo/bar/');
+        expect(res.redirect).toHaveBeenCalledWith("/foo/bar/");
       });
     });
   });

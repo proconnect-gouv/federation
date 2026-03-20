@@ -1,14 +1,12 @@
-import { Request, Response } from 'express';
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request, Response } from "express";
+import { SessionBackendStorageService } from "./session-backend-storage.service";
+import { SessionCookiesService } from "./session-cookies.service";
+import { SessionLifecycleService } from "./session-lifecycle.service";
+import { SessionLocalStorageService } from "./session-local-storage.service";
+import { SessionService } from "./session.service";
 
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { SessionService } from './session.service';
-import { SessionBackendStorageService } from './session-backend-storage.service';
-import { SessionCookiesService } from './session-cookies.service';
-import { SessionLifecycleService } from './session-lifecycle.service';
-import { SessionLocalStorageService } from './session-local-storage.service';
-
-describe('SessionService', () => {
+describe("SessionService", () => {
   let service: SessionService;
 
   const localStorageMock = {
@@ -47,7 +45,7 @@ describe('SessionService', () => {
 
   const req = {} as Request;
   const res = {} as Response;
-  const sessionId = 'sessionId';
+  const sessionId = "sessionId";
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -81,16 +79,16 @@ describe('SessionService', () => {
     });
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('get()', () => {
+  describe("get()", () => {
     // Given
-    const moduleName = 'moduleName';
-    const key = 'key';
+    const moduleName = "moduleName";
+    const key = "key";
 
-    it('should forward call to localStorage.get()', () => {
+    it("should forward call to localStorage.get()", () => {
       // When
       service.get(moduleName, key);
 
@@ -99,22 +97,22 @@ describe('SessionService', () => {
       expect(localStorageMock.get).toHaveBeenCalledWith(moduleName, key);
     });
 
-    it('should return result of call to localStorage.get()', () => {
+    it("should return result of call to localStorage.get()", () => {
       // When
       const result = service.get(moduleName, key);
 
       // Then
-      expect(result).toBe('mockedReturnValue::get');
+      expect(result).toBe("mockedReturnValue::get");
     });
   });
 
-  describe('set()', () => {
+  describe("set()", () => {
     // Given
-    const moduleName = 'moduleName';
-    const key = 'key';
-    const data = 'data';
+    const moduleName = "moduleName";
+    const key = "key";
+    const data = "data";
 
-    it('should forward call to localStorage.set()', () => {
+    it("should forward call to localStorage.set()", () => {
       // When
       service.set(moduleName, key, data);
 
@@ -123,17 +121,17 @@ describe('SessionService', () => {
       expect(localStorageMock.set).toHaveBeenCalledWith(moduleName, key, data);
     });
 
-    it('should return result of call to localStorage.set()', () => {
+    it("should return result of call to localStorage.set()", () => {
       // When
       const result = service.set(moduleName, key, data);
 
       // Then
-      expect(result).toBe('mockedReturnValue::set');
+      expect(result).toBe("mockedReturnValue::set");
     });
   });
 
-  describe('getId()', () => {
-    it('should forward call to localStorage.getId()', () => {
+  describe("getId()", () => {
+    it("should forward call to localStorage.getId()", () => {
       // When
       service.getId();
 
@@ -141,17 +139,17 @@ describe('SessionService', () => {
       expect(localStorageMock.getId).toHaveBeenCalledTimes(1);
     });
 
-    it('should return result of call to localStorage.getId()', () => {
+    it("should return result of call to localStorage.getId()", () => {
       // When
       const result = service.getId();
 
       // Then
-      expect(result).toBe('mockedReturnValue::getId');
+      expect(result).toBe("mockedReturnValue::getId");
     });
   });
 
-  describe('clear()', () => {
-    it('should call lifecycle.clear()', () => {
+  describe("clear()", () => {
+    it("should call lifecycle.clear()", () => {
       // When
       service.clear();
 
@@ -159,17 +157,17 @@ describe('SessionService', () => {
       expect(lifecycleMock.clear).toHaveBeenCalledTimes(1);
     });
 
-    it('should return result of lifecycle.clear()', () => {
+    it("should return result of lifecycle.clear()", () => {
       // When
       const result = service.clear();
 
       // Then
-      expect(result).toBe('mockedReturnValue::clear');
+      expect(result).toBe("mockedReturnValue::clear");
     });
   });
 
-  describe('initCache()', () => {
-    it('should call lifecycle.initCache()', async () => {
+  describe("initCache()", () => {
+    it("should call lifecycle.initCache()", async () => {
       // When
       await service.initCache(sessionId);
 
@@ -178,17 +176,17 @@ describe('SessionService', () => {
       expect(lifecycleMock.initCache).toHaveBeenCalledWith(sessionId);
     });
 
-    it('should return result of lifecycle.initCache()', async () => {
+    it("should return result of lifecycle.initCache()", async () => {
       // When
       const result = await service.initCache(sessionId);
 
       // Then
-      expect(result).toBe('mockedReturnValue::initCache');
+      expect(result).toBe("mockedReturnValue::initCache");
     });
   });
 
-  describe('init()', () => {
-    it('should call lifecycle.init()', () => {
+  describe("init()", () => {
+    it("should call lifecycle.init()", () => {
       // When
       service.init(res);
 
@@ -197,17 +195,17 @@ describe('SessionService', () => {
       expect(lifecycleMock.init).toHaveBeenCalledWith(res);
     });
 
-    it('should return result of lifecycle.init()', () => {
+    it("should return result of lifecycle.init()", () => {
       // When
       const result = service.init(res);
 
       // Then
-      expect(result).toBe('mockedReturnValue::init');
+      expect(result).toBe("mockedReturnValue::init");
     });
   });
 
-  describe('destroy()', () => {
-    it('should call lifecycle.destroy()', async () => {
+  describe("destroy()", () => {
+    it("should call lifecycle.destroy()", async () => {
       // When
       await service.destroy(res);
 
@@ -217,8 +215,8 @@ describe('SessionService', () => {
     });
   });
 
-  describe('commit()', () => {
-    it('should call lifecycle.commit()', async () => {
+  describe("commit()", () => {
+    it("should call lifecycle.commit()", async () => {
       // When
       await service.commit();
 
@@ -226,17 +224,17 @@ describe('SessionService', () => {
       expect(lifecycleMock.commit).toHaveBeenCalledTimes(1);
     });
 
-    it('should return result of lifecycle.commit()', async () => {
+    it("should return result of lifecycle.commit()", async () => {
       // When
       const result = await service.commit();
 
       // Then
-      expect(result).toBe('mockedReturnValue::commit');
+      expect(result).toBe("mockedReturnValue::commit");
     });
   });
 
-  describe('duplicate()', () => {
-    it('should call lifecycle.duplicate()', async () => {
+  describe("duplicate()", () => {
+    it("should call lifecycle.duplicate()", async () => {
       // When
       await service.duplicate(res);
 
@@ -245,17 +243,17 @@ describe('SessionService', () => {
       expect(lifecycleMock.duplicate).toHaveBeenCalledWith(res);
     });
 
-    it('should return result of lifecycle.duplicate()', async () => {
+    it("should return result of lifecycle.duplicate()", async () => {
       // When
       const result = await service.duplicate(res);
 
       // Then
-      expect(result).toBe('mockedReturnValue::duplicate');
+      expect(result).toBe("mockedReturnValue::duplicate");
     });
   });
 
-  describe('refresh()', () => {
-    it('should call lifecycle.refresh()', async () => {
+  describe("refresh()", () => {
+    it("should call lifecycle.refresh()", async () => {
       // When
       await service.refresh(req, res);
 
@@ -264,17 +262,17 @@ describe('SessionService', () => {
       expect(lifecycleMock.refresh).toHaveBeenCalledWith(req, res);
     });
 
-    it('should return result of lifecycle.refresh()', async () => {
+    it("should return result of lifecycle.refresh()", async () => {
       // When
       const result = await service.refresh(req, res);
 
       // Then
-      expect(result).toBe('mockedReturnValue::refresh');
+      expect(result).toBe("mockedReturnValue::refresh");
     });
   });
 
-  describe('getSessionIdFromCookie()', () => {
-    it('should call cookies.getSessionId()', () => {
+  describe("getSessionIdFromCookie()", () => {
+    it("should call cookies.getSessionId()", () => {
       // When
       service.getSessionIdFromCookie(req);
 
@@ -283,17 +281,17 @@ describe('SessionService', () => {
       expect(cookiesMock.get).toHaveBeenCalledWith(req);
     });
 
-    it('should return result of cookies.get()', () => {
+    it("should return result of cookies.get()", () => {
       // When
       const result = service.getSessionIdFromCookie(req);
 
       // Then
-      expect(result).toBe('mockedReturnValue::get');
+      expect(result).toBe("mockedReturnValue::get");
     });
   });
 
-  describe('getDataFromBackend()', () => {
-    it('should call backendStorage.get()', async () => {
+  describe("getDataFromBackend()", () => {
+    it("should call backendStorage.get()", async () => {
       // When
       await service.getDataFromBackend(sessionId);
 
@@ -302,17 +300,17 @@ describe('SessionService', () => {
       expect(backendStorageMock.get).toHaveBeenCalledWith(sessionId);
     });
 
-    it('should return result of backendStorage.get()', async () => {
+    it("should return result of backendStorage.get()", async () => {
       // When
       const result = await service.getDataFromBackend(sessionId);
 
       // Then
-      expect(result).toBe('mockedReturnValue::get');
+      expect(result).toBe("mockedReturnValue::get");
     });
   });
 
-  describe('expire()', () => {
-    it('should call backendStorage.expire()', async () => {
+  describe("expire()", () => {
+    it("should call backendStorage.expire()", async () => {
       // Given
       const ttl = 123;
 
@@ -324,7 +322,7 @@ describe('SessionService', () => {
       expect(backendStorageMock.expire).toHaveBeenCalledWith(sessionId, ttl);
     });
 
-    it('should return result of backendStorage.expire()', async () => {
+    it("should return result of backendStorage.expire()", async () => {
       // Given
       const ttl = 123;
 
@@ -332,14 +330,14 @@ describe('SessionService', () => {
       const result = await service.expire(sessionId, ttl);
 
       // Then
-      expect(result).toBe('mockedReturnValue::expire');
+      expect(result).toBe("mockedReturnValue::expire");
     });
   });
 
-  describe('setAlias()', () => {
-    it('should call backendStorage.setAlias()', async () => {
+  describe("setAlias()", () => {
+    it("should call backendStorage.setAlias()", async () => {
       // Given
-      const alias = 'alias';
+      const alias = "alias";
 
       // When
       await service.setAlias(alias, sessionId);
@@ -352,22 +350,22 @@ describe('SessionService', () => {
       );
     });
 
-    it('should return result of backendStorage.setAlias()', async () => {
+    it("should return result of backendStorage.setAlias()", async () => {
       // Given
-      const alias = 'alias';
+      const alias = "alias";
 
       // When
       const result = await service.setAlias(alias, sessionId);
 
       // Then
-      expect(result).toBe('mockedReturnValue::setAlias');
+      expect(result).toBe("mockedReturnValue::setAlias");
     });
   });
 
-  describe('getAlias()', () => {
-    it('should call backendStorage.getAlias()', async () => {
+  describe("getAlias()", () => {
+    it("should call backendStorage.getAlias()", async () => {
       // Given
-      const key = 'key';
+      const key = "key";
 
       // When
       await service.getAlias(key);
@@ -377,15 +375,15 @@ describe('SessionService', () => {
       expect(backendStorageMock.getAlias).toHaveBeenCalledWith(key);
     });
 
-    it('should return result of backendStorage.getAlias()', async () => {
+    it("should return result of backendStorage.getAlias()", async () => {
       // Given
-      const key = 'key';
+      const key = "key";
 
       // When
       const result = await service.getAlias(key);
 
       // Then
-      expect(result).toBe('mockedReturnValue::getAlias');
+      expect(result).toBe("mockedReturnValue::getAlias");
     });
   });
 });

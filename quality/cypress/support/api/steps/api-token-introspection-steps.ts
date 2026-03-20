@@ -1,7 +1,6 @@
 import { Then } from "@badeball/cypress-cucumber-preprocessor";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-
 import { getServiceProviderByDescription } from "../../common/helpers";
 import {
   GetTokenIntrospectionExpiredTokenDto,

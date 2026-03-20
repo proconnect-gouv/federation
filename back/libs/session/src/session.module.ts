@@ -1,19 +1,17 @@
-import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-
-import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ConfigService } from '@fc/config';
-import { CryptographyModule } from '@fc/cryptography';
-import { RedisModule } from '@fc/redis';
-
-import { SessionConfig } from './dto';
-import { SessionCommitInterceptor } from './interceptors';
-import { SessionMiddleware } from './middlewares';
-import { SessionService } from './services';
-import { SessionBackendStorageService } from './services/session-backend-storage.service';
-import { SessionCookiesService } from './services/session-cookies.service';
-import { SessionLifecycleService } from './services/session-lifecycle.service';
-import { SessionLocalStorageService } from './services/session-local-storage.service';
+import { AsyncLocalStorageModule } from "@fc/async-local-storage";
+import { ConfigService } from "@fc/config";
+import { CryptographyModule } from "@fc/cryptography";
+import { RedisModule } from "@fc/redis";
+import { Global, MiddlewareConsumer, Module } from "@nestjs/common";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { SessionConfig } from "./dto";
+import { SessionCommitInterceptor } from "./interceptors";
+import { SessionMiddleware } from "./middlewares";
+import { SessionService } from "./services";
+import { SessionBackendStorageService } from "./services/session-backend-storage.service";
+import { SessionCookiesService } from "./services/session-cookies.service";
+import { SessionLifecycleService } from "./services/session-lifecycle.service";
+import { SessionLocalStorageService } from "./services/session-local-storage.service";
 
 @Global()
 @Module({
@@ -42,7 +40,7 @@ export class SessionModule {
 
   configure(consumer: MiddlewareConsumer) {
     const { middlewareExcludedRoutes, middlewareIncludedRoutes } =
-      this.config.get<SessionConfig>('Session');
+      this.config.get<SessionConfig>("Session");
 
     consumer
       .apply(SessionMiddleware)

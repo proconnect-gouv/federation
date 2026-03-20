@@ -1,5 +1,4 @@
 import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
-
 import { getEnv } from "../../common/helpers";
 
 Then("je suis redirigé vers la page erreur technique", function () {

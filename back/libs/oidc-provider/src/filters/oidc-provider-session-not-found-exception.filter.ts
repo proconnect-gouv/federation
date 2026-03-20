@@ -1,12 +1,10 @@
-import { errors } from 'oidc-provider';
-
-import { ArgumentsHost, Catch, Injectable } from '@nestjs/common';
+import { generateErrorId, getStackTraceArray } from "@fc/exceptions/helpers";
+import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
+import { LoggerService } from "@fc/logger";
+import { ArgumentsHost, Catch, Injectable } from "@nestjs/common";
+import { BaseExceptionFilter } from "@nestjs/core";
+import { errors } from "oidc-provider";
 import SessionNotFound = errors.SessionNotFound;
-import { BaseExceptionFilter } from '@nestjs/core';
-
-import { generateErrorId, getStackTraceArray } from '@fc/exceptions/helpers';
-import { ErrorPageParams } from '@fc/exceptions/types/error-page-params';
-import { LoggerService } from '@fc/logger';
 
 @Catch(SessionNotFound)
 @Injectable()
@@ -18,7 +16,7 @@ export class OidcProviderSessionNotFoundExceptionFilter extends BaseExceptionFil
   catch(exception: SessionNotFound, host: ArgumentsHost) {
     const res = host.switchToHttp().getResponse();
 
-    const code = 'oidc-provider-error:session-not-found';
+    const code = "oidc-provider-error:session-not-found";
     const id = generateErrorId();
     const message = exception.error_description;
     const statusCode = 400;
@@ -49,6 +47,6 @@ export class OidcProviderSessionNotFoundExceptionFilter extends BaseExceptionFil
     this.logger.error(exceptionObject);
 
     res.status(statusCode);
-    res.render('error', errorPageParams);
+    res.render("error", errorPageParams);
   }
 }

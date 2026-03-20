@@ -1,52 +1,51 @@
-import 'reflect-metadata';
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import "reflect-metadata";
+import { IdentityProviderDTO } from "./identity-provider.dto";
 
-import { IdentityProviderDTO } from './identity-provider.dto';
-
-describe('Identity Provider (Data Transfer Object)', () => {
+describe("Identity Provider (Data Transfer Object)", () => {
   const idpNoDiscoveryMock = {
-    name: 'MonSuperFI',
-    title: 'Mon Super FI mais mieux écrit',
-    issuer: 'https://issuer.fr',
-    jwksUrl: 'https://issuer.fr/jwks',
-    tokenUrl: 'https://issuer.fr/token',
-    userInfoUrl: 'https://issuer.fr/me',
-    authorizationUrl: 'https://issuer.fr/auth',
-    statusUrl: 'https://issuer.fr/state',
-    discovery: 'false',
-    clientId: '09a1a257648c1742c74d6a3d84b31943',
-    client_secret: '1234567890AZERTYUIOP',
-    active: 'true',
-    siret: '',
-    token_endpoint_auth_method: 'client_secret_post',
-    isRoutingEnabled: 'true',
-    isEntraID: 'false',
+    name: "MonSuperFI",
+    title: "Mon Super FI mais mieux écrit",
+    issuer: "https://issuer.fr",
+    jwksUrl: "https://issuer.fr/jwks",
+    tokenUrl: "https://issuer.fr/token",
+    userInfoUrl: "https://issuer.fr/me",
+    authorizationUrl: "https://issuer.fr/auth",
+    statusUrl: "https://issuer.fr/state",
+    discovery: "false",
+    clientId: "09a1a257648c1742c74d6a3d84b31943",
+    client_secret: "1234567890AZERTYUIOP",
+    active: "true",
+    siret: "",
+    token_endpoint_auth_method: "client_secret_post",
+    isRoutingEnabled: "true",
+    isEntraID: "false",
     extraAcceptedEmailDomains: [],
-    isBlockingForUnlistedEmailDomainsEnabled: 'false',
+    isBlockingForUnlistedEmailDomainsEnabled: "false",
   };
 
   const idpDiscoveryMock = {
-    name: 'MonSuperFI',
-    title: 'Mon Super FI mais mieux écrit',
-    issuer: 'https://issuer.fr',
-    authorizationUrl: 'https://issuer.fr/auth',
-    statusUrl: 'https://issuer.fr/state',
-    discovery: 'true',
-    discoveryUrl: 'https://issuer.fr/discovery',
-    clientId: '09a1a257648c1742c74d6a3d84b31943',
-    client_secret: '1234567890AZERTYUIOP',
-    active: 'true',
-    siret: '',
-    token_endpoint_auth_method: 'client_secret_post',
-    isRoutingEnabled: 'true',
-    isEntraID: 'false',
+    name: "MonSuperFI",
+    title: "Mon Super FI mais mieux écrit",
+    issuer: "https://issuer.fr",
+    authorizationUrl: "https://issuer.fr/auth",
+    statusUrl: "https://issuer.fr/state",
+    discovery: "true",
+    discoveryUrl: "https://issuer.fr/discovery",
+    clientId: "09a1a257648c1742c74d6a3d84b31943",
+    client_secret: "1234567890AZERTYUIOP",
+    active: "true",
+    siret: "",
+    token_endpoint_auth_method: "client_secret_post",
+    isRoutingEnabled: "true",
+    isEntraID: "false",
     extraAcceptedEmailDomains: [],
-    isBlockingForUnlistedEmailDomainsEnabled: 'false',
+    isBlockingForUnlistedEmailDomainsEnabled: "false",
   };
 
-  describe('should validate', () => {
-    it('without discovery properties', async () => {
+  describe("should validate", () => {
+    it("without discovery properties", async () => {
       // When | Action
       const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
@@ -58,7 +57,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       expect(result).toEqual([]);
     });
 
-    it('with discovery properties', async () => {
+    it("with discovery properties", async () => {
       // When | Action
       const serviceProviderToClass = plainToInstance(
         IdentityProviderDTO,
@@ -71,8 +70,8 @@ describe('Identity Provider (Data Transfer Object)', () => {
     });
   });
 
-  describe('should fail', () => {
-    it('if discovery is not enabled and token, userInfo and authorization url are missing', async () => {
+  describe("should fail", () => {
+    it("if discovery is not enabled and token, userInfo and authorization url are missing", async () => {
       const failIdpNoDiscoveryMock = {
         ...idpNoDiscoveryMock,
       };
@@ -92,7 +91,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it('if discovery is enabled but there is no discoveryUrl', async () => {
+    it("if discovery is enabled but there is no discoveryUrl", async () => {
       const failIdpDiscoveryMock = {
         ...idpDiscoveryMock,
       };

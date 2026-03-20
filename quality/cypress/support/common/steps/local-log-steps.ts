@@ -1,5 +1,4 @@
 import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
-
 import {
   getBusinessLogs,
   getEnv,

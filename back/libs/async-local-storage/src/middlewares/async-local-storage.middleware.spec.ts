@@ -1,11 +1,9 @@
-import { Request } from 'express';
+import { Test, TestingModule } from "@nestjs/testing";
+import { Request } from "express";
+import { AsyncLocalStorageService } from "../async-local-storage.service";
+import { AsyncLocalStorageMiddleware } from "./async-local-storage.middleware";
 
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { AsyncLocalStorageService } from '../async-local-storage.service';
-import { AsyncLocalStorageMiddleware } from './async-local-storage.middleware';
-
-describe('AsyncLocalStorageMiddleware', () => {
+describe("AsyncLocalStorageMiddleware", () => {
   let middleware: AsyncLocalStorageMiddleware;
 
   const asyncLocalStorageMock = {
@@ -30,13 +28,13 @@ describe('AsyncLocalStorageMiddleware', () => {
     );
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(middleware).toBeDefined();
   });
 
-  describe('use', () => {
+  describe("use", () => {
     const reqMock = {
-      test: 'test',
+      test: "test",
     } as unknown as Request;
     const nextMock = jest.fn();
 
@@ -45,7 +43,7 @@ describe('AsyncLocalStorageMiddleware', () => {
       jest.restoreAllMocks();
     });
 
-    it('should call asyncLocalStorage.run', () => {
+    it("should call asyncLocalStorage.run", () => {
       // When
       middleware.use(reqMock as any, null, nextMock);
 
@@ -56,7 +54,7 @@ describe('AsyncLocalStorageMiddleware', () => {
       );
     });
 
-    it('should call next', () => {
+    it("should call next", () => {
       // Given
       middleware.use(reqMock, null, nextMock);
       const runCallback = asyncLocalStorageMock.run.mock.calls[0][0];

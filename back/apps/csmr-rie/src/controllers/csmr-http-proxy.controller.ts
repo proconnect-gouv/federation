@@ -1,18 +1,16 @@
-import { Controller, Get, UsePipes, ValidationPipe } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-
-import { ValidationException } from '@fc/exceptions';
+import { ValidationException } from "@fc/exceptions";
 import {
   BridgeError,
   BridgeProtocol,
   BridgeResponse,
   MessageType,
-} from '@fc/hybridge-http-proxy';
-import { LoggerService } from '@fc/logger';
-import { HttpProxyProtocol } from '@fc/microservices';
-
-import { BridgePayloadDto } from '../dto';
-import { CsmrHttpProxyService } from '../services';
+} from "@fc/hybridge-http-proxy";
+import { LoggerService } from "@fc/logger";
+import { HttpProxyProtocol } from "@fc/microservices";
+import { Controller, Get, UsePipes, ValidationPipe } from "@nestjs/common";
+import { MessagePattern, Payload } from "@nestjs/microservices";
+import { BridgePayloadDto } from "../dto";
+import { CsmrHttpProxyService } from "../services";
 
 @Controller()
 export class CsmrHttpProxyController {
@@ -21,9 +19,9 @@ export class CsmrHttpProxyController {
     private readonly proxy: CsmrHttpProxyService,
   ) {}
 
-  @Get('/livez')
+  @Get("/livez")
   healthcheck(): string {
-    return 'ok';
+    return "ok";
   }
 
   @MessagePattern(HttpProxyProtocol.Commands.HTTP_PROXY)
@@ -59,7 +57,7 @@ export class CsmrHttpProxyController {
   }
 
   formatError(error: Error): BridgeProtocol<BridgeError> {
-    this.logger.debug('build error message from internal Error');
+    this.logger.debug("build error message from internal Error");
     const { message: reason, name } = error;
     /**
      * @todo #825

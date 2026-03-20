@@ -1,16 +1,16 @@
-import { EnrichedDisplayBaseException } from '@fc/exceptions/exceptions';
+import { EnrichedDisplayBaseException } from "@fc/exceptions/exceptions";
 
 export class OidcClientBaseException extends EnrichedDisplayBaseException {
   public scope = 2;
-  public error = 'server_error';
+  public error = "server_error";
   public error_description =
-    'authentication aborted due to a technical error on the authorization server';
+    "authentication aborted due to a technical error on the authorization server";
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
 
   constructor(contactEmail: string, error?: Error | string) {
     super(error);
 
-    const emailSubject = encodeURIComponent('Erreur de connexion');
+    const emailSubject = encodeURIComponent("Erreur de connexion");
     const emailBody = encodeURIComponent(`
 Bonjour,
 

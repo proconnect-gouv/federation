@@ -1,10 +1,9 @@
-import { Document } from 'mongoose';
-
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
 @Schema({
   strict: true,
-  collection: 'cachedOrganizations',
+  collection: "cachedOrganizations",
   timestamps: true,
 })
 export class CachedOrganization extends Document {
@@ -54,7 +53,7 @@ export class CachedOrganization extends Document {
   siegeSocial: boolean;
 
   @Prop({ type: String })
-  statutDiffusion: 'partiellement_diffusible' | 'diffusible' | 'non_diffusible';
+  statutDiffusion: "partiellement_diffusible" | "diffusible" | "non_diffusible";
 
   @Prop({ type: String })
   codePostal?: string;

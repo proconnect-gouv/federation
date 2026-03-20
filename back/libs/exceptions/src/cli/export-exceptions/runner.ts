@@ -1,22 +1,19 @@
-import fs from 'fs';
-
-import ejs from 'ejs';
-import glob from 'glob';
-import { pathToFileURL } from 'node:url';
-
-import { HttpStatus } from '@nestjs/common';
-
-import { BaseException } from '../../exceptions/base.exception';
-import { getCode } from '../../helpers';
+import { HttpStatus } from "@nestjs/common";
+import ejs from "ejs";
+import fs from "fs";
+import glob from "glob";
+import { pathToFileURL } from "node:url";
+import { format } from "prettier";
+import { BaseException } from "../../exceptions/base.exception";
+import { getCode } from "../../helpers";
 import {
   ExceptionClass,
   ExceptionDocumentationInterface,
   PathAndException,
   PathAndInstantiatedException,
   ValidExceptionParams,
-} from '../../types';
-import MarkdownGenerator from './markdown-generator';
-import { format } from 'prettier';
+} from "../../types";
+import MarkdownGenerator from "./markdown-generator";
 
 const OIDC_PROVIDER_RUNTIME_SCOPE = 4;
 
@@ -39,21 +36,21 @@ export default class Runner {
   }
 
   static hasValidNumber(param: number): boolean {
-    return typeof param === 'number' && param >= 0;
+    return typeof param === "number" && param >= 0;
   }
 
   static hasValidString(param: string): boolean {
     return (
-      typeof param === 'string' &&
+      typeof param === "string" &&
       param !== null &&
       param !== undefined &&
-      param.trim() !== ''
+      param.trim() !== ""
     );
   }
 
   static hasValidHttpStatusCode(param: number): boolean {
     return (
-      typeof param === 'number' && Object.values(HttpStatus).includes(param)
+      typeof param === "number" && Object.values(HttpStatus).includes(param)
     );
   }
 
@@ -73,7 +70,7 @@ export default class Runner {
 
     // Retrieve static error and error description props
     const hasValidScope = Runner.hasValidNumber(scope);
-    const hasValidCode = typeof code === 'number' || typeof code === 'string';
+    const hasValidCode = typeof code === "number" || typeof code === "string";
     const hasValidHttpStatusCode =
       Runner.hasValidHttpStatusCode(http_status_code);
 
@@ -98,7 +95,7 @@ export default class Runner {
     const { error, error_description, http_status_code, scope, code } =
       new Exception();
 
-    const errorCode = getCode(scope, code, '');
+    const errorCode = getCode(scope, code, "");
 
     const data = {
       scope,
@@ -153,10 +150,10 @@ export default class Runner {
   }
 
   static async run(): Promise<void> {
-    console.log('Generating documentation for exceptions...');
+    console.log("Generating documentation for exceptions...");
     const paths = Runner.getExceptionsFilesPath(
-      ['libs', 'apps'],
-      '/**/*.exception.ts',
+      ["libs", "apps"],
+      "/**/*.exception.ts",
     );
     const loaded = await Runner.loadExceptions(paths);
 
@@ -167,17 +164,17 @@ export default class Runner {
     const mainMarkdown = MarkdownGenerator.generate(mainList);
 
     const inputFile = `${__dirname}/view/erreurs.ejs`;
-    const projectRootPath = '../';
+    const projectRootPath = "../";
 
     const mainPage = await Runner.renderFile(inputFile, {
       markdown: mainMarkdown,
       projectRootPath,
-      title: 'Codes d’erreur généraux',
+      title: "Codes d’erreur généraux",
     });
 
     fs.writeFileSync(
-      '_doc/erreurs.md',
-      await format(mainPage, { filepath: '_doc/erreurs.md' }),
+      "_doc/erreurs.md",
+      await format(mainPage, { filepath: "_doc/erreurs.md" }),
     );
   }
 }

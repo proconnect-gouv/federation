@@ -1,16 +1,13 @@
-import { isEmpty } from 'lodash';
-import pino, { Logger } from 'pino';
-
-import { Inject, Injectable, ShutdownSignal } from '@nestjs/common';
-
-import { ConfigService } from '@fc/config';
-
-import { trackedEventSteps } from '../config/tracked-event-steps';
-import { LoggerConfig, LoggerLegacyConfig } from '../dto';
-import { LogLevels, TrackedEvent } from '../enums';
-import { LoggerPluginServiceInterface } from '../interfaces';
-import { PLUGIN_SERVICES } from '../tokens';
-import { CustomLogLevels } from '../types';
+import { ConfigService } from "@fc/config";
+import { Inject, Injectable, ShutdownSignal } from "@nestjs/common";
+import { isEmpty } from "lodash";
+import pino, { Logger } from "pino";
+import { trackedEventSteps } from "../config/tracked-event-steps";
+import { LoggerConfig, LoggerLegacyConfig } from "../dto";
+import { LogLevels, TrackedEvent } from "../enums";
+import { LoggerPluginServiceInterface } from "../interfaces";
+import { PLUGIN_SERVICES } from "../tokens";
+import { CustomLogLevels } from "../types";
 
 /* istanbul ignore next */
 @Injectable()
@@ -84,7 +81,7 @@ export class LoggerService {
       ...pluginsContext,
     };
 
-    const { path } = this.config.get<LoggerLegacyConfig>('LoggerLegacy');
+    const { path } = this.config.get<LoggerLegacyConfig>("LoggerLegacy");
     if (!isEmpty(path)) {
       return this.pinoFileLogger.info({
         ...trackContext,
@@ -100,7 +97,7 @@ export class LoggerService {
 
   private logWithContext(level: LogLevels, ...args: unknown[]): void {
     const pluginsContext = this.getContextFromPlugins();
-    const userContext = typeof args[0] === 'string' ? {} : args.shift();
+    const userContext = typeof args[0] === "string" ? {} : args.shift();
     const finalContext = Object.assign({}, userContext, pluginsContext);
 
     this.pino[level](finalContext, ...(args as [string?, ...unknown[]]));
@@ -110,7 +107,7 @@ export class LoggerService {
     const context = {};
 
     this.plugins.forEach((plugin) => {
-      if (typeof plugin.getContext === 'function') {
+      if (typeof plugin.getContext === "function") {
         Object.assign(context, plugin.getContext());
       }
     });
@@ -119,7 +116,7 @@ export class LoggerService {
   }
 
   private configure() {
-    const { threshold } = this.config.get<LoggerConfig>('Logger');
+    const { threshold } = this.config.get<LoggerConfig>("Logger");
     const customLevels = LoggerService.customLevels;
 
     const options = {
@@ -135,7 +132,7 @@ export class LoggerService {
 
     this.pino = pino(options);
 
-    const { path } = this.config.get<LoggerLegacyConfig>('LoggerLegacy');
+    const { path } = this.config.get<LoggerLegacyConfig>("LoggerLegacy");
     if (!isEmpty(path)) {
       const stream = pino.destination(path);
       this.pinoFileLogger = pino(options, stream);
@@ -144,12 +141,12 @@ export class LoggerService {
         // Keep warnings here, this log must not be in business logs
         console.warn(`SIGUSR2: Reveived, reopening at ${path}`);
         stream.reopen();
-        console.warn('SIGUSR2: done');
+        console.warn("SIGUSR2: done");
       });
     }
 
     this.overloadConsole();
-    this.pino.info('Logger is ready and native console is now overloaded.');
+    this.pino.info("Logger is ready and native console is now overloaded.");
   }
 
   private overloadConsole() {

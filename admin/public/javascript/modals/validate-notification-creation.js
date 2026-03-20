@@ -1,9 +1,9 @@
-import { confirmDialog } from '../modals/confirm-dialog';
+import { confirmDialog } from "../modals/confirm-dialog";
 
 export function validateNotificationCreation(element) {
   const form = document.querySelector('form[name="notification"]');
   element.addEventListener(
-    'click',
+    "click",
     function (event) {
       event.preventDefault();
       event.stopPropagation();

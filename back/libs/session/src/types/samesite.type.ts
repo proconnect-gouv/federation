@@ -1,1 +1,1 @@
-export type SameSiteType = 'none' | 'lax' | 'strict';
+export type SameSiteType = "none" | "lax" | "strict";

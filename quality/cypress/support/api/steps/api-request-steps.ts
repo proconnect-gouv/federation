@@ -1,5 +1,4 @@
 import { Given, When } from "@badeball/cypress-cucumber-preprocessor";
-
 import { getApiRequests } from "../../common/helpers";
 
 /**

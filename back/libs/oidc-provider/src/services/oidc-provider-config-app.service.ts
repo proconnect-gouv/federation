@@ -1,21 +1,19 @@
-import { Response } from 'express';
+import { Response } from "express";
 import {
   Configuration,
   InteractionResults,
   KoaContextWithOIDC,
   Provider,
-} from 'oidc-provider';
+} from "oidc-provider";
 
-import { Injectable } from '@nestjs/common';
-
-import { ConfigService } from '@fc/config';
-import { UserSession } from '@fc/core';
-import { generateErrorId } from '@fc/exceptions/helpers';
-import { ErrorPageParams } from '@fc/exceptions/types/error-page-params';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
-
-import { OidcCtx } from '../interfaces';
+import { ConfigService } from "@fc/config";
+import { UserSession } from "@fc/core";
+import { generateErrorId } from "@fc/exceptions/helpers";
+import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
+import { LoggerService } from "@fc/logger";
+import { SessionService } from "@fc/session";
+import { Injectable } from "@nestjs/common";
+import { OidcCtx } from "../interfaces";
 
 /**
  * More documentation can be found in oidc-provider repo
@@ -54,22 +52,22 @@ export class OidcProviderConfigAppService {
   postLogoutSuccessSource(ctx: KoaContextWithOIDC) {
     // This line magically avoids error 500: ERR_HTTP_HEADERS_SENT
     // TODO investigate why.
-    ctx.body = '';
+    ctx.body = "";
 
     const res = ctx.res as unknown as Response;
-    ctx.type = 'html';
+    ctx.type = "html";
     // the render function is magically available in the koa context
     // as oidc-provider servers is mounted behind the nest server.
     const errorPageParams: ErrorPageParams = {
       exceptionDisplay: {
-        title: 'Déconnexion',
+        title: "Déconnexion",
         description:
-          'Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.',
-        illustration: 'connexion',
+          "Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.",
+        illustration: "connexion",
       },
       error: {},
     };
-    ctx.body = res.render('error', errorPageParams);
+    ctx.body = res.render("error", errorPageParams);
   }
 
   async findAccount(
@@ -79,7 +77,7 @@ export class OidcProviderConfigAppService {
     const sessionId = await this.sessionService.getAlias(sub);
     await this.sessionService.initCache(sessionId);
 
-    const { spIdentity } = this.sessionService.get<UserSession>('User');
+    const { spIdentity } = this.sessionService.get<UserSession>("User");
 
     return {
       accountId: spIdentity.sub,
@@ -97,11 +95,11 @@ export class OidcProviderConfigAppService {
       amr,
       acr,
     }: {
-      amr: InteractionResults['login']['amr'];
-      acr: InteractionResults['login']['acr'];
+      amr: InteractionResults["login"]["amr"];
+      acr: InteractionResults["login"]["acr"];
     },
   ) {
-    const { spIdentity } = this.sessionService.get<UserSession>('User');
+    const { spIdentity } = this.sessionService.get<UserSession>("User");
 
     const sessionId = this.sessionService.getId();
     await this.sessionService.setAlias(spIdentity.sub, sessionId);
@@ -125,7 +123,7 @@ export class OidcProviderConfigAppService {
     this.provider = provider;
   }
 
-  renderError: Configuration['renderError'] = (
+  renderError: Configuration["renderError"] = (
     ctx: KoaContextWithOIDC,
     { error, error_description },
     err,
@@ -137,13 +135,13 @@ export class OidcProviderConfigAppService {
     this.logger.error({ code, id, message, originalError: err });
 
     const res = ctx.res as unknown as Response;
-    ctx.type = 'html';
+    ctx.type = "html";
     // the render function is magically available in the koa context
     // as oidc-provider servers is mounted behind the nest server.
     const errorPageParams: ErrorPageParams = {
       exceptionDisplay: {},
       error: { code, id, message },
     };
-    ctx.body = res.render('error', errorPageParams);
+    ctx.body = res.render("error", errorPageParams);
   };
 }

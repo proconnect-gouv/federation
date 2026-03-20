@@ -1,1 +1,1 @@
-export * from './account-fca.service';
+export * from "./account-fca.service";

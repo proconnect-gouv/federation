@@ -1,13 +1,11 @@
-import { Observable } from 'rxjs';
-
+import { LoggerService } from "@fc/logger";
 import {
   CallHandler,
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-
-import { LoggerService } from '@fc/logger';
+} from "@nestjs/common";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class AppInterceptor implements NestInterceptor {

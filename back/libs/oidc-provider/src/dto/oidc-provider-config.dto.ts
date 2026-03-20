@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -10,28 +10,28 @@ import {
   IsString,
   IsUrl,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 import {
   type AdapterConstructor,
   AllClientMetadata,
   AsymmetricSigningAlgorithm,
   CanBePromise,
   type ClientAuthMethod,
-  Configuration as OidcProviderConfiguration,
   type EncryptionAlgValues,
   type EncryptionEncValues,
   ErrorOut,
   JWK,
   KoaContextWithOIDC,
+  Configuration as OidcProviderConfiguration,
   PKCEMethods,
   ResponseType,
   type SigningAlgorithm,
   type SigningAlgorithmWithNone,
   type SubjectTypes,
   SymmetricSigningAlgorithm,
-} from 'oidc-provider';
+} from "oidc-provider";
 
-import { OidcProviderPrompt, OidcProviderRoutes } from '../enums';
+import { OidcProviderPrompt, OidcProviderRoutes } from "../enums";
 
 /**
  * Since oidc-provider does not expose some callbacks signatures
@@ -108,7 +108,7 @@ export class Routes {
   readonly userinfo: OidcProviderRoutes;
 }
 
-type SameSite = 'strict' | 'lax' | 'none';
+type SameSite = "strict" | "lax" | "none";
 
 class CookiesOptions {
   @IsString()
@@ -362,7 +362,7 @@ class AllClientMetadataValidator implements AllClientMetadata {
 
   @IsString()
   @IsOptional()
-  readonly application_type?: 'web' | 'native';
+  readonly application_type?: "web" | "native";
 
   @IsNumber()
   @IsOptional()
@@ -591,11 +591,11 @@ export class Pkce {
  * @see https://oauth.net/2/grant-types/
  */
 type GrantType =
-  | 'authorization_code'
-  | 'refresh_token'
-  | 'device_code'
-  | 'client_credentials'
-  | 'password';
+  | "authorization_code"
+  | "refresh_token"
+  | "device_code"
+  | "client_credentials"
+  | "password";
 
 export class Configuration {
   @IsObject()
@@ -637,7 +637,7 @@ export class Configuration {
   readonly acceptQueryParamAccessTokens: boolean;
 
   @IsObject()
-  readonly ttl: OidcProviderConfiguration['ttl'];
+  readonly ttl: OidcProviderConfiguration["ttl"];
 
   @IsArray()
   readonly acrValues: string[];
@@ -746,7 +746,7 @@ export class Configuration {
   readonly jwks?: Jwks;
 
   @IsArray()
-  @IsIn(['public', 'pairwise'], { each: true })
+  @IsIn(["public", "pairwise"], { each: true })
   readonly subjectTypes: SubjectTypes[];
 
   @IsNumber()

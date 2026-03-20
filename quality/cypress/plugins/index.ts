@@ -3,7 +3,6 @@ import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esb
 import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
 import { addMatchImageSnapshotPlugin } from "@simonsmith/cypress-image-snapshot/plugin";
 import onProxy from "cypress-on-fix";
-
 import { log, table } from "./console-log-plugin";
 import { createHexaHash } from "./crypto-plugin";
 import { getJwtContent } from "./jwt-plugin";

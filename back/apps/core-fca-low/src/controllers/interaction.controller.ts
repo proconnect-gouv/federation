@@ -1,8 +1,14 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
-import { type Request, type Response } from 'express';
-import { isEmpty } from 'lodash';
-
+import { AccountFcaService } from "@fc/account-fca";
+import { ConfigService } from "@fc/config";
+import { InteractionErrorQuery } from "@fc/core/dto/interaction_error_query.dto";
+import { CsrfService } from "@fc/csrf";
+import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
+import { LoggerService, TrackedEvent } from "@fc/logger";
+import { NotificationsService } from "@fc/notifications";
+import { OidcAcrService } from "@fc/oidc-acr";
+import { OidcProviderService } from "@fc/oidc-provider";
+import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
+import { type ISessionService, SessionService } from "@fc/session";
 import {
   Controller,
   Get,
@@ -13,21 +19,12 @@ import {
   Res,
   UsePipes,
   ValidationPipe,
-} from '@nestjs/common';
-
-import { AccountFcaService } from '@fc/account-fca';
-import { ConfigService } from '@fc/config';
-import { InteractionErrorQuery } from '@fc/core/dto/interaction_error_query.dto';
-import { CsrfService } from '@fc/csrf';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService, TrackedEvent } from '@fc/logger';
-import { NotificationsService } from '@fc/notifications';
-import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcProviderService } from '@fc/oidc-provider';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { type ISessionService, SessionService } from '@fc/session';
-
-import { UserSessionDecorator } from '../decorators';
+} from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { type Request, type Response } from "express";
+import { isEmpty } from "lodash";
+import { UserSessionDecorator } from "../decorators";
 import {
   ActiveUserSessionDto,
   AfterGetOidcCallbackSessionDto,
@@ -35,13 +32,13 @@ import {
   Interaction,
   InteractionParamsDto,
   UserSession,
-} from '../dto';
-import { Routes } from '../enums';
+} from "../dto";
+import { Routes } from "../enums";
 import {
   CoreFcaAgentAccountBlockedException,
   CoreFcaAgentNotFromPublicServiceException,
-} from '../exceptions';
-import { CoreFcaControllerService, CoreFcaService } from '../services';
+} from "../exceptions";
+import { CoreFcaControllerService, CoreFcaService } from "../services";
 
 @Controller()
 export class InteractionController {
@@ -61,14 +58,14 @@ export class InteractionController {
   ) {}
 
   @Get(Routes.DEFAULT)
-  @Header('cache-control', 'no-store')
+  @Header("cache-control", "no-store")
   getDefault(@Res() res) {
-    const { defaultRedirectUri } = this.config.get<AppConfig>('App');
+    const { defaultRedirectUri } = this.config.get<AppConfig>("App");
     res.redirect(301, defaultRedirectUri);
   }
 
   @Get(Routes.INTERACTION)
-  @Header('cache-control', 'no-store')
+  @Header("cache-control", "no-store")
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getInteraction(
     @Req() req: Request,
@@ -99,17 +96,17 @@ export class InteractionController {
     const isUserConnectedAlready = isEmpty(activeSessionValidationErrors);
 
     const isSessionOpenedWithHintedLogin =
-      !spLoginHint || userSession.get('idpIdentity')?.email === spLoginHint;
+      !spLoginHint || userSession.get("idpIdentity")?.email === spLoginHint;
 
     const hintedIdp = await this.identityProvider.getById(idpHint);
     if (idpHint && isEmpty(hintedIdp)) {
       return await this.oidcProvider.abortInteraction(req, res, {
-        error: 'idp_hint_not_found',
-        error_description: 'provided idp_hint could not be found',
+        error: "idp_hint_not_found",
+        error_description: "provided idp_hint could not be found",
       });
     }
     const isSessionOpenedWithHintedIdp =
-      !idpHint || userSession.get('idpId') === hintedIdp.uid;
+      !idpHint || userSession.get("idpId") === hintedIdp.uid;
 
     const isEssentialAcrSatisfied =
       this.oidcAcr.isEssentialAcrSatisfied(interaction);
@@ -124,7 +121,7 @@ export class InteractionController {
     const { acrClaims } =
       this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
     const spEssentialAcr =
-      acrClaims?.value || acrClaims?.values.join(' ') || null;
+      acrClaims?.value || acrClaims?.values.join(" ") || null;
 
     if (!canReuseActiveSession) {
       userSession.clear();
@@ -146,9 +143,9 @@ export class InteractionController {
     if (canReuseActiveSession) {
       this.logger.track(TrackedEvent.FC_SSO_INITIATED);
 
-      const { urlPrefix } = this.config.get<AppConfig>('App');
+      const { urlPrefix } = this.config.get<AppConfig>("App");
       const url = `${urlPrefix}${Routes.INTERACTION_VERIFY.replace(
-        ':uid',
+        ":uid",
         interactionId,
       )}`;
 
@@ -165,7 +162,7 @@ export class InteractionController {
       );
     }
 
-    const isEmailInvalid = query.error === 'invalid_email';
+    const isEmailInvalid = query.error === "invalid_email";
 
     if (spLoginHint && !isEmailInvalid) {
       this.logger.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_LOGIN);
@@ -182,11 +179,11 @@ export class InteractionController {
 
     const notification = await this.notifications.getNotificationToDisplay();
     const { defaultEmailRenater, displayTestEnvWarning } =
-      this.config.get<AppConfig>('App');
+      this.config.get<AppConfig>("App");
 
     const csrfToken = this.csrfService.getOrCreate();
 
-    res.render('interaction', {
+    res.render("interaction", {
       csrfToken,
       defaultEmailRenater,
       notificationMessage: notification?.message,
@@ -199,7 +196,7 @@ export class InteractionController {
   }
 
   @Get(Routes.INTERACTION_VERIFY)
-  @Header('cache-control', 'no-store')
+  @Header("cache-control", "no-store")
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getVerify(
     @Req() req: Request,
@@ -232,17 +229,17 @@ export class InteractionController {
     if (!isIdpActive) {
       if (isSilentAuthentication) {
         return await this.oidcProvider.abortInteraction(req, res, {
-          error: 'login_required',
-          error_description: 'end-user authentication is required',
+          error: "login_required",
+          error_description: "end-user authentication is required",
         });
       }
 
-      const { urlPrefix } = this.config.get<AppConfig>('App');
+      const { urlPrefix } = this.config.get<AppConfig>("App");
 
       this.logger.track(TrackedEvent.FC_IDP_DISABLED);
 
       const url = `${urlPrefix}${Routes.INTERACTION.replace(
-        ':uid',
+        ":uid",
         interactionId,
       )}`;
       return res.redirect(url);
@@ -252,7 +249,7 @@ export class InteractionController {
     // is_service_public field is only provided by ProConnect Identité
     // any identity without an is_service_public field is considered to be from the public sector
     const isPrivateSectorIdentity = idpIdentity?.is_service_public === false;
-    const doesNotAcceptPrivateSectorEmployees = spType === 'public';
+    const doesNotAcceptPrivateSectorEmployees = spType === "public";
 
     if (isPrivateSectorIdentity && doesNotAcceptPrivateSectorEmployees) {
       throw new CoreFcaAgentNotFromPublicServiceException();
@@ -265,8 +262,8 @@ export class InteractionController {
 
     if (!interactionAcr) {
       return await this.oidcProvider.abortInteraction(req, res, {
-        error: 'access_denied',
-        error_description: 'requested ACRs could not be satisfied',
+        error: "access_denied",
+        error_description: "requested ACRs could not be satisfied",
       });
     }
 
@@ -284,7 +281,7 @@ export class InteractionController {
   }
 
   @Get(Routes.INTERACTION_ERROR)
-  @Header('cache-control', 'no-store')
+  @Header("cache-control", "no-store")
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getError(
     @Req() req: Request,
@@ -295,8 +292,8 @@ export class InteractionController {
     const { error, error_description } = query;
 
     return await this.oidcProvider.abortInteraction(req, res, {
-      error: error || 'server_error',
-      error_description: error_description || 'An unexpected error occurred',
+      error: error || "server_error",
+      error_description: error_description || "An unexpected error occurred",
     });
   }
 }

@@ -1,50 +1,50 @@
-import { Repository } from 'typeorm';
 import {
-  Controller,
-  Get,
-  Render,
-  Post,
   Body,
-  UseInterceptors,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Render,
   Req,
   Res,
-  Param,
-  Query,
-  Delete,
-  Patch,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserRole } from '../user/roles.enum';
-import { Roles } from '../authentication/decorator/roles.decorator';
-import { FormErrorsInterceptor } from '../form/interceptor/form-errors.interceptor';
+  UseInterceptors,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Roles } from "../authentication/decorator/roles.decorator";
+import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
+import { type PaginationSortDirectionType } from "../pagination";
+import { ScopesService } from "../scopes";
+import { UserRole } from "../user/roles.enum";
 import {
-  nullableArrayToDefaultNoneOrLines,
   arrayToLines,
+  nullableArrayToDefaultNoneOrLines,
   toEmptiableString,
-} from '../utils/transforms/string.transform';
-import { ScopesService } from '../scopes';
-import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
-import { ServiceProviderService } from './service-provider.service';
-import { ServiceProviderDto } from './dto/service-provider-input.dto';
-import { DeleteServiceProviderDto } from './dto/delete-service-provider.dto';
-import { GenerateNewClientSecretDTO } from './dto/generate-new-client-secret.dto';
-import { type PaginationSortDirectionType } from '../pagination';
+} from "../utils/transforms/string.transform";
+import { DeleteServiceProviderDto } from "./dto/delete-service-provider.dto";
+import { GenerateNewClientSecretDTO } from "./dto/generate-new-client-secret.dto";
+import { ServiceProviderDto } from "./dto/service-provider-input.dto";
+import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
+import { ServiceProviderService } from "./service-provider.service";
 
-@Controller('service-provider')
+@Controller("service-provider")
 export class ServiceProviderController {
   defaultScopes = [
-    'openid',
-    'given_name',
-    'usual_name',
-    'email',
-    'uid',
-    'siret',
-    'phone',
-    'idp_id',
-    'custom',
+    "openid",
+    "given_name",
+    "usual_name",
+    "email",
+    "uid",
+    "siret",
+    "phone",
+    "idp_id",
+    "custom",
   ];
   constructor(
-    @InjectRepository(ServiceProviderFromDb, 'fc-mongo')
+    @InjectRepository(ServiceProviderFromDb, "fc-mongo")
     private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
     private readonly serviceProviderService: ServiceProviderService,
     private readonly scopesService: ScopesService,
@@ -55,15 +55,15 @@ export class ServiceProviderController {
    */
   @Get()
   @Roles(UserRole.OPERATOR, UserRole.SECURITY)
-  @Render('service-provider/list')
+  @Render("service-provider/list")
   async list(
     @Req() req,
-    @Query('search') querySearch?: string,
-    @Query('sortField') querySortField?: string,
-    @Query('sortDirection')
-    querySortDirection: PaginationSortDirectionType = 'asc',
-    @Query('page') queryPage: string = '1',
-    @Query('limit') queryLimit: string = '10',
+    @Query("search") querySearch?: string,
+    @Query("sortField") querySortField?: string,
+    @Query("sortDirection")
+    querySortDirection: PaginationSortDirectionType = "asc",
+    @Query("page") queryPage: string = "1",
+    @Query("limit") queryLimit: string = "10",
   ) {
     const activeServiceProvidersCount =
       await this.serviceProviderRepository.countBy({ active: true });
@@ -76,14 +76,14 @@ export class ServiceProviderController {
       page,
       limit,
       search: querySearch
-        ? { fields: ['name', 'key'], value: querySearch }
+        ? { fields: ["name", "key"], value: querySearch }
         : undefined,
       sort: querySortField
         ? { field: querySortField, direction: querySortDirection }
         : undefined,
       defaultSort: {
-        field: 'createdAt',
-        direction: 'desc',
+        field: "createdAt",
+        direction: "desc",
       },
     });
     return {
@@ -102,8 +102,8 @@ export class ServiceProviderController {
   /**
    * Displays the service provider creation form.
    */
-  @Get('create')
-  @Render('service-provider/creation')
+  @Get("create")
+  @Render("service-provider/creation")
   @Roles(UserRole.OPERATOR)
   async showCreationForm(@Req() req) {
     const csrfToken = req.csrfToken();
@@ -121,7 +121,7 @@ export class ServiceProviderController {
   /**
    * Creates a service provider
    */
-  @Post('create')
+  @Post("create")
   @Roles(UserRole.OPERATOR)
   @UseInterceptors(new FormErrorsInterceptor(`/service-provider/create`))
   async createServiceProvider(
@@ -136,19 +136,19 @@ export class ServiceProviderController {
           req.user.username,
         );
       if (!hasGristPublicationSucceeded) {
-        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
       }
     } catch (error) {
       req.flash(
-        'globalError',
+        "globalError",
         "Impossible d'enregistrer le fournisseur de service",
       );
-      req.flash('values', createServiceProviderDto);
+      req.flash("values", createServiceProviderDto);
 
       return res.redirect(`${res.locals.APP_ROOT}/service-provider/create`);
     }
     req.flash(
-      'success',
+      "success",
       `Le fournisseur de service ${createServiceProviderDto.name} a été créé avec succès !`,
     );
 
@@ -158,10 +158,10 @@ export class ServiceProviderController {
   /**
    *  Displays the service provider update form
    */
-  @Get(':id')
+  @Get(":id")
   @Roles(UserRole.OPERATOR)
-  @Render('service-provider/update')
-  async findOne(@Param('id') id, @Req() req) {
+  @Render("service-provider/update")
+  async findOne(@Param("id") id, @Req() req) {
     const csrfToken = req.csrfToken();
 
     const serviceProvider = await this.serviceProviderService.findById(id);
@@ -192,7 +192,7 @@ export class ServiceProviderController {
     if (req.session.flash && req.session.flash.errors) {
       Object.assign(req.session.flash.values[0], output);
     } else {
-      req.flash('values', output);
+      req.flash("values", output);
     }
 
     const scopesSelected: string[] = serviceProvider.scopes || [];
@@ -210,12 +210,12 @@ export class ServiceProviderController {
   /**
    * Updates a service provider
    */
-  @Patch(':id')
+  @Patch(":id")
   @Roles(UserRole.OPERATOR)
   @UseInterceptors(new FormErrorsInterceptor(`/service-provider/:id`))
   async serviceProviderUpdate(
     @Body() updateServiceProviderDto: ServiceProviderDto,
-    @Param('id') id,
+    @Param("id") id,
     @Req() req,
     @Res() res,
   ) {
@@ -227,15 +227,15 @@ export class ServiceProviderController {
           req.user.username,
         );
       if (!hasGristPublicationSucceeded) {
-        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
       }
     } catch (error) {
       console.error(error);
-      req.flash('globalError', 'Impossible de mettre à jour le FS');
+      req.flash("globalError", "Impossible de mettre à jour le FS");
       return res.redirect(`${res.locals.APP_ROOT}/service-provider/${id}`);
     }
     req.flash(
-      'success',
+      "success",
       `Le fournisseur de service ${updateServiceProviderDto.name} a été modifié avec succès !`,
     );
 
@@ -245,11 +245,11 @@ export class ServiceProviderController {
   /**
    * Deletes a service provider
    */
-  @Delete(':id')
+  @Delete(":id")
   @Roles(UserRole.OPERATOR)
-  @UseInterceptors(new FormErrorsInterceptor('/service-provider'))
+  @UseInterceptors(new FormErrorsInterceptor("/service-provider"))
   async deleteServiceProvider(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Req() req,
     @Res() res,
     @Body() body,
@@ -261,14 +261,14 @@ export class ServiceProviderController {
           req.user.username,
         );
       if (!hasGristPublicationSucceeded) {
-        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
       }
     } catch (error) {
-      req.flash('globalError', error.message);
+      req.flash("globalError", error.message);
       return res.status(500);
     }
     req.flash(
-      'success',
+      "success",
       `Le fournisseur de service ${body.name} a été supprimé avec succès !`,
     );
     return res.redirect(`${res.locals.APP_ROOT}/service-provider`);
@@ -277,9 +277,9 @@ export class ServiceProviderController {
   /**
    * Deletes multiple service providers
    */
-  @Post('delete')
+  @Post("delete")
   @Roles(UserRole.OPERATOR)
-  @UseInterceptors(new FormErrorsInterceptor('/service-provider'))
+  @UseInterceptors(new FormErrorsInterceptor("/service-provider"))
   async deleteServiceProviders(
     @Body() body: DeleteServiceProviderDto,
     @Res() res,
@@ -293,14 +293,14 @@ export class ServiceProviderController {
           req.user.username,
         );
       if (!hasGristPublicationSucceeded) {
-        req.flash('globalError', { code: 'GRIST_PUBLICATION_FAILED' });
+        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
       }
     } catch (error) {
-      req.flash('globalError', error.message);
+      req.flash("globalError", error.message);
       return res.status(500);
     }
     req.flash(
-      'success',
+      "success",
       `Les fournisseurs de service ${name} ont été supprimés avec succès !`,
     );
     return res.redirect(`${res.locals.APP_ROOT}/service-provider`);
@@ -309,10 +309,10 @@ export class ServiceProviderController {
   /**
    * Displays the form for generating a new client secret
    */
-  @Get('update/:id/secret')
+  @Get("update/:id/secret")
   @Roles(UserRole.OPERATOR)
-  @Render('service-provider/generate-new-client-secret')
-  async generateNewSecret(@Param('id') id: string, @Req() req, @Res() res) {
+  @Render("service-provider/generate-new-client-secret")
+  async generateNewSecret(@Param("id") id: string, @Req() req, @Res() res) {
     const csrfToken = req.csrfToken();
 
     /**
@@ -339,13 +339,13 @@ export class ServiceProviderController {
   /**
    * Generates a new client secret for a service provider
    */
-  @Patch('update/:id/secret')
+  @Patch("update/:id/secret")
   @Roles(UserRole.OPERATOR)
   @UseInterceptors(
-    new FormErrorsInterceptor('/service-provider/update/:id/secret'),
+    new FormErrorsInterceptor("/service-provider/update/:id/secret"),
   )
   async generateNewClientSecret(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() generateNewClientSecretDTO: GenerateNewClientSecretDTO,
     @Req() req,
     @Res() res,
@@ -356,12 +356,12 @@ export class ServiceProviderController {
         req.user.username,
       );
     } catch (error) {
-      req.flash('gobalError', error);
+      req.flash("gobalError", error);
       return res.status(500);
     }
 
     req.flash(
-      'success',
+      "success",
       `Le nouveau client secret du fournisseur de service ${generateNewClientSecretDTO.name} a été généré avec succés !`,
     );
 
@@ -369,9 +369,9 @@ export class ServiceProviderController {
   }
 
   private formatEmailFields(emails: string): string {
-    if (typeof emails !== 'string') {
-      return '';
+    if (typeof emails !== "string") {
+      return "";
     }
-    return emails.replace(/,/g, '\r\n');
+    return emails.replace(/,/g, "\r\n");
   }
 }

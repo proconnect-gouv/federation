@@ -1,45 +1,45 @@
-import { MarkdownGenerator } from './markdown-generator';
+import { MarkdownGenerator } from "./markdown-generator";
 
-describe('MarkdownGenerator', () => {
+describe("MarkdownGenerator", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
   });
 
-  describe('generate', () => {
+  describe("generate", () => {
     const envMapMock = {
       instance2: {
-        envVar3: 'boolean',
+        envVar3: "boolean",
       },
       instance1: {
-        envVar1: 'string',
-        envVar2: 'number',
+        envVar1: "string",
+        envVar2: "number",
       },
     };
 
     const sortedInstancesMock = [
       {
-        instanceName: 'instance1',
+        instanceName: "instance1",
         envVars: [
-          { name: 'envVar1', type: 'string' },
-          { name: 'envVar2', type: 'number' },
+          { name: "envVar1", type: "string" },
+          { name: "envVar2", type: "number" },
         ],
       },
       {
-        instanceName: 'instance2',
-        envVars: [{ name: 'envVar3', type: 'boolean' }],
+        instanceName: "instance2",
+        envVars: [{ name: "envVar3", type: "boolean" }],
       },
     ];
 
     beforeEach(() => {
       jest
-        .spyOn(MarkdownGenerator, 'sortInstances')
+        .spyOn(MarkdownGenerator, "sortInstances")
         .mockReturnValue(sortedInstancesMock);
 
-      jest.spyOn(MarkdownGenerator, 'generateMarkdownContent');
+      jest.spyOn(MarkdownGenerator, "generateMarkdownContent");
     });
 
-    it('should sort the instances', () => {
+    it("should sort the instances", () => {
       // When
       MarkdownGenerator.generate(envMapMock);
 
@@ -48,7 +48,7 @@ describe('MarkdownGenerator', () => {
       expect(MarkdownGenerator.sortInstances).toHaveBeenCalledWith(envMapMock);
     });
 
-    it('should generate the markdown content for each instance', () => {
+    it("should generate the markdown content for each instance", () => {
       // When
       MarkdownGenerator.generate(envMapMock);
 
@@ -70,16 +70,16 @@ describe('MarkdownGenerator', () => {
       );
     });
 
-    it('should return the markdown content', () => {
+    it("should return the markdown content", () => {
       // Given
       const expected = [
         {
-          instanceName: 'instance1',
-          content: '| envVar1 | string |\n| envVar2 | number |',
+          instanceName: "instance1",
+          content: "| envVar1 | string |\n| envVar2 | number |",
         },
         {
-          instanceName: 'instance2',
-          content: '| envVar3 | boolean |',
+          instanceName: "instance2",
+          content: "| envVar3 | boolean |",
         },
       ];
 
@@ -91,36 +91,36 @@ describe('MarkdownGenerator', () => {
     });
   });
 
-  describe('sortInstances', () => {
+  describe("sortInstances", () => {
     const envMapMock = {
       instance2: {
-        envVar3: 'boolean',
+        envVar3: "boolean",
       },
       instance1: {
-        envVar1: 'string',
-        envVar2: 'number',
+        envVar1: "string",
+        envVar2: "number",
       },
     };
 
     const sortedInstancesMock = [
       {
-        instanceName: 'instance1',
+        instanceName: "instance1",
         envVars: [
-          { name: 'envVar1', type: 'string' },
-          { name: 'envVar2', type: 'number' },
+          { name: "envVar1", type: "string" },
+          { name: "envVar2", type: "number" },
         ],
       },
       {
-        instanceName: 'instance2',
-        envVars: [{ name: 'envVar3', type: 'boolean' }],
+        instanceName: "instance2",
+        envVars: [{ name: "envVar3", type: "boolean" }],
       },
     ];
 
     beforeEach(() => {
-      jest.spyOn(MarkdownGenerator, 'sortInstancesEnvVars');
+      jest.spyOn(MarkdownGenerator, "sortInstancesEnvVars");
     });
 
-    it('should sort the env variables for each instance', () => {
+    it("should sort the env variables for each instance", () => {
       // When
       MarkdownGenerator.sortInstances(envMapMock);
 
@@ -128,17 +128,17 @@ describe('MarkdownGenerator', () => {
       expect(MarkdownGenerator.sortInstancesEnvVars).toHaveBeenCalledTimes(2);
       expect(MarkdownGenerator.sortInstancesEnvVars).toHaveBeenNthCalledWith(
         1,
-        ['envVar1', 'envVar2'],
+        ["envVar1", "envVar2"],
         envMapMock.instance1,
       );
       expect(MarkdownGenerator.sortInstancesEnvVars).toHaveBeenNthCalledWith(
         2,
-        ['envVar3'],
+        ["envVar3"],
         envMapMock.instance2,
       );
     });
 
-    it('should return the sorted instances', () => {
+    it("should return the sorted instances", () => {
       // When
       const sortedInstances = MarkdownGenerator.sortInstances(envMapMock);
 
@@ -147,19 +147,19 @@ describe('MarkdownGenerator', () => {
     });
   });
 
-  describe('sortInstancesEnvVars', () => {
-    const envVarsNamesMock = ['envVar1', 'envVar2'];
+  describe("sortInstancesEnvVars", () => {
+    const envVarsNamesMock = ["envVar1", "envVar2"];
     const envVarsMock = {
-      envVar2: 'number',
-      envVar1: 'string',
+      envVar2: "number",
+      envVar1: "string",
     };
 
     const sortedEnvVarsMock = [
-      { name: 'envVar1', type: 'string' },
-      { name: 'envVar2', type: 'number' },
+      { name: "envVar1", type: "string" },
+      { name: "envVar2", type: "number" },
     ];
 
-    it('should sort the env variables', () => {
+    it("should sort the env variables", () => {
       // When
       const sortedEnvVars = MarkdownGenerator.sortInstancesEnvVars(
         envVarsNamesMock,
@@ -171,20 +171,20 @@ describe('MarkdownGenerator', () => {
     });
   });
 
-  describe('generateMarkdownContent', () => {
-    it('should format the markdown content', () => {
+  describe("generateMarkdownContent", () => {
+    it("should format the markdown content", () => {
       // Given
       const instanceMock = {
-        instanceName: 'instance1',
+        instanceName: "instance1",
         envVars: [
-          { name: 'envVar1', type: 'string' },
-          { name: 'envVar2', type: 'number' },
+          { name: "envVar1", type: "string" },
+          { name: "envVar2", type: "number" },
         ],
       };
 
       const expected = {
-        content: '| envVar1 | string |\n| envVar2 | number |',
-        instanceName: 'instance1',
+        content: "| envVar1 | string |\n| envVar2 | number |",
+        instanceName: "instance1",
       };
 
       // When

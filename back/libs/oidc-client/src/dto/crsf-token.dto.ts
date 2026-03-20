@@ -1,4 +1,4 @@
-import { IsAscii, IsString } from 'class-validator';
+import { IsAscii, IsString } from "class-validator";
 
 export class CrsfToken {
   @IsString()

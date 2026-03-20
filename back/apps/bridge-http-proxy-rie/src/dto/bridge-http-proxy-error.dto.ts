@@ -1,6 +1,5 @@
-import { IsNumber, IsString } from 'class-validator';
-
-import { BridgeError } from '@fc/hybridge-http-proxy';
+import { BridgeError } from "@fc/hybridge-http-proxy";
+import { IsNumber, IsString } from "class-validator";
 
 export class BridgeHttpProxyErrorDto implements BridgeError {
   @IsNumber()

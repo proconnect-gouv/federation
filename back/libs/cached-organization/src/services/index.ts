@@ -1,1 +1,1 @@
-export * from './cached-organization.service';
+export * from "./cached-organization.service";

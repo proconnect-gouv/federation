@@ -1,21 +1,21 @@
-import { Repository } from 'typeorm';
-import { ConfigService } from 'nestjs-config';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { ObjectId } from 'mongodb';
-import { LoggerService } from '../logger/logger.service';
-import { IdentityProviderService } from './identity-provider.service';
-import { IdentityProviderFromDb } from './identity-provider.mongodb.entity';
-import { SecretManagerService } from '../utils/secret-manager.service';
-import { ICrudTrack } from '../interfaces';
-import { v4 as uuidv4 } from 'uuid';
-import { PaginationService } from '../pagination';
-import { identityProviderFactory } from './fixtures';
-import { GristPublisherService } from '../grist-publisher/grist-publisher.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
+import { ConfigService } from "nestjs-config";
+import { Repository } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
+import { GristPublisherService } from "../grist-publisher/grist-publisher.service";
+import { ICrudTrack } from "../interfaces";
+import { LoggerService } from "../logger/logger.service";
+import { PaginationService } from "../pagination";
+import { SecretManagerService } from "../utils/secret-manager.service";
+import { identityProviderFactory } from "./fixtures";
+import { IdentityProviderFromDb } from "./identity-provider.mongodb.entity";
+import { IdentityProviderService } from "./identity-provider.service";
 
-jest.mock('uuid');
+jest.mock("uuid");
 
-describe('IdentityProviderService', () => {
+describe("IdentityProviderService", () => {
   let module: TestingModule;
   let identityProviderService: IdentityProviderService;
 
@@ -29,17 +29,17 @@ describe('IdentityProviderService', () => {
   };
 
   const insertResultMock = {
-    insertedId: 'insertedIdValueMock',
+    insertedId: "insertedIdValueMock",
   };
 
   const secretManagerMocked = {
     encrypt: jest.fn(),
     generateSHA256: jest.fn(),
   };
-  const mockUid = '76eded44d32b40c0cb1006065';
+  const mockUid = "76eded44d32b40c0cb1006065";
 
-  const encryptedSecret = '**********';
-  const objectId = new ObjectId('648c1742c74d6a3d84b31943');
+  const encryptedSecret = "**********";
+  const objectId = new ObjectId("648c1742c74d6a3d84b31943");
 
   const configIdentityProviderMock = {
     defaultValues: {},
@@ -62,20 +62,20 @@ describe('IdentityProviderService', () => {
   const identityProvidersMock = [
     identityProviderFactory.createIdentityProviderFromDb({
       _id: new ObjectId(),
-      name: 'mock-identity-provider-name-1',
-      title: 'mock-identity-provider-title-1',
+      name: "mock-identity-provider-name-1",
+      title: "mock-identity-provider-title-1",
     }),
     identityProviderFactory.createIdentityProviderFromDb({
       _id: new ObjectId(),
-      name: 'mock-identity-provider-name-2',
-      title: 'mock-identity-provider-title-2',
+      name: "mock-identity-provider-name-2",
+      title: "mock-identity-provider-title-2",
     }),
   ];
-  const mockDate = new Date('1970-01-01');
+  const mockDate = new Date("1970-01-01");
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([IdentityProviderFromDb], 'fc-mongo')],
+      imports: [TypeOrmModule.forFeature([IdentityProviderFromDb], "fc-mongo")],
       providers: [
         IdentityProviderService,
         Repository,
@@ -86,7 +86,7 @@ describe('IdentityProviderService', () => {
         GristPublisherService,
       ],
     })
-      .overrideProvider(getRepositoryToken(IdentityProviderFromDb, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(IdentityProviderFromDb, "fc-mongo"))
       .useValue(identityProviderRepository)
       .overrideProvider(SecretManagerService)
       .useValue(secretManagerMocked)
@@ -104,7 +104,7 @@ describe('IdentityProviderService', () => {
 
     jest.resetAllMocks();
 
-    jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+    jest.spyOn(global, "Date").mockImplementation(() => mockDate);
 
     secretManagerMocked.encrypt.mockReturnValue(encryptedSecret);
     configMock.get.mockResolvedValue(configIdentityProviderMock);
@@ -120,8 +120,8 @@ describe('IdentityProviderService', () => {
     module.close();
   });
 
-  describe('getAll', () => {
-    it('shoud return the array of all IdentityProviders', async () => {
+  describe("getAll", () => {
+    it("shoud return the array of all IdentityProviders", async () => {
       // Given
       const expectedResult = [...identityProvidersMock];
 
@@ -134,9 +134,9 @@ describe('IdentityProviderService', () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it('shoud throw if repository.find is failling ', async () => {
+    it("shoud throw if repository.find is failling ", async () => {
       // Given
-      const errorMessage = 'any error mock';
+      const errorMessage = "any error mock";
       const thrownMessage = `Unable to retrieve all identity providers : ${errorMessage}`;
 
       identityProviderRepository.find
@@ -152,64 +152,64 @@ describe('IdentityProviderService', () => {
     });
   });
 
-  describe('create', () => {
+  describe("create", () => {
     const identityProviderDto =
       identityProviderFactory.createIdentityProviderDto({
-        name: 'MonFI',
-        title: 'Mon FI mieux écrit',
-        issuer: 'https://issuer.fr',
-        authorizationUrl: 'https://issuer.fr/auth',
-        tokenUrl: 'https://issuer.fr/token',
-        userInfoUrl: 'https://issuer.fr/userinfo',
-        logoutUrl: 'https://issuer.fr/logout',
-        statusUrl: 'https://issuer.fr/state',
-        jwksUrl: 'https://issuer.fr/discovery',
+        name: "MonFI",
+        title: "Mon FI mieux écrit",
+        issuer: "https://issuer.fr",
+        authorizationUrl: "https://issuer.fr/auth",
+        tokenUrl: "https://issuer.fr/token",
+        userInfoUrl: "https://issuer.fr/userinfo",
+        logoutUrl: "https://issuer.fr/logout",
+        statusUrl: "https://issuer.fr/state",
+        jwksUrl: "https://issuer.fr/discovery",
         discoveryUrl:
-          'https://my-discovery-url/.well-known/openid-configuration',
+          "https://my-discovery-url/.well-known/openid-configuration",
         discovery: true,
-        clientId: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: '1234567890AZERTYUIOP',
+        clientId: "09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
         active: true,
-        fqdns: ['my-fqdn.fr'],
+        fqdns: ["my-fqdn.fr"],
       });
 
     const transformedIntoEntity =
       identityProviderFactory.createIdentityProviderFromDb({
-        _id: new ObjectId('68a30acf6cb39008b0015ab4'),
-        name: 'MonFI',
-        createdAt: new Date('1970-01-01T00:00:00.000Z'),
-        updatedAt: new Date('1970-01-01T00:00:00.000Z'),
-        updatedBy: 'user',
+        _id: new ObjectId("68a30acf6cb39008b0015ab4"),
+        name: "MonFI",
+        createdAt: new Date("1970-01-01T00:00:00.000Z"),
+        updatedAt: new Date("1970-01-01T00:00:00.000Z"),
+        updatedBy: "user",
         active: true,
-        authzURL: 'https://issuer.fr/auth',
-        clientID: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: '1234567890AZERTYUIOP',
-        discoveryUrl: 'https://default.discovery-url.fr',
+        authzURL: "https://issuer.fr/auth",
+        clientID: "09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
+        discoveryUrl: "https://default.discovery-url.fr",
         discovery: true,
-        endSessionURL: 'https://issuer.fr/logout',
-        url: 'https://default.issuer.fr',
-        statusURL: 'https://default.status-url.fr',
-        title: 'Mon FI mieux écrit',
-        id_token_encrypted_response_alg: 'default_alg',
-        id_token_encrypted_response_enc: 'default_enc',
-        id_token_signed_response_alg: 'ES256',
-        jwksURL: 'https://issuer.fr/discovery',
-        siret: '',
-        supportEmail: 'support@email.fr',
-        token_endpoint_auth_method: 'client_secret_post',
-        tokenURL: 'https://issuer.fr/token',
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_encrypted_response_enc: 'ES256',
-        userinfo_signed_response_alg: 'ES256',
-        userInfoURL: 'https://issuer.fr/userinfo',
-        uid: 'default_uid',
-        fqdns: ['my-fqdn.fr'],
+        endSessionURL: "https://issuer.fr/logout",
+        url: "https://default.issuer.fr",
+        statusURL: "https://default.status-url.fr",
+        title: "Mon FI mieux écrit",
+        id_token_encrypted_response_alg: "default_alg",
+        id_token_encrypted_response_enc: "default_enc",
+        id_token_signed_response_alg: "ES256",
+        jwksURL: "https://issuer.fr/discovery",
+        siret: "",
+        supportEmail: "support@email.fr",
+        token_endpoint_auth_method: "client_secret_post",
+        tokenURL: "https://issuer.fr/token",
+        userinfo_encrypted_response_alg: "RSA-OAEP",
+        userinfo_encrypted_response_enc: "ES256",
+        userinfo_signed_response_alg: "ES256",
+        userInfoURL: "https://issuer.fr/userinfo",
+        uid: "default_uid",
+        fqdns: ["my-fqdn.fr"],
       });
 
     beforeEach(() => {
       identityProviderService[
         // tslint:disable-next-line:no-string-literal
-        'transformDtoToEntity'
+        "transformDtoToEntity"
       ] = jest.fn().mockReturnValue(transformedIntoEntity);
       // // tslint:disable-next-line:no-string-literal
       // identityProviderService['tranformIntoLegacy'] = jest
@@ -220,27 +220,27 @@ describe('IdentityProviderService', () => {
         .mockResolvedValue({ identifiers: [{ _id: objectId }] });
 
       // tslint:disable-next-line:no-string-literal
-      identityProviderService['track'] = jest.fn();
+      identityProviderService["track"] = jest.fn();
     });
 
-    it('should call transformDtoToEntity', async () => {
+    it("should call transformDtoToEntity", async () => {
       // WHEN
-      await identityProviderService.create(identityProviderDto, 'user');
+      await identityProviderService.create(identityProviderDto, "user");
 
       // THEN
       expect(
         // tslint:disable-next-line:no-string-literal
-        identityProviderService['transformDtoToEntity'],
+        identityProviderService["transformDtoToEntity"],
       ).toHaveBeenCalledTimes(1);
       expect(
         // tslint:disable-next-line:no-string-literal
-        identityProviderService['transformDtoToEntity'],
-      ).toHaveBeenCalledWith(identityProviderDto, 'user', 'create');
+        identityProviderService["transformDtoToEntity"],
+      ).toHaveBeenCalledWith(identityProviderDto, "user", "create");
     });
 
-    it('should call identityProviderRepository.insert', async () => {
+    it("should call identityProviderRepository.insert", async () => {
       // WHEN
-      await identityProviderService.create(identityProviderDto, 'user');
+      await identityProviderService.create(identityProviderDto, "user");
 
       // THEN
       expect(identityProviderRepository.insert).toHaveBeenCalledTimes(1);
@@ -249,58 +249,58 @@ describe('IdentityProviderService', () => {
       );
     });
 
-    it('should call the tracking method of the service', async () => {
+    it("should call the tracking method of the service", async () => {
       // WHEN
-      await identityProviderService.create(identityProviderDto, 'user');
+      await identityProviderService.create(identityProviderDto, "user");
 
       // THEN
       // tslint:disable-next-line:no-string-literal
-      expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
+      expect(identityProviderService["track"]).toHaveBeenCalledTimes(1);
       // tslint:disable-next-line:no-string-literal
-      expect(identityProviderService['track']).toHaveBeenCalledWith({
-        entity: 'identity-provider',
-        action: 'create',
-        user: 'user',
+      expect(identityProviderService["track"]).toHaveBeenCalledWith({
+        entity: "identity-provider",
+        action: "create",
+        user: "user",
         id: objectId,
         name: identityProviderDto.name,
       });
     });
   });
 
-  describe('update()', () => {
+  describe("update()", () => {
     const idMock = objectId.toString();
-    const userMock = 'userMockValue';
-    const methodMock = 'update';
+    const userMock = "userMockValue";
+    const methodMock = "update";
     const existingIdentityProviderMock =
       identityProviderFactory.createIdentityProviderFromDb({
         _id: objectId,
-        uid: 'MonFI',
-        name: 'MonFI',
-        clientID: 'new-09a1a257648c1742c74d6a3d84b31943',
-        client_secret: '1234567890AZERTYUIOP',
+        uid: "MonFI",
+        name: "MonFI",
+        clientID: "new-09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
       });
     const identityProviderToUpdate =
       identityProviderFactory.createIdentityProviderDto({
-        name: 'MonFI',
-        clientId: 'new-09a1a257648c1742c74d6a3d84b31943',
-        client_secret: '1234567890AZERTYUIOP',
+        name: "MonFI",
+        clientId: "new-09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
       });
 
     const transformedIntoEntity =
       identityProviderFactory.createIdentityProviderFromDb({
         _id: objectId,
-        uid: 'MonFI',
-        name: 'MonFI',
+        uid: "MonFI",
+        name: "MonFI",
 
-        clientID: 'new-09a1a257648c1742c74d6a3d84b31943',
-        client_secret: '1234567890AZERTYUIOP',
+        clientID: "new-09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
 
         // client_secret: secretManagerMocked,
       });
 
     beforeEach(() => {
-      identityProviderService['track'] = jest.fn();
-      identityProviderService['transformDtoToEntity'] = jest
+      identityProviderService["track"] = jest.fn();
+      identityProviderService["transformDtoToEntity"] = jest
         .fn()
         .mockResolvedValue(transformedIntoEntity);
 
@@ -310,7 +310,7 @@ describe('IdentityProviderService', () => {
       );
     });
 
-    it('should call the tracking method of the service', async () => {
+    it("should call the tracking method of the service", async () => {
       // WHEN
       await identityProviderService.update(
         objectId.toString(),
@@ -319,17 +319,17 @@ describe('IdentityProviderService', () => {
       );
 
       // THEN
-      expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
-      expect(identityProviderService['track']).toHaveBeenCalledWith({
-        entity: 'identity-provider',
-        action: 'update',
+      expect(identityProviderService["track"]).toHaveBeenCalledTimes(1);
+      expect(identityProviderService["track"]).toHaveBeenCalledWith({
+        entity: "identity-provider",
+        action: "update",
         user: userMock,
-        name: 'MonFI',
+        name: "MonFI",
         id: objectId.toString(),
       });
     });
 
-    it('should call transformDtoToEntity', async () => {
+    it("should call transformDtoToEntity", async () => {
       // WHEN
       await identityProviderService.update(
         idMock,
@@ -339,14 +339,14 @@ describe('IdentityProviderService', () => {
 
       // THEN
       expect(
-        identityProviderService['transformDtoToEntity'],
+        identityProviderService["transformDtoToEntity"],
       ).toHaveBeenCalledTimes(1);
       expect(
-        identityProviderService['transformDtoToEntity'],
+        identityProviderService["transformDtoToEntity"],
       ).toHaveBeenCalledWith(identityProviderToUpdate, userMock, methodMock);
     });
 
-    it('should call identityProviderRepository.findOneAndUpdate', async () => {
+    it("should call identityProviderRepository.findOneAndUpdate", async () => {
       // WHEN
       await identityProviderService.update(
         idMock,
@@ -362,34 +362,34 @@ describe('IdentityProviderService', () => {
     });
   });
 
-  describe('track', () => {
-    it('should call logger.businessEvent()', () => {
+  describe("track", () => {
+    it("should call logger.businessEvent()", () => {
       // Given
       const argsMock = {} as ICrudTrack;
       // When
-      identityProviderService['track'](argsMock);
+      identityProviderService["track"](argsMock);
       // Then
       expect(loggerMock.businessEvent).toHaveBeenCalledTimes(1);
       expect(loggerMock.businessEvent).toHaveBeenCalledWith(argsMock);
     });
   });
 
-  describe('should delete identity provider by id', () => {
+  describe("should delete identity provider by id", () => {
     beforeEach(() => {
       const identityProviderMock = {
         _id: objectId,
-        uid: 'MonFI',
-        name: 'MonFI',
+        uid: "MonFI",
+        name: "MonFI",
       } as unknown as IdentityProviderFromDb;
 
       identityProviderRepository.findOneByOrFail.mockResolvedValueOnce(
         identityProviderMock,
       );
     });
-    it('should call the delete function of the identityProviderRepository with an ID as argument', async () => {
+    it("should call the delete function of the identityProviderRepository with an ID as argument", async () => {
       // set up
       const expectedRepositoryDeleteArguments = { _id: objectId };
-      const user = 'mockUsername';
+      const user = "mockUsername";
       identityProviderRepository.delete.mockResolvedValueOnce({ affected: 1 });
 
       // action
@@ -404,10 +404,10 @@ describe('IdentityProviderService', () => {
       );
     });
 
-    it('should call the tracking method of the service', async () => {
+    it("should call the tracking method of the service", async () => {
       // Given
-      const user = 'mockUsername';
-      identityProviderService['track'] = jest.fn();
+      const user = "mockUsername";
+      identityProviderService["track"] = jest.fn();
       identityProviderRepository.delete.mockResolvedValueOnce({ affected: 1 });
 
       // When
@@ -416,85 +416,85 @@ describe('IdentityProviderService', () => {
         user,
       );
       // Then
-      expect(identityProviderService['track']).toHaveBeenCalledTimes(1);
-      expect(identityProviderService['track']).toHaveBeenCalledWith({
-        entity: 'identity-provider',
-        action: 'delete',
-        name: 'MonFI',
+      expect(identityProviderService["track"]).toHaveBeenCalledTimes(1);
+      expect(identityProviderService["track"]).toHaveBeenCalledWith({
+        entity: "identity-provider",
+        action: "delete",
+        name: "MonFI",
         user,
         id: objectId.toString(),
       });
     });
   });
 
-  describe('transformDtoToEntity', () => {
+  describe("transformDtoToEntity", () => {
     const identityProviderDto =
       identityProviderFactory.createIdentityProviderDto({
-        name: 'MonFI',
-        title: 'Mon FI mieux écrit',
-        issuer: 'https://issuer.fr',
-        authorizationUrl: 'https://issuer.fr/auth',
-        tokenUrl: 'https://issuer.fr/token',
-        userInfoUrl: 'https://issuer.fr/userinfo',
-        logoutUrl: 'https://issuer.fr/logout',
-        statusUrl: 'https://default.status-url.fr',
-        jwksUrl: 'https://issuer.fr/discovery',
+        name: "MonFI",
+        title: "Mon FI mieux écrit",
+        issuer: "https://issuer.fr",
+        authorizationUrl: "https://issuer.fr/auth",
+        tokenUrl: "https://issuer.fr/token",
+        userInfoUrl: "https://issuer.fr/userinfo",
+        logoutUrl: "https://issuer.fr/logout",
+        statusUrl: "https://default.status-url.fr",
+        jwksUrl: "https://issuer.fr/discovery",
         discovery: true,
-        clientId: '09a1a257648c1742c74d6a3d84b31943',
-        client_secret: '1234567890AZERTYUIOP',
+        clientId: "09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
         active: true,
-        discoveryUrl: 'https://default.discovery-url.fr',
-        id_token_encrypted_response_alg: 'default_alg',
-        id_token_encrypted_response_enc: 'default_enc',
-        id_token_signed_response_alg: 'ES256',
-        siret: '',
-        supportEmail: 'support@email.fr',
-        token_endpoint_auth_method: 'client_secret_post',
+        discoveryUrl: "https://default.discovery-url.fr",
+        id_token_encrypted_response_alg: "default_alg",
+        id_token_encrypted_response_enc: "default_enc",
+        id_token_signed_response_alg: "ES256",
+        siret: "",
+        supportEmail: "support@email.fr",
+        token_endpoint_auth_method: "client_secret_post",
 
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_encrypted_response_enc: 'ES256',
-        userinfo_signed_response_alg: 'ES256',
+        userinfo_encrypted_response_alg: "RSA-OAEP",
+        userinfo_encrypted_response_enc: "ES256",
+        userinfo_signed_response_alg: "ES256",
       });
 
     const transformedIntoEntity =
       identityProviderFactory.createIdentityProviderFromDb({
-        _id: new ObjectId('68a30acf6cb39008b0015ab4'),
+        _id: new ObjectId("68a30acf6cb39008b0015ab4"),
         uid: mockUid,
-        name: 'MonFI',
+        name: "MonFI",
         createdAt: mockDate,
         updatedAt: mockDate,
-        updatedBy: 'user',
+        updatedBy: "user",
         active: true,
-        authzURL: 'https://issuer.fr/auth',
-        clientID: '09a1a257648c1742c74d6a3d84b31943',
+        authzURL: "https://issuer.fr/auth",
+        clientID: "09a1a257648c1742c74d6a3d84b31943",
         client_secret: encryptedSecret,
-        discoveryUrl: 'https://default.discovery-url.fr',
+        discoveryUrl: "https://default.discovery-url.fr",
         discovery: true,
-        endSessionURL: 'https://issuer.fr/logout',
-        url: 'https://issuer.fr',
-        statusURL: 'https://default.status-url.fr',
-        title: 'Mon FI mieux écrit',
-        id_token_encrypted_response_alg: 'default_alg',
-        id_token_encrypted_response_enc: 'default_enc',
-        id_token_signed_response_alg: 'ES256',
-        jwksURL: 'https://issuer.fr/discovery',
-        siret: '',
-        supportEmail: 'support@email.fr',
-        token_endpoint_auth_method: 'client_secret_post',
-        tokenURL: 'https://issuer.fr/token',
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_encrypted_response_enc: 'ES256',
-        userinfo_signed_response_alg: 'ES256',
-        userInfoURL: 'https://issuer.fr/userinfo',
+        endSessionURL: "https://issuer.fr/logout",
+        url: "https://issuer.fr",
+        statusURL: "https://default.status-url.fr",
+        title: "Mon FI mieux écrit",
+        id_token_encrypted_response_alg: "default_alg",
+        id_token_encrypted_response_enc: "default_enc",
+        id_token_signed_response_alg: "ES256",
+        jwksURL: "https://issuer.fr/discovery",
+        siret: "",
+        supportEmail: "support@email.fr",
+        token_endpoint_auth_method: "client_secret_post",
+        tokenURL: "https://issuer.fr/token",
+        userinfo_encrypted_response_alg: "RSA-OAEP",
+        userinfo_encrypted_response_enc: "ES256",
+        userinfo_signed_response_alg: "ES256",
+        userInfoURL: "https://issuer.fr/userinfo",
       });
 
-    it('should call encrypt', async () => {
+    it("should call encrypt", async () => {
       // WHEN
       // tslint:disable-next-line:no-string-literal
-      identityProviderService['transformDtoToEntity'](
+      identityProviderService["transformDtoToEntity"](
         identityProviderDto,
-        'user',
-        'create',
+        "user",
+        "create",
       );
 
       // THEN
@@ -504,13 +504,13 @@ describe('IdentityProviderService', () => {
       );
     });
 
-    it('should return a transform identity provider', async () => {
+    it("should return a transform identity provider", async () => {
       // WHEN
       // tslint:disable-next-line:no-string-literal
-      const result = identityProviderService['transformDtoToEntity'](
+      const result = identityProviderService["transformDtoToEntity"](
         identityProviderDto,
-        'user',
-        'create',
+        "user",
+        "create",
       );
 
       const { _id, ...transformedEntityWithoutId } = transformedIntoEntity;

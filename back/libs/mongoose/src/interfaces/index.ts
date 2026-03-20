@@ -1,1 +1,1 @@
-export * from './connexion.interface';
+export * from "./connexion.interface";

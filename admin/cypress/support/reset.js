@@ -1,7 +1,7 @@
 const SAFETY_EXEC_TIMEOUT = 10000; // 10 sec
 const LONG_EXEC_TIMEOUT = 60 * 1000; // 1 minutes
 
-const DOCKER_DIR = `cd ${Cypress.env('FEDERATION_DIR')}/docker`;
+const DOCKER_DIR = `cd ${Cypress.env("FEDERATION_DIR")}/docker`;
 
 export function resetMongo() {
   const command = `${DOCKER_DIR} && CI=1 ./docker-stack reset-db`;
@@ -13,12 +13,12 @@ export function resetMongo() {
 
   return cy
     .exec(command, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('exitCode')
-    .should('eq', 0);
+    .its("exitCode")
+    .should("eq", 0);
 }
 
 export function resetPostgres() {
-  const command = `./cypress/support/db.sh ${Cypress.env('APP_NAME')} apply`;
+  const command = `./cypress/support/db.sh ${Cypress.env("APP_NAME")} apply`;
 
   cy.log(`
     Executing command:
@@ -27,8 +27,8 @@ export function resetPostgres() {
 
   return cy
     .exec(command, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('exitCode')
-    .should('eq', 0);
+    .its("exitCode")
+    .should("eq", 0);
 }
 
 export function resetEventsStats() {
@@ -40,8 +40,8 @@ export function resetEventsStats() {
     `);
 
   cy.exec(command1, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('exitCode')
-    .should('eq', 0);
+    .its("exitCode")
+    .should("eq", 0);
 
   const command2 = `${DOCKER_DIR} && CI=1 ./docker-stack generate-events`;
 
@@ -55,8 +55,8 @@ export function resetEventsStats() {
    */
   return cy
     .exec(command2, { timeout: LONG_EXEC_TIMEOUT })
-    .its('exitCode')
-    .should('eq', 0);
+    .its("exitCode")
+    .should("eq", 0);
 }
 
 export function resetMetricsStats() {
@@ -68,8 +68,8 @@ export function resetMetricsStats() {
   `);
 
   cy.exec(command1, { timeout: SAFETY_EXEC_TIMEOUT })
-    .its('exitCode')
-    .should('eq', 0);
+    .its("exitCode")
+    .should("eq", 0);
 
   const command2 = `${DOCKER_DIR} && CI=1 ./docker-stack generate-metrics`;
 
@@ -80,6 +80,6 @@ export function resetMetricsStats() {
 
   return cy
     .exec(command2, { timeout: SAFETY_EXEC_TIMEOUT * 3 })
-    .its('exitCode')
-    .should('eq', 0);
+    .its("exitCode")
+    .should("eq", 0);
 }

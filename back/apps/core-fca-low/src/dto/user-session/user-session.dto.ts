@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose } from "class-transformer";
 import {
   IsArray,
   IsAscii,
@@ -9,10 +9,10 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-} from 'class-validator';
+} from "class-validator";
 
-import { IdentityForSpDto } from '../identity-for-sp.dto';
-import { IdentityFromIdpDto } from '../identity-from-idp.dto';
+import { IdentityForSpDto } from "../identity-for-sp.dto";
+import { IdentityFromIdpDto } from "../identity-from-idp.dto";
 
 // Properties annotated with @Expose will be the only ones included during cookie renewal/duplication.
 export class UserSession {

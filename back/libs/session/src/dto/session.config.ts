@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -12,21 +12,19 @@ import {
   Min,
   MinLength,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
-import { RouteInfo, type Type as Class } from '@nestjs/common/interfaces';
-
-import { IsStringOrRegExp } from '@fc/common';
-import { CoreFcaSession } from '@fc/core';
-
-import { type SameSiteType, type TemplateExposedType } from '../types';
+import { IsStringOrRegExp } from "@fc/common";
+import { CoreFcaSession } from "@fc/core";
+import { RouteInfo, type Type as Class } from "@nestjs/common/interfaces";
+import { type SameSiteType, type TemplateExposedType } from "../types";
 
 export class CookieOptions {
   @IsBoolean()
   readonly signed: boolean;
 
   @IsString()
-  @IsIn(['strict', 'lax', 'none'])
+  @IsIn(["strict", "lax", "none"])
   readonly sameSite: SameSiteType;
 
   @IsBoolean()

@@ -1,16 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { MongooseModuleOptions } from '@nestjs/mongoose';
-
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-
-import { MongooseConfig } from '../dto';
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { Injectable } from "@nestjs/common";
+import { MongooseModuleOptions } from "@nestjs/mongoose";
+import { MongooseConfig } from "../dto";
 import {
   MongooseConnectionConnectedEvent,
   MongooseConnectionDisconnectedEvent,
   MongooseConnectionReconnectedEvent,
-} from '../events';
-import { NestJsConnection } from '../interfaces';
+} from "../events";
+import { NestJsConnection } from "../interfaces";
 
 @Injectable()
 export class MongooseProvider {
@@ -24,23 +22,23 @@ export class MongooseProvider {
 
     // too simple to be extracted in a testable function
     /* istanbul ignore next line */
-    connection.on('connected', () =>
+    connection.on("connected", () =>
       eventBus.publish(new MongooseConnectionConnectedEvent()),
     );
     // too simple to be extracted in a testable function
     /* istanbul ignore next line */
-    connection.on('disconnected', () =>
+    connection.on("disconnected", () =>
       eventBus.publish(new MongooseConnectionDisconnectedEvent()),
     );
     // too simple to be extracted in a testable function
     /* istanbul ignore next line */
-    connection.on('reconnected', () =>
+    connection.on("reconnected", () =>
       eventBus.publish(new MongooseConnectionReconnectedEvent()),
     );
 
     connection.$initialConnection = connection.$initialConnection.catch(
       (error) => {
-        logger.fatal(error, 'Invalid Mongodb Connection, exiting app');
+        logger.fatal(error, "Invalid Mongodb Connection, exiting app");
         process.exit(1);
       },
     );
@@ -60,7 +58,7 @@ export class MongooseProvider {
       database,
       options,
       uri = `mongodb://${user}:${password}@${hosts}/${database}`,
-    } = config.get<MongooseConfig>('Mongoose');
+    } = config.get<MongooseConfig>("Mongoose");
 
     const params: MongooseModuleOptions = {
       uri,

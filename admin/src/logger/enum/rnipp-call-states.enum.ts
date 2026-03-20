@@ -1,5 +1,5 @@
 export enum RnippCallStates {
-  INITIATED = 'initiated',
-  SUCCESS = 'success',
-  ERRORED = 'errored',
+  INITIATED = "initiated",
+  SUCCESS = "success",
+  ERRORED = "errored",
 }

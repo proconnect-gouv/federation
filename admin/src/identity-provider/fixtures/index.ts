@@ -1,1 +1,1 @@
-export * from './identity-provider.factory';
+export * from "./identity-provider.factory";

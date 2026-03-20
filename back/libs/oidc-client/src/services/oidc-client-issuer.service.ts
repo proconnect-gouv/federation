@@ -1,21 +1,18 @@
-import { JWK } from 'jose-v4';
-import { Client, custom, Issuer } from 'openid-client';
-
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-
-import { ConfigService } from '@fc/config';
-import { AppConfig } from '@fc/core/dto';
-import { IdentityProviderMetadata } from '@fc/oidc';
-
-import { OidcClientClass } from '../enums';
+import { ConfigService } from "@fc/config";
+import { AppConfig } from "@fc/core/dto";
+import { IdentityProviderMetadata } from "@fc/oidc";
+import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { JWK } from "jose-v4";
+import { Client, custom, Issuer } from "openid-client";
+import { OidcClientClass } from "../enums";
 import {
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientIssuerDiscoveryFailedException,
-} from '../exceptions';
-import { type IIdentityProviderAdapter } from '../interfaces';
-import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
-import { OidcClientConfigService } from './oidc-client-config.service';
+} from "../exceptions";
+import { type IIdentityProviderAdapter } from "../interfaces";
+import { IDENTITY_PROVIDER_SERVICE } from "../tokens";
+import { OidcClientConfigService } from "./oidc-client-config.service";
 
 @Injectable()
 export class OidcClientIssuerService implements OnModuleInit {
@@ -72,14 +69,14 @@ export class OidcClientIssuerService implements OnModuleInit {
   }
 
   async getSupportEmail(idpId: string) {
-    const { supportEmail: pcfSupportEmail } = this.config.get<AppConfig>('App');
+    const { supportEmail: pcfSupportEmail } = this.config.get<AppConfig>("App");
 
     const idpMetadata = await this.identityProvider.getById(idpId);
     return idpMetadata.supportEmail || pcfSupportEmail;
   }
 
   isDefaultIdp(idpId: string): boolean {
-    const { defaultIdpId } = this.config.get<AppConfig>('App');
+    const { defaultIdpId } = this.config.get<AppConfig>("App");
     return idpId === defaultIdpId;
   }
 

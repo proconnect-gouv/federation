@@ -1,22 +1,22 @@
 /* istanbul ignore file */
 // Declarative code
-import { Entity, ObjectIdColumn, Column, Unique } from 'typeorm';
-import { ObjectId } from 'mongodb';
-@Entity('scopes')
-@Unique(['scope'])
+import { ObjectId } from "mongodb";
+import { Column, Entity, ObjectIdColumn, Unique } from "typeorm";
+@Entity("scopes")
+@Unique(["scope"])
 export class Scopes {
   @ObjectIdColumn()
   _id: ObjectId;
 
-  @Column({ name: 'scope' })
+  @Column({ name: "scope" })
   scope: string;
 
-  @Column({ name: 'fd' })
+  @Column({ name: "fd" })
   fd: string;
 
-  @Column({ name: 'label' })
+  @Column({ name: "label" })
   label: string;
 
-  @Column({ name: 'updatedBy' })
+  @Column({ name: "updatedBy" })
   updatedBy: string;
 }

@@ -1,1 +1,1 @@
-export * from './mongoose-config.dto';
+export * from "./mongoose-config.dto";

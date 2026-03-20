@@ -1,1 +1,1 @@
-export * from './identity-provider-adapter-mongo.schema';
+export * from "./identity-provider-adapter-mongo.schema";

@@ -1,11 +1,10 @@
-import { ExecutionContext } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { ExecutionContext } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import { CsrfMissingTokenException } from "../exceptions";
+import { CsrfService } from "../services";
+import { CsrfTokenGuard } from "./csrf-token.guard";
 
-import { CsrfMissingTokenException } from '../exceptions';
-import { CsrfService } from '../services';
-import { CsrfTokenGuard } from './csrf-token.guard';
-
-describe('CsrfTokenGuard', () => {
+describe("CsrfTokenGuard", () => {
   let guard: CsrfTokenGuard;
 
   const csrfMock = {
@@ -21,7 +20,7 @@ describe('CsrfTokenGuard', () => {
   };
 
   const reqMock = {
-    body: { csrfToken: 'csrfToken' },
+    body: { csrfToken: "csrfToken" },
   };
 
   beforeEach(async () => {
@@ -38,12 +37,12 @@ describe('CsrfTokenGuard', () => {
     httpMock.getRequest.mockReturnValue(reqMock);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(guard).toBeDefined();
   });
 
-  describe('canActivate', () => {
-    it('should throw CsrfMissingTokenException if there is no csrfToken in body ', () => {
+  describe("canActivate", () => {
+    it("should throw CsrfMissingTokenException if there is no csrfToken in body ", () => {
       // Given
       httpMock.getRequest.mockReturnValueOnce({ body: {} });
 
@@ -53,9 +52,9 @@ describe('CsrfTokenGuard', () => {
       ).toThrow(CsrfMissingTokenException);
     });
 
-    it('should let pass exception from csrf.check() ', () => {
+    it("should let pass exception from csrf.check() ", () => {
       // Given
-      const error = new Error('error');
+      const error = new Error("error");
       csrfMock.check.mockImplementationOnce(() => {
         throw error;
       });
@@ -66,9 +65,9 @@ describe('CsrfTokenGuard', () => {
       ).toThrow(error);
     });
 
-    it('should return result of CsrfService.check', () => {
+    it("should return result of CsrfService.check", () => {
       // Given
-      const checkResult = Symbol('checkResult');
+      const checkResult = Symbol("checkResult");
       csrfMock.check.mockReturnValue(checkResult);
 
       // When

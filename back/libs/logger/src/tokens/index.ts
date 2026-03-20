@@ -1,1 +1,1 @@
-export * from './plugin-services.token';
+export * from "./plugin-services.token";

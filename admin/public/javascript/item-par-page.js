@@ -1,10 +1,10 @@
-import $ from './jquery_wrapper';
+import $ from "./jquery_wrapper";
 
 export function itemPerPage(element) {
-  const form = $('#itemPerPage');
+  const form = $("#itemPerPage");
 
-  element.addEventListener('change', function (ev) {
-    $('#itemNumberList').removeClass('selected');
+  element.addEventListener("change", function (ev) {
+    $("#itemNumberList").removeClass("selected");
     form.submit();
   });
 }

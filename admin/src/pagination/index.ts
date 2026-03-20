@@ -1,2 +1,2 @@
-export * from './interface';
-export * from './pagination.service';
+export * from "./interface";
+export * from "./pagination.service";

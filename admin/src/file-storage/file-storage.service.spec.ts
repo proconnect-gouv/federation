@@ -1,14 +1,14 @@
-import { ObjectId } from 'mongodb';
-import { ConfigService } from 'nestjs-config';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { FileStorageService } from './file-storage.service';
-import { FileStorage } from './file-storage.mongodb.entity';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
+import { ConfigService } from "nestjs-config";
+import { v4 as uuidv4 } from "uuid";
+import { FileStorage } from "./file-storage.mongodb.entity";
+import { FileStorageService } from "./file-storage.service";
 
-jest.mock('uuid');
-import { v4 as uuidv4 } from 'uuid';
+jest.mock("uuid");
 
-describe('FileStorageService', () => {
+describe("FileStorageService", () => {
   const originalDateNow = Date.now;
 
   let module: TestingModule;
@@ -19,16 +19,16 @@ describe('FileStorageService', () => {
   };
 
   const file = {
-    id: new ObjectId('5d662c66b8e03e2912315da4'),
-    fieldname: 'logo',
-    originalname: '   Logo    with some     spaces   .png',
-    encoding: '7bits',
-    mimetype: 'image/png',
-    buffer: Buffer.from('myimage'),
+    id: new ObjectId("5d662c66b8e03e2912315da4"),
+    fieldname: "logo",
+    originalname: "   Logo    with some     spaces   .png",
+    encoding: "7bits",
+    mimetype: "image/png",
+    buffer: Buffer.from("myimage"),
     size: 4200,
   };
 
-  const filenameAsSaved = '4242424242424_Logo_with_some_spaces_.png';
+  const filenameAsSaved = "4242424242424_Logo_with_some_spaces_.png";
 
   const toArrayMock = jest.fn();
   const gridFSBucketMock = {
@@ -62,13 +62,13 @@ describe('FileStorageService', () => {
   };
 
   beforeEach(async () => {
-    Date.now = jest.fn().mockReturnValue('4242424242424');
+    Date.now = jest.fn().mockReturnValue("4242424242424");
 
     module = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([FileStorage], 'fc-mongo')],
+      imports: [TypeOrmModule.forFeature([FileStorage], "fc-mongo")],
       providers: [FileStorageService, FileStorage, ConfigService],
     })
-      .overrideProvider(getRepositoryToken(FileStorage, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(FileStorage, "fc-mongo"))
       .useValue(FileStorageRepositoryMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
@@ -84,11 +84,11 @@ describe('FileStorageService', () => {
     module.close();
   });
 
-  describe('onModuleInit', () => {
-    it('should instantiate the gridFSBucket', async () => {
+  describe("onModuleInit", () => {
+    it("should instantiate the gridFSBucket", async () => {
       // setup
       configServiceMock.get.mockReturnValueOnce({
-        dbName: 'dbName',
+        dbName: "dbName",
       });
 
       // action
@@ -96,17 +96,17 @@ describe('FileStorageService', () => {
 
       // expect
       expect(dbMock).toHaveBeenCalledTimes(1);
-      expect(gridFSBucketMock).toHaveProperty('delete');
-      expect(gridFSBucketMock).toHaveProperty('find');
-      expect(gridFSBucketMock).toHaveProperty('openDownloadStreamByName');
-      expect(gridFSBucketMock).toHaveProperty('openUploadStream');
+      expect(gridFSBucketMock).toHaveProperty("delete");
+      expect(gridFSBucketMock).toHaveProperty("find");
+      expect(gridFSBucketMock).toHaveProperty("openDownloadStreamByName");
+      expect(gridFSBucketMock).toHaveProperty("openUploadStream");
     });
   });
 
-  describe('storeFile', () => {
+  describe("storeFile", () => {
     beforeEach(async () => {
       configServiceMock.get.mockReturnValueOnce({
-        dbName: 'dbName',
+        dbName: "dbName",
       });
       gridFSBucketMock.openUploadStream.mockReturnValue({
         end: jest.fn().mockImplementation((buffer: Buffer, cb) => {
@@ -117,19 +117,19 @@ describe('FileStorageService', () => {
       await fileStorageService.onModuleInit();
     });
 
-    it('should remove and replace unecessaries spaces in filename before storing the file', async () => {
+    it("should remove and replace unecessaries spaces in filename before storing the file", async () => {
       // action
       await fileStorageService.storeFile(file);
 
       // expect
       expect(gridFSBucketMock.openUploadStream).toHaveBeenCalledTimes(1);
       expect(gridFSBucketMock.openUploadStream).toHaveBeenCalledWith(
-        `${Date.now()}${file.originalname.replace(/\s+/g, '_')}`,
+        `${Date.now()}${file.originalname.replace(/\s+/g, "_")}`,
         expect.anything(),
       );
     });
 
-    it('should insert the file contentType from mimetype and the encoding to metadata in database', async () => {
+    it("should insert the file contentType from mimetype and the encoding to metadata in database", async () => {
       // action
       await fileStorageService.storeFile(file);
 
@@ -144,7 +144,7 @@ describe('FileStorageService', () => {
       );
     });
 
-    it('should throw an error if there is no file to store', async () => {
+    it("should throw an error if there is no file to store", async () => {
       // action
       try {
         await fileStorageService.storeFile(undefined);
@@ -156,11 +156,11 @@ describe('FileStorageService', () => {
       expect.hasAssertions();
     });
 
-    it('should throw an error if there is an error when writing on the stream', async () => {
+    it("should throw an error if there is an error when writing on the stream", async () => {
       // setup
       gridFSBucketMock.openUploadStream.mockReturnValue({
         end: jest.fn().mockImplementation((buffer: Buffer, cb) => {
-          cb(new Error('Unexpected stream error :('), undefined);
+          cb(new Error("Unexpected stream error :("), undefined);
         }),
       });
 
@@ -170,16 +170,16 @@ describe('FileStorageService', () => {
       } catch (e) {
         // expect
         expect(gridFSBucketMock.openUploadStream).toHaveBeenCalledTimes(1);
-        expect(e.message).toBe('Unexpected stream error :(');
+        expect(e.message).toBe("Unexpected stream error :(");
       }
       expect.hasAssertions();
     });
   });
 
-  describe('getFileAsDataUri', () => {
+  describe("getFileAsDataUri", () => {
     beforeEach(async () => {
       configServiceMock.get.mockReturnValueOnce({
-        dbName: 'dbName',
+        dbName: "dbName",
       });
       gridFSBucketMock.find.mockReturnValue({
         toArray: toArrayMock.mockResolvedValue([
@@ -193,10 +193,10 @@ describe('FileStorageService', () => {
       gridFSBucketMock.openDownloadStreamByName.mockReturnValue({
         on: jest.fn().mockImplementation((event: string, cb) => {
           switch (event) {
-            case 'data':
+            case "data":
               cb(file.buffer);
               break;
-            case 'end': {
+            case "end": {
               cb();
               break;
             }
@@ -208,7 +208,7 @@ describe('FileStorageService', () => {
       await fileStorageService.onModuleInit();
     });
 
-    it('should retrieve file informations and then download the file itself from gridfs', async () => {
+    it("should retrieve file informations and then download the file itself from gridfs", async () => {
       // action
       await fileStorageService.getFileAsDataUri(filenameAsSaved);
 
@@ -226,29 +226,29 @@ describe('FileStorageService', () => {
       );
     });
 
-    it('should return the file as data uri', async () => {
+    it("should return the file as data uri", async () => {
       // action
       const fileAsDataUri =
         await fileStorageService.getFileAsDataUri(filenameAsSaved);
 
       // expect
       expect(fileAsDataUri).toBe(
-        `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+        `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
       );
     });
 
-    it('should retrieve file informations and then download the file itself from gridfs with multiple data event on the stream', async () => {
+    it("should retrieve file informations and then download the file itself from gridfs with multiple data event on the stream", async () => {
       // setup
       gridFSBucketMock.openDownloadStreamByName.mockReturnValue({
         on: jest.fn().mockImplementation((event: string, cb) => {
           switch (event) {
-            case 'data':
+            case "data":
               // equivalent to multiple data event
               cb(file.buffer);
               cb(file.buffer);
               cb(file.buffer);
               break;
-            case 'end': {
+            case "end": {
               cb();
               break;
             }
@@ -274,17 +274,17 @@ describe('FileStorageService', () => {
         filenameAsSaved,
       );
       expect(fileAsDataUri).toBe(
-        'data:image/png;base64,bXlpbWFnZW15aW1hZ2VteWltYWdl',
+        "data:image/png;base64,bXlpbWFnZW15aW1hZ2VteWltYWdl",
       );
     });
 
-    it('should throw an error if the stream emit an error event', async () => {
+    it("should throw an error if the stream emit an error event", async () => {
       // setup
       gridFSBucketMock.openDownloadStreamByName.mockReturnValue({
         on: jest.fn().mockImplementation((event: string, cb) => {
           switch (event) {
-            case 'error':
-              cb(new Error('Unexpected stream error :('));
+            case "error":
+              cb(new Error("Unexpected stream error :("));
               break;
           }
         }),
@@ -308,7 +308,7 @@ describe('FileStorageService', () => {
         expect(gridFSBucketMock.openDownloadStreamByName).toHaveBeenCalledWith(
           filenameAsSaved,
         );
-        expect(e.message).toBe('Unexpected stream error :(');
+        expect(e.message).toBe("Unexpected stream error :(");
       }
       expect.hasAssertions();
     });
@@ -333,10 +333,10 @@ describe('FileStorageService', () => {
     });
   });
 
-  describe('deleteFile', () => {
+  describe("deleteFile", () => {
     beforeEach(async () => {
       configServiceMock.get.mockReturnValueOnce({
-        dbName: 'dbName',
+        dbName: "dbName",
       });
       gridFSBucketMock.find.mockReturnValue({
         toArray: toArrayMock.mockResolvedValue([
@@ -355,7 +355,7 @@ describe('FileStorageService', () => {
       await fileStorageService.onModuleInit();
     });
 
-    it('should retrieve file informations and then delete it from GridFS', async () => {
+    it("should retrieve file informations and then delete it from GridFS", async () => {
       // action
       const result = await fileStorageService.deleteFile(filenameAsSaved);
 
@@ -392,10 +392,10 @@ describe('FileStorageService', () => {
       expect(result).toBe(undefined);
     });
 
-    it('should throw an error if the file informations are found but GridFS delete fail', async () => {
+    it("should throw an error if the file informations are found but GridFS delete fail", async () => {
       // setup
       gridFSBucketMock.delete.mockImplementation((id, cb) => {
-        cb(new Error('Oops ! Fail !'));
+        cb(new Error("Oops ! Fail !"));
       });
 
       // action
@@ -412,15 +412,15 @@ describe('FileStorageService', () => {
           file.id,
           expect.anything(),
         );
-        expect(e.message).toBe('Oops ! Fail !');
+        expect(e.message).toBe("Oops ! Fail !");
       }
       expect.hasAssertions();
     });
   });
 
-  describe('fromBase64', () => {
+  describe("fromBase64", () => {
     const correctImgMock =
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXwAAADI\
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXwAAADI\
     BAMAAAAZ5UcuAAAAG1BMVEXMzMyWlpacnJyqqqrFxcWxsbGjo6O3t7e+vr6He3KoAAAACXBIWXMAAA\
     7EAAAOxAGVKw4bAAAFJklEQVR4nO2bzW/bRhDFhx8SdeRSsdwjlbi1j1bbADmStuPmKAlp0KMUuHCOk\
     hq4Vyltgv7ZnZldShQl20ELSXT7foDJJXcEP63ezg4XIBEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\
@@ -444,21 +444,21 @@ describe('FileStorageService', () => {
     0+OuVkovy/Ljs1bq5PuZPYSp588/HWKisHn8LExb58PJKzrhcfYyPZ1QLvK5i275z74nZeXfNSdOvlcc\
     Yi8a3R5CPk9dHdT0bJSKRFEjp7jwfkyfAnmZaDX6/ow2R59O04OMvvx/GeLRhxGdWMVyKo2+P6Q1+Y0j2\
     vQ+DfoHki/ep+Fk1qe77FI0ymnlfYqO1+XrhR5LmYcOs0iIDM48tMjyjKLumYiQ0yrzUJRukW8NdmmKvH\
-    8g+V9B82m/Rzc7tIB/hXd2aAUAAPAf52/rXdAObZ4NXQAAAABJRU5ErkJggg==';
+    8g+V9B82m/Rzc7tIB/hXd2aAUAAPAf52/rXdAObZ4NXQAAAABJRU5ErkJggg==";
 
-    const failedImgMock = 'hello world';
+    const failedImgMock = "hello world";
 
     const failedFormatMock =
-      'data:application/pdf;base64,iVBORw0KGgoAAAANSUhEUgAAAXwAAADI\
+      "data:application/pdf;base64,iVBORw0KGgoAAAANSUhEUgAAAXwAAADI\
     BAMAAAAZ5UcuAAAAG1BMVEXMzMyWlpacnJyqqqrFxcWxsbGjo6O3t7e+vr6He3KoAAAACXBIWXMAAA\
     7EAAAOxAGVKw4bAAAFJklEQVR4nO2bzW/bRhDFhx8SdeRSsdwjlbi1j1bbADmStuPmKAlp0KMUuHCOk\
-    hq4Vyltgv7ZnZldShQl20ELSXT7foDJJXcEP63ezg4XIB';
+    hq4Vyltgv7ZnZldShQl20ELSXT7foDJJXcEP63ezg4XIB";
 
-    describe('should transform dataURI to FileStorage', () => {
-      it('without name', async () => {
+    describe("should transform dataURI to FileStorage", () => {
+      it("without name", async () => {
         // Arrange
 
-        const filename = 'mockedfilename';
+        const filename = "mockedfilename";
         // uuidv4 is fully mocked by the jest.mock("uuid") on top
         (uuidv4 as jest.Mock).mockReturnValue(filename);
 
@@ -468,15 +468,15 @@ describe('FileStorageService', () => {
         // Assert;
         expect(result).toBeTruthy();
         const { originalname, mimetype, encoding, size, buffer } = result;
-        expect(originalname).toEqual(filename + '.png');
-        expect(mimetype).toEqual('image/png');
+        expect(originalname).toEqual(filename + ".png");
+        expect(mimetype).toEqual("image/png");
         expect(size).toEqual(1435);
-        expect(encoding).toEqual('buffer');
+        expect(encoding).toEqual("buffer");
         expect(buffer).toBeInstanceOf(Buffer);
       });
-      it('with name', async () => {
+      it("with name", async () => {
         // Arrange
-        const name = 'franceconnect';
+        const name = "franceconnect";
 
         // Action
         const result = FileStorageService.fromBase64(correctImgMock, name);
@@ -484,18 +484,18 @@ describe('FileStorageService', () => {
         // Assert;
         expect(result).toBeTruthy();
         const { originalname, mimetype, encoding, size, buffer } = result;
-        expect(originalname).toEqual(name + '.png');
-        expect(mimetype).toEqual('image/png');
+        expect(originalname).toEqual(name + ".png");
+        expect(mimetype).toEqual("image/png");
         expect(size).toEqual(1435);
-        expect(encoding).toEqual('buffer');
+        expect(encoding).toEqual("buffer");
         expect(buffer).toBeInstanceOf(Buffer);
       });
     });
 
-    describe('should failed to transform dataURI to FileStorage', () => {
-      it('with wrong image', () => {
+    describe("should failed to transform dataURI to FileStorage", () => {
+      it("with wrong image", () => {
         // Arrange
-        const error = 'dataURI miss format or void';
+        const error = "dataURI miss format or void";
 
         // Action
         // Assert
@@ -503,9 +503,9 @@ describe('FileStorageService', () => {
           error,
         );
       });
-      it('with wrong base64 format', () => {
+      it("with wrong base64 format", () => {
         // Arrange
-        const error = 'wrong format of file in dataURI';
+        const error = "wrong format of file in dataURI";
 
         // Action
         // Assert

@@ -1,8 +1,8 @@
-import { PassportSerializer } from '@nestjs/passport';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../user/user.sql.entity';
-import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
+import { PassportSerializer } from "@nestjs/passport";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "../../user/user.sql.entity";
 
 @Injectable()
 export class LocalSerializer extends PassportSerializer {

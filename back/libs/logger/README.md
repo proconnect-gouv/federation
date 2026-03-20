@@ -96,25 +96,25 @@ Since we are using pino, you can either:
 - Use the `LoggerService` directly to log a message with the following format:
 
 ```typescript
-logger.info('Hello world !');
+logger.info("Hello world !");
 ```
 
 - Use the `LoggerService` to log a message with a context:
 
 ```typescript
-logger.info({ context: { foo: 'bar' } }, 'Hello world !');
+logger.info({ context: { foo: "bar" } }, "Hello world !");
 ```
 
 ⚠️ We do not want to use format string, please prefer strings templates:
 
 ```typescript
 // This is ok 👍
-logger.info({ context: { foo: 'bar' } }, `Hello ${name} !`);
+logger.info({ context: { foo: "bar" } }, `Hello ${name} !`);
 ```
 
 ```typescript
 // This is not ok 👎
-logger.info({ context: { foo: 'bar' } }, 'Hello %s !', name);
+logger.info({ context: { foo: "bar" } }, "Hello %s !", name);
 ```
 
 ## Plugins
@@ -122,7 +122,7 @@ logger.info({ context: { foo: 'bar' } }, 'Hello %s !', name);
 You can add some specific context to logs by applying some plugins to logger module.
 
 ```typescript
-import { somePlugin } from 'some-lib';
+import { somePlugin } from "some-lib";
 
 @Module({})
 export class AppModule {

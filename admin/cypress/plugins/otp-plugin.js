@@ -1,4 +1,4 @@
-import { generate } from 'otplib';
+import { generate } from "otplib";
 
 export function getTotp(args) {
   const { secret } = args;

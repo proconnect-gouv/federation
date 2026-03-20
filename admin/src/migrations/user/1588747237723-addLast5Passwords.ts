@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class AddLast5Passwords1588747237723 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {

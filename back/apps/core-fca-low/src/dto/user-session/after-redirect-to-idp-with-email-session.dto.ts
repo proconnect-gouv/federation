@@ -1,6 +1,5 @@
-import { IsDefined } from 'class-validator';
-
-import { AfterGetInteractionSessionDto } from './after-get-interaction-session.dto';
+import { IsDefined } from "class-validator";
+import { AfterGetInteractionSessionDto } from "./after-get-interaction-session.dto";
 
 export class AfterRedirectToIdpWithEmailSessionDto extends AfterGetInteractionSessionDto {
   @IsDefined()

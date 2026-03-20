@@ -1,13 +1,11 @@
-import { escape } from 'lodash';
-
-import { HttpStatus } from '@nestjs/common';
-
-import { ErrorCode } from '../enums';
-import { CoreFcaBaseException } from './core-fca-base.exception';
+import { HttpStatus } from "@nestjs/common";
+import { escape } from "lodash";
+import { ErrorCode } from "../enums";
+import { CoreFcaBaseException } from "./core-fca-base.exception";
 
 export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
   constructor(
-    public spName: string = 'le service',
+    public spName: string = "le service",
     public email: string,
   ) {
     super();
@@ -20,12 +18,12 @@ Si ce comportement vous paraît anormal, vérifiez que l’adresse e-mail utilis
   }
   public code = ErrorCode.NO_IDP;
   public http_status_code = HttpStatus.BAD_REQUEST;
-  public error = 'server_error';
+  public error = "server_error";
   public error_description =
-    'authentication aborted due to a technical error on the authorization server';
+    "authentication aborted due to a technical error on the authorization server";
   public crispLink =
-    'https://proconnect.crisp.help/fr/article/code-y500001-fournisseur-didentite-indisponible-sur-le-rie-4frofp/';
-  public illustration = 'access-restricted-error';
-  public title = 'Accès impossible';
+    "https://proconnect.crisp.help/fr/article/code-y500001-fournisseur-didentite-indisponible-sur-le-rie-4frofp/";
+  public illustration = "access-restricted-error";
+  public title = "Accès impossible";
   public displayContact = false;
 }

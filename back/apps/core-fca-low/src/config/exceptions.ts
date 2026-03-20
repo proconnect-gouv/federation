@@ -1,5 +1,5 @@
-import { ExceptionsConfig } from '@fc/exceptions/dto';
+import { ExceptionsConfig } from "@fc/exceptions/dto";
 
 export default {
-  prefix: 'Y',
+  prefix: "Y",
 } as ExceptionsConfig;

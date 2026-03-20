@@ -1,27 +1,24 @@
-import { Response } from 'express';
-import { isArray } from 'lodash';
-
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { SessionService } from "@fc/session";
 import {
   ArgumentsHost,
   BadRequestException,
   Catch,
   HttpException,
-} from '@nestjs/common';
-import { BaseExceptionFilter } from '@nestjs/core';
-
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
-
-import { httpErrorDisplays } from '../config/http-error-display';
-import { ExceptionsConfig } from '../dto';
+} from "@nestjs/common";
+import { BaseExceptionFilter } from "@nestjs/core";
+import { Response } from "express";
+import { isArray } from "lodash";
+import { httpErrorDisplays } from "../config/http-error-display";
+import { ExceptionsConfig } from "../dto";
 import {
   generateErrorId,
   getCode,
   getDefaultContactHref,
   getStackTraceArray,
-} from '../helpers';
-import { ErrorPageParams } from '../types/error-page-params';
+} from "../helpers";
+import { ErrorPageParams } from "../types/error-page-params";
 
 @Catch(HttpException)
 export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
@@ -46,7 +43,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
       };
 
       if (isArray(badRequestResponse.message)) {
-        message = badRequestResponse.message.join(', ');
+        message = badRequestResponse.message.join(", ");
       }
     }
 
@@ -60,7 +57,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
   }
 
   protected getExceptionCodeFor(exception: HttpException): string {
-    const { prefix } = this.config.get<ExceptionsConfig>('Exceptions');
+    const { prefix } = this.config.get<ExceptionsConfig>("Exceptions");
 
     return getCode(0, exception.getStatus(), prefix);
   }
@@ -98,8 +95,8 @@ export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
     res: Response;
   }): void {
     res.status(exception.getStatus());
-    const idpName = this.session.get('User', 'idpName');
-    const spName = this.session.get('User', 'spName');
+    const idpName = this.session.get("User", "idpName");
+    const spName = this.session.get("User", "spName");
     const contactHref = getDefaultContactHref(error, {
       idpName,
       spName,
@@ -112,6 +109,6 @@ export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
       },
       error,
     };
-    res.render('error', errorPageParams);
+    res.render("error", errorPageParams);
   }
 }

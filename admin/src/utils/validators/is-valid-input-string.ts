@@ -1,4 +1,4 @@
-import { ValidateIf, ValidationOptions } from 'class-validator';
+import { ValidateIf, ValidationOptions } from "class-validator";
 
 /**
  * Regexp to allow most legit alphanum characters
@@ -12,7 +12,7 @@ export const VALID_INPUT_STRING_REGEX =
 
 export function IsValidInputString(validationOptions?: ValidationOptions) {
   return ValidateIf((obj, value) => {
-    if (value === null || value === undefined || value === '') {
+    if (value === null || value === undefined || value === "") {
       return false;
     }
 

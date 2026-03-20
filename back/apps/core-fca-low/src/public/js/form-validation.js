@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', function () {
-  var forms = document.querySelectorAll('form');
+document.addEventListener("DOMContentLoaded", function () {
+  var forms = document.querySelectorAll("form");
 
   forms.forEach(function (form) {
-    var submitButton = form.querySelector('button.fr-btn');
+    var submitButton = form.querySelector("button.fr-btn");
 
     if (!submitButton) {
       return;
@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function checkFormValidity() {
       submitButton.disabled = !form.checkValidity();
     }
-    form.addEventListener('input', checkFormValidity);
-    form.addEventListener('change', checkFormValidity);
+    form.addEventListener("input", checkFormValidity);
+    form.addEventListener("change", checkFormValidity);
     // Autofilled inputs may receive a value from the browser cache after the DOM Content has loaded.
     // This happens with Chrome when we enter an email with `autocomplete="email"`, submit, then go back.
     // See issue "Autofill should trigger a change event on inputs" https://issues.chromium.org/issues/41094857

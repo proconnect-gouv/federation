@@ -1,5 +1,5 @@
-import { Type } from 'class-transformer';
-import { IsObject, IsString, IsUrl } from 'class-validator';
+import { Type } from "class-transformer";
+import { IsObject, IsString, IsUrl } from "class-validator";
 
 class MtlsEndpointAliases {
   @IsString()

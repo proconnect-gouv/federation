@@ -1,13 +1,11 @@
-import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-
-import { ConfigService } from '@fc/config';
-import { CsmrHttpProxyConfig } from '@fc/csmr-http-proxy';
-import { NestLoggerService } from '@fc/logger';
-import { RabbitmqConfig } from '@fc/rabbitmq';
-
-import { AppModule } from './app.module';
-import configuration from './config';
+import { ConfigService } from "@fc/config";
+import { CsmrHttpProxyConfig } from "@fc/csmr-http-proxy";
+import { NestLoggerService } from "@fc/logger";
+import { RabbitmqConfig } from "@fc/rabbitmq";
+import { NestFactory } from "@nestjs/core";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
+import { AppModule } from "./app.module";
+import configuration from "./config";
 
 async function bootstrap() {
   const configOptions = {
@@ -18,7 +16,7 @@ async function bootstrap() {
   const configService = new ConfigService(configOptions);
 
   // Fetch broker options from config
-  const options = configService.get<RabbitmqConfig>('HttpProxyBroker');
+  const options = configService.get<RabbitmqConfig>("HttpProxyBroker");
 
   const appModule = AppModule.forRoot(configService);
 

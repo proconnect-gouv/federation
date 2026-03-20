@@ -1,24 +1,20 @@
-import { Response } from 'express';
-import OidcProvider from 'oidc-provider';
-
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { LoggerService } from '@fc/logger';
-import { OidcProviderConfigAppService } from '@fc/oidc-provider/services';
-import { RedisService } from '@fc/redis';
-
-import { getLoggerMock } from '@mocks/logger';
-import { getRedisServiceMock } from '@mocks/redis';
-
+import { LoggerService } from "@fc/logger";
+import { OidcProviderConfigAppService } from "@fc/oidc-provider/services";
+import { RedisService } from "@fc/redis";
+import { getLoggerMock } from "@mocks/logger";
+import { getRedisServiceMock } from "@mocks/redis";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Response } from "express";
+import OidcProvider from "oidc-provider";
 import {
   OidcProviderMiddlewarePattern,
   OidcProviderMiddlewareStep,
-} from './enums';
-import { OidcProviderInitialisationException } from './exceptions';
-import { COOKIES, OidcProviderService } from './oidc-provider.service';
-import { OidcProviderConfigService } from './services/oidc-provider-config.service';
+} from "./enums";
+import { OidcProviderInitialisationException } from "./exceptions";
+import { COOKIES, OidcProviderService } from "./oidc-provider.service";
+import { OidcProviderConfigService } from "./services/oidc-provider-config.service";
 
-describe('OidcProviderService', () => {
+describe("OidcProviderService", () => {
   let service: OidcProviderService;
 
   const loggerMock = getLoggerMock();
@@ -30,7 +26,7 @@ describe('OidcProviderService', () => {
 
   const BadProviderProxyMock = class {
     constructor() {
-      throw Error('not Working');
+      throw Error("not Working");
     }
   } as any;
 
@@ -39,8 +35,8 @@ describe('OidcProviderService', () => {
   };
   const oidcProviderRedisAdapterMock = class AdapterMock {};
   const configOidcProviderMock = {
-    prefix: '/api',
-    issuer: 'http://foo.bar',
+    prefix: "/api",
+    issuer: "http://foo.bar",
     configuration: {
       adapter: oidcProviderRedisAdapterMock,
       jwks: { keys: [] },
@@ -48,12 +44,12 @@ describe('OidcProviderService', () => {
         devInteractions: { enabled: false },
       },
       cookies: {
-        keys: ['foo'],
+        keys: ["foo"],
       },
     },
   };
 
-  const serviceProviderListMock = [{ name: 'my SP' }];
+  const serviceProviderListMock = [{ name: "my SP" }];
   const serviceProviderServiceMock = {
     getList: jest.fn(),
     getById: jest.fn(),
@@ -109,12 +105,12 @@ describe('OidcProviderService', () => {
 
     configServiceMock.get.mockImplementation((module) => {
       switch (module) {
-        case 'OidcProvider':
+        case "OidcProvider":
           return configOidcProviderMock;
       }
     });
 
-    service['provider'] = providerMock as any;
+    service["provider"] = providerMock as any;
 
     serviceProviderServiceMock.getById.mockResolvedValue(
       serviceProviderListMock[0],
@@ -124,42 +120,42 @@ describe('OidcProviderService', () => {
     );
   });
 
-  describe('onModuleInit', () => {
+  describe("onModuleInit", () => {
     beforeEach(() => {
       // Given
       oidcProviderConfigServiceMock.getConfig.mockReturnValueOnce(
         configOidcProviderMock,
       );
       oidcProviderConfigServiceMock.getConfig.mockImplementation(() => ({
-        paramsMock: 'paramMocks',
+        paramsMock: "paramMocks",
       }));
-      service['getConfig'] = jest.fn().mockResolvedValue({
+      service["getConfig"] = jest.fn().mockResolvedValue({
         ...configOidcProviderMock,
       });
-      service['registerMiddlewares'] = jest.fn();
+      service["registerMiddlewares"] = jest.fn();
     });
 
-    it('should create oidc-provider instance', () => {
+    it("should create oidc-provider instance", () => {
       // When
       service.onModuleInit();
       // Then
       expect(service).toBeDefined();
       // Access to private property via []
-      expect(service['provider']).toBeInstanceOf(OidcProvider.Provider);
+      expect(service["provider"]).toBeInstanceOf(OidcProvider.Provider);
     });
 
-    it('should throw if provider can not be instantied', () => {
+    it("should throw if provider can not be instantied", () => {
       // Given
-      service['ProviderProxy'] = BadProviderProxyMock;
+      service["ProviderProxy"] = BadProviderProxyMock;
       // Then
       expect(() => service.onModuleInit()).toThrow(
         OidcProviderInitialisationException,
       );
     });
 
-    it('should call setProvider to allow oidcProviderConfigApp to retrieve this.provider ', () => {
+    it("should call setProvider to allow oidcProviderConfigApp to retrieve this.provider ", () => {
       // Given
-      service['ProviderProxy'] = ProviderProxyMock;
+      service["ProviderProxy"] = ProviderProxyMock;
       // When
       service.onModuleInit();
       // Then
@@ -167,26 +163,26 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('getProvider', () => {
-    it('should return the oidc-provider instance', () => {
+  describe("getProvider", () => {
+    it("should return the oidc-provider instance", () => {
       // When
       const result = service.getProvider();
       // Then
-      expect(result).toBe(service['provider']);
+      expect(result).toBe(service["provider"]);
     });
   });
 
-  describe('getCallback', () => {
-    it('should return the oidc-provider instance', () => {
+  describe("getCallback", () => {
+    it("should return the oidc-provider instance", () => {
       // When
       const result = service.getCallback();
       // Then
-      expect(result).toBe(service['callback']);
+      expect(result).toBe(service["callback"]);
     });
   });
 
-  describe('registerMiddleware', () => {
-    it('should register middleware but not call callback on middleware registration', () => {
+  describe("registerMiddleware", () => {
+    it("should register middleware but not call callback on middleware registration", () => {
       // Given
       providerMock.middlewares = [];
       const callback = jest.fn();
@@ -202,13 +198,13 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(0);
     });
 
-    it('should call provider use with callback function BEFORE', () => {
+    it("should call provider use with callback function BEFORE", () => {
       // Given
       providerMock.middlewares = [];
       const callback = jest.fn();
       const ctx = { path: OidcProviderMiddlewarePattern.USERINFO };
       const next = jest.fn().mockResolvedValue(undefined);
-      service['runMiddlewareBeforePattern'] = jest.fn();
+      service["runMiddlewareBeforePattern"] = jest.fn();
       // When
       service.registerMiddleware(
         OidcProviderMiddlewareStep.BEFORE,
@@ -217,10 +213,10 @@ describe('OidcProviderService', () => {
       );
       providerMock.middlewares[0].call(null, ctx, next);
       // Then
-      expect(service['runMiddlewareBeforePattern']).toHaveBeenCalledTimes(1);
+      expect(service["runMiddlewareBeforePattern"]).toHaveBeenCalledTimes(1);
     });
 
-    it('should call provider use with callback function AFTER', async () => {
+    it("should call provider use with callback function AFTER", async () => {
       // Given
       providerMock.middlewares = [];
       const callback = jest.fn();
@@ -228,7 +224,7 @@ describe('OidcProviderService', () => {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       const next = jest.fn().mockResolvedValue(undefined);
-      service['runMiddlewareAfterPattern'] = jest.fn();
+      service["runMiddlewareAfterPattern"] = jest.fn();
       // When
       service.registerMiddleware(
         OidcProviderMiddlewareStep.AFTER,
@@ -237,10 +233,10 @@ describe('OidcProviderService', () => {
       );
       await providerMock.middlewares[0].call(null, ctx, next);
       // Then
-      expect(service['runMiddlewareAfterPattern']).toHaveBeenCalledTimes(1);
+      expect(service["runMiddlewareAfterPattern"]).toHaveBeenCalledTimes(1);
     });
 
-    it('should match on path', async () => {
+    it("should match on path", async () => {
       // Given
       providerMock.middlewares = [];
       const callback = jest.fn();
@@ -260,15 +256,15 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('runMiddlewareBeforePattern', () => {
-    it('should call the callback if path param equal pattern with good step', async () => {
+  describe("runMiddlewareBeforePattern", () => {
+    it("should call the callback if path param equal pattern with good step", async () => {
       // Given
       const callback = jest.fn();
       const ctx = {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       // When
-      await service['runMiddlewareBeforePattern'](
+      await service["runMiddlewareBeforePattern"](
         {
           step: OidcProviderMiddlewareStep.BEFORE,
           path: OidcProviderMiddlewarePattern.USERINFO,
@@ -281,17 +277,17 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(1);
     });
 
-    it('should not call the callback method if wrong path is send', async () => {
+    it("should not call the callback method if wrong path is send", async () => {
       // Given
       const callback = jest.fn();
       const ctx = {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       // When
-      await service['runMiddlewareBeforePattern'](
+      await service["runMiddlewareBeforePattern"](
         {
           step: OidcProviderMiddlewareStep.BEFORE,
-          path: '',
+          path: "",
           pattern: OidcProviderMiddlewarePattern.USERINFO,
           ctx,
         },
@@ -301,14 +297,14 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(0);
     });
 
-    it('should not call the callback method if wrong step is send', async () => {
+    it("should not call the callback method if wrong step is send", async () => {
       // Given
       const callback = jest.fn();
       const ctx = {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       // When
-      await service['runMiddlewareBeforePattern'](
+      await service["runMiddlewareBeforePattern"](
         {
           step: OidcProviderMiddlewareStep.AFTER,
           path: OidcProviderMiddlewarePattern.USERINFO,
@@ -322,19 +318,19 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('runMiddlewareAfterPattern', () => {
-    it('should call the callback if route param equal pattern with good step', async () => {
+  describe("runMiddlewareAfterPattern", () => {
+    it("should call the callback if route param equal pattern with good step", async () => {
       // Given
       const callback = jest.fn();
       const ctx = {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       // When
-      await service['runMiddlewareAfterPattern'](
+      await service["runMiddlewareAfterPattern"](
         {
           step: OidcProviderMiddlewareStep.AFTER,
           route: OidcProviderMiddlewarePattern.USERINFO,
-          path: '',
+          path: "",
           pattern: OidcProviderMiddlewarePattern.USERINFO,
           ctx,
         },
@@ -344,17 +340,17 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(1);
     });
 
-    it('should call the callback if path param equal pattern with good step', async () => {
+    it("should call the callback if path param equal pattern with good step", async () => {
       // Given
       const callback = jest.fn();
       const ctx = {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       // When
-      await service['runMiddlewareAfterPattern'](
+      await service["runMiddlewareAfterPattern"](
         {
           step: OidcProviderMiddlewareStep.AFTER,
-          route: '',
+          route: "",
           path: OidcProviderMiddlewarePattern.USERINFO,
           pattern: OidcProviderMiddlewarePattern.USERINFO,
           ctx,
@@ -365,14 +361,14 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(1);
     });
 
-    it('should not call the callback method if wrong step is send', async () => {
+    it("should not call the callback method if wrong step is send", async () => {
       // Given
       const callback = jest.fn();
       const ctx = {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       // When
-      await service['runMiddlewareAfterPattern'](
+      await service["runMiddlewareAfterPattern"](
         {
           step: OidcProviderMiddlewareStep.BEFORE,
           route: OidcProviderMiddlewarePattern.USERINFO,
@@ -386,18 +382,18 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(0);
     });
 
-    it('should not call the callback method if wrong path or route is send', async () => {
+    it("should not call the callback method if wrong path or route is send", async () => {
       // Given
       const callback = jest.fn();
       const ctx = {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       // When
-      await service['runMiddlewareAfterPattern'](
+      await service["runMiddlewareAfterPattern"](
         {
           step: OidcProviderMiddlewareStep.BEFORE,
-          route: '',
-          path: '',
+          route: "",
+          path: "",
           pattern: OidcProviderMiddlewarePattern.USERINFO,
           ctx,
         },
@@ -407,7 +403,7 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(0);
     });
 
-    it('should not call the callback method if context indicates an error in oidc interaction', async () => {
+    it("should not call the callback method if context indicates an error in oidc interaction", async () => {
       // Given
       const callback = jest.fn();
       const ctx = {
@@ -415,10 +411,10 @@ describe('OidcProviderService', () => {
       };
 
       // When
-      await service['runMiddlewareAfterPattern'](
+      await service["runMiddlewareAfterPattern"](
         {
           step: OidcProviderMiddlewareStep.AFTER,
-          route: '',
+          route: "",
           path: OidcProviderMiddlewarePattern.USERINFO,
           pattern: OidcProviderMiddlewarePattern.USERINFO,
           ctx,
@@ -431,18 +427,18 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('getHttpOptions', () => {
+  describe("getHttpOptions", () => {
     const timeoutMock = 42;
-    it('should return the timeout http options', () => {
+    it("should return the timeout http options", () => {
       // Given
       const options = {
         timeout: timeoutMock,
       };
 
-      service['configuration'] = options;
+      service["configuration"] = options;
 
       // When
-      const result = service['getHttpOptions'](options);
+      const result = service["getHttpOptions"](options);
       // Then
       expect(result).toStrictEqual({
         timeout: timeoutMock,
@@ -450,15 +446,15 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('getInteraction', () => {
-    it('should return the result of oidc-provider.interactionDetails()', async () => {
+  describe("getInteraction", () => {
+    it("should return the result of oidc-provider.interactionDetails()", async () => {
       // Given
       const reqMock = {};
       const resMock = {};
       const resolvedValue = {
         prompt: {
-          name: Symbol('name'),
-          reasons: Symbol('reasons'),
+          name: Symbol("name"),
+          reasons: Symbol("reasons"),
         },
       };
       providerMock.interactionDetails.mockResolvedValueOnce(resolvedValue);
@@ -469,13 +465,13 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('abortInteraction', () => {
-    it('should have called this.provider.interactionFinished with parameters if retry params is false', async () => {
+  describe("abortInteraction", () => {
+    it("should have called this.provider.interactionFinished with parameters if retry params is false", async () => {
       // given
-      const resMock = Symbol('mock result');
-      const reqMock = Symbol('mock request');
-      const mockErr = 'this is an error message';
-      const mockErrDescription = 'this is an error description';
+      const resMock = Symbol("mock result");
+      const reqMock = Symbol("mock request");
+      const mockErr = "this is an error message";
+      const mockErrDescription = "this is an error description";
 
       // when
       await service.abortInteraction(reqMock, resMock, {
@@ -495,18 +491,18 @@ describe('OidcProviderService', () => {
       );
     });
 
-    it('should have called this.provider.interactionFinished with error undefined if retry params is true', async () => {
+    it("should have called this.provider.interactionFinished with error undefined if retry params is true", async () => {
       // given
-      const resMock = Symbol('mock result');
-      const reqMock = Symbol('mock request');
+      const resMock = Symbol("mock result");
+      const reqMock = Symbol("mock request");
 
       // when
       await service.abortInteraction(
         reqMock,
         resMock,
         {
-          error: 'error',
-          error_description: 'error description',
+          error: "error",
+          error_description: "error description",
         },
         true,
       );
@@ -523,14 +519,14 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('finishInteraction()', () => {
-    it('should call call finishInteraction with param', async () => {
+  describe("finishInteraction()", () => {
+    it("should call call finishInteraction with param", async () => {
       // Given
-      const reqMock = Symbol('req');
-      const resMock = Symbol('res');
+      const reqMock = Symbol("req");
+      const resMock = Symbol("res");
       const resultMock = {
-        acr: 'spAcrValue',
-        amr: ['spAmrValue'],
+        acr: "spAcrValue",
+        amr: ["spAmrValue"],
       };
       // When
       await service.finishInteraction(reqMock, resMock, resultMock);
@@ -544,8 +540,8 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('clearCookies', () => {
-    it('should iterate over COOKIES and call res.clearCookie with entry from COOKIES', () => {
+  describe("clearCookies", () => {
+    it("should iterate over COOKIES and call res.clearCookie with entry from COOKIES", () => {
       // Given
       const resMock = {
         clearCookie: jest.fn(),

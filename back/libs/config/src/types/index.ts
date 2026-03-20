@@ -1,1 +1,1 @@
-export * from './template-exposed.type';
+export * from "./template-exposed.type";

@@ -1,7 +1,6 @@
-import { readFileSync } from 'fs';
-import { join, resolve } from 'path';
-
-import { parseBoolean } from '../utils/transforms/parse-boolean';
+import { readFileSync } from "fs";
+import { join, resolve } from "path";
+import { parseBoolean } from "../utils/transforms/parse-boolean";
 
 let sslConfig;
 
@@ -23,15 +22,15 @@ if (parseBoolean(process.env.POSTGRES_SSL)) {
 }
 
 const config = {
-  type: 'postgres' as const,
-  host: process.env.DB_HOST || 'localhost',
+  type: "postgres" as const,
+  host: process.env.DB_HOST || "localhost",
   port: parseInt(process.env.DB_PORT, 10),
   database: process.env.DB_DATABASE,
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   synchronize: false, // do not set to true, we do not want schema automatic creation
-  entities: [resolve(__dirname, '../!(node_modules)/**/*.sql.entity{.ts,.js}')],
-  migrations: [join(__dirname, '../migrations/**/*{.ts,.js}')],
+  entities: [resolve(__dirname, "../!(node_modules)/**/*.sql.entity{.ts,.js}")],
+  migrations: [join(__dirname, "../migrations/**/*{.ts,.js}")],
   ssl: sslConfig,
 };
 

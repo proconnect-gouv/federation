@@ -1,1 +1,1 @@
-export * from './session-commit.interceptor';
+export * from "./session-commit.interceptor";

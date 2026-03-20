@@ -1,4 +1,4 @@
 export const enum OidcClientClass {
-  STANDARD = 'Client',
-  FAPI = 'FAPI1Client',
+  STANDARD = "Client",
+  FAPI = "FAPI1Client",
 }

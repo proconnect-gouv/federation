@@ -1,21 +1,21 @@
-import { MongoDriver } from 'typeorm/driver/mongodb/MongoDriver';
-import { Repository } from 'typeorm';
-import { ConfigService } from 'nestjs-config';
-import { v4 as uuidv4 } from 'uuid';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FileStorage } from './file-storage.mongodb.entity';
+import { InjectRepository } from "@nestjs/typeorm";
+import { ConfigService } from "nestjs-config";
+import { Repository } from "typeorm";
+import { MongoDriver } from "typeorm/driver/mongodb/MongoDriver";
+import { v4 as uuidv4 } from "uuid";
+import { FileStorage } from "./file-storage.mongodb.entity";
 
 export class FileStorageService {
   private gridFSBucket;
 
   constructor(
-    @InjectRepository(FileStorage, 'fc-mongo')
+    @InjectRepository(FileStorage, "fc-mongo")
     private readonly fileRepository: Repository<FileStorage>,
     private readonly config: ConfigService,
   ) {}
 
   async onModuleInit() {
-    const { dbName } = await this.config.get('mongo-database');
+    const { dbName } = await this.config.get("mongo-database");
     const mongoDriver = this.fileRepository.manager.connection
       .driver as MongoDriver;
     const nativeConnection = mongoDriver.queryRunner.databaseConnection;
@@ -37,7 +37,7 @@ export class FileStorageService {
 
     Object.assign(fileCopy, file);
 
-    fileCopy.originalname = fileCopy.originalname.trim().replace(/\s+/g, '_');
+    fileCopy.originalname = fileCopy.originalname.trim().replace(/\s+/g, "_");
     fileCopy.originalname = `${Date.now()}_${fileCopy.originalname}`;
 
     const stream = this.gridFSBucket.openUploadStream(fileCopy.originalname, {
@@ -77,18 +77,18 @@ export class FileStorageService {
     const fileFromGridFS: Promise<string> = new Promise((resolve, reject) => {
       const dataArray = [];
 
-      stream.on('data', (data) => {
+      stream.on("data", (data) => {
         dataArray.push(data);
       });
 
-      stream.on('end', () => {
+      stream.on("end", () => {
         const file = Buffer.concat(dataArray);
         resolve(
-          `data:${fileInfos.contentType};base64,${file.toString('base64')}`,
+          `data:${fileInfos.contentType};base64,${file.toString("base64")}`,
         );
       });
 
-      stream.on('error', (error) => {
+      stream.on("error", (error) => {
         reject(error);
       });
 
@@ -129,28 +129,28 @@ export class FileStorageService {
    * @param {string=} filename - le nom à donner au fichier (Optionnel)
    */
   static fromBase64(file: string, filename?: string): FileStorage {
-    const [meta, data] = file.split(',');
+    const [meta, data] = file.split(",");
     const extract = meta.match(/:(.*?);/);
     if (!extract || !(Array.isArray(extract) && extract[1])) {
-      throw new Error('dataURI miss format or void');
+      throw new Error("dataURI miss format or void");
     }
     const [, mime] = extract; // "extract" is like "image/png"
     const regext = /^image\/([a-z]{3,4})/; // extract extension name from mime type
     const [, extension] = mime.match(regext) || [];
     if (!extension) {
-      throw new Error('wrong format of file in dataURI');
+      throw new Error("wrong format of file in dataURI");
     }
 
-    const buffer = Buffer.from(data, 'base64');
+    const buffer = Buffer.from(data, "base64");
 
     const logoFile = new FileStorage();
     logoFile.originalname = `${filename || uuidv4()}${
-      extension ? '.' + extension : ''
+      extension ? "." + extension : ""
     }`;
     logoFile.mimetype = mime;
     logoFile.size = buffer.length;
     logoFile.buffer = buffer;
-    logoFile.encoding = 'buffer';
+    logoFile.encoding = "buffer";
     return logoFile;
   }
 }

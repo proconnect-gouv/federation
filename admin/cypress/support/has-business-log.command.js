@@ -1,6 +1,6 @@
 // Path to script
-const EXEC_TOOL_PATH = './cypress/support/parseBusinessLog.js';
-const LOG_FILE_PATH = Cypress.env('LOG_FILE_PATH');
+const EXEC_TOOL_PATH = "./cypress/support/parseBusinessLog.js";
+const LOG_FILE_PATH = Cypress.env("LOG_FILE_PATH");
 
 export function hasBusinessLog(event) {
   const stringifiedEvent = JSON.stringify(event);
@@ -13,7 +13,7 @@ export function hasBusinessLog(event) {
     `,
   );
 
-  cy.log('Check business logs');
+  cy.log("Check business logs");
 
-  return cy.exec(command).its('exitCode').should('eq', 0);
+  return cy.exec(command).its("exitCode").should("eq", 0);
 }

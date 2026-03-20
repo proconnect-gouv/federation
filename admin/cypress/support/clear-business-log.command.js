@@ -1,4 +1,4 @@
-const LOG_FILE_PATH = Cypress.env('LOG_FILE_PATH');
+const LOG_FILE_PATH = Cypress.env("LOG_FILE_PATH");
 
 export function clearBusinessLog() {
   // -- DEBUG
@@ -11,6 +11,6 @@ export function clearBusinessLog() {
     `,
   );
 
-  cy.log('Clear business logs');
-  return cy.exec(command).its('exitCode').should('eq', 0);
+  cy.log("Clear business logs");
+  return cy.exec(command).its("exitCode").should("eq", 0);
 }

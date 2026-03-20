@@ -1,24 +1,21 @@
-import { ObjectId } from 'mongodb';
-
-import { Test } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-
+import { Test } from "@nestjs/testing";
+import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
+import { ObjectId } from "mongodb";
 import {
-  IdentityProviderService,
   identityProviderFactory,
-} from '../identity-provider';
-import { ScopesService } from '../scopes';
+  IdentityProviderService,
+} from "../identity-provider";
+import { ScopesService } from "../scopes";
+import { serviceProviderFactory } from "./fixtures";
+import { ServiceProviderController } from "./service-provider.controller";
+import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
+import { ServiceProviderService } from "./service-provider.service";
 
-import { ServiceProviderController } from './service-provider.controller';
-import { ServiceProviderFromDb } from './service-provider.mongodb.entity';
-import { ServiceProviderService } from './service-provider.service';
-import { serviceProviderFactory } from './fixtures';
+const id: ObjectId = new ObjectId("5d9c677da8bb151b00720451");
 
-const id: ObjectId = new ObjectId('5d9c677da8bb151b00720451');
+const scopeList = ["openid", "given_name", "family_name", "email"];
 
-const scopeList = ['openid', 'given_name', 'family_name', 'email'];
-
-describe('ServiceProviderController', () => {
+describe("ServiceProviderController", () => {
   let serviceProviderController: ServiceProviderController;
   let service: ServiceProviderService;
 
@@ -45,39 +42,39 @@ describe('ServiceProviderController', () => {
     redirect: jest.fn(),
     status: jest.fn(),
     locals: {
-      APP_ROOT: '/foo/bar',
+      APP_ROOT: "/foo/bar",
     },
   };
 
   const ServiceProviderDtoMock = {
-    name: 'monfs',
+    name: "monfs",
     redirectUri: [
-      'https://url.com',
-      'fc+app01://openid_redirect_url',
-      'FC-app.02://openid_redirect_url',
-      'franceconnect://openid_redirect_url',
+      "https://url.com",
+      "fc+app01://openid_redirect_url",
+      "FC-app.02://openid_redirect_url",
+      "franceconnect://openid_redirect_url",
     ],
     redirectUriLogout: [
-      'https://url.com',
-      'fc+app01://openid_redirect_url',
-      'FC-app.02://openid_redirect_url',
-      'franceconnect://openid_redirect_url',
+      "https://url.com",
+      "fc+app01://openid_redirect_url",
+      "FC-app.02://openid_redirect_url",
+      "franceconnect://openid_redirect_url",
     ],
-    emails: ['v@b.com'],
-    ipAddresses: ['192.0.0.0'],
+    emails: ["v@b.com"],
+    ipAddresses: ["192.0.0.0"],
     active: true,
-    type: 'public',
+    type: "public",
     scopes: [...scopeList],
   };
 
-  const idParam = '05e4fadf-fda6-4ad8-ae75-b7f315843827';
+  const idParam = "05e4fadf-fda6-4ad8-ae75-b7f315843827";
 
   const req = {
     flash: jest.fn(),
     params: { id: idParam },
     session: {},
-    user: { id: idParam, username: 'mocker' },
-    csrfToken: () => 'mygreatcsrftoken',
+    user: { id: idParam, username: "mocker" },
+    csrfToken: () => "mygreatcsrftoken",
   };
 
   const scopesServiceMock = {
@@ -90,39 +87,39 @@ describe('ServiceProviderController', () => {
   };
 
   const scopesGroupMock = {
-    'Direction générale des Finances publiques': [
+    "Direction générale des Finances publiques": [
       {
-        fd: 'typeMockValue',
-        scope: 'scopeMockValue',
-        label: 'labelMockValue',
+        fd: "typeMockValue",
+        scope: "scopeMockValue",
+        label: "labelMockValue",
       },
     ],
     "Caisse nationale de l'assurance maladie": [
       {
-        fd: 'typeMockValue',
-        scope: 'scopeMockValue',
-        label: 'labelMockValue',
+        fd: "typeMockValue",
+        scope: "scopeMockValue",
+        label: "labelMockValue",
       },
     ],
   };
 
   const defaultScopes = [
-    'openid',
-    'given_name',
-    'usual_name',
-    'email',
-    'uid',
-    'siret',
-    'phone',
-    'idp_id',
-    'custom',
+    "openid",
+    "given_name",
+    "usual_name",
+    "email",
+    "uid",
+    "siret",
+    "phone",
+    "idp_id",
+    "custom",
   ];
 
-  const userMock = 'toto';
+  const userMock = "toto";
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([ServiceProviderFromDb], 'fc-mongo')],
+      imports: [TypeOrmModule.forFeature([ServiceProviderFromDb], "fc-mongo")],
       providers: [
         ServiceProviderController,
         ServiceProviderService,
@@ -130,7 +127,7 @@ describe('ServiceProviderController', () => {
         IdentityProviderService,
       ],
     })
-      .overrideProvider(getRepositoryToken(ServiceProviderFromDb, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(ServiceProviderFromDb, "fc-mongo"))
       .useValue(serviceProviderRepository)
       .overrideProvider(ServiceProviderService)
       .useValue(serviceProviderServiceMock)
@@ -157,32 +154,32 @@ describe('ServiceProviderController', () => {
     identityProviderServiceMock.getAll.mockResolvedValue(identityProvidersMock);
   });
 
-  describe('list()', () => {
-    it('returns the list of the available service providers', async () => {
+  describe("list()", () => {
+    it("returns the list of the available service providers", async () => {
       // Setup
       const search = undefined;
       const sortField = undefined;
       const sortDirection = undefined;
-      const page = '0';
-      const limit = '10';
+      const page = "0";
+      const limit = "10";
 
       // Mocking item id
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
+      const itemId: ObjectId = new ObjectId("5d35b91e70332098440d0f85");
 
       // Mocking Items
       const itemTest1 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
-        name: 'Site Usagers',
-        redirect_uris: ['https://url.com'],
-        post_logout_redirect_uris: [''],
-        jwks_uri: 'https://monfs.com/jwks',
-        email: 'v@b.com',
-        IPServerAddressesAndRanges: ['192.0.0.0'],
+        name: "Site Usagers",
+        redirect_uris: ["https://url.com"],
+        post_logout_redirect_uris: [""],
+        jwks_uri: "https://monfs.com/jwks",
+        email: "v@b.com",
+        IPServerAddressesAndRanges: ["192.0.0.0"],
         active: true,
-        type: 'public',
+        type: "public",
         secretCreatedAt: new Date(),
-        client_secret: '76eded44d32b40c0cb1006065',
-        key: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
+        client_secret: "76eded44d32b40c0cb1006065",
+        key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
@@ -190,17 +187,17 @@ describe('ServiceProviderController', () => {
 
       const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
-        name: 'Site Usagers',
-        redirect_uris: ['https://url.com'],
-        post_logout_redirect_uris: [''],
-        jwks_uri: 'https://monfs.com/jwks',
-        email: 'v@b.com',
-        IPServerAddressesAndRanges: ['192.0.0.0'],
+        name: "Site Usagers",
+        redirect_uris: ["https://url.com"],
+        post_logout_redirect_uris: [""],
+        jwks_uri: "https://monfs.com/jwks",
+        email: "v@b.com",
+        IPServerAddressesAndRanges: ["192.0.0.0"],
         active: true,
-        type: 'public',
+        type: "public",
         secretCreatedAt: new Date(),
-        client_secret: '76eded44d32b40c0cb1006065',
-        key: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
+        client_secret: "76eded44d32b40c0cb1006065",
+        key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
@@ -208,22 +205,22 @@ describe('ServiceProviderController', () => {
 
       const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
-        name: 'Site Usagers',
-        redirect_uris: ['https://url.com'],
-        post_logout_redirect_uris: [''],
-        jwks_uri: 'https://monfs.com/jwks',
-        email: 'v@b.com',
-        IPServerAddressesAndRanges: ['192.0.0.0'],
+        name: "Site Usagers",
+        redirect_uris: ["https://url.com"],
+        post_logout_redirect_uris: [""],
+        jwks_uri: "https://monfs.com/jwks",
+        email: "v@b.com",
+        IPServerAddressesAndRanges: ["192.0.0.0"],
         active: true,
-        type: 'public',
+        type: "public",
         secretCreatedAt: new Date(),
-        client_secret: '76eded44d32b40c0cb1006065',
-        key: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
+        client_secret: "76eded44d32b40c0cb1006065",
+        key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
-        userinfo_signed_response_alg: 'ES256',
-        id_token_signed_response_alg: 'ES256',
+        userinfo_signed_response_alg: "ES256",
+        id_token_signed_response_alg: "ES256",
       });
 
       // Mocking return value of serviceProviderController.list(page, limit)
@@ -232,8 +229,8 @@ describe('ServiceProviderController', () => {
         itemCount: 3,
         total: 3,
         pageCount: 0,
-        next: '',
-        previous: '',
+        next: "",
+        previous: "",
       };
 
       // Actions
@@ -242,7 +239,7 @@ describe('ServiceProviderController', () => {
       const paginated = Promise.resolve(serviceProvidersResult);
 
       jest
-        .spyOn(service, 'paginate')
+        .spyOn(service, "paginate")
         .mockImplementation(() => Promise.resolve(paginated));
 
       // Calling the list function
@@ -259,30 +256,30 @@ describe('ServiceProviderController', () => {
       expect(spList.serviceProviders.length).toEqual(3);
     });
 
-    it('call repository with active true', async () => {
+    it("call repository with active true", async () => {
       const search = undefined;
       const sortField = undefined;
       const sortDirection = undefined;
-      const page = '0';
-      const limit = '10';
+      const page = "0";
+      const limit = "10";
 
       // Mocking item id
-      const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
+      const itemId: ObjectId = new ObjectId("5d35b91e70332098440d0f85");
 
       // Mocking Items
       const itemTest1 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
-        name: 'Site Usagers',
-        redirect_uris: ['https://url.com'],
-        post_logout_redirect_uris: [''],
-        jwks_uri: 'https://monfs.com/jwks',
-        email: 'v@b.com',
-        IPServerAddressesAndRanges: ['192.0.0.0'],
+        name: "Site Usagers",
+        redirect_uris: ["https://url.com"],
+        post_logout_redirect_uris: [""],
+        jwks_uri: "https://monfs.com/jwks",
+        email: "v@b.com",
+        IPServerAddressesAndRanges: ["192.0.0.0"],
         active: true,
-        type: 'public',
+        type: "public",
         secretCreatedAt: new Date(),
-        client_secret: '76eded44d32b40c0cb1006065',
-        key: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
+        client_secret: "76eded44d32b40c0cb1006065",
+        key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
@@ -290,17 +287,17 @@ describe('ServiceProviderController', () => {
 
       const itemTest2 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
-        name: 'Site Usagers',
-        redirect_uris: ['https://url.com'],
-        jwks_uri: 'https://monfs.com/jwks',
-        post_logout_redirect_uris: [''],
-        email: 'v@b.com',
-        IPServerAddressesAndRanges: ['192.0.0.0'],
+        name: "Site Usagers",
+        redirect_uris: ["https://url.com"],
+        jwks_uri: "https://monfs.com/jwks",
+        post_logout_redirect_uris: [""],
+        email: "v@b.com",
+        IPServerAddressesAndRanges: ["192.0.0.0"],
         active: true,
-        type: 'public',
+        type: "public",
         secretCreatedAt: new Date(),
-        client_secret: '76eded44d32b40c0cb1006065',
-        key: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
+        client_secret: "76eded44d32b40c0cb1006065",
+        key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
@@ -308,17 +305,17 @@ describe('ServiceProviderController', () => {
 
       const itemTest3 = serviceProviderFactory.createServiceProviderFromDb({
         _id: itemId,
-        name: 'Site Usagers',
-        redirect_uris: ['https://url.com'],
-        jwks_uri: 'https://monfs.com/jwks',
-        post_logout_redirect_uris: [''],
-        email: 'v@b.com',
-        IPServerAddressesAndRanges: ['192.0.0.0'],
+        name: "Site Usagers",
+        redirect_uris: ["https://url.com"],
+        jwks_uri: "https://monfs.com/jwks",
+        post_logout_redirect_uris: [""],
+        email: "v@b.com",
+        IPServerAddressesAndRanges: ["192.0.0.0"],
         active: true,
-        type: 'public',
+        type: "public",
         secretCreatedAt: new Date(),
-        client_secret: '76eded44d32b40c0cb1006065',
-        key: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
+        client_secret: "76eded44d32b40c0cb1006065",
+        key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
         createdAt: new Date(),
         updatedBy: userMock,
         scopes: [...scopeList],
@@ -333,7 +330,7 @@ describe('ServiceProviderController', () => {
       const result = Promise.resolve(serviceProvidersResult);
 
       jest
-        .spyOn(service, 'paginate')
+        .spyOn(service, "paginate")
         .mockImplementation(() => Promise.resolve(result));
 
       await serviceProviderController.list(
@@ -351,8 +348,8 @@ describe('ServiceProviderController', () => {
     });
   });
 
-  describe('createServiceProvider()', () => {
-    it('should call correct params when creating a service provider', async () => {
+  describe("createServiceProvider()", () => {
+    it("should call correct params when creating a service provider", async () => {
       // when
       await serviceProviderController.createServiceProvider(
         ServiceProviderDtoMock,
@@ -373,24 +370,24 @@ describe('ServiceProviderController', () => {
     });
   });
 
-  describe('showCreationForm()', () => {
+  describe("showCreationForm()", () => {
     beforeEach(() => {
       scopesServiceMock.getScopesGroupedByFd.mockResolvedValue(scopesGroupMock);
     });
 
-    it('Should get service provider creation and render view', async () => {
+    it("Should get service provider creation and render view", async () => {
       // when
       const result = await serviceProviderController.showCreationForm(req);
 
       // then
       expect(result).toEqual({
-        csrfToken: 'mygreatcsrftoken',
+        csrfToken: "mygreatcsrftoken",
         scopesGroupedByFd: scopesGroupMock,
         defaultScopes,
       });
     });
 
-    it('Should call IdentityProviderService.getAll and return the fixture array', async () => {
+    it("Should call IdentityProviderService.getAll and return the fixture array", async () => {
       // when
       const result = await serviceProviderController.showCreationForm(req);
 
@@ -403,27 +400,27 @@ describe('ServiceProviderController', () => {
     });
   });
 
-  describe('findOne(), get a service provider', () => {
+  describe("findOne(), get a service provider", () => {
     const serviceProvider = {
       id: idParam,
-      name: 'ProConnect TEST find one',
-      redirect_uris: ['https://proconnect.gouv.fr'],
-      post_logout_redirect_uris: ['https://proconnect.gouv.fr'],
-      status: 'public',
-      jwks_uri: 'https://proconnect.gouv.fr/jwks',
-      active: 'true',
-      IPServerAddressesAndRanges: ['1.1.1.1'],
-      key: 'cb55015c-7fb5-49b4-9006-e523552bc3e7',
+      name: "ProConnect TEST find one",
+      redirect_uris: ["https://proconnect.gouv.fr"],
+      post_logout_redirect_uris: ["https://proconnect.gouv.fr"],
+      status: "public",
+      jwks_uri: "https://proconnect.gouv.fr/jwks",
+      active: "true",
+      IPServerAddressesAndRanges: ["1.1.1.1"],
+      key: "cb55015c-7fb5-49b4-9006-e523552bc3e7",
       scopes: [...scopeList],
-      grant_types: 'default',
-      response_types: 'default',
+      grant_types: "default",
+      response_types: "default",
     };
 
-    it('should get a service Provider and render update view', async () => {
+    it("should get a service Provider and render update view", async () => {
       // setup
       const spMock = {
         ...serviceProvider,
-        email: ['v@b.com'],
+        email: ["v@b.com"],
       };
 
       serviceProviderServiceMock.findById.mockImplementation(() =>
@@ -437,25 +434,25 @@ describe('ServiceProviderController', () => {
 
       // expect
       expect(req.flash).toHaveBeenCalledTimes(1);
-      expect(req.flash).toHaveBeenCalledWith('values', {
+      expect(req.flash).toHaveBeenCalledWith("values", {
         ...spMock,
-        redirectUri: 'https://proconnect.gouv.fr',
-        ipsRanges: '1.1.1.1',
-        postLogoutUri: 'https://proconnect.gouv.fr',
-        emails: 'v@b.com',
-        userinfo_signed_response_alg: '',
+        redirectUri: "https://proconnect.gouv.fr",
+        ipsRanges: "1.1.1.1",
+        postLogoutUri: "https://proconnect.gouv.fr",
+        emails: "v@b.com",
+        userinfo_signed_response_alg: "",
       });
       expect(result).toEqual({
         id: idParam,
-        csrfToken: 'mygreatcsrftoken',
+        csrfToken: "mygreatcsrftoken",
         scopesGroupedByFd: scopesGroupMock,
         scopesSelected: scopeList,
       });
     });
   });
 
-  describe('serviceProviderUpdate()', () => {
-    it('should update a servicerProvider and return to the serviceProvider page', async () => {
+  describe("serviceProviderUpdate()", () => {
+    it("should update a servicerProvider and return to the serviceProvider page", async () => {
       serviceProviderServiceMock.update.mockResolvedValue({
         hasGristPublicationSucceeded: true,
       });
@@ -472,7 +469,7 @@ describe('ServiceProviderController', () => {
       );
     });
 
-    it('should call serviceProviderService.update()', async () => {
+    it("should call serviceProviderService.update()", async () => {
       serviceProviderServiceMock.update.mockResolvedValue({
         hasGristPublicationSucceeded: true,
       });
@@ -512,15 +509,15 @@ describe('ServiceProviderController', () => {
       );
     });
 
-    it('should update a servicerProvider with URIScheme for redirectUri field and return to the serviceProvider page', async () => {
+    it("should update a servicerProvider with URIScheme for redirectUri field and return to the serviceProvider page", async () => {
       serviceProviderServiceMock.update.mockResolvedValue({
         hasGristPublicationSucceeded: true,
       });
       ((ServiceProviderDtoMock.redirectUri = [
-        'https://url.com',
-        'fc+app01://openid_redirect_url',
-        'FC-app.02://openid_redirect_url',
-        'franceconnect://openid_redirect_url',
+        "https://url.com",
+        "fc+app01://openid_redirect_url",
+        "FC-app.02://openid_redirect_url",
+        "franceconnect://openid_redirect_url",
       ]),
         await serviceProviderController.serviceProviderUpdate(
           ServiceProviderDtoMock,
@@ -534,15 +531,15 @@ describe('ServiceProviderController', () => {
       );
     });
 
-    it('should update a servicerProvider with URIScheme for redirectUriLogout field and return to the serviceProvider page', async () => {
+    it("should update a servicerProvider with URIScheme for redirectUriLogout field and return to the serviceProvider page", async () => {
       serviceProviderServiceMock.update.mockResolvedValue({
         hasGristPublicationSucceeded: true,
       });
       ((ServiceProviderDtoMock.redirectUriLogout = [
-        'https://url.com',
-        'fc+app01://openid_redirect_url',
-        'FC-app.02://openid_redirect_url',
-        'franceconnect://openid_redirect_url',
+        "https://url.com",
+        "fc+app01://openid_redirect_url",
+        "FC-app.02://openid_redirect_url",
+        "franceconnect://openid_redirect_url",
       ]),
         await serviceProviderController.serviceProviderUpdate(
           ServiceProviderDtoMock,
@@ -557,11 +554,11 @@ describe('ServiceProviderController', () => {
     });
   });
 
-  describe('Delete service provider', () => {
-    it('Should redirect if service provider is removed', async () => {
+  describe("Delete service provider", () => {
+    it("Should redirect if service provider is removed", async () => {
       // set up
-      const key = 'key';
-      const body = { name: 'name' };
+      const key = "key";
+      const body = { name: "name" };
 
       // action
       serviceProviderServiceMock.deleteServiceProviderById.mockReturnValueOnce(
@@ -586,14 +583,14 @@ describe('ServiceProviderController', () => {
       );
     });
 
-    it('Should not redirect the user but set the res status to 500 for the error handler', async () => {
+    it("Should not redirect the user but set the res status to 500 for the error handler", async () => {
       // set up
-      const key = 'key';
-      const body = { name: 'name' };
+      const key = "key";
+      const body = { name: "name" };
 
       // action
       serviceProviderServiceMock.deleteServiceProviderById.mockRejectedValueOnce(
-        new Error('Try again buddy'),
+        new Error("Try again buddy"),
       );
       await serviceProviderController.deleteServiceProvider(
         key,
@@ -609,18 +606,18 @@ describe('ServiceProviderController', () => {
         serviceProviderServiceMock.deleteServiceProviderById,
       ).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledTimes(1);
-      expect(req.flash).toHaveBeenCalledWith('globalError', 'Try again buddy');
+      expect(req.flash).toHaveBeenCalledWith("globalError", "Try again buddy");
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.redirect).toHaveBeenCalledTimes(0);
     });
   });
 
-  describe('Delete several service provider', () => {
-    it('Should redirect after remove several servide provider', async () => {
+  describe("Delete several service provider", () => {
+    it("Should redirect after remove several servide provider", async () => {
       // set up
       const deleteServiceProviderDto = {
-        deleteItems: ['aaaa', 'bbbb', 'cccc'],
-        name: 'aaa, bbb, ccc',
+        deleteItems: ["aaaa", "bbbb", "cccc"],
+        name: "aaa, bbb, ccc",
       };
 
       // action
@@ -648,16 +645,16 @@ describe('ServiceProviderController', () => {
       );
     });
 
-    it('Should not redirect the user but set the res status to 500 for error handler', async () => {
+    it("Should not redirect the user but set the res status to 500 for error handler", async () => {
       // set up
       const deleteServiceProviderDto = {
-        deleteItems: ['aaaa', 'bbbb'],
-        name: 'aaa, bbb',
+        deleteItems: ["aaaa", "bbbb"],
+        name: "aaa, bbb",
       };
 
       // action
       serviceProviderServiceMock.deleteManyServiceProvidersById.mockRejectedValueOnce(
-        new Error('Try again buddy'),
+        new Error("Try again buddy"),
       );
       await serviceProviderController.deleteServiceProviders(
         deleteServiceProviderDto,
@@ -676,77 +673,77 @@ describe('ServiceProviderController', () => {
         serviceProviderServiceMock.deleteManyServiceProvidersById,
       ).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledTimes(1);
-      expect(req.flash).toHaveBeenCalledWith('globalError', 'Try again buddy');
+      expect(req.flash).toHaveBeenCalledWith("globalError", "Try again buddy");
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.redirect).toHaveBeenCalledTimes(0);
     });
   });
 
-  describe('GenerateNewSecret View', () => {
-    it('should get a service Provider and render generate client secret view', async () => {
+  describe("GenerateNewSecret View", () => {
+    it("should get a service Provider and render generate client secret view", async () => {
       const serviceProvider = {
-        IPServerAddressesAndRanges: ['1.1.1.1'],
-        active: 'true',
-        email: ['v@b.com'],
-        emails: 'v@b.com',
-        ipsRanges: '1.1.1.1',
-        key: 'cb55015c-7fb5-49b4-9006-e523552bc3e7',
-        name: 'ProConnect Generate Secret 9',
-        postLogoutUri: 'https://proconnect.gouv.fr',
-        post_logout_redirect_uris: ['https://proconnect.gouv.fr'],
-        redirectUri: 'https://proconnect.gouv.fr',
-        redirect_uris: ['https://proconnect.gouv.fr'],
-        status: 'public',
+        IPServerAddressesAndRanges: ["1.1.1.1"],
+        active: "true",
+        email: ["v@b.com"],
+        emails: "v@b.com",
+        ipsRanges: "1.1.1.1",
+        key: "cb55015c-7fb5-49b4-9006-e523552bc3e7",
+        name: "ProConnect Generate Secret 9",
+        postLogoutUri: "https://proconnect.gouv.fr",
+        post_logout_redirect_uris: ["https://proconnect.gouv.fr"],
+        redirectUri: "https://proconnect.gouv.fr",
+        redirect_uris: ["https://proconnect.gouv.fr"],
+        status: "public",
         scopes: [...scopeList],
-        grant_types: 'default',
-        response_types: 'default',
+        grant_types: "default",
+        response_types: "default",
         jwksUri: undefined,
-        userinfo_signed_response_alg: '',
+        userinfo_signed_response_alg: "",
       };
 
       serviceProviderServiceMock.findById.mockResolvedValue(serviceProvider);
       scopesServiceMock.getScopesGroupedByFd.mockResolvedValue(scopesGroupMock);
       const result = await serviceProviderController.findOne(idParam, req);
       expect(req.flash).toHaveBeenCalledTimes(1);
-      expect(req.flash).toHaveBeenCalledWith('values', {
+      expect(req.flash).toHaveBeenCalledWith("values", {
         ...serviceProvider,
       });
       expect(result).toEqual({
         id: idParam,
-        csrfToken: 'mygreatcsrftoken',
+        csrfToken: "mygreatcsrftoken",
         scopesGroupedByFd: scopesGroupMock,
         scopesSelected: scopeList,
       });
     });
   });
 
-  describe('Generate a new client secret', () => {
-    it('Should redirect after generation of a client secret', async () => {
+  describe("Generate a new client secret", () => {
+    it("Should redirect after generation of a client secret", async () => {
       // set up
       const serviceProvider = {
-        IPServerAddressesAndRanges: ['1.1.1.1'],
-        active: 'true',
-        email: ['v@b.com'],
-        emails: 'v@b.com',
-        ipsRanges: '1.1.1.1',
-        key: 'cb55015c-7fb5-49b4-9006-e523552bc3e7',
-        name: 'FranceConnect TEST 9',
-        postLogoutUri: 'https://FranceConnect.com',
-        post_logout_redirect_uris: ['https://FranceConnect.com'],
-        redirectUri: 'https://FranceConnect.com',
-        redirect_uris: ['https://FranceConnect.com'],
-        status: 'public',
+        IPServerAddressesAndRanges: ["1.1.1.1"],
+        active: "true",
+        email: ["v@b.com"],
+        emails: "v@b.com",
+        ipsRanges: "1.1.1.1",
+        key: "cb55015c-7fb5-49b4-9006-e523552bc3e7",
+        name: "FranceConnect TEST 9",
+        postLogoutUri: "https://FranceConnect.com",
+        post_logout_redirect_uris: ["https://FranceConnect.com"],
+        redirectUri: "https://FranceConnect.com",
+        redirect_uris: ["https://FranceConnect.com"],
+        status: "public",
         client_secret:
-          '$2b$10$EO3FnI3YKfnnvUlvr084wegEgEPeRPRMdE2VJwMHpAsNkaMv1n9pG',
+          "$2b$10$EO3FnI3YKfnnvUlvr084wegEgEPeRPRMdE2VJwMHpAsNkaMv1n9pG",
         scopes: [...scopeList],
       };
       const generateNewClientSecretDTO = {
-        name: 'aaa, bbb, ccc',
-        key: 'clientID',
-        client_secret: 'ancien secret hash',
+        name: "aaa, bbb, ccc",
+        key: "clientID",
+        client_secret: "ancien secret hash",
       };
 
-      const key = 'key';
+      const key = "key";
 
       // action
       serviceProviderServiceMock.generateNewSecret.mockReturnValueOnce(
@@ -768,15 +765,15 @@ describe('ServiceProviderController', () => {
       );
     });
 
-    it('Should redirect after generation of a client secret', async () => {
+    it("Should redirect after generation of a client secret", async () => {
       // set up
       const generateNewClientSecretDTO = {
-        name: 'aaa, bbb, ccc',
-        key: 'clientID',
-        client_secret: 'ancien secret hash',
+        name: "aaa, bbb, ccc",
+        key: "clientID",
+        client_secret: "ancien secret hash",
       };
 
-      const key = 'key';
+      const key = "key";
 
       // action
       serviceProviderServiceMock.generateNewSecret.mockRejectedValueOnce(
@@ -799,34 +796,34 @@ describe('ServiceProviderController', () => {
     });
   });
 
-  describe('GET: paginate[mongodb] serviceProvider (list) ', () => {
-    const itemId: ObjectId = new ObjectId('5d35b91e70332098440d0f85');
+  describe("GET: paginate[mongodb] serviceProvider (list) ", () => {
+    const itemId: ObjectId = new ObjectId("5d35b91e70332098440d0f85");
 
     const defaultSpMock = {
       _id: itemId,
-      name: 'Site Usagers',
-      redirect_uris: ['https://url.com'],
-      post_logout_redirect_uris: [''],
-      jwks_uri: 'https://monfs.com/jwks',
-      email: 'v@b.com',
-      IPServerAddressesAndRanges: ['192.0.0.0'],
+      name: "Site Usagers",
+      redirect_uris: ["https://url.com"],
+      post_logout_redirect_uris: [""],
+      jwks_uri: "https://monfs.com/jwks",
+      email: "v@b.com",
+      IPServerAddressesAndRanges: ["192.0.0.0"],
       active: true,
-      type: 'public',
-      secretCreatedAt: new Date('2019-11-08T09:52:29.984Z'),
-      client_secret: '76eded44d32b40c0cb1006065',
-      key: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
-      createdAt: new Date('2019-11-08T09:52:29.984Z'),
+      type: "public",
+      secretCreatedAt: new Date("2019-11-08T09:52:29.984Z"),
+      client_secret: "76eded44d32b40c0cb1006065",
+      key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+      createdAt: new Date("2019-11-08T09:52:29.984Z"),
       updatedBy: userMock,
       scopes: [...scopeList],
     };
 
-    it('should return a list of service providers even with sort/action as undefined values', async () => {
+    it("should return a list of service providers even with sort/action as undefined values", async () => {
       // Setup
       const search = undefined;
       const sortField = undefined;
       const sortDirection = undefined;
-      const page = '0';
-      const limit = '10';
+      const page = "0";
+      const limit = "10";
 
       // Mocking return value of serviceProviderController.list(page, limit)
       const serviceProvidersResult = {
@@ -834,8 +831,8 @@ describe('ServiceProviderController', () => {
         itemCount: 2,
         totalItems: 2,
         pageCount: 0,
-        next: '',
-        previous: '',
+        next: "",
+        previous: "",
       };
 
       // Actions
@@ -858,20 +855,20 @@ describe('ServiceProviderController', () => {
       expect(result.serviceProviders).toEqual([defaultSpMock, defaultSpMock]);
     });
 
-    it('should return call paginate with correct params when list', async () => {
+    it("should return call paginate with correct params when list", async () => {
       // Setup
-      const page = '0';
-      const limit = '10';
-      const sortField = 'name';
-      const sortDirection = 'desc';
-      const search = 'joker';
+      const page = "0";
+      const limit = "10";
+      const sortField = "name";
+      const sortDirection = "desc";
+      const search = "joker";
 
       // Mocking return value of serviceProviderController.list(page, limit)
       const serviceProvidersResult = {
         items: [
           {
             id: itemId,
-            name: 'joker',
+            name: "joker",
             ...defaultSpMock,
           },
         ],
@@ -897,9 +894,9 @@ describe('ServiceProviderController', () => {
       expect(serviceProviderServiceMock.paginate).toHaveBeenCalledWith({
         page: 0,
         limit: 10,
-        search: { fields: ['name', 'key'], value: search },
+        search: { fields: ["name", "key"], value: search },
         sort: { field: sortField, direction: sortDirection },
-        defaultSort: { field: 'createdAt', direction: 'desc' },
+        defaultSort: { field: "createdAt", direction: "desc" },
       });
     });
   });

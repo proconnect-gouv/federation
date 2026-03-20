@@ -1,4 +1,4 @@
-import { IsObject, IsString } from 'class-validator';
+import { IsObject, IsString } from "class-validator";
 
 export class FormValidationErrorDto {
   @IsString()

@@ -1,8 +1,8 @@
-import { Test } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { LocalsInterceptor } from './meta/locals.interceptor';
+import { Test } from "@nestjs/testing";
+import { AppController } from "./app.controller";
+import { LocalsInterceptor } from "./meta/locals.interceptor";
 
-describe('AppController', () => {
+describe("AppController", () => {
   let appController: AppController;
   let localsInterceptor: LocalsInterceptor;
 
@@ -15,13 +15,13 @@ describe('AppController', () => {
       roles: [],
     },
     csrfToken: function csrfToken() {
-      return 'mygreatcsrftoken';
+      return "mygreatcsrftoken";
     },
   };
   const res = {
     redirect: jest.fn(),
     locals: {
-      APP_ROOT: '/foo/bar',
+      APP_ROOT: "/foo/bar",
     },
   };
   beforeEach(async () => {
@@ -39,10 +39,10 @@ describe('AppController', () => {
     jest.resetAllMocks();
   });
 
-  describe('index', () => {
-    it('should redirect the user who is a new user to the enrollment page', async () => {
+  describe("index", () => {
+    it("should redirect the user who is a new user to the enrollment page", async () => {
       // setup
-      req.user.roles = ['inactive_admin', 'new_account'];
+      req.user.roles = ["inactive_admin", "new_account"];
       // action
       await appController.index(req, res);
       // assertion
@@ -51,9 +51,9 @@ describe('AppController', () => {
         `${res.locals.APP_ROOT}/account/enrollment`,
       );
     });
-    it('should redirect the user who is not an operator to the service provider page', async () => {
+    it("should redirect the user who is not an operator to the service provider page", async () => {
       // setup
-      req.user.roles = ['operator'];
+      req.user.roles = ["operator"];
       // action
       await appController.index(req, res);
       // assertion
@@ -63,9 +63,9 @@ describe('AppController', () => {
       );
     });
 
-    it('should redirect the user who is an admin to the account page', async () => {
+    it("should redirect the user who is an admin to the account page", async () => {
       // setup
-      req.user.roles = ['admin'];
+      req.user.roles = ["admin"];
       // action
       await appController.index(req, res);
       // assertion

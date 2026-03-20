@@ -1,18 +1,15 @@
-import deepFreeze from 'deep-freeze';
-
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-
-import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
-
-import { NotificationInterface } from './interfaces';
+import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import deepFreeze from "deep-freeze";
+import { NotificationInterface } from "./interfaces";
 
 @Injectable()
 export class NotificationsService {
   private listCache: NotificationInterface[];
 
   constructor(
-    @InjectModel('Notifications')
+    @InjectModel("Notifications")
     private readonly notificationsModel,
     private readonly mongooseWatcher: MongooseCollectionOperationWatcherHelper,
   ) {}
@@ -45,7 +42,7 @@ export class NotificationsService {
       )
       // Sort must be identical to what is done on CL
       // In this case it will put the last created first
-      .sort({ _id: 'desc' })
+      .sort({ _id: "desc" })
       .lean();
 
     return result;

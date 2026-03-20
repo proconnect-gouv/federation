@@ -1,1 +1,1 @@
-export * from './bridge-http-proxy.service';
+export * from "./bridge-http-proxy.service";

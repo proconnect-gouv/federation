@@ -1,22 +1,20 @@
-import { Body, Controller, Get, Headers, Post, Req, Res } from '@nestjs/common';
-
-import { validateDto } from '@fc/common';
-import { validationOptions } from '@fc/config';
+import { validateDto } from "@fc/common";
+import { validationOptions } from "@fc/config";
 import {
   BridgeError,
   BridgeProtocol,
   BridgeResponse,
   MessageType,
-} from '@fc/hybridge-http-proxy';
-import { LoggerService } from '@fc/logger';
-
-import { BridgeHttpProxyErrorDto, BridgeHttpProxyResponseDto } from '../dto';
-import { BridgeHttpProxyRoutes } from '../enums';
+} from "@fc/hybridge-http-proxy";
+import { LoggerService } from "@fc/logger";
+import { Body, Controller, Get, Headers, Post, Req, Res } from "@nestjs/common";
+import { BridgeHttpProxyErrorDto, BridgeHttpProxyResponseDto } from "../dto";
+import { BridgeHttpProxyRoutes } from "../enums";
 import {
   BridgeHttpProxyCsmrException,
   BridgeHttpProxyMissingVariableException,
-} from '../exceptions';
-import { BridgeHttpProxyService } from '../services';
+} from "../exceptions";
+import { BridgeHttpProxyService } from "../services";
 
 @Controller()
 export class BridgeHttpProxyController {
@@ -27,7 +25,7 @@ export class BridgeHttpProxyController {
 
   @Get(BridgeHttpProxyRoutes.HEALTHCHECK_LIVE)
   healthcheck(): string {
-    return 'ok';
+    return "ok";
   }
 
   /**
@@ -67,10 +65,10 @@ export class BridgeHttpProxyController {
 
   private async allRequest(req, headers, res, body?: string): Promise<void> {
     const { originalUrl, method } = req;
-    const { host, 'x-forwarded-proto': xForwardedProto } = headers;
+    const { host, "x-forwarded-proto": xForwardedProto } = headers;
 
     this.logger.info(
-      `${method} ${xForwardedProto || 'https'}://${host}${originalUrl}`,
+      `${method} ${xForwardedProto || "https"}://${host}${originalUrl}`,
     );
 
     const response: BridgeProtocol<object> = await this.broker.proxyRequest(

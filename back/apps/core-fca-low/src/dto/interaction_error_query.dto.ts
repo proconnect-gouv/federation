@@ -1,5 +1,5 @@
-import { Transform } from 'class-transformer';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { Transform } from "class-transformer";
+import { IsOptional, IsString, MaxLength } from "class-validator";
 
 export class InteractionErrorQuery {
   @IsOptional()

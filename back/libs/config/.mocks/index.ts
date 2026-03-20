@@ -1,1 +1,1 @@
-export * from './config.service.mock';
+export * from "./config.service.mock";

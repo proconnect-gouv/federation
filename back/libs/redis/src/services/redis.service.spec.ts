@@ -1,16 +1,12 @@
-import Redis from 'ioredis';
+import { ConfigService } from "@fc/config";
+import { getConfigMock } from "@mocks/config";
+import { Test, TestingModule } from "@nestjs/testing";
+import Redis from "ioredis";
+import { RedisService } from "./redis.service";
 
-import { Test, TestingModule } from '@nestjs/testing';
+jest.mock("ioredis");
 
-import { ConfigService } from '@fc/config';
-
-import { getConfigMock } from '@mocks/config';
-
-import { RedisService } from './redis.service';
-
-jest.mock('ioredis');
-
-describe('RedisService', () => {
+describe("RedisService", () => {
   let service: RedisService;
 
   const configMock = getConfigMock();
@@ -28,12 +24,12 @@ describe('RedisService', () => {
     configMock.get.mockReturnValue({});
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('onModuleInit', () => {
-    it('should create redis client', () => {
+  describe("onModuleInit", () => {
+    it("should create redis client", () => {
       // When
       service.onModuleInit();
 

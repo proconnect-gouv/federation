@@ -1,1 +1,1 @@
-export * from './unknown-configuration-name.error';
+export * from "./unknown-configuration-name.error";

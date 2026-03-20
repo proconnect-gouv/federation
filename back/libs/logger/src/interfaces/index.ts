@@ -1,1 +1,1 @@
-export * from './logger-plugin.interface';
+export * from "./logger-plugin.interface";

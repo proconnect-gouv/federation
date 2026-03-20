@@ -1,1 +1,1 @@
-export * from './session-store-key.token';
+export * from "./session-store-key.token";

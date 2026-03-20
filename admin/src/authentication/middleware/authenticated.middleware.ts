@@ -1,4 +1,4 @@
-import { NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import { NestMiddleware, UnauthorizedException } from "@nestjs/common";
 
 export class AuthenticatedMiddleware implements NestMiddleware {
   use(req, res, next: () => void): any {

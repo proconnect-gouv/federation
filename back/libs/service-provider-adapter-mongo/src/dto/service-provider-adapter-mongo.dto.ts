@@ -1,4 +1,4 @@
-import { Transform } from 'class-transformer';
+import { Transform } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -7,7 +7,7 @@ import {
   IsString,
   Matches,
   MinLength,
-} from 'class-validator';
+} from "class-validator";
 
 const URL_REGEX = /^https?:\/\/[^/].+$/;
 
@@ -38,8 +38,8 @@ export class ServiceProviderAdapterMongoDTO {
   readonly scopes: string[];
 
   @IsString()
-  @IsIn(['ES256', 'RS256', 'HS256'])
-  readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';
+  @IsIn(["ES256", "RS256", "HS256"])
+  readonly id_token_signed_response_alg: "ES256" | "RS256" | "HS256";
 
   @IsOptional()
   @IsString()
@@ -69,8 +69,8 @@ export class ServiceProviderAdapterMongoDTO {
   // 'public' = sp that accepts public servants only
   // 'private' = sp that also accepts private sector employees
   @IsString()
-  @IsIn(['private', 'public'])
-  readonly type: 'private' | 'public';
+  @IsIn(["private", "public"])
+  readonly type: "private" | "public";
 
   @IsOptional()
   @IsArray()

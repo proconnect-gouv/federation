@@ -1,25 +1,24 @@
-import express, { urlencoded } from 'express';
-import { get } from 'lodash';
-import { strict as assert } from 'node:assert';
-import path from 'node:path';
-import Provider from 'oidc-provider-v8';
-
-import configuration from './oidc-provider-support/configuration';
-import MemoryAdapter from './oidc-provider-support/memory_adapter.js';
-import { createUser, getDefaultUser, parseFormDataValue } from './user-data';
+import express, { urlencoded } from "express";
+import { get } from "lodash";
+import { strict as assert } from "node:assert";
+import path from "node:path";
+import Provider from "oidc-provider-v8";
+import configuration from "./oidc-provider-support/configuration";
+import MemoryAdapter from "./oidc-provider-support/memory_adapter.js";
+import { createUser, getDefaultUser, parseFormDataValue } from "./user-data";
 
 const {
   PORT = 3000,
   FQDN,
-  STYLESHEET_URL = 'https://cdn.jsdelivr.net/gh/raj457036/attriCSS@master/themes/brightlight-green.css',
+  STYLESHEET_URL = "https://cdn.jsdelivr.net/gh/raj457036/attriCSS@master/themes/brightlight-green.css",
   APP_NAME,
 } = process.env;
 
 const app = express();
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '/'));
-app.enable('trust proxy');
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "/"));
+app.enable("trust proxy");
 
 const provider = new Provider(`https://${FQDN}`, {
   adapter: MemoryAdapter,
@@ -27,7 +26,7 @@ const provider = new Provider(`https://${FQDN}`, {
 });
 provider.proxy = true;
 
-app.get('/interaction/:uid', async (req, res, next) => {
+app.get("/interaction/:uid", async (req, res, next) => {
   try {
     const { uid, prompt, params, session } = await provider.interactionDetails(
       req,
@@ -38,19 +37,19 @@ app.get('/interaction/:uid', async (req, res, next) => {
 
     const defaultUser = getDefaultUser();
 
-    if (prompt.name === 'login') {
-      return res.render('index', {
+    if (prompt.name === "login") {
+      return res.render("index", {
         title: APP_NAME,
         stylesheetUrl: STYLESHEET_URL,
         uid,
         email: params?.login_hint || defaultUser.email,
         defaultUser,
         acr:
-          get(prompt.details, 'acr.value') ||
-          get(prompt.details, 'acr.values.0') ||
-          params?.acr_values?.split(' ')[0] ||
-          'eidas1',
-        amr: 'pwd',
+          get(prompt.details, "acr.value") ||
+          get(prompt.details, "acr.values.0") ||
+          params?.acr_values?.split(" ")[0] ||
+          "eidas1",
+        amr: "pwd",
         debugInfo: JSON.stringify(
           {
             oidcProviderPrompt: prompt,
@@ -64,7 +63,7 @@ app.get('/interaction/:uid', async (req, res, next) => {
       });
     }
 
-    return next(new Error('unsupported_prompt'));
+    return next(new Error("unsupported_prompt"));
   } catch (err) {
     return next(err);
   }
@@ -74,7 +73,7 @@ async function normalLogin(req, res) {
   const {
     prompt: { name },
   } = await provider.interactionDetails(req, res);
-  assert.equal(name, 'login');
+  assert.equal(name, "login");
   const { acr, amr, ...userAttributes } = req.body;
   const userId = createUser(userAttributes);
 
@@ -89,12 +88,12 @@ async function normalLogin(req, res) {
     ts: Date.now(),
   };
 
-  if (acr !== '') {
+  if (acr !== "") {
     loginResult.acr = parseFormDataValue(acr);
   }
 
-  if (amr !== '') {
-    loginResult.amr = amr.split(',');
+  if (amr !== "") {
+    loginResult.amr = amr.split(",");
   }
 
   const result = {
@@ -106,12 +105,12 @@ async function normalLogin(req, res) {
 }
 
 app.post(
-  '/interaction/:uid/login',
+  "/interaction/:uid/login",
   urlencoded({ extended: false }),
   async (req, res, next) => {
     try {
       let result;
-      if (req.body['error']) {
+      if (req.body["error"]) {
         result = req.body;
       } else {
         result = await normalLogin(req, res);

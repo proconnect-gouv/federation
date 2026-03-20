@@ -1,130 +1,126 @@
-import { plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
-
-import { EventBus } from '@nestjs/cqrs';
-import { getModelToken } from '@nestjs/mongoose';
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
-import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
-import { IdentityProviderMetadata } from '@fc/oidc';
-
-import { getLoggerMock } from '@mocks/logger';
-
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
+import { LoggerService } from "@fc/logger";
+import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
+import { IdentityProviderMetadata } from "@fc/oidc";
+import { getLoggerMock } from "@mocks/logger";
+import { EventBus } from "@nestjs/cqrs";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { plainToInstance } from "class-transformer";
+import { validate, ValidationError } from "class-validator";
 import {
   DiscoveryIdpAdapterMongoDTO,
   NoDiscoveryIdpAdapterMongoDTO,
-} from './dto';
-import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
-import { IdentityProvider } from './schemas';
+} from "./dto";
+import { IdentityProviderAdapterMongoService } from "./identity-provider-adapter-mongo.service";
+import { IdentityProvider } from "./schemas";
 
-jest.mock('class-validator', () => ({
-  ...jest.requireActual('class-validator'),
+jest.mock("class-validator", () => ({
+  ...jest.requireActual("class-validator"),
   validate: jest.fn(),
 }));
 
-jest.mock('class-transformer', () => ({
-  ...jest.requireActual('class-transformer'),
+jest.mock("class-transformer", () => ({
+  ...jest.requireActual("class-transformer"),
   plainToInstance: jest.fn(),
 }));
 
-describe('IdentityProviderAdapterMongoService', () => {
+describe("IdentityProviderAdapterMongoService", () => {
   let service: IdentityProviderAdapterMongoService;
 
   const legacyIdentityProviderMock = {
     active: true,
     authzURL:
-      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
-    clientID: 'clientID',
-    client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize",
+    clientID: "clientID",
+    client_secret: "7vhnwzo1yUVOJT9GJ91gD5oid56effu1",
     discovery: false,
     endSessionURL:
-      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
-    id_token_encrypted_response_alg: 'RSA-OAEP',
-    id_token_encrypted_response_enc: 'A256GCM',
-    id_token_signed_response_alg: 'HS256',
-    jwksURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
-    name: 'provider1',
-    title: 'provider 1',
-    tokenURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
-    token_endpoint_auth_method: 'client_secret_post',
-    uid: 'uid',
-    url: 'https://core-fcp-high.docker.dev-franceconnect.fr',
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end",
+    id_token_encrypted_response_alg: "RSA-OAEP",
+    id_token_encrypted_response_enc: "A256GCM",
+    id_token_signed_response_alg: "HS256",
+    jwksURL: "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs",
+    name: "provider1",
+    title: "provider 1",
+    tokenURL: "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token",
+    token_endpoint_auth_method: "client_secret_post",
+    uid: "uid",
+    url: "https://core-fcp-high.docker.dev-franceconnect.fr",
     userInfoURL:
-      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo',
-    userinfo_encrypted_response_alg: 'RSA-OAEP',
-    userinfo_encrypted_response_enc: 'A256GCM',
-    userinfo_signed_response_alg: 'HS256',
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo",
+    userinfo_encrypted_response_alg: "RSA-OAEP",
+    userinfo_encrypted_response_enc: "A256GCM",
+    userinfo_signed_response_alg: "HS256",
   };
 
   const legacyToOpenIdPropertyNameOutputMock = {
     active: true,
     authorization_endpoint:
-      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
-    client_id: 'clientID',
-    client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize",
+    client_id: "clientID",
+    client_secret: "7vhnwzo1yUVOJT9GJ91gD5oid56effu1",
     discovery: false,
     end_session_endpoint:
-      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
-    id_token_encrypted_response_alg: 'RSA-OAEP',
-    id_token_encrypted_response_enc: 'A256GCM',
-    id_token_signed_response_alg: 'HS256',
-    issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
-    jwks_uri: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
-    name: 'provider1',
-    response_types: ['code'],
-    revocation_endpoint_auth_method: 'client_secret_post',
-    title: 'provider 1',
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end",
+    id_token_encrypted_response_alg: "RSA-OAEP",
+    id_token_encrypted_response_enc: "A256GCM",
+    id_token_signed_response_alg: "HS256",
+    issuer: "https://core-fcp-high.docker.dev-franceconnect.fr",
+    jwks_uri: "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs",
+    name: "provider1",
+    response_types: ["code"],
+    revocation_endpoint_auth_method: "client_secret_post",
+    title: "provider 1",
     token_endpoint:
-      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
-    token_endpoint_auth_method: 'client_secret_post',
-    uid: 'uid',
-    userinfo_encrypted_response_alg: 'RSA-OAEP',
-    userinfo_encrypted_response_enc: 'A256GCM',
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token",
+    token_endpoint_auth_method: "client_secret_post",
+    uid: "uid",
+    userinfo_encrypted_response_alg: "RSA-OAEP",
+    userinfo_encrypted_response_enc: "A256GCM",
     userinfo_endpoint:
-      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo',
-    userinfo_signed_response_alg: 'HS256',
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo",
+    userinfo_signed_response_alg: "HS256",
   };
 
   const validIdentityProviderMock = {
     active: true,
     client: {
-      client_id: 'clientID',
-      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-      id_token_encrypted_response_alg: 'RSA-OAEP',
-      id_token_encrypted_response_enc: 'A256GCM',
-      id_token_signed_response_alg: 'HS256',
-      response_types: ['code'],
-      revocation_endpoint_auth_method: 'client_secret_post',
-      token_endpoint_auth_method: 'client_secret_post',
-      userinfo_encrypted_response_alg: 'RSA-OAEP',
-      userinfo_encrypted_response_enc: 'A256GCM',
-      userinfo_signed_response_alg: 'HS256',
+      client_id: "clientID",
+      client_secret: "7vhnwzo1yUVOJT9GJ91gD5oid56effu1",
+      id_token_encrypted_response_alg: "RSA-OAEP",
+      id_token_encrypted_response_enc: "A256GCM",
+      id_token_signed_response_alg: "HS256",
+      response_types: ["code"],
+      revocation_endpoint_auth_method: "client_secret_post",
+      token_endpoint_auth_method: "client_secret_post",
+      userinfo_encrypted_response_alg: "RSA-OAEP",
+      userinfo_encrypted_response_enc: "A256GCM",
+      userinfo_signed_response_alg: "HS256",
     },
     discovery: false,
     issuer: {
       authorization_endpoint:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
+        "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize",
       end_session_endpoint:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
-      issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
+        "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end",
+      issuer: "https://core-fcp-high.docker.dev-franceconnect.fr",
       jwks_uri:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
+        "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs",
       token_endpoint:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
+        "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token",
       userinfo_endpoint:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo',
+        "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo",
     },
-    name: 'provider1',
-    title: 'provider 1',
-    uid: 'uid',
+    name: "provider1",
+    title: "provider 1",
+    uid: "uid",
   };
 
   const invalidIdentityProviderMock = {
     ...legacyIdentityProviderMock,
-    active: 'NOT_A_BOOLEAN',
+    active: "NOT_A_BOOLEAN",
   };
 
   const identityProviderListMock = [legacyIdentityProviderMock];
@@ -157,7 +153,7 @@ describe('IdentityProviderAdapterMongoService', () => {
     operationTypeWatcher: jest.fn(),
   };
 
-  const identityProviderModel = getModelToken('IdentityProvider');
+  const identityProviderModel = getModelToken("IdentityProvider");
 
   const validateMock = jest.mocked(validate);
   const plainToInstanceMock = jest.mocked(plainToInstance);
@@ -203,25 +199,25 @@ describe('IdentityProviderAdapterMongoService', () => {
     plainToInstanceMock.mockImplementation((_dto, obj) => obj);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('onModuleInit', () => {
+  describe("onModuleInit", () => {
     beforeEach(() => {
       // Given
-      service['getList'] = jest.fn();
+      service["getList"] = jest.fn();
     });
 
-    it('should call getList', async () => {
+    it("should call getList", async () => {
       // When
       await service.onModuleInit();
       // Then
-      expect(service['getList']).toHaveBeenCalledTimes(1);
-      expect(service['getList']).toHaveBeenCalledWith();
+      expect(service["getList"]).toHaveBeenCalledTimes(1);
+      expect(service["getList"]).toHaveBeenCalledWith();
     });
 
-    it('should call watchWith from mongooseHelper', async () => {
+    it("should call watchWith from mongooseHelper", async () => {
       // When
       await service.onModuleInit();
       // Then
@@ -230,12 +226,12 @@ describe('IdentityProviderAdapterMongoService', () => {
       ).toHaveBeenCalledTimes(1);
     });
   });
-  describe('refreshCache', () => {
+  describe("refreshCache", () => {
     beforeEach(() => {
       // Given
       service.getList = jest.fn();
     });
-    it('should call getList method with true value in param', async () => {
+    it("should call getList method with true value in param", async () => {
       // When
       await service.refreshCache();
       // Then
@@ -244,29 +240,29 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
   });
 
-  describe('getIdpsByFqdn', () => {
+  describe("getIdpsByFqdn", () => {
     const idpListMock = [
-      { id: '1', fqdns: ['default-fqdn.fr'] },
-      { id: '2', fqdns: ['abc.fr'] },
-      { id: '3', fqdns: ['foo.fr', 'default-fqdn.fr'] },
+      { id: "1", fqdns: ["default-fqdn.fr"] },
+      { id: "2", fqdns: ["abc.fr"] },
+      { id: "3", fqdns: ["foo.fr", "default-fqdn.fr"] },
     ];
     beforeEach(() => {
       service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
     });
 
-    it('should return a list of FqdnToIdentityProvider', async () => {
-      const idpsByFqdn = await service.getIdpsByFqdn('default-fqdn.fr');
+    it("should return a list of FqdnToIdentityProvider", async () => {
+      const idpsByFqdn = await service.getIdpsByFqdn("default-fqdn.fr");
       expect(idpsByFqdn).toStrictEqual([idpListMock[0], idpListMock[2]]);
     });
 
-    it('should return an empty array if no corresponding FI is found for a fqdn', async () => {
-      const fqdnToIdps = await service.getIdpsByFqdn('non-existing-fqdn.fr');
+    it("should return an empty array if no corresponding FI is found for a fqdn", async () => {
+      const fqdnToIdps = await service.getIdpsByFqdn("non-existing-fqdn.fr");
       expect(fqdnToIdps).toStrictEqual([]);
     });
   });
 
-  describe('getFqdnFromEmail', () => {
-    it('should only return the undefined from an undefined email address', () => {
+  describe("getFqdnFromEmail", () => {
+    it("should only return the undefined from an undefined email address", () => {
       // When
       const fqdn = service.getFqdnFromEmail(undefined);
 
@@ -274,52 +270,52 @@ describe('IdentityProviderAdapterMongoService', () => {
       expect(fqdn).toBe(undefined);
     });
 
-    it('should only return the full qualified domain name from an email address', () => {
+    it("should only return the full qualified domain name from an email address", () => {
       // When
-      const fqdn = service.getFqdnFromEmail('hermione.granger@hogwards.uk');
+      const fqdn = service.getFqdnFromEmail("hermione.granger@hogwards.uk");
 
       // Then
-      expect(fqdn).toBe('hogwards.uk');
+      expect(fqdn).toBe("hogwards.uk");
     });
 
-    it('should only return the full qualified domain name from an email address with two @', () => {
+    it("should only return the full qualified domain name from an email address with two @", () => {
       // When
       const fqdn = service.getFqdnFromEmail(
-        'hermione@grangerhogwards@hogwards.uk',
+        "hermione@grangerhogwards@hogwards.uk",
       );
 
       // Then
-      expect(fqdn).toBe('hogwards.uk');
+      expect(fqdn).toBe("hogwards.uk");
     });
 
-    it('should only return the FQDN from a FQDN', () => {
+    it("should only return the FQDN from a FQDN", () => {
       // When
-      const fqdn = service.getFqdnFromEmail('hogwards.uk');
+      const fqdn = service.getFqdnFromEmail("hogwards.uk");
 
       // Then
-      expect(fqdn).toBe('hogwards.uk');
+      expect(fqdn).toBe("hogwards.uk");
     });
 
     const emailToTest = [
       {
-        value: 'hermione.granger@hogwards.uK',
-        expectedFqdn: 'hogwards.uk',
+        value: "hermione.granger@hogwards.uK",
+        expectedFqdn: "hogwards.uk",
       },
       {
-        value: 'hermione.granger@hogwardS.uk',
-        expectedFqdn: 'hogwards.uk',
+        value: "hermione.granger@hogwardS.uk",
+        expectedFqdn: "hogwards.uk",
       },
       {
-        value: 'hermione.granger@hogwardS.uK',
-        expectedFqdn: 'hogwards.uk',
+        value: "hermione.granger@hogwardS.uK",
+        expectedFqdn: "hogwards.uk",
       },
       {
-        value: 'hermione.granger@HOGWARDS.UK',
-        expectedFqdn: 'hogwards.uk',
+        value: "hermione.granger@HOGWARDS.UK",
+        expectedFqdn: "hogwards.uk",
       },
     ];
     it.each(emailToTest)(
-      'should always return qualified domain name in lower case from an email address with upper case',
+      "should always return qualified domain name in lower case from an email address with upper case",
       ({ value, expectedFqdn }) => {
         // When
         const fqdn = service.getFqdnFromEmail(value);
@@ -330,43 +326,43 @@ describe('IdentityProviderAdapterMongoService', () => {
     );
   });
 
-  describe('getIdpsByEmail', () => {
+  describe("getIdpsByEmail", () => {
     beforeEach(() => {
       service.getIdpsByFqdn = jest.fn();
     });
 
-    it('should only return the full qualified domain name from an email address', async () => {
+    it("should only return the full qualified domain name from an email address", async () => {
       // When
-      await service.getIdpsByEmail('hermione.granger@hogwarts.uk');
+      await service.getIdpsByEmail("hermione.granger@hogwarts.uk");
 
       // Then
       expect(service.getIdpsByFqdn).toHaveBeenCalledTimes(1);
-      expect(service.getIdpsByFqdn).toHaveBeenCalledWith('hogwarts.uk');
+      expect(service.getIdpsByFqdn).toHaveBeenCalledWith("hogwarts.uk");
     });
 
-    it('should only return the full qualified domain name from an email address with two @', async () => {
+    it("should only return the full qualified domain name from an email address with two @", async () => {
       // When
-      await service.getIdpsByEmail('hermione@grangerhogwarts@hogwarts.uk');
+      await service.getIdpsByEmail("hermione@grangerhogwarts@hogwarts.uk");
 
       // Then
       expect(service.getIdpsByFqdn).toHaveBeenCalledTimes(1);
-      expect(service.getIdpsByFqdn).toHaveBeenCalledWith('hogwarts.uk');
+      expect(service.getIdpsByFqdn).toHaveBeenCalledWith("hogwarts.uk");
     });
   });
 
-  describe('legacyToOpenIdPropertyName', () => {
-    it('should return identity provider with change legacy property name by openid property name', () => {
+  describe("legacyToOpenIdPropertyName", () => {
+    it("should return identity provider with change legacy property name by openid property name", () => {
       // setup
-      service['decryptClientSecret'] = jest
+      service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce(legacyIdentityProviderMock.client_secret);
 
       configMock.get.mockReturnValueOnce({
-        fqdn: 'core-fcp-high.docker.dev-franceconnect.fr',
+        fqdn: "core-fcp-high.docker.dev-franceconnect.fr",
       });
 
       // action
-      const result = service['legacyToOpenIdPropertyName'](
+      const result = service["legacyToOpenIdPropertyName"](
         legacyIdentityProviderMock as unknown as IdentityProvider,
       );
 
@@ -375,10 +371,10 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
   });
 
-  describe('toPanvaFormat', () => {
-    it('should return an object with data for FC and properties issuer and client for panva', () => {
+  describe("toPanvaFormat", () => {
+    it("should return an object with data for FC and properties issuer and client for panva", () => {
       // action
-      const result = service['toPanvaFormat'](
+      const result = service["toPanvaFormat"](
         legacyToOpenIdPropertyNameOutputMock as unknown,
       );
 
@@ -387,13 +383,13 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
   });
 
-  describe('findAllIdentityProvider', () => {
-    it('should resolve', async () => {
+  describe("findAllIdentityProvider", () => {
+    it("should resolve", async () => {
       // arrange
       validateMock.mockResolvedValueOnce([]);
 
       // action
-      const result = service['findAllIdentityProvider']();
+      const result = service["findAllIdentityProvider"]();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -401,29 +397,29 @@ describe('IdentityProviderAdapterMongoService', () => {
       await result;
     });
 
-    it('should have called find once', async () => {
+    it("should have called find once", async () => {
       // arrange
       validateMock.mockResolvedValueOnce([]);
 
       // action
-      await service['findAllIdentityProvider']();
+      await service["findAllIdentityProvider"]();
 
       // expect
       expect(repositoryMock.find).toHaveBeenCalledTimes(1);
     });
 
-    it('should return result of type list', async () => {
+    it("should return result of type list", async () => {
       // setup
       validateMock.mockResolvedValueOnce([]);
 
       // action
-      const result = await service['findAllIdentityProvider']();
+      const result = await service["findAllIdentityProvider"]();
 
       // expect
       expect(result).toEqual([legacyIdentityProviderMock]);
     });
 
-    it('should log an alert if an entry is excluded by the DTO', async () => {
+    it("should log an alert if an entry is excluded by the DTO", async () => {
       // setup
       const invalidIdentityProviderListMock = [
         legacyIdentityProviderMock,
@@ -438,7 +434,7 @@ describe('IdentityProviderAdapterMongoService', () => {
         .mockResolvedValueOnce(invalidIdentityProviderListMock);
 
       // action
-      await service['findAllIdentityProvider']();
+      await service["findAllIdentityProvider"]();
 
       // expect
       expect(loggerMock.error).toHaveBeenCalledTimes(1);
@@ -448,7 +444,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       });
     });
 
-    it('should filter out any entry exluded by the DTO', async () => {
+    it("should filter out any entry exluded by the DTO", async () => {
       // setup
       const invalidIdentityProviderListMock = [
         legacyIdentityProviderMock,
@@ -463,26 +459,26 @@ describe('IdentityProviderAdapterMongoService', () => {
         .mockResolvedValueOnce(invalidIdentityProviderListMock);
 
       // action
-      const result = await service['findAllIdentityProvider']();
+      const result = await service["findAllIdentityProvider"]();
 
       // expect
       expect(result).toEqual(identityProviderListMock);
     });
   });
 
-  describe('getList', () => {
+  describe("getList", () => {
     beforeEach(() => {
-      service['findAllIdentityProvider'] = jest
+      service["findAllIdentityProvider"] = jest
         .fn()
         .mockResolvedValueOnce(identityProviderListMock);
     });
 
-    it('should resolve', async () => {
+    it("should resolve", async () => {
       // setup
       const legacyToOpenIdMock = jest.spyOn<
         IdentityProviderAdapterMongoService,
         any
-      >(service, 'legacyToOpenIdPropertyName');
+      >(service, "legacyToOpenIdPropertyName");
       legacyToOpenIdMock.mockImplementationOnce((data) => data);
 
       // action
@@ -494,27 +490,27 @@ describe('IdentityProviderAdapterMongoService', () => {
       await result;
     });
 
-    it('should return a list of valides identity providers', async () => {
+    it("should return a list of valides identity providers", async () => {
       // setup
       // change client_id and client_secret in validIdentityProviderMock
       const expected = [
         Object.assign(validIdentityProviderMock, {
           client: Object.assign(
             {
-              client_id: 'clientID',
-              client_secret: 'client_secret',
+              client_id: "clientID",
+              client_secret: "client_secret",
             },
             validIdentityProviderMock.client,
           ),
         }),
       ];
 
-      service['decryptClientSecret'] = jest
+      service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce(expected[0].client.client_secret);
 
       configMock.get.mockReturnValueOnce({
-        fqdn: 'core-fcp-high.docker.dev-franceconnect.fr',
+        fqdn: "core-fcp-high.docker.dev-franceconnect.fr",
       });
 
       // action
@@ -524,74 +520,74 @@ describe('IdentityProviderAdapterMongoService', () => {
       expect(result).toEqual(expected);
     });
 
-    it('should call findAll method if refreshCache is true', async () => {
+    it("should call findAll method if refreshCache is true", async () => {
       // Given
       const refresh = true;
       const listMock = [
         {
-          client_id: 'foo',
+          client_id: "foo",
         },
         {
-          client_id: 'bar',
+          client_id: "bar",
         },
       ];
-      service['findAllIdentityProvider'] = jest
+      service["findAllIdentityProvider"] = jest
         .fn()
         .mockResolvedValue(listMock);
-      service['legacyToOpenIdPropertyName'] = jest
+      service["legacyToOpenIdPropertyName"] = jest
         .fn()
         .mockImplementation((input) => input);
       // When
       const result = await service.getList(refresh);
       // Then
-      expect(service['findAllIdentityProvider']).toHaveBeenCalledTimes(1);
-      expect(service['findAllIdentityProvider']).toHaveBeenCalledWith();
-      expect(service['legacyToOpenIdPropertyName']).toHaveBeenCalledTimes(
+      expect(service["findAllIdentityProvider"]).toHaveBeenCalledTimes(1);
+      expect(service["findAllIdentityProvider"]).toHaveBeenCalledWith();
+      expect(service["legacyToOpenIdPropertyName"]).toHaveBeenCalledTimes(
         listMock.length,
       );
       expect(result).toEqual(listMock);
     });
 
-    it('should not call findAll method if refreshCache is not set and cache exists', async () => {
+    it("should not call findAll method if refreshCache is not set and cache exists", async () => {
       // Given
-      service['listCache'] = [
+      service["listCache"] = [
         {
           client: {
-            client_id: 'foo',
+            client_id: "foo",
           },
         } as IdentityProviderMetadata,
         {
           client: {
-            client_id: 'bar',
+            client_id: "bar",
           },
         } as IdentityProviderMetadata,
       ];
-      service['findAllIdentityProvider'] = jest.fn();
+      service["findAllIdentityProvider"] = jest.fn();
       // When
       const result = await service.getList();
       // Then
-      expect(result).toBe(service['listCache']);
-      expect(service['findAllIdentityProvider']).toHaveBeenCalledTimes(0);
+      expect(result).toBe(service["listCache"]);
+      expect(service["findAllIdentityProvider"]).toHaveBeenCalledTimes(0);
     });
   });
 
-  describe('getById', () => {
+  describe("getById", () => {
     // Given
-    const idpListMock = [{ uid: 'wizz' }, { uid: 'foo' }, { uid: 'bar' }];
+    const idpListMock = [{ uid: "wizz" }, { uid: "foo" }, { uid: "bar" }];
 
-    it('should return an existing IdP', async () => {
+    it("should return an existing IdP", async () => {
       // Given
-      const idMock = 'foo';
+      const idMock = "foo";
       service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
       // When
       const result = await service.getById(idMock);
       // Then
-      expect(result).toEqual({ uid: 'foo' });
+      expect(result).toEqual({ uid: "foo" });
     });
 
-    it('should return undefined for non existing IdP', async () => {
+    it("should return undefined for non existing IdP", async () => {
       // Given
-      const idMock = 'nope';
+      const idMock = "nope";
       service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
       // When
       const result = await service.getById(idMock);
@@ -599,9 +595,9 @@ describe('IdentityProviderAdapterMongoService', () => {
       expect(result).toBeUndefined();
     });
 
-    it('should pass refresh flag to getList method', async () => {
+    it("should pass refresh flag to getList method", async () => {
       // Given
-      const idMock = 'foo';
+      const idMock = "foo";
       const refresh = true;
       service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
       // When
@@ -612,134 +608,134 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
   });
 
-  describe('decryptClientSecret', () => {
-    it('should get clientSecretEncryptKey and decryptClientSecretFeature from config', () => {
+  describe("decryptClientSecret", () => {
+    it("should get clientSecretEncryptKey and decryptClientSecretFeature from config", () => {
       // Given
-      const clientSecretMock = 'some string';
+      const clientSecretMock = "some string";
       const decryptClientSecretFeature = false;
-      const clientSecretEncryptKey = 'Key';
+      const clientSecretEncryptKey = "Key";
       configMock.get.mockReturnValueOnce({
         clientSecretEncryptKey,
         decryptClientSecretFeature,
       });
 
       // When
-      service['decryptClientSecret'](clientSecretMock);
+      service["decryptClientSecret"](clientSecretMock);
       // Then
       expect(configMock.get).toHaveBeenCalledTimes(1);
     });
 
-    it('should return null if decryptClientSecretFeature is false', () => {
+    it("should return null if decryptClientSecretFeature is false", () => {
       // Given
-      const clientSecretMock = 'some string';
+      const clientSecretMock = "some string";
       const decryptClientSecretFeature = false;
-      const clientSecretEncryptKey = 'Key';
+      const clientSecretEncryptKey = "Key";
       configMock.get.mockReturnValue({
         clientSecretEncryptKey,
         decryptClientSecretFeature,
       });
-      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+      cryptographyMock.decrypt.mockReturnValue("totoIsDecrypted");
 
       // When
-      const result = service['decryptClientSecret'](clientSecretMock);
+      const result = service["decryptClientSecret"](clientSecretMock);
       // Then
       expect(result).toEqual(null);
     });
 
-    it('should call decrypt with enc key from config if decryptClientSecretFeature is true', () => {
+    it("should call decrypt with enc key from config if decryptClientSecretFeature is true", () => {
       // Given
-      const clientSecretMock = 'some string';
+      const clientSecretMock = "some string";
       const decryptClientSecretFeature = true;
-      const clientSecretEncryptKey = 'Key';
+      const clientSecretEncryptKey = "Key";
       configMock.get.mockReturnValue({
         clientSecretEncryptKey,
         decryptClientSecretFeature,
       });
-      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+      cryptographyMock.decrypt.mockReturnValue("totoIsDecrypted");
       // When
-      service['decryptClientSecret'](clientSecretMock);
+      service["decryptClientSecret"](clientSecretMock);
       // Then
       expect(cryptographyMock.decrypt).toHaveBeenCalledTimes(1);
       expect(cryptographyMock.decrypt).toHaveBeenCalledWith(
         clientSecretEncryptKey,
-        Buffer.from(clientSecretMock, 'base64'),
+        Buffer.from(clientSecretMock, "base64"),
       );
     });
 
-    it('should return clientSecretEncryptKey if decryptClientSecretFeature is true', () => {
+    it("should return clientSecretEncryptKey if decryptClientSecretFeature is true", () => {
       // Given
-      const clientSecretMock = 'some string';
+      const clientSecretMock = "some string";
       const decryptClientSecretFeature = true;
-      const clientSecretEncryptKey = 'Key';
+      const clientSecretEncryptKey = "Key";
       configMock.get.mockReturnValue({
         clientSecretEncryptKey,
         decryptClientSecretFeature,
       });
-      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+      cryptographyMock.decrypt.mockReturnValue("totoIsDecrypted");
 
       // When
-      const result = service['decryptClientSecret'](clientSecretMock);
+      const result = service["decryptClientSecret"](clientSecretMock);
       // Then
-      expect(result).toEqual('totoIsDecrypted');
+      expect(result).toEqual("totoIsDecrypted");
     });
   });
 
-  describe('getIdentityProviderDTO', () => {
-    it('should return discovery identity provider DTO', () => {
+  describe("getIdentityProviderDTO", () => {
+    it("should return discovery identity provider DTO", () => {
       // Given
       const discovery = true;
 
       // When
-      const result = service['getIdentityProviderDTO'](discovery);
+      const result = service["getIdentityProviderDTO"](discovery);
       // Then
       expect(result).toBe(DiscoveryIdpAdapterMongoDTO);
     });
 
-    it('should return identity provider DTO', () => {
+    it("should return identity provider DTO", () => {
       // Given
       const discovery = false;
 
       // When
-      const result = service['getIdentityProviderDTO'](discovery);
+      const result = service["getIdentityProviderDTO"](discovery);
       // Then
       expect(result).toBe(NoDiscoveryIdpAdapterMongoDTO);
     });
   });
 
-  describe('isActiveById()', () => {
-    it('should return true if idp is active', async () => {
+  describe("isActiveById()", () => {
+    it("should return true if idp is active", async () => {
       // Given
-      service['getById'] = jest
+      service["getById"] = jest
         .fn()
         .mockResolvedValue(validIdentityProviderMock);
       // When
-      const result = await service.isActiveById('id');
+      const result = await service.isActiveById("id");
       // Then
       expect(result).toBeTrue();
     });
 
-    it('should return false if idp is disabled', async () => {
+    it("should return false if idp is disabled", async () => {
       // Given
-      service['getById'] = jest
+      service["getById"] = jest
         .fn()
         .mockResolvedValue({ ...validIdentityProviderMock, active: false });
       // When
-      const result = await service.isActiveById('id');
+      const result = await service.isActiveById("id");
       // Then
       expect(result).toBeFalse();
     });
 
-    it('should return false if idp is not found', async () => {
+    it("should return false if idp is not found", async () => {
       // Given
       const validIdentityProviderMockWithoutActiveKey = {
         ...validIdentityProviderMock,
       };
       delete validIdentityProviderMockWithoutActiveKey.active;
-      service['getById'] = jest
+      service["getById"] = jest
         .fn()
         .mockResolvedValue(validIdentityProviderMockWithoutActiveKey);
       // When
-      const result = await service.isActiveById('id');
+      const result = await service.isActiveById("id");
       // Then
       expect(result).toBeFalse();
     });

@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsIn,
@@ -8,7 +8,7 @@ import {
   IsString,
   MinLength,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
 class HttpsOptions {
   @IsString()
@@ -76,7 +76,7 @@ export class AppConfig {
 
   @IsOptional()
   @IsString()
-  @IsIn(['Europe/Paris'])
+  @IsIn(["Europe/Paris"])
   readonly timezone?: string;
 
   @IsOptional()

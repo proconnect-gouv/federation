@@ -1,11 +1,9 @@
-import { AsyncLocalStorage } from 'async_hooks';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AsyncLocalStorage } from "async_hooks";
+import { AsyncLocalStorageService } from "./async-local-storage.service";
+import { AsyncLocalStorageNotFoundException } from "./exceptions";
 
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { AsyncLocalStorageService } from './async-local-storage.service';
-import { AsyncLocalStorageNotFoundException } from './exceptions';
-
-describe('AsyncLocalStorageService', () => {
+describe("AsyncLocalStorageService", () => {
   let service: AsyncLocalStorageService<{ key: unknown }>;
 
   const mapMock = {
@@ -31,32 +29,32 @@ describe('AsyncLocalStorageService', () => {
     );
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('onModuleInit', () => {
-    it('should instanciate an AsyncLocalStorageService', () => {
+  describe("onModuleInit", () => {
+    it("should instanciate an AsyncLocalStorageService", () => {
       // When
       service.onModuleInit();
 
       // Then
-      expect(service['storage']).toBeInstanceOf(AsyncLocalStorage);
+      expect(service["storage"]).toBeInstanceOf(AsyncLocalStorage);
     });
   });
 
-  describe('Mocked Storage', () => {
+  describe("Mocked Storage", () => {
     beforeEach(() => {
       asyncLocalStorageMock.getStore.mockReturnValue(mapMock);
 
-      service['storage'] =
+      service["storage"] =
         asyncLocalStorageMock as unknown as AsyncLocalStorage<
           Map<string, unknown>
         >;
     });
 
-    describe('run', () => {
-      it('should call AsyncLocalStorage run method with a map and the given callback', () => {
+    describe("run", () => {
+      it("should call AsyncLocalStorage run method with a map and the given callback", () => {
         // Given
         const callback = () => {};
 
@@ -72,10 +70,10 @@ describe('AsyncLocalStorageService', () => {
       });
     });
 
-    describe('mandatory', () => {
-      it('should throw an AsyncLocalStorageNotFoundException if the storage is not found', () => {
+    describe("mandatory", () => {
+      it("should throw an AsyncLocalStorageNotFoundException if the storage is not found", () => {
         // Given
-        service['storage'] = undefined;
+        service["storage"] = undefined;
 
         // When / Then
         expect(() => service.mandatory).toThrowError(
@@ -83,7 +81,7 @@ describe('AsyncLocalStorageService', () => {
         );
       });
 
-      it('should return the service if the storage is found', () => {
+      it("should return the service if the storage is found", () => {
         // When
         const result = service.mandatory;
 
@@ -92,18 +90,18 @@ describe('AsyncLocalStorageService', () => {
       });
     });
 
-    describe('get', () => {
-      it('should call AsyncLocalStorage getStore method', () => {
+    describe("get", () => {
+      it("should call AsyncLocalStorage getStore method", () => {
         // When
-        service.get('key');
+        service.get("key");
 
         // Then
         expect(asyncLocalStorageMock.getStore).toHaveBeenCalledTimes(1);
       });
 
-      it('should call Map get method with the given key', () => {
+      it("should call Map get method with the given key", () => {
         // Given
-        const key = 'key';
+        const key = "key";
 
         // When
         service.get(key);
@@ -113,54 +111,54 @@ describe('AsyncLocalStorageService', () => {
         expect(mapMock.get).toHaveBeenCalledWith(key);
       });
 
-      it('should return the value returned by the Map get method', () => {
+      it("should return the value returned by the Map get method", () => {
         // Given
-        const value = 'value';
+        const value = "value";
         jest.mocked(mapMock.get).mockReturnValueOnce(value);
 
         // When
-        const result = service.get('key');
+        const result = service.get("key");
 
         // Then
         expect(result).toEqual(value);
       });
 
-      it('should return undefined if the store is not found', () => {
+      it("should return undefined if the store is not found", () => {
         // Given
-        service['getStore'] = jest.fn().mockReturnValueOnce(undefined);
+        service["getStore"] = jest.fn().mockReturnValueOnce(undefined);
 
         // When
-        const result = service.get('key');
+        const result = service.get("key");
 
         // Then
         expect(result).toBeUndefined();
       });
 
-      it('should return undefined if the key is not found', () => {
+      it("should return undefined if the key is not found", () => {
         // Given
         jest.mocked(mapMock.get).mockReturnValueOnce(undefined);
 
         // When
-        const result = service.get('key');
+        const result = service.get("key");
 
         // Then
         expect(result).toBeUndefined();
       });
     });
 
-    describe('set', () => {
-      it('should call AsyncLocalStorage getStore method', () => {
+    describe("set", () => {
+      it("should call AsyncLocalStorage getStore method", () => {
         // When
-        service.set('key', 'value');
+        service.set("key", "value");
 
         // Then
         expect(asyncLocalStorageMock.getStore).toHaveBeenCalledTimes(1);
       });
 
-      it('should call Map set method with the given key and value', () => {
+      it("should call Map set method with the given key and value", () => {
         // Given
-        const key = 'key';
-        const value = 'value';
+        const key = "key";
+        const value = "value";
 
         // When
         service.set(key, value);
@@ -171,33 +169,33 @@ describe('AsyncLocalStorageService', () => {
       });
     });
 
-    describe('getStore', () => {
-      it('should call AsyncLocalStorage getStore method', () => {
+    describe("getStore", () => {
+      it("should call AsyncLocalStorage getStore method", () => {
         // When
-        service['getStore']();
+        service["getStore"]();
 
         // Then
         expect(asyncLocalStorageMock.getStore).toHaveBeenCalledTimes(1);
       });
 
-      it('should return the value returned by the AsyncLocalStorage getStore method', () => {
+      it("should return the value returned by the AsyncLocalStorage getStore method", () => {
         // Given
         const value = mapMock;
         jest.mocked(asyncLocalStorageMock.getStore).mockReturnValueOnce(value);
 
         // When
-        const result = service['getStore']();
+        const result = service["getStore"]();
 
         // Then
         expect(result).toEqual(value);
       });
 
-      it('should return undefined if the storage is not found', () => {
+      it("should return undefined if the storage is not found", () => {
         // Given
-        service['storage'] = undefined;
+        service["storage"] = undefined;
 
         // When
-        const result = service['getStore']();
+        const result = service["getStore"]();
 
         // Then
         expect(result).toBeUndefined();

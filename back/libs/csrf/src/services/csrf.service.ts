@@ -1,10 +1,8 @@
-import { Injectable } from '@nestjs/common';
-
-import { CryptographyService } from '@fc/cryptography';
-import { SessionService } from '@fc/session';
-
-import { CsrfSession } from '../dto';
-import { CsrfBadTokenException } from '../exceptions';
+import { CryptographyService } from "@fc/cryptography";
+import { SessionService } from "@fc/session";
+import { Injectable } from "@nestjs/common";
+import { CsrfSession } from "../dto";
+import { CsrfBadTokenException } from "../exceptions";
 
 @Injectable()
 export class CsrfService {
@@ -14,7 +12,7 @@ export class CsrfService {
   ) {}
 
   getOrCreate(): string {
-    const existingToken = this.session.get<CsrfSession>('Csrf')?.csrfToken;
+    const existingToken = this.session.get<CsrfSession>("Csrf")?.csrfToken;
     if (existingToken) {
       return existingToken;
     }
@@ -22,7 +20,7 @@ export class CsrfService {
     const csrfToken: string =
       this.cryptography.genRandomString(csrfTokenLength);
 
-    this.session.set('Csrf', { csrfToken });
+    this.session.set("Csrf", { csrfToken });
 
     return csrfToken;
   }
@@ -36,7 +34,7 @@ export class CsrfService {
   }
 
   isValid(input: string): boolean {
-    const session = this.session.get<CsrfSession>('Csrf');
+    const session = this.session.get<CsrfSession>("Csrf");
 
     if (!session) {
       return false;

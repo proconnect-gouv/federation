@@ -1,12 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
+import { Test, TestingModule } from "@nestjs/testing";
+import { IDENTITY_PROVIDER_SERVICE } from "../tokens";
+import { OidcClientConfigService } from "./oidc-client-config.service";
 
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
-
-import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
-import { OidcClientConfigService } from './oidc-client-config.service';
-
-describe('OidcClientConfigService', () => {
+describe("OidcClientConfigService", () => {
   let service: OidcClientConfigService;
 
   const configServiceMock = {
@@ -36,14 +34,14 @@ describe('OidcClientConfigService', () => {
     jest.resetAllMocks();
 
     IdentityProviderServiceMock.getList.mockResolvedValue(
-      'IdentityProviderServiceMock Resolve Value',
+      "IdentityProviderServiceMock Resolve Value",
     );
 
     configServiceMock.get.mockImplementation((module: string) => {
       switch (module) {
-        case 'OidcClient':
+        case "OidcClient":
           return {
-            issuer: 'http://foo.bar',
+            issuer: "http://foo.bar",
             configuration: {},
             jwks: { keys: [] },
           };
@@ -51,14 +49,14 @@ describe('OidcClientConfigService', () => {
     });
   });
 
-  describe('constructor', () => {
-    it('should be defined', () => {
+  describe("constructor", () => {
+    it("should be defined", () => {
       expect(service).toBeDefined();
     });
   });
 
-  describe('get', () => {
-    it('should call IdentityProviderServiceMock.getList() with refresh parameter', async () => {
+  describe("get", () => {
+    it("should call IdentityProviderServiceMock.getList() with refresh parameter", async () => {
       // When
       await service.get(true);
       // Then
@@ -71,16 +69,16 @@ describe('OidcClientConfigService', () => {
       await service.get();
       // Then
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('OidcClient');
+      expect(configServiceMock.get).toHaveBeenCalledWith("OidcClient");
     });
 
-    it('should return data from identity.getList', async () => {
+    it("should return data from identity.getList", async () => {
       // When
       const result = await service.get();
       // Then
-      expect(result).toHaveProperty('providers');
+      expect(result).toHaveProperty("providers");
       expect(result.providers).toBe(
-        'IdentityProviderServiceMock Resolve Value',
+        "IdentityProviderServiceMock Resolve Value",
       );
     });
   });

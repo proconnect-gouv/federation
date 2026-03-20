@@ -1,11 +1,11 @@
-import { ConfigService, InjectConfig } from 'nestjs-config';
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
-  createDecipheriv,
-  randomBytes,
   createCipheriv,
+  createDecipheriv,
   createHash,
-} from 'crypto';
+  randomBytes,
+} from "crypto";
+import { ConfigService, InjectConfig } from "nestjs-config";
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;
@@ -19,19 +19,19 @@ export class SecretManagerService {
     const nonce = randomBytes(NONCE_LENGTH);
 
     const cipher = createCipheriv(
-      'aes-256-gcm',
-      this.config.get('app').cipherPass,
+      "aes-256-gcm",
+      this.config.get("app").cipherPass,
       nonce,
       {
         authTagLength: AUTHTAG_LENGTH,
       },
     );
 
-    const ciphertext = cipher.update(data, 'utf8');
+    const ciphertext = cipher.update(data, "utf8");
     cipher.final();
     const tag = cipher.getAuthTag();
 
-    return Buffer.concat([nonce, tag, ciphertext]).toString('base64');
+    return Buffer.concat([nonce, tag, ciphertext]).toString("base64");
   }
 
   /**
@@ -39,10 +39,10 @@ export class SecretManagerService {
    * @see https://crypto.stackexchange.com/a/18092
    */
   decrypt(cipher: string): any {
-    const cipherBuffer = Buffer.from(cipher, 'base64');
+    const cipherBuffer = Buffer.from(cipher, "base64");
 
     if (Buffer.byteLength(cipherBuffer) <= CIPHER_HEAD_LENGTH) {
-      throw new Error('Authentication failed !');
+      throw new Error("Authentication failed !");
     }
 
     const nonce = cipherBuffer.slice(0, 12);
@@ -50,8 +50,8 @@ export class SecretManagerService {
     const ciphertext = cipherBuffer.slice(28);
 
     const decipher = createDecipheriv(
-      'aes-256-gcm',
-      this.config.get('app').cipherPass,
+      "aes-256-gcm",
+      this.config.get("app").cipherPass,
       nonce,
       {
         authTagLength: AUTHTAG_LENGTH,
@@ -60,12 +60,12 @@ export class SecretManagerService {
 
     decipher.setAuthTag(tag);
 
-    const receivedPlaintext = decipher.update(ciphertext, null, 'utf8');
+    const receivedPlaintext = decipher.update(ciphertext, null, "utf8");
 
     try {
       decipher.final();
     } catch (err) {
-      throw new Error('Authentication failed !');
+      throw new Error("Authentication failed !");
     }
 
     return receivedPlaintext;
@@ -73,8 +73,8 @@ export class SecretManagerService {
 
   public generateSHA256(): string {
     const lengthValue = 256;
-    const hashFunction = 'sha256';
-    const digestType = 'hex';
+    const hashFunction = "sha256";
+    const digestType = "hex";
     const length = lengthValue;
     const random = randomBytes(length);
 

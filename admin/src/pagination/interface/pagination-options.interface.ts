@@ -6,4 +6,4 @@ export interface PaginationOptions {
   defaultSort: { field: string; direction: PaginationSortDirectionType };
 }
 
-export type PaginationSortDirectionType = 'asc' | 'desc';
+export type PaginationSortDirectionType = "asc" | "desc";

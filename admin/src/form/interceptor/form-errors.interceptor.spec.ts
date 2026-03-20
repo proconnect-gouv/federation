@@ -1,20 +1,20 @@
-import { BadRequestException } from '@nestjs/common';
-import { throwError } from 'rxjs';
-import { FormErrorsInterceptor } from './form-errors.interceptor';
+import { BadRequestException } from "@nestjs/common";
+import { throwError } from "rxjs";
+import { FormErrorsInterceptor } from "./form-errors.interceptor";
 
-describe('FormErrorsInterceptor', () => {
-  const urlTemplate = '/yolo/croute';
+describe("FormErrorsInterceptor", () => {
+  const urlTemplate = "/yolo/croute";
   const dto = jest.fn();
 
   const request = {
     body: dto,
     csrfToken: jest.fn(),
     flash: jest.fn(),
-    totp: 'valid',
+    totp: "valid",
   };
   const response = {
     locals: {
-      APP_ROOT: '/foo/bar',
+      APP_ROOT: "/foo/bar",
     },
     redirect: jest.fn(),
   };
@@ -31,16 +31,16 @@ describe('FormErrorsInterceptor', () => {
   };
   const errorMessage = [
     {
-      property: 'password',
+      property: "password",
       constraints: {
-        length: 'Length',
-        strength: 'Strength',
+        length: "Length",
+        strength: "Strength",
       },
     },
     {
-      property: 'age',
+      property: "age",
       constraints: {
-        minimum: 'Minimum',
+        minimum: "Minimum",
       },
     },
   ];
@@ -52,14 +52,14 @@ describe('FormErrorsInterceptor', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    request.csrfToken.mockReturnValue('ThIs_Is_A_cSrF_tOkEn');
+    request.csrfToken.mockReturnValue("ThIs_Is_A_cSrF_tOkEn");
 
     executionContext.switchToHttp.mockReturnValue({
       getRequest: jest.fn().mockReturnValue(request),
       getResponse: jest.fn().mockReturnValue(response),
     });
 
-    request.totp = 'valid';
+    request.totp = "valid";
   });
 
   it("should redirect to the provided url with errors sent by Nest's built-in ValidationPipe when there is no totp", (done) => {
@@ -67,8 +67,8 @@ describe('FormErrorsInterceptor', () => {
     delete request.totp;
 
     const expectedFirstFlashCallArgs = {
-      password: ['Length', 'Strength'],
-      age: ['Minimum'],
+      password: ["Length", "Strength"],
+      age: ["Minimum"],
     };
 
     const expectedSecondFlashCallArgs = dto;
@@ -80,11 +80,11 @@ describe('FormErrorsInterceptor', () => {
         // expect
         expect(request.flash).toHaveBeenCalledTimes(2);
         expect(request.flash).toHaveBeenCalledWith(
-          'errors',
+          "errors",
           expectedFirstFlashCallArgs,
         );
         expect(request.flash).toHaveBeenCalledWith(
-          'values',
+          "values",
           expectedSecondFlashCallArgs,
         );
         expect(response.redirect).toHaveBeenCalledTimes(1);
@@ -95,12 +95,12 @@ describe('FormErrorsInterceptor', () => {
       });
   });
 
-  it('should complete the template url with the rights params', (done) => {
+  it("should complete the template url with the rights params", (done) => {
     // setup
     const specialRequest = {
       params: {
-        id: 'incredible-id',
-        anotherParam: 'why+not',
+        id: "incredible-id",
+        anotherParam: "why+not",
       },
       body: dto,
       csrfToken: jest.fn(),
@@ -117,8 +117,8 @@ describe('FormErrorsInterceptor', () => {
     });
 
     const expectedFirstFlashCallArgs = {
-      password: ['Length', 'Strength'],
-      age: ['Minimum'],
+      password: ["Length", "Strength"],
+      age: ["Minimum"],
     };
 
     const expectedSecondFlashCallArgs = dto;
@@ -130,11 +130,11 @@ describe('FormErrorsInterceptor', () => {
         // expect
         expect(specialRequest.flash).toHaveBeenCalledTimes(2);
         expect(specialRequest.flash).toHaveBeenCalledWith(
-          'errors',
+          "errors",
           expectedFirstFlashCallArgs,
         );
         expect(specialRequest.flash).toHaveBeenCalledWith(
-          'values',
+          "values",
           expectedSecondFlashCallArgs,
         );
         expect(response.redirect).toHaveBeenCalledTimes(1);
@@ -148,8 +148,8 @@ describe('FormErrorsInterceptor', () => {
   it("should redirect to the provided url with errors sent by Nest's built-in ValidationPipe when totp is valid", (done) => {
     // setup
     const expectedFirstFlashCallArgs = {
-      password: ['Length', 'Strength'],
-      age: ['Minimum'],
+      password: ["Length", "Strength"],
+      age: ["Minimum"],
     };
 
     const expectedSecondFlashCallArgs = dto;
@@ -161,11 +161,11 @@ describe('FormErrorsInterceptor', () => {
         // expect
         expect(request.flash).toHaveBeenCalledTimes(2);
         expect(request.flash).toHaveBeenCalledWith(
-          'errors',
+          "errors",
           expectedFirstFlashCallArgs,
         );
         expect(request.flash).toHaveBeenCalledWith(
-          'values',
+          "values",
           expectedSecondFlashCallArgs,
         );
         expect(response.redirect).toHaveBeenCalledTimes(1);
@@ -176,9 +176,9 @@ describe('FormErrorsInterceptor', () => {
       });
   });
 
-  it('should redirect to the provided url with totp errors when totp is invalid', () => {
+  it("should redirect to the provided url with totp errors when totp is invalid", () => {
     // setup
-    request.totp = 'invalid';
+    request.totp = "invalid";
 
     const expectedFirstFlashCallArgs = {
       _totp: ["Le TOTP saisi n'est pas valide"],
@@ -192,11 +192,11 @@ describe('FormErrorsInterceptor', () => {
     // expect
     expect(request.flash).toHaveBeenCalledTimes(2);
     expect(request.flash).toHaveBeenCalledWith(
-      'errors',
+      "errors",
       expectedFirstFlashCallArgs,
     );
     expect(request.flash).toHaveBeenCalledWith(
-      'values',
+      "values",
       expectedSecondFlashCallArgs,
     );
     expect(response.redirect).toHaveBeenCalledTimes(1);

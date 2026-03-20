@@ -1,13 +1,13 @@
-import { NestMiddleware, Injectable } from '@nestjs/common';
-import { AuthenticationDto } from '../dto/authentication.dto';
-import { AuthenticationService } from '../authentication.service';
-import { UserService } from '../../user/user.service';
-import { LoggerService } from '../../logger/logger.service';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { LoggerService } from "../../logger/logger.service";
+import { UserService } from "../../user/user.service";
 import {
   AuthenticationActions,
   AuthenticationStates,
-} from '../authentication-actions.enum';
-import { TotpService } from '../totp/totp.service';
+} from "../authentication-actions.enum";
+import { AuthenticationService } from "../authentication.service";
+import { AuthenticationDto } from "../dto/authentication.dto";
+import { TotpService } from "../totp/totp.service";
 
 @Injectable()
 export class TotpMiddleware implements NestMiddleware {
@@ -31,7 +31,7 @@ export class TotpMiddleware implements NestMiddleware {
       req.body._totp,
       req.user.secret,
     );
-    req.totp = isTotpValid ? 'valid' : 'invalid';
+    req.totp = isTotpValid ? "valid" : "invalid";
 
     return next();
   }
@@ -48,8 +48,8 @@ export class TotpMiddleware implements NestMiddleware {
         user: username,
       });
 
-      req.flash('globalError', 'Connexion impossible.');
-      return res.redirect('/login');
+      req.flash("globalError", "Connexion impossible.");
+      return res.redirect("/login");
     }
 
     const isTotpValid = await this.totpService.check(_totp, req.userSecret);
@@ -62,8 +62,8 @@ export class TotpMiddleware implements NestMiddleware {
         user: username,
       });
 
-      req.flash('globalError', message);
-      return res.redirect('/login');
+      req.flash("globalError", message);
+      return res.redirect("/login");
     }
 
     return next();
@@ -72,7 +72,7 @@ export class TotpMiddleware implements NestMiddleware {
   private async handleUserTotpFailure(username: string): Promise<string> {
     this.authenticationService.saveUserAuthenticationFailure(username, null);
 
-    let message = 'Connexion impossible.';
+    let message = "Connexion impossible.";
     const maxAuthenticationAttemptLimitReached =
       await this.authenticationService.isMaxAuthenticationAttemptLimitReached(
         username,

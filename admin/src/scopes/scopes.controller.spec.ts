@@ -1,29 +1,29 @@
-import { ObjectId } from 'mongodb';
-import { ConfigService } from 'nestjs-config';
-import { Test, TestingModule } from '@nestjs/testing';
-import { ScopesService } from './scopes.service';
-import { ScopesController } from './scopes.controller';
-import { IScopes } from './interface/scopes.interface';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ObjectId } from "mongodb";
+import { ConfigService } from "nestjs-config";
 import {
-  scopesMock,
-  scopesListMock,
   scopesListGroupedByFdMock,
-} from './fixture';
+  scopesListMock,
+  scopesMock,
+} from "./fixture";
+import { IScopes } from "./interface/scopes.interface";
+import { ScopesController } from "./scopes.controller";
+import { ScopesService } from "./scopes.service";
 
-const id = new ObjectId('5d9c677da8bb151b00720451');
+const id = new ObjectId("5d9c677da8bb151b00720451");
 
 export const reqMock = {
   flash: jest.fn(),
   user: {
-    username: 'Harry Seldon',
+    username: "Harry Seldon",
   },
   csrfToken: function csrfToken() {
-    return 'foundationCsrfToken';
+    return "foundationCsrfToken";
   },
   body: {
-    scope: 'toto',
-    label: 'toto label',
-    fd: 'Direction générale des Finances publiques',
+    scope: "toto",
+    label: "toto label",
+    fd: "Direction générale des Finances publiques",
   },
 };
 
@@ -31,7 +31,7 @@ export const resMock = {
   redirect: jest.fn(),
   status: jest.fn(),
   locals: {
-    APP_ROOT: '/trantor/foundation',
+    APP_ROOT: "/trantor/foundation",
   },
 };
 
@@ -49,7 +49,7 @@ const configServiceMock = {
   get: jest.fn(),
 };
 
-describe('Scopes Controller', () => {
+describe("Scopes Controller", () => {
   let controller: ScopesController;
   let scopeService: ScopesService;
 
@@ -75,16 +75,16 @@ describe('Scopes Controller', () => {
     scopeService = module.get<ScopesService>(ScopesService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 
-  describe('list()', () => {
-    it('should exist', () => {
+  describe("list()", () => {
+    it("should exist", () => {
       expect(controller.list).toBeDefined();
     });
 
-    it('should return scope and csrf', async () => {
+    it("should return scope and csrf", async () => {
       // Setup
       ScopesServiceMock.getAll.mockResolvedValueOnce(scopesListMock);
 
@@ -93,12 +93,12 @@ describe('Scopes Controller', () => {
 
       // Expected
       expect(result).toEqual({
-        csrfToken: 'foundationCsrfToken',
+        csrfToken: "foundationCsrfToken",
         scopesAndLabelsList: scopesListMock,
       });
     });
 
-    it('should return scopes and csrf', async () => {
+    it("should return scopes and csrf", async () => {
       // Setup
       ScopesServiceMock.getAll.mockResolvedValueOnce(scopesListMock);
 
@@ -107,18 +107,18 @@ describe('Scopes Controller', () => {
 
       // Expected
       expect(result).toStrictEqual({
-        csrfToken: 'foundationCsrfToken',
+        csrfToken: "foundationCsrfToken",
         scopesAndLabelsList: scopesListMock,
       });
     });
   });
 
-  describe('showCreateScopeForm()', () => {
-    it('should exist', () => {
+  describe("showCreateScopeForm()", () => {
+    it("should exist", () => {
       expect(controller.showCreateScopeForm).toBeDefined();
     });
 
-    it('should return the csrf', async () => {
+    it("should return the csrf", async () => {
       // setup
       ScopesServiceMock.getScopesGroupedByFd.mockResolvedValueOnce(
         scopesListGroupedByFdMock,
@@ -127,14 +127,14 @@ describe('Scopes Controller', () => {
       const result = await controller.showCreateScopeForm(reqMock);
       // assertion
       expect(result).toEqual({
-        csrfToken: 'foundationCsrfToken',
+        csrfToken: "foundationCsrfToken",
         scopesGroupedByFd: scopesListGroupedByFdMock,
       });
     });
   });
 
-  describe('createScopeAndLabels()', () => {
-    it('should add a new scope label', async () => {
+  describe("createScopeAndLabels()", () => {
+    it("should add a new scope label", async () => {
       // Action
       await controller.createScopeAndLabels(scopesMock, reqMock, resMock);
       // Expected
@@ -143,14 +143,14 @@ describe('Scopes Controller', () => {
         `${resMock.locals.APP_ROOT}/scopes/label`,
       );
       expect(reqMock.flash).toHaveBeenCalledWith(
-        'success',
+        "success",
         `Le label ${scopesMock.label} pour le scope ${scopesMock.scope} a été créé avec succès !`,
       );
     });
 
-    it('should return to data-provider/label/create if it fails', async () => {
+    it("should return to data-provider/label/create if it fails", async () => {
       // Setup
-      const error = new Error('something');
+      const error = new Error("something");
       ScopesServiceMock.create.mockRejectedValueOnce(error);
 
       // Action
@@ -161,23 +161,23 @@ describe('Scopes Controller', () => {
         `${resMock.locals.APP_ROOT}/scopes/label/create`,
       );
       expect(reqMock.flash).toHaveBeenCalledWith(
-        'globalError',
+        "globalError",
         "Impossible d'enregistrer le label",
       );
     });
   });
 
-  describe('showUpdateScopeForm', () => {
-    it('should have a showCreateScopeForm method', () => {
+  describe("showUpdateScopeForm", () => {
+    it("should have a showCreateScopeForm method", () => {
       expect(controller.showUpdateScopeForm).toBeDefined();
     });
 
-    it('should render the update form', async () => {
+    it("should render the update form", async () => {
       // Setup
       ScopesServiceMock.getById.mockResolvedValueOnce({
-        scope: 'myGreatScope',
-        label: 'myGreatLabel',
-        fd: 'myGreatFD',
+        scope: "myGreatScope",
+        label: "myGreatLabel",
+        fd: "myGreatFD",
       });
       ScopesServiceMock.getScopesGroupedByFd.mockResolvedValue(
         scopesListGroupedByFdMock,
@@ -193,27 +193,27 @@ describe('Scopes Controller', () => {
       expect(ScopesServiceMock.getById).toHaveBeenCalledTimes(1);
       expect(ScopesServiceMock.getById).toHaveBeenCalledWith(id);
       expect(result).toEqual({
-        csrfToken: 'foundationCsrfToken',
-        scope: 'myGreatScope',
-        label: 'myGreatLabel',
-        fd: 'myGreatFD',
+        csrfToken: "foundationCsrfToken",
+        scope: "myGreatScope",
+        label: "myGreatLabel",
+        fd: "myGreatFD",
         scopesGroupedByFd: scopesListGroupedByFdMock,
         _id: id.toString(),
       });
     });
   });
 
-  describe('updateScopeAndLabels()', () => {
-    it('should exist', () => {
+  describe("updateScopeAndLabels()", () => {
+    it("should exist", () => {
       expect(controller.updateScopeAndLabels).toBeDefined();
     });
 
-    it('should update the scope label entry corresponding to the id param', async () => {
+    it("should update the scope label entry corresponding to the id param", async () => {
       const updatedScopeLabel: IScopes = {
-        _id: new ObjectId('5d9c677da8bb151b00720451'),
-        fd: 'DGFIP',
-        scope: 'Seldon2222',
-        label: 'Seldon222 Label (dgfip)',
+        _id: new ObjectId("5d9c677da8bb151b00720451"),
+        fd: "DGFIP",
+        scope: "Seldon2222",
+        label: "Seldon222 Label (dgfip)",
       };
       // Action
       const returnedValue = await controller.updateScopeAndLabels(
@@ -225,7 +225,7 @@ describe('Scopes Controller', () => {
       // Expected
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
       expect(reqMock.flash).toHaveBeenCalledWith(
-        'success',
+        "success",
         `Le label ${updatedScopeLabel.label} a été modifié avec succès !`,
       );
       expect(resMock.redirect).toHaveBeenCalledWith(
@@ -233,15 +233,15 @@ describe('Scopes Controller', () => {
       );
     });
 
-    it('should throw an error if scope label entry can not be update', async () => {
+    it("should throw an error if scope label entry can not be update", async () => {
       // Setup
       const updatedScopeLabel: IScopes = {
-        _id: new ObjectId('5d9c677da8bb151b00720451'),
-        fd: 'DGFIP',
-        scope: 'Seldon2222',
-        label: 'Seldon222 Label (dgfip)',
+        _id: new ObjectId("5d9c677da8bb151b00720451"),
+        fd: "DGFIP",
+        scope: "Seldon2222",
+        label: "Seldon222 Label (dgfip)",
       };
-      const error = new Error('something');
+      const error = new Error("something");
       ScopesServiceMock.update.mockRejectedValueOnce(error);
 
       // Action
@@ -255,8 +255,8 @@ describe('Scopes Controller', () => {
       // Expected
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
       expect(reqMock.flash).toHaveBeenCalledWith(
-        'globalError',
-        'Impossible de modifier le label',
+        "globalError",
+        "Impossible de modifier le label",
       );
       expect(resMock.redirect).toHaveBeenCalledWith(
         `${resMock.locals.APP_ROOT}/scopes/label/update/5d9c677da8bb151b00720451`,
@@ -264,17 +264,17 @@ describe('Scopes Controller', () => {
     });
   });
 
-  describe('deleteScopeAndLabel()', () => {
-    it('should exist', () => {
+  describe("deleteScopeAndLabel()", () => {
+    it("should exist", () => {
       expect(controller.deleteScopeAndLabel).toBeDefined();
     });
 
-    it('should delete the corresponding label', async () => {
+    it("should delete the corresponding label", async () => {
       // Setup
       const body = {
-        scope: 'toto',
-        label: 'toto label',
-        fd: 'Direction générale des Finances publiques',
+        scope: "toto",
+        label: "toto label",
+        fd: "Direction générale des Finances publiques",
       };
 
       // Action
@@ -287,7 +287,7 @@ describe('Scopes Controller', () => {
 
       // Expected
       expect(reqMock.flash).toHaveBeenCalledWith(
-        'success',
+        "success",
         `Le scope ${body.scope}:  ${body.label} a été supprimé avec succès !`,
       );
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -296,14 +296,14 @@ describe('Scopes Controller', () => {
       );
     });
 
-    it('should throw an error if scope label entry can not be removed', async () => {
+    it("should throw an error if scope label entry can not be removed", async () => {
       // Setup
       const body = {
-        scope: 'toto',
-        label: 'toto label',
-        fd: 'dgfip',
+        scope: "toto",
+        label: "toto label",
+        fd: "dgfip",
       };
-      const error = new Error('something');
+      const error = new Error("something");
 
       ScopesServiceMock.remove.mockRejectedValueOnce(error);
       // Action
@@ -316,23 +316,23 @@ describe('Scopes Controller', () => {
 
       // Expected
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
-      expect(reqMock.flash).toHaveBeenCalledWith('globalError', 'something');
+      expect(reqMock.flash).toHaveBeenCalledWith("globalError", "something");
       expect(resMock.redirect).toHaveBeenCalledWith(
         `${resMock.locals.APP_ROOT}/scopes/label`,
       );
     });
   });
 
-  it('call scopeService.delete', async () => {
+  it("call scopeService.delete", async () => {
     // Setup
     const body = {
-      scope: 'toto',
-      label: 'toto label',
-      fd: 'Direction générale des Finances publiques',
+      scope: "toto",
+      label: "toto label",
+      fd: "Direction générale des Finances publiques",
     };
-    const error = new Error('something');
+    const error = new Error("something");
 
-    jest.spyOn(scopeService, 'remove').mockRejectedValueOnce(error);
+    jest.spyOn(scopeService, "remove").mockRejectedValueOnce(error);
 
     // Action
     await controller.deleteScopeAndLabel(id.toString(), reqMock, resMock, body);

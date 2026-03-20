@@ -1,1 +1,1 @@
-export * from './cached-organization.schema';
+export * from "./cached-organization.schema";

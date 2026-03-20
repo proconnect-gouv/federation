@@ -1,25 +1,21 @@
-import { cloneDeep } from 'lodash';
+import { AsyncLocalStorageService } from "@fc/async-local-storage";
+import { getAsyncLocalStorageMock } from "@mocks/async-local-storage";
+import { Test, TestingModule } from "@nestjs/testing";
+import { cloneDeep } from "lodash";
+import { SessionStoreContentInterface } from "../interfaces";
+import { SESSION_STORE_KEY } from "../tokens";
+import { SessionLocalStorageService } from "./session-local-storage.service";
 
-import { Test, TestingModule } from '@nestjs/testing';
+jest.mock("lodash");
 
-import { AsyncLocalStorageService } from '@fc/async-local-storage';
-
-import { getAsyncLocalStorageMock } from '@mocks/async-local-storage';
-
-import { SessionStoreContentInterface } from '../interfaces';
-import { SESSION_STORE_KEY } from '../tokens';
-import { SessionLocalStorageService } from './session-local-storage.service';
-
-jest.mock('lodash');
-
-describe('SessionLocalStorageService', () => {
+describe("SessionLocalStorageService", () => {
   let service: SessionLocalStorageService;
 
   const asyncLocalStorageMock = getAsyncLocalStorageMock();
 
   const cloneDeepMock = jest.mocked(cloneDeep);
 
-  const cloneDeepResult = { prop: 'cloneDeepResult' };
+  const cloneDeepResult = { prop: "cloneDeepResult" };
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -40,12 +36,12 @@ describe('SessionLocalStorageService', () => {
     cloneDeepMock.mockReturnValue(cloneDeepResult);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('getSession()', () => {
-    it('should call asyncLocalStorageService.get()', () => {
+  describe("getSession()", () => {
+    it("should call asyncLocalStorageService.get()", () => {
       // When
       service.getStore();
 
@@ -53,7 +49,7 @@ describe('SessionLocalStorageService', () => {
       expect(asyncLocalStorageMock.get).toHaveBeenCalledTimes(1);
       expect(asyncLocalStorageMock.get).toHaveBeenCalledWith(SESSION_STORE_KEY);
     });
-    it('should return default object if result of call to asyncLocalStorageService.get() is falsy', () => {
+    it("should return default object if result of call to asyncLocalStorageService.get() is falsy", () => {
       // Given
       asyncLocalStorageMock.get.mockReturnValueOnce(undefined);
 
@@ -68,9 +64,9 @@ describe('SessionLocalStorageService', () => {
       });
     });
 
-    it('should return result of call to asyncLocalStorageService.get() otherwise', () => {
+    it("should return result of call to asyncLocalStorageService.get() otherwise", () => {
       // Given
-      const localStorageContent = Symbol('localStorageContent');
+      const localStorageContent = Symbol("localStorageContent");
       asyncLocalStorageMock.get.mockReturnValueOnce(localStorageContent);
 
       // When
@@ -81,9 +77,9 @@ describe('SessionLocalStorageService', () => {
     });
   });
 
-  describe('getId()', () => {
+  describe("getId()", () => {
     // Given
-    const idMock = Symbol('idMockedValue');
+    const idMock = Symbol("idMockedValue");
 
     beforeEach(() => {
       service.getStore = jest.fn().mockReturnValueOnce({
@@ -91,7 +87,7 @@ describe('SessionLocalStorageService', () => {
       });
     });
 
-    it('should call getSession()', () => {
+    it("should call getSession()", () => {
       // When
       service.getId();
 
@@ -99,7 +95,7 @@ describe('SessionLocalStorageService', () => {
       expect(service.getStore).toHaveBeenCalledTimes(1);
     });
 
-    it('should return id property from result to call to getSession()', () => {
+    it("should return id property from result to call to getSession()", () => {
       // When
       const result = service.getId();
 
@@ -108,11 +104,11 @@ describe('SessionLocalStorageService', () => {
     });
   });
 
-  describe('setStore()', () => {
-    it('should call asyncLocalStorage.set()', () => {
+  describe("setStore()", () => {
+    it("should call asyncLocalStorage.set()", () => {
       // Given
       const payload = Symbol(
-        'payload mock',
+        "payload mock",
       ) as unknown as SessionStoreContentInterface;
 
       // When
@@ -127,18 +123,18 @@ describe('SessionLocalStorageService', () => {
     });
   });
 
-  describe('get', () => {
+  describe("get", () => {
     // Given
-    const moduleName = 'moduleName';
-    const key = 'key';
+    const moduleName = "moduleName";
+    const key = "key";
 
     const sessionMock = {
       data: {
         [moduleName]: {
-          [key]: Symbol('valueMock'),
+          [key]: Symbol("valueMock"),
         },
       },
-      id: 'sessionId',
+      id: "sessionId",
       sync: true,
     };
 
@@ -146,7 +142,7 @@ describe('SessionLocalStorageService', () => {
       service.getStore = jest.fn().mockReturnValueOnce(sessionMock);
     });
 
-    it('should call getSession()', () => {
+    it("should call getSession()", () => {
       // When
       service.get(moduleName, key);
 
@@ -154,7 +150,7 @@ describe('SessionLocalStorageService', () => {
       expect(service.getStore).toHaveBeenCalledTimes(1);
     });
 
-    it('should return value corresponding to the moduleName.key if there is a key argument', () => {
+    it("should return value corresponding to the moduleName.key if there is a key argument", () => {
       // When
       const result = service.get(moduleName, key);
 
@@ -162,7 +158,7 @@ describe('SessionLocalStorageService', () => {
       expect(result).toBe(sessionMock.data[moduleName][key]);
     });
 
-    it('should return value corresponding to the moduleName if there is NO key argument', () => {
+    it("should return value corresponding to the moduleName if there is NO key argument", () => {
       // When
       const result = service.get(moduleName);
 
@@ -170,7 +166,7 @@ describe('SessionLocalStorageService', () => {
       expect(result).toBe(sessionMock.data[moduleName]);
     });
 
-    it('should return value corresponding to the session data if there is NO module argument', () => {
+    it("should return value corresponding to the session data if there is NO module argument", () => {
       // When
       const result = service.get();
 
@@ -179,28 +175,28 @@ describe('SessionLocalStorageService', () => {
     });
   });
 
-  describe('set()', () => {
+  describe("set()", () => {
     // Given
-    const moduleName = 'moduleName';
-    const key = 'key';
-    const data = Symbol('data mock');
+    const moduleName = "moduleName";
+    const key = "key";
+    const data = Symbol("data mock");
     const storeMock = {
       data,
-      id: 'sessionId',
+      id: "sessionId",
       sync: true,
     };
-    const setByKeyResult = Symbol('setByKey Result');
-    const setModuleResult = Symbol('setModule Result');
+    const setByKeyResult = Symbol("setByKey Result");
+    const setModuleResult = Symbol("setModule Result");
 
     beforeEach(() => {
       service.getStore = jest.fn().mockReturnValueOnce(storeMock);
-      service['setByKey'] = jest.fn().mockReturnValueOnce(setByKeyResult);
-      service['setModule'] = jest.fn().mockReturnValueOnce(setModuleResult);
+      service["setByKey"] = jest.fn().mockReturnValueOnce(setByKeyResult);
+      service["setModule"] = jest.fn().mockReturnValueOnce(setModuleResult);
 
       storeMock.sync = true;
     });
 
-    it('should call getSession()', () => {
+    it("should call getSession()", () => {
       // When
       service.set(moduleName, key);
 
@@ -208,7 +204,7 @@ describe('SessionLocalStorageService', () => {
       expect(service.getStore).toHaveBeenCalledTimes(1);
     });
 
-    it('should set getSession()', () => {
+    it("should set getSession()", () => {
       // When
       service.set(moduleName, key);
 
@@ -216,7 +212,7 @@ describe('SessionLocalStorageService', () => {
       expect(service.getStore).toHaveBeenCalledTimes(1);
     });
 
-    it('should set store.sync property to false', () => {
+    it("should set store.sync property to false", () => {
       // When
       service.set(moduleName, key);
 
@@ -224,15 +220,15 @@ describe('SessionLocalStorageService', () => {
       expect(storeMock.sync).toBe(false);
     });
 
-    it('should call setByKey() if there is a key', () => {
+    it("should call setByKey() if there is a key", () => {
       // Given
-      const inputData = Symbol('Input Data');
+      const inputData = Symbol("Input Data");
       // When
       service.set(moduleName, key, inputData);
 
       // Then
-      expect(service['setByKey']).toHaveBeenCalledTimes(1);
-      expect(service['setByKey']).toHaveBeenCalledWith(
+      expect(service["setByKey"]).toHaveBeenCalledTimes(1);
+      expect(service["setByKey"]).toHaveBeenCalledWith(
         moduleName,
         data,
         key,
@@ -240,15 +236,15 @@ describe('SessionLocalStorageService', () => {
       );
     });
 
-    it('should call setModule() if there is NO key', () => {
+    it("should call setModule() if there is NO key", () => {
       // Given
-      const inputData = { prop: Symbol('Input Data') };
+      const inputData = { prop: Symbol("Input Data") };
       // When
       service.set(moduleName, inputData);
 
       // Then
-      expect(service['setModule']).toHaveBeenCalledTimes(1);
-      expect(service['setModule']).toHaveBeenCalledWith(
+      expect(service["setModule"]).toHaveBeenCalledTimes(1);
+      expect(service["setModule"]).toHaveBeenCalledWith(
         moduleName,
         data,
         inputData,
@@ -256,53 +252,53 @@ describe('SessionLocalStorageService', () => {
     });
   });
 
-  describe('setByKey', () => {
+  describe("setByKey", () => {
     // Given
-    const moduleName = 'moduleName';
-    const key = 'key';
-    const data = Symbol('dataMock');
+    const moduleName = "moduleName";
+    const key = "key";
+    const data = Symbol("dataMock");
 
-    it('should set a key with cloned given data in existing object', () => {
+    it("should set a key with cloned given data in existing object", () => {
       // Given
       const session = {
         otherModule: {
-          someKey: 'someValue',
+          someKey: "someValue",
         },
         [moduleName]: {
-          foo: 'bar',
+          foo: "bar",
         },
       };
 
       // When
-      service['setByKey'](moduleName, session, key, data);
+      service["setByKey"](moduleName, session, key, data);
 
       // Then
       expect(session).toEqual({
         otherModule: {
-          someKey: 'someValue',
+          someKey: "someValue",
         },
         [moduleName]: {
-          foo: 'bar',
+          foo: "bar",
           [key]: cloneDeepResult,
         },
       });
     });
 
-    it('should create an object with given key and cloned data', () => {
+    it("should create an object with given key and cloned data", () => {
       // Given
       const session = {
         otherModule: {
-          someKey: 'someValue',
+          someKey: "someValue",
         },
       };
 
       // When
-      service['setByKey'](moduleName, session, key, data);
+      service["setByKey"](moduleName, session, key, data);
 
       // Then
       expect(session).toEqual({
         otherModule: {
-          someKey: 'someValue',
+          someKey: "someValue",
         },
         [moduleName]: {
           [key]: cloneDeepResult,
@@ -311,52 +307,52 @@ describe('SessionLocalStorageService', () => {
     });
   });
 
-  describe('setModule', () => {
+  describe("setModule", () => {
     // Given
-    const moduleName = 'moduleName';
-    const data = { key: Symbol('dataMock') };
+    const moduleName = "moduleName";
+    const data = { key: Symbol("dataMock") };
 
-    it('should set a module with cloned given data in existing object', () => {
+    it("should set a module with cloned given data in existing object", () => {
       // Given
       const session = {
         otherModule: {
-          someKey: 'someValue',
+          someKey: "someValue",
         },
         [moduleName]: {
-          preservedProperty: 'preserved value',
+          preservedProperty: "preserved value",
         },
       };
 
       // When
-      service['setModule'](moduleName, session, data);
+      service["setModule"](moduleName, session, data);
 
       // Then
       expect(session).toEqual({
         otherModule: {
-          someKey: 'someValue',
+          someKey: "someValue",
         },
         [moduleName]: {
-          preservedProperty: 'preserved value',
+          preservedProperty: "preserved value",
           ...cloneDeepResult,
         },
       });
     });
 
-    it('should create an object with given key and cloned data', () => {
+    it("should create an object with given key and cloned data", () => {
       // Given
       const session = {
         otherModule: {
-          someKey: 'someValue',
+          someKey: "someValue",
         },
       };
 
       // When
-      service['setModule'](moduleName, session, data);
+      service["setModule"](moduleName, session, data);
 
       // Then
       expect(session).toEqual({
         otherModule: {
-          someKey: 'someValue',
+          someKey: "someValue",
         },
         [moduleName]: cloneDeepResult,
       });

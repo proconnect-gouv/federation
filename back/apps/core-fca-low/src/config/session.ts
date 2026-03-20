@@ -1,24 +1,24 @@
-import { ConfigParser } from '@fc/config';
-import { CoreFcaSession, Routes } from '@fc/core';
-import { OidcProviderRoutes } from '@fc/oidc-provider';
-import { SessionConfig, SessionCookieOptionsInterface } from '@fc/session';
+import { ConfigParser } from "@fc/config";
+import { CoreFcaSession, Routes } from "@fc/core";
+import { OidcProviderRoutes } from "@fc/oidc-provider";
+import { SessionConfig, SessionCookieOptionsInterface } from "@fc/session";
 
-const env = new ConfigParser(process.env, 'Session');
+const env = new ConfigParser(process.env, "Session");
 
 const cookieOptions: SessionCookieOptionsInterface = {
   signed: true,
-  sameSite: 'lax',
+  sameSite: "lax",
   httpOnly: true,
   secure: true,
   maxAge: 43200000, // 12h
 };
 
 export default {
-  encryptionKey: env.string('USERINFO_CRYPT_KEY'),
-  prefix: 'FCA-LOW-SESS:',
+  encryptionKey: env.string("USERINFO_CRYPT_KEY"),
+  prefix: "FCA-LOW-SESS:",
   cookieOptions,
-  cookieSecrets: env.json('COOKIE_SECRETS'),
-  sessionCookieName: 'pc_session_id',
+  cookieSecrets: env.json("COOKIE_SECRETS"),
+  sessionCookieName: "pc_session_id",
   lifetime: 43200, // 12h
   sessionIdLength: 64,
   slidingExpiration: false,

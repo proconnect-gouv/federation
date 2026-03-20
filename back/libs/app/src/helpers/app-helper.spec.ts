@@ -1,10 +1,10 @@
-import { AppHelper } from './app-helper';
+import { AppHelper } from "./app-helper";
 
-describe('shutdown', () => {
-  it('should shutdown the app', () => {
+describe("shutdown", () => {
+  it("should shutdown the app", () => {
     // Given
     const processExit = jest
-      .spyOn(process, 'exit')
+      .spyOn(process, "exit")
       .mockImplementation((code) => code as never);
 
     // When

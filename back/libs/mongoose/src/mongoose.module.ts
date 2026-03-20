@@ -1,18 +1,17 @@
-import { DynamicModule, Global, Module } from '@nestjs/common';
-import { CqrsModule, EventBus } from '@nestjs/cqrs';
+import { DynamicModule, Global, Module } from "@nestjs/common";
+import { CqrsModule, EventBus } from "@nestjs/cqrs";
 import {
   ModelDefinition,
-  MongooseModule as MongooseNativeModule,
   MongooseModuleOptions,
-} from '@nestjs/mongoose';
+  MongooseModule as MongooseNativeModule,
+} from "@nestjs/mongoose";
 
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-
-import { MongooseConnectionConnectedHandler } from './handlers';
-import { MongooseConnectionDisconnectedHandler } from './handlers/mongoose-connection-disconnected.handler';
-import { MongooseCollectionOperationWatcherHelper } from './helpers';
-import { MongooseProvider } from './providers';
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
+import { MongooseConnectionConnectedHandler } from "./handlers";
+import { MongooseConnectionDisconnectedHandler } from "./handlers/mongoose-connection-disconnected.handler";
+import { MongooseCollectionOperationWatcherHelper } from "./helpers";
+import { MongooseProvider } from "./providers";
 
 @Global()
 @Module({})

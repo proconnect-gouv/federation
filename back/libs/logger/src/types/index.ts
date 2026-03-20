@@ -1,1 +1,1 @@
-export * from './custom-log-levels.type';
+export * from "./custom-log-levels.type";

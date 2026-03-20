@@ -1,8 +1,8 @@
-import * as otplib from 'otplib';
-import qrcode from 'qrcode';
-import { InjectConfig } from 'nestjs-config';
-import { Injectable } from '@nestjs/common';
-import { LoggerService } from '../../logger/logger.service';
+import { Injectable } from "@nestjs/common";
+import { InjectConfig } from "nestjs-config";
+import * as otplib from "otplib";
+import qrcode from "qrcode";
+import { LoggerService } from "../../logger/logger.service";
 
 @Injectable()
 export class TotpService {
@@ -41,9 +41,9 @@ export class TotpService {
     period: number;
   }> {
     const period = 30;
-    const algorithm = 'sha1';
+    const algorithm = "sha1";
     const user = userData.username;
-    const { appName, environment } = this.config.get('app');
+    const { appName, environment } = this.config.get("app");
     const issuer = `${appName} - ${environment}`;
     const secret = userData.secret;
     const uri = otplib.generateURI({

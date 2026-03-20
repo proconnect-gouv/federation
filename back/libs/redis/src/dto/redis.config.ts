@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateIf,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
 class TlsConfig {
   @IsString()

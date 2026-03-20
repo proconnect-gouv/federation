@@ -1,6 +1,6 @@
-import { Provider, UnknownObject } from 'oidc-provider';
+import { Provider, UnknownObject } from "oidc-provider";
 
-type Interaction = Awaited<ReturnType<Provider['interactionDetails']>>;
+type Interaction = Awaited<ReturnType<Provider["interactionDetails"]>>;
 
 export interface ExtendedInteraction extends Interaction {
   params: {
@@ -13,7 +13,7 @@ export interface ExtendedInteraction extends Interaction {
     siret_hint: string;
   };
   prompt: {
-    name: 'login' | 'consent' | string;
+    name: "login" | "consent" | string;
     reasons: string[];
     details:
       | {

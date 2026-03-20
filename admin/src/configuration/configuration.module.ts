@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { ConfigurationController } from './configuration.controller';
-import { Configuration } from './entity/configuration.mongodb.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigurationService } from './configuration.service';
-import { LocalsInterceptor } from '../meta/locals.interceptor';
-import { TotpService } from '../authentication/totp/totp.service';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { TotpService } from "../authentication/totp/totp.service";
+import { LocalsInterceptor } from "../meta/locals.interceptor";
+import { ConfigurationController } from "./configuration.controller";
+import { ConfigurationService } from "./configuration.service";
+import { Configuration } from "./entity/configuration.mongodb.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Configuration], 'fc-mongo')],
+  imports: [TypeOrmModule.forFeature([Configuration], "fc-mongo")],
   controllers: [ConfigurationController],
   providers: [LocalsInterceptor, ConfigurationService, TotpService],
 })

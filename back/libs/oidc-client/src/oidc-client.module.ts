@@ -1,17 +1,15 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
-
-import { CryptographyModule } from '@fc/cryptography';
-import { SessionModule } from '@fc/session';
-
-import { IIdentityProviderAdapter } from './interfaces';
+import { CryptographyModule } from "@fc/cryptography";
+import { SessionModule } from "@fc/session";
+import { DynamicModule, Module, Type } from "@nestjs/common";
+import { CqrsModule } from "@nestjs/cqrs";
+import { IIdentityProviderAdapter } from "./interfaces";
 import {
   OidcClientConfigService,
   OidcClientIssuerService,
   OidcClientService,
   OidcClientUtilsService,
-} from './services';
-import { IDENTITY_PROVIDER_SERVICE } from './tokens';
+} from "./services";
+import { IDENTITY_PROVIDER_SERVICE } from "./tokens";
 
 @Module({})
 export class OidcClientModule {

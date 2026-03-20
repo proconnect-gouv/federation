@@ -3,31 +3,29 @@
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1024
  * @ticket #FC-1024
  */
-import { isURL } from 'class-validator';
-import { Request } from 'express';
+import { isURL } from "class-validator";
+import { Request } from "express";
 import {
   AuthorizationParameters,
   CallbackExtras,
   CallbackParamsType,
   Client,
   TokenSet,
-} from 'openid-client';
+} from "openid-client";
 
-import { Injectable } from '@nestjs/common';
-
-import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
-
+import { CryptographyService } from "@fc/cryptography";
+import { LoggerService } from "@fc/logger";
+import { Injectable } from "@nestjs/common";
 import {
   OidcClientGetEndSessionUrlException,
   OidcClientInvalidStateException,
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
   OidcClientUserinfoFailedException,
-} from '../exceptions';
-import { ExtraTokenParams, TokenParams } from '../interfaces';
-import { OidcClientConfigService } from './oidc-client-config.service';
-import { OidcClientIssuerService } from './oidc-client-issuer.service';
+} from "../exceptions";
+import { ExtraTokenParams, TokenParams } from "../interfaces";
+import { OidcClientConfigService } from "./oidc-client-config.service";
+import { OidcClientIssuerService } from "./oidc-client-issuer.service";
 
 @Injectable()
 export class OidcClientUtilsService {
@@ -119,11 +117,11 @@ export class OidcClientUtilsService {
     try {
       // Invoke `openid-client` handler
       tokenSet = await client.callback(
-        client.metadata.redirect_uris.join(','),
+        client.metadata.redirect_uris.join(","),
         receivedParams,
         {
           ...params,
-          response_type: client.metadata.response_types.join(','),
+          response_type: client.metadata.response_types.join(","),
         },
         this.buildExtraParameters(extraParams),
       );
@@ -213,7 +211,7 @@ export class OidcClientUtilsService {
 
     const temporaryWorkAroundUrl = endSessionUrl.replace(
       /(&|\?)client_id=[^&]+/,
-      '',
+      "",
     );
 
     return temporaryWorkAroundUrl;
@@ -229,7 +227,7 @@ export class OidcClientUtilsService {
     try {
       const endSessionUrl = client.endSessionUrl();
       return isURL(endSessionUrl, {
-        protocols: ['https'],
+        protocols: ["https"],
         // Validator.js defined property
 
         require_protocol: true,

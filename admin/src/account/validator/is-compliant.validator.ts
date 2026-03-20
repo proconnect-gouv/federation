@@ -1,13 +1,13 @@
 import {
-  ValidationOptions,
   registerDecorator,
   ValidationArguments,
+  ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-} from 'class-validator';
-import { UNAUTHORIZED } from './unauthorized';
+} from "class-validator";
+import { UNAUTHORIZED } from "./unauthorized";
 
-const VALIDATOR_NAME = 'IsCompliant';
+const VALIDATOR_NAME = "IsCompliant";
 
 const MIN_LENGTH_CONSTRAINT = 12;
 const MAX_LENGTH_CONSTRAINT = 72;
@@ -23,7 +23,7 @@ export class IsPasswordCompliant implements ValidatorConstraintInterface {
       return false;
     }
 
-    if (typeof password !== 'string') {
+    if (typeof password !== "string") {
       return false;
     }
 
@@ -63,7 +63,7 @@ export class IsPasswordCompliant implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments) {
-    return 'Le mot de passe est invalide.';
+    return "Le mot de passe est invalide.";
   }
 
   static hasRecurrentPattern(password: string, patternLength: number) {

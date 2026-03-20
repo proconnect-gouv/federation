@@ -1,6 +1,6 @@
-import { TransformFnParams } from 'class-transformer';
+import { TransformFnParams } from "class-transformer";
 
-type Value = Pick<TransformFnParams, 'value'>;
+type Value = Pick<TransformFnParams, "value">;
 
 export function enforceArray({ value }: TransformFnParams): Value | Value[] {
   if (!value) {

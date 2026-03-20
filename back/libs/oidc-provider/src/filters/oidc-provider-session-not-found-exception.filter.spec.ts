@@ -1,26 +1,22 @@
-import { errors } from 'oidc-provider';
-
-import { ArgumentsHost } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { ConfigService } from '@fc/config';
-import { generateErrorId } from '@fc/exceptions/helpers';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
-
-import { getConfigMock } from '@mocks/config';
-import { getLoggerMock } from '@mocks/logger';
-import { getSessionServiceMock } from '@mocks/session';
-
-import { OidcProviderSessionNotFoundExceptionFilter } from './oidc-provider-session-not-found-exception.filter';
+import { ConfigService } from "@fc/config";
+import { generateErrorId } from "@fc/exceptions/helpers";
+import { LoggerService } from "@fc/logger";
+import { SessionService } from "@fc/session";
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
+import { getSessionServiceMock } from "@mocks/session";
+import { ArgumentsHost } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import { errors } from "oidc-provider";
+import { OidcProviderSessionNotFoundExceptionFilter } from "./oidc-provider-session-not-found-exception.filter";
 import SessionNotFound = errors.SessionNotFound;
 
-jest.mock('@fc/exceptions/helpers', () => ({
-  ...jest.requireActual('@fc/exceptions/helpers'),
+jest.mock("@fc/exceptions/helpers", () => ({
+  ...jest.requireActual("@fc/exceptions/helpers"),
   generateErrorId: jest.fn(),
 }));
 
-describe('OidcProviderSessionNotFoundExceptionFilter', () => {
+describe("OidcProviderSessionNotFoundExceptionFilter", () => {
   let filter: OidcProviderSessionNotFoundExceptionFilter;
 
   const generateErrorIdMock = jest.mocked(generateErrorId);
@@ -42,7 +38,7 @@ describe('OidcProviderSessionNotFoundExceptionFilter', () => {
     render: jest.fn(),
   } as any;
 
-  const idMock = 'error-id-123';
+  const idMock = "error-id-123";
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -74,17 +70,17 @@ describe('OidcProviderSessionNotFoundExceptionFilter', () => {
     generateErrorIdMock.mockReturnValue(idMock);
 
     resMock.status.mockReturnThis();
-    configMock.get.mockReturnValue({ prefix: 'Y' });
+    configMock.get.mockReturnValue({ prefix: "Y" });
 
-    exceptionMock = new SessionNotFound('message', 500);
+    exceptionMock = new SessionNotFound("message", 500);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(filter).toBeDefined();
   });
 
-  describe('catch', () => {
-    it('should log the exception with code, id, message and original exception', () => {
+  describe("catch", () => {
+    it("should log the exception with code, id, message and original exception", () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 
@@ -92,7 +88,7 @@ describe('OidcProviderSessionNotFoundExceptionFilter', () => {
       expect(loggerMock.error).toHaveBeenCalledOnce();
     });
 
-    it('should output the error with error object, exception and response', () => {
+    it("should output the error with error object, exception and response", () => {
       // When
       filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
 

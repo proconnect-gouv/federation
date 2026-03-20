@@ -1,15 +1,12 @@
-import { Model } from 'mongoose';
+import { ApiEntrepriseService } from "@fc/api-entreprise";
+import { ConfigService } from "@fc/config";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Model } from "mongoose";
+import { CachedOrganization } from "../schemas";
+import { CachedOrganizationService } from "./cached-organization.service";
 
-import { getModelToken } from '@nestjs/mongoose';
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { ApiEntrepriseService } from '@fc/api-entreprise';
-import { ConfigService } from '@fc/config';
-
-import { CachedOrganization } from '../schemas';
-import { CachedOrganizationService } from './cached-organization.service';
-
-describe('CachedOrganizationService', () => {
+describe("CachedOrganizationService", () => {
   let service: CachedOrganizationService;
   let model: Model<CachedOrganization>;
   const apiEntrepriseService = {
@@ -32,7 +29,7 @@ describe('CachedOrganizationService', () => {
           useValue: apiEntrepriseService,
         },
         {
-          provide: getModelToken('CachedOrganization'),
+          provide: getModelToken("CachedOrganization"),
           useValue: {
             findOne: jest.fn(),
             create: jest.fn(),
@@ -46,20 +43,20 @@ describe('CachedOrganizationService', () => {
 
     service = module.get<CachedOrganizationService>(CachedOrganizationService);
     model = module.get<Model<CachedOrganization>>(
-      getModelToken('CachedOrganization'),
+      getModelToken("CachedOrganization"),
     );
   });
 
-  it('should return early if cached organization exists and TTL is not expired', async () => {
-    const siret = '12345678901234';
+  it("should return early if cached organization exists and TTL is not expired", async () => {
+    const siret = "12345678901234";
     const now = Date.now();
     const storedOrganization = {
       siret,
-      libelle: 'Test Org',
+      libelle: "Test Org",
       updatedAt: new Date(now - 60 * 60 * 1000), // 1 hour ago
     };
 
-    jest.spyOn(model, 'findOne').mockResolvedValue(storedOrganization as any);
+    jest.spyOn(model, "findOne").mockResolvedValue(storedOrganization as any);
 
     await service.upsertCachedOrganizationBySiretIfNeeded(siret);
 
@@ -67,15 +64,15 @@ describe('CachedOrganizationService', () => {
     expect(model.create).not.toHaveBeenCalled();
   });
 
-  it('should fetch and create new organization if no cached data exists', async () => {
-    const siret = '12345678901234';
-    const organizationInfo = { libelle: 'New Org', siren: '1234567890', siret };
+  it("should fetch and create new organization if no cached data exists", async () => {
+    const siret = "12345678901234";
+    const organizationInfo = { libelle: "New Org", siren: "1234567890", siret };
 
-    jest.spyOn(model, 'findOne').mockResolvedValue(null);
+    jest.spyOn(model, "findOne").mockResolvedValue(null);
     jest
-      .spyOn(apiEntrepriseService, 'getOrganizationBySiret')
+      .spyOn(apiEntrepriseService, "getOrganizationBySiret")
       .mockResolvedValue(organizationInfo);
-    jest.spyOn(model, 'create').mockResolvedValue({} as any);
+    jest.spyOn(model, "create").mockResolvedValue({} as any);
 
     await service.upsertCachedOrganizationBySiretIfNeeded(siret);
 
@@ -86,18 +83,18 @@ describe('CachedOrganizationService', () => {
     expect(model.create).toHaveBeenCalledWith({ ...organizationInfo });
   });
 
-  it('should update organization if cached data exists but TTL is expired', async () => {
-    const siret = '12345678901234';
-    const organizationInfo = { siret, libelle: 'Updated Org' };
+  it("should update organization if cached data exists but TTL is expired", async () => {
+    const siret = "12345678901234";
+    const organizationInfo = { siret, libelle: "Updated Org" };
     const expiredDate = new Date(Date.now() - 25 * 60 * 60 * 1000); // 25 hours ago
-    jest.spyOn(model, 'findOne').mockResolvedValue({
+    jest.spyOn(model, "findOne").mockResolvedValue({
       ...organizationInfo,
       updatedAt: expiredDate,
     } as any);
     jest
-      .spyOn(apiEntrepriseService, 'getOrganizationBySiret')
+      .spyOn(apiEntrepriseService, "getOrganizationBySiret")
       .mockResolvedValue(organizationInfo);
-    jest.spyOn(model, 'updateOne').mockResolvedValue({} as any);
+    jest.spyOn(model, "updateOne").mockResolvedValue({} as any);
 
     await service.upsertCachedOrganizationBySiretIfNeeded(siret);
 

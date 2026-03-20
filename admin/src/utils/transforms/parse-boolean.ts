@@ -1,8 +1,8 @@
 // Inputs to be casted as `true`
-const truthy = ['true', 'on', '1', true, 1];
+const truthy = ["true", "on", "1", true, 1];
 
 // Inputs to be casted as `false`
-const falsy = ['false', 'off', '0', false, 0];
+const falsy = ["false", "off", "0", false, 0];
 
 /**
  * parese input and return the boolean value according to mappging defined
@@ -17,7 +17,7 @@ export function parseBoolean(
 ): boolean | undefined {
   let input: any = property;
 
-  if (input instanceof String || typeof input === 'string') {
+  if (input instanceof String || typeof input === "string") {
     input = input.toLowerCase();
   }
 

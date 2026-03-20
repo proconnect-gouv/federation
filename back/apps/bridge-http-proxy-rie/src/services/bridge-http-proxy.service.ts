@@ -1,27 +1,24 @@
-import { lastValueFrom, timeout } from 'rxjs';
-
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-
-import { validateDto } from '@fc/common';
-import { ConfigService, validationOptions } from '@fc/config';
-import { BridgePayload, BridgeProtocol } from '@fc/hybridge-http-proxy';
-import { LoggerService } from '@fc/logger';
-import { HttpProxyProtocol } from '@fc/microservices';
-import { RabbitmqConfig } from '@fc/rabbitmq';
-
-import { BridgeHttpProxyProtocolDto } from '../dto';
+import { validateDto } from "@fc/common";
+import { ConfigService, validationOptions } from "@fc/config";
+import { BridgePayload, BridgeProtocol } from "@fc/hybridge-http-proxy";
+import { LoggerService } from "@fc/logger";
+import { HttpProxyProtocol } from "@fc/microservices";
+import { RabbitmqConfig } from "@fc/rabbitmq";
+import { Inject, Injectable } from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
+import { lastValueFrom, timeout } from "rxjs";
+import { BridgeHttpProxyProtocolDto } from "../dto";
 import {
   BridgeHttpProxyMissingVariableException,
   BridgeHttpProxyRabbitmqException,
-} from '../exceptions';
+} from "../exceptions";
 
 @Injectable()
 export class BridgeHttpProxyService {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
-    @Inject('BridgeProxyBroker') private readonly broker: ClientProxy,
+    @Inject("BridgeProxyBroker") private readonly broker: ClientProxy,
   ) {}
 
   /**
@@ -42,7 +39,7 @@ export class BridgeHttpProxyService {
     let idpResponse: BridgeProtocol<object>;
     const message = this.createMessage(originalUrl, method, headers, body);
     const { requestTimeout } =
-      this.config.get<RabbitmqConfig>('BridgeProxyBroker');
+      this.config.get<RabbitmqConfig>("BridgeProxyBroker");
 
     const order = this.broker
       .send(HttpProxyProtocol.Commands.HTTP_PROXY, message)
@@ -82,8 +79,8 @@ export class BridgeHttpProxyService {
     headers,
     data?: string,
   ): BridgePayload {
-    const { host, 'x-forwarded-proto': xForwardedProto } = headers;
-    const url = `${xForwardedProto || 'https'}://${host}${originalUrl}`;
+    const { host, "x-forwarded-proto": xForwardedProto } = headers;
+    const url = `${xForwardedProto || "https"}://${host}${originalUrl}`;
 
     return {
       headers,

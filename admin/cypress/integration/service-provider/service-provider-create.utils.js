@@ -1,9 +1,9 @@
-const BASE_URL = Cypress.config('baseUrl');
+const BASE_URL = Cypress.config("baseUrl");
 
 export function createServiceProvider(serviceProviderInfo, configuration) {
-  cy.url().should('eq', `${BASE_URL}/service-provider`);
-  cy.contains('Créer un fournisseur de service').click();
-  cy.contains('Section Fournisseur de données').click();
+  cy.url().should("eq", `${BASE_URL}/service-provider`);
+  cy.contains("Créer un fournisseur de service").click();
+  cy.contains("Section Fournisseur de données").click();
 
   const {
     name,
@@ -40,7 +40,7 @@ export function createServiceProvider(serviceProviderInfo, configuration) {
     cy.get('[type="checkbox"]').check(serviceProviderInfo.scopes);
   }
 
-  cy.get('[type="radio"]').check('public', {
+  cy.get('[type="radio"]').check("public", {
     force: true,
   });
 

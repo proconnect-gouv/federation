@@ -1,5 +1,4 @@
 import { defineConfig } from "cypress";
-
 import baseConfig from "./cypress-base.config";
 import pluginConfig from "./cypress/plugins";
 

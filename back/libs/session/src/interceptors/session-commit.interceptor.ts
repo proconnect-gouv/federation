@@ -1,20 +1,17 @@
-import { Request } from 'express';
-import { Observable, tap } from 'rxjs';
-
+import { AppConfig } from "@fc/app";
+import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
 import {
   CallHandler,
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-import { RouteInfo } from '@nestjs/common/interfaces';
-
-import { AppConfig } from '@fc/app';
-import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-
-import { SessionConfig } from '../dto';
-import { SessionService } from '../services';
+} from "@nestjs/common";
+import { RouteInfo } from "@nestjs/common/interfaces";
+import { Request } from "express";
+import { Observable, tap } from "rxjs";
+import { SessionConfig } from "../dto";
+import { SessionService } from "../services";
 
 @Injectable()
 export class SessionCommitInterceptor implements NestInterceptor {
@@ -36,11 +33,11 @@ export class SessionCommitInterceptor implements NestInterceptor {
   }
 
   private async commit(req: Request) {
-    const { urlPrefix } = this.config.get<AppConfig>('App');
+    const { urlPrefix } = this.config.get<AppConfig>("App");
     const { middlewareIncludedRoutes } =
-      this.config.get<SessionConfig>('Session');
+      this.config.get<SessionConfig>("Session");
 
-    const currentRoute = req.route.path.replace(urlPrefix, '');
+    const currentRoute = req.route.path.replace(urlPrefix, "");
 
     /**
      * @todo #1551 Fix route paths to avoid any double execution of middlewares
@@ -70,12 +67,12 @@ export class SessionCommitInterceptor implements NestInterceptor {
       try {
         await this.session.commit();
       } catch {
-        this.logger.info('Could not commit session from interceptor');
+        this.logger.info("Could not commit session from interceptor");
       }
     }
   }
 
   private getCleanedUpRoutes(routes: (string | RouteInfo)[]): string[] {
-    return routes.map((route: string) => route.replace('$', ''));
+    return routes.map((route: string) => route.replace("$", ""));
   }
 }

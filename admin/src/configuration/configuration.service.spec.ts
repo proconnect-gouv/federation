@@ -1,11 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
+import { ConfigurationService } from "./configuration.service";
+import { Configuration } from "./entity/configuration.mongodb.entity";
+import { configuration } from "./fixture/configuration.fixtures";
 
-import { ConfigurationService } from './configuration.service';
-import { Configuration } from './entity/configuration.mongodb.entity';
-import { configuration } from './fixture/configuration.fixtures';
-
-describe('ConfigurationService', () => {
+describe("ConfigurationService", () => {
   let service: ConfigurationService;
   const configurationDbResponseMock: any = configuration;
   let configurationRepositoryMock: any;
@@ -37,12 +36,12 @@ describe('ConfigurationService', () => {
         },
       },
     };
-    const spySave = jest.spyOn(configurationRepositoryMock, 'save');
+    const spySave = jest.spyOn(configurationRepositoryMock, "save");
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([Configuration], 'fc-mongo')],
+      imports: [TypeOrmModule.forFeature([Configuration], "fc-mongo")],
       providers: [ConfigurationService],
     })
-      .overrideProvider(getRepositoryToken(Configuration, 'fc-mongo'))
+      .overrideProvider(getRepositoryToken(Configuration, "fc-mongo"))
       .useValue(configurationRepositoryMock)
       .compile();
     service = module.get<ConfigurationService>(ConfigurationService);
@@ -51,12 +50,12 @@ describe('ConfigurationService', () => {
     spySave.mockClear();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('getLastConfig', () => {
-    it('should return allConfigData', async () => {
+  describe("getLastConfig", () => {
+    it("should return allConfigData", async () => {
       // setup
       // action
       const result = await service.getLastConfig();
@@ -66,8 +65,8 @@ describe('ConfigurationService', () => {
     });
   });
 
-  describe('getLastConfigIndisponibilityData', () => {
-    it('should return useful indisponibility data', async () => {
+  describe("getLastConfigIndisponibilityData", () => {
+    it("should return useful indisponibility data", async () => {
       // setup
       service.getLastConfig = jest
         .fn()
@@ -80,32 +79,32 @@ describe('ConfigurationService', () => {
       expect(result).toEqual({
         activateMessage: true,
         messageOnLogin: {
-          message: 'Message',
-          startDate: '2019-09-20',
-          startHour: '17:24',
-          stopDate: '2019-09-20',
-          stopHour: '17:25',
-          startRNIPPMessageHour: '',
-          stopRNIPPMessageHour: '',
+          message: "Message",
+          startDate: "2019-09-20",
+          startHour: "17:24",
+          stopDate: "2019-09-20",
+          stopHour: "17:25",
+          startRNIPPMessageHour: "",
+          stopRNIPPMessageHour: "",
           recipient: false,
         },
       });
     });
   });
 
-  describe('updateConfigWithNewMessage', () => {
-    it('should update the configuration.messageOnLogin with form data', async () => {
+  describe("updateConfigWithNewMessage", () => {
+    it("should update the configuration.messageOnLogin with form data", async () => {
       // Setup
       const newData = {
-        message: 'Hello',
-        dateDebut: '2019-09-20',
-        dateFin: '2019-09-20',
-        heureDebut: '18:24',
-        heureFin: '18:25',
+        message: "Hello",
+        dateDebut: "2019-09-20",
+        dateFin: "2019-09-20",
+        heureDebut: "18:24",
+        heureFin: "18:25",
         activateMessage: true,
       };
 
-      const user = 'Harry Seldon';
+      const user = "Harry Seldon";
       await service.updateConfigWithNewMessage(newData, user);
       // Expected
       expect(configurationRepositoryMock.save).toHaveBeenCalledTimes(1);

@@ -1,23 +1,19 @@
-import pino, { Logger } from 'pino';
+import { ConfigService } from "@fc/config";
+import { getConfigMock } from "@mocks/config";
+import { getLoggerMock } from "@mocks/logger";
+import { Test, TestingModule } from "@nestjs/testing";
+import pino, { Logger } from "pino";
+import { LogLevels } from "../enums";
+import { PLUGIN_SERVICES } from "../tokens";
+import { LoggerService } from "./logger.service";
 
-import { Test, TestingModule } from '@nestjs/testing';
+jest.mock("pino");
 
-import { ConfigService } from '@fc/config';
-
-import { getConfigMock } from '@mocks/config';
-import { getLoggerMock } from '@mocks/logger';
-
-import { LogLevels } from '../enums';
-import { PLUGIN_SERVICES } from '../tokens';
-import { LoggerService } from './logger.service';
-
-jest.mock('pino');
-
-describe('LoggerService', () => {
+describe("LoggerService", () => {
   let service: LoggerService;
 
   const configMock = {
-    threshold: 'debug',
+    threshold: "debug",
   };
   const configServiceMock = getConfigMock();
   const loggerMock = getLoggerMock();
@@ -57,11 +53,11 @@ describe('LoggerService', () => {
     service = module.get<LoggerService>(LoggerService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('configure', () => {
+  describe("configure", () => {
     /**
      * 🚨 Due to the use of a constructor, we need to clear counter to properly test the function.
      * Please exerts utmost caution while updating. 🚨
@@ -69,49 +65,49 @@ describe('LoggerService', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      service['overloadConsole'] = jest.fn();
+      service["overloadConsole"] = jest.fn();
     });
 
-    it('should overload the console', () => {
+    it("should overload the console", () => {
       // When
-      service['configure']();
+      service["configure"]();
 
       // Then
-      expect(service['overloadConsole']).toHaveBeenCalledTimes(1);
-      expect(service['overloadConsole']).toHaveBeenCalledWith();
+      expect(service["overloadConsole"]).toHaveBeenCalledTimes(1);
+      expect(service["overloadConsole"]).toHaveBeenCalledWith();
     });
 
-    it('should log a notice that the console logger is overloaded', () => {
+    it("should log a notice that the console logger is overloaded", () => {
       // When
-      service['configure']();
+      service["configure"]();
 
       // Then
       expect(loggerMock.info).toHaveBeenCalledTimes(1);
       expect(loggerMock.info).toHaveBeenCalledWith(
-        'Logger is ready and native console is now overloaded.',
+        "Logger is ready and native console is now overloaded.",
       );
     });
   });
 
-  describe('debug', () => {
+  describe("debug", () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      service['logWithContext'] = jest.fn();
+      service["logWithContext"] = jest.fn();
     });
 
-    it('should call the pino logger with the correct level, object and message with arguments', () => {
+    it("should call the pino logger with the correct level, object and message with arguments", () => {
       // Given
       const level = LogLevels.DEBUG;
-      const message = 'test message';
-      const obj = { test: 'test' };
-      const args = ['arg1', 'arg2'];
+      const message = "test message";
+      const obj = { test: "test" };
+      const args = ["arg1", "arg2"];
 
       // When
       service[level](obj, message, ...args);
 
       // Then
-      expect(service['logWithContext']).toHaveBeenCalledTimes(1);
-      expect(service['logWithContext']).toHaveBeenCalledWith(
+      expect(service["logWithContext"]).toHaveBeenCalledTimes(1);
+      expect(service["logWithContext"]).toHaveBeenCalledWith(
         level,
         obj,
         message,
@@ -120,25 +116,25 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('logWithContext', () => {
+  describe("logWithContext", () => {
     const contextMock = {
-      foo: 'bar',
+      foo: "bar",
     };
 
     beforeEach(() => {
       jest.clearAllMocks();
 
-      service['getContextFromPlugins'] = jest.fn().mockReturnValue(contextMock);
+      service["getContextFromPlugins"] = jest.fn().mockReturnValue(contextMock);
     });
 
-    it('should call the pino logger with the correct level and arguments when first argument is the message', () => {
+    it("should call the pino logger with the correct level and arguments when first argument is the message", () => {
       // Given
       const level = LogLevels.DEBUG;
-      const message = 'test message';
-      const args = ['arg1', 'arg2'];
+      const message = "test message";
+      const args = ["arg1", "arg2"];
 
       // When
-      service['logWithContext'](level, message, args[0], args[1]);
+      service["logWithContext"](level, message, args[0], args[1]);
 
       // Then
       expect(loggerMock[level]).toHaveBeenCalledTimes(1);
@@ -149,19 +145,19 @@ describe('LoggerService', () => {
       );
     });
 
-    it('should call the pino logger with the correct level and arguments when first argument is an object', () => {
+    it("should call the pino logger with the correct level and arguments when first argument is an object", () => {
       // Given
       const level = LogLevels.DEBUG;
-      const message = 'test message';
-      const obj = { test: 'test' };
-      const args = ['arg1', 'arg2'];
+      const message = "test message";
+      const obj = { test: "test" };
+      const args = ["arg1", "arg2"];
       const expectedMessage = {
         ...obj,
         ...contextMock,
       };
 
       // When
-      service['logWithContext'](level, obj, message, args[0], args[1]);
+      service["logWithContext"](level, obj, message, args[0], args[1]);
 
       // Then
       expect(loggerMock[level]).toHaveBeenCalledTimes(1);
@@ -172,15 +168,15 @@ describe('LoggerService', () => {
       );
     });
 
-    it('should call the pino logger with the correct level and arguments when first argument is anything other than a string', () => {
+    it("should call the pino logger with the correct level and arguments when first argument is anything other than a string", () => {
       // Given
       const level = LogLevels.DEBUG;
-      const message = 'test message';
+      const message = "test message";
       const obj = 123;
-      const args = ['arg1', 'arg2'];
+      const args = ["arg1", "arg2"];
 
       // When
-      service['logWithContext'](level, obj, message, args[0], args[1]);
+      service["logWithContext"](level, obj, message, args[0], args[1]);
 
       // Then
       expect(loggerMock[level]).toHaveBeenCalledTimes(1);
@@ -191,53 +187,53 @@ describe('LoggerService', () => {
       );
     });
 
-    it('should call getContextFromPlugins with the call stack', () => {
+    it("should call getContextFromPlugins with the call stack", () => {
       // When
-      service['logWithContext'](LogLevels.DEBUG, 'test message');
+      service["logWithContext"](LogLevels.DEBUG, "test message");
 
       // Then
       expect(
-        service['getContextFromPlugins'],
+        service["getContextFromPlugins"],
       ).toHaveBeenCalledExactlyOnceWith();
     });
 
-    it('should call getContextFromPlugins without the call stack', () => {
+    it("should call getContextFromPlugins without the call stack", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({ threshold: LogLevels.INFO });
 
       // When
-      service['logWithContext'](LogLevels.DEBUG, 'test message');
+      service["logWithContext"](LogLevels.DEBUG, "test message");
 
       // Then
-      expect(service['getContextFromPlugins']).toHaveBeenCalledExactlyOnceWith(
+      expect(service["getContextFromPlugins"]).toHaveBeenCalledExactlyOnceWith(
         undefined,
       );
     });
   });
 
-  describe('getContextFromPlugins', () => {
-    it('should call the getContext method of each plugin service', () => {
+  describe("getContextFromPlugins", () => {
+    it("should call the getContext method of each plugin service", () => {
       // When
-      service['getContextFromPlugins']();
+      service["getContextFromPlugins"]();
 
       // Then
       expect(pluginMock1.getContext).toHaveBeenCalledExactlyOnceWith();
       expect(pluginMock2.getContext).toHaveBeenCalledExactlyOnceWith();
     });
 
-    it('should return the context from the plugins', () => {
+    it("should return the context from the plugins", () => {
       // Given
       const plugin1Context = {
-        foo: 'bar',
+        foo: "bar",
       };
       const plugin2Context = {
-        bar: 'foo',
+        bar: "foo",
       };
       pluginMock1.getContext.mockReturnValueOnce(plugin1Context);
       pluginMock2.getContext.mockReturnValueOnce(plugin2Context);
 
       // When
-      const result = service['getContextFromPlugins']();
+      const result = service["getContextFromPlugins"]();
       // Then
       expect(result).toEqual({
         ...plugin1Context,
@@ -246,10 +242,10 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('overloadConsole', () => {
-    it('should overload the console with the logger to the correct level', () => {
+  describe("overloadConsole", () => {
+    it("should overload the console with the logger to the correct level", () => {
       // When
-      service['overloadConsole']();
+      service["overloadConsole"]();
 
       // Then
       expect(console.log.toString()).toEqual(

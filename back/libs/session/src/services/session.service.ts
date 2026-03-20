@@ -1,11 +1,9 @@
-import { Request, Response } from 'express';
-
-import { Injectable } from '@nestjs/common';
-
-import { SessionBackendStorageService } from './session-backend-storage.service';
-import { SessionCookiesService } from './session-cookies.service';
-import { SessionLifecycleService } from './session-lifecycle.service';
-import { SessionLocalStorageService } from './session-local-storage.service';
+import { Injectable } from "@nestjs/common";
+import { Request, Response } from "express";
+import { SessionBackendStorageService } from "./session-backend-storage.service";
+import { SessionCookiesService } from "./session-cookies.service";
+import { SessionLifecycleService } from "./session-lifecycle.service";
+import { SessionLocalStorageService } from "./session-local-storage.service";
 
 export type RedisQueryResult = [Error | null, any];
 

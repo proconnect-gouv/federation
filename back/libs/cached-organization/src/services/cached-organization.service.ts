@@ -1,20 +1,17 @@
-import { isEmpty } from 'lodash';
-import { Model } from 'mongoose';
-
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-
-import { ApiEntrepriseConfig, ApiEntrepriseService } from '@fc/api-entreprise';
-import { ConfigService } from '@fc/config';
-
-import { CachedOrganization } from '../schemas';
+import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
+import { ConfigService } from "@fc/config";
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { isEmpty } from "lodash";
+import { Model } from "mongoose";
+import { CachedOrganization } from "../schemas";
 
 @Injectable()
 export class CachedOrganizationService {
   constructor(
     private readonly configService: ConfigService,
     private readonly apiEntrepriseService: ApiEntrepriseService,
-    @InjectModel('CachedOrganization') private model: Model<CachedOrganization>,
+    @InjectModel("CachedOrganization") private model: Model<CachedOrganization>,
   ) {}
 
   async upsertCachedOrganizationBySiretIfNeeded(siret: string) {
@@ -51,7 +48,7 @@ export class CachedOrganizationService {
 
   private isExpired(cachedOrganization: CachedOrganization) {
     const { cachedTTL } =
-      this.configService.get<ApiEntrepriseConfig>('ApiEntreprise');
+      this.configService.get<ApiEntrepriseConfig>("ApiEntreprise");
     return cachedOrganization.updatedAt.getTime() + cachedTTL < Date.now();
   }
 }

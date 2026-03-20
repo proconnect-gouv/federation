@@ -1,20 +1,20 @@
-import { PassportStrategy } from '@nestjs/passport';
-import { Inject, Injectable } from '@nestjs/common';
-import { Strategy } from 'passport-local';
-import { type IAuthenticationService } from '../authentication.service';
-import { User } from '../../user/user.sql.entity';
-import { UserService } from '../../user/user.service';
-import { IAuthenticationTrack } from '../authentication-track.interface';
+import { Inject, Injectable } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { Strategy } from "passport-local";
+import { LoggerService } from "../../logger/logger.service";
+import { UserService } from "../../user/user.service";
+import { User } from "../../user/user.sql.entity";
 import {
   AuthenticationActions,
   AuthenticationStates,
-} from '../authentication-actions.enum';
-import { LoggerService } from '../../logger/logger.service';
+} from "../authentication-actions.enum";
+import { IAuthenticationTrack } from "../authentication-track.interface";
+import { type IAuthenticationService } from "../authentication.service";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @Inject('IAuthenticationService')
+    @Inject("IAuthenticationService")
     private readonly authenticationService: IAuthenticationService,
     private readonly logger: LoggerService,
     private readonly userService: UserService,
@@ -57,7 +57,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         token,
       );
 
-    let messageToDisplay = 'Connexion impossible';
+    let messageToDisplay = "Connexion impossible";
 
     switch (authenticationFailureReason) {
       case AuthenticationStates.DENIED_MAX_AUTHENTICATION_ATTEMPTS_REACHED:
@@ -101,7 +101,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       state: authenticationFailureReason,
       user: usernameInput,
     });
-    req.flash('error', message);
+    req.flash("error", message);
   }
 
   private async blockUser(usernameInput: string): Promise<User> {

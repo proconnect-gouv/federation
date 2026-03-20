@@ -1,9 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
-
-import { Injectable, NestMiddleware } from '@nestjs/common';
-
-import { AsyncLocalStorageService } from '../async-local-storage.service';
-import { AsyncLocalStorageRequestInterface } from '../interfaces';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { NextFunction, Request, Response } from "express";
+import { AsyncLocalStorageService } from "../async-local-storage.service";
+import { AsyncLocalStorageRequestInterface } from "../interfaces";
 
 @Injectable()
 export class AsyncLocalStorageRequestMiddleware implements NestMiddleware {
@@ -12,8 +10,8 @@ export class AsyncLocalStorageRequestMiddleware implements NestMiddleware {
   ) {}
 
   use(req: Request, res: Response, next: NextFunction) {
-    this.asyncLocalStorage.set('request', req);
-    this.asyncLocalStorage.set('response', res);
+    this.asyncLocalStorage.set("request", req);
+    this.asyncLocalStorage.set("response", res);
     next();
   }
 }

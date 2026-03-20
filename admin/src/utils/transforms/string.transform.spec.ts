@@ -1,5 +1,4 @@
-import moment from 'moment-timezone';
-
+import moment from "moment-timezone";
 import {
   arrayToLines,
   defaultNoneOrLinesToNullableArray,
@@ -9,15 +8,15 @@ import {
   toBoolean,
   toDate,
   toNullableString,
-} from './string.transform';
+} from "./string.transform";
 
-describe('String transform', () => {
-  describe('toDate', () => {
-    const format = 'YYYY-MM-DD';
-    const wrongFormat = 'YYY-MM-D';
-    const date = '2020-09-10';
+describe("String transform", () => {
+  describe("toDate", () => {
+    const format = "YYYY-MM-DD";
+    const wrongFormat = "YYY-MM-D";
+    const date = "2020-09-10";
 
-    it('should return a function', () => {
+    it("should return a function", () => {
       // When
       const valid = toDate(format);
 
@@ -25,7 +24,7 @@ describe('String transform', () => {
       expect(valid).toBeInstanceOf(Function);
     });
 
-    it('should return a function that return a Date', () => {
+    it("should return a function that return a Date", () => {
       // When
       const valid = toDate(format);
 
@@ -33,7 +32,7 @@ describe('String transform', () => {
       expect(valid(date)).toBeInstanceOf(Date);
     });
 
-    it('should return a function that return a Date with the right format: YYYY-MM-DD', () => {
+    it("should return a function that return a Date with the right format: YYYY-MM-DD", () => {
       // Given
       const myFunc = toDate(format);
       const expected = moment(date, format).toDate();
@@ -45,7 +44,7 @@ describe('String transform', () => {
       expect(valid).toEqual(expected);
     });
 
-    it('should return undefined if the date format is not YYYY-MM-DD', () => {
+    it("should return undefined if the date format is not YYYY-MM-DD", () => {
       // Given
       const myFunc = toDate(wrongFormat);
 
@@ -57,10 +56,10 @@ describe('String transform', () => {
     });
   });
 
-  describe('toBoolean', () => {
-    it('should return true if value is true', () => {
+  describe("toBoolean", () => {
+    it("should return true if value is true", () => {
       // Given
-      const value = 'true';
+      const value = "true";
 
       // When
       const result = toBoolean({ value });
@@ -69,9 +68,9 @@ describe('String transform', () => {
       expect(result).toEqual(true);
     });
 
-    it('should return true if value is on', () => {
+    it("should return true if value is on", () => {
       // Given
-      const value = 'on';
+      const value = "on";
 
       // When
       const result = toBoolean({ value });
@@ -80,9 +79,9 @@ describe('String transform', () => {
       expect(result).toEqual(true);
     });
 
-    it('should return true if value is 1', () => {
+    it("should return true if value is 1", () => {
       // Given
-      const value = '1';
+      const value = "1";
 
       // When
       const result = toBoolean({ value });
@@ -91,9 +90,9 @@ describe('String transform', () => {
       expect(result).toEqual(true);
     });
 
-    it('should return true if value is yes', () => {
+    it("should return true if value is yes", () => {
       // Given
-      const value = 'yes';
+      const value = "yes";
 
       // When
       const result = toBoolean({ value });
@@ -102,9 +101,9 @@ describe('String transform', () => {
       expect(result).toEqual(true);
     });
 
-    it('should return false if value is false', () => {
+    it("should return false if value is false", () => {
       // Given
-      const value = 'false';
+      const value = "false";
 
       // When
       const result = toBoolean({ value });
@@ -113,9 +112,9 @@ describe('String transform', () => {
       expect(result).toEqual(false);
     });
 
-    it('should return false if value is off', () => {
+    it("should return false if value is off", () => {
       // Given
-      const value = 'off';
+      const value = "off";
 
       // When
       const result = toBoolean({ value });
@@ -124,9 +123,9 @@ describe('String transform', () => {
       expect(result).toEqual(false);
     });
 
-    it('should return false if value is 0', () => {
+    it("should return false if value is 0", () => {
       // Given
-      const value = '0';
+      const value = "0";
 
       // When
       const result = toBoolean({ value });
@@ -135,9 +134,9 @@ describe('String transform', () => {
       expect(result).toEqual(false);
     });
 
-    it('should return false if value is no', () => {
+    it("should return false if value is no", () => {
       // Given
-      const value = 'no';
+      const value = "no";
 
       // When
       const result = toBoolean({ value });
@@ -146,9 +145,9 @@ describe('String transform', () => {
       expect(result).toEqual(false);
     });
 
-    it('should return undefined if value is not a boolean', () => {
+    it("should return undefined if value is not a boolean", () => {
       // Given
-      const value = 'toto';
+      const value = "toto";
 
       // When
       const result = toBoolean({ value });
@@ -158,10 +157,10 @@ describe('String transform', () => {
     });
   });
 
-  describe('toArray', () => {
-    it('should return an array if a string is provided', () => {
+  describe("toArray", () => {
+    it("should return an array if a string is provided", () => {
       // Given
-      const value = 'toto';
+      const value = "toto";
 
       // When
       const result = toArray({ value });
@@ -170,9 +169,9 @@ describe('String transform', () => {
       expect(result).toEqual([value]);
     });
 
-    it('should return an array if an array is provided', () => {
+    it("should return an array if an array is provided", () => {
       // Given
-      const value = ['toto'];
+      const value = ["toto"];
 
       // When
       const result = toArray({ value });
@@ -182,85 +181,85 @@ describe('String transform', () => {
     });
   });
 
-  describe('linesToArray', () => {
-    it('should split string by newline', () => {
+  describe("linesToArray", () => {
+    it("should split string by newline", () => {
       // Given
-      const value = 'line1\nline2\nline3';
+      const value = "line1\nline2\nline3";
 
       // When
       const result = linesToArray({ value });
 
       // Then
-      expect(result).toEqual(['line1', 'line2', 'line3']);
+      expect(result).toEqual(["line1", "line2", "line3"]);
     });
 
-    it('should split string by carriage return', () => {
+    it("should split string by carriage return", () => {
       // Given
-      const value = 'line1\rline2\rline3';
+      const value = "line1\rline2\rline3";
 
       // When
       const result = linesToArray({ value });
 
       // Then
-      expect(result).toEqual(['line1', 'line2', 'line3']);
+      expect(result).toEqual(["line1", "line2", "line3"]);
     });
 
-    it('should split string by carriage return and newline', () => {
+    it("should split string by carriage return and newline", () => {
       // Given
-      const value = 'line1\r\nline2\r\nline3';
+      const value = "line1\r\nline2\r\nline3";
 
       // When
       const result = linesToArray({ value });
 
       // Then
-      expect(result).toEqual(['line1', 'line2', 'line3']);
+      expect(result).toEqual(["line1", "line2", "line3"]);
     });
 
-    it('should split string by semicolon', () => {
+    it("should split string by semicolon", () => {
       // Given
-      const value = 'line1;line2;line3';
+      const value = "line1;line2;line3";
 
       // When
       const result = linesToArray({ value });
 
       // Then
-      expect(result).toEqual(['line1', 'line2', 'line3']);
+      expect(result).toEqual(["line1", "line2", "line3"]);
     });
 
-    it('should trim values', () => {
+    it("should trim values", () => {
       // Given
-      const value = ' line1 ; line2 ; line3 ';
+      const value = " line1 ; line2 ; line3 ";
 
       // When
       const result = linesToArray({ value });
 
       // Then
-      expect(result).toEqual(['line1', 'line2', 'line3']);
+      expect(result).toEqual(["line1", "line2", "line3"]);
     });
 
-    it('should filter out empty values', () => {
+    it("should filter out empty values", () => {
       // Given
-      const value = 'line1;;line3';
+      const value = "line1;;line3";
 
       // When
       const result = linesToArray({ value });
 
       // Then
-      expect(result).toEqual(['line1', 'line3']);
+      expect(result).toEqual(["line1", "line3"]);
     });
 
-    it('should filter out duplicates if specified', () => {
+    it("should filter out duplicates if specified", () => {
       // Given
-      const value = 'line1;line2;line1;line3;line2';
+      const value = "line1;line2;line1;line3;line2";
 
       // When
       const result = linesToArray({ value }, { shouldDeleteDuplicates: true });
 
       // Then
-      expect(result).toEqual(['line1', 'line2', 'line3']);
+      expect(result).toEqual(["line1", "line2", "line3"]);
     });
 
-    it('should return undefined on error', () => {
+    it("should return undefined on error", () => {
       // Given
       const value = null;
 
@@ -272,21 +271,21 @@ describe('String transform', () => {
     });
   });
 
-  describe('arrayToLines', () => {
-    it('should join array with carriage return and newline', () => {
+  describe("arrayToLines", () => {
+    it("should join array with carriage return and newline", () => {
       // Given
-      const value = ['line1', 'line2', 'line3'];
+      const value = ["line1", "line2", "line3"];
 
       // When
       const result = arrayToLines(value);
 
       // Then
-      expect(result).toEqual('line1\r\nline2\r\nline3');
+      expect(result).toEqual("line1\r\nline2\r\nline3");
     });
 
-    it('should return the value if it is not an array', () => {
+    it("should return the value if it is not an array", () => {
       // Given
-      const value = 'not an array';
+      const value = "not an array";
 
       // When
       const result = arrayToLines(value);
@@ -296,10 +295,10 @@ describe('String transform', () => {
     });
   });
 
-  describe('defaultNoneOrLinesToNullableArray', () => {
+  describe("defaultNoneOrLinesToNullableArray", () => {
     it('should return null if value is "default"', () => {
       // Given
-      const value = 'default';
+      const value = "default";
 
       // When
       const result = defaultNoneOrLinesToNullableArray({ value });
@@ -308,9 +307,9 @@ describe('String transform', () => {
       expect(result).toEqual(null);
     });
 
-    it('should return null if value is falsy', () => {
+    it("should return null if value is falsy", () => {
       // Given
-      const value = '';
+      const value = "";
 
       // When
       const result = defaultNoneOrLinesToNullableArray({ value });
@@ -321,7 +320,7 @@ describe('String transform', () => {
 
     it('should return empty array if value is "none"', () => {
       // Given
-      const value = 'none';
+      const value = "none";
 
       // When
       const result = defaultNoneOrLinesToNullableArray({ value });
@@ -330,19 +329,19 @@ describe('String transform', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return array of lines for other values', () => {
+    it("should return array of lines for other values", () => {
       // Given
-      const value = 'line1\nline2';
+      const value = "line1\nline2";
 
       // When
       const result = defaultNoneOrLinesToNullableArray({ value });
 
       // Then
-      expect(result).toEqual(['line1', 'line2']);
+      expect(result).toEqual(["line1", "line2"]);
     });
   });
 
-  describe('nullableArrayToDefaultNoneOrLines', () => {
+  describe("nullableArrayToDefaultNoneOrLines", () => {
     it('should return "default" if value is falsy', () => {
       // Given
       const value = null;
@@ -351,7 +350,7 @@ describe('String transform', () => {
       const result = nullableArrayToDefaultNoneOrLines({ value });
 
       // Then
-      expect(result).toEqual('default');
+      expect(result).toEqual("default");
     });
 
     it('should return "none" if value is an empty array', () => {
@@ -362,23 +361,23 @@ describe('String transform', () => {
       const result = nullableArrayToDefaultNoneOrLines({ value });
 
       // Then
-      expect(result).toEqual('none');
+      expect(result).toEqual("none");
     });
 
-    it('should return joined lines if value is a non-empty array', () => {
+    it("should return joined lines if value is a non-empty array", () => {
       // Given
-      const value = ['line1', 'line2'];
+      const value = ["line1", "line2"];
 
       // When
       const result = nullableArrayToDefaultNoneOrLines({ value });
 
       // Then
-      expect(result).toEqual('line1\r\nline2');
+      expect(result).toEqual("line1\r\nline2");
     });
 
-    it('should return the value if it is not an array', () => {
+    it("should return the value if it is not an array", () => {
       // Given
-      const value = 'not an array';
+      const value = "not an array";
 
       // When
       const result = nullableArrayToDefaultNoneOrLines({ value });
@@ -388,10 +387,10 @@ describe('String transform', () => {
     });
   });
 
-  describe('toNullableString', () => {
-    it('should return the value if it is truthy', () => {
+  describe("toNullableString", () => {
+    it("should return the value if it is truthy", () => {
       // Given
-      const value = 'some string';
+      const value = "some string";
 
       // When
       const result = toNullableString({ value });
@@ -400,9 +399,9 @@ describe('String transform', () => {
       expect(result).toEqual(value);
     });
 
-    it('should return null if value is falsy', () => {
+    it("should return null if value is falsy", () => {
       // Given
-      const value = '';
+      const value = "";
 
       // When
       const result = toNullableString({ value });

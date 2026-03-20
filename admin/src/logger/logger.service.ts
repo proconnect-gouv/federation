@@ -1,18 +1,18 @@
-import { ConfigService, InjectConfig } from 'nestjs-config';
-import { ConsoleLogger } from '@nestjs/common';
-import pino from 'pino';
-import { LogLevelNames } from './enum/log-levels.enum';
-import { pinoLevelsMap, nestLevelsMap } from './log-maps.map';
+import { ConsoleLogger } from "@nestjs/common";
+import { ConfigService, InjectConfig } from "nestjs-config";
+import pino from "pino";
+import { LogLevelNames } from "./enum/log-levels.enum";
+import { nestLevelsMap, pinoLevelsMap } from "./log-maps.map";
 
 let logger: any;
 
 export class LoggerService extends ConsoleLogger {
   constructor(@InjectConfig() readonly config: ConfigService) {
     super(null, { timestamp: false });
-    const level = this.config.get('logger.level');
+    const level = this.config.get("logger.level");
 
     if (!(level in pinoLevelsMap)) {
-      throw new Error('Invalid configuration value for logger');
+      throw new Error("Invalid configuration value for logger");
     }
 
     logger = pino(
@@ -24,7 +24,7 @@ export class LoggerService extends ConsoleLogger {
         },
         level,
       },
-      pino.destination(this.config.get('logger.path')),
+      pino.destination(this.config.get("logger.path")),
     );
   }
 
@@ -33,7 +33,7 @@ export class LoggerService extends ConsoleLogger {
   }
 
   private isDev() {
-    return this.config.get('logger.isDevelopement');
+    return this.config.get("logger.isDevelopement");
   }
 
   private technicalLogger(level: string, log: any, context?: string) {

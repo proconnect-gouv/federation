@@ -1,52 +1,48 @@
-import { plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
+import { ConfigService } from "@fc/config";
+import { CryptographyService } from "@fc/cryptography";
+import { LoggerService } from "@fc/logger";
+import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
+import { ServiceProviderMetadata } from "@fc/oidc";
+import { getLoggerMock } from "@mocks/logger";
+import { EventBus } from "@nestjs/cqrs";
+import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { plainToInstance } from "class-transformer";
+import { validate, ValidationError } from "class-validator";
+import { ServiceProvider } from "./schemas";
+import { ServiceProviderAdapterMongoService } from "./service-provider-adapter-mongo.service";
 
-import { EventBus } from '@nestjs/cqrs';
-import { getModelToken } from '@nestjs/mongoose';
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
-import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
-import { ServiceProviderMetadata } from '@fc/oidc';
-
-import { getLoggerMock } from '@mocks/logger';
-
-import { ServiceProvider } from './schemas';
-import { ServiceProviderAdapterMongoService } from './service-provider-adapter-mongo.service';
-
-jest.mock('class-validator', () => ({
-  ...jest.requireActual('class-validator'),
+jest.mock("class-validator", () => ({
+  ...jest.requireActual("class-validator"),
   validate: jest.fn(),
 }));
 
-jest.mock('class-transformer', () => ({
-  ...jest.requireActual('class-transformer'),
+jest.mock("class-transformer", () => ({
+  ...jest.requireActual("class-transformer"),
   plainToInstance: jest.fn(),
 }));
 
-describe('ServiceProviderAdapterMongoService', () => {
+describe("ServiceProviderAdapterMongoService", () => {
   let service: ServiceProviderAdapterMongoService;
 
   const validServiceProviderMock = {
-    key: '987654321987654321987654321987654',
+    key: "987654321987654321987654321987654",
     active: true,
-    name: 'foo',
-    title: 'title',
+    name: "foo",
+    title: "title",
     client_secret: "This is an encrypted string, don't ask !",
-    scopes: ['openid', 'profile'],
-    redirect_uris: ['https://sp-site.fr/redirect_uris'],
-    post_logout_redirect_uris: ['https://sp-site.fr/post_logout_redirect_uris'],
-    id_token_signed_response_alg: 'ES256',
-    userinfo_signed_response_alg: 'ES256',
-    jwks_uri: 'https://sp-site.fr/jwks-uri',
-    type: 'public',
+    scopes: ["openid", "profile"],
+    redirect_uris: ["https://sp-site.fr/redirect_uris"],
+    post_logout_redirect_uris: ["https://sp-site.fr/post_logout_redirect_uris"],
+    id_token_signed_response_alg: "ES256",
+    userinfo_signed_response_alg: "ES256",
+    jwks_uri: "https://sp-site.fr/jwks-uri",
+    type: "public",
   };
 
   const invalidServiceProviderMock = {
     ...validServiceProviderMock,
-    active: 'NOT_A_BOOLEAN',
+    active: "NOT_A_BOOLEAN",
   };
 
   const serviceProviderListMock = [validServiceProviderMock];
@@ -72,7 +68,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     watchWith: jest.fn(),
   };
 
-  const serviceProviderModel = getModelToken('ServiceProvider');
+  const serviceProviderModel = getModelToken("ServiceProvider");
 
   const configMock = {
     get: jest.fn(),
@@ -121,16 +117,16 @@ describe('ServiceProviderAdapterMongoService', () => {
     plainToInstanceMock.mockImplementation((_dto, obj) => obj);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('onModuleInit', () => {
+  describe("onModuleInit", () => {
     beforeEach(() => {
       service.getList = jest.fn();
     });
 
-    it('should call watchWith from mongooseHelper', async () => {
+    it("should call watchWith from mongooseHelper", async () => {
       // When
       await service.onModuleInit();
       // Then
@@ -139,7 +135,7 @@ describe('ServiceProviderAdapterMongoService', () => {
       ).toHaveBeenCalledTimes(1);
     });
 
-    it('should warmup cache', async () => {
+    it("should warmup cache", async () => {
       // When
       await service.onModuleInit();
       // Then
@@ -147,13 +143,13 @@ describe('ServiceProviderAdapterMongoService', () => {
     });
   });
 
-  describe('refreshCache', () => {
+  describe("refreshCache", () => {
     beforeEach(() => {
       // Given
       service.getList = jest.fn();
     });
 
-    it('should call getList method with true value in param', async () => {
+    it("should call getList method with true value in param", async () => {
       // When
       await service.refreshCache();
       // Then
@@ -162,23 +158,23 @@ describe('ServiceProviderAdapterMongoService', () => {
     });
   });
 
-  describe('legacyToOpenIdPropertyName', () => {
-    it('should return service provider with change legacy property name by openid property name', () => {
+  describe("legacyToOpenIdPropertyName", () => {
+    it("should return service provider with change legacy property name by openid property name", () => {
       // setup
       const expected = {
         ...validServiceProviderMock,
         client_id: validServiceProviderMock.key,
-        client_secret: 'client_secret',
-        scope: validServiceProviderMock.scopes.join(' '),
+        client_secret: "client_secret",
+        scope: validServiceProviderMock.scopes.join(" "),
       };
       delete expected.key;
       delete expected.scopes;
-      service['decryptClientSecret'] = jest
+      service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce(expected.client_secret);
 
       // action
-      const result = service['legacyToOpenIdPropertyName'](
+      const result = service["legacyToOpenIdPropertyName"](
         validServiceProviderMock as unknown as ServiceProvider,
       );
 
@@ -187,7 +183,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     });
   });
 
-  describe('findAllServiceProvider', () => {
+  describe("findAllServiceProvider", () => {
     beforeEach(() => {
       configMock.get.mockReturnValue({
         isLocalhostAllowed: false,
@@ -195,47 +191,47 @@ describe('ServiceProviderAdapterMongoService', () => {
       validateMock.mockResolvedValueOnce([]);
     });
 
-    it('should have called find once', async () => {
+    it("should have called find once", async () => {
       // action
-      await service['findAllServiceProvider']();
+      await service["findAllServiceProvider"]();
 
       // expect
       expect(repositoryMock.find).toHaveBeenCalledTimes(1);
     });
 
-    it('should have called find with a filter argument containing active true', async () => {
+    it("should have called find with a filter argument containing active true", async () => {
       // setup
       const expectedRequestFilter = {
         active: true,
       };
       // action
-      await service['findAllServiceProvider']();
+      await service["findAllServiceProvider"]();
 
       // expect
       expect(repositoryMock.find).toHaveBeenCalledWith(expectedRequestFilter);
     });
 
-    it('should have called find with a filter argument containing active true', async () => {
+    it("should have called find with a filter argument containing active true", async () => {
       // setup
       const expectedRequestFilter = {
         active: true,
       };
       // action
-      await service['findAllServiceProvider']();
+      await service["findAllServiceProvider"]();
 
       // expect
       expect(repositoryMock.find).toHaveBeenCalledWith(expectedRequestFilter);
     });
 
-    it('should return result of type list', async () => {
+    it("should return result of type list", async () => {
       // action
-      const result = await service['findAllServiceProvider']();
+      const result = await service["findAllServiceProvider"]();
 
       // expect
       expect(result).toStrictEqual(serviceProviderListMock);
     });
 
-    it('should log a warning if an entry is excluded by the DTO', async () => {
+    it("should log a warning if an entry is excluded by the DTO", async () => {
       // setup
       validateMock.mockResolvedValueOnce([new ValidationError()]);
 
@@ -249,13 +245,13 @@ describe('ServiceProviderAdapterMongoService', () => {
         .mockResolvedValueOnce(invalidServiceProviderListMock);
 
       // action
-      await service['findAllServiceProvider']();
+      await service["findAllServiceProvider"]();
 
       // expect
       expect(loggerMock.error).toHaveBeenCalledTimes(1);
     });
 
-    it('should filter out any entry excluded by the DTO', async () => {
+    it("should filter out any entry excluded by the DTO", async () => {
       // setup
       validateMock.mockResolvedValueOnce([new ValidationError()]);
 
@@ -269,26 +265,26 @@ describe('ServiceProviderAdapterMongoService', () => {
         .mockResolvedValueOnce(invalidServiceProviderListMock);
 
       // action
-      const result = await service['findAllServiceProvider']();
+      const result = await service["findAllServiceProvider"]();
 
       // expect
       expect(result).toEqual(serviceProviderListMock);
     });
   });
 
-  describe('getList', () => {
+  describe("getList", () => {
     beforeEach(() => {
-      service['findAllServiceProvider'] = jest
+      service["findAllServiceProvider"] = jest
         .fn()
         .mockResolvedValueOnce(serviceProviderListMock);
     });
 
-    it('should resolve', async () => {
+    it("should resolve", async () => {
       // setup
       const legacyToOpenIdMock = jest.spyOn<
         ServiceProviderAdapterMongoService,
         any
-      >(service, 'legacyToOpenIdPropertyName');
+      >(service, "legacyToOpenIdPropertyName");
       legacyToOpenIdMock.mockImplementationOnce((data) => data);
 
       // action
@@ -300,18 +296,18 @@ describe('ServiceProviderAdapterMongoService', () => {
       await result;
     });
 
-    it('should return service provider list refreshed (refresh forced)', async () => {
+    it("should return service provider list refreshed (refresh forced)", async () => {
       const expected = [
         {
           ...validServiceProviderMock,
-          client_id: '987654321987654321987654321987654',
-          client_secret: 'client_secret',
-          scope: 'openid profile',
+          client_id: "987654321987654321987654321987654",
+          client_secret: "client_secret",
+          scope: "openid profile",
         },
       ];
       delete expected[0].key;
       delete expected[0].scopes;
-      service['decryptClientSecret'] = jest
+      service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce(expected[0].client_secret);
 
@@ -319,42 +315,42 @@ describe('ServiceProviderAdapterMongoService', () => {
       const result = await service.getList(true);
 
       // expect
-      expect(service['findAllServiceProvider']).toHaveBeenCalledTimes(1);
+      expect(service["findAllServiceProvider"]).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual(expected);
     });
 
-    it('should return service provider list if serviceProviderListCache is not defined', async () => {
+    it("should return service provider list if serviceProviderListCache is not defined", async () => {
       // setup
-      service['listCache'] = [
+      service["listCache"] = [
         {
-          client_id: 'foo',
+          client_id: "foo",
         },
         {
-          client_id: 'bar',
+          client_id: "bar",
         },
       ] as unknown as ServiceProviderMetadata[];
-      service['findAllServiceProvider'] = jest.fn();
+      service["findAllServiceProvider"] = jest.fn();
 
       // action
       const result = await service.getList();
 
       // expect
-      expect(result).toBe(service['listCache']);
-      expect(service['findAllServiceProvider']).toHaveBeenCalledTimes(0);
+      expect(result).toBe(service["listCache"]);
+      expect(service["findAllServiceProvider"]).toHaveBeenCalledTimes(0);
     });
 
-    it('should return service provider list with the cached version', async () => {
+    it("should return service provider list with the cached version", async () => {
       const expected = [
         {
           ...validServiceProviderMock,
-          client_id: '987654321987654321987654321987654',
-          client_secret: 'client_secret',
-          scope: 'openid profile',
+          client_id: "987654321987654321987654321987654",
+          client_secret: "client_secret",
+          scope: "openid profile",
         },
       ];
       delete expected[0].key;
       delete expected[0].scopes;
-      service['decryptClientSecret'] = jest
+      service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce(expected[0].client_secret);
 
@@ -362,48 +358,48 @@ describe('ServiceProviderAdapterMongoService', () => {
       const result = await service.getList(true);
 
       // expect
-      expect(service['findAllServiceProvider']).toHaveBeenCalledTimes(1);
+      expect(service["findAllServiceProvider"]).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual(expected);
     });
   });
 
-  describe('getById', () => {
+  describe("getById", () => {
     // Given
     const spListMock = [
       {
-        client_id: 'wizz',
+        client_id: "wizz",
       },
       {
-        client_id: 'foo',
+        client_id: "foo",
       },
       {
-        client_id: 'bar',
+        client_id: "bar",
       },
     ];
 
-    it('should return an existing SP', async () => {
+    it("should return an existing SP", async () => {
       // Given
-      const idMock = 'foo';
+      const idMock = "foo";
       service.getList = jest.fn().mockResolvedValueOnce(spListMock);
       // When
       const result = await service.getById(idMock);
       // Then
       expect(result).toEqual({
-        client_id: 'foo',
+        client_id: "foo",
       });
     });
-    it('should return undefined for non existing SP', async () => {
+    it("should return undefined for non existing SP", async () => {
       // Given
-      const idMock = 'nope';
+      const idMock = "nope";
       service.getList = jest.fn().mockResolvedValueOnce(spListMock);
       // When
       const result = await service.getById(idMock);
       // Then
       expect(result).toBeUndefined();
     });
-    it('should pass refresh flag to getList method', async () => {
+    it("should pass refresh flag to getList method", async () => {
       // Given
-      const idMock = 'foo';
+      const idMock = "foo";
       const refresh = true;
       service.getList = jest.fn().mockResolvedValueOnce(spListMock);
       // When
@@ -414,23 +410,23 @@ describe('ServiceProviderAdapterMongoService', () => {
     });
   });
 
-  describe('legacyToOpenIdPropertyName', () => {
-    it('should return service provider with change legacy property name by openid property name', () => {
+  describe("legacyToOpenIdPropertyName", () => {
+    it("should return service provider with change legacy property name by openid property name", () => {
       // setup
       const expected = {
         ...validServiceProviderMock,
-        client_id: '987654321987654321987654321987654',
-        client_secret: 'client_secret',
-        scope: 'openid profile',
+        client_id: "987654321987654321987654321987654",
+        client_secret: "client_secret",
+        scope: "openid profile",
       };
       delete expected.key;
       delete expected.scopes;
-      service['decryptClientSecret'] = jest
+      service["decryptClientSecret"] = jest
         .fn()
-        .mockReturnValueOnce('client_secret');
+        .mockReturnValueOnce("client_secret");
 
       // action
-      const result = service['legacyToOpenIdPropertyName'](
+      const result = service["legacyToOpenIdPropertyName"](
         validServiceProviderMock as unknown as ServiceProvider,
       );
 
@@ -439,46 +435,46 @@ describe('ServiceProviderAdapterMongoService', () => {
     });
   });
 
-  describe('decryptClientSecret', () => {
-    it('should get clientSecretEncryptKey from config', () => {
+  describe("decryptClientSecret", () => {
+    it("should get clientSecretEncryptKey from config", () => {
       // Given
-      const clientSecretMock = 'some string';
-      const clientSecretEncryptKey = 'Key';
+      const clientSecretMock = "some string";
+      const clientSecretEncryptKey = "Key";
       configMock.get.mockReturnValue({ clientSecretEncryptKey });
 
       // When
-      service['decryptClientSecret'](clientSecretMock);
+      service["decryptClientSecret"](clientSecretMock);
       // Then
       expect(configMock.get).toHaveBeenCalledTimes(1);
     });
 
-    it('should call decrypt with enc key from config', () => {
+    it("should call decrypt with enc key from config", () => {
       // Given
-      const clientSecretMock = 'some string';
-      const clientSecretEncryptKey = 'Key';
+      const clientSecretMock = "some string";
+      const clientSecretEncryptKey = "Key";
       configMock.get.mockReturnValue({ clientSecretEncryptKey });
-      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+      cryptographyMock.decrypt.mockReturnValue("totoIsDecrypted");
       // When
-      service['decryptClientSecret'](clientSecretMock);
+      service["decryptClientSecret"](clientSecretMock);
       // Then
       expect(cryptographyMock.decrypt).toHaveBeenCalledTimes(1);
       expect(cryptographyMock.decrypt).toHaveBeenCalledWith(
         clientSecretEncryptKey,
-        Buffer.from(clientSecretMock, 'base64'),
+        Buffer.from(clientSecretMock, "base64"),
       );
     });
 
-    it('should return clientSecretEncryptKey', () => {
+    it("should return clientSecretEncryptKey", () => {
       // Given
-      const clientSecretMock = 'some string';
-      const clientSecretEncryptKey = 'Key';
+      const clientSecretMock = "some string";
+      const clientSecretEncryptKey = "Key";
       configMock.get.mockReturnValue({ clientSecretEncryptKey });
-      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+      cryptographyMock.decrypt.mockReturnValue("totoIsDecrypted");
 
       // When
-      const result = service['decryptClientSecret'](clientSecretMock);
+      const result = service["decryptClientSecret"](clientSecretMock);
       // Then
-      expect(result).toEqual('totoIsDecrypted');
+      expect(result).toEqual("totoIsDecrypted");
     });
   });
 });

@@ -1,20 +1,19 @@
-import 'reflect-metadata';
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import "reflect-metadata";
+import { IndisponibiliteDTO } from "./indisponibilite.dto";
 
-import { IndisponibiliteDTO } from './indisponibilite.dto';
-
-describe('Indisponibilite (Data Transfer Object)', () => {
+describe("Indisponibilite (Data Transfer Object)", () => {
   const indisponibilite = {
-    message: 'Foundation is the futur',
-    dateDebut: '2020-01-15',
-    heureDebut: '09:00',
-    dateFin: '2020-01-15',
-    heureFin: '10:00',
-    activateMessage: 'true', // transformed in boolean in the DTO
+    message: "Foundation is the futur",
+    dateDebut: "2020-01-15",
+    heureDebut: "09:00",
+    dateFin: "2020-01-15",
+    heureFin: "10:00",
+    activateMessage: "true", // transformed in boolean in the DTO
   };
 
-  it('Should validate all properties', async () => {
+  it("Should validate all properties", async () => {
     // When | Action
     const messagetoCLass = plainToInstance(IndisponibiliteDTO, indisponibilite);
     const result = await validate(messagetoCLass);
@@ -23,7 +22,7 @@ describe('Indisponibilite (Data Transfer Object)', () => {
     expect(result).toEqual([]);
   });
 
-  it('Should not validate message property to prevent XSS attacks', async () => {
+  it("Should not validate message property to prevent XSS attacks", async () => {
     // When | Action
     const messagetoCLass = plainToInstance(IndisponibiliteDTO, {
       ...indisponibilite,
