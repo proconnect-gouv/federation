@@ -1,8 +1,8 @@
-import { ClientMetadata, IssuerMetadata } from "../dto";
+import { IdpMetadata, PcfClientMetadata } from "../dto";
 
 export type IdentityProviderMetadata = {
-  client: ClientMetadata;
-  issuer: IssuerMetadata;
+  pcfClientMetadata: PcfClientMetadata;
+  idpMetadata: IdpMetadata;
   uid: string;
   url: string;
   name: string;
@@ -11,7 +11,7 @@ export type IdentityProviderMetadata = {
   discovery: boolean;
   discoveryUrl?: string;
   siret: string;
-  supportEmail: string;
+  supportEmail?: string;
   fqdns?: string[];
   isRoutingEnabled: boolean;
   isEntraID: boolean;

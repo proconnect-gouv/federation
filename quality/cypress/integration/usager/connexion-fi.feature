@@ -27,7 +27,7 @@ Fonctionnalité: Connexion à un FI
     Quand je clique sur le bouton de connexion
     Alors je suis redirigé vers la page erreur technique
     Et le titre de la page d'erreur est "Accès indisponible"
-    Et le code d'erreur est "Y500017"
+    Et le code d'erreur est "Y020017"
     Et je clique sur le bouton Retour au service
     Et je suis redirigé vers la page erreur du fournisseur de service
 
@@ -50,7 +50,7 @@ Fonctionnalité: Connexion à un FI
     Et que je clique sur le bouton de connexion
     Alors je suis redirigé vers la page erreur technique
     Et le titre de la page d'erreur est "Accès impossible"
-    Et le message d'erreur est "Failed to establish tunnel"
+    Et le message d'erreur est "fetch failed"
     Et le code d'erreur est "Y020031"
 
   @ignoreInteg01 @k8s

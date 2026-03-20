@@ -6,8 +6,6 @@ import { IdentityProviderMetadata } from "@fc/oidc";
 import { Injectable } from "@nestjs/common";
 import { isEmpty } from "lodash";
 import {
-  CoreFcaAgentIdpDisabledException,
-  CoreFcaIdpConfigurationException,
   CoreFcaInvalidEmailDomainException,
   CoreFcaUnauthorizedEmailException,
 } from "../exceptions";
@@ -145,21 +143,5 @@ export class CoreFcaService {
       authorizedFqdnsConfig.spContact,
       authorizedFqdnsConfig.authorizedFqdns,
     );
-  }
-
-  async safelyGetExistingAndEnabledIdp(
-    idpId: string,
-  ): Promise<IdentityProviderMetadata> {
-    const idp = await this.identityProvider.getById(idpId);
-
-    if (isEmpty(idp)) {
-      throw new CoreFcaIdpConfigurationException();
-    }
-
-    if (!idp.active) {
-      throw new CoreFcaAgentIdpDisabledException();
-    }
-
-    return idp;
   }
 }

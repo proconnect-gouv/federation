@@ -7,11 +7,14 @@ export class OidcClientBaseException extends EnrichedDisplayBaseException {
     "authentication aborted due to a technical error on the authorization server";
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
 
-  constructor(contactEmail: string, error?: Error | string) {
+  constructor(contactEmail?: string, error?: Error | string) {
     super(error);
 
-    const emailSubject = encodeURIComponent("Erreur de connexion");
-    const emailBody = encodeURIComponent(`
+    if (!contactEmail) {
+      this.displayContact = false;
+    } else {
+      const emailSubject = encodeURIComponent("Erreur de connexion");
+      const emailBody = encodeURIComponent(`
 Bonjour,
 
 Je vous signale une erreur que j’ai rencontrée sur le fournisseur d’identité lors d’une tentative de connexion avec ProConnect.
@@ -23,6 +26,7 @@ Voici le message d’erreur reçu par ProConnect :
 
 Cordialement,
 `);
-    this.contactHref = `mailto:${contactEmail}?subject=${emailSubject}&body=${emailBody}`;
+      this.contactHref = `mailto:${contactEmail}?subject=${emailSubject}&body=${emailBody}`;
+    }
   }
 }

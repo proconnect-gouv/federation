@@ -1,8 +1,11 @@
-import { ConfigService } from "@fc/config";
-import { UserSession } from "@fc/core";
-import { OidcProviderConfig } from "@fc/oidc-provider";
-import { Injectable } from "@nestjs/common";
 import { get, intersection, isArray, isEmpty, isString } from "lodash";
+
+import { Injectable } from "@nestjs/common";
+
+import { ConfigService } from "@fc/config";
+import { AppConfig, UserSession } from "@fc/core";
+import { OidcProviderConfig } from "@fc/oidc-provider";
+
 import { AcrClaims, AcrValues, ExtendedInteraction } from "./oidc-acr.type";
 
 @Injectable()
@@ -76,10 +79,10 @@ export class OidcAcrService {
     return true;
   }
 
-  getFilteredAcrParamsFromInteraction({
-    params,
-    prompt,
-  }: ExtendedInteraction): { acrValues?: AcrValues; acrClaims?: AcrClaims } {
+  getFilteredAcrParamsFromInteraction(
+    { params, prompt }: ExtendedInteraction,
+    idpId?: string,
+  ): { acrValues?: AcrValues; acrClaims?: AcrClaims } {
     if (prompt.name === "login" && prompt.reasons.includes("essential_acr")) {
       return {
         acrClaims: {
@@ -104,6 +107,12 @@ export class OidcAcrService {
       return {
         acrValues: this.getFilteredAcrValues(params.acr_values).join(" "),
       };
+    }
+
+    const defaultIdpId = this.config.get<AppConfig>("App").defaultIdpId;
+    // this specific behavior is a legacy implementation and should be homogenized in the future
+    if (idpId !== defaultIdpId) {
+      return { acrValues: "eidas1" };
     }
 
     return {};

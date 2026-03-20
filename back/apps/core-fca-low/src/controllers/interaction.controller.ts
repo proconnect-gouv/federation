@@ -8,7 +8,7 @@ import { NotificationsService } from "@fc/notifications";
 import { OidcAcrService } from "@fc/oidc-acr";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
-import { type ISessionService, SessionService } from "@fc/session";
+import { type ISessionService } from "@fc/session";
 import {
   Controller,
   Get,
@@ -51,7 +51,6 @@ export class InteractionController {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
-    private readonly sessionService: SessionService,
     private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly csrfService: CsrfService,
     private readonly logger: LoggerService,

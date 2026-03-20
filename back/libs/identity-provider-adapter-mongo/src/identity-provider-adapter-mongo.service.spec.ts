@@ -86,7 +86,7 @@ describe("IdentityProviderAdapterMongoService", () => {
 
   const validIdentityProviderMock = {
     active: true,
-    client: {
+    pcfClientMetadata: {
       client_id: "clientID",
       client_secret: "7vhnwzo1yUVOJT9GJ91gD5oid56effu1",
       id_token_encrypted_response_alg: "RSA-OAEP",
@@ -100,7 +100,7 @@ describe("IdentityProviderAdapterMongoService", () => {
       userinfo_signed_response_alg: "HS256",
     },
     discovery: false,
-    issuer: {
+    idpMetadata: {
       authorization_endpoint:
         "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize",
       end_session_endpoint:
@@ -495,19 +495,19 @@ describe("IdentityProviderAdapterMongoService", () => {
       // change client_id and client_secret in validIdentityProviderMock
       const expected = [
         Object.assign(validIdentityProviderMock, {
-          client: Object.assign(
+          pcfClientMetadata: Object.assign(
             {
               client_id: "clientID",
               client_secret: "client_secret",
             },
-            validIdentityProviderMock.client,
+            validIdentityProviderMock.pcfClientMetadata,
           ),
         }),
       ];
 
       service["decryptClientSecret"] = jest
         .fn()
-        .mockReturnValueOnce(expected[0].client.client_secret);
+        .mockReturnValueOnce(expected[0].pcfClientMetadata.client_secret);
 
       configMock.get.mockReturnValueOnce({
         fqdn: "core-fcp-high.docker.dev-franceconnect.fr",
@@ -552,12 +552,12 @@ describe("IdentityProviderAdapterMongoService", () => {
       // Given
       service["listCache"] = [
         {
-          client: {
+          pcfClientMetadata: {
             client_id: "foo",
           },
         } as IdentityProviderMetadata,
         {
-          client: {
+          pcfClientMetadata: {
             client_id: "bar",
           },
         } as IdentityProviderMetadata,

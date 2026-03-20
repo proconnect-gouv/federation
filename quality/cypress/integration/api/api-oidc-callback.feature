@@ -14,7 +14,7 @@ Fonctionnalité: API - oidc-callback
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y020021"
+    Et le code d'erreur est "Y020026"
 
   Scénario: API oidc-callback - state vide
     Etant donné que je navigue sur la page fournisseur de service
@@ -28,7 +28,7 @@ Fonctionnalité: API - oidc-callback
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y020021"
+    Et le code d'erreur est "Y020026"
 
   Scénario: API oidc-callback - mauvais state
     Etant donné que je navigue sur la page fournisseur de service
@@ -37,11 +37,11 @@ Fonctionnalité: API - oidc-callback
     Et que je clique sur le bouton de connexion
     Et que je prépare une requête "oidc-callback"
     Quand je lance la requête
-    Alors le statut de la réponse est 403
+    Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y020022"
+    Et le code d'erreur est "Y020026"
 
   Scénario: API oidc-callback - code manquant
     Etant donné que je navigue sur la page fournisseur de service
@@ -54,12 +54,12 @@ Fonctionnalité: API - oidc-callback
     Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
     Et que je retire le paramètre "code" de la requête
     Quand je lance la requête
-    Alors le statut de la réponse est 502
+    Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y020026"
-    Et le message d'erreur est "code missing from response"
+    Et le message d'erreur est "invalid response encountered"
 
   Scénario: API oidc-callback - code vide
     Etant donné que je navigue sur la page fournisseur de service
@@ -72,12 +72,12 @@ Fonctionnalité: API - oidc-callback
     Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
     Et que je mets "" dans le paramètre "code" de la requête
     Quand je lance la requête
-    Alors le statut de la réponse est 502
+    Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y020026"
-    Et le message d'erreur est "code missing from response"
+    Et le message d'erreur est "invalid response encountered"
 
   Scénario: API oidc-callback - affichage de l'erreur remontée via le paramètre error
     Etant donné que je navigue sur la page fournisseur de service
@@ -87,7 +87,7 @@ Fonctionnalité: API - oidc-callback
     Et que le fournisseur d'identité renvoie l'erreur "invalid_scope" avec "your scopes are invalid"
     Et je m'authentifie
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y020026"
+    Et le code d'erreur est "Y020032"
     Et le message d'erreur est "invalid_scope (your scopes are invalid)"
 
   Scénario: API oidc-callback - bon state mais mauvais code
@@ -100,9 +100,9 @@ Fonctionnalité: API - oidc-callback
     Et que je mets le state fourni par AC dans le paramètre "state" de la requête
     Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
     Quand je lance la requête
-    Alors le statut de la réponse est 502
+    Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y020026"
-    Et le message d'erreur est "invalid_grant (grant request is invalid)"
+    Et le message d'erreur est "server responded with an error in the response body"

@@ -9,13 +9,19 @@ import {
   MinLength,
   ValidateNested,
 } from "class-validator";
-import { type IdTokenClaims } from "openid-client";
-import { TokenResults } from "../interfaces";
 
-export class TokenResultClaimsDto {
+import { type IDToken } from "openid-client";
+
+export class ClaimsDto {
   @IsString()
   @IsOptional()
-  readonly acr?: string;
+  acr?: string;
+
+  // Specific to MS Entra ID's authentication contexts
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
+  readonly acrs?: string[];
 
   @IsString({ each: true })
   @IsArray()
@@ -23,7 +29,7 @@ export class TokenResultClaimsDto {
   readonly amr?: string[];
 }
 
-export class TokenResultDto implements TokenResults {
+export class TokenDto {
   @IsString()
   @MinLength(1)
   @IsAscii()
@@ -34,15 +40,9 @@ export class TokenResultDto implements TokenResults {
   @IsJWT()
   readonly idToken: string;
 
-  @IsString()
-  @MinLength(1)
-  @IsAscii()
-  @IsOptional()
-  readonly refreshToken?: string;
-
   @IsObject()
   @ValidateNested()
   // Only the amr and acr claims need to be validated
-  @Type(() => TokenResultClaimsDto)
-  readonly claims: IdTokenClaims;
+  @Type(() => ClaimsDto)
+  readonly claims: IDToken & ClaimsDto;
 }

@@ -288,16 +288,20 @@ describe("OidcClientController", () => {
         idpState: null,
       });
       expect(logger.track).toHaveBeenCalledWith("IDP_CALLEDBACK");
-      expect(oidcClient.getToken).toHaveBeenCalledWith(
-        "idp123",
-        { state: "state123", nonce: "nonce123" },
+      expect(oidcClient.getToken).toHaveBeenCalledWith({
+        idpId: "idp123",
         req,
-        { sp_id: "sp123", sp_name: "SP Name" },
-      );
+        idpState: "state123",
+        idpNonce: "nonce123",
+      });
       expect(logger.track).toHaveBeenCalledWith("FC_REQUESTED_IDP_TOKEN");
       expect(oidcClient.getUserinfo).toHaveBeenCalledWith({
         accessToken: "access-token",
         idpId: "idp123",
+        claims: {
+          acr: "acr-value",
+          amr: "amr-value",
+        },
       });
       expect(logger.track).toHaveBeenNthCalledWith(1, "IDP_CALLEDBACK");
       expect(logger.track).toHaveBeenNthCalledWith(2, "FC_REQUESTED_IDP_TOKEN");
@@ -350,9 +354,10 @@ describe("OidcClientController", () => {
           ignored: "ignored",
         },
       });
-      // …but not in the userInfo endpoint…
+      // The oidc-client service merges claims for Entra, so the mock should return the merged result
       oidcClient.getUserinfo.mockResolvedValue({
         sub: "sub123",
+        arbitrary: "user@example.com",
       });
 
       await controller.getOidcCallback(
@@ -374,10 +379,11 @@ describe("OidcClientController", () => {
         isEntraID: true,
       });
 
+      // The oidc-client service processes the acrs array and sets the acr claim
       oidcClient.getToken.mockResolvedValue({
         idToken: "id-token",
         claims: {
-          // Entra ID can return multiple acr values
+          acr: "eidas2",
           acrs: ["c2", "p1", "urn:user:registersecurityinfo"],
         },
       });
@@ -397,9 +403,12 @@ describe("OidcClientController", () => {
     });
 
     it("should provide a default acr if missing", async () => {
+      // The oidc-client service sets a default acr of 'eidas1' if missing
       oidcClient.getToken.mockResolvedValue({
         idToken: "id-token",
-        claims: {},
+        claims: {
+          acr: "eidas1",
+        },
       });
 
       await controller.getOidcCallback(

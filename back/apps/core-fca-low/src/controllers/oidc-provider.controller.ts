@@ -19,7 +19,6 @@ import {
 } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { randomBytes } from "crypto";
 import { isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
 import {
@@ -136,7 +135,11 @@ export class OidcProviderController {
       const { idpIdToken, idpId } = activeUserSession;
       userSession.clear();
 
-      if (await this.oidcClient.hasEndSessionUrl(idpId)) {
+      const endSessionUrl = await this.oidcClient.getEndSessionUrl({
+        idpId: idpId,
+        idTokenHint: idpIdToken,
+      });
+      if (!isEmpty(endSessionUrl)) {
         this.logger.track(TrackedEvent.FC_REQUESTED_LOGOUT_FROM_IDP);
 
         userSession.set({
@@ -144,13 +147,6 @@ export class OidcProviderController {
             req.query,
           ).toString(),
         });
-
-        const endSessionUrl = await this.oidcClient.getEndSessionUrl(
-          idpId,
-          // note that state is never tested and could be removed in a dedicated PR
-          randomBytes(24).toString("base64url"),
-          idpIdToken,
-        );
 
         return res.redirect(endSessionUrl);
       }

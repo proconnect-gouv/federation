@@ -42,7 +42,6 @@ describe("OidcProviderController", () => {
       getCallback: jest.fn().mockReturnValue(handler),
     };
     oidcClientService = {
-      hasEndSessionUrl: jest.fn(),
       getEndSessionUrl: jest.fn(),
     } as unknown as OidcClientService;
 
@@ -183,7 +182,6 @@ describe("OidcProviderController", () => {
       const { req, res } = buildReqRes("/end-session");
       req.query = { a: "1" }; // from_idp not present => SP initiated
       const query = {} as LogoutParamsDto;
-      oidcClientService.hasEndSessionUrl = jest.fn().mockResolvedValue(true);
       oidcClientService.getEndSessionUrl = jest
         .fn()
         .mockResolvedValue("/end-session-url");
@@ -211,10 +209,7 @@ describe("OidcProviderController", () => {
 
       req.query = { from_idp: "false" };
       const query = {} as LogoutParamsDto;
-      oidcClientService.hasEndSessionUrl = jest.fn().mockResolvedValue(false);
-      oidcClientService.getEndSessionUrl = jest
-        .fn()
-        .mockResolvedValue(undefined);
+      oidcClientService.getEndSessionUrl = jest.fn().mockResolvedValue(null);
 
       // Force user connected
       const validateMock = jest.mocked(validate);

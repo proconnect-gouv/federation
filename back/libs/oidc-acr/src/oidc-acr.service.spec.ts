@@ -31,6 +31,7 @@ describe("OidcAcrService", () => {
 
     configServiceMock.get.mockReturnValue({
       configuration: { acrValues: ["A", "B"] },
+      defaultIdpId: "defaultIdpId",
     });
   });
 
@@ -293,6 +294,34 @@ describe("OidcAcrService", () => {
       // When
       const result =
         service["getFilteredAcrParamsFromInteraction"](interactionMock);
+
+      // Then
+      expect(result).toEqual({ acrValues: "eidas1" });
+    });
+
+    it("should return nothing when none of the previous conditions are valid for defaultIdp", () => {
+      // Given
+      const interactionMock = {
+        uid: "123",
+        params: {
+          client_id: "",
+          redirect_uri: "",
+          state: "",
+          idp_hint: "",
+          login_hint: "",
+        },
+        prompt: {
+          name: "consent",
+          reasons: [],
+          details: {},
+        },
+      } as unknown as ExtendedInteraction;
+
+      // When
+      const result = service["getFilteredAcrParamsFromInteraction"](
+        interactionMock,
+        "defaultIdpId",
+      );
 
       // Then
       expect(result).toEqual({});

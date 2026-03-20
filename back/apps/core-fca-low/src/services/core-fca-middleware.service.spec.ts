@@ -76,18 +76,6 @@ describe("CoreFcaMiddlewareService", () => {
     expect(mockCtx.res.render).toHaveBeenCalled();
   });
 
-  it("should extract authorization parameters based on HTTP method", () => {
-    const postCtx = { method: "POST", req: { body: { param: "value" } } };
-    const getCtx = { method: "GET", req: { query: { param: "value" } } };
-
-    expect((service as any).getAuthorizationParameters(postCtx)).toEqual(
-      postCtx.req.body,
-    );
-    expect((service as any).getAuthorizationParameters(getCtx)).toEqual(
-      getCtx.req.query,
-    );
-  });
-
   it("should reset cookies and clear headers in beforeAuthorizeMiddleware", () => {
     const mockCtx = { req: { headers: {} }, res: {} } as any as OidcCtx;
     const spy = jest.spyOn(mockOidcProviderService, "clearCookies");
@@ -185,7 +173,7 @@ describe("CoreFcaMiddlewareService", () => {
   });
 
   it("should handle silent authentication prompts in handleSilentAuthenticationMiddleware", async () => {
-    const mockCtx = { method: "POST", req: { body: {} } };
+    const mockCtx = { method: "GET", query: {} };
     const spyOverride = jest.spyOn(service as any, "overrideAuthorizePrompt");
     mockConfigService.get.mockReturnValueOnce({
       forcedPrompt: ["login", "consent"],
