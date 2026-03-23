@@ -33,7 +33,10 @@ export class ApiEntrepriseService {
       this.config.get<ApiEntrepriseConfig>("ApiEntreprise");
 
     if (shouldMockApi) {
-      return toOrganizationInfo(mockData.MaireClamart);
+      const mockOrganization = Object.values(mockData).find(
+        (establishment) => establishment.siret === siret,
+      );
+      return toOrganizationInfo(mockOrganization || mockData.MaireClamart);
     }
     const establishment = await findBySiretFactory(this.client, {
       context: "ProConnect Fédération",

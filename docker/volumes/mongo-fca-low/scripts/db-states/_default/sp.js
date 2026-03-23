@@ -4,7 +4,7 @@ const fsa = {
     name: 'FSA - FSA1-LOW',
     title: 'FSA - FSA1-LOW Title',
     redirect_uris: [
-      'https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback'
+      'https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback',
     ],
     post_logout_redirect_uris: [
       'https://fsa1-low.docker.dev-franceconnect.fr/',
@@ -35,6 +35,7 @@ const fsa = {
       'idp_acr',
       'groups',
       'custom',
+      'roles',
     ],
     introspection_signed_response_alg: null,
     introspection_encrypted_response_alg: null,
@@ -78,6 +79,7 @@ const fsa = {
       'idp_id',
       'idp_acr',
       'custom',
+      'roles',
     ],
     introspection_signed_response_alg: null,
     introspection_encrypted_response_alg: null,
@@ -121,13 +123,14 @@ const fsa = {
       'idp_id',
       'idp_acr',
       'custom',
+      'roles',
     ],
     introspection_signed_response_alg: null,
     introspection_encrypted_response_alg: null,
     introspection_encrypted_response_enc: null,
     id_token_signed_response_alg: 'RS256',
     userinfo_signed_response_alg: 'RS256',
-  }
+  },
 };
 
 // -- SPs ----------
