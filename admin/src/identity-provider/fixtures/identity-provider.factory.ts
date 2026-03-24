@@ -39,6 +39,7 @@ function createIdentityProviderFromDb(
     isEntraID: false,
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: true,
+    useTheHyyyperbridge: false,
     ...partial,
   };
 }
@@ -77,6 +78,7 @@ function createIdentityProviderDto(
     isEntraID: false,
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: true,
+    useTheHyyyperbridge: false,
     ...partial,
   };
 }

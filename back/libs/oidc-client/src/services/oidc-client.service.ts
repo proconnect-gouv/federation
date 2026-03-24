@@ -1,6 +1,28 @@
+import {
+  BridgeHttpProxyErrorDto,
+  BridgeHttpProxyProtocolDto,
+  BridgeHttpProxyResponseDto,
+} from "@fc/bridge-http-proxy/dto";
+import {
+  BridgeHttpProxyCsmrException,
+  BridgeHttpProxyMissingVariableException,
+  BridgeHttpProxyRabbitmqException,
+} from "@fc/bridge-http-proxy/exceptions";
+import { ConfigService } from "@fc/config";
+import { AppConfig } from "@fc/core";
+import { MessageType } from "@fc/hybridge-http-proxy/enums";
+import { BridgeError, BridgeProtocol } from "@fc/hybridge-http-proxy/interface";
+import { LoggerService } from "@fc/logger";
+import { HttpProxyProtocol } from "@fc/microservices";
+import { IdentityProviderMetadata } from "@fc/oidc";
+import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
+import { RabbitmqConfig } from "@fc/rabbitmq";
+import { Inject, Injectable } from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { Request } from "express";
+import { chain, cloneDeep, filter, isObject } from "lodash";
 import {
   authorizationCodeGrant,
   AuthorizationResponseError,
@@ -18,16 +40,7 @@ import {
   TokenEndpointResponseHelpers,
   type UserInfoResponse,
 } from "openid-client";
-
-import { Inject, Injectable } from "@nestjs/common";
-
-import { LoggerService } from "@fc/logger";
-
-import { ConfigService } from "@fc/config";
-import { AppConfig } from "@fc/core";
-import { IdentityProviderMetadata } from "@fc/oidc";
-import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
-import { chain, cloneDeep, filter, isObject } from "lodash";
+import { lastValueFrom, timeout } from "rxjs";
 import { OidcClientConfig, TokenDto } from "../dto";
 import {
   AuthorizationResponseErrorException,
@@ -61,6 +74,7 @@ export class OidcClientService {
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderAdapter,
     private readonly logger: LoggerService,
+    @Inject("HyyyperbridgeBroker") private readonly broker: ClientProxy,
   ) {}
 
   static objToUrlParams(obj) {
@@ -72,8 +86,91 @@ export class OidcClientService {
     );
   }
 
+  static getCurrentUrl = (req) =>
+    new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
+
+  private async fetchThroughTheHyyyperbridge(
+    url: string | URL | globalThis.Request,
+    options?: RequestInit,
+  ): Promise<Response> {
+    const message = {
+      url,
+      headers: options.headers,
+      method: options.method,
+      data: options?.body?.toString(),
+    };
+
+    const { requestTimeout } = this.config.get<RabbitmqConfig>(
+      "HyyyperbridgeBroker",
+    );
+
+    const order = this.broker
+      .send(HttpProxyProtocol.Commands.HTTP_PROXY, message)
+      .pipe(timeout(requestTimeout));
+
+    let rawHyyyperbridgeEnveloppe: BridgeProtocol<object>;
+
+    try {
+      rawHyyyperbridgeEnveloppe = await lastValueFrom(order);
+    } catch (error) {
+      throw new BridgeHttpProxyRabbitmqException(error);
+    }
+
+    const hyyyperbridgeEnveloppe = plainToInstance(
+      BridgeHttpProxyProtocolDto,
+      rawHyyyperbridgeEnveloppe,
+    );
+
+    const hybridgeEnveloppeValidationErrors = await validate(
+      hyyyperbridgeEnveloppe,
+    );
+
+    if (hybridgeEnveloppeValidationErrors.length) {
+      throw new BridgeHttpProxyMissingVariableException();
+    }
+
+    const { type, data: rawHyyyperbridgeData } = hyyyperbridgeEnveloppe;
+
+    if (type === MessageType.DATA) {
+      const hyyyperbridgeResponse = plainToInstance(
+        BridgeHttpProxyResponseDto,
+        rawHyyyperbridgeData,
+      );
+      const dtoProtocolErrors = await validate(hyyyperbridgeResponse);
+      if (dtoProtocolErrors.length) {
+        throw new BridgeHttpProxyMissingVariableException();
+      }
+
+      const { headers, status, statusText } = hyyyperbridgeResponse;
+
+      return new Response(hyyyperbridgeResponse.data, {
+        status,
+        headers,
+        statusText,
+      });
+    } else {
+      const hyyyperbridgeError = plainToInstance(
+        BridgeHttpProxyErrorDto,
+        rawHyyyperbridgeData,
+      );
+      const hyyyperbridgeErrorValidationErrors =
+        await validate(hyyyperbridgeError);
+      if (hyyyperbridgeErrorValidationErrors.length) {
+        throw new BridgeHttpProxyMissingVariableException();
+      }
+
+      throw new BridgeHttpProxyCsmrException().from(
+        rawHyyyperbridgeData as BridgeError,
+      );
+    }
+  }
+
   /* istanbul ignore next */
-  static fetch = async (url, options) => {
+  async fetch(
+    useTheHyyyperbridge: boolean,
+    url: string | URL | globalThis.Request,
+    options?: RequestInit,
+  ): Promise<Response> {
     // The Hybridge reverse proxy generates an error when both "Content-Length"
     // and "Transfer-Encoding" headers are sent simultaneously, which prevents
     // successful discovery:
@@ -91,17 +188,19 @@ export class OidcClientService {
       },
     };
 
-    return fetch(url, updatedOptions);
-  };
+    if (useTheHyyyperbridge) {
+      return this.fetchThroughTheHyyyperbridge(url, updatedOptions);
+    }
 
-  static getCurrentUrl = (req) =>
-    new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
+    return fetch(url, updatedOptions);
+  }
 
   public async getProviderConfig(issuerId: string): Promise<{
     config: Configuration;
     idp: IdentityProviderMetadata;
   }> {
-    const { timeout } = this.config.get<OidcClientConfig>("OidcClient");
+    const { timeout, bypassHybridgeInternet } =
+      this.config.get<OidcClientConfig>("OidcClient");
     const idp = await this.identityProvider.getById(issuerId);
 
     if (!idp) {
@@ -129,7 +228,10 @@ export class OidcClientService {
           ClientSecretPost(idp.federationClientMetadata.client_secret),
           {
             timeout,
-            [customFetch]: OidcClientService.fetch,
+            [customFetch]: this.fetch.bind(
+              this,
+              bypassHybridgeInternet && idp.useTheHyyyperbridge,
+            ),
           },
         );
       } catch (error) {

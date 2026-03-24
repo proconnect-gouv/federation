@@ -33,6 +33,7 @@ describe("Identity Provider (Data Transfer Object)", () => {
     isEntraID: true,
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
+    useTheHyyyperbridge: false,
   };
 
   const discoveryIdpAdapterMongoMock = {

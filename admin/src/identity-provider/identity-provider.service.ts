@@ -211,6 +211,7 @@ export class IdentityProviderService {
       extraAcceptedEmailDomains: identityProviderDto.extraAcceptedEmailDomains,
       isBlockingForUnlistedEmailDomainsEnabled:
         identityProviderDto.isBlockingForUnlistedEmailDomainsEnabled,
+      useTheHyyyperbridge: identityProviderDto.useTheHyyyperbridge,
     };
 
     if (mode === "create") {
@@ -263,6 +264,7 @@ export class IdentityProviderService {
       extraAcceptedEmailDomains: inputProvider.extraAcceptedEmailDomains,
       isBlockingForUnlistedEmailDomainsEnabled:
         inputProvider.isBlockingForUnlistedEmailDomainsEnabled,
+      useTheHyyyperbridge: inputProvider.useTheHyyyperbridge,
     };
   }
 

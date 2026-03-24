@@ -17,4 +17,5 @@ export default {
   },
   postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_LOGOUT_CALLBACK}`,
   redirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_CALLBACK}`,
+  bypassHybridgeInternet: env.boolean("FEATURE_BYPASS_HYBRIDGE_INTERNET"),
 } as OidcClientConfig;
