@@ -395,7 +395,7 @@ describe("InteractionController", () => {
       const res: Partial<Response> = { redirect: jest.fn() };
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           interactionId: "interaction123",
           idpAcr: "high",
           spEssentialAcr: "high",
@@ -443,7 +443,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           isSilentAuthentication: true,
           idpId: "idp123",
         }),
@@ -461,7 +461,7 @@ describe("InteractionController", () => {
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           isSilentAuthentication: false,
           interactionId: "interaction123",
           idpId: "idp123",
@@ -483,7 +483,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1", roles: [] },
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           spId: "sp123",
           idpId: "idp123",
           idpIdentity: { is_service_public: false },
@@ -503,7 +503,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           spId: "sp123",
           idpId: "idp123",
           idpIdentity: { is_service_public: false },
@@ -524,7 +524,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           spEssentialAcr: "high",
           idpAcr: "low",
         }),
