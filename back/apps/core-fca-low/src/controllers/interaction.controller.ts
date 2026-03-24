@@ -249,7 +249,7 @@ export class InteractionController {
     // is_service_public field is only provided by ProConnect Identité
     // any identity without an is_service_public field is considered to be from the public sector
     const isPrivateSectorIdentity = idpIdentity?.is_service_public === false;
-    const isRoleAgentPublic = !roles || roles.includes("agent_public");
+    const isRoleAgentPublic = roles.includes("agent_public");
     const doesNotAcceptPrivateSectorEmployees = spType === "public";
 
     if (
@@ -258,10 +258,8 @@ export class InteractionController {
     ) {
       this.logger.warn({
         code: "agent_public_role_mismatch",
-        roles,
-        is_service_public: idpIdentity?.is_service_public,
-        spType,
-        siret: idpIdentity?.siret,
+        isPrivateSectorIdentity,
+        isRoleAgentPublic,
       });
     }
     if (isPrivateSectorIdentity && doesNotAcceptPrivateSectorEmployees) {

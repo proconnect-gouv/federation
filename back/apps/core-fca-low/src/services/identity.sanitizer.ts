@@ -65,6 +65,7 @@ export class IdentitySanitizer {
     const { featureFetchOrganizationData } =
       this.config.get<ApiEntrepriseConfig>("ApiEntreprise");
 
+    identityForSp.roles = [];
     if (featureFetchOrganizationData && !!identityForSp.siret) {
       try {
         const cachedOrganization =
@@ -74,11 +75,10 @@ export class IdentitySanitizer {
         const roles =
           this.cachedOrganizationService.computeRoles(cachedOrganization);
         identityForSp.roles = roles;
-        identityForSp.is_service_public = roles.includes("agent_public");
       } catch (error) {
         this.logger.error({
           code: "identity-sanitizer-cached-organization-error",
-          error,
+          originalError: error,
         });
       }
     }

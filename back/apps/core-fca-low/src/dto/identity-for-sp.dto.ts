@@ -1,8 +1,8 @@
 import {
+  IsArray,
   IsDefined,
   IsEnum,
   IsObject,
-  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -35,6 +35,7 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
   @IsString()
   idp_acr: string;
 
+  @IsArray()
   @IsEnum(
     [
       "dirigeant",
@@ -46,6 +47,5 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
     ],
     { each: true },
   )
-  @IsOptional()
-  roles?: string[];
+  roles: string[];
 }

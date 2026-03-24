@@ -20,13 +20,13 @@ export class CachedOrganizationService {
 
   computeRoles(cachedOrganization: CachedOrganization): string[] {
     const roles: string[] = [];
-    const isServicePublic = isPublicService({
-      cached_categorie_juridique: cachedOrganization.categorieJuridique,
-      cached_etat_administratif: cachedOrganization.etatAdministratif,
-      siret: cachedOrganization.siret,
-    });
-
-    if (isServicePublic) {
+    if (
+      isPublicService({
+        cached_categorie_juridique: cachedOrganization.categorieJuridique,
+        cached_etat_administratif: cachedOrganization.etatAdministratif,
+        siret: cachedOrganization.siret,
+      })
+    ) {
       roles.push("agent_public");
     }
 
