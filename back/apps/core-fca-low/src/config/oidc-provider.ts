@@ -109,10 +109,8 @@ export default {
       idp_acr: ["idp_acr"],
       // MonComptePro claims naming convention
       is_service_public: ["is_service_public"],
-      roles: ["roles"],
       groups: ["groups"],
       custom: ["custom"],
-
       lasuite_visio: ["lasuite_visio"],
       "lasuite_visio:rooms:create": ["lasuite_visio:rooms:create"],
       "lasuite_visio:rooms:list": ["lasuite_visio:rooms:list"],
