@@ -1,3 +1,7 @@
+import { Request, Response } from "express";
+
+import { Test, TestingModule } from "@nestjs/testing";
+
 import { ConfigService } from "@fc/config";
 import { AppConfig, UserSession } from "@fc/core/dto";
 import { Routes } from "@fc/core/enums";
@@ -8,16 +12,12 @@ import { OidcAcrService } from "@fc/oidc-acr";
 import { OidcClientConfig, OidcClientService } from "@fc/oidc-client";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { SessionService } from "@fc/session";
+
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { getSessionServiceMock } from "@mocks/session";
-import { Test, TestingModule } from "@nestjs/testing";
-import { Request, Response } from "express";
-import {
-  CoreFcaAgentIdpDisabledException,
-  CoreFcaAgentNoIdpException,
-  CoreFcaIdpConfigurationException,
-} from "../exceptions";
+
+import { CoreFcaAgentNoIdpException } from "../exceptions";
 import { CoreFcaControllerService } from "./core-fca-controller.service";
 
 describe("CoreFcaControllerService", () => {
@@ -27,10 +27,7 @@ describe("CoreFcaControllerService", () => {
   const sessionServiceMock = getSessionServiceMock();
 
   const oidcClientMock = {
-    utils: {
-      buildAuthorizeParameters: jest.fn(),
-      getAuthorizeUrl: jest.fn(),
-    },
+    getAuthorizationUrl: jest.fn(),
   } as unknown as OidcClientService;
 
   const oidcProviderServiceMock = {
@@ -45,7 +42,6 @@ describe("CoreFcaControllerService", () => {
 
   const coreFcaServiceMock = {
     ensureEmailIsAuthorizedForSp: jest.fn(),
-    safelyGetExistingAndEnabledIdp: jest.fn(),
     selectIdpsFromEmail: jest.fn(),
   } as unknown as CoreFcaService;
 
@@ -78,24 +74,22 @@ describe("CoreFcaControllerService", () => {
       prompt: {},
     });
 
-    (
-      oidcClientMock.utils.buildAuthorizeParameters as jest.Mock
-    ).mockResolvedValue({
+    (oidcClientMock.getAuthorizationUrl as jest.Mock).mockResolvedValue({
+      authorizationUrl: "http://mock-authorize-url",
       nonce: "mockNonce",
       state: "mockState",
+      idpName: "mockIdpName",
+      idpLabel: "mockIdpLabel",
     });
-
-    (oidcClientMock.utils.getAuthorizeUrl as jest.Mock).mockResolvedValue(
-      "http://mock-authorize-url",
-    );
-
-    (
-      coreFcaServiceMock.safelyGetExistingAndEnabledIdp as jest.Mock
-    ).mockResolvedValue(selectedIdpMock);
 
     (configServiceMock.get as jest.Mock).mockImplementation((key) => {
       if (key === "OidcClient")
-        return { scope: "scopeMockValue" } as OidcClientConfig;
+        return {
+          scope: "scopeMockValue",
+          timeout: 5000,
+          redirectUri: "https://mock-redirect-uri.com",
+          postLogoutRedirectUri: "https://mock-post-logout-uri.com",
+        } as OidcClientConfig;
       if (key === "App")
         return {
           defaultIdpId: "idpIdMockValue",
@@ -156,7 +150,7 @@ describe("CoreFcaControllerService", () => {
       (
         oidcAcrMock.getFilteredAcrParamsFromInteraction as jest.Mock
       ).mockReturnValueOnce({
-        acrClaims: {},
+        acrClaims: { essential: true, values: ["mockAcrValue"] },
       });
 
       // When
@@ -168,8 +162,8 @@ describe("CoreFcaControllerService", () => {
       );
       expect(sessionServiceMock.set).toHaveBeenCalledWith("User", {
         idpId: "idpIdMockValue",
-        idpName: "nameMockValue",
-        idpLabel: "titleMockValue",
+        idpName: "mockIdpName",
+        idpLabel: "mockIdpLabel",
         idpNonce: "mockNonce",
         idpState: "mockState",
         idpIdentity: undefined,
@@ -198,7 +192,12 @@ describe("CoreFcaControllerService", () => {
       // Given
       (configServiceMock.get as jest.Mock).mockImplementation((key) => {
         if (key === "OidcClient")
-          return { scope: "scopeMockValue" } as OidcClientConfig;
+          return {
+            scope: "scopeMockValue",
+            timeout: 5000,
+            redirectUri: "https://mock-redirect-uri.com",
+            postLogoutRedirectUri: "https://mock-post-logout-uri.com",
+          } as OidcClientConfig;
         if (key === "App")
           return {
             defaultIdpId: "anotherIdp",
@@ -218,72 +217,6 @@ describe("CoreFcaControllerService", () => {
       expect(resMock.redirect).toHaveBeenCalledWith(
         "http://mock-authorize-url",
       );
-    });
-
-    it("should throw CoreFcaIdpConfigurationException if IdP is not found", async () => {
-      // Given
-      (
-        coreFcaServiceMock.safelyGetExistingAndEnabledIdp as jest.Mock
-      ).mockRejectedValueOnce(new CoreFcaIdpConfigurationException());
-
-      // When / Then
-      await expect(
-        service.redirectToIdpWithIdpId(reqMock, resMock, "invalidIdp"),
-      ).rejects.toThrow(CoreFcaIdpConfigurationException);
-    });
-
-    it("should throw CoreFcaAgentIdpDisabledException when IdP is disabled", async () => {
-      // Given
-      (
-        coreFcaServiceMock.safelyGetExistingAndEnabledIdp as jest.Mock
-      ).mockRejectedValueOnce(new CoreFcaAgentIdpDisabledException());
-
-      // When / Then
-      await expect(
-        service.redirectToIdpWithIdpId(reqMock, resMock, "disabledIdp"),
-      ).rejects.toThrow(CoreFcaAgentIdpDisabledException);
-    });
-
-    it("should propagate unexpected errors from safelyGetExistingAndEnabledIdp", async () => {
-      // Given
-      (
-        coreFcaServiceMock.safelyGetExistingAndEnabledIdp as jest.Mock
-      ).mockRejectedValueOnce(new Error("random"));
-
-      // When / Then
-      await expect(
-        service.redirectToIdpWithIdpId(reqMock, resMock, "any"),
-      ).rejects.toThrow(Error);
-    });
-
-    it("should use a smaller set of scopes when IdP is Entra ID", async () => {
-      (
-        coreFcaServiceMock.safelyGetExistingAndEnabledIdp as jest.Mock
-      ).mockReturnValue({ isEntraID: true });
-      (
-        oidcAcrMock.getFilteredAcrParamsFromInteraction as jest.Mock
-      ).mockReturnValueOnce({});
-
-      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
-
-      const params = (oidcClientMock.utils.getAuthorizeUrl as jest.Mock).mock
-        .calls[0][1];
-      expect(params).toMatchObject({ scope: "openid email profile" });
-    });
-
-    it("should not pass any claims to authorize when IdP is Entra ID", async () => {
-      (
-        coreFcaServiceMock.safelyGetExistingAndEnabledIdp as jest.Mock
-      ).mockReturnValue({ isEntraID: true });
-      (
-        oidcAcrMock.getFilteredAcrParamsFromInteraction as jest.Mock
-      ).mockReturnValueOnce({});
-
-      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
-
-      const params = (oidcClientMock.utils.getAuthorizeUrl as jest.Mock).mock
-        .calls[0][1];
-      expect(params.claims).toBeUndefined();
     });
   });
 

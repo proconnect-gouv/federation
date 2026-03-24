@@ -1,3 +1,7 @@
+import { Request, Response } from "express";
+
+import { Injectable } from "@nestjs/common";
+
 import { ConfigService } from "@fc/config";
 import {
   AfterGetInteractionSessionDto,
@@ -11,12 +15,10 @@ import { CoreFcaService } from "@fc/core/services/core-fca.service";
 import { EmailValidatorService } from "@fc/email-validator/services";
 import { LoggerService, TrackedEvent } from "@fc/logger";
 import { OidcAcrService } from "@fc/oidc-acr";
-import { OidcClientConfig, OidcClientService } from "@fc/oidc-client";
+import { OidcClientService } from "@fc/oidc-client";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { SessionService } from "@fc/session";
-import { Injectable } from "@nestjs/common";
-import { Request, Response } from "express";
-import { AuthorizationParameters } from "openid-client";
+import { isEmpty } from "lodash";
 
 @Injectable()
 export class CoreFcaControllerService {
@@ -91,69 +93,35 @@ export class CoreFcaControllerService {
     const { spId, idpLoginHint, spName, spSiretHint, rememberMe } =
       this.session.get<AfterRedirectToIdpWithEmailSessionDto>("User");
 
-    const idp = await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
-
-    const entraConfig = { scope: "openid email profile" };
-    const { scope } = idp.isEntraID
-      ? entraConfig
-      : this.config.get<OidcClientConfig>("OidcClient");
-
     this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, idpLoginHint);
 
-    const selectedIdp =
-      await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
-
-    const { nonce, state } =
-      await this.oidcClient.utils.buildAuthorizeParameters();
-
-    const authorizeParams: AuthorizationParameters = {
-      state,
-      nonce,
-      scope,
+    const authorizeParams: { [key: string]: any } = {
       acr_values: null,
       login_hint: idpLoginHint,
       siret_hint: spSiretHint,
       sp_id: spId,
       sp_name: spName,
       remember_me: rememberMe,
-    };
-    const claims = {
-      id_token: {
-        amr: null,
-        acr: null,
+      claims: {
+        id_token: {
+          amr: null,
+          acr: null,
+        },
       },
     };
 
     const interaction = await this.oidcProvider.getInteraction(req, res);
     const { acrValues, acrClaims } =
-      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
+      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction, idpId);
 
-    if (acrClaims) {
-      claims["id_token"]["acr"] = acrClaims;
-    } else if (acrValues) {
-      authorizeParams["acr_values"] = acrValues;
+    if (!isEmpty(acrClaims)) {
+      authorizeParams.claims.id_token.acr = acrClaims;
+    } else if (!isEmpty(acrValues)) {
+      authorizeParams.acr_values = acrValues;
     }
 
-    if (!idp.isEntraID) {
-      authorizeParams.claims = claims;
-    }
-
-    const defaultIdpId = this.config.get<AppConfig>("App").defaultIdpId;
-
-    // these specific behaviors are legacy implementations and should be homogenized in the future
-    if (idpId === defaultIdpId && !idp.isEntraID) {
-      authorizeParams["scope"] += " is_service_public";
-    }
-    if (idpId !== defaultIdpId && !acrValues && !acrClaims) {
-      authorizeParams["acr_values"] = "eidas1";
-    }
-
-    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
-      idpId,
-      authorizeParams,
-    );
-
-    const { name: idpName, title: idpLabel } = selectedIdp;
+    const { authorizationUrl, nonce, state, idpName, idpLabel } =
+      await this.oidcClient.getAuthorizationUrl(idpId, authorizeParams);
 
     const sessionPayload: UserSession = {
       idpId,

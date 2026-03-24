@@ -5,16 +5,15 @@ import {
   CoreFcaInvalidIdentityException,
 } from "@fc/core";
 import { LoggerService } from "@fc/logger";
-import { OidcClientTokenResultFailedException } from "@fc/oidc-client";
+import { OidcClientTokenValidationFailedException } from "@fc/oidc-client";
 import { SessionService } from "@fc/session";
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { getSessionServiceMock } from "@mocks/session";
 import { ArgumentsHost } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { Response } from "express";
 import { BaseException } from "../exceptions/base.exception";
-import { generateErrorId } from "../helpers/";
+import { generateErrorId } from "../helpers";
 import { FcWebHtmlExceptionFilter } from "./fc-web-html-exception.filter";
 
 jest.mock("../helpers/", () => ({
@@ -198,7 +197,7 @@ describe("FcWebHtmlExceptionFilter", () => {
     });
     it("should render the error template with displayContact and contactHref", () => {
       // When
-      const coreFcaException = new OidcClientTokenResultFailedException(
+      const coreFcaException = new OidcClientTokenValidationFailedException(
         "support-fi@example.com",
         "error_msg",
       );

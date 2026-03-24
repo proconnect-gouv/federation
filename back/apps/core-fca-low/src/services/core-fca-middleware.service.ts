@@ -1,3 +1,9 @@
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { Response } from "express";
+
+import { Injectable } from "@nestjs/common";
+
 import { ConfigService } from "@fc/config";
 import { ActiveUserSessionDto, UserSession } from "@fc/core/dto";
 import { generateErrorId } from "@fc/exceptions/helpers";
@@ -12,13 +18,8 @@ import {
   OidcProviderRoutes,
   OidcProviderService,
 } from "@fc/oidc-provider";
-import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
 import { SessionService } from "@fc/session";
-import { Injectable } from "@nestjs/common";
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { Response } from "express";
-import { AuthorizationParameters } from "openid-client";
+import { isString } from "lodash";
 
 @Injectable()
 export class CoreFcaMiddlewareService {
@@ -27,7 +28,6 @@ export class CoreFcaMiddlewareService {
     protected readonly config: ConfigService,
     protected readonly oidcProvider: OidcProviderService,
     protected readonly sessionService: SessionService,
-    protected readonly serviceProvider: ServiceProviderAdapterMongoService,
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}
 
@@ -86,14 +86,6 @@ export class CoreFcaMiddlewareService {
     );
   }
 
-  protected getAuthorizationParameters({
-    method,
-    req,
-  }: OidcCtx): AuthorizationParameters {
-    const isPostMethod = method === "POST";
-    return isPostMethod ? req.body : req.query;
-  }
-
   protected beforeAuthorizeMiddleware({ req, res }: OidcCtx): void {
     /**
      * Force cookies to be reset to prevent panva from keeping
@@ -127,13 +119,7 @@ export class CoreFcaMiddlewareService {
       this.config.get<OidcProviderConfig>("OidcProvider");
     const overrideValue = forcedPrompt.join(" ");
 
-    /**
-     * Support both methods
-     * @TODO #137 check what needs to be done if we implement pushedAuthorizationRequests
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/137
-     */
-    const isPostMethod = ctx.method === "POST";
-    const data = isPostMethod ? ctx.req.body : ctx.query;
+    const data = ctx.method === "POST" ? ctx.req.body : ctx.query;
     data.prompt = overrideValue;
   }
 
@@ -173,9 +159,9 @@ export class CoreFcaMiddlewareService {
   protected async handleSilentAuthenticationMiddleware(
     ctx: OidcCtx,
   ): Promise<void> {
-    const { prompt } = this.getAuthorizationParameters(ctx);
+    const { prompt } = ctx.method === "POST" ? ctx.req.body : ctx.query;
 
-    if (!prompt) {
+    if (!isString(prompt)) {
       return this.overrideAuthorizePrompt(ctx);
     }
 

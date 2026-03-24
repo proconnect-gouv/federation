@@ -4,11 +4,11 @@ import { RedisService } from "@fc/redis";
 import { Global, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import {
+  HttpOptions,
   InteractionResults,
   KoaContextWithOIDC,
   Provider,
 } from "oidc-provider";
-import { HttpOptions } from "openid-client";
 import {
   OidcProviderEvents,
   OidcProviderMiddlewarePattern,

@@ -2,7 +2,7 @@ import express from "express";
 import { importJWK, JWK } from "jose-v6";
 import crypto, { JsonWebKey } from "node:crypto";
 import process from "node:process";
-import client from "openid-client-v6";
+import client from "openid-client";
 
 const {
   DataProviderAdapterCore_CHECKTOKEN_JWT_ENCRYPTED_RESPONSE_ALG: encryptAlg,

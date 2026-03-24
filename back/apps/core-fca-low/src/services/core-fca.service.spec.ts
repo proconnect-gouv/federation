@@ -1,15 +1,14 @@
+import { Test, TestingModule } from "@nestjs/testing";
+
 import { ConfigService } from "@fc/config";
 import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
 import { IdentityProviderMetadata } from "@fc/oidc";
+
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
-import { Test, TestingModule } from "@nestjs/testing";
-import {
-  CoreFcaAgentIdpDisabledException,
-  CoreFcaIdpConfigurationException,
-  CoreFcaInvalidEmailDomainException,
-} from "../exceptions";
+
+import { CoreFcaInvalidEmailDomainException } from "../exceptions";
 import { CoreFcaService } from "./core-fca.service";
 
 describe("CoreFcaService", () => {
@@ -498,48 +497,6 @@ describe("CoreFcaService", () => {
       expect(sortedProviders).toEqual([
         { uid: "idp1", title: "Autre (via ProConnect Identité)" },
       ]);
-    });
-  });
-
-  describe("safelyGetExistingAndEnabledIdp", () => {
-    it("should return the idp when it exists and is active", async () => {
-      // Given
-      const idp = {
-        uid: "idp-active",
-        active: true,
-      } as unknown as IdentityProviderMetadata;
-      identityProviderMock.getById.mockResolvedValueOnce(idp);
-
-      // When
-      const result =
-        await service["safelyGetExistingAndEnabledIdp"]("idp-active");
-
-      // Then
-      expect(result).toBe(idp);
-    });
-
-    it("should throw CoreFcaIdpConfigurationException when idp does not exist", async () => {
-      // Given
-      identityProviderMock.getById.mockResolvedValueOnce(null);
-
-      // When / Then
-      await expect(
-        service["safelyGetExistingAndEnabledIdp"]("unknown-idp"),
-      ).rejects.toBeInstanceOf(CoreFcaIdpConfigurationException);
-    });
-
-    it("should throw CoreFcaAgentIdpDisabledException when idp is inactive", async () => {
-      // Given
-      const idp = {
-        uid: "idp-inactive",
-        active: false,
-      } as unknown as IdentityProviderMetadata;
-      identityProviderMock.getById.mockResolvedValueOnce(idp);
-
-      // When / Then
-      await expect(
-        service["safelyGetExistingAndEnabledIdp"]("idp-inactive"),
-      ).rejects.toBeInstanceOf(CoreFcaAgentIdpDisabledException);
     });
   });
 });

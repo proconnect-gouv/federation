@@ -56,8 +56,6 @@
 | Mongoose_USER                                 | string        |
 | Mongoose_WATCHER_DEBOUNCE_WAIT_DURATION       | number        |
 | OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEYS        | json          |
-| OidcClient_FAPI                               | boolean       |
-| OidcClient_SCOPE                              | string        |
 | OidcProvider_COOKIES_KEYS                     | json          |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS       | json          |
 | OidcProvider_CRYPTO_SIG_RS256_PRIV_KEYS       | json          |

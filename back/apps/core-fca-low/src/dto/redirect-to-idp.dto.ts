@@ -1,8 +1,13 @@
-import { CrsfToken } from "@fc/oidc-client";
 import { Transform } from "class-transformer";
-import { IsBoolean, IsEmail, IsOptional } from "class-validator";
+import {
+  IsAscii,
+  IsBoolean,
+  IsEmail,
+  IsOptional,
+  IsString,
+} from "class-validator";
 
-export class RedirectToIdp extends CrsfToken {
+export class RedirectToIdp {
   @IsEmail()
   readonly email: string;
 
@@ -10,4 +15,8 @@ export class RedirectToIdp extends CrsfToken {
   @IsOptional()
   @Transform(({ value }) => value === "on", { toClassOnly: true })
   readonly rememberMe: boolean;
+
+  @IsString()
+  @IsAscii()
+  readonly csrfToken: string;
 }

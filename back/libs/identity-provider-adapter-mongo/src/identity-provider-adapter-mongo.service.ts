@@ -1,20 +1,23 @@
+import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
+import { cloneDeep } from "lodash";
+import { Model } from "mongoose";
+
+import { Injectable, Type } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+
 import { ConfigService } from "@fc/config";
 import { CryptographyService } from "@fc/cryptography";
 import { LoggerService } from "@fc/logger";
 import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
 import {
-  ClientMetadata,
+  FederationClientMetadata,
+  FederationServerMetadata,
   IdentityProviderMetadata,
-  IssuerMetadata,
 } from "@fc/oidc";
 import { IIdentityProviderAdapter } from "@fc/oidc-client";
-import { Injectable, Type } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import deepFreeze from "deep-freeze";
-import { cloneDeep } from "lodash";
-import { Model } from "mongoose";
+
+import { ClientMetadata, ServerMetadata } from "openid-client";
 import {
   DiscoveryIdpAdapterMongoDTO,
   IdentityProviderAdapterMongoConfig,
@@ -22,7 +25,7 @@ import {
 } from "./dto";
 import { IdentityProvider } from "./schemas";
 
-const CLIENT_METADATA = [
+export const CLIENT_METADATA = [
   "client_id",
   "client_secret",
   "response_types",
@@ -34,16 +37,17 @@ const CLIENT_METADATA = [
   "userinfo_encrypted_response_alg",
   "userinfo_encrypted_response_enc",
   "userinfo_signed_response_alg",
-];
+] as const satisfies (keyof ClientMetadata)[];
 
-const ISSUER_METADATA = [
+export const IDP_METADATA = [
   "issuer",
   "token_endpoint",
   "authorization_endpoint",
   "jwks_uri",
   "userinfo_endpoint",
   "end_session_endpoint",
-];
+] as const satisfies readonly (keyof ServerMetadata)[];
+
 @Injectable()
 export class IdentityProviderAdapterMongoService implements IIdentityProviderAdapter {
   private listCache: IdentityProviderMetadata[];
@@ -107,9 +111,9 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
   async getList(refreshCache?: boolean): Promise<IdentityProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
       const allIdentityProviders = await this.findAllIdentityProvider();
-      this.listCache = deepFreeze(
-        allIdentityProviders.map((idp) => this.legacyToOpenIdPropertyName(idp)),
-      ) as IdentityProviderMetadata[];
+      this.listCache = allIdentityProviders.map((idp) =>
+        this.legacyToOpenIdPropertyName(idp),
+      );
     }
 
     return this.listCache;
@@ -150,7 +154,8 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
     return filteredIdps;
   }
 
-  // todo: remove this method for proconnect, we have no legacy IdP
+  // The legacy format is not a ProConnect concept.
+  // We should probably avoid transforming the IDP and use the database format directly
   private legacyToOpenIdPropertyName(
     source: IdentityProvider,
   ): IdentityProviderMetadata {
@@ -180,26 +185,22 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
     result.response_types = ["code"];
     result.revocation_endpoint_auth_method = "client_secret_post";
 
-    /**
-     * @TODO #326 Fix type issues between legacy model and `oidc-client` library
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/326
-     * We have non-blocking incompatibilities.
-     */
     return this.toPanvaFormat(result);
   }
 
-  // todo: check if we can simply save the idp as panva format
+  // The Panva format does not refer to a format provided by openid-client that we are aware of.
+  // We should probably avoid transforming the IDP and use the database format directly
   private toPanvaFormat(result: unknown): IdentityProviderMetadata {
     const panvaFormatted = {
-      client: {} as ClientMetadata,
-      issuer: {} as IssuerMetadata,
+      federationClientMetadata: {} as FederationClientMetadata,
+      federationServerMetadata: {} as FederationServerMetadata,
     };
 
     Object.entries(result).forEach(([key, value]) => {
-      if (CLIENT_METADATA.includes(key)) {
-        panvaFormatted.client[key] = value;
-      } else if (ISSUER_METADATA.includes(key)) {
-        panvaFormatted.issuer[key] = value;
+      if (CLIENT_METADATA.includes(key as (typeof CLIENT_METADATA)[number])) {
+        panvaFormatted.federationClientMetadata[key] = value;
+      } else if (IDP_METADATA.includes(key as (typeof IDP_METADATA)[number])) {
+        panvaFormatted.federationServerMetadata[key] = value;
       } else {
         panvaFormatted[key] = value;
       }

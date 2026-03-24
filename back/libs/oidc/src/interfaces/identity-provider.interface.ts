@@ -1,8 +1,8 @@
-import { ClientMetadata, IssuerMetadata } from "../dto";
+import { FederationClientMetadata, FederationServerMetadata } from "../dto";
 
 export type IdentityProviderMetadata = {
-  client: ClientMetadata;
-  issuer: IssuerMetadata;
+  federationClientMetadata: FederationClientMetadata;
+  federationServerMetadata: FederationServerMetadata;
   uid: string;
   url: string;
   name: string;
@@ -11,7 +11,7 @@ export type IdentityProviderMetadata = {
   discovery: boolean;
   discoveryUrl?: string;
   siret: string;
-  supportEmail: string;
+  supportEmail?: string;
   fqdns?: string[];
   isRoutingEnabled: boolean;
   isEntraID: boolean;

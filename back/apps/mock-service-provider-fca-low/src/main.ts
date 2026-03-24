@@ -4,7 +4,7 @@ import session from "express-session";
 import { chain, isObject } from "lodash";
 import path from "node:path";
 import process from "node:process";
-import client from "openid-client-v6";
+import client from "openid-client";
 import { decrypt } from "./decrypt";
 
 declare module "express-session" {

@@ -1,3 +1,10 @@
+import { AccountFcaService } from "@fc/account-fca";
+import { ConfigService } from "@fc/config";
+import { CsrfService, CsrfTokenGuard } from "@fc/csrf";
+import { LoggerService, TrackedEvent } from "@fc/logger";
+import { OidcClientService } from "@fc/oidc-client";
+import { OidcProviderRoutes } from "@fc/oidc-provider";
+import { type ISessionService } from "@fc/session";
 import {
   Body,
   Controller,
@@ -10,22 +17,8 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
-
-import { AccountFcaService } from "@fc/account-fca";
-import { ConfigService } from "@fc/config";
-import { CsrfService, CsrfTokenGuard } from "@fc/csrf";
-import { LoggerService, TrackedEvent } from "@fc/logger";
-import { IdentityProviderMetadata } from "@fc/oidc";
-import {
-  OidcClientConfig,
-  OidcClientService,
-  TokenResultClaimsDto,
-} from "@fc/oidc-client";
-import { OidcProviderRoutes } from "@fc/oidc-provider";
-import { type ISessionService, SessionService } from "@fc/session";
-
 import { type Request, type Response } from "express";
-import { filter, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
 import {
   AfterGetInteractionSessionDto,
@@ -52,7 +45,6 @@ export class OidcClientController {
     private readonly oidcClient: OidcClientService,
     private readonly coreFcaService: CoreFcaService,
     private readonly coreFcaControllerService: CoreFcaControllerService,
-    private readonly sessionService: SessionService,
     private readonly sanitizer: IdentitySanitizer,
     private readonly csrfService: CsrfService,
   ) {}
@@ -124,11 +116,6 @@ export class OidcClientController {
     );
   }
 
-  /**
-   * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
-   */
-
   @Get(Routes.OIDC_CALLBACK)
   @Header("cache-control", "no-store")
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -142,63 +129,33 @@ export class OidcClientController {
     // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
     await userSession.duplicate();
 
-    const { idpId, idpNonce, idpState, interactionId, spId, spName } =
-      userSession.get();
+    const { idpId, idpNonce, idpState, interactionId } = userSession.get();
 
     // Remove nonce and state from the session to prevent replay attacks
     userSession.set({ idpNonce: null, idpState: null });
 
     this.logger.track(TrackedEvent.IDP_CALLEDBACK);
-    const tokenParams = {
-      state: idpState,
-      nonce: idpNonce,
-    };
 
-    const extraParams = {
-      sp_id: spId,
-      sp_name: spName,
-    };
-
-    const { accessToken, idToken, claims } = await this.oidcClient.getToken(
+    const { accessToken, idToken, claims } = await this.oidcClient.getToken({
       idpId,
-      tokenParams,
       req,
-      extraParams,
-    );
-
-    const idp = await this.coreFcaService.safelyGetExistingAndEnabledIdp(idpId);
-
-    let acr;
-    if (idp.isEntraID && claims["acrs"]) {
-      // This behavior is specific to MS Entra ID's authentication contexts
-      // We consider only values of the form c1, c2, c3, mutually exclusive,
-      // and map them to equivalent eidas levels
-      const acrs = filter(claims["acrs"], (x) => x.startsWith("c"));
-      acr = acrs.toString().replace("c", "eidas");
-    } else {
-      // Otherwise, use the 'acr' claim
-      acr = claims["acr"];
-    }
-    // Default the acr value to eidas1 (weak)
-    acr = acr || "eidas1";
+      idpState,
+      idpNonce,
+    });
 
     userSession.set({
       amr: claims.amr,
       idpIdToken: idToken,
-      idpAcr: acr,
+      idpAcr: claims.acr,
     });
 
     this.logger.track(TrackedEvent.FC_REQUESTED_IDP_TOKEN);
 
-    const userInfoParams = {
-      accessToken,
+    const plainIdpIdentity = await this.oidcClient.getUserinfo({
       idpId,
-    };
-
-    const plainIdpIdentity = await this.oidcClient.getUserinfo(userInfoParams);
-
-    // Augment user info with any claims from ID Token
-    this.augmentIdentityFromIdToken(claims, plainIdpIdentity, idp);
+      accessToken,
+      claims,
+    });
 
     const idpIdentity = await this.sanitizer.getValidatedIdentityFromIdp(
       plainIdpIdentity,
@@ -226,7 +183,7 @@ export class OidcClientController {
       idpIdentity,
       idpId,
       account.sub,
-      acr,
+      claims.acr,
     );
 
     userSession.set({
@@ -253,20 +210,5 @@ export class OidcClientController {
     }
 
     res.redirect(url);
-  }
-
-  private augmentIdentityFromIdToken(
-    claims: TokenResultClaimsDto,
-    plainIdpIdentity: any,
-    idp: IdentityProviderMetadata,
-  ) {
-    if (!idp.isEntraID) return;
-
-    const { scope } = this.config.get<OidcClientConfig>("OidcClient");
-    for (const key of scope.split(" ")) {
-      if (claims[key] && !plainIdpIdentity[key]) {
-        plainIdpIdentity[key] = claims[key];
-      }
-    }
   }
 }
