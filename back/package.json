@@ -17,7 +17,6 @@
     "start:prod:mock-identity-provider-fca-low": "node dist/apps/mock-identity-provider-fca-low/main.js > /tmp/.pm2/logs/mock-identity-provider-fca-low-out-0.log 2> /tmp/.pm2/mock-identity-provider-fca-low-error-0.log",
     "start:prod:mock-data-provider": "node dist/apps/mock-data-provider/main.js > /tmp/.pm2/logs/mock-data-provider-out-0.log 2> /tmp/.pm2/mock-data-provider-error-0.log",
     "lint": "tsc --noEmit && prettier --check .",
-    "prettier": "prettier -c \"{apps,libs}/**/*.ts\"",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -25,7 +24,7 @@
     "doc:exceptions": "tsx libs/exceptions/src/cli/export-exceptions",
     "doc:env": "tsx libs/config/src/cli/export-env",
     "doc": "yarn doc:exceptions && yarn doc:env",
-    "static": "yarn doc && yarn lint --fix && yarn prettier --write && yarn tsc --noEmit"
+    "static": "yarn doc && tsc --noEmit && prettier --write ."
   },
   "resolutions": {
     "cookie-signature": "1.2.0",
