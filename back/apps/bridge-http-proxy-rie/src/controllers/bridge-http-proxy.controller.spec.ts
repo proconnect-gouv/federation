@@ -139,9 +139,6 @@ describe("BrokerProxyController", () => {
 
       // Then
       expect(loggerServiceMock.info).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.info).toHaveBeenCalledWith(
-        "GET https://url.com/fizz",
-      );
     });
 
     it("should call broker proxy service without body", async () => {

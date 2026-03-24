@@ -1,13 +1,16 @@
 import { BridgeError } from "@fc/hybridge-http-proxy";
-import { IsNumber, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class BridgeHttpProxyErrorDto implements BridgeError {
-  @IsNumber()
-  readonly code: number;
+  @IsString()
+  @IsOptional()
+  readonly code?: string;
 
   @IsString()
-  readonly reason: string;
+  @IsOptional()
+  readonly reason?: string;
 
   @IsString()
-  readonly name: string;
+  @IsOptional()
+  readonly name?: string;
 }
