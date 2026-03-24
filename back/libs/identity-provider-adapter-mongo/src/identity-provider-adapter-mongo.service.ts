@@ -11,9 +11,9 @@ import { CryptographyService } from "@fc/cryptography";
 import { LoggerService } from "@fc/logger";
 import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
 import {
+  FederationClientMetadata,
+  FederationServerMetadata,
   IdentityProviderMetadata,
-  IdpMetadata,
-  PcfClientMetadata,
 } from "@fc/oidc";
 import { IIdentityProviderAdapter } from "@fc/oidc-client";
 
@@ -192,15 +192,15 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
   // We should probably avoid transforming the IDP and use the database format directly
   private toPanvaFormat(result: unknown): IdentityProviderMetadata {
     const panvaFormatted = {
-      pcfClientMetadata: {} as PcfClientMetadata,
-      idpMetadata: {} as IdpMetadata,
+      federationClientMetadata: {} as FederationClientMetadata,
+      federationServerMetadata: {} as FederationServerMetadata,
     };
 
     Object.entries(result).forEach(([key, value]) => {
       if (CLIENT_METADATA.includes(key as (typeof CLIENT_METADATA)[number])) {
-        panvaFormatted.pcfClientMetadata[key] = value;
+        panvaFormatted.federationClientMetadata[key] = value;
       } else if (IDP_METADATA.includes(key as (typeof IDP_METADATA)[number])) {
-        panvaFormatted.idpMetadata[key] = value;
+        panvaFormatted.federationServerMetadata[key] = value;
       } else {
         panvaFormatted[key] = value;
       }

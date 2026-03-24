@@ -3,7 +3,7 @@ import { IsString } from "class-validator";
 import { JsonValue } from "oauth4webapi";
 import { ServerMetadata } from "openid-client";
 
-export class IdpMetadata implements Pick<
+export class FederationServerMetadata implements Pick<
   ServerMetadata,
   (typeof IDP_METADATA)[number]
 > {

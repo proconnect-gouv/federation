@@ -1,8 +1,8 @@
-import { IdpMetadata, PcfClientMetadata } from "../dto";
+import { FederationClientMetadata, FederationServerMetadata } from "../dto";
 
 export type IdentityProviderMetadata = {
-  pcfClientMetadata: PcfClientMetadata;
-  idpMetadata: IdpMetadata;
+  federationClientMetadata: FederationClientMetadata;
+  federationServerMetadata: FederationServerMetadata;
   uid: string;
   url: string;
   name: string;

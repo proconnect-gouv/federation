@@ -86,7 +86,7 @@ describe("IdentityProviderAdapterMongoService", () => {
 
   const validIdentityProviderMock = {
     active: true,
-    pcfClientMetadata: {
+    federationClientMetadata: {
       client_id: "clientID",
       client_secret: "7vhnwzo1yUVOJT9GJ91gD5oid56effu1",
       id_token_encrypted_response_alg: "RSA-OAEP",
@@ -100,7 +100,7 @@ describe("IdentityProviderAdapterMongoService", () => {
       userinfo_signed_response_alg: "HS256",
     },
     discovery: false,
-    idpMetadata: {
+    federationServerMetadata: {
       authorization_endpoint:
         "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize",
       end_session_endpoint:
@@ -495,19 +495,21 @@ describe("IdentityProviderAdapterMongoService", () => {
       // change client_id and client_secret in validIdentityProviderMock
       const expected = [
         Object.assign(validIdentityProviderMock, {
-          pcfClientMetadata: Object.assign(
+          federationClientMetadata: Object.assign(
             {
               client_id: "clientID",
               client_secret: "client_secret",
             },
-            validIdentityProviderMock.pcfClientMetadata,
+            validIdentityProviderMock.federationClientMetadata,
           ),
         }),
       ];
 
       service["decryptClientSecret"] = jest
         .fn()
-        .mockReturnValueOnce(expected[0].pcfClientMetadata.client_secret);
+        .mockReturnValueOnce(
+          expected[0].federationClientMetadata.client_secret,
+        );
 
       configMock.get.mockReturnValueOnce({
         fqdn: "core-fcp-high.docker.dev-franceconnect.fr",
@@ -552,12 +554,12 @@ describe("IdentityProviderAdapterMongoService", () => {
       // Given
       service["listCache"] = [
         {
-          pcfClientMetadata: {
+          federationClientMetadata: {
             client_id: "foo",
           },
         } as IdentityProviderMetadata,
         {
-          pcfClientMetadata: {
+          federationClientMetadata: {
             client_id: "bar",
           },
         } as IdentityProviderMetadata,

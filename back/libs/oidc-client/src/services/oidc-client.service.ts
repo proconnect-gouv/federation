@@ -115,18 +115,18 @@ export class OidcClientService {
     let config: Configuration;
     if (!idp.discovery) {
       config = new Configuration(
-        idp.idpMetadata,
-        idp.pcfClientMetadata.client_id,
-        idp.pcfClientMetadata,
-        ClientSecretPost(idp.pcfClientMetadata.client_secret),
+        idp.federationServerMetadata,
+        idp.federationClientMetadata.client_id,
+        idp.federationClientMetadata,
+        ClientSecretPost(idp.federationClientMetadata.client_secret),
       );
     } else {
       try {
         config = await discovery(
           new URL(idp.discoveryUrl),
-          idp.pcfClientMetadata.client_id,
-          idp.pcfClientMetadata,
-          ClientSecretPost(idp.pcfClientMetadata.client_secret),
+          idp.federationClientMetadata.client_id,
+          idp.federationClientMetadata,
+          ClientSecretPost(idp.federationClientMetadata.client_secret),
           {
             timeout,
             [customFetch]: OidcClientService.fetch,

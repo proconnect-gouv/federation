@@ -4,7 +4,7 @@ import { CLIENT_METADATA } from "@fc/identity-provider-adapter-mongo";
 import { JsonValue } from "oauth4webapi";
 import { ClientMetadata } from "openid-client";
 
-export class PcfClientMetadata implements Pick<
+export class FederationClientMetadata implements Pick<
   ClientMetadata,
   (typeof CLIENT_METADATA)[number]
 > {

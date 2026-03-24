@@ -48,7 +48,7 @@ describe("OidcClientService", () => {
     active: true,
     discovery: true,
     discoveryUrl: "https://idp.test",
-    pcfClientMetadata: {
+    federationClientMetadata: {
       client_id: "client-id",
       client_secret: "client-secret",
       id_token_signed_response_alg: "RS256",
@@ -194,8 +194,8 @@ describe("OidcClientService", () => {
       // Given
       const idpWithoutUserinfoAlg = {
         ...idpMock,
-        pcfClientMetadata: {
-          ...idpMock.pcfClientMetadata,
+        federationClientMetadata: {
+          ...idpMock.federationClientMetadata,
           userinfo_signed_response_alg: undefined,
         },
       };
