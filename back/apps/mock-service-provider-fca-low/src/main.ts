@@ -32,7 +32,8 @@ const PC_CLIENT_SECRET = decrypt(
   process.env.IdentityProviderAdapterEnv_CLIENT_SECRET_CIPHER_PASS,
 );
 const PC_PROVIDER = process.env.IdentityProviderAdapterEnv_DISCOVERY_URL;
-const PC_SCOPES = process.env.OidcClient_SCOPE;
+const PC_SCOPES =
+  "openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt idp_id idp_acr custom roles";
 const LOGIN_HINT = "";
 const PC_ID_TOKEN_SIGNED_RESPONSE_ALG =
   process.env.IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG;

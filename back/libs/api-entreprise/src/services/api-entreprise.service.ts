@@ -36,7 +36,12 @@ export class ApiEntrepriseService {
       const mockOrganization = Object.values(mockData).find(
         (establishment) => establishment.siret === siret,
       );
-      return toOrganizationInfo(mockOrganization || mockData.MaireClamart);
+      return toOrganizationInfo(
+        mockOrganization || {
+          ...mockData.MaireClamart,
+          siret,
+        },
+      );
     }
     const establishment = await findBySiretFactory(this.client, {
       context: "ProConnect Fédération",

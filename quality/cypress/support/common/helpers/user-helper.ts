@@ -11,6 +11,7 @@ export interface User {
   siret: string;
   uid: string;
   usual_name: string;
+  roles: string[];
 }
 
 export function getDefaultUser(): User {
@@ -30,5 +31,6 @@ export function getDefaultUser(): User {
     siret: "13002526500013",
     uid: "1",
     usual_name: "Doe",
+    roles: ["agent_public"],
   };
 }
