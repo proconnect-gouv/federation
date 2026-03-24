@@ -79,7 +79,7 @@ describe("ApiEntrepriseService", () => {
       const result = await service.getOrganizationBySiret(siret);
 
       expect(result).toEqual(mockOrganizationInfo);
-      expect(toOrganizationInfo).toHaveBeenCalledWith({});
+      expect(toOrganizationInfo).toHaveBeenCalledWith({ siret });
     });
 
     it("should fetch organization from API if shouldMockApi is false", async () => {
