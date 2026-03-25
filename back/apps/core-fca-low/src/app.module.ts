@@ -1,4 +1,5 @@
 import { AccountFcaModule } from "@fc/account-fca";
+import { ApiEntrepriseModule } from "@fc/api-entreprise";
 import { AsyncLocalStorageModule } from "@fc/async-local-storage";
 import { CachedOrganizationModule } from "@fc/cached-organization";
 import { ConfigModule, ConfigService } from "@fc/config";
@@ -24,6 +25,7 @@ import {
   OidcProviderModule,
   OidcProviderSessionNotFoundExceptionFilter,
 } from "@fc/oidc-provider";
+import { RedisModule } from "@fc/redis";
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -33,6 +35,7 @@ import { DynamicModule, Module } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 import { CqrsModule } from "@nestjs/cqrs";
 import {
+  HealthController,
   InteractionController,
   OidcClientController,
   OidcProviderController,
@@ -61,6 +64,7 @@ export class AppModule {
         EmailValidatorModule,
         SessionModule,
         MongooseModule.forRoot(),
+        RedisModule,
         ServiceProviderAdapterMongoModule,
         IdentityProviderAdapterMongoModule,
         OidcAcrModule,
@@ -78,9 +82,11 @@ export class AppModule {
         NotificationsModule,
         CsrfModule,
         AccountFcaModule,
+        ApiEntrepriseModule,
         CachedOrganizationModule,
       ],
       controllers: [
+        HealthController,
         InteractionController,
         OidcClientController,
         OidcProviderController,

@@ -1,5 +1,8 @@
 export enum Routes {
   DEFAULT = "/",
+  HEALTHCHECK_LIVE = "/livez",
+  HEALTHCHECK_READY = "/readyz",
+  HEALTHCHECK_READY_CHECK = "/readyz/:check",
   INTERACTION = "/interaction/:uid",
   INTERACTION_VERIFY = "/interaction/:uid/verify",
   INTERACTION_ERROR = "/interaction/:uid/error",
