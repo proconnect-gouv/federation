@@ -9,11 +9,7 @@ describe("HealthController", () => {
   let mongoConnectionMock: { readyState: number };
   let redisServiceMock: { client: { ping: jest.Mock } };
   let apiEntrepriseMock: { getOrganizationBySiret: jest.Mock };
-  let resMock: {
-    status: jest.Mock;
-    setHeader: jest.Mock;
-    send: jest.Mock;
-  };
+  let resMock: { status: jest.Mock };
 
   beforeEach(async () => {
     mongoConnectionMock = { readyState: 1 };
@@ -25,8 +21,6 @@ describe("HealthController", () => {
     };
     resMock = {
       status: jest.fn().mockReturnThis(),
-      setHeader: jest.fn().mockReturnThis(),
-      send: jest.fn(),
     };
 
     const app: TestingModule = await Test.createTestingModule({
@@ -58,43 +52,43 @@ describe("HealthController", () => {
 
   describe("readyz", () => {
     it('should return "ok" when all services are healthy', async () => {
-      await controller.readyz(resMock as any);
+      const result = await controller.readyz(resMock as any);
 
-      expect(resMock.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(resMock.send).toHaveBeenCalledWith("ok");
+      expect(resMock.status).not.toHaveBeenCalled();
+      expect(result).toBe("ok");
     });
 
     it('should return "error" when MongoDB is disconnected', async () => {
       mongoConnectionMock.readyState = 0;
 
-      await controller.readyz(resMock as any);
+      const result = await controller.readyz(resMock as any);
 
       expect(resMock.status).toHaveBeenCalledWith(
         HttpStatus.SERVICE_UNAVAILABLE,
       );
-      expect(resMock.send).toHaveBeenCalledWith("error");
+      expect(result).toBe("error");
     });
 
     it('should return "error" when Redis ping fails', async () => {
       redisServiceMock.client.ping.mockRejectedValue(new Error("ECONNREFUSED"));
 
-      await controller.readyz(resMock as any);
+      const result = await controller.readyz(resMock as any);
 
       expect(resMock.status).toHaveBeenCalledWith(
         HttpStatus.SERVICE_UNAVAILABLE,
       );
-      expect(resMock.send).toHaveBeenCalledWith("error");
+      expect(result).toBe("error");
     });
 
     it('should return "error" when Redis returns unexpected response', async () => {
       redisServiceMock.client.ping.mockResolvedValue("NOT_PONG");
 
-      await controller.readyz(resMock as any);
+      const result = await controller.readyz(resMock as any);
 
       expect(resMock.status).toHaveBeenCalledWith(
         HttpStatus.SERVICE_UNAVAILABLE,
       );
-      expect(resMock.send).toHaveBeenCalledWith("error");
+      expect(result).toBe("error");
     });
 
     it('should return "error" when API Entreprise fails', async () => {
@@ -102,12 +96,12 @@ describe("HealthController", () => {
         new Error("ECONNREFUSED"),
       );
 
-      await controller.readyz(resMock as any);
+      const result = await controller.readyz(resMock as any);
 
       expect(resMock.status).toHaveBeenCalledWith(
         HttpStatus.SERVICE_UNAVAILABLE,
       );
-      expect(resMock.send).toHaveBeenCalledWith("error");
+      expect(result).toBe("error");
       expect(apiEntrepriseMock.getOrganizationBySiret).toHaveBeenCalledWith(
         "13002526500013",
       );
@@ -115,14 +109,10 @@ describe("HealthController", () => {
 
     describe("verbose", () => {
       it("should return verbose output with all checks passing", async () => {
-        await controller.readyz(resMock as any, "");
+        const result = await controller.readyz(resMock as any, "");
 
-        expect(resMock.status).toHaveBeenCalledWith(HttpStatus.OK);
-        expect(resMock.setHeader).toHaveBeenCalledWith(
-          "Content-Type",
-          "text/plain",
-        );
-        expect(resMock.send).toHaveBeenCalledWith(
+        expect(resMock.status).not.toHaveBeenCalled();
+        expect(result).toBe(
           [
             "[+]mongodb ok",
             "[+]redis ok",
@@ -138,15 +128,15 @@ describe("HealthController", () => {
           new Error("ECONNREFUSED"),
         );
 
-        await controller.readyz(resMock as any, "");
+        const result = await controller.readyz(resMock as any, "");
 
         expect(resMock.status).toHaveBeenCalledWith(
           HttpStatus.SERVICE_UNAVAILABLE,
         );
-        expect(resMock.send).toHaveBeenCalledWith(
+        expect(result).toBe(
           [
-            "[-]mongodb failed",
-            "[-]redis failed",
+            "[-]mongodb failed (Mongo connection not ready (readyState=0))",
+            "[-]redis failed (ECONNREFUSED)",
             "[+]api-entreprise ok",
             "readyz check failed",
           ].join("\n"),
@@ -158,12 +148,10 @@ describe("HealthController", () => {
       it("should exclude a single check", async () => {
         mongoConnectionMock.readyState = 0;
 
-        await controller.readyz(resMock as any, "", "mongodb");
+        const result = await controller.readyz(resMock as any, "", "mongodb");
 
-        expect(resMock.status).toHaveBeenCalledWith(HttpStatus.OK);
-        expect(resMock.send).toHaveBeenCalledWith(
-          expect.stringContaining("[+]mongodb excluded: ok"),
-        );
+        expect(resMock.status).not.toHaveBeenCalled();
+        expect(result).toContain("[+]mongodb excluded: ok");
       });
 
       it("should exclude multiple checks", async () => {
@@ -172,45 +160,43 @@ describe("HealthController", () => {
           new Error("ECONNREFUSED"),
         );
 
-        await controller.readyz(resMock as any, "", ["mongodb", "redis"]);
+        const result = await controller.readyz(resMock as any, "", [
+          "mongodb",
+          "redis",
+        ]);
 
-        expect(resMock.status).toHaveBeenCalledWith(HttpStatus.OK);
-        expect(resMock.send).toHaveBeenCalledWith(
-          expect.stringContaining("[+]mongodb excluded: ok"),
-        );
-        expect(resMock.send).toHaveBeenCalledWith(
-          expect.stringContaining("[+]redis excluded: ok"),
-        );
+        expect(resMock.status).not.toHaveBeenCalled();
+        expect(result).toContain("[+]mongodb excluded: ok");
+        expect(result).toContain("[+]redis excluded: ok");
       });
     });
   });
 
   describe("readyzCheck", () => {
     it("should return ok for a healthy individual check", async () => {
-      await controller.readyzCheck(resMock as any, "mongodb");
+      const result = await controller.readyzCheck(resMock as any, "mongodb");
 
-      expect(resMock.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(resMock.send).toHaveBeenCalledWith("[+]mongodb ok");
+      expect(resMock.status).not.toHaveBeenCalled();
+      expect(result).toBe("[+]mongodb ok");
     });
 
     it("should return error for a failing individual check", async () => {
       mongoConnectionMock.readyState = 0;
 
-      await controller.readyzCheck(resMock as any, "mongodb");
+      const result = await controller.readyzCheck(resMock as any, "mongodb");
 
       expect(resMock.status).toHaveBeenCalledWith(
         HttpStatus.SERVICE_UNAVAILABLE,
       );
-      expect(resMock.send).toHaveBeenCalledWith("[-]mongodb failed");
+      expect(result).toBe(
+        "[-]mongodb failed (Mongo connection not ready (readyState=0))",
+      );
     });
 
-    it("should return 404 for an unknown check", async () => {
-      await controller.readyzCheck(resMock as any, "unknown");
-
-      expect(resMock.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
-      expect(resMock.send).toHaveBeenCalledWith(
-        'readyz check "unknown" not found',
-      );
+    it("should throw NotFoundException for an unknown check", async () => {
+      await expect(
+        controller.readyzCheck(resMock as any, "unknown"),
+      ).rejects.toThrow('readyz check "unknown" not found');
     });
   });
 });

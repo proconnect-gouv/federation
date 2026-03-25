@@ -1,6 +1,15 @@
 import { ApiEntrepriseService } from "@fc/api-entreprise";
 import { RedisService } from "@fc/redis";
-import { Controller, Get, HttpStatus, Param, Query, Res } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Header,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  Query,
+  Res,
+} from "@nestjs/common";
 import { InjectConnection } from "@nestjs/mongoose";
 import { type Response } from "express";
 import { Connection } from "mongoose";
@@ -17,7 +26,9 @@ export class HealthController {
   checks = {
     mongodb: async () => {
       if (this.mongoConnection.readyState !== 1) {
-        throw new Error(`Mongo connection not ready (readyState=${readyState})`);
+        throw new Error(
+          `Mongo connection not ready (readyState=${this.mongoConnection.readyState})`,
+        );
       }
     },
     redis: async () => {
@@ -38,92 +49,100 @@ export class HealthController {
   }
 
   @Get(Routes.HEALTHCHECK_READY)
+  @Header("Content-Type", "text/plain")
   async readyz(
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Query("verbose") verbose?: string,
     @Query("exclude") exclude?: string | string[],
-  ): Promise<void> {
+  ): Promise<string> {
     const excludeSet = new Set(
       Array.isArray(exclude) ? exclude : exclude ? [exclude] : [],
     );
 
     const results = await this.runChecks(excludeSet);
-    const allHealthy = results.every((r) => r.ok || r.excluded);
+    const allHealthy = results.every((r) => r.status !== "error");
 
-    const statusCode = allHealthy
-      ? HttpStatus.OK
-      : HttpStatus.SERVICE_UNAVAILABLE;
+    if (!allHealthy) {
+      res.status(HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     if (verbose !== undefined) {
       const lines = results.map(formatCheckLine);
-      res
-        .status(statusCode)
-        .setHeader("Content-Type", "text/plain")
-        .send(
-          [...lines, `readyz check ${allHealthy ? "passed" : "failed"}`].join(
-            "\n",
-          ),
-        );
-      return;
+      return [
+        ...lines,
+        `readyz check ${allHealthy ? "passed" : "failed"}`,
+      ].join("\n");
     }
 
-    res.status(statusCode).send(allHealthy ? "ok" : "error");
+    return allHealthy ? "ok" : "error";
   }
 
   @Get(Routes.HEALTHCHECK_READY_CHECK)
+  @Header("Content-Type", "text/plain")
   async readyzCheck(
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param("check") check: string,
-  ): Promise<void> {
+  ): Promise<string> {
     if (!this.checks.hasOwnProperty(check)) {
-      res
-        .status(HttpStatus.NOT_FOUND)
-        .setHeader("Content-Type", "text/plain")
-        .send(`readyz check "${check}" not found`);
-      return;
+      throw new NotFoundException(`readyz check "${check}" not found`);
     }
 
     const result = await this.runCheck(check);
-    const statusCode = result.ok
-      ? HttpStatus.OK
-      : HttpStatus.SERVICE_UNAVAILABLE;
 
-    res
-      .status(statusCode)
-      .setHeader("Content-Type", "text/plain")
-      .send(formatCheckLine(result));
+    if (result.status !== "success") {
+      res.status(HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    return formatCheckLine(result);
   }
 
   private async runChecks(excludeSet: Set<string>): Promise<CheckResult[]> {
     return Promise.all(
       Object.keys(this.checks).map(async (name) => {
         if (excludeSet.has(name)) {
-          return { name, ok: true, excluded: true };
+          return { name, status: "excluded" };
         }
         return this.runCheck(name);
       }),
     );
   }
 
-  private async runCheck(name: string): Promise<CheckResult> {
+  private async runCheck(
+    name: string,
+  ): Promise<CheckSuccessResult | CheckErrorResult> {
     try {
       await this.checks[name]();
-      return { name, ok: true };
-    } catch {
-      return { name, ok: false };
+      return { name, status: "success" };
+    } catch (error) {
+      return { error, name, status: "error" };
     }
   }
 }
 
-interface CheckResult {
+interface CheckSuccessResult {
   name: string;
-  ok: boolean;
-  excluded?: boolean;
+  status: "success";
 }
 
+interface CheckExcludedResult {
+  name: string;
+  status: "excluded";
+}
+
+interface CheckErrorResult {
+  error: Error;
+  name: string;
+  status: "error";
+}
+
+type CheckResult = CheckErrorResult | CheckExcludedResult | CheckSuccessResult;
 function formatCheckLine(result: CheckResult): string {
-  if (result.excluded) {
-    return `[+]${result.name} excluded: ok`;
+  switch (result.status) {
+    case "success":
+      return `[+]${result.name} ok`;
+    case "excluded":
+      return `[+]${result.name} excluded: ok`;
+    case "error":
+      return `[-]${result.name} failed (${result.error.message})`;
   }
-  return result.ok ? `[+]${result.name} ok` : `[-]${result.name} failed`;
 }
