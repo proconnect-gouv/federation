@@ -1,10 +1,11 @@
+import { LoggerModule } from "@fc/logger";
 import { Module } from "@nestjs/common";
 import { ApiEntrepriseService } from "./services";
-import { ApiEntrepriseClientProvider } from "./services/api-entreprise-client.provider";
+import { ApiEntrepriseClientService } from "./services/api-entreprise-client.service";
 
 @Module({
-  imports: [],
-  providers: [ApiEntrepriseClientProvider, ApiEntrepriseService],
+  imports: [LoggerModule],
+  providers: [ApiEntrepriseClientService, ApiEntrepriseService],
   exports: [ApiEntrepriseService],
 })
 export class ApiEntrepriseModule {}

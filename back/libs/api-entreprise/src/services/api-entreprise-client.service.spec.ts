@@ -1,5 +1,5 @@
 import { ConfigService } from "@fc/config";
-import { ApiEntrepriseClientProvider } from "./api-entreprise-client.provider";
+import { ApiEntrepriseClientService } from "./api-entreprise-client.service";
 
 jest.mock(
   "@proconnect-gouv/proconnect.api_entreprise/testing/seed/v3-insee-sirene-etablissements-siret",
@@ -27,7 +27,7 @@ describe("ApiEntrepriseClientProvider", () => {
         organizationSiret: "12345678901234",
       });
 
-      const provider = new ApiEntrepriseClientProvider(mockConfigService);
+      const provider = new ApiEntrepriseClientService(mockConfigService);
       const result = await provider.findBySiret("21920023500014");
 
       expect(result).toBeDefined();
@@ -41,7 +41,7 @@ describe("ApiEntrepriseClientProvider", () => {
         organizationSiret: "12345678901234",
       });
 
-      const provider = new ApiEntrepriseClientProvider(mockConfigService);
+      const provider = new ApiEntrepriseClientService(mockConfigService);
       const result = await provider.findBySiret("21920023500015");
 
       expect(result).toBeDefined();
@@ -65,7 +65,7 @@ describe("ApiEntrepriseClientProvider", () => {
         }),
       );
 
-      const provider = new ApiEntrepriseClientProvider(mockConfigService);
+      const provider = new ApiEntrepriseClientService(mockConfigService);
       const result = await provider.findBySiret("21920023500014");
 
       expect(result).toEqual(mockedEstablishment);
