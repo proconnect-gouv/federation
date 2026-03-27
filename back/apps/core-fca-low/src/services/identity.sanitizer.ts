@@ -78,7 +78,7 @@ export class IdentitySanitizer {
       } catch (error) {
         this.logger.error({
           code: "identity-sanitizer-cached-organization-error",
-          error,
+          originalError: error,
         });
       }
     }

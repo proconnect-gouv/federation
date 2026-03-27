@@ -229,7 +229,7 @@ describe("IdentitySanitizer", () => {
 
       expect(logger.error).toHaveBeenCalledWith({
         code: "identity-sanitizer-cached-organization-error",
-        error,
+        originalError: error,
       });
       expect(result.roles).toBeUndefined();
       expect(result.is_service_public).toBeUndefined();
