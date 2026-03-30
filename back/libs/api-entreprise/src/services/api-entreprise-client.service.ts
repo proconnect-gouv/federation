@@ -7,7 +7,7 @@ import { findBySiretFactory } from "@proconnect-gouv/proconnect.api_entreprise/a
 import { createApiEntrepriseOpenApiClient } from "@proconnect-gouv/proconnect.api_entreprise/client";
 
 @Injectable()
-export class ApiEntrepriseClientProvider {
+export class ApiEntrepriseClientService {
   constructor(private readonly configService: ConfigService) {}
 
   findBySiret(siret: string) {

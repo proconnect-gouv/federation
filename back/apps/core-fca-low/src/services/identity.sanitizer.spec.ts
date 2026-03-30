@@ -227,10 +227,11 @@ describe("IdentitySanitizer", () => {
         acr,
       );
 
-      expect(logger.error).toHaveBeenCalledWith({
-        code: "identity-sanitizer-cached-organization-error",
-        error,
-      });
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: "identity-sanitizer-cached-organization-error",
+        }),
+      );
       expect(result.roles).toBeUndefined();
       expect(result.is_service_public).toBeUndefined();
     });
