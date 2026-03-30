@@ -344,7 +344,7 @@ describe("OidcClientService", () => {
     it("should throw OidcClientTokenFailedException on other errors", async () => {
       // Given
       (openidClient.authorizationCodeGrant as jest.Mock).mockRejectedValue(
-        new Error("Token error"),
+        new Error("Token error", { cause: new Response() }),
       );
 
       // When / Then
@@ -515,7 +515,7 @@ describe("OidcClientService", () => {
     it("should throw OidcClientUserinfoFailedException on error", async () => {
       // Given
       (openidClient.fetchUserInfo as jest.Mock).mockRejectedValue(
-        new Error("Userinfo error"),
+        new Error("Userinfo error", { cause: new Response() }),
       );
 
       // When / Then
