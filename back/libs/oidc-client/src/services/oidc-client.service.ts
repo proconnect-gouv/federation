@@ -236,6 +236,20 @@ export class OidcClientService {
         },
       );
     } catch (error) {
+      if (error.cause instanceof Response) {
+        /* istanbul ignore next */
+        const body = await error.cause.text().catch(() => "unreadable body");
+        this.logger.error({
+          code: "oidc-client-token-http-error",
+          reponseError: {
+            status: error.cause.status,
+            statusText: error.cause.statusText,
+            headers: Object.fromEntries(error.cause.headers?.entries()),
+            url: error.cause.url,
+            body,
+          },
+        });
+      }
       if (error instanceof AuthorizationResponseError) {
         throw new AuthorizationResponseErrorException(
           idp.supportEmail,
@@ -316,6 +330,20 @@ export class OidcClientService {
 
       return plainIdpIdentity;
     } catch (error) {
+      if (error.cause instanceof Response) {
+        /* istanbul ignore next */
+        const body = await error.cause.text().catch(() => "unreadable body");
+        this.logger.error({
+          code: "oidc-client-userinfo-http-error",
+          reponseError: {
+            status: error.cause.status,
+            statusText: error.cause.statusText,
+            headers: Object.fromEntries(error.cause.headers?.entries()),
+            url: error.cause.url,
+            body,
+          },
+        });
+      }
       throw new OidcClientUserinfoFailedException(idp.supportEmail, error);
     }
   }
