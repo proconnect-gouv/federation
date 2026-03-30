@@ -133,6 +133,21 @@ export class OidcClientService {
           },
         );
       } catch (error) {
+        if (error.cause instanceof Response) {
+          /* istanbul ignore next */
+          const body = await error.cause.text().catch(() => "unreadable body");
+          this.logger.error({
+            code: "oidc-client-discovery-http-error",
+            reponseError: {
+              status: error.cause.status,
+              statusText: error.cause.statusText,
+              headers: Object.fromEntries(error.cause.headers?.entries()),
+              url: error.cause.url,
+              body,
+            },
+          });
+        }
+
         throw new OidcClientIssuerDiscoveryFailedException(
           idp.supportEmail,
           error,

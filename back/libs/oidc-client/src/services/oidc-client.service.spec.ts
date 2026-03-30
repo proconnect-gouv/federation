@@ -168,7 +168,7 @@ describe("OidcClientService", () => {
       // Given
       identityProviderMock.getById.mockResolvedValue(idpMock);
       (openidClient.discovery as jest.Mock).mockRejectedValue(
-        new Error("discovery failed"),
+        new Error("discovery failed", { cause: new Response() }),
       );
 
       // When / Then
