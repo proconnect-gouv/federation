@@ -337,6 +337,8 @@ describe("OidcClientService", () => {
           req: reqMock as any,
           idpState: "state",
           idpNonce: "nonce",
+          spId: "sp-id",
+          spName: "sp-name",
         }),
       ).rejects.toThrow(AuthorizationResponseErrorException);
     });
@@ -354,6 +356,8 @@ describe("OidcClientService", () => {
           req: reqMock as any,
           idpState: "state",
           idpNonce: "nonce",
+          spId: "sp-id",
+          spName: "sp-name",
         }),
       ).rejects.toThrow(OidcClientTokenFailedException);
     });
@@ -374,6 +378,8 @@ describe("OidcClientService", () => {
           req: reqMock as any,
           idpState: "state",
           idpNonce: "nonce",
+          spId: "sp-id",
+          spName: "sp-name",
         }),
       ).rejects.toThrow(OidcClientTokenValidationFailedException);
     });
@@ -390,6 +396,8 @@ describe("OidcClientService", () => {
         req: reqMock as any,
         idpState: "state",
         idpNonce: "nonce",
+        spId: "sp-id",
+        spName: "sp-name",
       });
 
       // Then
@@ -414,6 +422,8 @@ describe("OidcClientService", () => {
         req: reqMock as any,
         idpState: "state",
         idpNonce: "nonce",
+        spId: "sp-id",
+        spName: "sp-name",
       });
 
       // Then
@@ -442,6 +452,8 @@ describe("OidcClientService", () => {
         req: reqMock as any,
         idpState: "state",
         idpNonce: "nonce",
+        spId: "sp-id",
+        spName: "sp-name",
       });
 
       // Then
@@ -471,6 +483,8 @@ describe("OidcClientService", () => {
         req: reqMock as any,
         idpState: "state",
         idpNonce: "nonce",
+        spId: "sp-id",
+        spName: "sp-name",
       });
 
       // Then
@@ -494,6 +508,8 @@ describe("OidcClientService", () => {
         req: reqMock as any,
         idpState: "state",
         idpNonce: "nonce",
+        spId: "sp-id",
+        spName: "sp-name",
       });
 
       // Then

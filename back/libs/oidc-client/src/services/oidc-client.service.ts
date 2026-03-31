@@ -216,11 +216,15 @@ export class OidcClientService {
     req,
     idpState,
     idpNonce,
+    spId,
+    spName,
   }: {
     idpId: string;
     req: Request;
     idpState: string;
     idpNonce: string;
+    spId: string;
+    spName: string;
   }) {
     const { config, idp } = await this.getProviderConfig(idpId);
 
@@ -234,6 +238,8 @@ export class OidcClientService {
           expectedNonce: idpNonce,
           expectedState: idpState,
         },
+        // These parameters are used by Cerbère
+        { sp_id: spId, sp_name: spName },
       );
     } catch (error) {
       if (error.cause instanceof Response) {

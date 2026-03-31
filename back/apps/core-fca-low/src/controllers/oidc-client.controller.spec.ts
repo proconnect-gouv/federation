@@ -293,6 +293,8 @@ describe("OidcClientController", () => {
         req,
         idpState: "state123",
         idpNonce: "nonce123",
+        spId: "sp123",
+        spName: "SP Name",
       });
       expect(logger.track).toHaveBeenCalledWith("FC_REQUESTED_IDP_TOKEN");
       expect(oidcClient.getUserinfo).toHaveBeenCalledWith({
