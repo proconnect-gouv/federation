@@ -17,7 +17,7 @@ export class HealthController {
   checks = {
     mongodb: async () => {
       if (this.mongoConnection.readyState !== 1) {
-        throw new Error("disconnected");
+        throw new Error(`Mongo connection not ready (readyState=${readyState})`);
       }
     },
     redis: async () => {
