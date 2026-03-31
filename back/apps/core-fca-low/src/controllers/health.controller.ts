@@ -23,7 +23,7 @@ export class HealthController {
     redis: async () => {
       const pong = await this.redis.client.ping();
       if (pong !== "PONG") {
-        throw new Error("unexpected response");
+        throw new Error(`unexpected redis client response: ${pong}`);
       }
     },
     // We use DINUM SIRET for the ping route
