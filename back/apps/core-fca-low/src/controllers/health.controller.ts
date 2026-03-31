@@ -75,7 +75,7 @@ export class HealthController {
     @Res() res: Response,
     @Param("check") check: string,
   ): Promise<void> {
-    if (!this.checks[check]) {
+    if (!this.checks.hasOwnProperty(check)) {
       res
         .status(HttpStatus.NOT_FOUND)
         .setHeader("Content-Type", "text/plain")
