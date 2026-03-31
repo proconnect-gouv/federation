@@ -10,7 +10,6 @@ const cookieOptions: SessionCookieOptionsInterface = {
   sameSite: "lax",
   httpOnly: true,
   secure: true,
-  maxAge: 43200000, // 12h
 };
 
 export default {
