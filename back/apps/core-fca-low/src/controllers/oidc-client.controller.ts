@@ -129,7 +129,8 @@ export class OidcClientController {
     // For more information, refer to: https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1288
     await userSession.duplicate();
 
-    const { idpId, idpNonce, idpState, interactionId } = userSession.get();
+    const { idpId, idpNonce, idpState, interactionId, spId, spName } =
+      userSession.get();
 
     // Remove nonce and state from the session to prevent replay attacks
     userSession.set({ idpNonce: null, idpState: null });
@@ -141,6 +142,8 @@ export class OidcClientController {
       req,
       idpState,
       idpNonce,
+      spId,
+      spName,
     });
 
     userSession.set({
