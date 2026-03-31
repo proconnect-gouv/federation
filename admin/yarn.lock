@@ -931,50 +931,50 @@
   dependencies:
     consola "^3.2.3"
 
-"@otplib/core@13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@otplib/core/-/core-13.3.0.tgz#7f037af6cc5907c2cff9cf6092952088a0ce5a6e"
-  integrity sha512-pnQDOuCmFVeF/XnboJq9TOJgLoo2idNPJKMymOF8vGqJJ+ReKRYM9bUGjNPRWC0tHjMwu1TXbnzyBp494JgRag==
+"@otplib/core@13.4.0":
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/@otplib/core/-/core-13.4.0.tgz#14db803de5bd09f7c412eba86c7d193a09d57187"
+  integrity sha512-JqOGcvZQi2wIkEQo8f3/iAjstavpXy6gouIDMHygjNuH6Q0FjbHOiXMdcE94RwfgDNMABhzwUmvaPsxvgm9NYw==
 
-"@otplib/hotp@13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@otplib/hotp/-/hotp-13.3.0.tgz#135e45c6350ae60bbc1170a1801a6100e49794b8"
-  integrity sha512-XJMZGz2bg4QJwK7ulvl1GUI2VMn/flaIk/E/BTKAejHsX2kUtPF1bRhlZ2+elq8uU5Fs9Z9FHcQK2CPZNQbbUQ==
+"@otplib/hotp@13.4.0":
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/@otplib/hotp/-/hotp-13.4.0.tgz#e12a69cc54c000213e4bf2d92dc9741a6897d3a2"
+  integrity sha512-MJjE0x06mn2ptymz5qZmQveb+vWFuaIftqE0b5/TZZqUOK7l97cV8lRTmid5BpAQMwJDNLW6RnYxGeCRiNdekw==
   dependencies:
-    "@otplib/core" "13.3.0"
-    "@otplib/uri" "13.3.0"
+    "@otplib/core" "13.4.0"
+    "@otplib/uri" "13.4.0"
 
-"@otplib/plugin-base32-scure@13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@otplib/plugin-base32-scure/-/plugin-base32-scure-13.3.0.tgz#3362fc5dd568e9cecac913fd0fa169148c469142"
-  integrity sha512-/jYbL5S6GB0Ie3XGEWtLIr9s5ZICl/BfmNL7+8/W7usZaUU4GiyLd2S+JGsNCslPyqNekSudD864nDAvRI0s8w==
+"@otplib/plugin-base32-scure@13.4.0":
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/@otplib/plugin-base32-scure/-/plugin-base32-scure-13.4.0.tgz#04c3b31075bc733ed3fb54d3335a65813faed0fe"
+  integrity sha512-/t9YWJmMbB8bF5z8mXrBZc2FXBe8B/3hG5FhWr9K8cFwFhyxScbPysmZe8s1UTzSA6N+s8Uv8aIfCtVXPNjJWw==
   dependencies:
-    "@otplib/core" "13.3.0"
+    "@otplib/core" "13.4.0"
     "@scure/base" "^2.0.0"
 
-"@otplib/plugin-crypto-noble@13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@otplib/plugin-crypto-noble/-/plugin-crypto-noble-13.3.0.tgz#edfd6c8c54730cfdfc52c6a3fcd797e204fdd0e2"
-  integrity sha512-wmV+jBVncepgwv99G7Plrdzd0tHfbpXk2U+OD7MO7DzpDqOYEgOPi+IIneksJSTL8QvWdfi+uQEuhnER4fKouA==
+"@otplib/plugin-crypto-noble@13.4.0":
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/@otplib/plugin-crypto-noble/-/plugin-crypto-noble-13.4.0.tgz#048c6ad84fd718a2b66f108048aa2f7fd118e5d8"
+  integrity sha512-KrvE4m7Zv+TT1944HzgqFJWJpKb6AyoxDbvhPStmBqdMlv5Gekb80d66cuFRL08kkPgJ5gXUSb5SFpYeB+bACg==
   dependencies:
     "@noble/hashes" "^2.0.1"
-    "@otplib/core" "13.3.0"
+    "@otplib/core" "13.4.0"
 
-"@otplib/totp@13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@otplib/totp/-/totp-13.3.0.tgz#1d1f61cfd1acd773e1051e6b918227ae34545808"
-  integrity sha512-XfjGNoN8d9S3Ove2j7AwkVV7+QDFsV7Lm7YwSiezNaHffkWtJ60aJYpmf+01dARdPST71U2ptueMsRJso4sq4A==
+"@otplib/totp@13.4.0":
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/@otplib/totp/-/totp-13.4.0.tgz#f43543435f9ea4c7798913ef8f975462f80fce63"
+  integrity sha512-dK+vl0f0ekzf6mCENRI9AKS2NJUC7OjI3+X8e7QSnhQ2WM7I+i4PGpb3QxKi5hxjTtwVuoZwXR2CFtXdcRtNdQ==
   dependencies:
-    "@otplib/core" "13.3.0"
-    "@otplib/hotp" "13.3.0"
-    "@otplib/uri" "13.3.0"
+    "@otplib/core" "13.4.0"
+    "@otplib/hotp" "13.4.0"
+    "@otplib/uri" "13.4.0"
 
-"@otplib/uri@13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@otplib/uri/-/uri-13.3.0.tgz#7474d6dc0fdf8ab2d0cf2b79e2001446c4e7b6b3"
-  integrity sha512-3oh6nBXy+cm3UX9cxEAGZiDrfxHU2gfelYFV+XNCx+8dq39VaQVymwlU2yjPZiMAi/3agaUeEftf2RwM5F+Cyg==
+"@otplib/uri@13.4.0":
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/@otplib/uri/-/uri-13.4.0.tgz#23fa0b727bec026bb871afd42e1c3e5ff57bed1d"
+  integrity sha512-x1ozBa5bPbdZCrrTL/HK21qchiK7jYElTu+0ft22abeEhiLYgH1+SIULvOcVk3CK8YwF4kdcidvkq4ciejucJA==
   dependencies:
-    "@otplib/core" "13.3.0"
+    "@otplib/core" "13.4.0"
 
 "@parcel/bundler-default@2.16.4":
   version "2.16.4"
@@ -5476,17 +5476,17 @@ ospath@^1.2.2:
   resolved "https://registry.yarnpkg.com/ospath/-/ospath-1.2.2.tgz#1276639774a3f8ef2572f7fe4280e0ea4550c07b"
   integrity sha512-o6E5qJV5zkAbIDNhGSIlyOhScKXgQrSRMilfph0clDfM0nEnBOlKlH4sWDmG95BW/CvwNz0vmm7dJVtU2KlMiA==
 
-otplib@^13.3.0:
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/otplib/-/otplib-13.3.0.tgz#2ead040ab29d1a829d1d7c510b059a3e4c76b2b0"
-  integrity sha512-VYMKyyDG8yt2q+z58sz54/EIyTh7+tyMrjeemR44iVh5+dkKtIs57irTqxjH+IkAL1uMmG1JIFhG5CxTpqdU5g==
+otplib@^13.4.0:
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/otplib/-/otplib-13.4.0.tgz#5743391a7fe1900cb1ac364af0bbb407a72af76b"
+  integrity sha512-RUcYcRMCgRWhUE/XabRppXpUwCwaWBNHe5iPXhdvP8wwDGpGpsIf/kxX/ec3zFsOaM1Oq8lEhUqDwk6W7DHkwg==
   dependencies:
-    "@otplib/core" "13.3.0"
-    "@otplib/hotp" "13.3.0"
-    "@otplib/plugin-base32-scure" "13.3.0"
-    "@otplib/plugin-crypto-noble" "13.3.0"
-    "@otplib/totp" "13.3.0"
-    "@otplib/uri" "13.3.0"
+    "@otplib/core" "13.4.0"
+    "@otplib/hotp" "13.4.0"
+    "@otplib/plugin-base32-scure" "13.4.0"
+    "@otplib/plugin-crypto-noble" "13.4.0"
+    "@otplib/totp" "13.4.0"
+    "@otplib/uri" "13.4.0"
 
 p-limit@^2.2.0:
   version "2.3.0"
