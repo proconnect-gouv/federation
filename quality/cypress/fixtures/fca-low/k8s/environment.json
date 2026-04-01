@@ -1,5 +1,5 @@
 {
   "name": "k8s",
-  "adminRootUrl": "https://exploitation-local.proconnect.127.0.0.1.nip.io",
-  "federationRootUrl": "https://fca-local.proconnect.127.0.0.1.nip.io"
+  "adminRootUrl": "https://admin-local.proconnect.127.0.0.1.nip.io",
+  "federationRootUrl": "https://federation-local.proconnect.127.0.0.1.nip.io"
 }
