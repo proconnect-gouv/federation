@@ -8,7 +8,7 @@ export class BridgeHttpProxyCsmrException extends BridgeHttpProxyBaseException {
   public error_description =
     "authentication aborted due to a technical error on the authorization server";
 
-  public reference: number;
+  public reference: string;
   public name: string;
   public reason: string;
 

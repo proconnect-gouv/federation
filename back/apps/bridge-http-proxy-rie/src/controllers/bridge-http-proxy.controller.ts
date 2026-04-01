@@ -67,9 +67,10 @@ export class BridgeHttpProxyController {
     const { originalUrl, method } = req;
     const { host, "x-forwarded-proto": xForwardedProto } = headers;
 
-    this.logger.info(
-      `${method} ${xForwardedProto || "https"}://${host}${originalUrl}`,
-    );
+    this.logger.info({
+      msg: `${method} ${xForwardedProto || "https"}://${host}${originalUrl}`,
+      body,
+    });
 
     const response: BridgeProtocol<object> = await this.broker.proxyRequest(
       originalUrl,

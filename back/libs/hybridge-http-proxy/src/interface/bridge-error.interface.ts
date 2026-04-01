@@ -1,5 +1,5 @@
 export interface BridgeError {
-  code: number;
-  reason: string;
-  name: string;
+  code?: string;
+  reason?: string;
+  name?: string;
 }
