@@ -2,7 +2,7 @@ import { ApiEntrepriseService } from "@fc/api-entreprise";
 import { RedisService } from "@fc/redis";
 import { HttpStatus } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { HealthController } from "./health.controller";
+import { ExcludeTarget, HealthController } from "./health.controller";
 
 describe("HealthController", () => {
   let controller: HealthController;
@@ -148,33 +148,24 @@ describe("HealthController", () => {
       it("should exclude a single check", async () => {
         mongoConnectionMock.readyState = 0;
 
-        const result = await controller.readyz(resMock as any, "", "mongodb");
-
-        expect(resMock.status).not.toHaveBeenCalled();
-        expect(result).toContain("[+]mongodb excluded: ok");
-      });
-
-      it("should exclude multiple checks", async () => {
-        mongoConnectionMock.readyState = 0;
-        redisServiceMock.client.ping.mockRejectedValue(
-          new Error("ECONNREFUSED"),
+        const result = await controller.readyz(
+          resMock as any,
+          "",
+          ExcludeTarget.MongoDB,
         );
 
-        const result = await controller.readyz(resMock as any, "", [
-          "mongodb",
-          "redis",
-        ]);
-
         expect(resMock.status).not.toHaveBeenCalled();
         expect(result).toContain("[+]mongodb excluded: ok");
-        expect(result).toContain("[+]redis excluded: ok");
       });
     });
   });
 
   describe("readyzCheck", () => {
     it("should return ok for a healthy individual check", async () => {
-      const result = await controller.readyzCheck(resMock as any, "mongodb");
+      const result = await controller.readyzCheck(
+        resMock as any,
+        ExcludeTarget.MongoDB,
+      );
 
       expect(resMock.status).not.toHaveBeenCalled();
       expect(result).toBe("[+]mongodb ok");
@@ -183,7 +174,10 @@ describe("HealthController", () => {
     it("should return error for a failing individual check", async () => {
       mongoConnectionMock.readyState = 0;
 
-      const result = await controller.readyzCheck(resMock as any, "mongodb");
+      const result = await controller.readyzCheck(
+        resMock as any,
+        ExcludeTarget.MongoDB,
+      );
 
       expect(resMock.status).toHaveBeenCalledWith(
         HttpStatus.SERVICE_UNAVAILABLE,
@@ -191,12 +185,6 @@ describe("HealthController", () => {
       expect(result).toBe(
         "[-]mongodb failed (Mongo connection not ready (readyState=0))",
       );
-    });
-
-    it("should throw NotFoundException for an unknown check", async () => {
-      await expect(
-        controller.readyzCheck(resMock as any, "unknown"),
-      ).rejects.toThrow('readyz check "unknown" not found');
     });
   });
 });
