@@ -105,7 +105,8 @@ export class OidcClientService {
     const idp = await this.identityProvider.getById(issuerId);
 
     if (!idp) {
-      throw new OidcClientIdpNotFoundException();
+      const errorParams = this.getOidcClientErrorParams(idp);
+      throw new OidcClientIdpNotFoundException(errorParams);
     }
 
     if (!idp.active) {
@@ -147,11 +148,8 @@ export class OidcClientService {
             },
           });
         }
-
-        throw new OidcClientIssuerDiscoveryFailedException(
-          idp.supportEmail,
-          error,
-        );
+        const errorParams = this.getOidcClientErrorParams(idp);
+        throw new OidcClientIssuerDiscoveryFailedException(errorParams, error);
       }
     }
 
@@ -251,9 +249,15 @@ export class OidcClientService {
         });
       }
       if (error instanceof AuthorizationResponseError) {
+        let errorMessage =
+          error.error ||
+          "le fournisseur d’identité n’a pas envoyé de message d’erreur";
+        if (error.error_description) {
+          errorMessage += ` (${error.error_description})`;
+        }
         throw new AuthorizationResponseErrorException(
           idp.supportEmail,
-          `${error.error} (${error.error_description})`,
+          errorMessage,
         );
       }
 

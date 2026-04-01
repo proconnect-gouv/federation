@@ -28,15 +28,11 @@
               <h1 data-testid="error-section-title" class="fr-mb-3w">
                 <%  if (locals.exceptionDisplay.title)  { %>
                   <%= locals.exceptionDisplay.title %>
-                <% } else { %>
-                  Accès impossible
                 <% } %>
               </h1>
 
               <% if (locals.exceptionDisplay.description)  { %>
                 <p class="error-description-with-white-space"><%- locals.exceptionDisplay.description %></p>
-              <% } else { %>
-                <p>Nous n'arrivons pas à vous connecter à votre service en ligne pour l'instant.</p>
               <% } %>
 
               <% if(locals.exceptionDisplay.crispLink) { %>
@@ -78,8 +74,6 @@
                     <p class="fr-text--sm fr-mb-1w">
                       <%  if (locals.exceptionDisplay.contactMessage)  { %>
                         <%= locals.exceptionDisplay.contactMessage %>
-                      <% } else { %>
-                        Vous pouvez nous signaler cette erreur en nous écrivant.
                       <% } %>
                     </p>
                   <% } %>

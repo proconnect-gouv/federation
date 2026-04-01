@@ -56,6 +56,7 @@ export class UserSession {
   @Expose()
   readonly spId?: string;
 
+  // this one
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -143,6 +144,7 @@ export class UserSession {
   @IsString()
   readonly spLoginHint?: string;
 
+  // this one
   @IsOptional()
   @IsString()
   readonly idpLoginHint?: string;
