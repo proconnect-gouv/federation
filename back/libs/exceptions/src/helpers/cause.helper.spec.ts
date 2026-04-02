@@ -10,7 +10,11 @@ describe("getCauseChain", () => {
     const cause = new TypeError("root cause");
     const error = new Error("test", { cause });
     expect(getCauseChain(error)).toEqual([
-      { message: "root cause", type: "TypeError" },
+      {
+        message: "root cause",
+        stack: cause.stack?.split("\n"),
+        type: "TypeError",
+      },
     ]);
   });
 
@@ -19,8 +23,8 @@ describe("getCauseChain", () => {
     const mid = new TypeError("middle", { cause: root });
     const error = new Error("top", { cause: mid });
     expect(getCauseChain(error)).toEqual([
-      { message: "middle", type: "TypeError" },
-      { message: "deep", type: "RangeError" },
+      { message: "middle", stack: mid.stack?.split("\n"), type: "TypeError" },
+      { message: "deep", stack: root.stack?.split("\n"), type: "RangeError" },
     ]);
   });
 
