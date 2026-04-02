@@ -1,6 +1,7 @@
 import { DynamicModule, Module, Type } from "@nestjs/common";
 
 import { RabbitmqModule } from "@fc/rabbitmq";
+import { SessionModule } from "@fc/session";
 import { IIdentityProviderAdapter } from "./interfaces";
 import { OidcClientService } from "./services";
 import { IDENTITY_PROVIDER_SERVICE } from "./tokens";
@@ -16,6 +17,7 @@ export class OidcClientModule {
       imports: [
         identityProviderModule,
         RabbitmqModule.registerFor("Hyyyperbridge"),
+        SessionModule,
       ],
       providers: [
         {

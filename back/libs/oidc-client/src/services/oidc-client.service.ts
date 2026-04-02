@@ -41,6 +41,8 @@ import {
   type UserInfoResponse,
 } from "openid-client";
 import { lastValueFrom, timeout } from "rxjs";
+
+import { SessionService } from "@fc/session";
 import { OidcClientConfig, TokenDto } from "../dto";
 import {
   AuthorizationResponseErrorException,
@@ -51,7 +53,10 @@ import {
   OidcClientTokenValidationFailedException,
   OidcClientUserinfoFailedException,
 } from "../exceptions";
-import { type IIdentityProviderAdapter } from "../interfaces";
+import {
+  OidcClientSessionParams,
+  type IIdentityProviderAdapter,
+} from "../interfaces";
 
 @Injectable()
 export class OidcClientService {
@@ -75,6 +80,7 @@ export class OidcClientService {
     private readonly identityProvider: IIdentityProviderAdapter,
     private readonly logger: LoggerService,
     @Inject("HyyyperbridgeBroker") private readonly broker: ClientProxy,
+    private readonly session: SessionService,
   ) {}
 
   static objToUrlParams(obj) {
@@ -195,6 +201,16 @@ export class OidcClientService {
     return fetch(url, updatedOptions);
   }
 
+  private getOidcClientErrorParams(): OidcClientSessionParams {
+    const spName = this.session.get("User", "spName");
+    const idpLoginHint = this.session.get("User", "idpLoginHint");
+
+    return {
+      spName,
+      idpLoginHint,
+    };
+  }
+
   public async getProviderConfig(issuerId: string): Promise<{
     config: Configuration;
     idp: IdentityProviderMetadata;
@@ -204,7 +220,13 @@ export class OidcClientService {
     const idp = await this.identityProvider.getById(issuerId);
 
     if (!idp) {
-      throw new OidcClientIdpNotFoundException();
+      const errorParams = this.getOidcClientErrorParams();
+      throw new OidcClientIdpNotFoundException(
+        undefined,
+        undefined,
+        undefined,
+        errorParams,
+      );
     }
 
     if (!idp.active) {
@@ -249,10 +271,12 @@ export class OidcClientService {
             },
           });
         }
-
+        const errorParams = this.getOidcClientErrorParams();
         throw new OidcClientIssuerDiscoveryFailedException(
           idp.supportEmail,
+          idp.name,
           error,
+          errorParams,
         );
       }
     }
@@ -359,13 +383,24 @@ export class OidcClientService {
         });
       }
       if (error instanceof AuthorizationResponseError) {
+        let errorMessage =
+          error.error ||
+          "le fournisseur d’identité n’a pas envoyé de message d’erreur";
+        if (error.error_description) {
+          errorMessage += ` (${error.error_description})`;
+        }
         throw new AuthorizationResponseErrorException(
           idp.supportEmail,
-          `${error.error} (${error.error_description})`,
+          idp.name,
+          errorMessage,
         );
       }
 
-      throw new OidcClientTokenFailedException(idp.supportEmail, error);
+      throw new OidcClientTokenFailedException(
+        idp.supportEmail,
+        idp.name,
+        error,
+      );
     }
 
     const claims = tokens.claims();
@@ -387,6 +422,7 @@ export class OidcClientService {
     if (tokenValidationErrors.length) {
       throw new OidcClientTokenValidationFailedException(
         idp.supportEmail,
+        idp.name,
         tokenValidationErrors.toString(),
       );
     }
@@ -452,7 +488,11 @@ export class OidcClientService {
           },
         });
       }
-      throw new OidcClientUserinfoFailedException(idp.supportEmail, error);
+      throw new OidcClientUserinfoFailedException(
+        idp.supportEmail,
+        idp.name,
+        error,
+      );
     }
   }
 

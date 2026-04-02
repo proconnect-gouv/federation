@@ -109,9 +109,11 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
         mainAction,
       } = exception;
       errorPageParams.exceptionDisplay = {
-        contactHref: displayContact
-          ? contactHref || getDefaultContactHref(error, { spName, idpName })
-          : undefined,
+        contactHref:
+          contactHref ||
+          (displayContact
+            ? getDefaultContactHref(error, { spName, idpName })
+            : undefined),
         title,
         description,
         displayContact,

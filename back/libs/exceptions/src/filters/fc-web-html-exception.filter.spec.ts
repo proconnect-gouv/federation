@@ -221,7 +221,7 @@ describe("FcWebHtmlExceptionFilter", () => {
           exceptionDisplay: expect.objectContaining({
             title: expect.any(String),
             description: expect.any(String),
-            displayContact: true,
+            displayContact: false,
             contactHref: expect.any(String),
           }),
         }),
