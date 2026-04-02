@@ -5,6 +5,7 @@ export function getCauseChain(exception: Error): object[] {
   while (current instanceof Error) {
     causes.push({
       message: current.message,
+      stack: current.stack?.split("\n"),
       type: current.constructor.name,
     });
     current = current.cause;
