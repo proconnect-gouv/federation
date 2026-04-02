@@ -13,16 +13,11 @@ export class BaseException extends Error {
   public log: unknown;
 
   constructor(input?: Error | string) {
-    let arg: unknown = input;
-
     if (input instanceof Error) {
-      arg = input.message;
-    }
-
-    super(arg as string);
-
-    if (input instanceof Error) {
+      super(input.message, { cause: input });
       this.originalError = input;
+    } else {
+      super(input);
     }
   }
 }
