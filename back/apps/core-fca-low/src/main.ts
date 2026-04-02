@@ -115,6 +115,8 @@ async function bootstrap() {
     }),
   );
 
+  app.set("trust proxy", 1);
+
   /**
    * @TODO #1203 All below useStaticAssets functions need to be removed (until line 146) when webpack has been configured to load assets from @gouvfr/dsfr package
    * @ticket FC-1203
