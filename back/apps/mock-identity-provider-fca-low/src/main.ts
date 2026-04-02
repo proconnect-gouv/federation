@@ -18,7 +18,10 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/"));
-app.enable("trust proxy");
+
+// Parse JSON and URL-encoded bodies
+app.use(express.json());
+app.use(urlencoded({ extended: false }));
 
 // add a middleware that dumps all requests and responses to the console, including the body, to help with debugging
 app.use((req, res, next) => {
