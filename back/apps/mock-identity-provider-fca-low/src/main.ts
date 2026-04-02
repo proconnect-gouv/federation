@@ -20,6 +20,28 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/"));
 app.enable("trust proxy");
 
+// add a middleware that dumps all requests and responses to the console, including the body, to help with debugging
+app.use((req, res, next) => {
+  console.log("Request:", {
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+    body: req.body,
+  });
+
+  const originalSend = res.send;
+  res.send = function (body) {
+    console.log("Response:", {
+      statusCode: res.statusCode,
+      headers: res.getHeaders(),
+      body,
+    });
+    return originalSend.call(this, body);
+  };
+
+  next();
+});
+
 const provider = new Provider(`https://${FQDN}`, {
   adapter: MemoryAdapter,
   ...configuration,
