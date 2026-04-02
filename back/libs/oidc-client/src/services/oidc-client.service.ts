@@ -95,7 +95,7 @@ export class OidcClientService {
   };
 
   static getCurrentUrl = (req) =>
-    new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
+    new URL(`${req.headers['x-forwarded-proto'] ?? req.protocol}://${req.get("host")}${req.originalUrl}`);
 
   public async getProviderConfig(issuerId: string): Promise<{
     config: Configuration;
