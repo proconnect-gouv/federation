@@ -68,7 +68,7 @@
     "jose-v6": "npm:jose@^6.0.12",
     "lodash": "^4.18.1",
     "migrate-mongo": "^14.0.7",
-    "mongoose": "^9.2.4",
+    "mongoose": "^9.3.3",
     "oidc-provider": "7.14.3",
     "oidc-provider-v8": "npm:oidc-provider@^8.8.0",
     "openapi-fetch": "^0.17.0",
