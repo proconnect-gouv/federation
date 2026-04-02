@@ -11,6 +11,7 @@ import { ExceptionsConfig } from "../dto";
 import { BaseException, EnrichedDisplayBaseException } from "../exceptions";
 import {
   generateErrorId,
+  getCauseChain,
   getCode,
   getDefaultContactHref,
   getStackTraceArray,
@@ -60,6 +61,7 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
       code,
       id,
       message,
+      causes: getCauseChain(exception),
       originalError: exception.originalError,
       reason: exception.log,
       stackTrace: getStackTraceArray(exception),
