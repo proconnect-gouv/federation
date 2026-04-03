@@ -206,7 +206,7 @@ const fia = {
     isEntraID: false,
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
-    useTheHyyyperbridge: false,
+    useTheHyyyperbridge: true,
   },
 
   // -- FIA using LemonLDAP
