@@ -1,308 +1,169 @@
-import { MessageType } from "@fc/hybridge-http-proxy";
+import {
+  BridgeError,
+  BridgeProtocol,
+  BridgeResponse,
+  MessageType,
+} from "@fc/hybridge-http-proxy";
 import { LoggerService } from "@fc/logger";
-import { HttpProxyProtocol } from "@fc/microservices";
 import { getLoggerMock } from "@mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
+import { BridgePayloadDto } from "../dto";
+import { CsmrHttpProxyService } from "../services";
 import { CsmrHttpProxyController } from "./csmr-http-proxy.controller";
 
 describe("CsmrHttpProxyController", () => {
-  let controller: CsmrHttpProxyController;
+  let csmrHttpProxyController: CsmrHttpProxyController;
 
-  const loggerServiceMock = getLoggerMock();
+  const loggerMock = getLoggerMock();
 
-  const payloadMock = {
-    url: "https://example.com/foo",
-    method: "get",
-    headers: {
-      host: "example.com",
-      connection: "keep-alive",
-    },
-    data: "foo=bar",
+  const csmrHttpProxyMock = {
+    forwardRequest: jest.fn(),
   };
 
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
-    const module: TestingModule = await Test.createTestingModule({
+    const app: TestingModule = await Test.createTestingModule({
       controllers: [CsmrHttpProxyController],
-      providers: [LoggerService],
+      providers: [LoggerService, CsmrHttpProxyService],
     })
       .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
+      .useValue(loggerMock)
+      .overrideProvider(CsmrHttpProxyService)
+      .useValue(csmrHttpProxyMock)
       .compile();
 
-    controller = module.get<CsmrHttpProxyController>(CsmrHttpProxyController);
+    csmrHttpProxyController = app.get<CsmrHttpProxyController>(
+      CsmrHttpProxyController,
+    );
   });
 
-  it("should be defined", () => {
-    expect(controller).toBeDefined();
+  it("should get the controller defined", () => {
+    // Arrange
+    // Action
+    // Assert
+    expect(csmrHttpProxyController).toBeDefined();
   });
 
   describe("healthcheck()", () => {
     it("should return 'ok'", () => {
-      const result = controller.healthcheck();
+      const result = csmrHttpProxyController.healthcheck();
       expect(result).toBe("ok");
     });
   });
 
   describe("proxyRequest()", () => {
-    it("should log received command", async () => {
-      // Given
-      const fetchResponse = {
-        status: 200,
-        statusText: "OK",
-        text: jest.fn().mockResolvedValueOnce("response body"),
-        headers: new Headers({ "content-type": "text/html" }),
+    const baseBridgePayloadMock: BridgePayloadDto = Object.freeze({
+      url: "https://test.com/getToken",
+      method: "get",
+      headers: {
+        test: "world",
+      },
+      data: null,
+    } as unknown as BridgePayloadDto);
+
+    it("should get the data from external service without data params", async () => {
+      // Arrange
+      const payload: BridgePayloadDto = {
+        ...baseBridgePayloadMock,
       };
-      jest.spyOn(global, "fetch").mockResolvedValueOnce(fetchResponse as any);
 
-      // When
-      await controller.proxyRequest(payloadMock as any);
+      const dataMock = {
+        status: 200,
+        data: null,
+        statusText: "Success",
+        headers: {
+          "content-type": "text/html; charset=UTF-8",
+        },
+      };
 
-      // Then
-      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.debug).toHaveBeenCalledWith({
-        msg: `received new ${HttpProxyProtocol.Commands.HTTP_PROXY} command`,
-        payload: payloadMock,
-      });
-    });
-
-    describe("connection header handling", () => {
-      it("should keep connection header when value is 'keep-alive'", async () => {
-        // Given
-        const payload = {
-          ...payloadMock,
-          headers: { ...payloadMock.headers, connection: "keep-alive" },
-        };
-        const fetchResponse = {
+      const resultMock: BridgeProtocol<BridgeResponse> = {
+        type: MessageType.DATA,
+        data: {
           status: 200,
-          statusText: "OK",
-          text: jest.fn().mockResolvedValueOnce(""),
-          headers: new Headers(),
-        };
-        jest.spyOn(global, "fetch").mockResolvedValueOnce(fetchResponse as any);
-
-        // When
-        await controller.proxyRequest(payload as any);
-
-        // Then
-        const calledHeaders = (global.fetch as jest.Mock).mock.calls[0][1]
-          .headers as Headers;
-        expect(calledHeaders.get("connection")).toBe("keep-alive");
-      });
-
-      it("should keep connection header when value is 'close'", async () => {
-        // Given
-        const payload = {
-          ...payloadMock,
-          headers: { ...payloadMock.headers, connection: "close" },
-        };
-        const fetchResponse = {
-          status: 200,
-          statusText: "OK",
-          text: jest.fn().mockResolvedValueOnce(""),
-          headers: new Headers(),
-        };
-        jest.spyOn(global, "fetch").mockResolvedValueOnce(fetchResponse as any);
-
-        // When
-        await controller.proxyRequest(payload as any);
-
-        // Then
-        const calledHeaders = (global.fetch as jest.Mock).mock.calls[0][1]
-          .headers as Headers;
-        expect(calledHeaders.get("connection")).toBe("close");
-      });
-
-      it("should delete connection header when value is not 'keep-alive' or 'close'", async () => {
-        // Given
-        const payload = {
-          ...payloadMock,
+          data: null,
+          statusText: "Success",
           headers: {
-            ...payloadMock.headers,
-            connection: "upgrade, keep-alive",
+            "content-type": "text/html; charset=UTF-8",
           },
-        };
-        const fetchResponse = {
-          status: 200,
-          statusText: "OK",
-          text: jest.fn().mockResolvedValueOnce(""),
-          headers: new Headers(),
-        };
-        jest.spyOn(global, "fetch").mockResolvedValueOnce(fetchResponse as any);
+        },
+      };
+      csmrHttpProxyMock.forwardRequest.mockResolvedValueOnce(dataMock);
 
-        // When
-        await controller.proxyRequest(payload as any);
-
-        // Then
-        const calledHeaders = (global.fetch as jest.Mock).mock.calls[0][1]
-          .headers as Headers;
-        expect(calledHeaders.get("connection")).toBeNull();
-      });
+      // Action
+      const result = await csmrHttpProxyController.proxyRequest(payload);
+      // Assert
+      expect(result).toStrictEqual(resultMock);
     });
 
-    describe("successful fetch", () => {
-      it("should call fetch with correct parameters", async () => {
-        // Given
-        const fetchResponse = {
+    it("should get the data from external ressources with data params", async () => {
+      // Arrange
+      const payload: BridgePayloadDto = {
+        ...baseBridgePayloadMock,
+        method: "post",
+        data: '{"sarah":"connor"}',
+      };
+
+      const dataMock = {
+        status: 200,
+        statusText: "Success",
+        headers: {
+          "content-type": "text/html; charset=UTF-8",
+        },
+        data: "{\nhello: 'world'\n}",
+      };
+
+      const resultMock: BridgeProtocol<BridgeResponse> = {
+        type: MessageType.DATA,
+        data: {
           status: 200,
-          statusText: "OK",
-          text: jest.fn().mockResolvedValueOnce("response body"),
-          headers: new Headers({ "content-type": "text/html" }),
-        };
-        jest.spyOn(global, "fetch").mockResolvedValueOnce(fetchResponse as any);
-
-        // When
-        await controller.proxyRequest(payloadMock as any);
-
-        // Then
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-        expect(global.fetch).toHaveBeenCalledWith(
-          payloadMock.url,
-          expect.objectContaining({
-            method: payloadMock.method,
-            body: payloadMock.data,
-          }),
-        );
-      });
-
-      it("should pass null body when data is undefined", async () => {
-        // Given
-        const payload = { ...payloadMock, data: undefined };
-        const fetchResponse = {
-          status: 200,
-          statusText: "OK",
-          text: jest.fn().mockResolvedValueOnce(""),
-          headers: new Headers(),
-        };
-        jest.spyOn(global, "fetch").mockResolvedValueOnce(fetchResponse as any);
-
-        // When
-        await controller.proxyRequest(payload as any);
-
-        // Then
-        expect(global.fetch).toHaveBeenCalledWith(
-          payload.url,
-          expect.objectContaining({
-            body: null,
-          }),
-        );
-      });
-
-      it("should return DATA response with status, data, statusText and headers", async () => {
-        // Given
-        const fetchResponse = {
-          status: 200,
-          statusText: "OK",
-          text: jest.fn().mockResolvedValueOnce("response body"),
-          headers: new Headers({
-            "content-type": "text/html",
-            "x-custom": "value",
-          }),
-        };
-        jest.spyOn(global, "fetch").mockResolvedValueOnce(fetchResponse as any);
-
-        // When
-        const result = await controller.proxyRequest(payloadMock as any);
-
-        // Then
-        expect(result).toEqual({
-          type: MessageType.DATA,
-          data: {
-            status: 200,
-            data: "response body",
-            statusText: "OK",
-            headers: {
-              "content-type": "text/html",
-              "x-custom": "value",
-            },
+          statusText: "Success",
+          headers: {
+            "content-type": "text/html; charset=UTF-8",
           },
-        });
-      });
+          data: "{\nhello: 'world'\n}",
+        },
+      };
+      csmrHttpProxyMock.forwardRequest.mockResolvedValueOnce(dataMock);
+      // Action
+      const result = await csmrHttpProxyController.proxyRequest(payload);
+      // Assert
+      expect(result).toStrictEqual(resultMock);
     });
 
-    describe("failed fetch", () => {
-      it("should return ERROR response when fetch throws", async () => {
-        // Given
-        const error = new Error("fetch failed");
-        jest.spyOn(global, "fetch").mockRejectedValueOnce(error);
+    it("should fail to get the data from external ressource with unknown error", async () => {
+      const errorMock = new Error("Unknown Error");
 
-        // When
-        const result = await controller.proxyRequest(payloadMock as any);
-
-        // Then
-        expect(result).toEqual({
-          type: MessageType.ERROR,
-          data: {
-            reason: "fetch failed",
-            name: "Error",
-            code: undefined,
-          },
-        });
+      csmrHttpProxyMock.forwardRequest.mockImplementationOnce(() => {
+        throw errorMock;
       });
+      // Arrange
+      const payload = {
+        url: "https://test.com/getToken",
+        method: "post",
+        headers: {
+          test: "world",
+        },
+        data: '{"sarah":"connor"}',
+      } as unknown as BridgePayloadDto;
 
-      it("should include cause message in reason when error has a cause", async () => {
-        // Given
-        const error = new Error("fetch failed", {
-          cause: new Error("connection refused"),
-        });
-        jest.spyOn(global, "fetch").mockRejectedValueOnce(error);
+      const resultMock: BridgeProtocol<BridgeError> = {
+        type: MessageType.ERROR,
+        data: {
+          name: "Error",
+          reason: "Unknown Error",
+          code: undefined,
+        },
+      };
 
-        // When
-        const result = await controller.proxyRequest(payloadMock as any);
+      // Action
+      const result = await csmrHttpProxyController.proxyRequest(payload);
 
-        // Then
-        expect(result).toEqual({
-          type: MessageType.ERROR,
-          data: {
-            reason: "fetch failed (connection refused)",
-            name: "Error",
-            code: undefined,
-          },
-        });
-      });
+      // Assert
+      expect(result).toStrictEqual(resultMock);
 
-      it("should use cause name and code when available", async () => {
-        // Given
-        const cause = new Error("connection refused");
-        (cause as any).name = "ConnectionError";
-        (cause as any).code = "ECONNREFUSED";
-        const error = new Error("fetch failed", { cause });
-        jest.spyOn(global, "fetch").mockRejectedValueOnce(error);
-
-        // When
-        const result = await controller.proxyRequest(payloadMock as any);
-
-        // Then
-        expect(result).toEqual({
-          type: MessageType.ERROR,
-          data: {
-            reason: "fetch failed (connection refused)",
-            name: "ConnectionError",
-            code: "ECONNREFUSED",
-          },
-        });
-      });
-
-      it("should log error data", async () => {
-        // Given
-        const error = new Error("fetch failed");
-        jest.spyOn(global, "fetch").mockRejectedValueOnce(error);
-
-        // When
-        await controller.proxyRequest(payloadMock as any);
-
-        // Then
-        expect(loggerServiceMock.error).toHaveBeenCalledTimes(1);
-        expect(loggerServiceMock.error).toHaveBeenCalledWith({
-          errorData: {
-            reason: "fetch failed",
-            name: "Error",
-            code: undefined,
-          },
-        });
-      });
+      expect(loggerMock.error).toHaveBeenCalledTimes(1);
     });
   });
 });
