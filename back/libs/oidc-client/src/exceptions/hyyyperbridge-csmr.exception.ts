@@ -1,4 +1,4 @@
-import { BridgeError } from "@fc/hybridge-http-proxy";
+import { HyyyperbridgeErrorDto } from "@fc/hyyyperbridge";
 import { HyyyperbridgeErrorCode } from "../enums";
 import { HyyyperbridgeBaseException } from "./hyyyperbridge-base.exception";
 
@@ -12,7 +12,7 @@ export class HyyyperbridgeCsmrException extends HyyyperbridgeBaseException {
   public name: string;
   public reason: string;
 
-  from(error: BridgeError) {
+  from(error: HyyyperbridgeErrorDto) {
     const { code: reference, name, reason } = error;
     this.reference = reference;
     this.name = name;
