@@ -1,5 +1,4 @@
 import { ConfigService } from "@fc/config";
-import { MessageType } from "@fc/hybridge-http-proxy/enums";
 import { LoggerService } from "@fc/logger";
 import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
 import { getConfigMock } from "@mocks/config";
@@ -13,6 +12,7 @@ import * as rxjs from "rxjs";
 
 import { getSessionServiceMock } from "@mocks/session";
 
+import { HyyyperbridgeMessageType } from "@fc/hyyyperbridge";
 import { SessionService } from "@fc/session";
 import {
   AuthorizationResponseErrorException,
@@ -236,12 +236,12 @@ describe("OidcClientService", () => {
         it("should return a Response on valid data", async () => {
           // Given
           (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
-            type: MessageType.DATA,
+            type: HyyyperbridgeMessageType.DATA,
             data: rawResponseData,
           });
           (classTransformer.plainToInstance as jest.Mock)
             .mockReturnValueOnce({
-              type: MessageType.DATA,
+              type: HyyyperbridgeMessageType.DATA,
               data: rawResponseData,
             })
             .mockReturnValueOnce(rawResponseData);
@@ -262,12 +262,12 @@ describe("OidcClientService", () => {
         it("should throw HyyyperbridgeMissingVariableException when response DTO validation fails", async () => {
           // Given
           (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
-            type: MessageType.DATA,
+            type: HyyyperbridgeMessageType.DATA,
             data: rawResponseData,
           });
           (classTransformer.plainToInstance as jest.Mock)
             .mockReturnValueOnce({
-              type: MessageType.DATA,
+              type: HyyyperbridgeMessageType.DATA,
               data: rawResponseData,
             })
             .mockReturnValueOnce(rawResponseData);
@@ -292,12 +292,12 @@ describe("OidcClientService", () => {
         it("should throw HyyyperbridgeCsmrException on valid error data", async () => {
           // Given
           (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
-            type: MessageType.ERROR,
+            type: HyyyperbridgeMessageType.ERROR,
             data: rawErrorData,
           });
           (classTransformer.plainToInstance as jest.Mock)
             .mockReturnValueOnce({
-              type: MessageType.ERROR,
+              type: HyyyperbridgeMessageType.ERROR,
               data: rawErrorData,
             })
             .mockReturnValueOnce(rawErrorData);
@@ -314,12 +314,12 @@ describe("OidcClientService", () => {
         it("should throw HyyyperbridgeMissingVariableException when error DTO validation fails", async () => {
           // Given
           (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
-            type: MessageType.ERROR,
+            type: HyyyperbridgeMessageType.ERROR,
             data: rawErrorData,
           });
           (classTransformer.plainToInstance as jest.Mock)
             .mockReturnValueOnce({
-              type: MessageType.ERROR,
+              type: HyyyperbridgeMessageType.ERROR,
               data: rawErrorData,
             })
             .mockReturnValueOnce(rawErrorData);
@@ -348,12 +348,12 @@ describe("OidcClientService", () => {
           data: "ok",
         };
         (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
-          type: MessageType.DATA,
+          type: HyyyperbridgeMessageType.DATA,
           data: rawResponseData,
         });
         (classTransformer.plainToInstance as jest.Mock)
           .mockReturnValueOnce({
-            type: MessageType.DATA,
+            type: HyyyperbridgeMessageType.DATA,
             data: rawResponseData,
           })
           .mockReturnValueOnce(rawResponseData);

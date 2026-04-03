@@ -209,13 +209,13 @@
         "tsConfigPath": "libs/notifications/tsconfig.lib.json"
       }
     },
-    "hybridge-http-proxy": {
+    "hyyyperbridge": {
       "type": "library",
-      "root": "libs/hybridge-http-proxy",
+      "root": "libs/hyyyperbridge",
       "entryFile": "index",
-      "sourceRoot": "libs/hybridge-http-proxy/src",
+      "sourceRoot": "libs/hyyyperbridge/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/hybridge-http-proxy/tsconfig.lib.json"
+        "tsConfigPath": "libs/hyyyperbridge/tsconfig.lib.json"
       }
     },
     "oidc-acr": {
