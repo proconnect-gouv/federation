@@ -16,6 +16,7 @@ describe("IdentitySanitizer", () => {
   let identitySanitizer: IdentitySanitizer;
   let logger = {
     error: jest.fn(),
+    debug: jest.fn(),
   } as unknown as LoggerService;
   let identityProvider: IdentityProviderAdapterMongoService;
   let config: ConfigService;
