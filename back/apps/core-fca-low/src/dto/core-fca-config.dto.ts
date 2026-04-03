@@ -6,6 +6,7 @@ import { LoggerConfig, LoggerLegacyConfig } from "@fc/logger";
 import { MongooseConfig } from "@fc/mongoose";
 import { OidcClientConfig } from "@fc/oidc-client";
 import { OidcProviderConfig } from "@fc/oidc-provider";
+import { RabbitmqConfig } from "@fc/rabbitmq/dto";
 import { RedisConfig } from "@fc/redis";
 import { ServiceProviderAdapterMongoConfig } from "@fc/service-provider-adapter-mongo";
 import { SessionConfig } from "@fc/session";
@@ -33,6 +34,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => EmailValidatorConfig)
   readonly EmailValidator: EmailValidatorConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => RabbitmqConfig)
+  readonly HyyyperbridgeBroker: RabbitmqConfig;
 
   @IsObject()
   @ValidateNested()

@@ -44,6 +44,8 @@
 | App_VIEWS_PATHS                               | json          |
 | EmailValidator_DOMAIN_WHITELIST               | stringArray   |
 | FQDN                                          | string        |
+| HyyyperbridgeBroker_QUEUE                     | string        |
+| HyyyperbridgeBroker_URLS                      | json          |
 | LoggerLegacy_FILE                             | string        |
 | Logger_THRESHOLD                              | string        |
 | Mongoose_DATABASE                             | string        |
@@ -56,6 +58,7 @@
 | Mongoose_USER                                 | string        |
 | Mongoose_WATCHER_DEBOUNCE_WAIT_DURATION       | number        |
 | OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEYS        | json          |
+| OidcClient_FEATURE_BYPASS_HYBRIDGE_INTERNET   | boolean       |
 | OidcProvider_COOKIES_KEYS                     | json          |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS       | json          |
 | OidcProvider_CRYPTO_SIG_RS256_PRIV_KEYS       | json          |

@@ -62,10 +62,14 @@ export class IdentityProvider extends Document {
   isEntraID: boolean;
 
   @Prop({ type: [String] })
+  @Prop({ type: [String] })
   extraAcceptedEmailDomains: string[];
 
   @Prop({ type: Boolean })
   isBlockingForUnlistedEmailDomainsEnabled: boolean;
+
+  @Prop({ type: Boolean })
+  useTheHyyyperbridge: boolean;
 }
 
 export const IdentityProviderSchema =

@@ -1,18 +1,20 @@
-import "reflect-metadata";
-
-import { Test, TestingModule } from "@nestjs/testing";
-
+import {
+  BridgeHttpProxyCsmrException,
+  BridgeHttpProxyMissingVariableException,
+  BridgeHttpProxyRabbitmqException,
+} from "@fc/bridge-http-proxy/exceptions";
 import { ConfigService } from "@fc/config";
+import { MessageType } from "@fc/hybridge-http-proxy/enums";
 import { LoggerService } from "@fc/logger";
 import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
-
+import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
-
+import { Test, TestingModule } from "@nestjs/testing";
 import * as classTransformer from "class-transformer";
 import * as classValidator from "class-validator";
 import * as openidClient from "openid-client";
-
-import { getConfigMock } from "@mocks/config";
+import "reflect-metadata";
+import * as rxjs from "rxjs";
 import {
   AuthorizationResponseErrorException,
   OidcClientIdpDisabledException,
@@ -25,6 +27,11 @@ import {
 import { OidcClientService } from "./oidc-client.service";
 
 jest.mock("openid-client");
+jest.mock("rxjs", () => ({
+  ...jest.requireActual("rxjs"),
+  lastValueFrom: jest.fn(),
+  timeout: jest.fn().mockReturnValue(jest.fn()),
+}));
 jest.mock("class-validator", () => ({
   ...jest.requireActual("class-validator"),
   validate: jest.fn(),
@@ -59,6 +66,10 @@ describe("OidcClientService", () => {
     title: "IDP Title",
   };
 
+  const brokerMock = {
+    send: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -69,6 +80,10 @@ describe("OidcClientService", () => {
         ConfigService,
         LoggerService,
         { provide: IDENTITY_PROVIDER_SERVICE, useValue: identityProviderMock },
+        {
+          provide: "HyyyperbridgeBroker",
+          useValue: brokerMock,
+        },
       ],
     })
       .overrideProvider(ConfigService)
@@ -78,7 +93,10 @@ describe("OidcClientService", () => {
       .compile();
 
     service = module.get<OidcClientService>(OidcClientService);
-    configServiceMock.get.mockReturnValue({ timeout: 6000 });
+    configServiceMock.get.mockReturnValue({
+      timeout: 6000,
+      bypassHybridgeInternet: false,
+    });
   });
 
   it("should be defined", () => {
@@ -116,6 +134,240 @@ describe("OidcClientService", () => {
 
       // Then
       expect(result.href).toBe("https://example.com/path");
+    });
+  });
+
+  describe("fetch", () => {
+    const urlMock = "https://example.com/api";
+    const optionsMock: RequestInit = {
+      method: "GET",
+      headers: { authorization: "Bearer token" },
+    };
+
+    const expectedUpdatedOptions = {
+      ...optionsMock,
+      headers: {
+        ...optionsMock.headers,
+        "accept-encoding": "identity",
+      },
+    };
+
+    describe("when useTheHyyyperbridge is false", () => {
+      it("should call native fetch with accept-encoding identity header", async () => {
+        // Given
+        const responseMock = new Response("ok");
+        jest.spyOn(global, "fetch").mockResolvedValue(responseMock);
+
+        // When
+        const result = await service.fetch(false, urlMock, optionsMock);
+
+        // Then
+        expect(global.fetch).toHaveBeenCalledWith(
+          urlMock,
+          expectedUpdatedOptions,
+        );
+        expect(result).toBe(responseMock);
+      });
+    });
+
+    describe("when useTheHyyyperbridge is true", () => {
+      const requestTimeoutMock = 5000;
+      const pipedObservableMock = Symbol("pipedObservable");
+
+      beforeEach(() => {
+        configServiceMock.get.mockImplementation((key: string) => {
+          if (key === "HyyyperbridgeBroker") {
+            return { requestTimeout: requestTimeoutMock };
+          }
+          return { timeout: 6000, bypassHybridgeInternet: true };
+        });
+        brokerMock.send.mockReturnValue({
+          pipe: jest.fn().mockReturnValue(pipedObservableMock),
+        });
+      });
+
+      it("should throw BridgeHttpProxyRabbitmqException when broker fails", async () => {
+        // Given
+        (rxjs.lastValueFrom as jest.Mock).mockRejectedValue(
+          new Error("broker error"),
+        );
+
+        // When / Then
+        await expect(service.fetch(true, urlMock, optionsMock)).rejects.toThrow(
+          BridgeHttpProxyRabbitmqException,
+        );
+      });
+
+      it("should throw BridgeHttpProxyMissingVariableException when envelope validation fails", async () => {
+        // Given
+        (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
+          type: "invalid",
+          data: {},
+        });
+        (classTransformer.plainToInstance as jest.Mock).mockReturnValueOnce({
+          type: "invalid",
+          data: {},
+        });
+        (classValidator.validate as jest.Mock).mockResolvedValueOnce([
+          { error: "invalid envelope" },
+        ]);
+
+        // When / Then
+        await expect(service.fetch(true, urlMock, optionsMock)).rejects.toThrow(
+          BridgeHttpProxyMissingVariableException,
+        );
+      });
+
+      describe("when type is DATA", () => {
+        const rawResponseData = {
+          status: 200,
+          statusText: "OK",
+          headers: { "content-type": "application/json" },
+          data: '{"result":"success"}',
+        };
+
+        it("should return a Response on valid data", async () => {
+          // Given
+          (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
+            type: MessageType.DATA,
+            data: rawResponseData,
+          });
+          (classTransformer.plainToInstance as jest.Mock)
+            .mockReturnValueOnce({
+              type: MessageType.DATA,
+              data: rawResponseData,
+            })
+            .mockReturnValueOnce(rawResponseData);
+          (classValidator.validate as jest.Mock)
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([]);
+
+          // When
+          const result = await service.fetch(true, urlMock, optionsMock);
+
+          // Then
+          expect(result).toBeInstanceOf(Response);
+          expect(result.status).toBe(200);
+          expect(result.statusText).toBe("OK");
+          expect(await result.text()).toBe('{"result":"success"}');
+        });
+
+        it("should throw BridgeHttpProxyMissingVariableException when response DTO validation fails", async () => {
+          // Given
+          (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
+            type: MessageType.DATA,
+            data: rawResponseData,
+          });
+          (classTransformer.plainToInstance as jest.Mock)
+            .mockReturnValueOnce({
+              type: MessageType.DATA,
+              data: rawResponseData,
+            })
+            .mockReturnValueOnce(rawResponseData);
+          (classValidator.validate as jest.Mock)
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([{ error: "invalid response" }]);
+
+          // When / Then
+          await expect(
+            service.fetch(true, urlMock, optionsMock),
+          ).rejects.toThrow(BridgeHttpProxyMissingVariableException);
+        });
+      });
+
+      describe("when type is ERROR", () => {
+        const rawErrorData = {
+          code: "ERR_001",
+          reason: "Something failed",
+          name: "TestError",
+        };
+
+        it("should throw BridgeHttpProxyCsmrException on valid error data", async () => {
+          // Given
+          (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
+            type: MessageType.ERROR,
+            data: rawErrorData,
+          });
+          (classTransformer.plainToInstance as jest.Mock)
+            .mockReturnValueOnce({
+              type: MessageType.ERROR,
+              data: rawErrorData,
+            })
+            .mockReturnValueOnce(rawErrorData);
+          (classValidator.validate as jest.Mock)
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([]);
+
+          // When / Then
+          await expect(
+            service.fetch(true, urlMock, optionsMock),
+          ).rejects.toThrow(BridgeHttpProxyCsmrException);
+        });
+
+        it("should throw BridgeHttpProxyMissingVariableException when error DTO validation fails", async () => {
+          // Given
+          (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
+            type: MessageType.ERROR,
+            data: rawErrorData,
+          });
+          (classTransformer.plainToInstance as jest.Mock)
+            .mockReturnValueOnce({
+              type: MessageType.ERROR,
+              data: rawErrorData,
+            })
+            .mockReturnValueOnce(rawErrorData);
+          (classValidator.validate as jest.Mock)
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([{ error: "invalid error" }]);
+
+          // When / Then
+          await expect(
+            service.fetch(true, urlMock, optionsMock),
+          ).rejects.toThrow(BridgeHttpProxyMissingVariableException);
+        });
+      });
+
+      it("should send the correct message to the broker", async () => {
+        // Given
+        const optionsWithBody: RequestInit = {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: '{"key":"value"}',
+        };
+        const rawResponseData = {
+          status: 200,
+          statusText: "OK",
+          headers: {},
+          data: "ok",
+        };
+        (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
+          type: MessageType.DATA,
+          data: rawResponseData,
+        });
+        (classTransformer.plainToInstance as jest.Mock)
+          .mockReturnValueOnce({
+            type: MessageType.DATA,
+            data: rawResponseData,
+          })
+          .mockReturnValueOnce(rawResponseData);
+        (classValidator.validate as jest.Mock)
+          .mockResolvedValueOnce([])
+          .mockResolvedValueOnce([]);
+
+        // When
+        await service.fetch(true, urlMock, optionsWithBody);
+
+        // Then
+        expect(brokerMock.send).toHaveBeenCalledWith("HTTP_PROXY", {
+          url: urlMock,
+          headers: {
+            "content-type": "application/json",
+            "accept-encoding": "identity",
+          },
+          method: "POST",
+          data: '{"key":"value"}',
+        });
+      });
     });
   });
 
@@ -188,6 +440,64 @@ describe("OidcClientService", () => {
 
       // Then
       expect(result).toEqual({ config: configMock, idp: idpMock });
+    });
+
+    it("should pass useTheHyyyperbridge as true when bypassHybridgeInternet and idp.useTheHyyyperbridge are both true", async () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        timeout: 6000,
+        bypassHybridgeInternet: true,
+      });
+      const idpWithHyyyperbridge = {
+        ...idpMock,
+        useTheHyyyperbridge: true,
+      };
+      identityProviderMock.getById.mockResolvedValue(idpWithHyyyperbridge);
+      (openidClient.discovery as jest.Mock).mockResolvedValue({});
+
+      // When
+      await service.getProviderConfig("idp-id");
+
+      // Then
+      expect(openidClient.discovery).toHaveBeenCalledWith(
+        expect.any(URL),
+        expect.any(String),
+        expect.any(Object),
+        expect.any(Function),
+        expect.objectContaining({
+          timeout: 6000,
+          [openidClient.customFetch]: expect.any(Function),
+        }),
+      );
+    });
+
+    it("should pass useTheHyyyperbridge as false when bypassHybridgeInternet is false", async () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        timeout: 6000,
+        bypassHybridgeInternet: false,
+      });
+      const idpWithHyyyperbridge = {
+        ...idpMock,
+        useTheHyyyperbridge: true,
+      };
+      identityProviderMock.getById.mockResolvedValue(idpWithHyyyperbridge);
+      (openidClient.discovery as jest.Mock).mockResolvedValue({});
+
+      // When
+      await service.getProviderConfig("idp-id");
+
+      // Then
+      expect(openidClient.discovery).toHaveBeenCalledWith(
+        expect.any(URL),
+        expect.any(String),
+        expect.any(Object),
+        expect.any(Function),
+        expect.objectContaining({
+          timeout: 6000,
+          [openidClient.customFetch]: expect.any(Function),
+        }),
+      );
     });
 
     it("should handle null userinfo_signed_response_alg", async () => {

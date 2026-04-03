@@ -105,6 +105,9 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsBoolean()
   readonly isBlockingForUnlistedEmailDomainsEnabled: boolean;
+
+  @IsBoolean()
+  readonly useTheHyyyperbridge: boolean;
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {

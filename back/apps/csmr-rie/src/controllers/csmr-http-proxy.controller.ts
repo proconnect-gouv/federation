@@ -1,4 +1,3 @@
-import { ValidationException } from "@fc/exceptions";
 import {
   BridgeError,
   BridgeProtocol,
@@ -23,10 +22,10 @@ export class CsmrHttpProxyController {
   @MessagePattern(HttpProxyProtocol.Commands.HTTP_PROXY)
   @UsePipes(
     new ValidationPipe({
-      forbidNonWhitelisted: true,
       whitelist: true,
       transform: true,
-      exceptionFactory: ValidationException.factory,
+      disableErrorMessages: false,
+      validationError: { target: true },
     }),
   )
   async proxyRequest(

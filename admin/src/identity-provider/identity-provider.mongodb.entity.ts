@@ -118,4 +118,7 @@ export class IdentityProviderFromDb {
 
   @Column()
   isBlockingForUnlistedEmailDomainsEnabled: boolean;
+
+  @Column()
+  useTheHyyyperbridge: boolean;
 }

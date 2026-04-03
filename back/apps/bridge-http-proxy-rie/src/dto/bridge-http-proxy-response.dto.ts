@@ -10,7 +10,7 @@ export class BridgeHttpProxyResponseDto implements BridgeResponse {
 
   @IsObject()
   @ValidateHttpHeaders()
-  readonly headers: Record<string, unknown>;
+  readonly headers: Record<string, string>;
 
   /**
    * this parameter is voluntary abstract.

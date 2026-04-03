@@ -1,4 +1,10 @@
-import { IsNumber, IsObject, IsOptional, IsUrl } from "class-validator";
+import {
+  IsBoolean,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsUrl,
+} from "class-validator";
 
 import { JSONWebKeySet } from "jose-v2";
 
@@ -21,4 +27,7 @@ export class OidcClientConfig {
     require_protocol: true,
   })
   readonly postLogoutRedirectUri: string;
+
+  @IsBoolean()
+  readonly bypassHybridgeInternet: boolean;
 }

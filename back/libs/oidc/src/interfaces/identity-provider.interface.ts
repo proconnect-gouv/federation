@@ -17,4 +17,5 @@ export type IdentityProviderMetadata = {
   isEntraID: boolean;
   extraAcceptedEmailDomains?: string[];
   isBlockingForUnlistedEmailDomainsEnabled: boolean;
+  useTheHyyyperbridge: boolean;
 };

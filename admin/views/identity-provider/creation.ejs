@@ -506,6 +506,27 @@
                   </div>
                 </div>
               </div>
+              <%
+              let useTheHyyyperbridgeChecked = false
+              if (locals.messages.values && messages.values[0].useTheHyyyperbridge !== undefined) {
+                useTheHyyyperbridgeChecked = messages.values[0].useTheHyyyperbridge
+              } else {
+                useTheHyyyperbridgeChecked = false
+              }
+              %>
+              <div class="mb-3 row">
+                <label class="col-2 col-form-label">Utiliser le Hyyyperbridge pour ce FI :</label>
+                <div class="mb-3 col-4 d-flex align-items-end">
+                  <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input is-valid" id="enableTheHyyyperbridge" name="useTheHyyyperbridge" value="true" required <%= useTheHyyyperbridgeChecked ? 'checked' : '' %>>
+                    <label class="form-check-label" for="enableTheHyyyperbridge">oui</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input is-valid" id="disableTheHyyyperbridge" name="useTheHyyyperbridge" value="false" required <%= useTheHyyyperbridgeChecked ? '' : 'checked' %>>
+                    <label class="form-check-label" for="disableTheHyyyperbridge">non</label>
+                  </div>
+                </div>
+              </div>
 
             </details>
 

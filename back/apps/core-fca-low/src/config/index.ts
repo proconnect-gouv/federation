@@ -3,6 +3,7 @@ import ApiEntreprise from "./api-entreprise";
 import App from "./app";
 import EmailValidator from "./email-validator";
 import Exceptions from "./exceptions";
+import HyyyperbridgeBroker from "./hyyyperbridge-broker";
 import IdentityProviderAdapterMongo from "./identity-provider-adapter-mongo";
 import Logger from "./logger";
 import LoggerLegacy from "./logger-legacy";
@@ -18,6 +19,7 @@ export default {
   App,
   EmailValidator,
   Exceptions,
+  HyyyperbridgeBroker,
   Logger,
   LoggerLegacy,
   OidcProvider,
