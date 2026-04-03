@@ -1,5 +1,4 @@
 import { ConfigService } from "@fc/config";
-import { BridgeError, BridgeProtocol } from "@fc/hybridge-http-proxy/interface";
 import { LoggerService } from "@fc/logger";
 import { HttpProxyProtocol } from "@fc/microservices";
 import { IdentityProviderMetadata } from "@fc/oidc";
@@ -30,15 +29,14 @@ import {
 } from "openid-client";
 import { lastValueFrom, timeout } from "rxjs";
 
-import { SessionService } from "@fc/session";
 import {
   HyyyperbridgeEnveloppeDto,
   HyyyperbridgeErrorDto,
+  HyyyperbridgeMessageType,
   HyyyperbridgeResponseDto,
-  OidcClientConfig,
-  TokenDto,
-} from "../dto";
-import { HyyyperbridgeMessageType } from "../enums";
+} from "@fc/hyyyperbridge";
+import { SessionService } from "@fc/session";
+import { OidcClientConfig, TokenDto } from "../dto";
 import {
   AuthorizationResponseErrorException,
   HyyyperbridgeCsmrException,
@@ -120,7 +118,7 @@ export class OidcClientService {
       .send(HttpProxyProtocol.Commands.HTTP_PROXY, message)
       .pipe(timeout(requestTimeout));
 
-    let rawHyyyperbridgeEnveloppe: BridgeProtocol<object>;
+    let rawHyyyperbridgeEnveloppe: object;
 
     try {
       rawHyyyperbridgeEnveloppe = await lastValueFrom(order);
@@ -128,10 +126,10 @@ export class OidcClientService {
       throw new HyyyperbridgeRabbitmqException(error);
     }
 
-    const hyyyperbridgeEnveloppe = plainToInstance(
+    const hyyyperbridgeEnveloppe = plainToInstance<
       HyyyperbridgeEnveloppeDto,
-      rawHyyyperbridgeEnveloppe,
-    );
+      object
+    >(HyyyperbridgeEnveloppeDto, rawHyyyperbridgeEnveloppe);
 
     const hybridgeEnveloppeValidationErrors = await validate(
       hyyyperbridgeEnveloppe,
@@ -171,9 +169,7 @@ export class OidcClientService {
         throw new HyyyperbridgeMissingVariableException();
       }
 
-      throw new HyyyperbridgeCsmrException().from(
-        rawHyyyperbridgeData as BridgeError,
-      );
+      throw new HyyyperbridgeCsmrException().from(rawHyyyperbridgeData);
     }
   }
 

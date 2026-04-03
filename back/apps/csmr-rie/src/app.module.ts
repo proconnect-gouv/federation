@@ -1,7 +1,8 @@
 import { ConfigModule, ConfigService } from "@fc/config";
 import { LoggerModule } from "@fc/logger";
+import { RabbitmqModule } from "@fc/rabbitmq";
 import { DynamicModule, Module } from "@nestjs/common";
-import { CsmrHttpProxyModule } from "./csmr-http-proxy.module";
+import { CsmrHttpProxyController, HealthController } from "./controllers";
 
 @Module({})
 export class AppModule {
@@ -13,9 +14,9 @@ export class AppModule {
         ConfigModule.forRoot(configService),
         // 2. Load logger module next
         LoggerModule.forRoot(),
-        // 3. Load other modules
-        CsmrHttpProxyModule,
+        RabbitmqModule.registerFor("HttpProxy"),
       ],
+      controllers: [CsmrHttpProxyController, HealthController],
     };
   }
 }
