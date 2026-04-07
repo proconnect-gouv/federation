@@ -221,16 +221,13 @@ export class OidcClientService {
 
     if (!idp) {
       const errorParams = this.getOidcClientErrorParams();
-      throw new OidcClientIdpNotFoundException(
-        undefined,
-        undefined,
-        undefined,
-        errorParams,
-      );
+      throw new OidcClientIdpNotFoundException(errorParams);
     }
 
     if (!idp.active) {
-      throw new OidcClientIdpDisabledException(idp.supportEmail);
+      throw new OidcClientIdpDisabledException({
+        contactEmail: idp.supportEmail,
+      });
     }
 
     let config: Configuration;
@@ -273,10 +270,8 @@ export class OidcClientService {
         }
         const errorParams = this.getOidcClientErrorParams();
         throw new OidcClientIssuerDiscoveryFailedException(
-          idp.supportEmail,
-          idp.name,
+          { ...errorParams, contactEmail: idp.supportEmail, idpName: idp.name },
           error,
-          errorParams,
         );
       }
     }
@@ -383,22 +378,18 @@ export class OidcClientService {
         });
       }
       if (error instanceof AuthorizationResponseError) {
-        let errorMessage =
-          error.error ||
-          "le fournisseur d’identité n’a pas envoyé de message d’erreur";
+        let errorMessage = error.error;
         if (error.error_description) {
           errorMessage += ` (${error.error_description})`;
         }
         throw new AuthorizationResponseErrorException(
-          idp.supportEmail,
-          idp.name,
+          { contactEmail: idp.supportEmail, idpName: idp.name },
           errorMessage,
         );
       }
 
       throw new OidcClientTokenFailedException(
-        idp.supportEmail,
-        idp.name,
+        { contactEmail: idp.supportEmail, idpName: idp.name },
         error,
       );
     }
@@ -421,8 +412,7 @@ export class OidcClientService {
 
     if (tokenValidationErrors.length) {
       throw new OidcClientTokenValidationFailedException(
-        idp.supportEmail,
-        idp.name,
+        { contactEmail: idp.supportEmail, idpName: idp.name },
         tokenValidationErrors.toString(),
       );
     }
@@ -489,8 +479,7 @@ export class OidcClientService {
         });
       }
       throw new OidcClientUserinfoFailedException(
-        idp.supportEmail,
-        idp.name,
+        { contactEmail: idp.supportEmail, idpName: idp.name },
         error,
       );
     }

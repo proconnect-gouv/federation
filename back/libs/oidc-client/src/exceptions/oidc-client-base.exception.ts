@@ -10,15 +10,12 @@ export class OidcClientBaseException extends EnrichedDisplayBaseException {
   public contactMessage = "Signaler l'erreur au service informatique concerné.";
   public displayContact = false;
 
-  constructor(
-    contactEmail?: string,
-    idpName?: string,
-    error?: Error | string,
-    sessionParams?: OidcClientSessionParams,
-  ) {
+  constructor(errorParams?: OidcClientSessionParams, error?: Error | string) {
     super(error);
 
-    if (!isEmpty(contactEmail)) {
+    if (!isEmpty(errorParams?.contactEmail)) {
+      const { contactEmail, idpName, spName, idpLoginHint } = errorParams!;
+
       const emailSubject = encodeURIComponent("Erreur de connexion");
 
       const humanReadableCurrentDate = new Date().toLocaleString("fr-FR", {
@@ -35,16 +32,16 @@ export class OidcClientBaseException extends EnrichedDisplayBaseException {
       const emailBody = encodeURIComponent(`
       Bonjour,
 
-      Je vous signale une erreur que j’ai rencontrée sur le fournisseur d’identité lors d’une tentative de connexion avec ProConnect.
+      Je vous signale une erreur que j’ai rencontrée lors d’une tentative de connexion ProConnect.
 
       Voici les logs complets de connexion :
 
       - timestamp: « ${humanReadableCurrentDate} »
-      - nom du fournisseur d'identité: ${idpName}
-      - nom de l'erreur ProConnect: ${this.constructor.name}
+      - nom du fournisseur d'identité : ${idpName}
+      - nom de l'erreur ProConnect : ${this.constructor.name}
       - message envoyé par le fournisseur d'identité : "${this.message ? this.message : "le fournisseur d'identité n'a pas envoyé de message d'erreur"}"
-      - nom du service depuis lequel la connexion est initiée : ${sessionParams?.spName}
-      - email de l'utilisateur envoyé au fournisseur d'identité (login_hint) : ${sessionParams?.idpLoginHint}
+      - nom du service depuis lequel la connexion est initiée : ${spName}
+      - email de l'utilisateur envoyé au fournisseur d'identité (login_hint) : ${idpLoginHint}
 
       Cordialement,
       `);
@@ -52,6 +49,14 @@ export class OidcClientBaseException extends EnrichedDisplayBaseException {
       this.contactHref = `mailto:${contactEmail}?subject=${emailSubject}&body=${emailBody}`;
 
       this.description = `Erreur technique sur le serveur d'authentification. Veuillez réessayer de vous connecter. Si le problème persiste, vous pouvez signaler l'erreur à votre portail de connexion à l'adresse suivante : <a href="${this.contactHref}">${contactEmail}</a>`;
+
+      this.additionalErrorLogs = [
+        { label: "timestamp", value: humanReadableCurrentDate },
+        { label: "fournisseur d'identité", value: idpName },
+        { label: "nom de l'erreur ProConnect", value: this.constructor.name },
+        { label: "service", value: spName },
+        { label: "login hint", value: idpLoginHint },
+      ];
     }
   }
 }

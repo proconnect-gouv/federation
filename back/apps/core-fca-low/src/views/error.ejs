@@ -45,23 +45,33 @@
                     href="<%= locals.exceptionDisplay.crispLink %>"
                   >la page d'aide correspondante<span class="visually-hidden"> - nouvelle fenêtre</span></a>.
                 </p>
-            <% } %>
+              <% } %>
+
+              <% if (locals.exceptionDisplay.additionalErrorLogs) { %>
+                  <% locals.exceptionDisplay.additionalErrorLogs.forEach(({ label, value }) => { %>
+                    <% if (value) { %>
+                      <p class="fr-text--xs fr-mt-0 fr-mb-1v" data-testid="error-code">
+                        - <%= label %> : <%= value %>
+                      </p>
+                    <% } %>
+                  <% }) %>
+              <% } %>
 
               <% if (locals.error.code) { %>
                 <p class="fr-text--xs fr-mt-0 fr-mb-1v" data-testid="error-code">
-                  code erreur : <%= locals.error.code %>
+                  - code erreur : <%= locals.error.code %>
                 </p>
               <% } %>
 
               <% if (locals.error.id) { %>
                 <p class="fr-text--xs fr-mt-0 fr-mb-1v" data-testid="error-id">
-                  id erreur : <%= locals.error.id %>
+                  - id erreur : <%= locals.error.id %>
                 </p>
               <% } %>
-
+              
               <% if (locals.error.message) { %>
                 <p class="fr-text--xs fr-mt-0 fr-mb-1v" data-testid="error-message">
-                  message erreur : "<%= locals.error.message %>".
+                  - message erreur : "<%= locals.error.message %>"
                 </p>
               <% } %>
             </div>
@@ -85,7 +95,7 @@
                     <% } %>
                     <% if (locals.interactionErrorUrl) { %>
                       <a class="fr-btn <%= locals.exceptionDisplay.mainAction === 'goBack' ? '' : ' fr-btn--tertiary' %> fr-mt-1w fr-mt-md-0" href="<%= locals.interactionErrorUrl %>">
-                        Retour au service
+                        Réessayer de vous connecter
                       </a>
                     <% } %>
                   </div>
