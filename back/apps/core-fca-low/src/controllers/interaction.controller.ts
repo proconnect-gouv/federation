@@ -253,7 +253,7 @@ export class InteractionController {
 
     if (
       doesNotAcceptPrivateSectorEmployees &&
-      isPrivateSectorIdentity !== isRoleAgentPublic
+      isPrivateSectorIdentity !== !isRoleAgentPublic
     ) {
       this.logger.warn({
         code: "agent_public_role_mismatch",

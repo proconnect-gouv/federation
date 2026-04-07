@@ -498,6 +498,31 @@ describe("InteractionController", () => {
       ).rejects.toThrow(CoreFcaAgentNotFromPublicServiceException);
     });
 
+    it("should throw CoreFcaAgentNotFromPublicServiceException for private sector identity not allowed by SP and log error if mismatch", async () => {
+      const req = { query: {} } as Request;
+      const res = {} as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
+          spId: "sp123",
+          idpId: "idp123",
+          idpIdentity: { is_service_public: false },
+        }),
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
+
+      identityProviderMock.isActiveById.mockResolvedValue(true);
+      serviceProviderMock.getById.mockResolvedValue({ type: "public" });
+
+      await expect(
+        controller.getVerify(req, res, {} as any, userSessionService),
+      ).rejects.toThrow(CoreFcaAgentNotFromPublicServiceException);
+      expect(loggerMock.warn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: "agent_public_role_mismatch",
+        }),
+      );
+    });
+
     it("should throw CoreFcaAgentAccountBlockedException if the account is inactive", async () => {
       const req = { query: {} } as Request;
       const res = {} as Response;
@@ -540,7 +565,7 @@ describe("InteractionController", () => {
     });
   });
 
-  describe("getVerify()", () => {
+  describe("getError()", () => {
     it("should call abortInteraction", async () => {
       const req = {} as Request;
       const res = {} as Response;
