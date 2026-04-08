@@ -9,6 +9,7 @@
       "changeProcessCWD": true
     }
   ],
+  "typescript.tsdk": "root/back/node_modules/typescript/lib",
   "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "prettier.ignorePath": "**/.prettierignore"
 }
