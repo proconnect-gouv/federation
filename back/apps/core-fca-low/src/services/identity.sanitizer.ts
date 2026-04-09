@@ -1,5 +1,5 @@
 import { plainToInstance } from "class-transformer";
-import { validate, ValidationError } from "class-validator";
+import { validate } from "class-validator";
 import { cloneDeep } from "lodash";
 
 import { HttpStatus, Injectable } from "@nestjs/common";
@@ -30,9 +30,8 @@ export class IdentitySanitizer {
       IdentityFromIdpDto,
       plainIdentityFromIdp,
     );
-    const userinfoValidationErrors = await validate(identityFromIdp);
-    await this.throwIfInvalid(
-      userinfoValidationErrors,
+    await this.assertIdentityIsValid(
+      identityFromIdp,
       idpId,
       HttpStatus.BAD_REQUEST,
     );
@@ -120,11 +119,8 @@ export class IdentitySanitizer {
     });
 
     // Now the identity should be valid
-    const identityValidationErrors = await validate(identityForSp);
-    // But we may yet throw if the IdP has no default value
-    // to substitute for an incorrect siret
-    await this.throwIfInvalid(
-      identityValidationErrors,
+    await this.assertIdentityIsValid(
+      identityForSp,
       idpId,
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
@@ -132,17 +128,24 @@ export class IdentitySanitizer {
     return identityForSp;
   }
 
-  private async throwIfInvalid(
-    validationErrors: ValidationError[],
+  private async assertIdentityIsValid(
+    identity: object,
     idpId: string,
-    statusCode: HttpStatus,
+    httpStatus: HttpStatus,
   ) {
-    if (validationErrors.length > 0) {
+    const identityValidationErrors = await validate(identity);
+    if (identityValidationErrors.length > 0) {
       const identityProvider = await this.identityProvider.getById(idpId);
 
       this.logger.error({
         msg: `Identity from "${idpId}" is invalid`,
-        validationErrors: validationErrors,
+        code: "invalid-identity-validation",
+        validationErrors: identityValidationErrors,
+      });
+
+      this.logger.debug({
+        code: "invalid-identity-debug",
+        identity,
       });
 
       const contact =
@@ -150,13 +153,15 @@ export class IdentitySanitizer {
         this.config.get<AppConfig>("App").supportEmail;
 
       const exception = new CoreFcaInvalidIdentityException(
-        validationErrors.toString(),
+        identityValidationErrors.toString(),
         contact,
-        JSON.stringify(validationErrors.map((error) => error?.constraints)),
-        JSON.stringify(validationErrors[0]?.target),
+        JSON.stringify(
+          identityValidationErrors.map((error) => error?.constraints),
+        ),
+        JSON.stringify(identityValidationErrors[0]?.target),
       );
 
-      exception.http_status_code = statusCode;
+      exception.http_status_code = httpStatus;
       throw exception;
     }
   }
