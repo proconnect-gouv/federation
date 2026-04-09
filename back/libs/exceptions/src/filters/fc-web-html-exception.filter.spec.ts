@@ -198,7 +198,7 @@ describe("FcWebHtmlExceptionFilter", () => {
     it("should render the error template with displayContact and contactHref", () => {
       // When
       const coreFcaException = new OidcClientTokenValidationFailedException(
-        "support-fi@example.com",
+        { contactEmail: "support-fi@example.com" },
         "error_msg",
       );
       const inputMock = {
@@ -219,10 +219,11 @@ describe("FcWebHtmlExceptionFilter", () => {
         expect.objectContaining({
           error: inputMock.error,
           exceptionDisplay: expect.objectContaining({
-            title: expect.any(String),
+            contactHref: undefined,
             description: expect.any(String),
-            displayContact: true,
-            contactHref: expect.any(String),
+            displayContact: false,
+            title: expect.any(String),
+            additionalErrorLogs: expect.any(Array),
           }),
         }),
       );

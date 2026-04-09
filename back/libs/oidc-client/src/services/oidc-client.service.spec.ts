@@ -15,6 +15,10 @@ import * as classValidator from "class-validator";
 import * as openidClient from "openid-client";
 import "reflect-metadata";
 import * as rxjs from "rxjs";
+
+import { getSessionServiceMock } from "@mocks/session";
+
+import { SessionService } from "@fc/session";
 import {
   AuthorizationResponseErrorException,
   OidcClientIdpDisabledException,
@@ -25,6 +29,8 @@ import {
   OidcClientUserinfoFailedException,
 } from "../exceptions";
 import { OidcClientService } from "./oidc-client.service";
+
+const sessionMock = getSessionServiceMock();
 
 jest.mock("openid-client");
 jest.mock("rxjs", () => ({
@@ -84,12 +90,15 @@ describe("OidcClientService", () => {
           provide: "HyyyperbridgeBroker",
           useValue: brokerMock,
         },
+        SessionService,
       ],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
       .compile();
 
     service = module.get<OidcClientService>(OidcClientService);
@@ -636,6 +645,32 @@ describe("OidcClientService", () => {
         "Authorization error",
         { cause: params },
       );
+      (openidClient.authorizationCodeGrant as jest.Mock).mockRejectedValue(
+        authError,
+      );
+
+      // When / Then
+      await expect(
+        service.getToken({
+          idpId: "idp-id",
+          req: reqMock as any,
+          idpState: "state",
+          idpNonce: "nonce",
+          spId: "sp-id",
+          spName: "sp-name",
+        }),
+      ).rejects.toThrow(AuthorizationResponseErrorException);
+    });
+
+    it("should append error_description to message when present", async () => {
+      // Given
+      const authError = new openidClient.AuthorizationResponseError(
+        "Authorization error",
+        { cause: new URLSearchParams() },
+      );
+      (authError as any).error = "access_denied";
+      (authError as any).error_description = "User cancelled login";
+
       (openidClient.authorizationCodeGrant as jest.Mock).mockRejectedValue(
         authError,
       );

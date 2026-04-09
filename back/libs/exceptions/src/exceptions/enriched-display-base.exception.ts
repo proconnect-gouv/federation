@@ -11,4 +11,5 @@ export class EnrichedDisplayBaseException extends BaseException {
   public contactHref: string;
 
   public mainAction: "contact" | "goBack" = "goBack";
+  public additionalErrorLogs?: { label: string; value: string | undefined }[];
 }

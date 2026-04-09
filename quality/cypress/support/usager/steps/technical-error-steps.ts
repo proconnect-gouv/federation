@@ -49,6 +49,6 @@ When("je navigue sur la page {string}", function (path: string) {
   });
 });
 
-Then("je clique sur le bouton Retour au service", function () {
-  cy.contains("Retour au service").click();
+Then("je clique sur le bouton Réessayer de vous connecter", function () {
+  cy.contains("Réessayer de vous connecter").click();
 });

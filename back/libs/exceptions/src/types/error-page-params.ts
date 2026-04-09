@@ -13,6 +13,7 @@ export interface ErrorPageParams {
     illustration?: string;
     crispLink?: string;
     mainAction?: "contact" | "goBack";
+    additionalErrorLogs?: { label: string; value: string | undefined }[];
   };
   interactionErrorUrl?: string;
 }
