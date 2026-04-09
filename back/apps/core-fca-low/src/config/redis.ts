@@ -3,9 +3,8 @@ import { RedisConfig } from "@fc/redis";
 
 const env = new ConfigParser(process.env, "Redis");
 
-const tlsSettings = {
-  ca: env.file("CACERT"),
-};
+const ca = env.file("CACERT", true);
+const tlsSettings = ca ? { ca } : undefined;
 
 export default {
   host: env.string("HOST"),

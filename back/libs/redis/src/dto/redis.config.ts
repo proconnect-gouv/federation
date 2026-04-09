@@ -41,14 +41,16 @@ export class RedisConfig {
   readonly sentinels: Sentinel[];
 
   @IsObject()
+  @IsOptional()
   @ValidateNested()
   @Type(() => TlsConfig)
-  readonly tls: TlsConfig;
+  readonly tls?: TlsConfig;
 
   @IsObject()
+  @IsOptional()
   @ValidateNested()
   @Type(() => TlsConfig)
-  readonly sentinelTLS: TlsConfig;
+  readonly sentinelTLS?: TlsConfig;
 
   @IsBoolean()
   readonly enableTLSForSentinelMode: boolean;
