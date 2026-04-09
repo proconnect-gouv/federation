@@ -1,0 +1,27 @@
+<% if (locals.displayMaintenanceNotice) { %>
+<div
+  id="maintenance-notice"
+  class="fr-notice fr-notice--info fr-pt-2w fr-mb-2w"
+  role="alert"
+>
+  <div class="fr-container">
+    <div class="fr-notice__body">
+      <p>
+        <span class="fr-notice__title">Maintenance programmée</span>
+        ProConnect sera indisponible le <%= maintenanceDatetime %> pour une
+        durée approximative d’<%= maintenanceDuration %>.
+      </p>
+
+      <button
+        id="notice-close"
+        title="Masquer le message"
+        type="button"
+        class="fr-btn--close fr-btn"
+      >
+        Masquer le message
+      </button>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/js/unshow-notice.js" defer></script>
+<% } %>

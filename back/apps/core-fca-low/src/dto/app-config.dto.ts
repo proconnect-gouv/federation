@@ -41,4 +41,16 @@ export class AppConfig extends AppGenericConfig {
   @IsBoolean()
   @IsOptional()
   readonly displayTestEnvWarning?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly displayMaintenanceNotice?: boolean;
+
+  @IsString()
+  @IsOptional()
+  readonly maintenanceDatetime?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly maintenanceDuration?: string;
 }
