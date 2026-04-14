@@ -26,7 +26,7 @@ export class OidcClientModule {
         },
         OidcClientService,
       ],
-      exports: [OidcClientService],
+      exports: [OidcClientService, RabbitmqModule],
     };
   }
 }

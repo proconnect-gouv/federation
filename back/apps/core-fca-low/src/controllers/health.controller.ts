@@ -5,18 +5,22 @@ import {
   Get,
   Header,
   HttpStatus,
+  Inject,
   Param,
   ParseEnumPipe,
   Query,
   Res,
 } from "@nestjs/common";
+import { ClientProxy } from "@nestjs/microservices";
 import { InjectConnection } from "@nestjs/mongoose";
 import { type Response } from "express";
 import { Connection } from "mongoose";
+import { firstValueFrom, timeout } from "rxjs";
 import { Routes } from "../enums";
 
 export enum ExcludeTarget {
   ApiEntreprise = "api-entreprise",
+  Hyyyperbridge = "hyyyperbridge",
   MongoDB = "mongodb",
   Redis = "redis",
 }
@@ -27,6 +31,7 @@ export class HealthController {
     @InjectConnection() private readonly mongoConnection: Connection,
     private readonly redis: RedisService,
     private readonly apiEntreprise: ApiEntrepriseService,
+    @Inject("HyyyperbridgeBroker") private readonly hyyyperbridge: ClientProxy,
   ) {}
 
   checks = {
@@ -46,6 +51,11 @@ export class HealthController {
     // We use DINUM SIRET for the ping route
     [ExcludeTarget.ApiEntreprise]: async () => {
       await this.apiEntreprise.getOrganizationBySiret("13002526500013");
+    },
+    [ExcludeTarget.Hyyyperbridge]: async () => {
+      await firstValueFrom(
+        this.hyyyperbridge.emit("ping", {}).pipe(timeout(5000)),
+      );
     },
   };
 
@@ -115,7 +125,12 @@ export class HealthController {
       await this.checks[name]();
       return { name, status: "success" };
     } catch (error) {
-      return { error, name, status: "error" };
+      return {
+        error:
+          error instanceof Error ? error : new Error(JSON.stringify(error)),
+        name,
+        status: "error",
+      };
     }
   }
 }

@@ -2,6 +2,7 @@ import { ApiEntrepriseService } from "@fc/api-entreprise";
 import { RedisService } from "@fc/redis";
 import { HttpStatus } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
+import { of, throwError } from "rxjs";
 import { ExcludeTarget, HealthController } from "./health.controller";
 
 describe("HealthController", () => {
@@ -9,6 +10,7 @@ describe("HealthController", () => {
   let mongoConnectionMock: { readyState: number };
   let redisServiceMock: { client: { ping: jest.Mock } };
   let apiEntrepriseMock: { getOrganizationBySiret: jest.Mock };
+  let hyyyperbridgeMock: { emit: jest.Mock };
   let resMock: { status: jest.Mock };
 
   beforeEach(async () => {
@@ -18,6 +20,9 @@ describe("HealthController", () => {
     };
     apiEntrepriseMock = {
       getOrganizationBySiret: jest.fn().mockResolvedValue({}),
+    };
+    hyyyperbridgeMock = {
+      emit: jest.fn().mockReturnValue(of(undefined)),
     };
     resMock = {
       status: jest.fn().mockReturnThis(),
@@ -37,6 +42,10 @@ describe("HealthController", () => {
         {
           provide: ApiEntrepriseService,
           useValue: apiEntrepriseMock,
+        },
+        {
+          provide: "HyyyperbridgeBroker",
+          useValue: hyyyperbridgeMock,
         },
       ],
     }).compile();
@@ -107,6 +116,30 @@ describe("HealthController", () => {
       );
     });
 
+    it('should return "error" when a check throws a non-Error value', async () => {
+      hyyyperbridgeMock.emit.mockReturnValue(throwError(() => ({ err: {} })));
+
+      const result = await controller.readyz(resMock as any, "");
+
+      expect(resMock.status).toHaveBeenCalledWith(
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+      expect(result).toContain('[-]hyyyperbridge failed ({"err":{}})');
+    });
+
+    it('should return "error" when Hyyyperbridge connect fails', async () => {
+      hyyyperbridgeMock.emit.mockReturnValue(
+        throwError(() => new Error("ECONNREFUSED")),
+      );
+
+      const result = await controller.readyz(resMock as any);
+
+      expect(resMock.status).toHaveBeenCalledWith(
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+      expect(result).toBe("error");
+    });
+
     describe("verbose", () => {
       it("should return verbose output with all checks passing", async () => {
         const result = await controller.readyz(resMock as any, "");
@@ -117,6 +150,7 @@ describe("HealthController", () => {
             "[+]mongodb ok",
             "[+]redis ok",
             "[+]api-entreprise ok",
+            "[+]hyyyperbridge ok",
             "readyz check passed",
           ].join("\n"),
         );
@@ -138,6 +172,7 @@ describe("HealthController", () => {
             "[-]mongodb failed (Mongo connection not ready (readyState=0))",
             "[-]redis failed (ECONNREFUSED)",
             "[+]api-entreprise ok",
+            "[+]hyyyperbridge ok",
             "readyz check failed",
           ].join("\n"),
         );
