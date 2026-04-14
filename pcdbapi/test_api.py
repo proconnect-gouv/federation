@@ -77,7 +77,10 @@ async def test_missing_auth(client):
     response = await client.get("/xyz")
     assert response.status_code == 404
 
-    response = await client.get("/healthz")
+    response = await client.get("/livez")
+    assert response.status_code == 200
+
+    response = await client.get("/readyz")
     assert response.status_code == 200
 
     response = await client.get("/api/oidc_clients?email=test@example.com")

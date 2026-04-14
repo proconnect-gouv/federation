@@ -15,12 +15,14 @@ docker compose run --rm pcdbapi-test pytest
 docker compose run -T --rm pcdbapi-test ruff format .
 
 # Check health
-curl http://localhost:8000/healthz
+curl http://localhost:8000/livez
+curl http://localhost:8000/readyz
 ```
 
 ## API Endpoints
 
-- `GET /healthz` - Health check
+- `GET /livez` - Liveness check (app is running)
+- `GET /readyz` - Readiness check (app + database)
 - `GET /api/oidc_clients` - List OIDC clients
 - `POST /api/oidc_clients` - Create OIDC client
 - `GET /api/oidc_clients/{id}` - Get OIDC client

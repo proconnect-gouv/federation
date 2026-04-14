@@ -87,8 +87,13 @@ def format_oidc_client(elt: dict):
     )
 
 
-@app.get("/healthz")
-async def healthz():
+@app.get("/livez")
+async def livez():
+    return "ok"
+
+
+@app.get("/readyz")
+async def readyz():
     ping_response = await app.db.command("ping")
     if int(ping_response["ok"]) != 1:  # pragma: no cover
         raise HTTPException(status_code=500, detail="Database connection failed")
