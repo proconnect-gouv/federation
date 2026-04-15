@@ -12,30 +12,24 @@ async function bootstrap() {
     config: configuration,
     schema: CsmrHttpProxyConfig,
   };
-  // First create app context to access configService
   const configService = new ConfigService(configOptions);
 
-  // Fetch broker options from config
   const options = configService.get<RabbitmqConfig>("HttpProxyBroker");
 
   const appModule = AppModule.forRoot(configService);
 
-  // Create consumer
-  const consumer = await NestFactory.createMicroservice<MicroserviceOptions>(
-    appModule,
-    {
-      transport: Transport.RMQ,
-      options,
-      bufferLogs: true,
-    },
-  );
+  const app = await NestFactory.create(appModule, { bufferLogs: true });
 
-  const logger = await consumer.resolve(NestLoggerService);
+  const logger = await app.resolve(NestLoggerService);
+  app.useLogger(logger);
 
-  consumer.useLogger(logger);
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options,
+  });
 
-  // Launch consumer
-  await consumer.listen();
+  await app.startAllMicroservices();
+  await app.listen(process.env.PORT);
   console.log(`Consumer is listening on queue "${options.queue}"`);
 }
 

@@ -40,17 +40,7 @@ describe("CsmrHttpProxyController", () => {
   });
 
   it("should get the controller defined", () => {
-    // Arrange
-    // Action
-    // Assert
     expect(csmrHttpProxyController).toBeDefined();
-  });
-
-  describe("healthcheck()", () => {
-    it("should return 'ok'", () => {
-      const result = csmrHttpProxyController.healthcheck();
-      expect(result).toBe("ok");
-    });
   });
 
   describe("proxyRequest()", () => {

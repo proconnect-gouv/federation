@@ -6,7 +6,7 @@ import {
 } from "@fc/hybridge-http-proxy";
 import { LoggerService } from "@fc/logger";
 import { HttpProxyProtocol } from "@fc/microservices";
-import { Controller, Get, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Controller, UsePipes, ValidationPipe } from "@nestjs/common";
 import { MessagePattern, Payload } from "@nestjs/microservices";
 import { BridgePayloadDto } from "../dto";
 import { CsmrHttpProxyService } from "../services";
@@ -17,11 +17,6 @@ export class CsmrHttpProxyController {
     private readonly logger: LoggerService,
     private readonly proxy: CsmrHttpProxyService,
   ) {}
-
-  @Get("/livez")
-  healthcheck(): string {
-    return "ok";
-  }
 
   @MessagePattern(HttpProxyProtocol.Commands.HTTP_PROXY)
   @UsePipes(
