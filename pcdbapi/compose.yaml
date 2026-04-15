@@ -20,7 +20,7 @@ services:
     networks:
       - data
     healthcheck:
-      test: ['CMD-SHELL', 'python -c "import urllib.request; urllib.request.urlopen(\"http://localhost:8000/healthz\")"']
+      test: ['CMD-SHELL', 'python -c "import urllib.request; urllib.request.urlopen(\"http://localhost:8000/livez\")"']
       interval: 10s
       timeout: 5s
       retries: 5
