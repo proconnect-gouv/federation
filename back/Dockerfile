@@ -37,6 +37,9 @@ RUN apk add --no-cache bash
 COPY --from=dev_dependencies /var/www/app/node_modules node_modules
 COPY . ./
 
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
+  CMD  wget --no-verbose --tries=1 --spider --no-check-certificate https://localhost:3000/api/v2/livez || exit 1
+
 CMD yarn start:dev ${NESTJS_INSTANCE}
 
 FROM ${NODE_IMAGE} AS builder
@@ -68,5 +71,8 @@ COPY --from=dependencies /var/www/app/node_modules /var/www/app/node_modules
 COPY --from=builder /build/back/dist/apps/${INSTANCE} /var/www/app/dist/instances/app
 
 WORKDIR /var/www/app
+
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
+  CMD  wget --no-verbose --tries=1 --spider --no-check-certificate https://localhost:3000/api/v2/livez || exit 1
 
 CMD ["pm2-runtime", "/etc/pm2/app.json"]
