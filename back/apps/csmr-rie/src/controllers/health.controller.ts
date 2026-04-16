@@ -1,9 +1,11 @@
+import { LoggerService } from "@fc/logger";
 import {
   Controller,
   Get,
   Header,
   HttpStatus,
   Inject,
+  Query,
   Res,
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
@@ -14,6 +16,7 @@ import { firstValueFrom, timeout } from "rxjs";
 export class HealthController {
   constructor(
     @Inject("HttpProxyBroker") private readonly broker: ClientProxy,
+    private readonly logger: LoggerService,
   ) {}
 
   @Get("/livez")
@@ -23,12 +26,33 @@ export class HealthController {
 
   @Get("/readyz")
   @Header("Content-Type", "text/plain")
-  async readyz(@Res({ passthrough: true }) res: Response): Promise<string> {
+  async readyz(
+    @Res({ passthrough: true }) res: Response,
+    @Query("verbose") verbose?: string,
+  ): Promise<string> {
     try {
-      await firstValueFrom(this.broker.emit("ping", {}).pipe(timeout(5000)));
+      const pong = await firstValueFrom(
+        this.broker.send<string>("ping", {}).pipe(timeout(5000)),
+      );
+      if (pong !== "pong") {
+        throw new Error(`unexpected response: ${pong}`);
+      }
+
+      if (verbose !== undefined) {
+        return ["[+]broker ok", "readyz check passed"].join("\n");
+      }
       return "ok";
     } catch (error) {
+      this.logger.error(error);
       res.status(HttpStatus.SERVICE_UNAVAILABLE);
+
+      if (verbose !== undefined) {
+        const message =
+          error instanceof Error ? error.message : JSON.stringify(error);
+        return [`[-]broker failed (${message})`, "readyz check failed"].join(
+          "\n",
+        );
+      }
       return "error";
     }
   }

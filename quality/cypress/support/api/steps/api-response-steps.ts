@@ -113,6 +113,14 @@ Then("le corps de la réponse contient un JWT", function () {
     });
 });
 
+Then("le corps de la réponse est {string}", function (expected: string) {
+  cy.get("@apiResponse").its("body").should("equal", expected);
+});
+
+Then("le corps de la réponse contient {string}", function (expected: string) {
+  cy.get("@apiResponse").its("body").should("include", expected);
+});
+
 Then(
   "le corps de la réponse contient une erreur avec les champs error et error_description",
   function () {

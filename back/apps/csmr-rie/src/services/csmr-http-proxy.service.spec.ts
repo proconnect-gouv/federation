@@ -1,4 +1,6 @@
 import { BridgePayload, BridgeResponse } from "@fc/hybridge-http-proxy";
+import { LoggerService } from "@fc/logger";
+import { getLoggerMock } from "@mocks/logger";
 import { HttpService } from "@nestjs/axios";
 import { Test, TestingModule } from "@nestjs/testing";
 import { lastValueFrom } from "rxjs";
@@ -14,6 +16,8 @@ describe("CsmrHttpProxyService", () => {
     post: jest.fn(),
   };
 
+  const loggerMock = getLoggerMock();
+
   const lastValueMock = jest.mocked(lastValueFrom);
 
   const httpResponseMock = Symbol("httpResponseMock");
@@ -23,10 +27,12 @@ describe("CsmrHttpProxyService", () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [HttpService, CsmrHttpProxyService],
+      providers: [HttpService, LoggerService, CsmrHttpProxyService],
     })
       .overrideProvider(HttpService)
       .useValue(httpService)
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
       .compile();
 
     service = module.get<CsmrHttpProxyService>(CsmrHttpProxyService);

@@ -53,9 +53,12 @@ export class HealthController {
       await this.apiEntreprise.getOrganizationBySiret("13002526500013");
     },
     [ExcludeTarget.Hyyyperbridge]: async () => {
-      await firstValueFrom(
-        this.hyyyperbridge.emit("ping", {}).pipe(timeout(5000)),
+      const pong = await firstValueFrom(
+        this.hyyyperbridge.send<string>("ping", {}).pipe(timeout(5000)),
       );
+      if (pong !== "pong") {
+        throw new Error(`unexpected response: ${pong}`);
+      }
     },
   };
 

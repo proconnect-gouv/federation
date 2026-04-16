@@ -43,6 +43,12 @@ describe("CsmrHttpProxyController", () => {
     expect(csmrHttpProxyController).toBeDefined();
   });
 
+  describe("ping()", () => {
+    it('should return "pong"', () => {
+      expect(csmrHttpProxyController.ping()).toBe("pong");
+    });
+  });
+
   describe("proxyRequest()", () => {
     const baseBridgePayloadMock: BridgePayloadDto = Object.freeze({
       url: "https://test.com/getToken",
