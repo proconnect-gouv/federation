@@ -11,4 +11,6 @@ export interface IdentityProviderGristRecord {
   Alg_userinfo: string;
   Routage_active: "Oui" | "Non";
   Adresse_e_mail_de_support: string;
+  Utilisation_de_l_hyyyperbridge: "Oui" | "Non";
+  Entra_ID: "Oui" | "Non";
 }
