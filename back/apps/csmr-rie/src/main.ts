@@ -27,10 +27,10 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options,
   });
-
-  await app.startAllMicroservices();
-  await app.listen(process.env.PORT);
-  console.log(`Consumer is listening on queue "${options.queue}"`);
+  await Promise.all([
+    app.listen(process.env.PORT || 3000),
+    app.startAllMicroservices(),
+  ]);
 }
 
 void bootstrap();
