@@ -1,9 +1,9 @@
 import { AsyncLocalStorageModule } from "@fc/async-local-storage";
 import { ConfigModule, ConfigService } from "@fc/config";
-import { RabbitmqConfig } from "@fc/rabbitmq";
+import { RabbitmqConfig, RabbitmqModule } from "@fc/rabbitmq";
 import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
-import { CsmrHttpProxyController } from "./controllers";
+import { CsmrHttpProxyController, HealthController } from "./controllers";
 import { rawTransform, validateStatus } from "./http";
 import { CsmrHttpProxyService } from "./services";
 
@@ -22,8 +22,9 @@ import { CsmrHttpProxyService } from "./services";
       },
       inject: [ConfigService],
     }),
+    RabbitmqModule.registerFor("HttpProxy"),
   ],
-  controllers: [CsmrHttpProxyController],
+  controllers: [CsmrHttpProxyController, HealthController],
   providers: [CsmrHttpProxyService],
 })
 export class CsmrHttpProxyModule {}
