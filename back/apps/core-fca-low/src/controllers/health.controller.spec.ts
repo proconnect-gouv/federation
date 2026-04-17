@@ -10,7 +10,7 @@ describe("HealthController", () => {
   let mongoConnectionMock: { readyState: number };
   let redisServiceMock: { client: { ping: jest.Mock } };
   let apiEntrepriseMock: { getOrganizationBySiret: jest.Mock };
-  let hyyyperbridgeMock: { emit: jest.Mock };
+  let hyyyperbridgeMock: { send: jest.Mock };
   let resMock: { status: jest.Mock };
 
   beforeEach(async () => {
@@ -22,7 +22,7 @@ describe("HealthController", () => {
       getOrganizationBySiret: jest.fn().mockResolvedValue({}),
     };
     hyyyperbridgeMock = {
-      emit: jest.fn().mockReturnValue(of(undefined)),
+      send: jest.fn().mockReturnValue(of("pong")),
     };
     resMock = {
       status: jest.fn().mockReturnThis(),
@@ -117,7 +117,7 @@ describe("HealthController", () => {
     });
 
     it('should return "error" when a check throws a non-Error value', async () => {
-      hyyyperbridgeMock.emit.mockReturnValue(throwError(() => ({ err: {} })));
+      hyyyperbridgeMock.send.mockReturnValue(throwError(() => ({ err: {} })));
 
       const result = await controller.readyz(resMock as any, "");
 
@@ -127,10 +127,21 @@ describe("HealthController", () => {
       expect(result).toContain('[-]hyyyperbridge failed ({"err":{}})');
     });
 
-    it('should return "error" when Hyyyperbridge connect fails', async () => {
-      hyyyperbridgeMock.emit.mockReturnValue(
+    it('should return "error" when Hyyyperbridge is unreachable', async () => {
+      hyyyperbridgeMock.send.mockReturnValue(
         throwError(() => new Error("ECONNREFUSED")),
       );
+
+      const result = await controller.readyz(resMock as any);
+
+      expect(resMock.status).toHaveBeenCalledWith(
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+      expect(result).toBe("error");
+    });
+
+    it('should return "error" when Hyyyperbridge returns unexpected response', async () => {
+      hyyyperbridgeMock.send.mockReturnValue(of("not-pong"));
 
       const result = await controller.readyz(resMock as any);
 

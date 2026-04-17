@@ -86,6 +86,21 @@
     "method": "POST",
     "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/token"
   },
+  "livez": {
+    "method": "GET",
+    "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/livez"
+  },
+  "readyz": {
+    "method": "GET",
+    "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/readyz"
+  },
+  "readyz-verbose": {
+    "method": "GET",
+    "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/readyz",
+    "qs": {
+      "verbose": ""
+    }
+  },
   "redirect-to-idp": {
     "method": "POST",
     "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/redirect-to-idp",

@@ -18,6 +18,11 @@ export class CsmrHttpProxyController {
     private readonly proxy: CsmrHttpProxyService,
   ) {}
 
+  @MessagePattern("ping")
+  ping(): string {
+    return "pong";
+  }
+
   @MessagePattern(HttpProxyProtocol.Commands.HTTP_PROXY)
   @UsePipes(
     new ValidationPipe({
