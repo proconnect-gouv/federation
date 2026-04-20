@@ -1,4 +1,5 @@
 import { ApiEntrepriseService } from "@fc/api-entreprise";
+import { ConfigService } from "@fc/config";
 import { RedisService } from "@fc/redis";
 import { HttpStatus } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -11,6 +12,7 @@ describe("HealthController", () => {
   let redisServiceMock: { client: { ping: jest.Mock } };
   let apiEntrepriseMock: { getOrganizationBySiret: jest.Mock };
   let hyyyperbridgeMock: { send: jest.Mock };
+  let configServiceMock: { get: jest.Mock };
   let resMock: { status: jest.Mock };
 
   beforeEach(async () => {
@@ -23,6 +25,9 @@ describe("HealthController", () => {
     };
     hyyyperbridgeMock = {
       send: jest.fn().mockReturnValue(of("pong")),
+    };
+    configServiceMock = {
+      get: jest.fn().mockReturnValue({ bypassHybridgeInternet: true }),
     };
     resMock = {
       status: jest.fn().mockReturnThis(),
@@ -42,6 +47,10 @@ describe("HealthController", () => {
         {
           provide: ApiEntrepriseService,
           useValue: apiEntrepriseMock,
+        },
+        {
+          provide: ConfigService,
+          useValue: configServiceMock,
         },
         {
           provide: "HyyyperbridgeBroker",
@@ -149,6 +158,16 @@ describe("HealthController", () => {
         HttpStatus.SERVICE_UNAVAILABLE,
       );
       expect(result).toBe("error");
+    });
+
+    it('should return "ok" when Hyyyperbridge is bypassed', async () => {
+      configServiceMock.get.mockReturnValue({ bypassHybridgeInternet: false });
+
+      const result = await controller.readyz(resMock as any);
+
+      expect(resMock.status).not.toHaveBeenCalled();
+      expect(hyyyperbridgeMock.send).not.toHaveBeenCalled();
+      expect(result).toBe("ok");
     });
 
     describe("verbose", () => {

@@ -1,4 +1,6 @@
 import { ApiEntrepriseService } from "@fc/api-entreprise";
+import { ConfigService } from "@fc/config";
+import type { OidcClientConfig } from "@fc/oidc-client";
 import { RedisService } from "@fc/redis";
 import {
   Controller,
@@ -28,6 +30,7 @@ export enum ExcludeTarget {
 @Controller()
 export class HealthController {
   constructor(
+    private readonly config: ConfigService,
     @InjectConnection() private readonly mongoConnection: Connection,
     private readonly redis: RedisService,
     private readonly apiEntreprise: ApiEntrepriseService,
@@ -53,6 +56,10 @@ export class HealthController {
       await this.apiEntreprise.getOrganizationBySiret("13002526500013");
     },
     [ExcludeTarget.Hyyyperbridge]: async () => {
+      const { bypassHybridgeInternet } =
+        this.config.get<OidcClientConfig>("OidcClient");
+      if (!bypassHybridgeInternet) return "bypass";
+
       const pong = await firstValueFrom(
         this.hyyyperbridge.send<string>("ping", {}).pipe(timeout(5000)),
       );
