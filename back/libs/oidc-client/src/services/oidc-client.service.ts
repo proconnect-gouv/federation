@@ -22,7 +22,7 @@ import { ClientProxy } from "@nestjs/microservices";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { Request } from "express";
-import { chain, cloneDeep, filter, isObject } from "lodash";
+import { chain, cloneDeep, isObject, map } from "lodash";
 import {
   authorizationCodeGrant,
   AuthorizationResponseError,
@@ -73,6 +73,14 @@ export class OidcClientService {
     "phone",
     "chorusdt",
   ].join(" ");
+
+  entraIdAcrValuesMapping = {
+    c1: "eidas1",
+    c2: "eidas2",
+    c3: "eidas3",
+  };
+
+  prioritizedAcrValues = ["eidas3", "eidas2", "eidas1"];
 
   constructor(
     private readonly config: ConfigService,
@@ -423,8 +431,16 @@ export class OidcClientService {
       // This behavior is specific to MS Entra ID's authentication contexts
       // We consider only values of the form c1, c2, c3, mutually exclusive,
       // and map them to equivalent eidas levels
-      const acrs = filter(token.claims.acrs, (level) => level.startsWith("c"));
-      acr = acrs.toString().replace("c", "eidas");
+      const proConnectAcrs = map(
+        token.claims.acrs,
+        (level) => this.entraIdAcrValuesMapping[level],
+      ).filter(Boolean);
+      const proConnectHighestAcr = this.prioritizedAcrValues.find((level) =>
+        proConnectAcrs.includes(level),
+      );
+      if (!!proConnectHighestAcr) {
+        acr = proConnectHighestAcr;
+      }
     }
 
     token.claims.acr = acr;
