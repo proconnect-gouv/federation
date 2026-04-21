@@ -1279,10 +1279,10 @@
   resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.annuaire_entreprises/-/proconnect.annuaire_entreprises-1.1.4.tgz#755a7c54464b9590be025869cb0f5e55796241bf"
   integrity sha512-MQCAG15jFoVkTM9D9uH7c42wnvjwBUCg6Vzh/ZEWVKGcGWr0fmkj9l3QZtu0KFhFHCwBIhsfB1Y0nRRZzs+YpQ==
 
-"@proconnect-gouv/proconnect.api_entreprise@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.api_entreprise/-/proconnect.api_entreprise-2.0.0.tgz#5551d32b940cd883d8f8f90e7d65616a65355c76"
-  integrity sha512-x2AZJNThRV4uGOCrdeDOnVZBFkrFyv6O2Pn5ULH/5D29W+xvP4OgwPM0um3X2bTTptJRMxQsNAai9x4+O+uwyA==
+"@proconnect-gouv/proconnect.api_entreprise@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.api_entreprise/-/proconnect.api_entreprise-2.2.0.tgz#1c17a80e336b2cec237a654e31899dd4c83e3b41"
+  integrity sha512-C5CP7QdEXCo8wU7frz4NeVUlCKMfD2D9xuhakvza1iJEOsV0pgfxPB0EXkwIcGXFU/Es31hindatICC/9xc83A==
   dependencies:
     openapi-fetch "^0.17.0"
 
