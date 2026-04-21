@@ -1,24 +1,25 @@
 import { ConfigService } from "@fc/config";
-import { CsmrHttpProxyConfig } from "@fc/csmr-http-proxy";
+import { CsmrHttpProxyConfig, HttpClient } from "@fc/csmr-http-proxy";
 import { NestLoggerService } from "@fc/logger";
 import { RabbitmqConfig } from "@fc/rabbitmq";
 import { NestFactory } from "@nestjs/core";
 import { MicroserviceOptions, Transport } from "@nestjs/microservices";
-import { AppModule } from "./app.module";
 import configuration from "./config";
+import { CsmrHttpProxyModule } from "./csmr-http-proxy.module";
 
 async function bootstrap() {
-  const configOptions = {
+  const configService = new ConfigService({
     config: configuration,
     schema: CsmrHttpProxyConfig,
-  };
-  const configService = new ConfigService(configOptions);
+  });
 
   const options = configService.get<RabbitmqConfig>("HttpProxyBroker");
+  const httpClient = configService.get<HttpClient>("httpClient");
 
-  const appModule = AppModule.forRoot(configService);
-
-  const app = await NestFactory.create(appModule, { bufferLogs: true });
+  const app = await NestFactory.create(
+    CsmrHttpProxyModule.register({ configService, httpClient }),
+    { bufferLogs: true },
+  );
 
   const logger = await app.resolve(NestLoggerService);
   app.useLogger(logger);

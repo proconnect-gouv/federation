@@ -9,4 +9,5 @@ export default {
   Logger,
   LoggerLegacy,
   HttpProxyBroker,
+  httpClient: process.env.USE_HTTP_CLIENT || "axios",
 } as CsmrHttpProxyConfig;

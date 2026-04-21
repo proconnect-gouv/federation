@@ -87,3 +87,4 @@
 | REQUEST_TIMEOUT   | string        |
 | RieBroker_QUEUE   | string        |
 | RieBroker_URLS    | json          |
+| USE_HTTP_CLIENT   | string        |

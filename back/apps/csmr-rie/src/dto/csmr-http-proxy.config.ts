@@ -2,7 +2,9 @@ import { AppRmqConfig } from "@fc/app";
 import { LoggerConfig, LoggerLegacyConfig } from "@fc/logger";
 import { RabbitmqConfig } from "@fc/rabbitmq";
 import { Type } from "class-transformer";
-import { IsObject, ValidateNested } from "class-validator";
+import { IsIn, IsObject, ValidateNested } from "class-validator";
+
+export type HttpClient = "axios" | "fetch";
 
 export class CsmrHttpProxyConfig {
   @IsObject()
@@ -24,4 +26,7 @@ export class CsmrHttpProxyConfig {
   @ValidateNested()
   @Type(() => RabbitmqConfig)
   readonly HttpProxyBroker: RabbitmqConfig;
+
+  @IsIn(["axios", "fetch"] satisfies HttpClient[])
+  readonly httpClient: HttpClient;
 }
