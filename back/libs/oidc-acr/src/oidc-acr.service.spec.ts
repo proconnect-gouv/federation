@@ -246,37 +246,6 @@ describe("OidcAcrService", () => {
       });
     });
 
-    it("should return acrValues when acr_values parameter is used", () => {
-      // Given
-      const interactionMock = {
-        uid: "123",
-        params: {
-          acr_values: "A B",
-          client_id: "",
-          redirect_uri: "",
-          state: "",
-          idp_hint: "",
-          login_hint: "",
-        },
-        prompt: {
-          name: "consent",
-          reasons: [],
-          details: {},
-        },
-      } as unknown as ExtendedInteraction;
-
-      jest.spyOn(service, "getFilteredAcrValues").mockReturnValueOnce(["A"]);
-
-      // When
-      const result =
-        service["getFilteredAcrParamsFromInteraction"](interactionMock);
-
-      // Then
-      expect(result).toEqual({
-        acrValues: "A",
-      });
-    });
-
     it("should return acrValues when none of the previous conditions are valid", () => {
       // Given
       const interactionMock = {
@@ -300,7 +269,9 @@ describe("OidcAcrService", () => {
         service["getFilteredAcrParamsFromInteraction"](interactionMock);
 
       // Then
-      expect(result).toEqual({ acrValues: "eidas1" });
+      expect(result).toEqual({
+        acrClaims: { essential: true, value: "eidas1" },
+      });
     });
 
     it("should return nothing when none of the previous conditions are valid for defaultIdp", () => {

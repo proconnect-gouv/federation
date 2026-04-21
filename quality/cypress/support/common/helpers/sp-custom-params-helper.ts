@@ -25,14 +25,6 @@ export const setScope = (scope: string): void => {
   });
 };
 
-export const setAcrValues = (acrValues: string): void => {
-  updateCustomParams((customParams) => {
-    customParams["acr_values"] = acrValues;
-
-    return customParams;
-  });
-};
-
 export const setIdpHint = (idpHint: string): void => {
   updateCustomParams((customParams) => {
     customParams["idp_hint"] = idpHint;

@@ -7,7 +7,7 @@ import { AppConfig, UserSession } from "@fc/core";
 import { OidcProviderConfig } from "@fc/oidc-provider";
 
 import { LoggerService } from "@fc/logger";
-import { AcrClaims, AcrValues, ExtendedInteraction } from "./oidc-acr.type";
+import { AcrClaims, ExtendedInteraction } from "./oidc-acr.type";
 
 @Injectable()
 export class OidcAcrService {
@@ -86,7 +86,7 @@ export class OidcAcrService {
   getFilteredAcrParamsFromInteraction(
     { params, prompt }: ExtendedInteraction,
     idpId?: string,
-  ): { acrValues?: AcrValues; acrClaims?: AcrClaims } {
+  ): { acrClaims?: AcrClaims } {
     if (prompt.name === "login" && prompt.reasons.includes("essential_acr")) {
       return {
         acrClaims: {
@@ -107,21 +107,10 @@ export class OidcAcrService {
       };
     }
 
-    if (isString(params?.acr_values)) {
-      this.logger.warn({
-        code: "oidc-acr:acr_values_params_present",
-        acrValues: params.acr_values,
-        promptDetails: prompt.details,
-      });
-      return {
-        acrValues: this.getFilteredAcrValues(params.acr_values).join(" "),
-      };
-    }
-
     const defaultIdpId = this.config.get<AppConfig>("App").defaultIdpId;
     // this specific behavior is a legacy implementation and should be homogenized in the future
     if (idpId !== defaultIdpId) {
-      return { acrValues: "eidas1" };
+      return { acrClaims: { essential: true, value: "eidas1" } };
     }
 
     return {};

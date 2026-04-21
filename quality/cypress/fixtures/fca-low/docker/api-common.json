@@ -2,7 +2,6 @@
   "authorize": {
     "qs": {
       "scope": "openid profile",
-      "acr_values": "eidas1",
       "claims": "{\"id_token\":{\"amr\":{\"essential\":true}}}",
       "prompt": "login consent",
       "client_id": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
@@ -116,7 +115,6 @@
     "body": {
       "email": "test@fia1.fr",
       "scope": "openid profile",
-      "acr_values": "eidas1",
       "csrfToken": "3f42c6c16ef2f1fc63ae9f8ee85b476819e204c91cdb68f39be01ed3faec42f2"
     }
   }

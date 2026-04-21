@@ -96,7 +96,6 @@ export class CoreFcaControllerService {
     this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, idpLoginHint);
 
     const authorizeParams: { [key: string]: any } = {
-      acr_values: null,
       login_hint: idpLoginHint,
       siret_hint: spSiretHint,
       sp_id: spId,
@@ -111,13 +110,13 @@ export class CoreFcaControllerService {
     };
 
     const interaction = await this.oidcProvider.getInteraction(req, res);
-    const { acrValues, acrClaims } =
-      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction, idpId);
+    const { acrClaims } = this.oidcAcr.getFilteredAcrParamsFromInteraction(
+      interaction,
+      idpId,
+    );
 
     if (!isEmpty(acrClaims)) {
       authorizeParams.claims.id_token.acr = acrClaims;
-    } else if (!isEmpty(acrValues)) {
-      authorizeParams.acr_values = acrValues;
     }
 
     const { authorizationUrl, nonce, state, idpName, idpLabel } =
