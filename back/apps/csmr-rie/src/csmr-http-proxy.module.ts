@@ -1,9 +1,10 @@
 import { AsyncLocalStorageModule } from "@fc/async-local-storage";
 import { ConfigModule, ConfigService } from "@fc/config";
-import { RabbitmqConfig, RabbitmqModule } from "@fc/rabbitmq";
+import { RabbitmqModule } from "@fc/rabbitmq";
 import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { CsmrHttpProxyController, HealthController } from "./controllers";
+import { HttpProxyBrokerConfig } from "./dto";
 import { rawTransform, validateStatus } from "./http";
 import { CsmrHttpProxyService } from "./services";
 
@@ -12,12 +13,13 @@ import { CsmrHttpProxyService } from "./services";
     HttpModule.registerAsync({
       imports: [ConfigModule, AsyncLocalStorageModule],
       useFactory: (configService: ConfigService) => {
-        const { requestTimeout: timeout } =
-          configService.get<RabbitmqConfig>("HttpProxyBroker");
+        const { requestTimeout: timeout, proxyDisabled } =
+          configService.get<HttpProxyBrokerConfig>("HttpProxyBroker");
         return {
           timeout,
           validateStatus,
           transformResponse: rawTransform,
+          ...(proxyDisabled && { proxy: false }),
         };
       },
       inject: [ConfigService],
