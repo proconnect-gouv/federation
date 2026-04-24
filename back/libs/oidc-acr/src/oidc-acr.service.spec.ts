@@ -1,5 +1,6 @@
 import { ConfigService } from "@fc/config";
 import { UserSession } from "@fc/core";
+import { LoggerService } from "@fc/logger";
 import { getConfigMock } from "@mocks/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { OidcAcrService } from "./oidc-acr.service";
@@ -9,13 +10,16 @@ describe("OidcAcrService", () => {
   let service: OidcAcrService;
 
   const configServiceMock = getConfigMock();
+  const loggerServiceMock = { warn: jest.fn() };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OidcAcrService, ConfigService],
+      providers: [OidcAcrService, ConfigService, LoggerService],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .compile();
 
     service = module.get<OidcAcrService>(OidcAcrService);
