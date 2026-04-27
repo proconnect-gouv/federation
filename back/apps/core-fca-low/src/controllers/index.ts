@@ -1,3 +1,4 @@
+export * from "./accessibility.controller";
 export * from "./health.controller";
 export * from "./interaction.controller";
 export * from "./oidc-client.controller";

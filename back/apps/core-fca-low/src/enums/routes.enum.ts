@@ -1,4 +1,5 @@
 export enum Routes {
+  ACCESSIBILITY = "/accessibilite",
   DEFAULT = "/",
   HEALTHCHECK_LIVE = "/livez",
   HEALTHCHECK_READY = "/readyz",
