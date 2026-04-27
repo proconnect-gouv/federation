@@ -63,7 +63,10 @@ describe(EmailValidatorService.name, () => {
       .useValue(accountFcaServiceMock)
       .compile();
 
-    configServiceMock.get.mockReturnValue({ domainWhitelist: [] });
+    configServiceMock.get.mockReturnValue({
+      domainWhitelist: [],
+      featureValidateEmail: true,
+    });
 
     service = app.get<EmailValidatorService>(EmailValidatorService);
   });
@@ -169,9 +172,27 @@ describe(EmailValidatorService.name, () => {
       expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
+    it("should return true when the feature is disabled and not call resolveMx", async () => {
+      // Given
+      configServiceMock.get.mockReturnValue({ featureValidateEmail: false });
+
+      // When
+      const result = await service.validate(testEmail);
+
+      // Then
+      expect(
+        identityProviderAdapterMongoMock.getFqdnFromEmail,
+      ).toHaveBeenCalledWith(testEmail);
+      expect(resolveMx).not.toHaveBeenCalled();
+      expect(result).toEqual({ isEmailValid: true });
+    });
+
     it("should return true when domain is whitelisted and not call resolveMx", async () => {
       // Given
-      configServiceMock.get.mockReturnValue({ domainWhitelist: [testDomain] });
+      configServiceMock.get.mockReturnValue({
+        domainWhitelist: [testDomain],
+        featureValidateEmail: true,
+      });
 
       // When
       const result = await service.validate(testEmail);
