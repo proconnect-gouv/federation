@@ -425,6 +425,26 @@ describe("OidcClientService", () => {
       expect(result).toEqual({ config: configMock, idp: idpWithoutDiscovery });
     });
 
+    it("should set customFetch on non-discovery config routed through hyyyperbridge when bypassHybridgeInternet and useTheHyyyperbridge are both true", async () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        timeout: 6000,
+        bypassHybridgeInternet: true,
+      });
+      const idp = { ...idpMock, discovery: false, useTheHyyyperbridge: true };
+      const configMock: Record<string | symbol, any> = {};
+      identityProviderMock.getById.mockResolvedValue(idp);
+      (openidClient.Configuration as jest.Mock).mockReturnValue(configMock);
+      jest.spyOn(service, "fetch").mockResolvedValue(new Response());
+
+      // When
+      await service.getProviderConfig("idp-id");
+      configMock[openidClient.customFetch]("url", {});
+
+      // Then
+      expect(service.fetch).toHaveBeenCalledWith(true, "url", {});
+    });
+
     it("should throw OidcClientIssuerDiscoveryFailedException on discovery failure", async () => {
       // Given
       identityProviderMock.getById.mockResolvedValue(idpMock);

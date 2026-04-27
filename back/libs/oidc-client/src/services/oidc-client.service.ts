@@ -238,6 +238,10 @@ export class OidcClientService {
         idp.federationClientMetadata,
         ClientSecretPost(idp.federationClientMetadata.client_secret),
       );
+      config[customFetch] = this.fetch.bind(
+        this,
+        bypassHybridgeInternet && idp.useTheHyyyperbridge,
+      );
     } else {
       try {
         config = await discovery(
