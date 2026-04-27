@@ -1,6 +1,9 @@
-import { IsArray } from "class-validator";
+import { IsArray, IsBoolean } from "class-validator";
 
 export class EmailValidatorConfig {
   @IsArray()
   readonly domainWhitelist: string[];
+
+  @IsBoolean()
+  readonly featureValidateEmail: boolean;
 }

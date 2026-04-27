@@ -46,6 +46,7 @@
 | App_SP_AUTHORIZED_FQDNS_CONFIGS               | json          |
 | App_VIEWS_PATHS                               | json          |
 | EmailValidator_DOMAIN_WHITELIST               | stringArray   |
+| EmailValidator_FEATURE_VALIDATE_EMAIL         | boolean       |
 | FQDN                                          | string        |
 | HyyyperbridgeBroker_QUEUE                     | string        |
 | HyyyperbridgeBroker_URLS                      | json          |

@@ -86,10 +86,14 @@ export class EmailValidatorService {
   }
 
   private async isEmailDomainValid(email: string) {
-    const { domainWhitelist } =
+    const { domainWhitelist, featureValidateEmail } =
       this.config.get<EmailValidatorConfig>("EmailValidator");
     const emailDomain =
       this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
+
+    if (!featureValidateEmail) {
+      return true;
+    }
 
     if (domainWhitelist.includes(emailDomain)) {
       return true;
