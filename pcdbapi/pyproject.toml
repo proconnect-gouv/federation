@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "ProConnect Database API"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi==0.135.3",
+    "fastapi==0.136.0",
     "motor==3.7.1",
     "uvicorn==0.44.0",
     "pydantic==2.13.0",
