@@ -1163,13 +1163,13 @@
   resolved "https://registry.yarnpkg.com/@nestjs/cqrs/-/cqrs-11.0.3.tgz#aa6c482c12e883689955b07e3b8c4eb2b417d03d"
   integrity sha512-2ezBftiXqVfNTzjCrmhazohYhIQzgm8rvM0aKndv73IOOBcVlNuNiQ3HHiHdd4c2w/3MOQDtsGbQHgZUuW6DPw==
 
-"@nestjs/microservices@^10.2.3":
-  version "10.4.4"
-  resolved "https://registry.npmjs.org/@nestjs/microservices/-/microservices-10.4.4.tgz"
-  integrity sha512-OyNyYLBpcXx/ITD+UyEQAmfSApQPqClXcVT+UjEymiTdZwkhNNCG6Fh2jRnCK6n620FvgAnKYRY8GG+2Lo+gbw==
+"@nestjs/microservices@^11.1.19":
+  version "11.1.19"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-11.1.19.tgz#0222ca2331a2a702df3b4dd6b7fd2fe7487fb39a"
+  integrity sha512-3Oja56ydTlSaui19/i7gYM0MMqz/w4UR2aqZeL4K8B+Fq0Ztg3zHb8et76atToJGpSCevJLEsoEMOMaGgzRwfg==
   dependencies:
     iterare "1.2.1"
-    tslib "2.7.0"
+    tslib "2.8.1"
 
 "@nestjs/mongoose@^11.0.4":
   version "11.0.4"
