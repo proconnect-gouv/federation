@@ -4,10 +4,10 @@ version = "0.1.0"
 description = "ProConnect Database API"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi==0.135.3",
+    "fastapi==0.136.0",
     "motor==3.7.1",
     "uvicorn==0.45.0",
-    "pydantic==2.13.0",
+    "pydantic==2.13.3",
     "cryptography==46.0.6"
 ]
 
@@ -18,7 +18,7 @@ test = [
     "pytest-cov==7.1.0",
     "httpx==0.28.1",
     "asgi-lifespan==2.1.0",
-    "ruff==0.15.10",
+    "ruff==0.15.11",
 ]
 
 [build-system]

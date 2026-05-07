@@ -1309,10 +1309,10 @@ cypress-plugin-api@^2.11.2:
     set-cookie-parser "^2.5.1"
     vue "^3.2.41"
 
-cypress@15.13.0:
-  version "15.13.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-15.13.0.tgz#e3c5487efd815e7f1e6f0ec76e4f7b4f9fe7cd21"
-  integrity sha512-hJ9sY++TUC/HlUzHVJpIrDyqKMjlhx5PTXl/A7eA91JNEtUWkJAqefQR5mo9AtLra/9+m+JJaMg2U5Qd0a74Fw==
+cypress@15.13.1:
+  version "15.13.1"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-15.13.1.tgz#75fb321b5c10e9d1737868a9158250fe2e07607c"
+  integrity sha512-jLkgo75zlwo7PhXp0XJot+zIfFSDzN1SvTml6Xf3ETM1XHRWnH3Q4LAR3orCo/BsnxPnhjG3m5HYSvn9DAtwBg==
   dependencies:
     "@cypress/request" "^3.0.10"
     "@cypress/xvfb" "^1.2.4"
@@ -2128,10 +2128,10 @@ global-dirs@^3.0.0:
   dependencies:
     ini "2.0.0"
 
-globals@^17.4.0:
-  version "17.4.0"
-  resolved "https://registry.yarnpkg.com/globals/-/globals-17.4.0.tgz#33d7d297ed1536b388a0e2f4bcd0ff19c8ff91b5"
-  integrity sha512-hjrNztw/VajQwOLsMNT1cbJiH2muO3OROCHnbehc8eY5JyD2gqz4AcMHPqgaOR59DjgUjYAYLeH699g/eWi2jw==
+globals@^17.5.0:
+  version "17.5.0"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-17.5.0.tgz#a82c641d898f8dfbe0e81f66fdff7d0de43f88c6"
+  integrity sha512-qoV+HK2yFl/366t2/Cb3+xxPUo5BuMynomoDmiaZBIdbs+0pYbjfZU+twLhGKp4uCZ/+NbtpVepH5bGCxRyy2g==
 
 glur@^1.1.2:
   version "1.1.2"
@@ -3119,9 +3119,9 @@ postcss-values-parser@^6.0.2:
     quote-unquote "^1.0.0"
 
 postcss@^8.4.31, postcss@^8.5.1, postcss@^8.5.8:
-  version "8.5.8"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.8.tgz#6230ecc8fb02e7a0f6982e53990937857e13f399"
-  integrity sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==
+  version "8.5.12"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.12.tgz#cd0c0f667f7cb0521e2313234ea6e707a9ec1ddb"
+  integrity sha512-W62t/Se6rA0Az3DfCL0AqJwXuKwBeYg6nOaIgzP+xZ7N5BFCI7DYi1qs6ygUYT6rvfi6t9k65UMLJC+PHZpDAA==
   dependencies:
     nanoid "^3.3.11"
     picocolors "^1.1.1"
