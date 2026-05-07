@@ -32,7 +32,7 @@
     "@simonsmith/cypress-image-snapshot": "^10.0.3",
     "@types/ejs": "^3.1.5",
     "@types/node": "^24.2.1",
-    "axe-core": "^4.11.2",
+    "axe-core": "^4.11.4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cypress": "15.13.1",
