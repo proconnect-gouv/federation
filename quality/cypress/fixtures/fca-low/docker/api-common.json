@@ -101,6 +101,14 @@
       "verbose": ""
     }
   },
+  "readyz-excludes": {
+    "method": "GET",
+    "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/readyz",
+    "qs": {
+      "exclude": ["api-entreprise", "hyyyperbridge"],
+      "verbose": ""
+    }
+  },
   "redirect-to-idp": {
     "method": "POST",
     "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/redirect-to-idp",

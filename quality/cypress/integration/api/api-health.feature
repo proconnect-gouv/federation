@@ -25,3 +25,11 @@ Fonctionnalité: API - health
     Et le corps de la réponse contient "[+]api-entreprise ok"
     Et le corps de la réponse contient "[+]hyyyperbridge ok"
     Et le corps de la réponse contient "readyz check passed"
+
+  Scénario: readyz excludes - exclut plusieurs services de la vérification
+    Etant donné que je prépare une requête "readyz-excludes"
+    Quand je lance la requête
+    Alors le statut de la réponse est 200
+    Et le corps de la réponse contient "[+]api-entreprise excluded: ok"
+    Et le corps de la réponse contient "[+]hyyyperbridge excluded: ok"
+    Et le corps de la réponse contient "readyz check passed"
