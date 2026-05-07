@@ -1,5 +1,5 @@
 #language: fr
-@apiHealth 
+
 Fonctionnalité: API - health
 
   Scénario: livez - répond ok
