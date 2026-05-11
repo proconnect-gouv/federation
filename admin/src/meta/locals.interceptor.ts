@@ -33,7 +33,7 @@ export class LocalsInterceptor implements NestInterceptor {
 
     res.locals.APP_ENVIRONMENT = appConfig.environment;
 
-    res.locals.IS_PRODUCTION = appConfig.isProduction;
+    res.locals.HAS_RED_BORDER = appConfig.hasRedBorder;
 
     res.locals.APP_VERSION = appConfig.appVersion;
 

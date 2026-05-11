@@ -41,7 +41,7 @@ describe("LocalsInterceptor", () => {
       };
       configService.get.mockReturnValueOnce({
         environment: "testing",
-        isProduction: false,
+        hasRedBorder: false,
         commitUrlPrefix:
           "https://gitlab.com/france-connect/FranceConnect/commit/",
         currentBranch,
@@ -59,7 +59,7 @@ describe("LocalsInterceptor", () => {
       expect(res.locals.APP_ENVIRONMENT).toBe("testing");
       expect(res.locals.APP_ROOT).toBe("/foo/bar");
       expect(res.locals.TIMEZONE).toBe("Europe/Paris");
-      expect(res.locals.IS_PRODUCTION).toBe(false);
+      expect(res.locals.HAS_RED_BORDER).toBe(false);
       expect(res.locals.APP_VERSION).toBe("no-version");
       expect(res.locals.COMMIT_URL_PREFIX).toBe(
         "https://gitlab.com/france-connect/FranceConnect/commit/",
