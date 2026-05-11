@@ -7,7 +7,7 @@
 <script src="<%= APP_ROOT %>/main.js" async="async"></script>
 <link rel="stylesheet" href="<%= APP_ROOT %>/main.css"/>
 
-<% if (locals.IS_PRODUCTION) { %>
+<% if (locals.IS_PRODUCTION == true) { %>
   <style type="text/css">body { border: 5px solid red; }</style>
 <% } %>
 
