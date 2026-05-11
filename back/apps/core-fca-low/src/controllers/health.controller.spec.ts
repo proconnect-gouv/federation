@@ -4,7 +4,7 @@ import { RedisService } from "@fc/redis";
 import { HttpStatus } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { of, throwError } from "rxjs";
-import { ExcludeTarget, HealthController } from "./health.controller";
+import { CheckTarget, HealthController } from "./health.controller";
 
 describe("HealthController", () => {
   let controller: HealthController;
@@ -213,14 +213,28 @@ describe("HealthController", () => {
       it("should exclude a single check", async () => {
         mongoConnectionMock.readyState = 0;
 
-        const result = await controller.readyz(
-          resMock as any,
-          "",
-          ExcludeTarget.MongoDB,
-        );
+        const result = await controller.readyz(resMock as any, "", [
+          CheckTarget.MongoDB,
+        ]);
 
         expect(resMock.status).not.toHaveBeenCalled();
         expect(result).toContain("[+]mongodb excluded: ok");
+      });
+
+      it("should exclude multiple checks", async () => {
+        mongoConnectionMock.readyState = 0;
+        redisServiceMock.client.ping.mockRejectedValue(
+          new Error("ECONNREFUSED"),
+        );
+
+        const result = await controller.readyz(resMock as any, "", [
+          CheckTarget.MongoDB,
+          CheckTarget.Redis,
+        ]);
+
+        expect(resMock.status).not.toHaveBeenCalled();
+        expect(result).toContain("[+]mongodb excluded: ok");
+        expect(result).toContain("[+]redis excluded: ok");
       });
     });
   });
@@ -229,7 +243,7 @@ describe("HealthController", () => {
     it("should return ok for a healthy individual check", async () => {
       const result = await controller.readyzCheck(
         resMock as any,
-        ExcludeTarget.MongoDB,
+        CheckTarget.MongoDB,
       );
 
       expect(resMock.status).not.toHaveBeenCalled();
@@ -241,7 +255,7 @@ describe("HealthController", () => {
 
       const result = await controller.readyzCheck(
         resMock as any,
-        ExcludeTarget.MongoDB,
+        CheckTarget.MongoDB,
       );
 
       expect(resMock.status).toHaveBeenCalledWith(

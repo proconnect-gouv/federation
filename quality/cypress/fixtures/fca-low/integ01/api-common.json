@@ -18,6 +18,29 @@
     "method": "GET",
     "url": "https://fca.integ01.dev-agentconnect.fr/api/v2/.well-known/openid-configuration"
   },
+  "livez": {
+    "method": "GET",
+    "url": "https://fca.integ01.dev-agentconnect.fr/api/v2/livez"
+  },
+  "readyz": {
+    "method": "GET",
+    "url": "https://fca.integ01.dev-agentconnect.fr/api/v2/readyz"
+  },
+  "readyz-verbose": {
+    "method": "GET",
+    "url": "https://fca.integ01.dev-agentconnect.fr/api/v2/readyz",
+    "qs": {
+      "verbose": ""
+    }
+  },
+  "readyz-excludes": {
+    "method": "GET",
+    "url": "https://fca.integ01.dev-agentconnect.fr/api/v2/readyz",
+    "qs": {
+      "exclude": ["api-entreprise", "hyyyperbridge"],
+      "verbose": ""
+    }
+  },
   "redirect-to-idp": {
     "method": "POST",
     "url": "https://fca.integ01.dev-agentconnect.fr/api/v2/redirect-to-idp",
