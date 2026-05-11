@@ -39,7 +39,7 @@
     "cypress-axe": "^1.7.0",
     "cypress-on-fix": "^1.1.0",
     "cypress-plugin-api": "^2.11.2",
-    "ejs": "^5.0.1",
+    "ejs": "^5.0.2",
     "globals": "^17.5.0",
     "jose": "^6.2.2",
     "lodash": "^4.18.1",
