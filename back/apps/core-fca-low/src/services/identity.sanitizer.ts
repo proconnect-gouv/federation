@@ -1,5 +1,5 @@
 import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
+import { validate, ValidationError } from "class-validator";
 import { cloneDeep } from "lodash";
 
 import { HttpStatus, Injectable } from "@nestjs/common";
@@ -10,6 +10,7 @@ import { LoggerService } from "@fc/logger";
 
 import { ApiEntrepriseConfig } from "@fc/api-entreprise";
 import { CachedOrganizationService } from "@fc/cached-organization";
+import { IdentityProviderMetadata } from "@fc/oidc";
 import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from "../dto";
 import { CoreFcaInvalidIdentityException } from "../exceptions";
 
@@ -58,22 +59,30 @@ export class IdentitySanitizer {
 
     if (siretValidationErrors.length > 0) {
       const identityProvider = await this.identityProvider.getById(idpId);
-      identityForSp.siret = identityProvider.siret || null;
+      if (!identityProvider.siret) {
+        // it will throw an error as the siret is required in the IdentityForSpDto, and the error will be caught and logged in the controller
+        this.throwExceptionForInvalidIdentity(
+          identityProvider,
+          identityForSp,
+          siretValidationErrors,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      identityForSp.siret = identityProvider.siret;
     }
 
     const { featureFetchOrganizationData } =
       this.config.get<ApiEntrepriseConfig>("ApiEntreprise");
 
-    if (featureFetchOrganizationData && !!identityForSp.siret) {
+    if (featureFetchOrganizationData) {
       try {
         const cachedOrganization =
           await this.cachedOrganizationService.getCachedOrganizationBySiret(
-            identityFromIdp.siret,
+            identityForSp.siret,
           );
         const roles =
           this.cachedOrganizationService.computeRoles(cachedOrganization);
         identityForSp.roles = roles;
-        identityForSp.is_service_public = roles.includes("agent_public");
       } catch (error) {
         this.logger.error({
           code: "identity-sanitizer-cached-organization-error",
@@ -81,7 +90,11 @@ export class IdentitySanitizer {
           cachedOrganizationErrorCause: error?.cause,
           cachedOrganizationErrorType: error?.constructor?.name,
         });
+        identityForSp.roles = [];
       }
+    } else {
+      // this happens only on the RIE
+      identityForSp.roles = ["agent_public"];
     }
 
     // Delete the phone_number property if validation fails
@@ -137,32 +150,46 @@ export class IdentitySanitizer {
     if (identityValidationErrors.length > 0) {
       const identityProvider = await this.identityProvider.getById(idpId);
 
-      this.logger.error({
-        msg: `Identity from "${idpId}" is invalid`,
-        code: "invalid-identity-validation",
-        validationErrors: identityValidationErrors,
-      });
-
-      this.logger.debug({
-        code: "invalid-identity-debug",
+      this.throwExceptionForInvalidIdentity(
+        identityProvider,
         identity,
-      });
-
-      const contact =
-        identityProvider.supportEmail ||
-        this.config.get<AppConfig>("App").supportEmail;
-
-      const exception = new CoreFcaInvalidIdentityException(
-        identityValidationErrors.toString(),
-        contact,
-        JSON.stringify(
-          identityValidationErrors.map((error) => error?.constraints),
-        ),
-        JSON.stringify(identityValidationErrors[0]?.target),
+        identityValidationErrors,
+        httpStatus,
       );
-
-      exception.http_status_code = httpStatus;
-      throw exception;
     }
+  }
+
+  private throwExceptionForInvalidIdentity(
+    identityProvider: IdentityProviderMetadata,
+    identity: object,
+    identityValidationErrors: ValidationError[],
+    httpStatus: HttpStatus,
+  ) {
+    this.logger.error({
+      msg: `Identity from "${identityProvider.uid}" is invalid`,
+      code: "invalid-identity-validation",
+      validationErrors: identityValidationErrors,
+    });
+
+    this.logger.debug({
+      code: "invalid-identity-debug",
+      identity,
+    });
+
+    const contact =
+      identityProvider.supportEmail ||
+      this.config.get<AppConfig>("App").supportEmail;
+
+    const exception = new CoreFcaInvalidIdentityException(
+      identityValidationErrors.toString(),
+      contact,
+      JSON.stringify(
+        identityValidationErrors.map((error) => error?.constraints),
+      ),
+      JSON.stringify(identityValidationErrors[0]?.target),
+    );
+
+    exception.http_status_code = httpStatus;
+    throw exception;
   }
 }

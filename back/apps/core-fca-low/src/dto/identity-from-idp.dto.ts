@@ -1,7 +1,6 @@
 import { Transform } from "class-transformer";
 import {
   IsAscii,
-  IsBoolean,
   IsEmail,
   IsOptional,
   IsString,
@@ -71,10 +70,6 @@ export class IdentityFromIdpDto {
   @MaxLength(256)
   @IsOptional()
   "chorusdt:matricule"?: string;
-
-  @IsBoolean()
-  @IsOptional()
-  is_service_public?: boolean;
 
   @IsOptional()
   phone_number?: any;

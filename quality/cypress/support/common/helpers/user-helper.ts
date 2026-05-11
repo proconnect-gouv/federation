@@ -4,7 +4,6 @@ export interface User {
   "chorusdt:societe": string;
   custom: { [key: string]: unknown };
   given_name: string;
-  is_service_public: string;
   organizational_unit: string;
   phone_number: string;
   siren: string;
@@ -24,7 +23,6 @@ export function getDefaultUser(): User {
       phone_number_verified: false,
     },
     given_name: "John",
-    is_service_public: "true",
     organizational_unit: "comptabilite",
     phone_number: "+49 000 000000",
     siren: "130025265",

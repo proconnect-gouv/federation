@@ -23,8 +23,9 @@ When("je m'authentifie", function () {
   cy.get("button[type='submit']").click();
 });
 
-When("j'utilise un compte usager privé", function () {
-  cy.get('input[name="is_service_public"]').type(`{selectAll}false`, {
+When("j'utilise un compte usager d'une organisation privée", function () {
+  const octoTechnologySiret = "41816609600069";
+  cy.get('input[name="siret"]').type(`{selectAll}${octoTechnologySiret}`, {
     force: true,
   });
 });

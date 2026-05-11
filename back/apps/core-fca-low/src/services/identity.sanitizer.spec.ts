@@ -161,6 +161,7 @@ describe("IdentitySanitizer", () => {
         sub,
         uid: "UID123",
         usual_name: "Doe",
+        roles: ["agent_public"],
       });
     });
 
@@ -196,7 +197,6 @@ describe("IdentitySanitizer", () => {
         cachedOrganizationService.getCachedOrganizationBySiret,
       ).toHaveBeenCalledWith("12345678900007");
       expect(identityForSp.roles).toEqual(["agent_public"]);
-      expect(identityForSp.is_service_public).toBe(true);
     });
 
     it("should handle error when getCachedOrganizationBySiret throws", async () => {
@@ -211,6 +211,10 @@ describe("IdentitySanitizer", () => {
         uid: "UID123",
         siret: "12345678900007",
       };
+
+      identityProvider.getById = jest
+        .fn()
+        .mockResolvedValue({ siret: "12345678900007" } as any);
 
       config.get = jest.fn().mockReturnValue({
         featureFetchOrganizationData: true,
@@ -233,8 +237,7 @@ describe("IdentitySanitizer", () => {
           code: "identity-sanitizer-cached-organization-error",
         }),
       );
-      expect(result.roles).toBeUndefined();
-      expect(result.is_service_public).toBeUndefined();
+      expect(result.roles).toEqual([]);
     });
 
     it("should not throw CoreFcaInvalidIdentityException when phone number is invalid", async () => {
