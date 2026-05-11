@@ -825,6 +825,34 @@ describe("OidcClientService", () => {
       expect(result.claims.acr).toBe("eidas2");
     });
 
+    it("should map EntraID acrs to eidas 1 if not recognized", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isEntraID: true,
+      });
+      const tokensWithAcrs = {
+        ...tokensMock,
+        claims: jest.fn().mockReturnValue({ sub: "user-sub", acrs: ["p1"] }),
+      };
+      (openidClient.authorizationCodeGrant as jest.Mock).mockResolvedValue(
+        tokensWithAcrs,
+      );
+
+      // When
+      const result = await service.getToken({
+        idpId: "idp-id",
+        req: reqMock as any,
+        idpState: "state",
+        idpNonce: "nonce",
+        spId: "sp-id",
+        spName: "sp-name",
+      });
+
+      // Then
+      expect(result.claims.acr).toBe("eidas1");
+    });
+
     it("should filter acrs for EntraID keeping only c-prefixed values", async () => {
       // Given
       identityProviderMock.getById.mockResolvedValue({
