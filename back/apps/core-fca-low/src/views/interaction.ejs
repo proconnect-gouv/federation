@@ -16,8 +16,10 @@
         <div class="fr-grid-row fr-grid-row--center">
           <div class="fr-col-12 fr-col-md-8 fr-col-lg-5">
             <% if(locals.displayTestEnvWarning) { %><%- include('includes/test-env-warning.ejs') %><% } %>
-            <h1 class="fr-mb-1v fr-h2">Se connecter ou s'inscrire à</h1>
-            <h2 class="fr-text--lead"><%= locals.spName %></h2>
+            <h1 class="fr-h2">Se connecter ou s'inscrire à
+              <br>
+              <span class="fr-h4"><%= locals.spName %></span>
+            </h1>
             <% if (locals.notificationMessage) { %>
               <div
                 class="fr-notice fr-notice--info background-alt-blue-france ac-color-alt-grey fr-my-8v"

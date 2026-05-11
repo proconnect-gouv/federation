@@ -35,6 +35,7 @@ import { DynamicModule, Module } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 import { CqrsModule } from "@nestjs/cqrs";
 import {
+  AccessibilityController,
   HealthController,
   InteractionController,
   OidcClientController,
@@ -86,6 +87,7 @@ export class AppModule {
         CachedOrganizationModule,
       ],
       controllers: [
+        AccessibilityController,
         HealthController,
         InteractionController,
         OidcClientController,
