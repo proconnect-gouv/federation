@@ -10,7 +10,6 @@ import {
 } from "@proconnect-gouv/proconnect.core/data";
 import { run as spellCheckEmail } from "@zootools/email-spell-checker";
 import { chain, uniq } from "lodash";
-import { resolveMx } from "node:dns/promises";
 import { EmailValidatorConfig } from "../dto";
 
 @Injectable()
@@ -86,23 +85,24 @@ export class EmailValidatorService {
   }
 
   private async isEmailDomainValid(email: string) {
-    const { domainWhitelist, featureValidateEmail } =
-      this.config.get<EmailValidatorConfig>("EmailValidator");
     const emailDomain =
       this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
+    if (!emailDomain) return false;
 
-    if (!featureValidateEmail) {
-      return true;
-    }
+    const { domainWhitelist, featureValidateEmail } =
+      this.config.get<EmailValidatorConfig>("EmailValidator");
+    if (!featureValidateEmail) return true;
 
-    if (domainWhitelist.includes(emailDomain)) {
-      return true;
-    }
+    if (domainWhitelist.includes(emailDomain)) return true;
 
     try {
-      await resolveMx(emailDomain);
-
-      return true;
+      const response = await fetch(
+        `https://dns.google/resolve?name=${encodeURIComponent(emailDomain)}&type=MX`,
+      );
+      const { Answer } = (await response.json()) as {
+        Answer?: { name: string }[];
+      };
+      return Array.isArray(Answer) && Answer.length > 0;
     } catch {
       return false;
     }

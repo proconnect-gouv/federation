@@ -5,12 +5,7 @@ import { LoggerService } from "@fc/logger";
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
-import { resolveMx } from "node:dns/promises";
 import { EmailValidatorService } from "./email-validator.service";
-
-jest.mock("node:dns/promises", () => ({
-  resolveMx: jest.fn(),
-}));
 
 describe(EmailValidatorService.name, () => {
   let service: EmailValidatorService;
@@ -32,7 +27,9 @@ describe(EmailValidatorService.name, () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
-    (resolveMx as jest.Mock).mockReset();
+    jest.spyOn(global, "fetch").mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ Answer: undefined }),
+    } as unknown as Response);
 
     (
       identityProviderAdapterMongoMock.getIdpsByEmail as jest.Mock
@@ -121,7 +118,6 @@ describe(EmailValidatorService.name, () => {
   describe("validate", () => {
     it("should call config.get with correct parameter", async () => {
       await service.validate(testEmail);
-      expect(configServiceMock.get).toHaveBeenCalledOnce();
       expect(configServiceMock.get).toHaveBeenCalledWith("EmailValidator");
     });
 
@@ -144,7 +140,7 @@ describe(EmailValidatorService.name, () => {
       // Then
       expect(result).toEqual({ isEmailValid: true });
       expect(accountFcaServiceMock.checkEmailExists).not.toHaveBeenCalled();
-      expect(resolveMx).not.toHaveBeenCalled();
+      expect(global.fetch).not.toHaveBeenCalled();
       expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
@@ -167,12 +163,24 @@ describe(EmailValidatorService.name, () => {
       expect(accountFcaServiceMock.checkEmailExists).toHaveBeenCalledWith(
         testEmail,
       );
-      expect(resolveMx).not.toHaveBeenCalled();
+      expect(global.fetch).not.toHaveBeenCalled();
       expect(result).toEqual({ isEmailValid: true });
       expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
-    it("should return true when the feature is disabled and not call resolveMx", async () => {
+    it("should return false when no domain can be extracted from the email", async () => {
+      // Given
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValue(null);
+
+      // When
+      const result = await service.validate(testEmail);
+
+      // Then
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(result).toEqual({ isEmailValid: false, suggestion: "" });
+    });
+
+    it("should return true when the feature is disabled and not call fetch", async () => {
       // Given
       configServiceMock.get.mockReturnValue({ featureValidateEmail: false });
 
@@ -183,11 +191,11 @@ describe(EmailValidatorService.name, () => {
       expect(
         identityProviderAdapterMongoMock.getFqdnFromEmail,
       ).toHaveBeenCalledWith(testEmail);
-      expect(resolveMx).not.toHaveBeenCalled();
+      expect(global.fetch).not.toHaveBeenCalled();
       expect(result).toEqual({ isEmailValid: true });
     });
 
-    it("should return true when domain is whitelisted and not call resolveMx", async () => {
+    it("should return true when domain is whitelisted and not call fetch", async () => {
       // Given
       configServiceMock.get.mockReturnValue({
         domainWhitelist: [testDomain],
@@ -201,15 +209,17 @@ describe(EmailValidatorService.name, () => {
       expect(
         identityProviderAdapterMongoMock.getFqdnFromEmail,
       ).toHaveBeenCalledWith(testEmail);
-      expect(resolveMx).not.toHaveBeenCalled();
+      expect(global.fetch).not.toHaveBeenCalled();
       expect(result).toEqual({ isEmailValid: true });
     });
 
-    it("should call resolveMx with domain and return true when MX records are found", async () => {
+    it("should call DNS-over-HTTPS with domain and return true when MX records are found", async () => {
       // Given
-      (resolveMx as jest.Mock).mockResolvedValue([
-        { exchange: "mx.test", priority: 10 },
-      ]);
+      jest.spyOn(global, "fetch").mockResolvedValue({
+        json: jest
+          .fn()
+          .mockResolvedValue({ Answer: [{ name: `${testDomain}.` }] }),
+      } as unknown as Response);
 
       // When
       const result = await service.validate(testEmail);
@@ -218,20 +228,24 @@ describe(EmailValidatorService.name, () => {
       expect(
         identityProviderAdapterMongoMock.getFqdnFromEmail,
       ).toHaveBeenCalledWith(testEmail);
-      expect(resolveMx).toHaveBeenCalledWith(testDomain);
+      expect(global.fetch).toHaveBeenCalledWith(
+        `https://dns.google/resolve?name=${encodeURIComponent(testDomain)}&type=MX`,
+      );
       expect(result).toEqual({ isEmailValid: true });
       expect(loggerServiceMock.warn).not.toHaveBeenCalled();
     });
 
-    it("should return false and log a warn when MX lookup fails", async () => {
+    it("should return false when DNS-over-HTTPS fetch throws", async () => {
       // Given
-      (resolveMx as jest.Mock).mockRejectedValue(new Error("NXDOMAIN"));
+      jest.spyOn(global, "fetch").mockRejectedValue(new Error("network error"));
 
       // When
       const result = await service.validate(testEmail);
 
       // Then
-      expect(resolveMx).toHaveBeenCalledWith(testDomain);
+      expect(global.fetch).toHaveBeenCalledWith(
+        `https://dns.google/resolve?name=${encodeURIComponent(testDomain)}&type=MX`,
+      );
       expect(result).toEqual({ isEmailValid: false, suggestion: "" });
     });
 
@@ -252,13 +266,16 @@ describe(EmailValidatorService.name, () => {
       );
     });
 
-    it("should return false without suggestion when email domain is invalid and no suggestion is available", async () => {
+    it("should return false without suggestion when email domain has no MX records and no suggestion is available", async () => {
       // Given
-      (resolveMx as jest.Mock).mockRejectedValue(
-        new Error("No MX records found"),
-      ); // No MX records found
+      jest.spyOn(global, "fetch").mockResolvedValue({
+        json: jest.fn().mockResolvedValue({ Answer: [] }),
+      } as unknown as Response);
 
       identityProviderAdapterMongoMock.getList.mockResolvedValue([]);
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValue(
+        "test.exmple.com",
+      );
 
       // When
       const result = await service.validate("user@test.exmple.com");
@@ -268,15 +285,18 @@ describe(EmailValidatorService.name, () => {
       expect(result.suggestion).toBe("");
     });
 
-    it("should return false with suggestion when email domain is invalid", async () => {
+    it("should return false with suggestion when email domain has no MX records", async () => {
       // Given
-      (resolveMx as jest.Mock).mockRejectedValue(
-        new Error("No MX records found"),
-      ); // No MX records found
+      jest.spyOn(global, "fetch").mockResolvedValue({
+        json: jest.fn().mockResolvedValue({ Answer: [] }),
+      } as unknown as Response);
 
       identityProviderAdapterMongoMock.getList.mockResolvedValue([
         { fqdns: ["test.example.com"] },
       ]);
+      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValue(
+        "test.exmple.com",
+      );
 
       // When
       const result = await service.validate("user@test.exmple.com");
