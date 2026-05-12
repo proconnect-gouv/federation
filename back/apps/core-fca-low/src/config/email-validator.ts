@@ -5,5 +5,7 @@ const env = new ConfigParser(process.env, "EmailValidator");
 
 export default {
   domainWhitelist: env.stringArray("DOMAIN_WHITELIST"),
-  featureValidateEmail: env.boolean("FEATURE_VALIDATE_EMAIL") ?? true,
+  featureMxResolutionValidation: env.boolean(
+    "FEATURE_MX_RESOLUTION_VALIDATION",
+  ),
 } as EmailValidatorConfig;
