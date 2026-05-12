@@ -13,7 +13,7 @@ export default {
   currentBranch: process.env.CURRENT_BRANCH || "dev",
   latestCommitShortHash: process.env.GIT_LATEST_COMMIT_SHORT_HASH || "",
   latestCommitLongHash: process.env.GIT_LATEST_COMMIT_LONG_HASH || "",
-  isProduction: process.env.IS_PRODUCTION || false,
+  hasRedBorder: process.env.HAS_RED_BORDER === "true",
   cipherPass: process.env.CLIENT_SECRET_CIPHER_PASS,
   appVersion: process.env.APP_VERSION || "no-version",
   userTokenExpiresIn: 2880,

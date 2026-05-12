@@ -13,7 +13,7 @@ export interface IConfig {
   currentBranch: string;
   latestCommitShortHash: string;
   latestCommitLongHash: string;
-  isProduction: boolean;
+  hasRedBorder: boolean;
   cipherPass: string;
   appVersion: string;
   userTokenExpiresIn: number;
