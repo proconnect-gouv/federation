@@ -5,5 +5,5 @@ export class EmailValidatorConfig {
   readonly domainWhitelist: string[];
 
   @IsBoolean()
-  readonly featureValidateEmail: boolean;
+  readonly featureMxResolutionValidation: boolean;
 }

@@ -62,7 +62,7 @@ describe(EmailValidatorService.name, () => {
 
     configServiceMock.get.mockReturnValue({
       domainWhitelist: [],
-      featureValidateEmail: true,
+      featureMxResolutionValidation: true,
     });
 
     service = app.get<EmailValidatorService>(EmailValidatorService);
@@ -180,9 +180,12 @@ describe(EmailValidatorService.name, () => {
       expect(result).toEqual({ isEmailValid: false, suggestion: "" });
     });
 
-    it("should return true when the feature is disabled and not call fetch", async () => {
+    it("should return false when the mx resolution feature is disabled and not call fetch", async () => {
       // Given
-      configServiceMock.get.mockReturnValue({ featureValidateEmail: false });
+      configServiceMock.get.mockReturnValue({
+        domainWhitelist: [],
+        featureMxResolutionValidation: false,
+      });
 
       // When
       const result = await service.validate(testEmail);
@@ -192,14 +195,14 @@ describe(EmailValidatorService.name, () => {
         identityProviderAdapterMongoMock.getFqdnFromEmail,
       ).toHaveBeenCalledWith(testEmail);
       expect(global.fetch).not.toHaveBeenCalled();
-      expect(result).toEqual({ isEmailValid: true });
+      expect(result).toEqual({ isEmailValid: false, suggestion: "" });
     });
 
     it("should return true when domain is whitelisted and not call fetch", async () => {
       // Given
       configServiceMock.get.mockReturnValue({
         domainWhitelist: [testDomain],
-        featureValidateEmail: true,
+        featureMxResolutionValidation: true,
       });
 
       // When

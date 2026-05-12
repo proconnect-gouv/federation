@@ -89,11 +89,12 @@ export class EmailValidatorService {
       this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
     if (!emailDomain) return false;
 
-    const { domainWhitelist, featureValidateEmail } =
+    const { domainWhitelist, featureMxResolutionValidation } =
       this.config.get<EmailValidatorConfig>("EmailValidator");
-    if (!featureValidateEmail) return true;
 
     if (domainWhitelist.includes(emailDomain)) return true;
+
+    if (!featureMxResolutionValidation) return false;
 
     try {
       const response = await fetch(
