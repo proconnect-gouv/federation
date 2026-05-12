@@ -1300,10 +1300,10 @@
     nanoid "^5.1.5"
     tld-extract "^2.1.0"
 
-"@proconnect-gouv/proconnect.identite@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-3.0.0.tgz#4d5ed0801097466a4d220d82d520d38abe77a5b6"
-  integrity sha512-gMKQpl+G7uCnWj+0xk+LJJ2Ss9zA0jH+iKlHdMnEhyuqCNbWZK1AWEwl2HkK5Gh/O2MOS3wLwkhaKuHc9PeHQg==
+"@proconnect-gouv/proconnect.identite@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-7.0.0.tgz#0f00076302918dcd84812c1bb4aacd31897a430c"
+  integrity sha512-CrcQ9JIFOjW/2NjsPX8081R2lB7R7mesrl+E6s7OPAIdkwy/i3U+z6O8V06Ak1pqIVHFXwGAik0nunweHHX4yg==
   dependencies:
     leven "^4.0.0"
     openid-client "^6.6.4"
@@ -4328,11 +4328,6 @@ jose@^5.9.6:
   resolved "https://registry.npmjs.org/jose/-/jose-5.10.0.tgz"
   integrity sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==
 
-jose@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-6.1.0.tgz#96285365689d16f2845a353964d2284bf19f464c"
-  integrity sha512-TTQJyoEoKcC1lscpVDCSsVgYzUDg/0Bt3WE//WiTPK6uOCQC2KZS4MpugbMWt/zyjkopgZoXhZuCi00gLudfUA==
-
 jose@^6.1.3:
   version "6.2.2"
   resolved "https://registry.yarnpkg.com/jose/-/jose-6.2.2.tgz#d6b5279b89b3e88d531c202e3fbe351f39a44aac"
@@ -4946,11 +4941,6 @@ npm-run-path@^4.0.1:
   dependencies:
     path-key "^3.0.0"
 
-oauth4webapi@^3.8.2:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-3.8.2.tgz#500d1979038c14656f3f24ff1eb501ff3993115b"
-  integrity sha512-FzZZ+bht5X0FKe7Mwz3DAVAmlH1BV5blSak/lHMBKz0/EBMhX6B10GlQYI51+oRp8ObJaX0g6pXrAxZh5s8rjw==
-
 oauth4webapi@^3.8.4:
   version "3.8.5"
   resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-3.8.5.tgz#4aa8a73f5c4644daf674a7c40497be910db99d3f"
@@ -5066,15 +5056,7 @@ openapi-typescript-helpers@^0.1.0:
   resolved "https://registry.yarnpkg.com/openapi-typescript-helpers/-/openapi-typescript-helpers-0.1.0.tgz#2102a2ea1c473cb1cfe19f87c662ff053fbb1d70"
   integrity sha512-OKTGPthhivLw/fHz6c3OPtg72vi86qaMlqbJuVJ23qOvQ+53uw1n7HdmkJFibloF7QEjDrDkzJiOJuockM/ljw==
 
-openid-client@^6.6.4:
-  version "6.8.1"
-  resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-6.8.1.tgz#0e6dd3c1e9c98771ebf387b793ce9f626791a924"
-  integrity sha512-VoYT6enBo6Vj2j3Q5Ec0AezS+9YGzQo1f5Xc42lreMGlfP4ljiXPKVDvCADh+XHCV/bqPu/wWSiCVXbJKvrODw==
-  dependencies:
-    jose "^6.1.0"
-    oauth4webapi "^3.8.2"
-
-openid-client@^6.8.1:
+openid-client@^6.6.4, openid-client@^6.8.1:
   version "6.8.2"
   resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-6.8.2.tgz#72afd3108886ee3ed174fb633865d992d95d8963"
   integrity sha512-uOvTCndr4udZsKihJ68H9bUICrriHdUVJ6Az+4Ns6cW55rwM5h0bjVIzDz2SxgOI84LKjFyjOFvERLzdTUROGA==
