@@ -9,7 +9,6 @@ import {
   BridgeHttpProxyRabbitmqException,
 } from "@fc/bridge-http-proxy/exceptions";
 import { ConfigService } from "@fc/config";
-import { AppConfig } from "@fc/core";
 import { MessageType } from "@fc/hybridge-http-proxy/enums";
 import { BridgeError, BridgeProtocol } from "@fc/hybridge-http-proxy/interface";
 import { LoggerService } from "@fc/logger";
@@ -318,12 +317,6 @@ export class OidcClientService {
       ...defaultParams,
       ...customParams,
     };
-
-    const { defaultIdpId } = this.config.get<AppConfig>("App");
-    // this specific behavior is a legacy implementation and should be homogenized in the future
-    if (idpId === defaultIdpId) {
-      params.scope += " is_service_public";
-    }
 
     if (idp.isEntraID) {
       params.scope = "openid email profile";

@@ -2,7 +2,6 @@ import {
   IsDefined,
   IsEnum,
   IsObject,
-  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -46,6 +45,5 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
     ],
     { each: true },
   )
-  @IsOptional()
-  roles?: string[];
+  roles: string[];
 }

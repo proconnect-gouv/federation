@@ -395,7 +395,7 @@ describe("InteractionController", () => {
       const res: Partial<Response> = { redirect: jest.fn() };
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           interactionId: "interaction123",
           idpAcr: "high",
           spEssentialAcr: "high",
@@ -486,7 +486,6 @@ describe("InteractionController", () => {
           spIdentity: { sub: "user1", roles: [] },
           spId: "sp123",
           idpId: "idp123",
-          idpIdentity: { is_service_public: false },
         }),
       } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
@@ -503,10 +502,9 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1", roles: ["agent_public"] },
+          spIdentity: { sub: "user1", roles: [] },
           spId: "sp123",
           idpId: "idp123",
-          idpIdentity: { is_service_public: false },
         }),
       } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
@@ -516,11 +514,6 @@ describe("InteractionController", () => {
       await expect(
         controller.getVerify(req, res, {} as any, userSessionService),
       ).rejects.toThrow(CoreFcaAgentNotFromPublicServiceException);
-      expect(loggerMock.warn).toHaveBeenCalledWith(
-        expect.objectContaining({
-          code: "agent_public_role_mismatch",
-        }),
-      );
     });
 
     it("should throw CoreFcaAgentAccountBlockedException if the account is inactive", async () => {
@@ -531,7 +524,6 @@ describe("InteractionController", () => {
           spIdentity: { sub: "user1" },
           spId: "sp123",
           idpId: "idp123",
-          idpIdentity: { is_service_public: false },
         }),
       } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
       accountFcaMock.getAccountBySub.mockResolvedValue({ active: false });
@@ -549,7 +541,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           spEssentialAcr: "high",
           idpAcr: "low",
         }),

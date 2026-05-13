@@ -37,7 +37,6 @@ const defaultUser = {
   belonging_population: "agent",
   "chorusdt:matricule": "USER_AGC",
   "chorusdt:societe": "CHT",
-  is_service_public: true,
   organizational_unit: "comptabilite",
   siren: "130025265",
   uid: "1",
@@ -51,17 +50,8 @@ export const getDefaultUser = () => {
 const userStorage = new QuickLRU({ maxSize: 1000 });
 
 export const createUser = (body) => {
-  const {
-    email,
-    given_name,
-    usual_name,
-    siret,
-    is_service_public,
-    sub,
-    phone_number,
-  } = body;
-  const id =
-    email + given_name + usual_name + siret + is_service_public + phone_number;
+  const { email, given_name, usual_name, siret, sub, phone_number } = body;
+  const id = email + given_name + usual_name + siret + phone_number;
   // replace default property values, allowing substitution of a default value with an empty string
   const user = chain({
     ...defaultUser,
@@ -69,7 +59,6 @@ export const createUser = (body) => {
     given_name,
     usual_name,
     siret,
-    is_service_public,
     sub,
     phone_number,
   })

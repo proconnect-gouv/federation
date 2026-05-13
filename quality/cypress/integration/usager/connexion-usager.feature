@@ -42,7 +42,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et que j'entre l'email "albus.dumbledore@example.com"
     Quand je clique sur le bouton de connexion
     Et je suis redirigé vers la page login du fournisseur d'identité "moncomptepro"
-    Et j'utilise un compte usager privé
+    Et j'utilise un compte usager d'une organisation privée
     Et je m'authentifie
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500015"
@@ -53,7 +53,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "albus.dumbledore@example.com"
     Quand je clique sur le bouton de connexion
-    Et j'utilise un compte usager privé
+    Et j'utilise un compte usager d'une organisation privée
     Et je m'authentifie
     Alors je suis redirigé vers la page fournisseur de service "acceptant le privé"
 

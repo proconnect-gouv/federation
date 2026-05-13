@@ -49,7 +49,6 @@ export default {
     siren: ["siren"],
     uid: ["uid"],
     usual_name: ["usual_name"],
-    is_service_public: ["is_service_public"],
   },
   clients: [
     {

@@ -585,26 +585,6 @@ describe("OidcClientService", () => {
       });
     });
 
-    it("should add is_service_public scope for default IDP", async () => {
-      // Given
-      configServiceMock.get.mockImplementation((key) =>
-        key === "OidcClient"
-          ? { redirectUri: "https://rp.test/cb" }
-          : { defaultIdpId: "idp-id" },
-      );
-
-      // When
-      await service.getAuthorizationUrl("idp-id", {});
-
-      // Then
-      expect(openidClient.buildAuthorizationUrl).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({
-          toString: expect.any(Function),
-        }),
-      );
-    });
-
     it("should handle EntraID specific scope and remove claims", async () => {
       // Given
       identityProviderMock.getById.mockResolvedValue({
