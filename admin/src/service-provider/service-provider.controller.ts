@@ -42,6 +42,7 @@ export class ServiceProviderController {
     "phone",
     "idp_id",
     "custom",
+    "roles",
   ];
   constructor(
     @InjectRepository(ServiceProviderFromDb, "fc-mongo")
