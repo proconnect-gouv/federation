@@ -3718,9 +3718,9 @@ supports-preserve-symlinks-flag@^1.0.0:
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
 systeminformation@^5.31.1:
-  version "5.31.4"
-  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.31.4.tgz#788d80a821d572f4369683c4c61d466d86451fb4"
-  integrity sha512-lZppDyQx91VdS5zJvAyGkmwe+Mq6xY978BDUG2wRkWE+jkmUF5ti8cvOovFQoN5bvSFKCXVkyKEaU5ec3SJiRg==
+  version "5.31.6"
+  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.31.6.tgz#2da4979a7262974fd068a3a306ded30aed6127c0"
+  integrity sha512-Uv2b2uGGM6ns+26czgW2cYRabYdnswM0ddSOOlryHOaelzsmDSet1iM/NT7VOYxW8x/BW+HkY+b1Ve2pLTSGSA==
 
 tagged-tag@^1.0.0:
   version "1.0.0"
