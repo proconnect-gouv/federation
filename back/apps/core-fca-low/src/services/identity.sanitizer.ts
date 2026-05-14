@@ -80,6 +80,7 @@ export class IdentitySanitizer {
           await this.cachedOrganizationService.getCachedOrganizationBySiret(
             identityForSp.siret,
           );
+        identityForSp.organization_label = cachedOrganization.libelle;
         const roles =
           this.cachedOrganizationService.computeRoles(cachedOrganization);
         identityForSp.roles = roles;

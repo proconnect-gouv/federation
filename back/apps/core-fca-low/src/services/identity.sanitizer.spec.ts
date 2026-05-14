@@ -185,6 +185,11 @@ describe("IdentitySanitizer", () => {
       (cachedOrganizationService.computeRoles as jest.Mock).mockReturnValue([
         "agent_public",
       ]);
+      (
+        cachedOrganizationService.getCachedOrganizationBySiret as jest.Mock
+      ).mockReturnValue({
+        libelle: "Organization Label",
+      });
 
       const identityForSp = await identitySanitizer.transformIdentity(
         identityFromIdp as IdentityFromIdpDto,
@@ -197,6 +202,7 @@ describe("IdentitySanitizer", () => {
         cachedOrganizationService.getCachedOrganizationBySiret,
       ).toHaveBeenCalledWith("12345678900007");
       expect(identityForSp.roles).toEqual(["agent_public"]);
+      expect(identityForSp.organization_label).toEqual("Organization Label");
     });
 
     it("should handle error when getCachedOrganizationBySiret throws", async () => {

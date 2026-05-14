@@ -36,6 +36,7 @@ const fsa = {
       'groups',
       'custom',
       'roles',
+      'organization_label'
     ],
     introspection_signed_response_alg: null,
     introspection_encrypted_response_alg: null,
@@ -80,6 +81,7 @@ const fsa = {
       'idp_acr',
       'custom',
       'roles',
+      'organization_label'
     ],
     introspection_signed_response_alg: null,
     introspection_encrypted_response_alg: null,
@@ -124,6 +126,7 @@ const fsa = {
       'idp_acr',
       'custom',
       'roles',
+      'organization_label'
     ],
     introspection_signed_response_alg: null,
     introspection_encrypted_response_alg: null,
