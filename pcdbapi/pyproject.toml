@@ -6,7 +6,7 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi==0.136.1",
     "motor==3.7.1",
-    "uvicorn==0.45.0",
+    "uvicorn==0.46.0",
     "pydantic==2.13.3",
     "cryptography==46.0.7"
 ]
