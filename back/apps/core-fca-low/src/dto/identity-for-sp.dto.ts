@@ -2,6 +2,7 @@ import {
   IsDefined,
   IsEnum,
   IsObject,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -33,6 +34,10 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
 
   @IsString()
   idp_acr: string;
+
+  @IsString()
+  @IsOptional()
+  organization_label?: string;
 
   @IsEnum(
     [

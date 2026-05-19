@@ -16,7 +16,8 @@
       "idp_id",
       "idp_acr",
       "custom",
-      "roles"
+      "roles",
+      "organization_label"
     ]
   },
   {
@@ -35,7 +36,8 @@
       "idp_id",
       "idp_acr",
       "custom",
-      "roles"
+      "roles",
+      "organization_label"
     ]
   },
   {

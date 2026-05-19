@@ -32,13 +32,13 @@ const defaultUser = {
   website: "http://example.com",
   zoneinfo: "Europe/Berlin",
   // ProConnect claims
-  siret: "13002526500013",
+  siret: "21920023500014",
   // Deprecated ProConnect claims
   belonging_population: "agent",
   "chorusdt:matricule": "USER_AGC",
   "chorusdt:societe": "CHT",
   organizational_unit: "comptabilite",
-  siren: "130025265",
+  siren: "219200235",
   uid: "1",
   usual_name: "Doe",
 };

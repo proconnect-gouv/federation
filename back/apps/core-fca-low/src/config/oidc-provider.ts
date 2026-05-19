@@ -108,6 +108,7 @@ export default {
       idp_id: ["idp_id"],
       idp_acr: ["idp_acr"],
       roles: ["roles"],
+      organization_label: ["organization_label"],
       groups: ["groups"],
       custom: ["custom"],
 

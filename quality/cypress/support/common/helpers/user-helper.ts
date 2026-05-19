@@ -11,6 +11,7 @@ export interface User {
   uid: string;
   usual_name: string;
   roles: string[];
+  organization_label: string;
 }
 
 export function getDefaultUser(): User {
@@ -25,10 +26,11 @@ export function getDefaultUser(): User {
     given_name: "John",
     organizational_unit: "comptabilite",
     phone_number: "+49 000 000000",
-    siren: "130025265",
-    siret: "13002526500013",
+    siren: "219200235",
+    siret: "21920023500014",
     uid: "1",
     usual_name: "Doe",
     roles: ["agent_public"],
+    organization_label: "Commune de clamart - Mairie",
   };
 }
