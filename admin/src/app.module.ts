@@ -28,7 +28,6 @@ import { IdentityProviderController } from "./identity-provider/identity-provide
 import { IdentityProviderModule } from "./identity-provider/identity-provider.module";
 import { LoggerModule } from "./logger/logger.module";
 import { LocalsInterceptor } from "./meta/locals.interceptor";
-import { ScopesController } from "./scopes/scopes.controller";
 import { ServiceProviderController } from "./service-provider/service-provider.controller";
 import { ServiceProviderModule } from "./service-provider/service-provider.module";
 
@@ -70,7 +69,6 @@ export class AppModule implements NestModule {
         ServiceProviderController,
         AccountController,
         ConfigurationController,
-        ScopesController,
       );
 
     consumer.apply(CsurfMiddleware).forRoutes(AuthenticationController);

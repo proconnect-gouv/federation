@@ -10,10 +10,9 @@
     <div data-init="selectScopesGroup" id="<%= groupId; %>">
       <b><%= groupId; %></b> &nbsp;&nbsp; | &nbsp;&nbsp; TOUS <input id="group-<%= groupId; %>" type="checkbox" />
       <p>
-        <% scopes.forEach(({fd, scope}) => { %>
+        <% scopes.forEach((scope) => { %>
         <div class="form-check form-check-inline">
           <input
-            data-fd="<%= fd; %>"
             type="checkbox"
             class="form-check-input"
             id="scope-<%= scope %>"

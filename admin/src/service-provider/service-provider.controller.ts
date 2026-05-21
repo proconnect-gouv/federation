@@ -17,7 +17,6 @@ import { Repository } from "typeorm";
 import { Roles } from "../authentication/decorator/roles.decorator";
 import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
 import { type PaginationSortDirectionType } from "../pagination";
-import { ScopesService } from "../scopes";
 import { UserRole } from "../user/roles.enum";
 import {
   arrayToLines,
@@ -48,7 +47,6 @@ export class ServiceProviderController {
     @InjectRepository(ServiceProviderFromDb, "fc-mongo")
     private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
     private readonly serviceProviderService: ServiceProviderService,
-    private readonly scopesService: ScopesService,
   ) {}
 
   /**
@@ -108,7 +106,8 @@ export class ServiceProviderController {
   @Roles(UserRole.OPERATOR)
   async showCreationForm(@Req() req) {
     const csrfToken = req.csrfToken();
-    const scopesGroupedByFd = await this.scopesService.getScopesGroupedByFd();
+    const scopesGroupedByFd =
+      this.serviceProviderService.getScopesGroupedByFd();
 
     const response = {
       csrfToken,
@@ -197,7 +196,8 @@ export class ServiceProviderController {
     }
 
     const scopesSelected: string[] = serviceProvider.scopes || [];
-    const scopesGroupedByFd = await this.scopesService.getScopesGroupedByFd();
+    const scopesGroupedByFd =
+      this.serviceProviderService.getScopesGroupedByFd();
 
     const response = {
       csrfToken,

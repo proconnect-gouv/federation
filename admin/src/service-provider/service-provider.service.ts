@@ -13,6 +13,35 @@ import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
 
 @Injectable()
 export class ServiceProviderService {
+  GROUPED_SCOPES = {
+    identity: [
+      "openid",
+      "given_name",
+      "usual_name",
+      "email",
+      "uid",
+      "siren",
+      "siret",
+      "organizational_unit",
+      "belonging_population",
+      "phone",
+      "chorusdt",
+      "idp_id",
+      "idp_acr",
+      "custom",
+      "roles",
+      "organization_label",
+    ],
+    desk: [
+      "groups",
+      "lasuite_visio",
+      "lasuite_visio:rooms:list",
+      "lasuite_visio:rooms:retrieve",
+      "lasuite_visio:rooms:update",
+      "lasuite_visio:rooms:delete",
+      "lasuite_visio:rooms:create",
+    ],
+  };
   constructor(
     @InjectRepository(ServiceProviderFromDb, "fc-mongo")
     private readonly serviceProviderRepository: Repository<ServiceProviderFromDb>,
@@ -199,6 +228,10 @@ export class ServiceProviderService {
       await this.serviceProviderRepository.findAndCount(paginationParams);
 
     return { items, total };
+  }
+
+  getScopesGroupedByFd() {
+    return this.GROUPED_SCOPES;
   }
 
   private transformDtoIntoEntity(
