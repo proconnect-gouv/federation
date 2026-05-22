@@ -114,6 +114,7 @@ describe("ServiceProviderController", () => {
     "idp_id",
     "custom",
     "roles",
+    "organization_label",
   ];
 
   const userMock = "toto";
