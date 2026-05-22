@@ -5,7 +5,6 @@ import { FileStorageService } from "../file-storage/file-storage.service";
 import { GristPublisherService } from "../grist-publisher/grist-publisher.service";
 import { IdentityProviderModule } from "../identity-provider";
 import { PaginationService } from "../pagination";
-import { ScopesModule } from "../scopes";
 import { SecretManagerService } from "../utils/secret-manager.service";
 import { SecretAdapter } from "../utils/secret.adapter";
 import { ServiceProviderController } from "./service-provider.controller";
@@ -15,7 +14,6 @@ import { ServiceProviderService } from "./service-provider.service";
 @Module({
   imports: [
     TypeOrmModule.forFeature([ServiceProviderFromDb, FileStorage], "fc-mongo"),
-    ScopesModule,
     IdentityProviderModule,
   ],
   controllers: [ServiceProviderController],

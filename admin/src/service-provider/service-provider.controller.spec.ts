@@ -5,13 +5,10 @@ import {
   identityProviderFactory,
   IdentityProviderService,
 } from "../identity-provider";
-import { ScopesService } from "../scopes";
 import { serviceProviderFactory } from "./fixtures";
 import { ServiceProviderController } from "./service-provider.controller";
 import { ServiceProviderFromDb } from "./service-provider.mongodb.entity";
 import { ServiceProviderService } from "./service-provider.service";
-
-const id: ObjectId = new ObjectId("5d9c677da8bb151b00720451");
 
 const scopeList = ["openid", "given_name", "family_name", "email"];
 
@@ -25,6 +22,7 @@ describe("ServiceProviderController", () => {
 
   const serviceProviderServiceMock = {
     createServiceProvider: jest.fn(),
+    getScopesGroupedByFd: jest.fn(),
     paginate: jest.fn(),
     find: jest.fn(),
     findById: jest.fn(),
@@ -77,30 +75,13 @@ describe("ServiceProviderController", () => {
     csrfToken: () => "mygreatcsrftoken",
   };
 
-  const scopesServiceMock = {
-    getAll: jest.fn(),
-    getScopesGroupedByFd: jest.fn(),
-  };
-
   const identityProviderServiceMock = {
     getAll: jest.fn(),
   };
 
-  const scopesGroupMock = {
-    "Direction générale des Finances publiques": [
-      {
-        fd: "typeMockValue",
-        scope: "scopeMockValue",
-        label: "labelMockValue",
-      },
-    ],
-    "Caisse nationale de l'assurance maladie": [
-      {
-        fd: "typeMockValue",
-        scope: "scopeMockValue",
-        label: "labelMockValue",
-      },
-    ],
+  const scopesGroupedByFd = {
+    "Direction générale des Finances publiques": ["scopeMockValue"],
+    "Caisse nationale de l'assurance maladie": ["scopeMockValue"],
   };
 
   const defaultScopes = [
@@ -125,7 +106,6 @@ describe("ServiceProviderController", () => {
       providers: [
         ServiceProviderController,
         ServiceProviderService,
-        ScopesService,
         IdentityProviderService,
       ],
     })
@@ -133,8 +113,6 @@ describe("ServiceProviderController", () => {
       .useValue(serviceProviderRepository)
       .overrideProvider(ServiceProviderService)
       .useValue(serviceProviderServiceMock)
-      .overrideProvider(ScopesService)
-      .useValue(scopesServiceMock)
       .overrideProvider(IdentityProviderService)
       .useValue(identityProviderServiceMock)
       .compile();
@@ -149,6 +127,9 @@ describe("ServiceProviderController", () => {
 
     renderMock.render.mockReturnValueOnce(true);
     res.status.mockReturnValueOnce(renderMock);
+    serviceProviderServiceMock.getScopesGroupedByFd.mockReturnValue(
+      scopesGroupedByFd,
+    );
     const identityProvidersMock = [
       identityProviderFactory.createIdentityProviderFromDb({}),
       identityProviderFactory.createIdentityProviderFromDb({}),
@@ -373,10 +354,6 @@ describe("ServiceProviderController", () => {
   });
 
   describe("showCreationForm()", () => {
-    beforeEach(() => {
-      scopesServiceMock.getScopesGroupedByFd.mockResolvedValue(scopesGroupMock);
-    });
-
     it("Should get service provider creation and render view", async () => {
       // when
       const result = await serviceProviderController.showCreationForm(req);
@@ -384,7 +361,7 @@ describe("ServiceProviderController", () => {
       // then
       expect(result).toEqual({
         csrfToken: "mygreatcsrftoken",
-        scopesGroupedByFd: scopesGroupMock,
+        scopesGroupedByFd: scopesGroupedByFd,
         defaultScopes,
       });
     });
@@ -396,7 +373,7 @@ describe("ServiceProviderController", () => {
       // then
       expect(result).toEqual({
         csrfToken: expect.any(String),
-        scopesGroupedByFd: scopesGroupMock,
+        scopesGroupedByFd: scopesGroupedByFd,
         defaultScopes,
       });
     });
@@ -429,8 +406,6 @@ describe("ServiceProviderController", () => {
         Promise.resolve(spMock),
       );
 
-      scopesServiceMock.getScopesGroupedByFd.mockResolvedValue(scopesGroupMock);
-
       // action
       const result = await serviceProviderController.findOne(idParam, req);
 
@@ -447,7 +422,7 @@ describe("ServiceProviderController", () => {
       expect(result).toEqual({
         id: idParam,
         csrfToken: "mygreatcsrftoken",
-        scopesGroupedByFd: scopesGroupMock,
+        scopesGroupedByFd: scopesGroupedByFd,
         scopesSelected: scopeList,
       });
     });
@@ -704,7 +679,6 @@ describe("ServiceProviderController", () => {
       };
 
       serviceProviderServiceMock.findById.mockResolvedValue(serviceProvider);
-      scopesServiceMock.getScopesGroupedByFd.mockResolvedValue(scopesGroupMock);
       const result = await serviceProviderController.findOne(idParam, req);
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledWith("values", {
@@ -713,7 +687,7 @@ describe("ServiceProviderController", () => {
       expect(result).toEqual({
         id: idParam,
         csrfToken: "mygreatcsrftoken",
-        scopesGroupedByFd: scopesGroupMock,
+        scopesGroupedByFd: scopesGroupedByFd,
         scopesSelected: scopeList,
       });
     });
