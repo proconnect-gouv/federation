@@ -56,7 +56,6 @@ jobs:
           build-args: |
             SOURCE_COMMIT=${{ github.sha }}
             INSTANCE=${{ matrix.instance }}
-            HEALTHCHECK_LIVE=${{ matrix.healthcheck_live || 'http://localhost:3000/livez' }}
           context: ${{ matrix.context }}
           target: ${{ matrix.target || '' }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -104,7 +103,6 @@ jobs:
         include:
           - instance: core-fca-low
             context: ./back
-            healthcheck_live: https://localhost:3000/api/v2/livez
           - instance: core-fca-low-migrator
             context: ./back
             target: migrator
