@@ -58,6 +58,7 @@ jobs:
             INSTANCE=${{ matrix.instance }}
             HEALTHCHECK_LIVE=${{ matrix.healthcheck_live || 'http://localhost:3000/livez' }}
           context: ${{ matrix.context }}
+          target: ${{ matrix.target || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           platforms: ${{ matrix.arch }}
@@ -94,6 +95,7 @@ jobs:
         instance:
           - bridge-http-proxy-rie
           - core-fca-low
+          - core-fca-low-migrator
           - csmr-rie
           - mock-data-provider
           - mock-identity-provider-fca-low
@@ -106,6 +108,9 @@ jobs:
           - instance: core-fca-low
             context: ./back
             healthcheck_live: https://localhost:3000/api/v2/livez
+          - instance: core-fca-low-migrator
+            context: ./back
+            target: migrator
           - instance: csmr-rie
             context: ./back
           - instance: mock-data-provider
