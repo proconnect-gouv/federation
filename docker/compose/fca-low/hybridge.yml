@@ -1,52 +1,6 @@
 services:
   ####################
   ##
-  ##   PUBLIC network
-  ##
-  ####################
-
-  rp-hybridge:
-    image: nginx:1.27.3
-    volumes:
-      - ../../volumes/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ../../volumes/nginx-proxy/includes:/etc/nginx/includes:ro
-      - ../../volumes/rp-bridge-proxy/:/etc/nginx/conf.d:ro
-      - ../../volumes/ssl:/etc/nginx/docker_host:ro
-    networks:
-      public:
-        ipv4_address: 172.16.1.254
-    depends_on:
-      - hybridge-internet
-
-  hybridge-internet:
-    hostname: hybridge-internet
-    build:
-      context: '../../../back'
-      target: dev
-    user: ${CURRENT_UID}
-    depends_on:
-      rp-all:
-        condition: service_started
-    volumes:
-      - '../../../back/apps:/var/www/app/apps:ro'
-      - '../../../back/libs:/var/www/app/libs:ro'
-      - '../../volumes/app:/opt/scripts'
-      - '../../volumes/log:/var/log/app'
-      - '../../volumes/.home:/home'
-      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
-    tmpfs:
-      - /var/www/app/dist:mode=777
-    env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/hybridge-internet.env'
-    tty: true
-    networks:
-      - public
-      - data
-    init: true
-
-  ####################
-  ##
   ##   RIE network
   ##
   ####################

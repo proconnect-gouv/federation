@@ -57,9 +57,9 @@ export class HealthController {
       await this.apiEntreprise.getOrganizationBySiret("13002526500013");
     },
     [CheckTarget.Hyyyperbridge]: async () => {
-      const { bypassHybridgeInternet } =
+      const { enableHyyyperbridge } =
         this.config.get<OidcClientConfig>("OidcClient");
-      if (!bypassHybridgeInternet) return "bypass";
+      if (!enableHyyyperbridge) return "bypass";
 
       const pong = await firstValueFrom(
         this.hyyyperbridge.send<string>("ping", {}).pipe(timeout(5000)),

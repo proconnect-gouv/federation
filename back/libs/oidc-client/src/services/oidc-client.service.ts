@@ -1,15 +1,4 @@
-import {
-  BridgeHttpProxyErrorDto,
-  BridgeHttpProxyProtocolDto,
-  BridgeHttpProxyResponseDto,
-} from "@fc/bridge-http-proxy/dto";
-import {
-  BridgeHttpProxyCsmrException,
-  BridgeHttpProxyMissingVariableException,
-  BridgeHttpProxyRabbitmqException,
-} from "@fc/bridge-http-proxy/exceptions";
 import { ConfigService } from "@fc/config";
-import { MessageType } from "@fc/hybridge-http-proxy/enums";
 import { BridgeError, BridgeProtocol } from "@fc/hybridge-http-proxy/interface";
 import { LoggerService } from "@fc/logger";
 import { HttpProxyProtocol } from "@fc/microservices";
@@ -42,9 +31,19 @@ import {
 import { lastValueFrom, timeout } from "rxjs";
 
 import { SessionService } from "@fc/session";
-import { OidcClientConfig, TokenDto } from "../dto";
+import {
+  HyyyperbridgeEnveloppeDto,
+  HyyyperbridgeErrorDto,
+  HyyyperbridgeResponseDto,
+  OidcClientConfig,
+  TokenDto,
+} from "../dto";
+import { HyyyperbridgeMessageType } from "../enums";
 import {
   AuthorizationResponseErrorException,
+  HyyyperbridgeCsmrException,
+  HyyyperbridgeMissingVariableException,
+  HyyyperbridgeRabbitmqException,
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientIssuerDiscoveryFailedException,
@@ -126,11 +125,11 @@ export class OidcClientService {
     try {
       rawHyyyperbridgeEnveloppe = await lastValueFrom(order);
     } catch (error) {
-      throw new BridgeHttpProxyRabbitmqException(error);
+      throw new HyyyperbridgeRabbitmqException(error);
     }
 
     const hyyyperbridgeEnveloppe = plainToInstance(
-      BridgeHttpProxyProtocolDto,
+      HyyyperbridgeEnveloppeDto,
       rawHyyyperbridgeEnveloppe,
     );
 
@@ -139,19 +138,19 @@ export class OidcClientService {
     );
 
     if (hybridgeEnveloppeValidationErrors.length) {
-      throw new BridgeHttpProxyMissingVariableException();
+      throw new HyyyperbridgeMissingVariableException();
     }
 
     const { type, data: rawHyyyperbridgeData } = hyyyperbridgeEnveloppe;
 
-    if (type === MessageType.DATA) {
+    if (type === HyyyperbridgeMessageType.DATA) {
       const hyyyperbridgeResponse = plainToInstance(
-        BridgeHttpProxyResponseDto,
+        HyyyperbridgeResponseDto,
         rawHyyyperbridgeData,
       );
       const dtoProtocolErrors = await validate(hyyyperbridgeResponse);
       if (dtoProtocolErrors.length) {
-        throw new BridgeHttpProxyMissingVariableException();
+        throw new HyyyperbridgeMissingVariableException();
       }
 
       const { headers, status, statusText } = hyyyperbridgeResponse;
@@ -163,16 +162,16 @@ export class OidcClientService {
       });
     } else {
       const hyyyperbridgeError = plainToInstance(
-        BridgeHttpProxyErrorDto,
+        HyyyperbridgeErrorDto,
         rawHyyyperbridgeData,
       );
       const hyyyperbridgeErrorValidationErrors =
         await validate(hyyyperbridgeError);
       if (hyyyperbridgeErrorValidationErrors.length) {
-        throw new BridgeHttpProxyMissingVariableException();
+        throw new HyyyperbridgeMissingVariableException();
       }
 
-      throw new BridgeHttpProxyCsmrException().from(
+      throw new HyyyperbridgeCsmrException().from(
         rawHyyyperbridgeData as BridgeError,
       );
     }
@@ -222,7 +221,7 @@ export class OidcClientService {
     config: Configuration;
     idp: IdentityProviderMetadata;
   }> {
-    const { timeout, bypassHybridgeInternet } =
+    const { timeout, enableHyyyperbridge } =
       this.config.get<OidcClientConfig>("OidcClient");
     const idp = await this.identityProvider.getById(issuerId);
 
@@ -247,7 +246,7 @@ export class OidcClientService {
       );
       config[customFetch] = this.fetch.bind(
         this,
-        bypassHybridgeInternet && idp.useTheHyyyperbridge,
+        enableHyyyperbridge && idp.useTheHyyyperbridge,
       );
     } else {
       try {
@@ -260,7 +259,7 @@ export class OidcClientService {
             timeout,
             [customFetch]: this.fetch.bind(
               this,
-              bypassHybridgeInternet && idp.useTheHyyyperbridge,
+              enableHyyyperbridge && idp.useTheHyyyperbridge,
             ),
           },
         );

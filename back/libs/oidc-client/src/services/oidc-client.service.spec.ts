@@ -1,8 +1,3 @@
-import {
-  BridgeHttpProxyCsmrException,
-  BridgeHttpProxyMissingVariableException,
-  BridgeHttpProxyRabbitmqException,
-} from "@fc/bridge-http-proxy/exceptions";
 import { ConfigService } from "@fc/config";
 import { MessageType } from "@fc/hybridge-http-proxy/enums";
 import { LoggerService } from "@fc/logger";
@@ -21,6 +16,9 @@ import { getSessionServiceMock } from "@mocks/session";
 import { SessionService } from "@fc/session";
 import {
   AuthorizationResponseErrorException,
+  HyyyperbridgeCsmrException,
+  HyyyperbridgeMissingVariableException,
+  HyyyperbridgeRabbitmqException,
   OidcClientIdpDisabledException,
   OidcClientIdpNotFoundException,
   OidcClientIssuerDiscoveryFailedException,
@@ -104,7 +102,7 @@ describe("OidcClientService", () => {
     service = module.get<OidcClientService>(OidcClientService);
     configServiceMock.get.mockReturnValue({
       timeout: 6000,
-      bypassHybridgeInternet: false,
+      enableHyyyperbridge: false,
     });
   });
 
@@ -188,14 +186,14 @@ describe("OidcClientService", () => {
           if (key === "HyyyperbridgeBroker") {
             return { requestTimeout: requestTimeoutMock };
           }
-          return { timeout: 6000, bypassHybridgeInternet: true };
+          return { timeout: 6000, enableHyyyperbridge: true };
         });
         brokerMock.send.mockReturnValue({
           pipe: jest.fn().mockReturnValue(pipedObservableMock),
         });
       });
 
-      it("should throw BridgeHttpProxyRabbitmqException when broker fails", async () => {
+      it("should throw HyyyperbridgeRabbitmqException when broker fails", async () => {
         // Given
         (rxjs.lastValueFrom as jest.Mock).mockRejectedValue(
           new Error("broker error"),
@@ -203,11 +201,11 @@ describe("OidcClientService", () => {
 
         // When / Then
         await expect(service.fetch(true, urlMock, optionsMock)).rejects.toThrow(
-          BridgeHttpProxyRabbitmqException,
+          HyyyperbridgeRabbitmqException,
         );
       });
 
-      it("should throw BridgeHttpProxyMissingVariableException when envelope validation fails", async () => {
+      it("should throw HyyyperbridgeMissingVariableException when envelope validation fails", async () => {
         // Given
         (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
           type: "invalid",
@@ -223,7 +221,7 @@ describe("OidcClientService", () => {
 
         // When / Then
         await expect(service.fetch(true, urlMock, optionsMock)).rejects.toThrow(
-          BridgeHttpProxyMissingVariableException,
+          HyyyperbridgeMissingVariableException,
         );
       });
 
@@ -261,7 +259,7 @@ describe("OidcClientService", () => {
           expect(await result.text()).toBe('{"result":"success"}');
         });
 
-        it("should throw BridgeHttpProxyMissingVariableException when response DTO validation fails", async () => {
+        it("should throw HyyyperbridgeMissingVariableException when response DTO validation fails", async () => {
           // Given
           (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
             type: MessageType.DATA,
@@ -280,7 +278,7 @@ describe("OidcClientService", () => {
           // When / Then
           await expect(
             service.fetch(true, urlMock, optionsMock),
-          ).rejects.toThrow(BridgeHttpProxyMissingVariableException);
+          ).rejects.toThrow(HyyyperbridgeMissingVariableException);
         });
       });
 
@@ -291,7 +289,7 @@ describe("OidcClientService", () => {
           name: "TestError",
         };
 
-        it("should throw BridgeHttpProxyCsmrException on valid error data", async () => {
+        it("should throw HyyyperbridgeCsmrException on valid error data", async () => {
           // Given
           (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
             type: MessageType.ERROR,
@@ -310,10 +308,10 @@ describe("OidcClientService", () => {
           // When / Then
           await expect(
             service.fetch(true, urlMock, optionsMock),
-          ).rejects.toThrow(BridgeHttpProxyCsmrException);
+          ).rejects.toThrow(HyyyperbridgeCsmrException);
         });
 
-        it("should throw BridgeHttpProxyMissingVariableException when error DTO validation fails", async () => {
+        it("should throw HyyyperbridgeMissingVariableException when error DTO validation fails", async () => {
           // Given
           (rxjs.lastValueFrom as jest.Mock).mockResolvedValue({
             type: MessageType.ERROR,
@@ -332,7 +330,7 @@ describe("OidcClientService", () => {
           // When / Then
           await expect(
             service.fetch(true, urlMock, optionsMock),
-          ).rejects.toThrow(BridgeHttpProxyMissingVariableException);
+          ).rejects.toThrow(HyyyperbridgeMissingVariableException);
         });
       });
 
@@ -425,11 +423,11 @@ describe("OidcClientService", () => {
       expect(result).toEqual({ config: configMock, idp: idpWithoutDiscovery });
     });
 
-    it("should set customFetch on non-discovery config routed through hyyyperbridge when bypassHybridgeInternet and useTheHyyyperbridge are both true", async () => {
+    it("should set customFetch on non-discovery config routed through hyyyperbridge when enableHyyyperbridge and useTheHyyyperbridge are both true", async () => {
       // Given
       configServiceMock.get.mockReturnValue({
         timeout: 6000,
-        bypassHybridgeInternet: true,
+        enableHyyyperbridge: true,
       });
       const idp = { ...idpMock, discovery: false, useTheHyyyperbridge: true };
       const configMock: Record<string | symbol, any> = {};
@@ -471,11 +469,11 @@ describe("OidcClientService", () => {
       expect(result).toEqual({ config: configMock, idp: idpMock });
     });
 
-    it("should pass useTheHyyyperbridge as true when bypassHybridgeInternet and idp.useTheHyyyperbridge are both true", async () => {
+    it("should pass useTheHyyyperbridge as true when enableHyyyperbridge and idp.useTheHyyyperbridge are both true", async () => {
       // Given
       configServiceMock.get.mockReturnValue({
         timeout: 6000,
-        bypassHybridgeInternet: true,
+        enableHyyyperbridge: true,
       });
       const idpWithHyyyperbridge = {
         ...idpMock,
@@ -500,11 +498,11 @@ describe("OidcClientService", () => {
       );
     });
 
-    it("should pass useTheHyyyperbridge as false when bypassHybridgeInternet is false", async () => {
+    it("should pass useTheHyyyperbridge as false when enableHyyyperbridge is false", async () => {
       // Given
       configServiceMock.get.mockReturnValue({
         timeout: 6000,
-        bypassHybridgeInternet: false,
+        enableHyyyperbridge: false,
       });
       const idpWithHyyyperbridge = {
         ...idpMock,

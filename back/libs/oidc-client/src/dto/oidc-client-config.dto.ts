@@ -29,5 +29,5 @@ export class OidcClientConfig {
   readonly postLogoutRedirectUri: string;
 
   @IsBoolean()
-  readonly bypassHybridgeInternet: boolean;
+  readonly enableHyyyperbridge: boolean;
 }

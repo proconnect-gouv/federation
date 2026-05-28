@@ -93,7 +93,6 @@ jobs:
       fail-fast: false
       matrix:
         instance:
-          - bridge-http-proxy-rie
           - core-fca-low
           - core-fca-low-migrator
           - csmr-rie
@@ -103,8 +102,6 @@ jobs:
           - api-partner
           - fc-exploitation-v2
         include:
-          - instance: bridge-http-proxy-rie
-            context: ./back
           - instance: core-fca-low
             context: ./back
             healthcheck_live: https://localhost:3000/api/v2/livez

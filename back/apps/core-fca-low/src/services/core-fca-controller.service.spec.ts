@@ -89,7 +89,7 @@ describe("CoreFcaControllerService", () => {
           timeout: 5000,
           redirectUri: "https://mock-redirect-uri.com",
           postLogoutRedirectUri: "https://mock-post-logout-uri.com",
-          bypassHybridgeInternet: true,
+          enableHyyyperbridge: true,
         } as OidcClientConfig;
       if (key === "App")
         return {
@@ -198,7 +198,7 @@ describe("CoreFcaControllerService", () => {
             timeout: 5000,
             redirectUri: "https://mock-redirect-uri.com",
             postLogoutRedirectUri: "https://mock-post-logout-uri.com",
-            bypassHybridgeInternet: true,
+            enableHyyyperbridge: true,
           } as OidcClientConfig;
         if (key === "App")
           return {

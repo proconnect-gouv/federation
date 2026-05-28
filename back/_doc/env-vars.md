@@ -4,23 +4,10 @@
 
 ## Instances index
 
-1. [bridge-http-proxy-rie](#bridge-http-proxy-rie)
-2. [core-fca-low](#core-fca-low)
-3. [csmr-rie](#csmr-rie)
+1. [core-fca-low](#core-fca-low)
+2. [csmr-rie](#csmr-rie)
 
 ## Variables
-
-### bridge-http-proxy-rie
-
-| Var Name              | Inferred type |
-| --------------------- | ------------- |
-| App_HTTPS_SERVER_CERT | file          |
-| App_HTTPS_SERVER_KEY  | file          |
-| Broker_QUEUE          | string        |
-| Broker_URLS           | json          |
-| LoggerLegacy_FILE     | string        |
-| Logger_THRESHOLD      | string        |
-| REQUEST_TIMEOUT       | string        |
 
 ### core-fca-low
 
@@ -62,7 +49,7 @@
 | Mongoose_USER                                   | string        |
 | Mongoose_WATCHER_DEBOUNCE_WAIT_DURATION         | number        |
 | OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEYS          | json          |
-| OidcClient_FEATURE_BYPASS_HYBRIDGE_INTERNET     | boolean       |
+| OidcClient_FEATURE_ENABLE_HYYYPERBRIDGE         | boolean       |
 | OidcProvider_COOKIES_KEYS                       | json          |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS         | json          |
 | OidcProvider_CRYPTO_SIG_RS256_PRIV_KEYS         | json          |
