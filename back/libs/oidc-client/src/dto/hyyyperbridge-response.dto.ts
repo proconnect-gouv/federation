@@ -1,7 +1,6 @@
-import { BridgeResponse, ValidateHttpHeaders } from "@fc/hybridge-http-proxy";
 import { IsNumber, IsObject, IsString } from "class-validator";
 
-export class BridgeHttpProxyResponseDto implements BridgeResponse {
+export class HyyyperbridgeResponseDto {
   @IsNumber()
   readonly status: number;
 
@@ -9,7 +8,6 @@ export class BridgeHttpProxyResponseDto implements BridgeResponse {
   readonly statusText: string;
 
   @IsObject()
-  @ValidateHttpHeaders()
   readonly headers: Record<string, string>;
 
   /**

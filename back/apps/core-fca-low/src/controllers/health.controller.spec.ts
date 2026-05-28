@@ -27,7 +27,7 @@ describe("HealthController", () => {
       send: jest.fn().mockReturnValue(of("pong")),
     };
     configServiceMock = {
-      get: jest.fn().mockReturnValue({ bypassHybridgeInternet: true }),
+      get: jest.fn().mockReturnValue({ enableHyyyperbridge: true }),
     };
     resMock = {
       status: jest.fn().mockReturnThis(),
@@ -161,7 +161,7 @@ describe("HealthController", () => {
     });
 
     it('should return "ok" when Hyyyperbridge is bypassed', async () => {
-      configServiceMock.get.mockReturnValue({ bypassHybridgeInternet: false });
+      configServiceMock.get.mockReturnValue({ enableHyyyperbridge: false });
 
       const result = await controller.readyz(resMock as any);
 

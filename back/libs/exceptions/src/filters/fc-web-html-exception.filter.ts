@@ -1,5 +1,5 @@
-import { AppConfig } from "@fc/bridge-http-proxy/dto/app-config.dto";
 import { ConfigService } from "@fc/config";
+import { AppConfig } from "@fc/core/dto";
 import { UserSession } from "@fc/core/dto/user-session/user-session.dto";
 import { Routes } from "@fc/core/enums/routes.enum";
 import { LoggerService } from "@fc/logger";

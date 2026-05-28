@@ -47,7 +47,5 @@ services:
       - 'fia1-low'
       ### RIE
       - 'squid'
-      - 'hybridge-internet'
       - 'hybridge-rie'
       - 'fia-rie-low'
-      - 'rp-hybridge'

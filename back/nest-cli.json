@@ -47,15 +47,6 @@
         "assets": ["../../../apps/mock-identity-provider-fca-low/**/*.ejs"]
       }
     },
-    "bridge-http-proxy-rie": {
-      "type": "application",
-      "root": "apps/bridge-http-proxy-rie",
-      "entryFile": "main",
-      "sourceRoot": "apps/bridge-http-proxy-rie/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/bridge-http-proxy-rie/tsconfig.app.json"
-      }
-    },
     "csmr-rie": {
       "type": "application",
       "root": "apps/csmr-rie",
