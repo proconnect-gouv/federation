@@ -1,9 +1,7 @@
-import { BridgePayload, ValidateHttpHeaders } from "@fc/hybridge-http-proxy";
-import { type AxiosResponseHeaders } from "axios";
 import { Transform } from "class-transformer";
 import { IsIn, IsObject, IsOptional, IsString, IsUrl } from "class-validator";
 
-export class BridgePayloadDto implements BridgePayload {
+export class BridgePayloadDto {
   @IsUrl()
   readonly url: string;
 
@@ -15,8 +13,7 @@ export class BridgePayloadDto implements BridgePayload {
   readonly method: string;
 
   @IsObject()
-  @ValidateHttpHeaders()
-  readonly headers: AxiosResponseHeaders;
+  readonly headers: Record<string, string>;
 
   /**
    * this parameter is voluntary abstract.

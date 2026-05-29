@@ -2,18 +2,7 @@ import { AppRmqConfig } from "@fc/app";
 import { LoggerConfig, LoggerLegacyConfig } from "@fc/logger";
 import { RabbitmqConfig } from "@fc/rabbitmq";
 import { Type } from "class-transformer";
-import {
-  IsBoolean,
-  IsObject,
-  IsOptional,
-  ValidateNested,
-} from "class-validator";
-
-export class HttpProxyBrokerConfig extends RabbitmqConfig {
-  @IsBoolean()
-  @IsOptional()
-  readonly proxyDisabled?: boolean;
-}
+import { IsObject, ValidateNested } from "class-validator";
 
 export class CsmrHttpProxyConfig {
   @IsObject()
@@ -33,6 +22,6 @@ export class CsmrHttpProxyConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => HttpProxyBrokerConfig)
-  readonly HttpProxyBroker: HttpProxyBrokerConfig;
+  @Type(() => RabbitmqConfig)
+  readonly HttpProxyBroker: RabbitmqConfig;
 }
