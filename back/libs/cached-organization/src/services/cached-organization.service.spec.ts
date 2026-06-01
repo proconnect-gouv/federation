@@ -1,5 +1,6 @@
 import { ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Model } from "mongoose";
@@ -15,11 +16,18 @@ describe("CachedOrganizationService", () => {
   const configService = {
     get: jest.fn(),
   };
+  const loggerService = {
+    warn: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CachedOrganizationService,
+        {
+          provide: LoggerService,
+          useValue: loggerService,
+        },
         {
           provide: ConfigService,
           useValue: configService,
@@ -71,6 +79,26 @@ describe("CachedOrganizationService", () => {
       const roles = service.computeRoles(cachedOrganization);
 
       expect(roles).toEqual([]);
+    });
+
+    it("should log a warning if there is a mismatch between isPublicService and computeServicePublicInfo", () => {
+      const cachedOrganization = {
+        siret: "12345678901234",
+        categorieJuridique: "5546",
+        etatAdministratif: "A",
+      } as CachedOrganization;
+
+      const roles = service.computeRoles(cachedOrganization);
+
+      expect(roles).toEqual([]);
+      expect(loggerService.warn).toHaveBeenCalledWith({
+        code: "cached-organization-service-public-mismatch",
+        legacyValue: false,
+        newValue: true,
+        siret: cachedOrganization.siret,
+        etatAdministratif: cachedOrganization.etatAdministratif,
+        categorieJuridique: cachedOrganization.categorieJuridique,
+      });
     });
   });
 

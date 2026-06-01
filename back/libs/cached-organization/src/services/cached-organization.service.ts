@@ -3,16 +3,21 @@ import { Model } from "mongoose";
 
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { isPublicService } from "@proconnect-gouv/proconnect.identite/services/organization";
+import {
+  computeServicePublicInfo,
+  isPublicService,
+} from "@proconnect-gouv/proconnect.identite/services/organization";
 
 import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
 
+import { LoggerService } from "@fc/logger";
 import { CachedOrganization } from "../schemas";
 
 @Injectable()
 export class CachedOrganizationService {
   constructor(
+    private readonly logger: LoggerService,
     private readonly configService: ConfigService,
     private readonly apiEntrepriseService: ApiEntrepriseService,
     @InjectModel("CachedOrganization") private model: Model<CachedOrganization>,
@@ -25,6 +30,22 @@ export class CachedOrganizationService {
       cached_etat_administratif: cachedOrganization.etatAdministratif,
       siret: cachedOrganization.siret,
     });
+    const servicePublicInfo = computeServicePublicInfo({
+      cached_categorie_juridique: cachedOrganization.categorieJuridique,
+      cached_etat_administratif: cachedOrganization.etatAdministratif,
+      siret: cachedOrganization.siret,
+    });
+
+    if (servicePublicInfo.isServicePublic !== isServicePublic) {
+      this.logger.warn({
+        code: "cached-organization-service-public-mismatch",
+        legacyValue: isServicePublic,
+        newValue: servicePublicInfo.isServicePublic,
+        siret: cachedOrganization.siret,
+        etatAdministratif: cachedOrganization.etatAdministratif,
+        categorieJuridique: cachedOrganization.categorieJuridique,
+      });
+    }
 
     if (isServicePublic) {
       roles.push("agent_public");

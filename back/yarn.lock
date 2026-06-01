@@ -1269,10 +1269,10 @@
   resolved "https://registry.yarnpkg.com/@pinojs/redact/-/redact-0.4.0.tgz#c3de060dd12640dcc838516aa2a6803cc7b2e9d6"
   integrity sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==
 
-"@proconnect-gouv/proconnect.annuaire_entreprises@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.annuaire_entreprises/-/proconnect.annuaire_entreprises-1.1.4.tgz#755a7c54464b9590be025869cb0f5e55796241bf"
-  integrity sha512-MQCAG15jFoVkTM9D9uH7c42wnvjwBUCg6Vzh/ZEWVKGcGWr0fmkj9l3QZtu0KFhFHCwBIhsfB1Y0nRRZzs+YpQ==
+"@proconnect-gouv/proconnect.annuaire_entreprises@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.annuaire_entreprises/-/proconnect.annuaire_entreprises-2.0.1.tgz#7787fa049694c8cb3a690ab79615b64e85f7a653"
+  integrity sha512-xsBSHjlKnuE0dDhEiK2hZ+gfsA6T3sARP/i0uYIu8wTo1KxT1zzJGn0LLNeYf0uNUbmgZHbiVFAqaXCWj+zFWw==
 
 "@proconnect-gouv/proconnect.api_entreprise@^2.2.0":
   version "2.2.0"
@@ -1295,16 +1295,30 @@
     nanoid "^5.1.5"
     tld-extract "^2.1.0"
 
-"@proconnect-gouv/proconnect.identite@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-3.0.0.tgz#4d5ed0801097466a4d220d82d520d38abe77a5b6"
-  integrity sha512-gMKQpl+G7uCnWj+0xk+LJJ2Ss9zA0jH+iKlHdMnEhyuqCNbWZK1AWEwl2HkK5Gh/O2MOS3wLwkhaKuHc9PeHQg==
+"@proconnect-gouv/proconnect.identite@^8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-8.1.1.tgz#e8a0c464798343c0f9c601c4da4734e3a583f760"
+  integrity sha512-wHrG7+pWTaSEM6vmpVLNCDtn2H+YDL1G6dJ8edNMltWo1dYrirNUO/0XZE1fKSlA79ez+HOzNth8OsiM4Njr1w==
   dependencies:
     leven "^4.0.0"
     openid-client "^6.6.4"
     sql-template-tag "^5.2.1"
     ts-pattern "^5.7.0"
     zod "^4.3.5"
+
+"@proconnect-gouv/proconnect.insee@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.insee/-/proconnect.insee-2.0.0.tgz#3de92964f608a01d774ce4b5a11ef8fa2acee5b9"
+  integrity sha512-RKox55L7Sc2VheP94vjPQVF57hftskmLucEgFJewXIgfpl82UfBNdqUX2hySthOt3eWJDSzVbMqEcjsXlonqlA==
+  dependencies:
+    openapi-fetch "^0.17.0"
+
+"@proconnect-gouv/proconnect.registre_national_entreprises@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.registre_national_entreprises/-/proconnect.registre_national_entreprises-4.0.0.tgz#9a5c47b9f00ad44ff752811c2f5c6f5b942cbf5b"
+  integrity sha512-sXarhXkMhlss+i2KfUwjDQHU2ZeZCmgx5PN/bbs6zSZbdYFBrH62pQRKn6Vm3U2JaYJEXiwrHXl6CNMwi7wBlQ==
+  dependencies:
+    openapi-fetch "^0.17.0"
 
 "@scure/base@^2.0.0":
   version "2.0.0"
