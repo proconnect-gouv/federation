@@ -30,7 +30,12 @@ describe("IdentitySanitizer", () => {
       logger,
       null,
     );
-    cachedOrganizationService = new CachedOrganizationService(null, null, null);
+    cachedOrganizationService = new CachedOrganizationService(
+      null,
+      null,
+      null,
+      null,
+    );
     cachedOrganizationService.computeRoles = jest.fn();
     cachedOrganizationService.getCachedOrganizationBySiret = jest.fn();
     config = new ConfigService({ config: {}, schema: {} } as any);
