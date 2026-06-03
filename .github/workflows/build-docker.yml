@@ -101,6 +101,7 @@ jobs:
           - mock-service-provider-fca-low
           - api-partner
           - fc-exploitation-v2
+          - statisticat
         include:
           - instance: core-fca-low
             context: ./back
@@ -120,6 +121,8 @@ jobs:
             context: ./pcdbapi
           - instance: fc-exploitation-v2
             context: ./admin
+          - instance: statisticat
+            context: ./statisticat
         arch:
           - amd64
           - arm64
