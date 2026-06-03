@@ -139,6 +139,8 @@ async def create_oidc_client(data: OidcClient, request: Request):
                 "phone",
                 "idp_id",
                 "custom",
+                "roles",
+                "organization_label",
             ],
         }
     )
