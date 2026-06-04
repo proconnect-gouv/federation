@@ -1269,10 +1269,10 @@
   resolved "https://registry.yarnpkg.com/@pinojs/redact/-/redact-0.4.0.tgz#c3de060dd12640dcc838516aa2a6803cc7b2e9d6"
   integrity sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==
 
-"@proconnect-gouv/proconnect.annuaire_entreprises@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.annuaire_entreprises/-/proconnect.annuaire_entreprises-2.0.1.tgz#7787fa049694c8cb3a690ab79615b64e85f7a653"
-  integrity sha512-xsBSHjlKnuE0dDhEiK2hZ+gfsA6T3sARP/i0uYIu8wTo1KxT1zzJGn0LLNeYf0uNUbmgZHbiVFAqaXCWj+zFWw==
+"@proconnect-gouv/proconnect.annuaire_entreprises@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.annuaire_entreprises/-/proconnect.annuaire_entreprises-2.0.2.tgz#c3fa9ea696171aa22bfd9c44356f46b7aaed74ff"
+  integrity sha512-Ip82iwCxiz0N3rT7sm45hNO+lJPBrbM7xTPeoAnCavkwi45jhZLgMxm++cDkwiHhVw4u0hwuV4BCPJ4/QCPxKg==
 
 "@proconnect-gouv/proconnect.api_entreprise@^2.2.0":
   version "2.2.0"
@@ -1295,10 +1295,10 @@
     nanoid "^5.1.5"
     tld-extract "^2.1.0"
 
-"@proconnect-gouv/proconnect.identite@^8.1.1":
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-8.1.1.tgz#e8a0c464798343c0f9c601c4da4734e3a583f760"
-  integrity sha512-wHrG7+pWTaSEM6vmpVLNCDtn2H+YDL1G6dJ8edNMltWo1dYrirNUO/0XZE1fKSlA79ez+HOzNth8OsiM4Njr1w==
+"@proconnect-gouv/proconnect.identite@^9.1.2":
+  version "9.1.2"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.identite/-/proconnect.identite-9.1.2.tgz#4bdd1e70aa64b59a4bed68242437c60206def5be"
+  integrity sha512-Y2fz2F5MlrGbnTIdEm30gcfTM8gCWtEqE3ypqHGPYYjgg2IdvqliqCmK145T2lIBs/cFsT3P2MRS7Fb+BiL49g==
   dependencies:
     leven "^4.0.0"
     openid-client "^6.6.4"
