@@ -59,14 +59,37 @@ describe("CachedOrganizationService", () => {
     it("should return agent_public role when organization is public service", () => {
       const cachedOrganization = {
         siret: "12345678901234",
-        categorieJuridique: "7210",
+        categorieJuridique: "7410", // Groupement d'intérêt public (GIP)
         etatAdministratif: "A",
       } as CachedOrganization;
 
       const roles = service.computeRoles(cachedOrganization);
 
       expect(roles).toContain("agent_public");
-      expect(roles.length).toBe(1);
+    });
+
+    it("should return agent_public_territorial role when organization is public service territorial", () => {
+      const cachedOrganization = {
+        siret: "12345678901234",
+        categorieJuridique: "7220", // Département
+        etatAdministratif: "A",
+      } as CachedOrganization;
+
+      const roles = service.computeRoles(cachedOrganization);
+
+      expect(roles).toContain("agent_public_territorial");
+    });
+
+    it("should return agent_public_etat role when organization is public service state", () => {
+      const cachedOrganization = {
+        siret: "12345678901234",
+        categorieJuridique: "4160", // Institution Banque de France
+        etatAdministratif: "A",
+      } as CachedOrganization;
+
+      const roles = service.computeRoles(cachedOrganization);
+
+      expect(roles).toContain("agent_public_etat");
     });
 
     it("should return empty roles array when organization is not public service", () => {
@@ -79,26 +102,6 @@ describe("CachedOrganizationService", () => {
       const roles = service.computeRoles(cachedOrganization);
 
       expect(roles).toEqual([]);
-    });
-
-    it("should log a warning if there is a mismatch between isPublicService and computeServicePublicInfo", () => {
-      const cachedOrganization = {
-        siret: "12345678901234",
-        categorieJuridique: "5546",
-        etatAdministratif: "A",
-      } as CachedOrganization;
-
-      const roles = service.computeRoles(cachedOrganization);
-
-      expect(roles).toEqual([]);
-      expect(loggerService.warn).toHaveBeenCalledWith({
-        code: "cached-organization-service-public-mismatch",
-        legacyValue: false,
-        newValue: true,
-        siret: cachedOrganization.siret,
-        etatAdministratif: cachedOrganization.etatAdministratif,
-        categorieJuridique: cachedOrganization.categorieJuridique,
-      });
     });
   });
 

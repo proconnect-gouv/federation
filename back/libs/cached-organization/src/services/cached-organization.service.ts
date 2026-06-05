@@ -3,10 +3,7 @@ import { Model } from "mongoose";
 
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import {
-  computeServicePublicInfo,
-  isPublicService,
-} from "@proconnect-gouv/proconnect.identite/services/organization";
+import { computeServicePublicInfo } from "@proconnect-gouv/proconnect.identite/services/organization";
 
 import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
@@ -25,30 +22,20 @@ export class CachedOrganizationService {
 
   computeRoles(cachedOrganization: CachedOrganization): string[] {
     const roles: string[] = [];
-    const isServicePublic = isPublicService({
-      cached_categorie_juridique: cachedOrganization.categorieJuridique,
-      cached_etat_administratif: cachedOrganization.etatAdministratif,
-      siret: cachedOrganization.siret,
-    });
     const servicePublicInfo = computeServicePublicInfo({
       cached_categorie_juridique: cachedOrganization.categorieJuridique,
       cached_etat_administratif: cachedOrganization.etatAdministratif,
       siret: cachedOrganization.siret,
     });
 
-    if (servicePublicInfo.isServicePublic !== isServicePublic) {
-      this.logger.warn({
-        code: "cached-organization-service-public-mismatch",
-        legacyValue: isServicePublic,
-        newValue: servicePublicInfo.isServicePublic,
-        siret: cachedOrganization.siret,
-        etatAdministratif: cachedOrganization.etatAdministratif,
-        categorieJuridique: cachedOrganization.categorieJuridique,
-      });
-    }
-
-    if (isServicePublic) {
+    if (servicePublicInfo.isServicePublic) {
       roles.push("agent_public");
+    }
+    if (!!servicePublicInfo.isCollectivite) {
+      roles.push("agent_public_territorial");
+    }
+    if (!!servicePublicInfo.isAdministrationEtat) {
+      roles.push("agent_public_etat");
     }
 
     return roles;

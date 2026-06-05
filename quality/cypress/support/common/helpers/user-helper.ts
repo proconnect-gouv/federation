@@ -30,7 +30,7 @@ export function getDefaultUser(): User {
     siret: "21920023500014",
     uid: "1",
     usual_name: "Doe",
-    roles: ["agent_public"],
+    roles: ["agent_public", "agent_public_territorial"],
     organization_label: "Commune de clamart - Mairie",
   };
 }
