@@ -4,8 +4,6 @@ services:
     build:
       context: '../..'
       dockerfile: 'builds/mongodb/Dockerfile'
-      args:
-        MONGO_VERSION: '5.0.23'
     volumes:
       - '../../volumes/mongo-fca-low/scripts:/opt/scripts'
       - '../../volumes/mongo-fca-low/initdb.d:/docker-entrypoint-initdb.d'
