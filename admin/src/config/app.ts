@@ -2,7 +2,7 @@ import { IConfig } from "../interfaces";
 import { Platform } from "../utils/instance.enum";
 
 export default {
-  appName: process.env.APP_NAME || "FC_EXPLOITATION",
+  appName: process.env.APP_NAME || "Admin ProConnect",
   appFqdn:
     process.env.APP_FQDN || "fc-exploitation.docker.dev-franceconnect.fr",
   environment: process.env.ENV_NAME || "development",
