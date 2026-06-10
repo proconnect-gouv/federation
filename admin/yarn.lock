@@ -906,10 +906,10 @@
     path-to-regexp "8.4.2"
     tslib "2.8.1"
 
-"@nestjs/testing@^11.1.19":
-  version "11.1.19"
-  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-11.1.19.tgz#1bb72dbeb4de6fee23d3f1efe310970e5c9b0cb7"
-  integrity sha512-/UFNWXvPEdu4v4DlC5oWLbGKmD27LehLK06b8oLzs6D6lf4vAQTdST8LRAXBadyMUQnVEQWMuBo3CtAVtlfXtQ==
+"@nestjs/testing@^11.1.24":
+  version "11.1.24"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-11.1.24.tgz#ccc4c759d6b84c09dd27c9fc0208c5a1d4cd446f"
+  integrity sha512-+4M4UAnhtprBQN0J2uI6IP0wDqhy9aH8XCMu5SO8oCi0oB04YXA4a4PAEkxmsPn7gHW4dj1u4GFteNQOWgvTJw==
   dependencies:
     tslib "2.8.1"
 
