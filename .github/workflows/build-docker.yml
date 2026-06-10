@@ -8,7 +8,7 @@ on:
     branches:
       - main
     tags:
-      - "*"
+      - "pc-*"
 
 jobs:
   build:

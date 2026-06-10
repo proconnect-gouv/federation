@@ -2,6 +2,8 @@ name: 💚 CI Tests - Federation Admin
 
 on:
   push:
+    branches-ignore:
+      - main
 
 permissions:
   contents: read

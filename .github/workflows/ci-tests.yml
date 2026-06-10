@@ -2,6 +2,8 @@ name: 💚 CI Tests
 
 on:
   push:
+    branches-ignore:
+      - main
 
 permissions:
   contents: read
@@ -227,6 +229,6 @@ jobs:
       matrix:
         include:
           - stack: medium
-            tags: 'not @hybridge and not @ignore'
+            tags: "not @hybridge and not @ignore"
           - stack: hybridge
-            tags: '@hybridge'
+            tags: "@hybridge"
