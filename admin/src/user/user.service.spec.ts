@@ -346,7 +346,7 @@ describe("UserService", () => {
 
       configServiceMock.get.mockReturnValueOnce({
         app_root: "/foo/bar",
-        appName: "Exploitation",
+        appName: "Admin ProConnect",
       });
 
       // Private method testing https://stackoverflow.com/a/35991491/1071169
@@ -389,7 +389,7 @@ describe("UserService", () => {
 
       configServiceMock.get.mockReturnValueOnce({
         app_root: "/foo/bar",
-        appName: "Exploitation",
+        appName: "Admin ProConnect",
       });
 
       // Private method testing https://stackoverflow.com/a/35991491/1071169
@@ -436,7 +436,7 @@ describe("UserService", () => {
 
       configServiceMock.get.mockReturnValueOnce({
         app_root: "/foo/bar",
-        appName: "Exploitation",
+        appName: "Admin ProConnect",
       });
 
       try {

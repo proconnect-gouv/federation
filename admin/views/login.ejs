@@ -7,7 +7,7 @@
 
 <div class="container-fluid">
   <form class="login-form" method="POST" novalidate data-form-type="login">
-    <h2 class="login-form-heading"><img src="<%= APP_ROOT %>/images/FClogo.png" alt=""></h2>
+    <h2 class="login-form-heading"><img src="<%= APP_ROOT %>/images/logo.png" alt=""></h2>
     <% if (messages.error) {%>
       <div class="alert alert-danger">
         <%= messages.error %>
@@ -51,7 +51,7 @@
       class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>"
       name="_totp">
     <% } %>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Valider</button>
+    <button class="btn btn-lg btn-primary btn-block validate-btn" type="submit">Valider</button>
   </form>
 </div>
 </body>
