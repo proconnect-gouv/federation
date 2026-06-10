@@ -217,7 +217,7 @@ export class InteractionController {
       amr,
       idpAcr,
       idpId,
-      spIdentity: { email, roles },
+      spIdentity: { email, roles, siret, organization_label },
       interactionId,
       isSilentAuthentication,
       spEssentialAcr,
@@ -256,7 +256,9 @@ export class InteractionController {
     const doesNotAcceptPrivateSectorEmployees = spType === "public";
 
     if (!isRoleAgentPublic && doesNotAcceptPrivateSectorEmployees) {
-      throw new CoreFcaAgentNotFromPublicServiceException();
+      throw new CoreFcaAgentNotFromPublicServiceException(
+        `The user's roles are: [${roles.join(", ")}]; the user is linked to the non-public organization: ${organization_label} (SIRET: ${siret})`,
+      );
     }
 
     const interactionAcr = this.oidcAcr.getInteractionAcr({
