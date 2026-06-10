@@ -39,13 +39,12 @@
       data-form-type="password"
       required>
     <% if (showTotpField) {%>
-    <label class="form-label" for="_totp">Code TOTP</label>
     <input
       id="_totp"
       type="text"
       required
       value=""
-      placeholder="123456"
+      placeholder="Code TOTP (ex.: 123456)"
       inputmode="numeric"
       autocomplete="one-time-code"
       class="form-control <%= locals.messages.errors && messages.errors[0]._totp && 'is-invalid' %>"
