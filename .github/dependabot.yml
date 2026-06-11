@@ -50,6 +50,12 @@ updates:
           - "version-update:semver-major"
           - "version-update:semver-minor"
   - package-ecosystem: "docker"
+    directory: "/docker/builds/mongodb"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
     directory: "/admin"
     labels:
       - dependencies
