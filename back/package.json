@@ -90,7 +90,7 @@
     "@nestjs/testing": "^10.4.22",
     "@types/deep-freeze": "^0.1.2",
     "@types/express": "^5.0.6",
-    "@types/express-session": "^1.18.2",
+    "@types/express-session": "^1.19.0",
     "@types/jest": "^29.5.4",
     "@types/lodash": "^4.17.24",
     "@types/node": "^22.5.5",
