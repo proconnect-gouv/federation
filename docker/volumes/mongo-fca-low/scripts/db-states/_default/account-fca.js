@@ -37,5 +37,5 @@ const accountsFca = {
 
 Object.entries(accountsFca).forEach(([key, account]) => {
   print(`${key} > Initializing user account: ${key}...`);
-  db.accountFca.update({ id: account.id }, account, { upsert: true });
+  db.accountFca.replaceOne({ id: account.id }, account, { upsert: true });
 });
