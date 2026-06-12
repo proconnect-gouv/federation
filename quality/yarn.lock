@@ -557,14 +557,14 @@
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-2.2.0.tgz#1311378ed247df6d58f8eb8941921965e97e5747"
   integrity sha512-b8XEupJibegiXV+tDUseI8oLQc8ei3d/4Jkb2RpbHh3MfE054ov3uIz2dhFkB3FI8iwYkEh0gGCApkrYggkPNg==
 
-"@simonsmith/cypress-image-snapshot@^10.0.3":
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/@simonsmith/cypress-image-snapshot/-/cypress-image-snapshot-10.0.3.tgz#fb836344a706bd893a31d8cc56363e909306aded"
-  integrity sha512-IIxXHxVPiBra9J1k0LARJfZYBSGaXF0llh8lpo7fgZSxzuE6cvYbUnH/6LfkcbC6JDEwNOZjC5x7vZDjSkpFmw==
+"@simonsmith/cypress-image-snapshot@^10.0.4":
+  version "10.0.4"
+  resolved "https://registry.yarnpkg.com/@simonsmith/cypress-image-snapshot/-/cypress-image-snapshot-10.0.4.tgz#0ce5e03a0c627f00cf67fbad6e281b612f70fe6b"
+  integrity sha512-DIxnlRLnicyCVf6QXvdj72FTvKWX1u3dmAPRPBWmTq5or/BDLcOJYwxEkt0CsXTAIOyCi1SdQHFlzWbWok5e4g==
   dependencies:
     "@types/pixelmatch" "^5.2.6"
     chalk "^4.1.2"
-    jest-image-snapshot "^6.5.1"
+    jest-image-snapshot "^6.5.2"
     ssim.js "^3.5.0"
 
 "@teppeis/multimaps@3.0.0", "@teppeis/multimaps@^3.0.0":
@@ -2473,10 +2473,10 @@ jackspeak@^3.1.2:
   optionalDependencies:
     "@pkgjs/parseargs" "^0.11.0"
 
-jest-image-snapshot@^6.5.1:
-  version "6.5.1"
-  resolved "https://registry.yarnpkg.com/jest-image-snapshot/-/jest-image-snapshot-6.5.1.tgz#cc714aff86187ecf38f90c506b443769aff87499"
-  integrity sha512-xlJFufgfY2Z4DsRsjcnTwxuynvo1bKdhf4OfcEftNuUAK+BwSCUtPmwlBGJhQ0XJXfm9JMAi/4BhQiHbaV8HrA==
+jest-image-snapshot@^6.5.2:
+  version "6.5.2"
+  resolved "https://registry.yarnpkg.com/jest-image-snapshot/-/jest-image-snapshot-6.5.2.tgz#5bd4ffd36d14f590a3a6264c35a069fe2bc8395d"
+  integrity sha512-frenWThr5ddnnokcX5N4gwi41hA5TiUOdhv/JoGcJrOaktHjrk4/7XbiHKW52lgKX+vei6QkRlgM7fkYQ15nPg==
   dependencies:
     chalk "^4.0.0"
     get-stdin "^5.0.1"
