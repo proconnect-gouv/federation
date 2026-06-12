@@ -16,7 +16,7 @@ describe("Account", () => {
   describe("User has the OPERATOR role", () => {
     beforeEach(() => {
       cy.login(USER_OPERATOR, USER_PASS);
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
     });
 
     it("checking account page is well displayed", () => {
@@ -43,7 +43,7 @@ describe("Account", () => {
       cy.forceLogin(USER_ONLY_ADMIN, USER_PASS);
 
       cy.url().should("contain", `/account`);
-      cy.contains("Gestion des utilisateurs");
+      cy.contains("Gestion des utilisateurs de l'admin");
       cy.contains("Fournisseurs de service").should("not.exist");
       cy.contains("Fournisseurs d'identité").should("not.exist");
       cy.get('form[name="deleteForm"]').should("exist");

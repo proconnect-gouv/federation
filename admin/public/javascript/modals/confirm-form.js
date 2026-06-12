@@ -33,6 +33,14 @@ export function removeItem(element) {
   confirmTotp(element, "Voulez-vous supprimer", "delete");
 }
 
+export function activateItem(element) {
+  confirmTotp(element, "Voulez-vous activer", "activate");
+}
+
+export function deactivateItem(element) {
+  confirmTotp(element, "Voulez-vous désactiver", "deactivate");
+}
+
 export function updateItem(element) {
   confirmTotp(element, "Voulez-vous mettre à jour", "update");
 }

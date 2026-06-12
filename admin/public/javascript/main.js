@@ -14,7 +14,12 @@ import {
 import { handleEmail } from "./handle-email";
 import { itemPerPage } from "./item-par-page";
 import { lazyInit } from "./lazy-init";
-import { removeItem, updateItem } from "./modals/confirm-form";
+import {
+  activateItem,
+  deactivateItem,
+  removeItem,
+  updateItem,
+} from "./modals/confirm-form";
 import { generateNewSecret } from "./modals/generate-client-secret.modal";
 import { validateNotificationCreation } from "./modals/validate-notification-creation";
 import { searchReset } from "./search-reset";
@@ -38,6 +43,8 @@ const initMap = {
   toggleByRadio,
   changeSignature,
   removeItem,
+  activateItem,
+  deactivateItem,
   displayRemoveButtonEvent,
   submitDeletion,
   updateItem,
