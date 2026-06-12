@@ -92,7 +92,8 @@ jobs:
         if: failure()
         run: |
           mkdir -p cypress/logs
-          docker cp pc-exploitation-1:/tmp/.pm2/logs cypress/logs || true
+          docker logs pc-admin-1 &> cypress/logs/admin.log || true
+          docker logs pc-core-1 &> cypress/logs/core-fca-low.log || true
           docker cp pc-rp-all:/var/log/nginx cypress/logs || true
 
       - name: Publish artifacts

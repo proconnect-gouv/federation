@@ -55,18 +55,13 @@ FROM ${NODE_IMAGE} AS production
 
 ARG INSTANCE
 
-RUN yarn global add pm2@6.0.8
-
 ENV NODE_ENV=production
-ENV PM2_HOME=/tmp/.pm2
 
-COPY deploy/pm2/app.json /etc/pm2/
-
-VOLUME ["/data/log", "/etc/ssl/client_certs"]
+VOLUME ["/etc/ssl/client_certs"]
 
 COPY --from=dependencies /var/www/app/node_modules /var/www/app/node_modules
 COPY --from=builder /build/back/dist/apps/${INSTANCE} /var/www/app/dist/instances/app
 
 WORKDIR /var/www/app
 
-CMD ["pm2-runtime", "/etc/pm2/app.json"]
+CMD ["node", "/var/www/app/dist/instances/app/main.js"]
