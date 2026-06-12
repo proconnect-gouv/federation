@@ -19,10 +19,6 @@ export class AuthorizeParamsDto {
 
   @IsOptional()
   @IsString()
-  readonly acr_values?: string;
-
-  @IsOptional()
-  @IsString()
   readonly claims?: string;
 
   @IsString()

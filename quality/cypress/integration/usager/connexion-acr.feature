@@ -16,20 +16,6 @@ Fonctionnalité: Connexion Usager - ACR
       | eidas2 |
       | eidas3 |
 
-  Scénario: Comportement non spécifié lorsque acr_values et acr exigé demandés simultanément
-    # implémentation actuelle : si acr_values est transmis en parallèle d'un claim acr essential,
-    # alors les valeurs fournies dans acr_values sont considérées comme « essential » également
-    Etant donné je navigue sur la page fournisseur de service
-    Et que le fournisseur de service demande un niveau de sécurité "eidas3" via acr_values
-    Et que le fournisseur de service requiert un niveau de sécurité "eidas2"
-    Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@fia1.fr"
-    Quand je clique sur le bouton de connexion
-    Et je m'authentifie
-    # le niveau eidas3, considéré comme essential, n'est pas satisfait
-    # une nouvelle authentification est demandée
-    Alors je suis redirigé vers la page interaction
-
   Plan du Scénario: Erreur d'authentification avec un acr "<acr>" exigé et un acr "<idpAcr>"
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert un niveau de sécurité "<acr>"
@@ -48,7 +34,7 @@ Fonctionnalité: Connexion Usager - ACR
 
   Plan du Scénario: identification niveau "<acrValues>" utilise "<actualAcr>"
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service demande un niveau de sécurité "<acrValues>" via acr_values
+    Et que le fournisseur de service requiert un niveau de sécurité "<acrValues>"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Quand je clique sur le bouton de connexion
@@ -64,7 +50,7 @@ Fonctionnalité: Connexion Usager - ACR
 
   Scénario: FI retourne le niveau eidas3
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
+    Et que le fournisseur de service requiert un niveau de sécurité "eidas1"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
@@ -74,7 +60,7 @@ Fonctionnalité: Connexion Usager - ACR
 
   Scénario: FI retourne un niveau inconnu
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
+    Et que le fournisseur de service requiert un niveau de sécurité "eidas1"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion

@@ -156,9 +156,7 @@ describe("InteractionController", () => {
   describe("getInteraction()", () => {
     beforeEach(() => {
       serviceProviderMock.getById.mockResolvedValue({ name: "spName" });
-      oidcAcrMock.getFilteredAcrParamsFromInteraction.mockReturnValue({
-        acr_values: "high",
-      });
+      oidcAcrMock.getFilteredAcrParamsFromInteraction.mockReturnValue({});
       oidcAcrMock.isEssentialAcrSatisfied.mockReturnValue(true);
       configServiceMock.get.mockReturnValue({ urlPrefix: "/prefix" });
     });

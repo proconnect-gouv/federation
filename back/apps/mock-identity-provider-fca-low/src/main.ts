@@ -47,7 +47,6 @@ app.get("/interaction/:uid", async (req, res, next) => {
         acr:
           get(prompt.details, "acr.value") ||
           get(prompt.details, "acr.values.0") ||
-          params?.acr_values?.split(" ")[0] ||
           "eidas1",
         amr: "pwd",
         debugInfo: JSON.stringify(

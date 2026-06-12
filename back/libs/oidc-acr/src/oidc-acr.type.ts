@@ -4,7 +4,6 @@ type Interaction = Awaited<ReturnType<Provider["interactionDetails"]>>;
 
 export interface ExtendedInteraction extends Interaction {
   params: {
-    acr_values?: string;
     client_id: string;
     redirect_uri: string;
     state: string;
@@ -26,8 +25,6 @@ export interface ExtendedInteraction extends Interaction {
       | UnknownObject;
   };
 }
-
-export type AcrValues = string;
 
 export type AcrClaims = {
   essential: true;

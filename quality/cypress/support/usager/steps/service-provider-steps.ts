@@ -13,7 +13,6 @@ import {
   removeCodeChallengeMethod,
   removeFromRequestedClaims,
   removePrompt,
-  setAcrValues,
   setAsRequestedClaims,
   setAsVoluntaryClaims,
   setCodeChallengeMethod,
@@ -84,13 +83,6 @@ Given(
   "le fournisseur de service envoie la redirect_uri {string}",
   function (redirectUri: string) {
     setRedirectUri(redirectUri);
-  },
-);
-
-Given(
-  "le fournisseur de service demande un niveau de sécurité {string} via acr_values",
-  function (acrValue: string) {
-    setAcrValues(acrValue);
   },
 );
 
