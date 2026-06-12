@@ -16,7 +16,8 @@ services:
     volumes:
       - ../docker/volumes/ssl:/etc/ssl:ro
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     networks:
       - data
     healthcheck:
@@ -44,7 +45,8 @@ services:
       - CLIENT_SECRET_CIPHER_PASS=test-pcdbapi-secret-cipher-passs
       - API_SECRET=pcdb-api-secret-key
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     networks:
       - data
 
