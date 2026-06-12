@@ -20,9 +20,18 @@
               <section class="mb-3 row">
                 <label class="col-2 col-form-label" for="username">Nom d'utilisateur</label>
                 <div class="col-10">
-                  <input id="username" type="text" required
-                  class="form-control <%= locals.messages.errors && messages.errors[0].username && 'is-invalid' %>" placeholder="login"
-                  name="username" value="<%= locals.messages.values && messages.values[0].username %>">
+                  <input
+                    id="username"
+                    type="text"
+                    required
+                    class="form-control <%= locals.messages.errors && messages.errors[0].username && 'is-invalid' %>"
+                    placeholder="login"
+                    name="username"
+                    value="<%= locals.messages.values && messages.values[0].username %>"
+                    autocomplete="off"
+                    data-1p-ignore="true"
+                    data-bwignore="true"
+                    data-form-type="other">
                   <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].username) { %>
                     <% messages.errors[0].username.forEach((error) => { %>
@@ -38,10 +47,19 @@
               <section class="mb-3 row">
                 <label class="col-2 col-form-label" for="email">Email</label>
                 <div class="col-10">
-                  <input id="email" type="text" required
-                  class="form-control <%= locals.messages.errors && messages.errors[0].email && 'is-invalid' %>" placeholder="mail@to.com"
-                  name="email" value="<%= locals.messages.values && messages.values[0].email %>"
-                  pattern="^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$">
+                  <input
+                  id="email"
+                  type="email"
+                  required
+                  class="form-control <%= locals.messages.errors && messages.errors[0].email && 'is-invalid' %>"
+                  placeholder="mail@to.com"
+                  name="email"
+                  value="<%= locals.messages.values && messages.values[0].email %>"
+                  pattern="^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other">
                   <div class="invalid-feedback">
                     <% if (locals.messages.errors && messages.errors[0].email) { %>
                       <% messages.errors[0].email.forEach((error) => { %>
@@ -49,7 +67,7 @@
                       <br>
                       <% }) %>
                     <% } else { %>
-                      Veuillez mettre une adresse email valide ( Ex: email@email.com )
+                      Veuillez mettre une adresse email valide.
                     <% } %>
                   </div>
                 </div>
