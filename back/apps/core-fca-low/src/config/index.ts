@@ -6,7 +6,6 @@ import Exceptions from "./exceptions";
 import HyyyperbridgeBroker from "./hyyyperbridge-broker";
 import IdentityProviderAdapterMongo from "./identity-provider-adapter-mongo";
 import Logger from "./logger";
-import LoggerLegacy from "./logger-legacy";
 import Mongoose from "./mongoose";
 import OidcClient from "./oidc-client";
 import OidcProvider from "./oidc-provider";
@@ -21,7 +20,6 @@ export default {
   Exceptions,
   HyyyperbridgeBroker,
   Logger,
-  LoggerLegacy,
   OidcProvider,
   OidcClient,
   Mongoose,

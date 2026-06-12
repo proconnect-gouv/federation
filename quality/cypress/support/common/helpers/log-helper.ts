@@ -6,34 +6,35 @@ export enum LogResult {
   EventMismatch,
 }
 
-export function clearBusinessLog(logPath?: string): void {
-  const logFilePath: string = logPath || Cypress.env("LOG_FILE_PATH");
-  cy.task("clearBusinessLog", { logFilePath }).should("eq", 0);
+export function clearBusinessLog(): void {
+  cy.task("clearBusinessLog").should("eq", 0);
 }
 
 export function hasBusinessLog(
   event: Record<string, unknown>,
   result: LogResult = LogResult.EventFound,
-  logPath?: string,
+  container?: string,
 ): void {
-  const logFilePath: string = logPath || Cypress.env("LOG_FILE_PATH");
-  cy.task<number>("hasBusinessLog", { event, logFilePath }).then((exitCode) => {
-    const text = result === LogResult.EventFound ? "be" : "not be";
-    expect(
-      exitCode,
-      `${JSON.stringify(event)} should ${text} present in the business log`,
-    ).to.eq(result);
-  });
+  const containerName: string = container || Cypress.env("LOG_CONTAINER_NAME");
+  cy.task<number>("hasBusinessLog", { containerName, event }).then(
+    (exitCode) => {
+      const text = result === LogResult.EventFound ? "be" : "not be";
+      expect(
+        exitCode,
+        `${JSON.stringify(event)} should ${text} present in the business log`,
+      ).to.eq(result);
+    },
+  );
 }
 
 export function getBusinessLogs(
   event: Record<string, unknown>,
-  logPath?: string,
+  container?: string,
 ): Cypress.Chainable<Record<string, string>[]> {
-  const logFilePath: string = logPath || Cypress.env("LOG_FILE_PATH");
+  const containerName: string = container || Cypress.env("LOG_CONTAINER_NAME");
   return cy.task<Record<string, string>[]>("getBusinessLogs", {
+    containerName,
     event,
-    logFilePath,
   });
 }
 
