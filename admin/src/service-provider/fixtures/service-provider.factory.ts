@@ -15,7 +15,7 @@ function createServiceProviderDto(
     redirectUri: ["https://monfs.com"],
     redirectUriLogout: ["https://monfs.com/logout"],
     ipAddresses: ["192.0.0.0"],
-    emails: ["jean.dupont@mail.fr"],
+    email: "jean.dupont@mail.fr",
     active: true,
     type: "private",
     scopes: [],

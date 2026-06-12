@@ -58,7 +58,7 @@ describe("ServiceProviderController", () => {
       "FC-app.02://openid_redirect_url",
       "franceconnect://openid_redirect_url",
     ],
-    emails: ["v@b.com"],
+    email: "v@b.com",
     ipAddresses: ["192.0.0.0"],
     active: true,
     type: "public",
@@ -399,7 +399,7 @@ describe("ServiceProviderController", () => {
       // setup
       const spMock = {
         ...serviceProvider,
-        email: ["v@b.com"],
+        email: "v@b.com",
       };
 
       serviceProviderServiceMock.findById.mockImplementation(() =>
@@ -416,7 +416,7 @@ describe("ServiceProviderController", () => {
         redirectUri: "https://proconnect.gouv.fr",
         ipsRanges: "1.1.1.1",
         postLogoutUri: "https://proconnect.gouv.fr",
-        emails: "v@b.com",
+        email: "v@b.com",
         userinfo_signed_response_alg: "",
       });
       expect(result).toEqual({
@@ -661,8 +661,7 @@ describe("ServiceProviderController", () => {
       const serviceProvider = {
         IPServerAddressesAndRanges: ["1.1.1.1"],
         active: "true",
-        email: ["v@b.com"],
-        emails: "v@b.com",
+        email: "v@b.com",
         ipsRanges: "1.1.1.1",
         key: "cb55015c-7fb5-49b4-9006-e523552bc3e7",
         name: "ProConnect Generate Secret 9",
@@ -699,8 +698,7 @@ describe("ServiceProviderController", () => {
       const serviceProvider = {
         IPServerAddressesAndRanges: ["1.1.1.1"],
         active: "true",
-        email: ["v@b.com"],
-        emails: "v@b.com",
+        email: "v@b.com",
         ipsRanges: "1.1.1.1",
         key: "cb55015c-7fb5-49b4-9006-e523552bc3e7",
         name: "FranceConnect TEST 9",

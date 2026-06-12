@@ -24,7 +24,7 @@ describe("Service provider creation", () => {
     name: "MyFirstSP",
     redirectUri: "https://url.com/login",
     redirectUriLogout: "https://url.com/logout",
-    emails: "titlen@gmail.com",
+    email: "user2@yopmail.com",
     type: "public",
     ipAddresses: "",
   };
@@ -134,25 +134,6 @@ describe("Service provider creation", () => {
       cy.closeBanner(".alert-success");
     });
 
-    it("if we add a service provider with two emails", () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: "2 emails",
-          emails: "titlen@gmail.com\rsecondemail@gmail.com",
-        },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.url().should("eq", `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service 2 emails a été créé avec succès !`,
-      );
-      cy.closeBanner(".alert-success");
-    });
-
     it("if we add a service provider with two ipAddresses", () => {
       // Action
       createServiceProvider(
@@ -175,7 +156,7 @@ describe("Service provider creation", () => {
     it("if we add a service provider with no email", () => {
       // Action
       createServiceProvider(
-        { ...spData, name: "no email", emails: "" },
+        { ...spData, name: "no email", email: "" },
         basicConfiguration,
       );
 
@@ -299,7 +280,7 @@ describe("Service provider creation", () => {
           name: "",
           redirectUri: "",
           redirectUriLogout: "",
-          emails: "",
+          email: "",
           ipAddresses: "",
         },
         basicConfiguration,
@@ -314,9 +295,9 @@ describe("Service provider creation", () => {
         .should("be.visible");
       cy.get('[name="redirectUri"]').should("be.empty");
       cy.get('[name="redirectUriLogout"]').should("be.empty");
-      cy.contains(
-        `Veuillez mettre des emails valides ( Ex: email@email.com )`,
-      ).should("not.be.visible");
+      cy.contains(`Veuillez mettre une adresse email valide.`).should(
+        "not.be.visible",
+      );
       cy.get('[name="ipAddresses"]').should("be.empty");
     });
 
@@ -395,19 +376,19 @@ describe("Service provider creation", () => {
         .should("be.visible");
     });
 
-    it("if an error occured in the form, we display an error (emails)", () => {
+    it("if an error occured in the form, we display an error (email)", () => {
       // Arrange
       const errorFs = {
         ...spData,
         name: "Good name",
-        emails: "****",
+        email: "****",
       };
 
       // Action
       createServiceProvider(errorFs, basicConfiguration);
 
       // Assert
-      cy.contains(`Veuillez mettre des emails valides ( Ex: email@email.com )`)
+      cy.contains(`Veuillez mettre une adresse email valide.`)
         .scrollIntoView()
         .should("be.visible");
     });
