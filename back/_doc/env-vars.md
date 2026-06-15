@@ -37,7 +37,6 @@
 | FQDN                                            | string        |
 | HyyyperbridgeBroker_QUEUE                       | string        |
 | HyyyperbridgeBroker_URLS                        | json          |
-| LoggerLegacy_FILE                               | string        |
 | Logger_THRESHOLD                                | string        |
 | Mongoose_DATABASE                               | string        |
 | Mongoose_HOSTS                                  | string        |
@@ -67,11 +66,10 @@
 
 ### csmr-rie
 
-| Var Name          | Inferred type |
-| ----------------- | ------------- |
-| APP_NAME          | string        |
-| LoggerLegacy_FILE | string        |
-| Logger_THRESHOLD  | string        |
-| REQUEST_TIMEOUT   | string        |
-| RieBroker_QUEUE   | string        |
-| RieBroker_URLS    | json          |
+| Var Name         | Inferred type |
+| ---------------- | ------------- |
+| APP_NAME         | string        |
+| Logger_THRESHOLD | string        |
+| REQUEST_TIMEOUT  | string        |
+| RieBroker_QUEUE  | string        |
+| RieBroker_URLS   | json          |

@@ -6,7 +6,7 @@ Fonctionnalité: Connexion Usager - Token
   # the `WWWAuthenticateChallengeError` may be replaced in an `Unauthorized` error.
   # Because we force NODE_ENV=development locally and in CI when starting the app,
   # the test works in both cases. However, in K8S CI, INTEGRATION (and PRODUCTION),
-  # where we start the app with pm2-runtime without setting this variable, it does not work,
+  # where we start the app without setting this variable, it does not work,
   # because the error is replaced and only an `Unauthorized` message is returned.
 
   @ignoreInteg01

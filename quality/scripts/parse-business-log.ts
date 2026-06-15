@@ -28,7 +28,14 @@ const loadLog = async (path: string): Promise<LogEvent[]> => {
   return rawData
     .split("\n")
     .filter(Boolean)
-    .map((row) => JSON.parse(row))
+    .flatMap((row) => {
+      // The container stdout also contains non-JSON lines (framework output)
+      try {
+        return [JSON.parse(row)];
+      } catch {
+        return [];
+      }
+    })
     .reverse();
 };
 

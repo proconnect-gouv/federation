@@ -2,7 +2,7 @@ import { ApiEntrepriseConfig } from "@fc/api-entreprise";
 import { EmailValidatorConfig } from "@fc/email-validator/dto";
 import { ExceptionsConfig } from "@fc/exceptions/dto";
 import { IdentityProviderAdapterMongoConfig } from "@fc/identity-provider-adapter-mongo";
-import { LoggerConfig, LoggerLegacyConfig } from "@fc/logger";
+import { LoggerConfig } from "@fc/logger";
 import { MongooseConfig } from "@fc/mongoose";
 import { OidcClientConfig } from "@fc/oidc-client";
 import { OidcProviderConfig } from "@fc/oidc-provider";
@@ -44,11 +44,6 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => LoggerConfig)
   readonly Logger: LoggerConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => LoggerLegacyConfig)
-  readonly LoggerLegacy: LoggerLegacyConfig;
 
   @IsObject()
   @ValidateNested()

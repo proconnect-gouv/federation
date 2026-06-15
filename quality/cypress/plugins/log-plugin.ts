@@ -7,35 +7,30 @@ const asyncExec = promisify(exec);
 const EXEC_TOOL_PATH = "./scripts/parse-business-log.ts";
 const GET_BUSINESS_LOG_SCRIPT_PATH = "./scripts/get-business-logs.ts";
 
-interface clearBusinessLogArgs {
-  logFilePath: string;
-}
+// Business events are read from the container stdout (docker logs).
+// The marker is moved forward by clearBusinessLog so each scenario
+// only sees the events emitted after its own start.
+let logsSince = new Date().toISOString();
 
-export const clearBusinessLog = async (
-  args: clearBusinessLogArgs,
-): Promise<number> => {
-  const { logFilePath } = args;
-  const command = `echo "" > '${logFilePath}'`;
-  let exitCode = 0;
-  try {
-    await asyncExec(command);
-  } catch (err) {
-    exitCode = err.code;
-  }
-  return exitCode;
+const dockerLogsCommand = (containerName: string): string =>
+  `docker logs '${containerName}' --since '${logsSince}' 2>&1`;
+
+export const clearBusinessLog = async (): Promise<number> => {
+  logsSince = new Date().toISOString();
+  return 0;
 };
 
 interface hasBusinessLogArgs {
   event: Record<string, unknown>;
-  logFilePath: string;
+  containerName: string;
 }
 
 export const hasBusinessLog = async (
   args: hasBusinessLogArgs,
 ): Promise<number> => {
-  const { event, logFilePath } = args;
+  const { event, containerName } = args;
   const stringifiedEvent = JSON.stringify(event);
-  const command = `tsx ${EXEC_TOOL_PATH} '${logFilePath}' '${stringifiedEvent}'`;
+  const command = `${dockerLogsCommand(containerName)} | tsx ${EXEC_TOOL_PATH} /dev/stdin '${stringifiedEvent}'`;
 
   let exitCode = 0;
   try {
@@ -49,9 +44,9 @@ export const hasBusinessLog = async (
 export const getBusinessLogs = async (
   args: hasBusinessLogArgs,
 ): Promise<Record<string, string>> => {
-  const { event, logFilePath } = args;
+  const { event, containerName } = args;
   const stringifiedEvent = JSON.stringify(event);
-  const command = `tsx ${GET_BUSINESS_LOG_SCRIPT_PATH} '${logFilePath}' '${stringifiedEvent}'`;
+  const command = `${dockerLogsCommand(containerName)} | tsx ${GET_BUSINESS_LOG_SCRIPT_PATH} /dev/stdin '${stringifiedEvent}'`;
 
   const { stdout } = await asyncExec(command);
 
