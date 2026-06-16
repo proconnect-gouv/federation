@@ -55,7 +55,6 @@ async def lifespan(app: FastAPI):
         password=CONFIG["mongodb_password"],
         tls=True,
         tlsCAFile=CONFIG["mongodb_ca_filepath"],
-        tlsCertificateKeyFile=CONFIG["mongodb_certificate_filepath"],
     )
 
     app.db = app.mongodb_client.get_default_database()

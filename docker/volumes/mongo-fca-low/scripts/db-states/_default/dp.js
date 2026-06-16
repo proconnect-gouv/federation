@@ -45,5 +45,5 @@ const dps = {
 /* ------------------------------------------------------------------------------- */
 Object.values(dps).forEach((dp) => {
   print(`${dp.name} > Initializing data provider: ${dp.name}`);
-  db.client.update({ name: dp.name }, dp, { upsert: true });
+  db.client.replaceOne({ name: dp.name }, dp, { upsert: true });
 });
