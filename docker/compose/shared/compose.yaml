@@ -222,6 +222,11 @@ services:
       dockerfile: 'builds/broker/Dockerfile'
     # Specify hostname to fix cluster name
     hostname: broker
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - data
     ports:
