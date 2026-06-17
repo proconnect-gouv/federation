@@ -8,6 +8,7 @@ export default {
   queue: env.string("QUEUE"),
   queueOptions: {
     durable: true,
+    arguments: { "x-queue-type": "quorum" },
   },
   payloadEncoding: "base64",
 
