@@ -49,3 +49,18 @@ services:
       - 'squid'
       - 'hybridge-rie'
       - 'fia-rie-low'
+
+  rabbitmq-cluster:
+    image: alpine
+    depends_on:
+      - 'core-cluster'
+      - 'fsa1-low'
+      - 'fia1-low'
+      ### RIE
+      - 'squid'
+      - 'hybridge-rie-cluster'
+      - 'fia-rie-low'
+      ### Cluster brokers
+      - 'broker-1'
+      - 'broker-2'
+      - 'broker-3'

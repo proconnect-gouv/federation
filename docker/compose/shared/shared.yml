@@ -228,6 +228,66 @@ services:
       - '5672:5672'
       - '15672:15672'
 
+  broker-1:
+    image: rabbitmq:3.12.4-management
+    hostname: broker-1
+    env_file:
+      - ../shared/.env/rabbitmq.env
+    environment:
+      RABBITMQ_NODENAME: rabbit@broker-1
+    volumes:
+      - '../../builds/broker/rabbitmq-cluster.config:/etc/rabbitmq/rabbitmq.config:ro'
+      - '../../builds/broker/definitions.json:/etc/rabbitmq/definitions.json:ro'
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - data
+
+  broker-2:
+    image: rabbitmq:3.12.4-management
+    hostname: broker-2
+    env_file:
+      - ../shared/.env/rabbitmq.env
+    environment:
+      RABBITMQ_NODENAME: rabbit@broker-2
+    volumes:
+      - '../../builds/broker/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro'
+      - '../../builds/broker/definitions.json:/etc/rabbitmq/definitions.json:ro'
+    depends_on:
+      broker-1:
+        condition: service_healthy
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - data
+
+  broker-3:
+    image: rabbitmq:3.12.4-management
+    hostname: broker-3
+    env_file:
+      - ../shared/.env/rabbitmq.env
+    environment:
+      RABBITMQ_NODENAME: rabbit@broker-3
+    volumes:
+      - '../../builds/broker/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro'
+      - '../../builds/broker/definitions.json:/etc/rabbitmq/definitions.json:ro'
+    depends_on:
+      broker-1:
+        condition: service_healthy
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - data
+
   ####################
   # Data storage
   ####################

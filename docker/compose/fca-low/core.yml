@@ -19,3 +19,16 @@ services:
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/core-rie.env'
+
+  core-cluster:
+    extends: core
+    env_file:
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core-cluster.env'
+    depends_on:
+      broker-1:
+        condition: service_healthy
+      broker-2:
+        condition: service_healthy
+      broker-3:
+        condition: service_healthy
