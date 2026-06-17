@@ -53,6 +53,12 @@ services:
         condition: service_healthy
       redis-pwd:
         condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO', '/dev/null', '--no-check-certificate', 'https://localhost:3000/api/v2/readyz?exclude=api-entreprise,hyyyperbridge']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     volumes:
       - '../../../back/apps:/var/www/app/apps:ro'
       - '../../../back/libs:/var/www/app/libs:ro'
