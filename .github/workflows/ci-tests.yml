@@ -198,7 +198,7 @@ jobs:
 
       - name: Execute e2e tests
         run: |
-          yarn test:low:chrome-desktop -c video=false --env TAGS="${{ matrix.tags }}"
+          yarn test:low:chrome-desktop -c video=false --env TAGS="${{ matrix.tags }}" --env LOG_CONTAINER_NAME="${{ matrix.log_container || 'pc-core-1' }}"
           yarn report
 
       - name: Create artifacts-logs directory
@@ -230,3 +230,6 @@ jobs:
             tags: 'not @hybridge and not @ignore'
           - stack: hybridge
             tags: '@hybridge'
+          - stack: redis-sentinel
+            tags: 'not @hybridge and not @ignore'
+            log_container: pc-core-sentinel-1
