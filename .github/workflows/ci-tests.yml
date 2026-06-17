@@ -230,3 +230,5 @@ jobs:
             tags: 'not @hybridge and not @ignore'
           - stack: hybridge
             tags: '@hybridge'
+          - stack: rabbitmq-cluster
+            tags: '@hybridge'
