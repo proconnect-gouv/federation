@@ -49,3 +49,15 @@ services:
       - 'squid'
       - 'hybridge-rie'
       - 'fia-rie-low'
+
+  redis-sentinel:
+    image: alpine
+    depends_on:
+      - 'core-sentinel'
+      - 'fsa1-low'
+      - 'fia1-low'
+      - 'redis-sentinel-master'
+      - 'redis-sentinel-replica'
+      - 'redis-sentinel-1'
+      - 'redis-sentinel-2'
+      - 'redis-sentinel-3'

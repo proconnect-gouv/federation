@@ -19,3 +19,18 @@ services:
     env_file:
       - '../shared/.env/base-app.env'
       - '../fca-low/.env/core-rie.env'
+
+  core-sentinel:
+    extends: core
+    env_file:
+      - '../shared/.env/base-app.env'
+      - '../fca-low/.env/core-sentinel.env'
+    depends_on:
+      redis-sentinel-master:
+        condition: service_healthy
+      redis-sentinel-1:
+        condition: service_healthy
+      redis-sentinel-2:
+        condition: service_healthy
+      redis-sentinel-3:
+        condition: service_healthy
