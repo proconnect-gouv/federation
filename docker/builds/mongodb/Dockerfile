@@ -1,4 +1,4 @@
-FROM mongo:8.2.10
+FROM mongo:8.2.11
 
 RUN openssl rand -base64 756 > /mongo-key-file
 COPY ./volumes/ssl/docker-stack-ca.crt /usr/local/share/ca-certificates/
