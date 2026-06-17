@@ -11,41 +11,60 @@ services:
   small:
     image: alpine
     depends_on:
-      - 'core'
-      - 'fsa1-low'
-      - 'fia1-low'
+      - "core"
+      - "fsa1-low"
+      - "fia1-low"
 
   # -- used for e2e tests
   medium:
     image: alpine
     depends_on:
-      - 'core'
-      - 'admin'
+      - "core"
+      - "admin"
       # -- SP
-      - 'fsa1-low'
-      - 'fsa2-low'
-      - 'fsa3-low'
+      - "fsa1-low"
+      - "fsa2-low"
+      - "fsa3-low"
       # -- IdP
-      - 'fia1-low'
-      - 'fia2-low'
-      - 'moncomptepro'
+      - "fia1-low"
+      - "fia2-low"
+      - "moncomptepro"
       # -- DP
-      - 'dpa1-low'
-      - 'dpa2-low'
+      - "dpa1-low"
+      - "dpa2-low"
 
   lemon-ldap:
     image: alpine
     depends_on:
-      - 'identity-provider-llng'
-      - 'openldap'
+      - "identity-provider-llng"
+      - "openldap"
 
   hybridge:
     image: alpine
     depends_on:
-      - 'core'
-      - 'fsa1-low'
-      - 'fia1-low'
+      - "core"
+      - "fsa1-low"
+      - "fia1-low"
       ### RIE
-      - 'squid'
-      - 'hybridge-rie'
-      - 'fia-rie-low'
+      - "squid"
+      - "hybridge-rie"
+      - "fia-rie-low"
+
+  redis-sentinel:
+    image: alpine
+    depends_on:
+      - "admin"
+      - "core-sentinel"
+      - "dpa1-low"
+      - "dpa2-low"
+      - "fia1-low"
+      - "fia2-low"
+      - "fsa1-low"
+      - "fsa2-low"
+      - "fsa3-low"
+      - "moncomptepro"
+      - "redis-sentinel-1"
+      - "redis-sentinel-2"
+      - "redis-sentinel-3"
+      - "redis-sentinel-master"
+      - "redis-sentinel-replica"
