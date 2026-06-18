@@ -136,7 +136,7 @@ services:
       - public
 
   base-redis:
-    image: 'bitnamilegacy/redis:6.0.15'
+    image: 'bitnamilegacy/redis:8.0.3'
     env_file:
       - ../shared/.env/redis.env
     healthcheck:
