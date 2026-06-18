@@ -44,7 +44,7 @@ const dataProviderConfigs: { name: string; url: string }[] = JSON.parse(
 );
 const ACR_VALUES_FOR_2FA =
   process.env.ACR_VALUES_FOR_2FA ||
-  "eidas2 eidas3 https://proconnect.gouv.fr/assurance/self-asserted-2fa https://proconnect.gouv.fr/assurance/consistency-checked-2fa";
+  "eidas0-mfa eidas1-mfa eidas2 eidas3 https://proconnect.gouv.fr/assurance/self-asserted-2fa https://proconnect.gouv.fr/assurance/consistency-checked-2fa";
 
 const app = express();
 
