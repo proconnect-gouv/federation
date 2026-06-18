@@ -59,8 +59,11 @@
 | Redis_DB                                        | number        |
 | Redis_ENABLE_TLS_FOR_SENTINEL_MODE              | boolean       |
 | Redis_HOST                                      | string        |
+| Redis_NAME                                      | string        |
 | Redis_PASSWORD                                  | string        |
 | Redis_PORT                                      | number        |
+| Redis_SENTINELS                                 | stringArray   |
+| Redis_SENTINEL_PASSWORD                         | string        |
 | Session_COOKIE_SECRETS                          | json          |
 | Session_USERINFO_CRYPT_KEY                      | string        |
 
