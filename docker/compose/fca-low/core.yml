@@ -2,13 +2,13 @@ services:
   core:
     hostname: core
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-core
     ports:
       - 9229:9229
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/core.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/core.env"
     depends_on:
       squid:
         condition: service_started
@@ -17,5 +17,5 @@ services:
     extends: core
     hostname: core-rie
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/core-rie.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/core-rie.env"
