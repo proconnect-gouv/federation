@@ -20,6 +20,7 @@ CONFIG = {
     "mongodb_password": os.getenv("MONGODB_PASSWORD"),
     "mongodb_certificate_filepath": os.getenv("MONGODB_CERTIFICATE_FILEPATH"),
     "mongodb_ca_filepath": os.getenv("MONGODB_CA_FILEPATH"),
+    "mongodb_tls": os.getenv("MONGODB_TLS", "false").lower() == "true",
     "client_secret_cipher_pass": os.getenv("CLIENT_SECRET_CIPHER_PASS"),
     "api_secret": os.getenv("API_SECRET"),  # shared secret
     "max_timestamp_diff": 300,  # 5 minutes
@@ -53,7 +54,7 @@ async def lifespan(app: FastAPI):
         CONFIG["mongodb_url"],
         username=CONFIG["mongodb_username"],
         password=CONFIG["mongodb_password"],
-        tls=True,
+        tls=CONFIG["mongodb_tls"],
         tlsCAFile=CONFIG["mongodb_ca_filepath"],
     )
 
