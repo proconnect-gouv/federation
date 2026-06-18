@@ -6,29 +6,29 @@ services:
   fsa1-low:
     hostname: fsa1-low
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-sp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fsa1-low.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/fsa1-low.env"
 
   fsa2-low:
     hostname: fsa2-low
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-sp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fsa2-low.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/fsa2-low.env"
 
   fsa3-low:
     hostname: fsa3-low
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-sp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fsa3-low.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/fsa3-low.env"
 
   ####################
   # IDP Mocks
@@ -37,50 +37,50 @@ services:
   fia1-low:
     hostname: fia1-low
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-idp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fia1-low.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/fia1-low.env"
 
   fia2-low:
     hostname: fia2-low
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-idp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fia2-low.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/fia2-low.env"
 
   moncomptepro:
     hostname: moncomptepro
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-idp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/moncomptepro.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/moncomptepro.env"
 
   fia-rie-low:
     hostname: fia-rie-low
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-idp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/fia-rie-low.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/fia-rie-low.env"
     networks:
       - rie
 
   identity-provider-llng:
     build:
-      context: '../..'
-      dockerfile: 'builds/lemonldap/Dockerfile'
+      context: "../.."
+      dockerfile: "builds/lemonldap/Dockerfile"
     volumes:
-      - '../../volumes/llng/scripts/:/scripts:ro'
-      - '../../volumes/llng/llng-conf.json:/llng-conf.json:ro'
+      - "../../volumes/llng/scripts/:/scripts:ro"
+      - "../../volumes/llng/llng-conf.json:/llng-conf.json:ro"
     env_file:
-      - '../fca-low/.env/fia-llng-low.env'
+      - "../fca-low/.env/fia-llng-low.env"
     networks:
       - rie
 
@@ -91,17 +91,17 @@ services:
   dpa1-low:
     hostname: dpa1-low
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-dp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/dpa1-low.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/dpa1-low.env"
 
   dpa2-low:
     hostname: dpa2-low
     extends:
-      file: ../shared/shared.yml
+      file: ../shared/compose.yaml
       service: base-dp-mock
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/dpa2-low.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/dpa2-low.env"
