@@ -12,7 +12,7 @@ export default {
     authSource: env.string("DATABASE"),
     tls: env.boolean("TLS"),
     tlsAllowInvalidCertificates: env.boolean("TLS_INSECURE"),
-    tlsCAFile: env.string("TLS_CA_FILE"),
+    tlsCAFile: env.string("TLS_CA_FILE", true),
     tlsAllowInvalidHostnames: env.boolean("TLS_ALLOW_INVALID_HOST_NAME"),
   },
   watcherDebounceWaitDuration:
