@@ -242,7 +242,7 @@ services:
         ipv4_address: 172.16.4.105
 
   postgres:
-    image: postgres:13-bullseye
+    image: postgres:17-bullseye
     volumes:
       - '../../volumes/postgres/init-multiple-postgresql-databases.sh:/docker-entrypoint-initdb.d/init-multiple-postgresql-databases.sh:ro'
       - '../../volumes/postgres/start.sh:/usr/bin/start.sh:ro'
