@@ -200,9 +200,9 @@ describe("Account", () => {
         cy.contains(`Le nom d'utilisateur doit être renseigné`).should(
           "be.visible",
         );
-        cy.contains(
-          `Veuillez mettre une adresse email valide ( Ex: email@email.com )`,
-        ).should("be.visible");
+        cy.contains(`Veuillez mettre une adresse email valide.`).should(
+          "be.visible",
+        );
         cy.contains(`Veuillez renseigner au moins un rôle`).should(
           "be.visible",
         );
@@ -235,9 +235,9 @@ describe("Account", () => {
         });
 
         createUserAccount(userInfo, configuration);
-        cy.contains(
-          `Veuillez mettre une adresse email valide ( Ex: email@email.com )`,
-        ).should("be.visible");
+        cy.contains(`Veuillez mettre une adresse email valide.`).should(
+          "be.visible",
+        );
       });
 
       it("if an error occured in the form, we diplays error (roles)", () => {

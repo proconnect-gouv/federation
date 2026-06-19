@@ -28,7 +28,7 @@ describe("update a service-provider", () => {
         name: "MyFirstFSCypress",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        emails: "valenttin@gmail.com",
+        email: "user@yopmail.com",
         ipAddresses: "192.0.0.0",
       };
 
@@ -55,7 +55,7 @@ describe("update a service-provider", () => {
         name: "MyFirstFSCypress",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        emails: "valenttin@gmail.com",
+        email: "user@yopmail.com",
         ipAddresses: "192.0.0.0",
       };
 
@@ -95,7 +95,7 @@ describe("update a service-provider", () => {
         name: "MyFirstFSCypress",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        emails: "valenttin@gmail.com",
+        email: "user@yopmail.com",
         ipAddresses: "192.0.0.0",
         scopes: ["openid"],
       };
@@ -234,14 +234,14 @@ describe("update a service-provider", () => {
       cy.formControl(sp);
     });
 
-    it("Should be able to update a sp ( emails ) ", () => {
+    it("Should be able to update a sp ( email ) ", () => {
       // Arrange
       const mockConfig = {
         ...configuration,
         totp: true,
       };
 
-      const sp = { emails: "emailupdate@gmail.com" };
+      const sp = { email: "emailupdate@yopmail.com" };
 
       // Action
       cy.visit(`/service-provider?page=1&limit=9000`);
@@ -271,7 +271,7 @@ describe("update a service-provider", () => {
         name: "MyFirstFSCypressModificate",
         redirectUri: "",
         redirectUriLogout: "",
-        emails: "",
+        email: "",
         ipAddresses: "",
       };
 
@@ -313,10 +313,10 @@ describe("update a service-provider", () => {
       });
 
       // Assert
-      cy.contains(`Veuillez mettre des emails valides ( Ex: email@email.com )`);
+      cy.contains(`Veuillez mettre une adresse email valide.`);
     });
 
-    it("Should not be able to update a sp with an error( emails ) ", () => {
+    it("Should not be able to update a sp with an error( email ) ", () => {
       // Arrange
       const mockConfig = {
         ...configuration,
@@ -324,7 +324,7 @@ describe("update a service-provider", () => {
         totp: true,
       };
 
-      const sp = { emails: "* *" };
+      const sp = { email: "* *" };
 
       // Action
       cy.visit(`/service-provider?page=1&limit=9000`);
@@ -337,7 +337,7 @@ describe("update a service-provider", () => {
       });
 
       // Assert
-      cy.contains(`Veuillez mettre des emails valides ( Ex: email@email.com )`);
+      cy.contains(`Veuillez mettre une adresse email valide.`);
     });
 
     it("Should not be able to update a sp with an error( redirectUriLogout ) ", () => {
@@ -402,7 +402,7 @@ describe("update a service-provider", () => {
         name: "MyFirstFSCypressModificate",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        emails: "valenttin@gmail.com",
+        email: "user@yopmail.com",
         ipAddresses: "192.0.0.0",
       };
 
@@ -474,7 +474,7 @@ describe("update a service-provider", () => {
         name: "MyFirstFSCypress",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        emails: "valenttin@gmail.com",
+        email: "user@yopmail.com",
         ipAddresses: "192.0.0.0",
       };
 
@@ -506,7 +506,7 @@ describe("update a service-provider", () => {
         name: "MyFirstFSCypress",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        emails: "valenttin@gmail.com",
+        email: "user@yopmail.com",
         ipAddresses: "192.0.0.0",
       };
 

@@ -25,8 +25,7 @@ export class CreateUserDto {
   @IsEmail(
     {},
     {
-      message:
-        "Veuillez mettre une adresse email valide ( Ex: email@email.com )",
+      message: "Veuillez mettre une adresse email valide.",
     },
   )
   readonly email: string;

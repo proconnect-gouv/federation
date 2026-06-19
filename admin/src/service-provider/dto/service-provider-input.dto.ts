@@ -50,13 +50,12 @@ export class ServiceProviderDto {
   readonly redirectUriLogout: string[];
 
   @IsOptional()
-  @Transform(linesToArray)
-  @Matches(/^$|^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, {
-    each: true,
-    message: "Veuillez mettre des emails valides ( Ex: email@email.com )",
+  @Matches(/^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$/, {
+    message: "Veuillez mettre une adresse email valide.",
   })
-  readonly emails: string[];
-  // match empty string because of optionals parameters
+  @Transform(toNullableString)
+  readonly email: string;
+  // match empty string because of optional parameters
   // impossible to use IsOptionalExtended because of the Transform which always return something
   @Transform(linesToArray)
   @Matches(IP_VALIDATOR_REGEX, {

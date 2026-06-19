@@ -171,9 +171,6 @@ export class ServiceProviderController {
       redirectUri: arrayToLines(serviceProvider.redirect_uris),
       ipsRanges: arrayToLines(serviceProvider.IPServerAddressesAndRanges),
       postLogoutUri: arrayToLines(serviceProvider.post_logout_redirect_uris),
-      emails: Array.isArray(serviceProvider.email)
-        ? arrayToLines(serviceProvider.email)
-        : this.formatEmailFields(serviceProvider.email),
       response_types: nullableArrayToDefaultNoneOrLines({
         value: serviceProvider.response_types,
       }),
@@ -368,12 +365,5 @@ export class ServiceProviderController {
     );
 
     return res.redirect(`${res.locals.APP_ROOT}/service-provider`);
-  }
-
-  private formatEmailFields(emails: string): string {
-    if (typeof emails !== "string") {
-      return "";
-    }
-    return emails.replace(/,/g, "\r\n");
   }
 }

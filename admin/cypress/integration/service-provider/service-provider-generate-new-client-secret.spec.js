@@ -30,7 +30,7 @@ describe("update a service-provider", () => {
         signupId: "123456",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        emails: "valenttin@gmail.com",
+        email: "user@yopmail.com",
         ipAddresses: "192.0.0.0",
       };
 
@@ -59,7 +59,7 @@ describe("update a service-provider", () => {
         signupId: "123456",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        emails: "valenttin@gmail.com",
+        email: "user@yopmail.com",
         ipAddresses: "Obviously not an IP",
       };
 

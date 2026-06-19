@@ -84,28 +84,29 @@
               </div>
             </section>
             <section class="mb-3 row">
-              <label class="col-2 col-form-label" for="emails">Email(s) de contact (un par ligne)</label>
+              <label class="col-2 col-form-label" for="email">Email propriétaire dans l’Espace Partenaires</label>
               <div class="col-10">
-                <textarea
-                  id="emails"
-                  class="form-control  <%= locals.messages.errors && messages.errors[0].emails && 'is-invalid' %>"
+                <input
+                  id="email"
+                  type="text"
+                  class="form-control <%= locals.messages.errors && messages.errors[0].email && 'is-invalid' %>"
                   placeholder="email@email.com"
-                  name="emails"
-                  pattern="^$|^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$"
+                  name="email"
+                  pattern="^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$"
                   autocomplete="off"
                   data-1p-ignore="true"
                   data-bwignore="true"
-                  data-form-type="other"><%= locals.messages.values && messages.values[0].emails %></textarea>
+                  data-form-type="other"
+                  value="<%= locals.messages.values && messages.values[0].email %>"
+                >
                 <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].emails) { %>
-                  <p>
-                    <% messages.errors[0].emails.forEach((error) => { %>
-                    <%= error %>
-                    <br>
+                  <% if (locals.messages.errors && messages.errors[0].email) { %>
+                    <% messages.errors[0].email.forEach((error) => { %>
+                      <%= error %>
+                      <br>
                     <% }) %>
-                  </p>
                   <% } else { %>
-                  Veuillez mettre des emails valides ( Ex: email@email.com )
+                    Veuillez mettre une adresse email valide.
                   <% } %>
                 </div>
               </div>

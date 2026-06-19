@@ -28,7 +28,7 @@ describe("Delete service provider", () => {
     signupId: "123456",
     redirectUri: "https://url.com",
     redirectUriLogout: "https://url.com/logout",
-    emails: "titlen@gmail.com",
+    email: "user2@yopmail.com",
     ipAddresses: "192.0.0.0",
   };
 
