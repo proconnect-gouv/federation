@@ -1,8 +1,9 @@
 import { LoggerService } from "@fc/logger";
-import { OidcProviderConfigAppService } from "@fc/oidc-provider/services";
 import { RedisService } from "@fc/redis";
+import { SessionService } from "@fc/session";
 import { getLoggerMock } from "@mocks/logger";
 import { getRedisServiceMock } from "@mocks/redis";
+import { getSessionServiceMock } from "@mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Response } from "express";
 import OidcProvider from "oidc-provider";
@@ -69,15 +70,10 @@ describe("OidcProviderService", () => {
   };
 
   const redisMock = getRedisServiceMock();
+  const sessionServiceMock = getSessionServiceMock();
 
   const oidcProviderConfigServiceMock = {
     getConfig: jest.fn(),
-    findAccount: jest.fn(),
-  };
-
-  const oidcProviderConfigAppMock = {
-    setProvider: jest.fn(),
-    finishInteraction: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -87,7 +83,7 @@ describe("OidcProviderService", () => {
         OidcProviderService,
         RedisService,
         OidcProviderConfigService,
-        OidcProviderConfigAppService,
+        SessionService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -96,8 +92,8 @@ describe("OidcProviderService", () => {
       .useValue(redisMock)
       .overrideProvider(OidcProviderConfigService)
       .useValue(oidcProviderConfigServiceMock)
-      .overrideProvider(OidcProviderConfigAppService)
-      .useValue(oidcProviderConfigAppMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
     service = module.get<OidcProviderService>(OidcProviderService);
@@ -151,15 +147,6 @@ describe("OidcProviderService", () => {
       expect(() => service.onModuleInit()).toThrow(
         OidcProviderInitialisationException,
       );
-    });
-
-    it("should call setProvider to allow oidcProviderConfigApp to retrieve this.provider ", () => {
-      // Given
-      service["ProviderProxy"] = ProviderProxyMock;
-      // When
-      service.onModuleInit();
-      // Then
-      expect(oidcProviderConfigAppMock.setProvider).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -520,23 +507,51 @@ describe("OidcProviderService", () => {
   });
 
   describe("finishInteraction()", () => {
-    it("should call call finishInteraction with param", async () => {
+    // Given
+    const reqMock = {
+      fc: { interactionId: "interactiondMockValue" },
+    };
+    const resMock = {};
+    const spIdentityMock = { sub: "test-sub" };
+
+    beforeEach(() => {
+      sessionServiceMock.getId.mockReturnValue("sessionId");
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: spIdentityMock,
+      });
+    });
+
+    it("should finish interaction with grant", async () => {
       // Given
-      const reqMock = Symbol("req");
-      const resMock = Symbol("res");
       const resultMock = {
-        acr: "spAcrValue",
-        amr: ["spAmrValue"],
+        consent: {},
+        login: {
+          accountId: spIdentityMock.sub,
+          acr: "acrValue",
+          amr: ["amrValue"],
+          ts: expect.any(Number),
+          remember: false,
+        },
       };
+      providerMock.interactionFinished.mockResolvedValueOnce("ignoredValue");
       // When
-      await service.finishInteraction(reqMock, resMock, resultMock);
+      await service.finishInteraction(reqMock, resMock, {
+        amr: ["amrValue"],
+        acr: "acrValue",
+      });
+
       // Then
-      expect(oidcProviderConfigAppMock.finishInteraction).toHaveBeenCalledTimes(
-        1,
+      expect(sessionServiceMock.get).toHaveBeenCalledWith("User");
+      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
+        spIdentityMock.sub,
+        "sessionId",
       );
-      expect(
-        oidcProviderConfigAppMock.finishInteraction,
-      ).toHaveBeenLastCalledWith(reqMock, resMock, resultMock);
+      expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
+      expect(providerMock.interactionFinished).toHaveBeenCalledWith(
+        reqMock,
+        resMock,
+        resultMock,
+      );
     });
   });
 

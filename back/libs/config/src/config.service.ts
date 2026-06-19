@@ -37,7 +37,7 @@ export class ConfigService {
 
     if (errors.length > 0) {
       console.error("Invalid configuration Error");
-      console.error(errors);
+      console.error(errors.toString());
       console.error("Exiting app");
       AppHelper.shutdown();
     }
