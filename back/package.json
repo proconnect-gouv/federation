@@ -55,7 +55,7 @@
     "class-validator": "proconnect-gouv/class-validator#build-0.15.1-proconnect.1",
     "cookie-parser": "^1.4.7",
     "deep-freeze": "^0.0.1",
-    "ejs": "^5.0.1",
+    "ejs": "^6.0.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "helmet": "^8.2.0",
