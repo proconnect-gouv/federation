@@ -30,11 +30,10 @@ export class OidcAcrService {
       return undefined;
     }
 
-    const {
-      configuration: { acrValues: supportedAcrValues },
-    } = this.config.get<OidcProviderConfig>("OidcProvider");
+    const { supportedAcrValues } =
+      this.config.get<OidcProviderConfig>("OidcProvider");
 
-    if (!supportedAcrValues.includes(idpAcr)) {
+    if (!Array.from(supportedAcrValues).includes(idpAcr)) {
       // If the IdP's ACR value is not supported, fallback to 'eidas1'
       // Note: Some IdPs, especially from Fonction Publique Territoriale, may use lower ACRs
       return "eidas1";
@@ -60,11 +59,10 @@ export class OidcAcrService {
       acrValuesAsArray = requestedAcrValues;
     }
 
-    const {
-      configuration: { acrValues: supportedAcrValues },
-    } = this.config.get<OidcProviderConfig>("OidcProvider");
+    const { supportedAcrValues } =
+      this.config.get<OidcProviderConfig>("OidcProvider");
 
-    return intersection(acrValuesAsArray, supportedAcrValues);
+    return intersection(acrValuesAsArray, Array.from(supportedAcrValues));
   }
 
   isEssentialAcrSatisfied({

@@ -1,10 +1,11 @@
 import { ConfigService } from "@fc/config";
+import { LoggerService } from "@fc/logger";
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from "@fc/oidc";
+import { SessionService } from "@fc/session";
+import { getLoggerMock } from "@mocks/logger";
+import { getSessionServiceMock } from "@mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
-import { ClientMetadata, KoaContextWithOIDC } from "oidc-provider";
-import { OidcProviderRedisAdapter } from "../adapters";
-import { OidcProviderService } from "../oidc-provider.service";
-import { OidcProviderConfigAppService } from "./oidc-provider-config-app.service";
+import { KoaContextWithOIDC } from "oidc-provider";
 import { OidcProviderConfigService } from "./oidc-provider-config.service";
 
 describe("OidcProviderConfigService", () => {
@@ -18,37 +19,54 @@ describe("OidcProviderConfigService", () => {
     getById: jest.fn(),
   };
 
-  const oidcProviderConfigAppMock = {
-    logoutSource: jest.fn(),
-    postLogoutSuccessSource: jest.fn(),
-    findAccount: jest.fn(),
-  };
+  const loggerServiceMock = getLoggerMock();
+  const sessionServiceMock = getSessionServiceMock();
 
   const oidcProviderRedisAdapterMock = class AdapterMock {};
 
-  const oidcProviderServiceMock = {} as OidcProviderService;
-
   const configOidcProviderMock = {
-    prefix: "/api",
     issuer: "http://foo.bar",
     configuration: {
       adapter: oidcProviderRedisAdapterMock,
-      jwks: { keys: [] },
       features: {
         devInteractions: { enabled: false },
       },
-      cookies: {
-        keys: ["foo"],
-      },
     },
   };
+
+  const atHashMock = "at_hash Mock value";
+  const sessionId = "sessionIdMock value";
+  const reqMock = { sessionId };
+  const resMock = {};
+
+  const ctxMock = {
+    sessionId,
+    req: reqMock,
+    res: resMock,
+    oidc: {
+      entities: {
+        IdTokenHint: {
+          payload: {
+            at_hash: atHashMock,
+          },
+        },
+      },
+      session: {
+        accountId: "test-sub",
+      },
+    },
+  } as unknown as KoaContextWithOIDC;
+
+  const form =
+    '<form id="logoutId" method="post" action="https://redirect/me/there"><input type="hidden" name="xsrf" value="123456azerty"/></form>';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OidcProviderConfigService,
         ConfigService,
-        OidcProviderConfigAppService,
+        LoggerService,
+        SessionService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
@@ -57,8 +75,10 @@ describe("OidcProviderConfigService", () => {
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(OidcProviderConfigAppService)
-      .useValue(oidcProviderConfigAppMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
     service = module.get<OidcProviderConfigService>(OidcProviderConfigService);
@@ -69,62 +89,6 @@ describe("OidcProviderConfigService", () => {
         case "OidcProvider":
           return configOidcProviderMock;
       }
-    });
-  });
-
-  describe("getConfig()", () => {
-    it("should call several services and concat their outputs", () => {
-      // Given
-      OidcProviderRedisAdapter.getConstructorWithDI = jest
-        .fn()
-        .mockReturnValue(oidcProviderRedisAdapterMock);
-
-      // When
-      const result = service.getConfig(oidcProviderServiceMock);
-
-      // Then
-      expect(
-        OidcProviderRedisAdapter.getConstructorWithDI,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        OidcProviderRedisAdapter.getConstructorWithDI,
-      ).toHaveBeenCalledWith(
-        oidcProviderServiceMock,
-        serviceProviderServiceMock,
-      );
-
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith("OidcProvider");
-
-      expect(result).toMatchObject(configOidcProviderMock);
-    });
-
-    it("should return false to PKCE output if we pass two empty objects", () => {
-      // Given
-      OidcProviderRedisAdapter.getConstructorWithDI = jest
-        .fn()
-        .mockReturnValue(oidcProviderRedisAdapterMock);
-      // When
-      const result = service.getConfig(oidcProviderServiceMock);
-      const pkceResult = result.configuration.pkce.required({}, {});
-      expect(pkceResult).toEqual(false);
-    });
-
-    it("should bind methods to config", () => {
-      // When
-      const result = service.getConfig(oidcProviderServiceMock);
-
-      // Then
-      expect(result).toHaveProperty(
-        "configuration.features.rpInitiatedLogout.logoutSource",
-      );
-      expect(result).toHaveProperty(
-        "configuration.features.rpInitiatedLogout.postLogoutSuccessSource",
-      );
-      expect(result).toHaveProperty("configuration.findAccount");
-      expect(result).toHaveProperty("configuration.renderError");
-      expect(result).toHaveProperty("configuration.clientBasedCORS");
-      expect(result).toHaveProperty("configuration.interactions.url");
     });
   });
 
@@ -151,18 +115,98 @@ describe("OidcProviderConfigService", () => {
     });
   });
 
-  describe("clientBasedCORS", () => {
-    it("should return false", () => {
+  describe("postLogoutSuccessSource", () => {
+    it("should set a body property to koa context", () => {
       // Given
-      const ctx = {} as KoaContextWithOIDC;
-      const origin = {};
-      const client = {} as ClientMetadata;
+      const renderMock = jest.fn();
+      const ctx = {
+        res: { render: renderMock },
+      } as unknown as KoaContextWithOIDC;
 
       // When
-      const result = service["clientBasedCORS"](ctx, origin, client);
+      service["postLogoutSuccessSource"](ctx);
 
       // Then
-      expect(result).toBe(false);
+      expect(renderMock).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe("logoutSource", () => {
+    it("should render logout page", () => {
+      // When
+      service["logoutSource"](ctxMock, form);
+
+      // Then
+      expect(ctxMock.body).toBeDefined();
+    });
+  });
+
+  describe("findAccount", () => {
+    it("should return account details with accountId and claims when session is valid", async () => {
+      // Given
+      const sub = "test-sub";
+      const sessionId = "test-session-id";
+      const spIdentityMock = {
+        sub: "test-sub",
+        given_name: "John",
+        family_name: "Doe",
+      };
+      sessionServiceMock.getAlias.mockResolvedValueOnce(sessionId);
+      sessionServiceMock.initCache.mockResolvedValueOnce(true);
+      sessionServiceMock.get.mockReturnValueOnce({
+        spIdentity: spIdentityMock,
+      });
+
+      // When
+      const result = await service.findAccount(ctxMock, sub);
+
+      // Then
+      expect(sessionServiceMock.getAlias).toHaveBeenCalledWith(sub);
+      expect(result).toEqual({
+        accountId: spIdentityMock.sub,
+        claims: expect.any(Function),
+      });
+
+      // Claims function test
+      const claims = await result.claims(
+        "userinfo",
+        "openid given_name family_name",
+        {},
+        [],
+      );
+      expect(claims).toEqual(spIdentityMock);
+    });
+  });
+
+  describe("renderError", () => {
+    it("should set ctx.type to html and render the error template with details", async () => {
+      // Given
+      const renderReturnMock = "rendered-html";
+      const renderMock = jest.fn().mockReturnValue(renderReturnMock);
+      const ctx = {
+        res: { render: renderMock },
+      } as unknown as KoaContextWithOIDC;
+
+      const params = {
+        error: "access_denied",
+        error_description: "Not allowed",
+      } as unknown as Parameters<OidcProviderConfigService["renderError"]>[1];
+
+      // When
+      await service.renderError(ctx, params, new Error("boom"));
+
+      // Then
+      expect(ctx).toHaveProperty("type", "html");
+      expect(renderMock).toHaveBeenCalledTimes(1);
+      expect(renderMock).toHaveBeenCalledWith("error", {
+        error: {
+          code: "oidc-provider-rendered-error:access_denied",
+          id: expect.any(String),
+          message: "Not allowed",
+        },
+        exceptionDisplay: {},
+      });
+      expect(ctx).toHaveProperty("body", renderReturnMock);
     });
   });
 });

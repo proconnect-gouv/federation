@@ -1,6 +1,8 @@
+import { UserSession } from "@fc/core";
 import { LoggerService } from "@fc/logger";
 import { ExtendedInteraction } from "@fc/oidc-acr";
 import { RedisService } from "@fc/redis";
+import { SessionService } from "@fc/session";
 import { Global, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import {
@@ -16,10 +18,7 @@ import {
   OidcProviderRoutes,
 } from "./enums";
 import { OidcProviderInitialisationException } from "./exceptions";
-import {
-  OidcProviderConfigAppService,
-  OidcProviderConfigService,
-} from "./services";
+import { OidcProviderConfigService } from "./services";
 
 export const COOKIES = ["_session", "_interaction", "_interaction_resume"];
 
@@ -39,7 +38,7 @@ export class OidcProviderService {
     readonly logger: LoggerService,
     readonly redis: RedisService,
     private readonly configService: OidcProviderConfigService,
-    private readonly oidcProviderConfigApp: OidcProviderConfigAppService,
+    protected readonly sessionService: SessionService,
   ) {}
 
   /**
@@ -47,7 +46,6 @@ export class OidcProviderService {
    * @see https://docs.nestjs.com/faq/http-adapter
    * @see https://docs.nestjs.com/fundamentals/lifecycle-events
    */
-
   onModuleInit() {
     const { issuer, configuration } = this.configService.getConfig(this);
     this.configuration = configuration;
@@ -62,8 +60,6 @@ export class OidcProviderService {
     } catch {
       throw new OidcProviderInitialisationException();
     }
-
-    this.oidcProviderConfigApp.setProvider(this.provider);
 
     this.addLogListenerOnProviderEvents();
   }
@@ -140,6 +136,37 @@ export class OidcProviderService {
     return interactionDetails as ExtendedInteraction;
   }
 
+  async finishInteraction(
+    req: any,
+    res: any,
+    {
+      amr,
+      acr,
+    }: {
+      amr: InteractionResults["login"]["amr"];
+      acr: InteractionResults["login"]["acr"];
+    },
+  ) {
+    const { spIdentity } = this.sessionService.get<UserSession>("User");
+
+    const sessionId = this.sessionService.getId();
+    await this.sessionService.setAlias(spIdentity.sub, sessionId);
+
+    const result = {
+      login: {
+        amr,
+        acr,
+        accountId: spIdentity.sub,
+        ts: Math.floor(Date.now() / 1000),
+        remember: false,
+      },
+      // skip the consent
+      consent: {},
+    } as InteractionResults;
+
+    return await this.provider.interactionFinished(req, res, result);
+  }
+
   async abortInteraction(
     req: any,
     res: any,
@@ -182,7 +209,7 @@ export class OidcProviderService {
     return (
       step === OidcProviderMiddlewareStep.AFTER &&
       /**
-       * In the post processing phase, we may also target more specific actions with ctx.oidc.route
+       * In the post-processing phase, we may also target more specific actions with ctx.oidc.route
        * Though we can still match on the path.
        * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pre--and-post-middlewares
        *
@@ -222,14 +249,6 @@ export class OidcProviderService {
         middleware,
       );
     });
-  }
-
-  async finishInteraction(
-    req: any,
-    res: any,
-    result: { amr: string[]; acr: string },
-  ) {
-    await this.oidcProviderConfigApp.finishInteraction(req, res, result);
   }
 
   clearCookies(res: Response) {

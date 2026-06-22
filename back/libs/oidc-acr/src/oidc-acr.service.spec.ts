@@ -34,7 +34,7 @@ describe("OidcAcrService", () => {
     jest.clearAllMocks();
 
     configServiceMock.get.mockReturnValue({
-      configuration: { acrValues: ["A", "B"] },
+      supportedAcrValues: ["A", "B"],
       defaultIdpId: "defaultIdpId",
     });
   });
@@ -71,7 +71,7 @@ describe("OidcAcrService", () => {
     it("should return 'eidas1' if IdP ACR is unsupported", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
-        configuration: { acrValues: ["A", "B"] },
+        supportedAcrValues: ["A", "B"],
       });
       const sessionDataMock: UserSession = {
         spEssentialAcr: undefined,
@@ -90,7 +90,7 @@ describe("OidcAcrService", () => {
     it("should return empty array with no requestedAcrValues provided", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
-        configuration: { acrValues: ["A", "B"] },
+        supportedAcrValues: ["A", "B"],
       });
 
       // When
@@ -103,7 +103,7 @@ describe("OidcAcrService", () => {
     it("should filter supported ACR values when given a string", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
-        configuration: { acrValues: ["A", "B"] },
+        supportedAcrValues: ["A", "B"],
       });
 
       const inputAcrValues = "A C";
@@ -118,7 +118,7 @@ describe("OidcAcrService", () => {
     it("should filter supported ACR values when given an array", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
-        configuration: { acrValues: ["A", "B"] },
+        supportedAcrValues: ["A", "B"],
       });
 
       const inputAcrValues = ["A", "C"];

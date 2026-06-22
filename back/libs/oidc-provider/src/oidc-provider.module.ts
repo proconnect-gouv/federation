@@ -12,10 +12,7 @@ import { DynamicModule, Module, Type } from "@nestjs/common";
 import { ModuleMetadata } from "@nestjs/common/interfaces";
 import { OidcProviderSessionNotFoundExceptionFilter } from "./filters/oidc-provider-session-not-found-exception.filter";
 import { OidcProviderService } from "./oidc-provider.service";
-import {
-  OidcProviderConfigAppService,
-  OidcProviderConfigService,
-} from "./services";
+import { OidcProviderConfigService } from "./services";
 
 @Module({})
 export class OidcProviderModule {
@@ -54,7 +51,6 @@ export class OidcProviderModule {
           provide: IDENTITY_PROVIDER_SERVICE,
           useExisting: IdentityProviderAdapterMongoService,
         },
-        OidcProviderConfigAppService,
         serviceProviderProvider,
         OidcProviderService,
         OidcProviderConfigService,

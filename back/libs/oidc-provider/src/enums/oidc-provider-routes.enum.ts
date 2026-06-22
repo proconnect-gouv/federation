@@ -2,7 +2,6 @@ export enum OidcProviderRoutes {
   AUTHORIZATION = "/authorize",
   AUTHORIZATION_RESUME = "/authorize/:id",
   REDIRECT_TO_SP = "/login",
-  CHECK_SESSION = "/session/check",
   CODE_VERIFICATION = "/device",
   DEVICE_AUTHORIZATION = "/device/auth",
   END_SESSION = "/session/end",
