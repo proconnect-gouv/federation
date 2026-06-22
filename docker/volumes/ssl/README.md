@@ -71,14 +71,6 @@ Il est parfois nécessaire d'avoir la clé privée et le certificat dans un mêm
 
 Par convention nous les mettrons dans un fichier `pem`.
 
-Par exemple avec mongoDB:
-
-```shell
-> cat mongo.crt mongo.key > mongo.pem
-```
-
-Le certificat est utilisé dans `docker/builds/mongodb/Dockerfile`.
-
 ### Certificat CA et NodeJS
 
 Afin que les requêtes https vers nos mocks soient validées, il faut déclarer la variable `NODE_EXTRA_CA_CERTS`:

@@ -1,10 +1,9 @@
 include:
   - ../shared/compose.yaml
-  - mongo.yml
-  - core.yml
-  - mocks.yml
   - admin.yml
+  - core.yml
   - hybridge.yml
+  - mocks.yml
 
 services:
   small:

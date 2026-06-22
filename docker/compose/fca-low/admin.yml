@@ -2,7 +2,7 @@ services:
   admin:
     hostname: admin
     build:
-      context: '../../../admin'
+      context: "../../../admin"
       target: dev
     user: ${CURRENT_UID}
     ports:
@@ -12,26 +12,26 @@ services:
         condition: service_started
       pg-admin:
         condition: service_healthy
-      mongo-fca-low:
+      mongo:
         condition: service_healthy
       redis-pwd:
         condition: service_healthy
     volumes:
-      - '../../../admin/src:/var/www/app/src:ro'
-      - '../../../admin/views:/var/www/app/views:ro'
-      - '../../../admin/public:/var/www/app/public:ro'
-      - '../../volumes/app:/opt/scripts'
-      - '../../volumes/.home:/home'
-      - '../../volumes/ssl:/etc/ssl/docker_host:ro'
-      - '../../volumes/log:/var/log/app'
+      - "../../../admin/src:/var/www/app/src:ro"
+      - "../../../admin/views:/var/www/app/views:ro"
+      - "../../../admin/public:/var/www/app/public:ro"
+      - "../../volumes/app:/opt/scripts"
+      - "../../volumes/.home:/home"
+      - "../../volumes/ssl:/etc/ssl/docker_host:ro"
+      - "../../volumes/log:/var/log/app"
     tmpfs:
       - /var/www/app/dist:mode=777
       - /var/www/app/.parcel-cache:mode=777
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../shared/.env/postgres.env'
-      - '../shared/.env/pc-mongo.env'
-      - '../fca-low/.env/admin.env'
+      - "../shared/.env/base-app.env"
+      - "../shared/.env/postgres.env"
+      - "../shared/.env/pc-mongo.env"
+      - "../fca-low/.env/admin.env"
     networks:
       - exploitation
       - data
