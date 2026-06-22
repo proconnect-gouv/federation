@@ -74,7 +74,7 @@
     "express-session": "^1.19.0",
     "font-awesome": "^4.7.0",
     "generate-password": "^1.7.1",
-    "helmet": "^8.1.0",
+    "helmet": "^8.2.0",
     "jquery": "^4.0.0",
     "jsdom": "^29.0.2",
     "lodash": "^4.18.1",
