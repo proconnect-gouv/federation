@@ -246,20 +246,17 @@ services:
       data:
         ipv4_address: 172.16.4.105
 
-  postgres:
-    image: postgres:17-bullseye
-    volumes:
-      - '../../volumes/postgres/init-multiple-postgresql-databases.sh:/docker-entrypoint-initdb.d/init-multiple-postgresql-databases.sh:ro'
-      - '../../volumes/postgres/start.sh:/usr/bin/start.sh:ro'
-      - '../../volumes/postgres/postgresql.conf:/etc/postgresql/postgresql.conf'
-      - '../../volumes/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf'
-      - ../../volumes/ssl:/etc/ssl/docker_host:ro
-    env_file:
-      - '../shared/.env/postgres/base.env'
-      - '../shared/.env/postgres/databases.env'
-    command: ['start.sh']
-    ports:
-      - '5432:5432'
+  pg-admin:
+    image: postgres:11
+    environment:
+      - 'POSTGRES_DB=pg-db'
+      - 'POSTGRES_USER=pg-user'
+      - 'POSTGRES_PASSWORD=pg-password'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U pg-user -d pg-db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - data
 

@@ -11,7 +11,7 @@ services:
       rp-all:
         condition: service_started
       pg-admin:
-        condition: service_started
+        condition: service_healthy
       mongo-fca-low:
         condition: service_healthy
       redis-pwd:
