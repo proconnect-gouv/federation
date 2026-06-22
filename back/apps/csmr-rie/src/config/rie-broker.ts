@@ -3,7 +3,7 @@ import { RabbitmqConfig } from "@fc/rabbitmq";
 
 const env = new ConfigParser(process.env, "RieBroker");
 
-export default {
+const rieBrokerConfig: RabbitmqConfig = {
   urls: env.json("URLS"),
   queue: env.string("QUEUE"),
   queueOptions: {
@@ -13,4 +13,6 @@ export default {
 
   // Global request timeout used for any outgoing app requests.
   requestTimeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
-} as RabbitmqConfig;
+};
+
+export default rieBrokerConfig;

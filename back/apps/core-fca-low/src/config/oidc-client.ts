@@ -5,7 +5,7 @@ import app from "./app";
 
 const env = new ConfigParser(process.env, "OidcClient");
 
-export default {
+const oidcClientConfig: OidcClientConfig = {
   // Global request timeout for all outgoing application requests.
   // This duration is in seconds and is typically set to 6000 in most environments,
   // which equals 100 minutes.
@@ -18,4 +18,6 @@ export default {
   postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_LOGOUT_CALLBACK}`,
   redirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_CALLBACK}`,
   enableHyyyperbridge: env.boolean("FEATURE_ENABLE_HYYYPERBRIDGE"),
-} as OidcClientConfig;
+};
+
+export default oidcClientConfig;

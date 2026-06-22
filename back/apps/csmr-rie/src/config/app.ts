@@ -1,5 +1,7 @@
 import { AppRmqConfig } from "@fc/app";
 
-export default {
+const appRmqConfig: AppRmqConfig = {
   name: process.env.APP_NAME,
-} as AppRmqConfig;
+};
+
+export default appRmqConfig;

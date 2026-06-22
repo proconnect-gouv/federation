@@ -3,6 +3,8 @@ import { LoggerConfig } from "@fc/logger";
 
 const env = new ConfigParser(process.env, "Logger");
 
-export default {
+const loggerConfig: LoggerConfig = {
   threshold: env.string("THRESHOLD"),
-} as LoggerConfig;
+};
+
+export default loggerConfig;

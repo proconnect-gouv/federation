@@ -3,7 +3,7 @@ import { MongooseConfig } from "@fc/mongoose";
 
 const env = new ConfigParser(process.env, "Mongoose");
 
-export default {
+const mongooseConfig: MongooseConfig = {
   user: env.string("USER"),
   password: env.string("PASSWORD"),
   hosts: env.string("HOSTS"),
@@ -17,4 +17,6 @@ export default {
   },
   watcherDebounceWaitDuration:
     env.number("WATCHER_DEBOUNCE_WAIT_DURATION", true) ?? 1_000,
-} as MongooseConfig;
+};
+
+export default mongooseConfig;

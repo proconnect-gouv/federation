@@ -13,7 +13,7 @@ const sentinels = env.stringArray("SENTINELS").map((entry) => {
 
 const useSentinels = sentinels.length > 0;
 
-export default {
+const redisConfig: RedisConfig = {
   host: useSentinels ? undefined : env.string("HOST"),
   port: useSentinels ? undefined : env.number("PORT"),
   password: env.string("PASSWORD"),
@@ -24,4 +24,6 @@ export default {
   sentinelTLS: tlsSettings,
   tls: tlsSettings,
   enableTLSForSentinelMode: env.boolean("ENABLE_TLS_FOR_SENTINEL_MODE"),
-} as RedisConfig;
+};
+
+export default redisConfig;
