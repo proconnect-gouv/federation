@@ -3,7 +3,7 @@ import { AppConfig } from "@fc/core";
 
 const env = new ConfigParser(process.env, "App");
 
-export default {
+const appConfig: AppConfig = {
   name: "CORE_FCA_LOW",
   urlPrefix: "/api/v2",
   assetsPaths: env.json("ASSETS_PATHS"),
@@ -54,4 +54,6 @@ export default {
   defaultRedirectUri: "https://www.proconnect.gouv.fr",
   supportEmail: "support+federation@proconnect.gouv.fr",
   passeDroitEmailSuffix: "+proconnect",
-} as AppConfig;
+};
+
+export default appConfig;

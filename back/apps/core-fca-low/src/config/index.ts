@@ -13,7 +13,7 @@ import Redis from "./redis";
 import ServiceProviderAdapterMongo from "./service-provider-adapter-mongo";
 import Session from "./session";
 
-export default {
+const coreFcaConfig: CoreFcaConfig = {
   ApiEntreprise,
   App,
   EmailValidator,
@@ -27,4 +27,6 @@ export default {
   ServiceProviderAdapterMongo,
   IdentityProviderAdapterMongo,
   Session,
-} as CoreFcaConfig;
+};
+
+export default coreFcaConfig;

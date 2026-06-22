@@ -6,7 +6,7 @@ import {
   type IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from "@fc/oidc";
-import { SessionService } from "@fc/session";
+import { SessionConfig, SessionService } from "@fc/session";
 import { Inject, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import { Configuration, KoaContextWithOIDC } from "oidc-provider";
@@ -70,6 +70,8 @@ export class OidcProviderConfigService {
       timeout,
       supportedAcrValues,
     } = this.config.get<OidcProviderConfig>("OidcProvider");
+    const { lifetime: sessionLifetime } =
+      this.config.get<SessionConfig>("Session");
 
     const url = this.url.bind(this, prefix);
 
@@ -167,8 +169,8 @@ export class OidcProviderConfigService {
       ttl: {
         // default values can be found in the documentation
         // https://github.com/panva/node-oidc-provider/blob/v8.x/docs/README.md#ttl
-        Grant: 12 * 60 * 60, // 12h - same as session lifetime
-        Session: 12 * 60 * 60, // 12h - same as session lifetime
+        Grant: sessionLifetime,
+        Session: sessionLifetime,
         RefreshToken: function RefreshTokenTTL(ctx, token, client) {
           if (
             ctx &&
@@ -181,7 +183,7 @@ export class OidcProviderConfigService {
             return ctx.oidc.entities.RotatedRefreshToken.remainingTTL;
           }
 
-          return 12 * 60 * 60; // 12h - same as session lifetime
+          return sessionLifetime;
         },
       },
     };

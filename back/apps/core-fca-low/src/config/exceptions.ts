@@ -1,5 +1,7 @@
 import { ExceptionsConfig } from "@fc/exceptions/dto";
 
-export default {
+const exceptionsConfig: ExceptionsConfig = {
   prefix: "Y",
-} as ExceptionsConfig;
+};
+
+export default exceptionsConfig;

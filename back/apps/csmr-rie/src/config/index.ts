@@ -3,8 +3,10 @@ import App from "./app";
 import Logger from "./logger";
 import HttpProxyBroker from "./rie-broker";
 
-export default {
+const csmrHttpProxyConfig: CsmrHttpProxyConfig = {
   App,
   Logger,
   HttpProxyBroker,
-} as CsmrHttpProxyConfig;
+};
+
+export default csmrHttpProxyConfig;

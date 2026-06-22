@@ -3,7 +3,9 @@ import { IdentityProviderAdapterMongoConfig } from "@fc/identity-provider-adapte
 
 const env = new ConfigParser(process.env, "AdapterMongo");
 
-export default {
+const identityProviderAdapterMongoConfig: IdentityProviderAdapterMongoConfig = {
   clientSecretEncryptKey: env.string("CLIENT_SECRET_CIPHER_PASS"),
   decryptClientSecretFeature: env.boolean("DECRYPT_CLIENT_SECRET_FEATURE"),
-} as IdentityProviderAdapterMongoConfig;
+};
+
+export default identityProviderAdapterMongoConfig;
