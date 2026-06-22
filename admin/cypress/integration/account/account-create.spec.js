@@ -301,7 +301,7 @@ describe("Account", () => {
         const user = Object.assign({}, userInfo, {
           password: "MyNewPassword10",
         });
-        cy.contains("Comptes utilisateurs").click();
+        cy.contains("Utilisateurs de l'admin").click();
         createUserAndLogWith(user, configuration);
 
         cy.url().should("contain", `/account/enrollment`);
@@ -337,7 +337,7 @@ describe("Account", () => {
           confirmPassword: "fsfsdfdsf",
         });
 
-        cy.contains("Comptes utilisateurs").click();
+        cy.contains("Utilisateurs de l'admin").click();
         createUserAndLogWith(user, configuration);
 
         cy.url().should("contain", `/account/enrollment`);
@@ -353,7 +353,7 @@ describe("Account", () => {
           redirect: false,
           totpFirstLogin: false,
         });
-        cy.contains("Comptes utilisateurs").click();
+        cy.contains("Utilisateurs de l'admin").click();
         createUserAndLogWith(userInfo, configuration);
 
         cy.url().should("contain", `/account/enrollment`);
@@ -449,7 +449,7 @@ describe("Account", () => {
 
         cy.forceLogin(USER_ADMIN, USER_PASS);
 
-        cy.contains("Comptes utilisateurs").click();
+        cy.contains("Utilisateurs de l'admin").click();
         cy.contains("Créer un utilisateur").click();
         cy.formType("#username", userInfo.username, basicConfiguration);
         cy.formType("#email", userInfo.email, basicConfiguration);

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head.ejs') -%>
+</head>
+<body>
+<%- include('partials/header.ejs') -%>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div>
+        <div class="flex-grow-1">
+          <p class="h2">Gestion des utilisateurs de la Fédération</p>
+          <form id="itemPerPage" data-init="itemPerPage" method="GET" action="<%= APP_ROOT %>/federation-user">
+            <p id="users-count"><i><%= totalItems %> utilisateurs - Résultats par page :</i>
+            <%- include('partials/choose-items-number-to-show.ejs') -%>
+          </form>
+          <%- include('partials/global-errors-handler.ejs') -%>
+          <%- include('partials/search', {userSearch: querySearch, placeholder: "Rechercher par sub" }); %>
+
+          <table class="table table-hover table-light shadow-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col" class="w-10">Sub</th>
+              <th scope="col" class="w-60">Emails</th>
+              <th scope="col" class="w-10">Dernière connexion</th>
+              <th scope="col" class="w-10">Actif</th>
+              <th scope="col" class="w-10">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% federationUsers.forEach(function(user){ %>
+              <tr id="<%= user.sub %>">
+                <td><%= user.sub %></td>
+                <td>
+                  <%
+                      user.emails.forEach(function(email, index) {
+                        if (index > 0) { %>
+                          <br />
+                        <% } %>
+                        <%= email %>
+                  <% }) %>
+                </td>
+                <td ><%= user.lastConnection %></td>
+                <td class="cell-activation-status">
+                  <i class="fa fa-toggle-<%= user.active ? "on" : "off" %>"></i>
+                </td>
+                <td>
+                  <form
+                    name="toggleActivationForm"
+                    method="POST"
+                    id="<%= user.active ? 'deactivate' : 'activate' %>-<%= user._id %>"
+                    data-init="<%= user.active ? 'deactivate' : 'activate' %>Item"
+                    data-element-type="l'utilisateur"
+                    data-element-id="<%= user._id %>"
+                    data-element-title="<%= user.sub %>"
+                    action="<%= APP_ROOT %>/federation-user/<%= user._id%>/<%= user.active ? 'deactivate' : 'activate' %>?_method=PATCH"
+                    class="d-flex align-items-center"
+                    
+                    novalidate>
+                        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+                        <input type="hidden" name="_totp">
+                        <input type="hidden" name="sub" value="<%= user.sub %>">
+                        <button type="submit" class="btn btn-sm">
+                          <i class="fa <%= user.active ? "fa-lock" : "fa-unlock" %>" aria-hidden="true" title="<%= user.active ? "Bloquer" : "Débloquer" %>"></i>
+                        </button>
+                    </form>
+                  </td>
+                </td>
+              </tr>
+            <% }) %>
+            </tbody>
+          </table>
+          <div class="container-fluid">
+          <%- include('partials/pagination.ejs', {
+              total: totalItems,
+              baseHref: `${APP_ROOT}/federation-user`,
+            }) %>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -24,6 +24,8 @@ import { TotpService } from "./authentication/totp/totp.service";
 import { CliModule } from "./cli/cli.module";
 import { ConfigurationController } from "./configuration/configuration.controller";
 import { ConfigurationModule } from "./configuration/configuration.module";
+import { FederationUserController } from "./federation-user/federation-user.controller";
+import { FederationUserModule } from "./federation-user/federation-user.module";
 import { IdentityProviderController } from "./identity-provider/identity-provider.controller";
 import { IdentityProviderModule } from "./identity-provider/identity-provider.module";
 import { LoggerModule } from "./logger/logger.module";
@@ -39,6 +41,7 @@ import { ServiceProviderModule } from "./service-provider/service-provider.modul
     IdentityProviderModule,
     ServiceProviderModule,
     AccountModule,
+    FederationUserModule,
     LoggerModule,
     ConfigurationModule,
     ConfigModule.load(resolve(__dirname, "config", "**/!(*.d).{ts,js}")),
@@ -67,6 +70,7 @@ export class AppModule implements NestModule {
         AppController,
         IdentityProviderController,
         ServiceProviderController,
+        FederationUserController,
         AccountController,
         ConfigurationController,
       );
@@ -135,26 +139,16 @@ export class AppModule implements NestModule {
       },
     ];
 
-    const totpScopes = [
-      {
-        path: "/scopes/label/create",
-        method: RequestMethod.POST,
-      },
-      {
-        path: "/scopes/label/update/:id",
-        method: RequestMethod.PATCH,
-      },
-      {
-        path: "/scopes/label/delete/:id",
-        method: RequestMethod.DELETE,
-      },
+    const totpFederationUser = [
+      { path: "/federation-user/:id/activate", method: RequestMethod.PATCH },
+      { path: "/federation-user/:id/deactivate", method: RequestMethod.PATCH },
     ];
 
     const totpRoutes: RouteInfo[] = [
       ...totpAccount,
       ...totpIdentityProvider,
       ...totpServiceProvider,
-      ...totpScopes,
+      ...totpFederationUser,
       {
         path: "/configuration/indisponibilite",
         method: RequestMethod.POST,

@@ -18,6 +18,9 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
     EXPLOIT_USER_NAME: "jean_patoche",
     EXPLOIT_USER_PASS: "georgesmoustaki",
     EXPLOIT_USER_TOTP: "KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD",
+    ADMIN_SECURITY_USERNAME: "jack",
+    ADMIN_SECURITY_PASSWORD: "georgesmoustaki",
+    ADMIN_SECURITY_TOTP_SECRET: "KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD",
     FC_ACCESS_USER: "",
     FC_ACCESS_PASS: "",
     // Other Configuration

@@ -480,7 +480,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash an error to the new user trying to log in with a bad username", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", userInfo.username, basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -511,7 +511,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash an error to the new user trying to log in with a good username but a bad password", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", userInfo.username, basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -533,7 +533,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash an error to the new user trying to log in with good username and password but a bad token", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", userInfo.username, basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -567,7 +567,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash an error to the new user entering a bad password", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "kevin", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -604,7 +604,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash an error to the new user having good credentials but a bad token", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Arthur", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -671,7 +671,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash an error to the new user having bad token and password", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Tom", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -738,7 +738,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash an error to the new user having bad username and token", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Tristan", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -797,7 +797,7 @@ describe("Authentication failures", () => {
     });
 
     it("should block the user after the fifth error on his password", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Margot", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -860,7 +860,7 @@ describe("Authentication failures", () => {
     });
 
     it("should block the user after the fifth error on his token", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Laetitia", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -927,7 +927,7 @@ describe("Authentication failures", () => {
     });
 
     it("should block the user after the fifth error on his password and his token", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Marie", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -994,7 +994,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash 'Connexion impossible' to the new user failling four times his password, logging in, out, then failling again his password", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Dominique", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -1069,7 +1069,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash 'Connexion impossible' to the new user failling four times his token, logging in, out, then failling again his authentication", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Cyril", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -1147,7 +1147,7 @@ describe("Authentication failures", () => {
     });
 
     it("should flash 'Connexion impossible' to the new user failling four times his password and totp, logging in, out, then failling again his authentication", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "Mathias", basicConfiguration);
       cy.formType("#email", userInfo.email, basicConfiguration);
@@ -1226,7 +1226,7 @@ describe("Authentication failures", () => {
     });
 
     it("should be impossible for a regular user to login through first login route without second authentication factor", () => {
-      cy.contains("Comptes utilisateurs").click();
+      cy.contains("Utilisateurs de l'admin").click();
       cy.contains("Créer un utilisateur").click();
       cy.formType("#username", "tempUser", basicConfiguration);
       cy.formType("#email", "temp@temp.com", basicConfiguration);

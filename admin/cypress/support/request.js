@@ -45,7 +45,7 @@ export function testIsCompliantPasswordEnrollment(
   const configuration = Object.assign({}, basicConfiguration, {
     submit: false,
   });
-  cy.contains("Comptes utilisateurs").click();
+  cy.contains("Utilisateurs de l'admin").click();
 
   createUserAndLogWith(userInfo, configuration);
 

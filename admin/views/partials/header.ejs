@@ -17,9 +17,14 @@
         <% 
         } %>
         <li class="nav-item">
-          <a class="nav-link" data-prefix="<%= locals.APP_ROOT %>/account" href="<%= locals.APP_ROOT %>/account">Comptes
-            utilisateurs</a>
+          <a class="nav-link" data-prefix="<%= locals.APP_ROOT %>/account" href="<%= locals.APP_ROOT %>/account">Utilisateurs de l'admin</a>
         </li>
+        <% if (locals.CURRENT_USER.roles.includes('security')) { %>
+        <li class="nav-item">
+          <a class="nav-link" data-prefix="<%= locals.APP_ROOT %>/federation-user" href="<%= locals.APP_ROOT %>/federation-user">Utilisateurs de Fédération</a>
+        </li>
+        <% }%>
+
       </ul>
       <div class="dropdown">
         <a class="dropdown-toggle me-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"

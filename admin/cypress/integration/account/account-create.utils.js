@@ -6,7 +6,7 @@ import { deleteUser } from "./account-delete.utils";
  * using cy.get('@tmpPassword')
  */
 export function createUserAccount(userInfo, basicConfiguration) {
-  cy.contains("Comptes utilisateurs").click();
+  cy.contains("Utilisateurs de l'admin").click();
   cy.contains("Créer un utilisateur").click();
   cy.wait(1);
 

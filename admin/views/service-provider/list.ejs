@@ -23,7 +23,7 @@
           <a class="btn btn-primary mb-3" href="<%= APP_ROOT %>/service-provider/create">Créer un fournisseur de service</a>
         </div>
         <% } %>
-        <%- include('partials/search', {userSearch: querySearch}); %>
+        <%- include('partials/search', {userSearch: querySearch, placeholder: "Rechercher par nom ou ID" }); %>
         <% if (CURRENT_USER.roles.includes('operator')) { %>
         <div id="delete-button" class="ms-2">
           <input id="csrf" type="hidden" name="_csrf" value="<%= locals.csrfToken  %>">
