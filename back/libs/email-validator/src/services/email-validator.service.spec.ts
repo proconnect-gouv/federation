@@ -309,4 +309,70 @@ describe(EmailValidatorService.name, () => {
       expect(result.suggestion).toBe("user@test.example.com");
     });
   });
+
+  describe("computeIsDomainReachable", () => {
+    it("should return true when MX records are found", async () => {
+      // Given
+
+      jest.spyOn(global, "fetch").mockResolvedValueOnce({
+        json: jest.fn().mockResolvedValue({
+          Answer: [{ name: "example.com.", type: 15, TTL: 300, data: "0 ." }],
+        }),
+      } as unknown as Response);
+
+      // When
+      const result = await service["computeIsDomainReachable"]("example.com");
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it("should return true when no MX records are found but the DNS resolution succeeds", async () => {
+      // Given
+      jest
+        .spyOn(global, "fetch")
+        .mockResolvedValueOnce({
+          json: jest.fn().mockResolvedValue({
+            Answer: undefined,
+          }),
+        } as unknown as Response)
+        .mockResolvedValueOnce({
+          json: jest.fn().mockResolvedValue({
+            Answer: [
+              { name: "ehpad-avs.fr.", type: 15, TTL: 300, data: "0 ." },
+            ],
+          }),
+        } as unknown as Response);
+
+      // When
+      const result = await service["computeIsDomainReachable"]("ehpad-avs.fr");
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it("should return false when no MX records are found and the DNS resolution fails", async () => {
+      // Given
+      jest
+        .spyOn(global, "fetch")
+        .mockResolvedValueOnce({
+          json: jest.fn().mockResolvedValue({
+            Answer: undefined,
+          }),
+        } as unknown as Response)
+        .mockResolvedValueOnce({
+          json: jest.fn().mockResolvedValue({
+            Answer: undefined,
+          }),
+        } as unknown as Response);
+
+      // When
+      const result = await service["computeIsDomainReachable"](
+        "does-not-exist-1234567890.fr",
+      );
+
+      // Then
+      expect(result).toBe(false);
+    });
+  });
 });
