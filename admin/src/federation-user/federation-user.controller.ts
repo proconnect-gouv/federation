@@ -43,7 +43,7 @@ export class FederationUserController {
         page,
         limit,
         search: querySearch
-          ? { fields: ["sub"], value: querySearch }
+          ? { fields: ["sub", "idpIdentityKeys.idpMail"], value: querySearch }
           : undefined,
         sort: querySortField
           ? { field: querySortField, direction: querySortDirection }
