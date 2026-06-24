@@ -86,7 +86,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Alors je vois l'erreur "Adresse e-mail invalide."
 
   @k8s
-  Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse email sans option "se souvenir de moi"
+  Scénario: Connexion d'un usager - mauvaise orthographe d'une adresse email sans option "Mémoriser mon adresse sur cet appareil"
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@gendramerie.interieur.gouv.fr"
