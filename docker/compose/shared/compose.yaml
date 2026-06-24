@@ -274,7 +274,9 @@ services:
       - data
 
   mongo:
-    image: mongo:8.2.11
+    # Mongo 8.3.4 = docker run --rm bitnami/mongodb:latest mongod --version
+    # docker pull bitnami/mongodb:latest | grep Digest
+    image: bitnami/mongodb@sha256:08a7d03d7443a308c1e8cb911a9fb242027646253dbb3442bef45a068a66a7f8 # latest
     command:
       - "--keyFile"
       - /mongodb-keyfile
