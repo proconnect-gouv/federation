@@ -96,14 +96,30 @@ export class EmailValidatorService {
 
     if (!featureMxResolutionValidation) return false;
 
+    const isDomainReachable = await this.computeIsDomainReachable(emailDomain);
+    return isDomainReachable;
+  }
+
+  private async computeIsDomainReachable(domain: string): Promise<boolean> {
     try {
-      const response = await fetch(
-        `https://dns.google/resolve?name=${encodeURIComponent(emailDomain)}&type=MX`,
+      const mxResponse = await fetch(
+        `https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=MX`,
       );
-      const { Answer } = (await response.json()) as {
+      const mxData = (await mxResponse.json()) as {
         Answer?: { name: string }[];
       };
-      return Array.isArray(Answer) && Answer.length > 0;
+      const { Answer } = mxData;
+      if (Answer) {
+        return Array.isArray(Answer) && Answer.length > 0;
+      }
+      const dnsResponse = await fetch(
+        `https://dns.google/resolve?name=${encodeURIComponent(domain)}`,
+      );
+      const dnsData = (await dnsResponse.json()) as {
+        Answer?: { name: string }[];
+      };
+
+      return Array.isArray(dnsData.Answer) && dnsData.Answer.length > 0;
     } catch {
       return false;
     }
