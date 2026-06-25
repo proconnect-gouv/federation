@@ -4,7 +4,6 @@
     "redirectUri": "https://dummy-sp-config-for-fc-exploit.fr/oidc-callback",
     "redirectUriLogout": "https://dummy-sp-config-for-fc-exploit.fr/logout-callback",
     "email": "dummy1@proconnect.loc",
-    "ipAddresses": ["1.1.1.1", "1.1.1.2"],
     "scopes": ["given_name", "usual_name", "email"],
     "active": "true",
     "type": "public",

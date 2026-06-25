@@ -6,7 +6,6 @@ export interface ServiceProviderConfig extends Record<
   redirectUri: string;
   redirectUriLogout: string;
   email: string;
-  ipAddresses: string[];
   scopes: string[];
   active: string;
   type: string;

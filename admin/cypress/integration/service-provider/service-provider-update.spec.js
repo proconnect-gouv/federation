@@ -29,7 +29,6 @@ describe("update a service-provider", () => {
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
         email: "user@yopmail.com",
-        ipAddresses: "192.0.0.0",
       };
 
       // Action
@@ -56,7 +55,6 @@ describe("update a service-provider", () => {
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
         email: "user@yopmail.com",
-        ipAddresses: "192.0.0.0",
       };
 
       // Action
@@ -96,7 +94,6 @@ describe("update a service-provider", () => {
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
         email: "user@yopmail.com",
-        ipAddresses: "192.0.0.0",
         scopes: ["openid"],
       };
 
@@ -272,7 +269,6 @@ describe("update a service-provider", () => {
         redirectUri: "",
         redirectUriLogout: "",
         email: "",
-        ipAddresses: "",
       };
 
       // Action
@@ -403,7 +399,6 @@ describe("update a service-provider", () => {
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
         email: "user@yopmail.com",
-        ipAddresses: "192.0.0.0",
       };
 
       // Action
@@ -475,7 +470,6 @@ describe("update a service-provider", () => {
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
         email: "user@yopmail.com",
-        ipAddresses: "192.0.0.0",
       };
 
       // Action
@@ -507,7 +501,6 @@ describe("update a service-provider", () => {
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
         email: "user@yopmail.com",
-        ipAddresses: "192.0.0.0",
       };
 
       // Action

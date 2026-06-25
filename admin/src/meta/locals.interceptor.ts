@@ -8,7 +8,6 @@ import moment from "moment-timezone";
 import { ConfigService } from "nestjs-config";
 import { Observable } from "rxjs";
 import { UserRole } from "../user/roles.enum";
-import { IP_VALIDATOR_REGEX } from "../utils/ip-validator.constant";
 import { VALID_INPUT_STRING_REGEX } from "../utils/validators/is-valid-input-string";
 import { errorCodeTranslations } from "./error-code-translations";
 
@@ -64,7 +63,6 @@ export class LocalsInterceptor implements NestInterceptor {
     ];
 
     res.locals.VALID_INPUT_STRING_REGEX = VALID_INPUT_STRING_REGEX.source;
-    res.locals.IP_VALIDATOR_REGEX = IP_VALIDATOR_REGEX.source;
 
     return next.handle();
   }

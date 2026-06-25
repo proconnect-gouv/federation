@@ -112,7 +112,6 @@ describe("ServiceProviderService", () => {
     const expectedServiceProviderCreated =
       serviceProviderFactory.createServiceProviderFromDb({
         client_secret: "FE1CE803iuyiuyiy",
-        IPServerAddressesAndRanges: ["192.0.0.0"],
         key: "secretKeyMocked",
       });
     beforeEach(() => {
@@ -387,7 +386,6 @@ describe("ServiceProviderService", () => {
           name: "proConnect",
           redirectUri: ["https://proConnect.com"],
           redirectUriLogout: ["https://proConnect.com/logout"],
-          ipAddresses: ["192.0.0.0"],
           email: "v@b2.com",
           active: true,
           type: "private",

@@ -11,7 +11,6 @@ import {
   Matches,
 } from "class-validator";
 import { AlgoValue } from "../../enum";
-import { IP_VALIDATOR_REGEX } from "../../utils/ip-validator.constant";
 import {
   defaultNoneOrLinesToNullableArray,
   linesToArray,
@@ -55,14 +54,6 @@ export class ServiceProviderDto {
   })
   @Transform(toNullableString)
   readonly email: string;
-  // match empty string because of optional parameters
-  // impossible to use IsOptionalExtended because of the Transform which always return something
-  @Transform(linesToArray)
-  @Matches(IP_VALIDATOR_REGEX, {
-    each: true,
-    message: "Veuillez mettre des ips valides ( Ex: 1.1.1.1 )",
-  })
-  readonly ipAddresses: string[];
 
   @IsNotEmpty({
     message: "Veuillez faire un choix",

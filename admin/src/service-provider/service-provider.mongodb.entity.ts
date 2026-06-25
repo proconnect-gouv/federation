@@ -20,9 +20,6 @@ export class ServiceProviderFromDb {
   @Column()
   type: string;
 
-  @Column({ name: "IPServerAddressesAndRanges" })
-  IPServerAddressesAndRanges: string[];
-
   @Column({ name: "email" })
   email: string;
 

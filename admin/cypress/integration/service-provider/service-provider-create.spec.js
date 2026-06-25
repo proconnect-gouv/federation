@@ -26,7 +26,6 @@ describe("Service provider creation", () => {
     redirectUriLogout: "https://url.com/logout",
     email: "user2@yopmail.com",
     type: "public",
-    ipAddresses: "",
   };
 
   before(() => {
@@ -134,25 +133,6 @@ describe("Service provider creation", () => {
       cy.closeBanner(".alert-success");
     });
 
-    it("if we add a service provider with two ipAddresses", () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: "2 ipAddresses",
-          ipAddresses: "192.0.0.0\r1.1.1.1",
-        },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.url().should("eq", `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service 2 ipAddresses a été créé avec succès !`,
-      );
-      cy.closeBanner(".alert-success");
-    });
-
     it("if we add a service provider with no email", () => {
       // Action
       createServiceProvider(
@@ -215,7 +195,7 @@ describe("Service provider creation", () => {
       );
     });
 
-    it("if we add  a sp with no redirectUri, redirectUriLogout and ip", () => {
+    it("if we add  a sp with no redirectUri, redirectUriLogout", () => {
       // Action
       createServiceProvider(
         {
@@ -223,7 +203,6 @@ describe("Service provider creation", () => {
           name: "champs optionnels",
           redirectUri: "",
           redirectUriLogout: "",
-          ipAddresses: "",
         },
         basicConfiguration,
       );
@@ -264,7 +243,7 @@ describe("Service provider creation", () => {
         {
           ...spData,
           name: "MyFirstSP",
-          ipAddresses: "Obviously not an IP",
+          redirectUri: "Obviously not a URL",
         },
         basicConfiguration,
       );
@@ -281,7 +260,6 @@ describe("Service provider creation", () => {
           redirectUri: "",
           redirectUriLogout: "",
           email: "",
-          ipAddresses: "",
         },
         basicConfiguration,
       );
@@ -298,7 +276,6 @@ describe("Service provider creation", () => {
       cy.contains(`Veuillez mettre une adresse email valide.`).should(
         "not.be.visible",
       );
-      cy.get('[name="ipAddresses"]').should("be.empty");
     });
 
     it("if an error occured in the form, we display an error (name)", () => {
@@ -389,23 +366,6 @@ describe("Service provider creation", () => {
 
       // Assert
       cy.contains(`Veuillez mettre une adresse email valide.`)
-        .scrollIntoView()
-        .should("be.visible");
-    });
-
-    it("if an error occured in the form, we display an error (ips addresses)", () => {
-      // Action
-      createServiceProvider(
-        {
-          ...spData,
-          name: "Good name",
-          ipAddresses: "****",
-        },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.contains(`Veuillez mettre des ips valides ( Ex: 1.1.1.1 )`)
         .scrollIntoView()
         .should("be.visible");
     });

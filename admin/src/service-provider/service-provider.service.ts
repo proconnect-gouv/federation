@@ -106,7 +106,6 @@ export class ServiceProviderService {
     serviceProvider.type = input.type;
     serviceProvider.email = input.email;
     serviceProvider.active = input.active;
-    serviceProvider.IPServerAddressesAndRanges = input.ipAddresses;
     serviceProvider.updatedAt = new Date();
     serviceProvider.updatedBy = user;
     serviceProvider.userinfo_signed_response_alg =
@@ -247,7 +246,6 @@ export class ServiceProviderService {
       post_logout_redirect_uris: serviceProviderDto.redirectUriLogout,
       type: serviceProviderDto.type,
       email: serviceProviderDto.email,
-      IPServerAddressesAndRanges: serviceProviderDto.ipAddresses,
       scopes: serviceProviderDto.scopes,
       userinfo_signed_response_alg:
         serviceProviderDto.userinfo_signed_response_alg,
