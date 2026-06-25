@@ -12,6 +12,7 @@ describe("Service Provider Input (Data Transfer Object)", () => {
     active: "true",
     type: "private",
     scopes: ["given_name"],
+    collaborators: [],
   };
 
   it("should validate if all properties are correct", async () => {

@@ -423,6 +423,37 @@ describe("update a service-provider", () => {
       cy.formControl(sp);
     });
 
+    it("Should be able to update a sp ( collaborators ) ", () => {
+      // Arrange
+      const mockConfig = {
+        ...configuration,
+        totp: true,
+      };
+
+      const sp = {
+        collaborators: "user1@yopmail.com\nuser2@yopmail.com",
+      };
+
+      // Action
+      cy.visit(`/service-provider?page=1&limit=9000`);
+
+      cy.contains(`MyFirstFSCypressModificate`).should("be.visible");
+      cy.get("a.btn-action-update").last().click();
+
+      cy.formFill(sp, mockConfig);
+      cy.get('form[name="fs-form"] button[type="submit"]').click();
+
+      // Assert
+      cy.contains(
+        `Le fournisseur de service MyFirstFSCypressModificate a été modifié avec succès !`,
+      );
+
+      cy.get("#collaborators").should("be.visible");
+      cy.get("#collaborators").should("not.have.class", "checked");
+
+      cy.formControl(sp);
+    });
+
     it("Should be able to change a sp into a resource server", () => {
       // Arrange
       const mockConfig = {

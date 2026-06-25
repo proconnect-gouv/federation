@@ -8,6 +8,7 @@ import moment from "moment-timezone";
 import { ConfigService } from "nestjs-config";
 import { Observable } from "rxjs";
 import { UserRole } from "../user/roles.enum";
+import { VALID_EMAILS_REGEX } from "../utils/regex/valid-email-regex";
 import { VALID_INPUT_STRING_REGEX } from "../utils/validators/is-valid-input-string";
 import { errorCodeTranslations } from "./error-code-translations";
 
@@ -63,6 +64,7 @@ export class LocalsInterceptor implements NestInterceptor {
     ];
 
     res.locals.VALID_INPUT_STRING_REGEX = VALID_INPUT_STRING_REGEX.source;
+    res.locals.VALID_EMAILS_REGEX = VALID_EMAILS_REGEX.source;
 
     return next.handle();
   }
