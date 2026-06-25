@@ -7,25 +7,25 @@ services:
   hybridge-rie:
     hostname: hybridge-rie
     build:
-      context: '../../../back'
+      context: "../../../back"
       target: dev
     user: ${CURRENT_UID}
     depends_on:
       - broker
     volumes:
-      - '../../../back/apps:/var/www/app/apps:ro'
-      - '../../../back/libs:/var/www/app/libs:ro'
-      - '../../volumes/app:/opt/scripts'
-      - '../../volumes/log/:/var/log/app'
-      - '../../volumes/.home:/home'
+      - "../../../back/apps:/var/www/app/apps:ro"
+      - "../../../back/libs:/var/www/app/libs:ro"
+      - "../../volumes/app:/opt/scripts"
+      - "../../volumes/log/:/var/log/app"
+      - "../../volumes/.home:/home"
       - ../../volumes/ssl:/etc/ssl/docker_host:ro
     tmpfs:
       - /var/www/app/dist:mode=777
     env_file:
-      - '../shared/.env/base-app.env'
-      - '../fca-low/.env/hybridge-rie.env'
+      - "../shared/.env/base-app.env"
+      - "../fca-low/.env/hybridge-rie.env"
     tty: true
     networks:
       - rie
     init: true
-    command: 'yarn start:dev csmr-rie'
+    command: "yarn start:dev csmr-rie"
