@@ -367,9 +367,12 @@ Given(
   },
 );
 
-When('je clique sur la checkbox "se souvenir de moi"', function () {
-  cy.contains("Se souvenir de moi").click();
-});
+When(
+  'je clique sur la checkbox "Mémoriser mon adresse sur cet appareil"',
+  function () {
+    cy.contains("Mémoriser mon adresse sur cet appareil").click();
+  },
+);
 
 When("je ferme la modal nouvelle interface si elle est affichée", () => {
   cy.get("body").then(($body) => {
