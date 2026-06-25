@@ -115,24 +115,6 @@
               </div>
             </section>
             <section class="mb-3 row">
-              <label class="col-2 col-form-label" for="ipAddresses">Plages d'adresses IP (une par ligne)</label>
-              <div class="col-10">
-                <textarea id="IPServerAddressesAndRanges" class="form-control <%= locals.messages.errors && messages.errors[0].ipAddresses && 'is-invalid' %>" placeholder="1.1.1.1" name="ipAddresses" pattern="<%= IP_VALIDATOR_REGEX %>"><%= locals.messages.values && messages.values[0].ipAddresses %></textarea>
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].ipAddresses) { %>
-                  <p>
-                    <% messages.errors[0].ipAddresses.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez mettre des ips valides ( Ex: 1.1.1.1 )
-                  <% } %>
-                </div>
-              </div>
-            </section>
-            <section class="mb-3 row">
               <label class="col-2 col-form-label mt-2">Scopes : </label>
               <div class="mb-3 m-3 col-md-9">
                 <div class="form-check form-check-inline">

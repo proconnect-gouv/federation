@@ -169,7 +169,6 @@ export class ServiceProviderController {
     const output = {
       ...serviceProvider,
       redirectUri: arrayToLines(serviceProvider.redirect_uris),
-      ipsRanges: arrayToLines(serviceProvider.IPServerAddressesAndRanges),
       postLogoutUri: arrayToLines(serviceProvider.post_logout_redirect_uris),
       response_types: nullableArrayToDefaultNoneOrLines({
         value: serviceProvider.response_types,

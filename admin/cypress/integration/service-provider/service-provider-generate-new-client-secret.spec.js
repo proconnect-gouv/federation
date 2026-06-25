@@ -31,7 +31,6 @@ describe("update a service-provider", () => {
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
         email: "user@yopmail.com",
-        ipAddresses: "192.0.0.0",
       };
 
       // Action
@@ -57,10 +56,9 @@ describe("update a service-provider", () => {
       const fs = {
         name: "MyFirstFS",
         signupId: "123456",
-        redirectUri: "https://url.com",
+        redirectUri: "Obviously not a URL",
         redirectUriLogout: "https://url.com/logout",
         email: "user@yopmail.com",
-        ipAddresses: "Obviously not an IP",
       };
 
       // Action

@@ -127,7 +127,6 @@ async def create_oidc_client(data: OidcClient, request: Request):
                 CONFIG["client_secret_cipher_pass"], secrets.token_hex(32)
             ),
             "claims": ["amr"],
-            "IPServerAddressesAndRanges": ["1.1.1.1"],
             "type": "private",
             "scopes": [
                 "openid",
