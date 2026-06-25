@@ -170,6 +170,8 @@ export class ServiceProviderController {
       ...serviceProvider,
       redirectUri: arrayToLines(serviceProvider.redirect_uris),
       postLogoutUri: arrayToLines(serviceProvider.post_logout_redirect_uris),
+      collaborators: arrayToLines(serviceProvider.collaborators),
+
       response_types: nullableArrayToDefaultNoneOrLines({
         value: serviceProvider.response_types,
       }),

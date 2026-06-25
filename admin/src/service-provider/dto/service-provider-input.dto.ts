@@ -11,6 +11,7 @@ import {
   Matches,
 } from "class-validator";
 import { AlgoValue } from "../../enum";
+import { VALID_EMAIL_REGEX } from "../../utils/regex/valid-email-regex";
 import {
   defaultNoneOrLinesToNullableArray,
   linesToArray,
@@ -49,7 +50,7 @@ export class ServiceProviderDto {
   readonly redirectUriLogout: string[];
 
   @IsOptional()
-  @Matches(/^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$/, {
+  @Matches(VALID_EMAIL_REGEX, {
     message: "Veuillez mettre une adresse email valide.",
   })
   @Transform(toNullableString)
@@ -126,4 +127,12 @@ export class ServiceProviderDto {
   @Transform(toNullableString)
   // tslint:disable-next-line: variable-name
   readonly jwks_uri?: string | null;
+
+  @Transform(linesToArray)
+  @IsOptionalExtended()
+  @Matches(VALID_EMAIL_REGEX, {
+    each: true,
+    message: "Veuillez mettre une liste d'adresses email valides.",
+  })
+  readonly collaborators: string[];
 }

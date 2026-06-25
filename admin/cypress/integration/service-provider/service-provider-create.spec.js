@@ -133,6 +133,25 @@ describe("Service provider creation", () => {
       cy.closeBanner(".alert-success");
     });
 
+    it("if we add a service provider with two collaborators", () => {
+      // Action
+      createServiceProvider(
+        {
+          ...spData,
+          name: "2 collaborators",
+          collaborators: "user1@yopmail.com\ruser2@yopmail.com",
+        },
+        basicConfiguration,
+      );
+
+      // Assert
+      cy.url().should("eq", `${BASE_URL}/service-provider`);
+      cy.contains(
+        `Le fournisseur de service 2 collaborators a été créé avec succès !`,
+      );
+      cy.closeBanner(".alert-success");
+    });
+
     it("if we add a service provider with no email", () => {
       // Action
       createServiceProvider(
@@ -366,6 +385,25 @@ describe("Service provider creation", () => {
 
       // Assert
       cy.contains(`Veuillez mettre une adresse email valide.`)
+        .scrollIntoView()
+        .should("be.visible");
+    });
+
+    it("if an error occured in the form, we display an error (collaborators)", () => {
+      // Arrange
+      const errorFs = {
+        ...spData,
+        name: "Good name",
+        collaborators: "****",
+      };
+
+      // Action
+      createServiceProvider(errorFs, basicConfiguration);
+
+      // Assert
+      cy.contains(
+        `Veuillez mettre des adresses e-mail valides ( Ex: email@email.com )`,
+      )
         .scrollIntoView()
         .should("be.visible");
     });

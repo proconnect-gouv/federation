@@ -121,6 +121,7 @@ export class ServiceProviderService {
     serviceProvider.response_types = input.response_types;
     serviceProvider.grant_types = input.grant_types;
     serviceProvider.jwks_uri = input.jwks_uri;
+    serviceProvider.collaborators = input.collaborators;
 
     /*
      * Since we have "legacy SPs" with no scope at all, we want to describe some rules
@@ -271,6 +272,7 @@ export class ServiceProviderService {
       updatedBy: user,
       secretUpdatedBy: user,
       key,
+      collaborators: serviceProviderDto.collaborators,
     };
   }
 

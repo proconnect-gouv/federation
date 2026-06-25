@@ -26,6 +26,7 @@ function createServiceProviderDto(
     introspection_encrypted_response_enc: "A128CBC-HS256",
     grant_types: ["authorization_code"],
     jwks_uri: "https://monfs.com/jwks",
+    collaborators: [],
     ...partial,
   };
 }
@@ -57,6 +58,7 @@ function createServiceProviderFromDb(
     secretUpdatedAt: new Date(),
     key: "key",
     updatedBy: "user",
+    collaborators: [],
     ...partial,
   };
 }

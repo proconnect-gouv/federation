@@ -16,6 +16,7 @@ export function createServiceProvider(serviceProviderInfo, configuration) {
     response_types,
     grant_types,
     jwks_uri,
+    collaborators,
   } = serviceProviderInfo;
 
   cy.formFill(
@@ -30,6 +31,7 @@ export function createServiceProvider(serviceProviderInfo, configuration) {
       response_types,
       grant_types,
       jwks_uri,
+      collaborators,
     }),
     configuration,
   );

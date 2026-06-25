@@ -93,4 +93,7 @@ export class ServiceProviderFromDb {
   @Column()
   // tslint:disable-next-line: variable-name
   jwks_uri: string;
+
+  @Column()
+  collaborators: string[];
 }
