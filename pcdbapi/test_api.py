@@ -9,10 +9,8 @@ import time
 
 import pytest
 from asgi_lifespan import LifespanManager
-from fastapi import Request
 from httpx import ASGITransport, AsyncClient, Response
 
-from crypt import decrypt_symetric
 from main import CONFIG, app
 
 # Protection against running tests on production database
@@ -184,13 +182,18 @@ async def test_404s(client):
 
 @pytest.mark.asyncio
 async def test_create_oidc_client(client):
-    app_data = {"name": "Test App", "redirect_uris": ["https://example.com/callback"]}
+    app_data = {
+        "name": "Test App",
+        "redirect_uris": ["https://example.com/callback"],
+        "collaborators": ["collaborator@example.com"],
+    }
     response = await api_call(
         client, "POST", "/api/oidc_clients?email=test@example.com", json_data=app_data
     )
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == app_data["name"]
+    assert data["collaborators"] == app_data["collaborators"]
     assert data["email"] == "test@example.com"
     assert "_id" in data
     assert len(data["client_secret"]) == 64
@@ -226,7 +229,11 @@ async def test_update_fields_whitelist(client):
     assert create_response.status_code == 422
 
     # Create app with valid fields
-    valid_data = {"name": "Test App", "redirect_uris": ["https://example.com/callback"]}
+    valid_data = {
+        "name": "Test App",
+        "redirect_uris": ["https://example.com/callback"],
+        "collaborators": ["collaborator@example.com"],
+    }
     create_response = await api_call(
         client, "POST", "/api/oidc_clients?email=test@example.com", json_data=valid_data
     )
@@ -234,6 +241,7 @@ async def test_update_fields_whitelist(client):
     created = create_response.json()
     assert created["name"] == valid_data["name"]
     assert created["redirect_uris"] == valid_data["redirect_uris"]
+    assert created["collaborators"] == valid_data["collaborators"]
     app_id = created["_id"]
 
     for k, v in {
@@ -272,7 +280,11 @@ async def test_update_fields_whitelist(client):
     assert create_response.status_code == 422
 
     # Update with valid fields
-    valid_updates = {"name": "Updated App", "redirect_uris": ["https://updated.com/callback"]}
+    valid_updates = {
+        "name": "Updated App",
+        "redirect_uris": ["https://updated.com/callback"],
+        "collaborators": ["collaborator-updated@example.com"],
+    }
     response = await api_call(
         client,
         "PATCH",
@@ -284,6 +296,7 @@ async def test_update_fields_whitelist(client):
     data = response.json()
     assert data["name"] == valid_updates["name"]
     assert data["redirect_uris"] == valid_updates["redirect_uris"]
+    assert data["collaborators"] == valid_updates["collaborators"]
     assert len(data["client_secret"]) == 64
 
 
@@ -330,6 +343,7 @@ async def test_oidc_client_lifecycle(client):
         "name": "Test App",
         "redirect_uris": ["https://example.com/callback"],
         "id_token_signed_response_alg": "ES256",
+        "collaborators": ["collaborator@example.com"],
     }
     create_response = await api_call(
         client, "POST", "/api/oidc_clients?email=test@example.com", json_data=app_data
@@ -339,6 +353,7 @@ async def test_oidc_client_lifecycle(client):
     assert created_app["name"] == app_data["name"]
     assert created_app["redirect_uris"] == app_data["redirect_uris"]
     assert created_app["email"] == "test@example.com"
+    assert created_app["collaborators"] == app_data["collaborators"]
     assert created_app["createdAt"] is not None
     assert created_app["updatedAt"] is not None
     assert created_app["updatedBy"] == "espace-partenaires"
@@ -352,11 +367,26 @@ async def test_oidc_client_lifecycle(client):
     apps = list_response.json()
     assert len(apps) == 0
 
+    # Try to list apps directly with collaborator email
+    list_response = await api_call(
+        client, "GET", "/api/oidc_clients?email=collaborator@example.com"
+    )
+    assert list_response.status_code == 200
+    apps = list_response.json()
+    assert len(apps) == 1
+    assert apps[0]["_id"] == app_id
+
     # Try to get app directly with different email
     get_response = await api_call(
         client, "GET", f"/api/oidc_clients/{app_id}?email=other@example.com"
     )
     assert get_response.status_code == 404
+
+    # Try to get app directly with collaborator email
+    get_response = await api_call(
+        client, "GET", f"/api/oidc_clients/{app_id}?email=collaborator@example.com"
+    )
+    assert get_response.status_code == 200
 
     # Try to patch app with different email
     updates = {"name": "Different App"}
@@ -403,14 +433,31 @@ async def test_oidc_client_lifecycle(client):
     assert updated_app["redirect_uris"] == updates["redirect_uris"]
     assert len(updated_app["client_secret"]) == 64
 
+    # Update app while being a collaborator
+    collaborator_updates = {
+        "name": "Updated App 2",
+        "redirect_uris": ["https://updated.com/callback/2"],
+    }
+    patch_response = await api_call(
+        client,
+        "PATCH",
+        f"/api/oidc_clients/{app_id}?email=collaborator@example.com",
+        json_data=collaborator_updates,
+    )
+    assert patch_response.status_code == 200
+    updated_app = patch_response.json()
+    assert updated_app["name"] == collaborator_updates["name"]
+    assert updated_app["redirect_uris"] == collaborator_updates["redirect_uris"]
+    assert len(updated_app["client_secret"]) == 64
+
     # Get app again and verify update
     get_response = await api_call(
         client, "GET", f"/api/oidc_clients/{app_id}?email=test@example.com"
     )
     assert get_response.status_code == 200
     retrieved_app = get_response.json()
-    assert retrieved_app["name"] == updates["name"]
-    assert retrieved_app["redirect_uris"] == updates["redirect_uris"]
+    assert retrieved_app["name"] == collaborator_updates["name"]
+    assert retrieved_app["redirect_uris"] == collaborator_updates["redirect_uris"]
     assert retrieved_app["updatedAt"] is not None
     assert retrieved_app["updatedBy"] == "espace-partenaires"
     assert retrieved_app["updatedAt"] > created_app["updatedAt"]
