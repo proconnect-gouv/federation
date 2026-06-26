@@ -30,6 +30,24 @@ describe("Federation user list", () => {
       ).should("have.class", "fa-toggle-off");
     });
 
+    it("I can search a federation user by sub", () => {
+      cy.visit(`/federation-user`);
+      cy.get("#searchInput").type(DEACTIVATED_USER_SUB);
+      cy.contains("Rechercher").click();
+
+      cy.get("table tbody tr").should("have.length", 1);
+      cy.get("table").should("contain.text", DEACTIVATED_USER_SUB);
+    });
+
+    it("I can search a federation user by email", () => {
+      cy.visit(`/federation-user`);
+      cy.get("#searchInput").type("user-multiple-idp@fia1.fr");
+      cy.contains("Rechercher").click();
+
+      cy.get("table tbody tr").should("have.length", 1);
+      cy.get("table").should("contain.text", "user-multiple-idp@fia1.fr");
+    });
+
     it("I cannot activate a federation user if totp not filled", () => {
       cy.visit(`/federation-user`);
 

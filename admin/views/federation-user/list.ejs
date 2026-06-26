@@ -16,7 +16,7 @@
             <%- include('partials/choose-items-number-to-show.ejs') -%>
           </form>
           <%- include('partials/global-errors-handler.ejs') -%>
-          <%- include('partials/search', {userSearch: querySearch, placeholder: "Rechercher par sub" }); %>
+          <%- include('partials/search', {userSearch: querySearch, placeholder: "Rechercher par sub ou e-mail" }); %>
 
           <table class="table table-hover table-light shadow-sm">
             <thead class="thead-light">
@@ -32,7 +32,7 @@
             <% federationUsers.forEach(function(user){ %>
               <tr id="<%= user.sub %>">
                 <td><%= user.sub %></td>
-                <td>
+                <td class="cell-emails">
                   <%
                       user.emails.forEach(function(email, index) {
                         if (index > 0) { %>
