@@ -260,7 +260,7 @@ services:
         ipv4_address: 172.16.4.105
 
   pg-admin:
-    image: postgres:18
+    image: postgres:16
     environment:
       - "POSTGRES_DB=pg-db"
       - "POSTGRES_USER=pg-user"
