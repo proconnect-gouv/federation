@@ -33,6 +33,7 @@ class OidcClient(BaseModel):
     post_logout_redirect_uris: List[str] | None = None
     id_token_signed_response_alg: Literal["RS256", "ES256", "HS256"] | None = None
     userinfo_signed_response_alg: Literal["RS256", "ES256", "HS256"] | None = None
+    collaborators: List[str] | None = None
     active: bool | None = None
 
 
@@ -98,7 +99,14 @@ async def readyz():
 @app.get("/api/oidc_clients")
 @encode_response
 async def list_oidc_clients(request: Request):
-    cursor = app.collection.find({"email": request.state.email})
+    cursor = app.collection.find(
+        {
+            "$or": [
+                {"email": request.state.email},
+                {"collaborators": request.state.email},
+            ]
+        }
+    )
     elts = await cursor.to_list(None)
     for elt in elts:
         format_oidc_client(elt)
@@ -149,7 +157,17 @@ async def create_oidc_client(data: OidcClient, request: Request):
 @encode_response
 async def get_oidc_client(id: str, request: Request):
     oid = validate_objectid(id)
-    if not (elt := await app.collection.find_one({"_id": oid, "email": request.state.email})):
+    if not (
+        elt := await app.collection.find_one(
+            {
+                "_id": oid,
+                "$or": [
+                    {"email": request.state.email},
+                    {"collaborators": request.state.email},
+                ],
+            }
+        )
+    ):
         raise HTTPException(status_code=404)
     format_oidc_client(elt)
     return elt
@@ -167,7 +185,14 @@ async def update_oidc_client(id: str, updates: OidcClient, request: Request):
         }
     )
     result = await app.collection.update_one(
-        {"_id": oid, "email": request.state.email}, {"$set": d}
+        {
+            "_id": oid,
+            "$or": [
+                {"email": request.state.email},
+                {"collaborators": request.state.email},
+            ],
+        },
+        {"$set": d},
     )
     if not result.matched_count:
         raise HTTPException(status_code=404)
