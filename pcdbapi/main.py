@@ -144,6 +144,7 @@ async def create_oidc_client(data: OidcClient, request: Request):
                 "roles",
                 "organization_label",
             ],
+            "collaborators": [],
         }
     )
     result = await app.collection.insert_one(d)
