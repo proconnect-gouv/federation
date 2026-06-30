@@ -31,7 +31,7 @@ Then(
 
     const DELIMITOR = " et ";
     const extraEventVerification = prepareEventVerification(
-      info,
+      info ?? "",
       DELIMITOR,
       {},
       valueMapping,
@@ -94,7 +94,7 @@ const prepareEventVerification = (
   keyMapping: Record<string, string> = {},
   valueMapping: Record<string, unknown> = {},
 ): Record<string, unknown> => {
-  const expectedEvent = {};
+  const expectedEvent: Record<string, unknown> = {};
   if (text) {
     text.split(delimitor).forEach((infoText) => {
       const result = infoText.match(/^"([^"]+)" "([^"]*)"$/);

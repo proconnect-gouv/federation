@@ -36,12 +36,12 @@ Given(
       .its("request.query.state")
       .should("exist")
       .then((value: string) => {
-        this.apiRequest.qs["state"] = value;
+        (this.apiRequest!.qs as Record<string, unknown>)["state"] = value;
       });
   },
 );
 
-Then("le bouton {string} est {string}", (buttonText, state) => {
+Then("le bouton {string} est {string}", (buttonText: string, state: string) => {
   const assertion = state === "désactivé" ? "be.disabled" : "not.be.disabled";
   cy.contains("button", buttonText).should(assertion);
 });

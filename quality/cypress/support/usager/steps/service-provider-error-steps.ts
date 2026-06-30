@@ -6,9 +6,9 @@ const URL_TYPE_GROUP = 1;
 
 const checkErrorCallbackUrl = (url: string, containsQuery = true): void => {
   const match = url.match(ERROR_URL_REGEXP);
-  expect(match.length).to.equal(4);
+  expect(match!.length).to.equal(4);
   const delimitor = containsQuery ? "?" : "#";
-  expect(match[URL_TYPE_GROUP]).to.equal(delimitor);
+  expect(match![URL_TYPE_GROUP]).to.equal(delimitor);
 };
 
 Then(

@@ -21,10 +21,10 @@ Then(
     getContactSupportLink()
       .invoke("attr", "href")
       .then((hrefValue) => {
-        const matches = hrefValue.match(/subject=([^&]+)&body=([^&]+)/);
+        const matches = hrefValue!.match(/subject=([^&]+)&body=([^&]+)/);
         expect(matches).to.have.length(3);
-        const subject = decodeURIComponent(matches[1]);
-        const body = decodeURIComponent(matches[2]);
+        const subject = decodeURIComponent(matches![1]);
+        const body = decodeURIComponent(matches![2]);
 
         expect(subject).to.contains(`Signaler l’erreur ${errorCode}`);
         expect(body).to.contains(`Je souhaitais me connecter à « ${spName} ».`);
@@ -41,14 +41,16 @@ Then(
     getContactSupportLink()
       .invoke("attr", "href")
       .then((hrefValue) => {
-        const matches = hrefValue.match(/subject=([^&]+)&body=([^&]+)/);
+        const matches = hrefValue!.match(/subject=([^&]+)&body=([^&]+)/);
         expect(matches).to.have.length(3);
-        const httpEncodedBody = matches.pop();
+        const httpEncodedBody = matches!.pop();
 
-        const body = decodeURIComponent(httpEncodedBody);
+        const body = decodeURIComponent(httpEncodedBody!);
         const validationConstraintsMatch = body.match(/\[\s*\{[\s\S]*?\}\s*\]/);
         expect(validationConstraintsMatch).to.have.length(1);
-        const validationConstraints = JSON.parse(validationConstraintsMatch[0]);
+        const validationConstraints = JSON.parse(
+          validationConstraintsMatch![0],
+        );
         const expectedValidationConstraints = [
           { isEmail: "email must be an email" },
         ];
@@ -58,7 +60,7 @@ Then(
 
         const validationTargetMatch = body.match(/\{\s*"sub"[\s\S]*?\}/);
         expect(validationTargetMatch).to.have.length(1);
-        const validationTarget = JSON.parse(validationTargetMatch[0]);
+        const validationTarget = JSON.parse(validationTargetMatch![0]);
         delete validationTarget.exp;
         delete validationTarget.iat;
         delete validationTarget.iss;

@@ -14,7 +14,7 @@ Then(
   /^(?:le |l')(entête du JWE|entête du JWS|payload du JWT) a (\d+) propriétés?$/,
   function (jwtPart: string, count: number) {
     cy.get("@jwt")
-      .its(jwtPartsMap[jwtPart])
+      .its(jwtPartsMap[jwtPart as keyof typeof jwtPartsMap])
       .then((part) => Object.keys(part))
       .should("have.length", count);
   },
@@ -23,7 +23,9 @@ Then(
 Then(
   /^(?:le |l')(entête du JWE|entête du JWS|payload du JWT) a une propriété "([^"]+)"$/,
   function (jwtPart: string, property: string) {
-    cy.get("@jwt").its(jwtPartsMap[jwtPart]).should("have.property", property);
+    cy.get("@jwt")
+      .its(jwtPartsMap[jwtPart as keyof typeof jwtPartsMap])
+      .should("have.property", property);
   },
 );
 
@@ -31,7 +33,7 @@ Then(
   /^(?:le |l')(entête du JWE|entête du JWS|payload du JWT) n'a pas de propriété "([^"]+)"$/,
   function (jwtPart: string, property: string) {
     cy.get("@jwt")
-      .its(jwtPartsMap[jwtPart])
+      .its(jwtPartsMap[jwtPart as keyof typeof jwtPartsMap])
       .should("not.have.property", property);
   },
 );
@@ -40,7 +42,7 @@ Then(
   /^(?:le |l')(entête du JWE|entête du JWS|payload du JWT) a une propriété "([^"]+)" égale à "([^"]+)"$/,
   function (jwtPart: string, property: string, value: string) {
     cy.get("@jwt")
-      .its(jwtPartsMap[jwtPart])
+      .its(jwtPartsMap[jwtPart as keyof typeof jwtPartsMap])
       .its(property)
       .should("equal", value);
   },
@@ -50,7 +52,7 @@ Then(
   /^(?:le |l')(entête du JWE|entête du JWS|payload du JWT) a une propriété "([^"]+)" égale à (\d+)$/,
   function (jwtPart: string, property: string, value: number) {
     cy.get("@jwt")
-      .its(jwtPartsMap[jwtPart])
+      .its(jwtPartsMap[jwtPart as keyof typeof jwtPartsMap])
       .its(property)
       .should("equal", value);
   },
@@ -61,7 +63,7 @@ Then(
   function (jwtPart: string, property: string, value: string) {
     const booleanValue = value === "true";
     cy.get("@jwt")
-      .its(jwtPartsMap[jwtPart])
+      .its(jwtPartsMap[jwtPart as keyof typeof jwtPartsMap])
       .its(property)
       .should("equal", booleanValue);
   },
@@ -71,7 +73,7 @@ Then(
   /^(?:le |l')(entête du JWE|entête du JWS|payload du JWT) a une propriété "([^"]+)" contenant "([^"]+)"$/,
   function (jwtPart: string, property: string, value: string) {
     cy.get("@jwt")
-      .its(jwtPartsMap[jwtPart])
+      .its(jwtPartsMap[jwtPart as keyof typeof jwtPartsMap])
       .its(property)
       .should("include", value);
   },

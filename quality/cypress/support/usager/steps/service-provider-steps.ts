@@ -348,7 +348,7 @@ Given(
       .its("request.query.code")
       .should("exist")
       .then((value: string) => {
-        this.apiRequest.body["code"] = value;
+        (this.apiRequest!.body as Record<string, unknown>)["code"] = value;
       });
   },
 );

@@ -17,27 +17,27 @@ Given("je prépare une requête {string}", function (requestKey: string) {
 Given(
   "je retire le paramètre {string} de la requête",
   function (property: string) {
-    expect(this.apiRequest.qs[property]).to.exist;
-    delete this.apiRequest.qs[property];
+    expect((this.apiRequest!.qs as Record<string, unknown>)[property]).to.exist;
+    delete (this.apiRequest!.qs as Record<string, unknown>)[property];
   },
 );
 
 Given(
   "je mets {string} dans le paramètre {string} de la requête",
   function (value: string, property: string) {
-    this.apiRequest.qs[property] = value;
+    (this.apiRequest!.qs as Record<string, unknown>)[property] = value;
   },
 );
 
 Given("je retire {string} du corps de la requête", function (property: string) {
-  expect(this.apiRequest.body[property]).to.exist;
-  delete this.apiRequest.body[property];
+  expect((this.apiRequest!.body as Record<string, unknown>)[property]).to.exist;
+  delete (this.apiRequest!.body as Record<string, unknown>)[property];
 });
 
 Given(
   "je mets {string} dans la propriété {string} du corps de la requête",
   function (value: string, property: string) {
-    this.apiRequest.body[property] = value;
+    (this.apiRequest!.body as Record<string, unknown>)[property] = value;
   },
 );
 
@@ -47,7 +47,7 @@ Given(
     cy.get(`@api:${dataKey}`)
       .should("exist")
       .then((value) => {
-        this.apiRequest.body[property] = value;
+        (this.apiRequest!.body as Record<string, unknown>)[property] = value;
       });
   },
 );
@@ -55,7 +55,7 @@ Given(
 Given(
   "je configure la requête pour ne pas suivre les redirections",
   function () {
-    this.apiRequest.followRedirect = false;
+    this.apiRequest!.followRedirect = false;
   },
 );
 
