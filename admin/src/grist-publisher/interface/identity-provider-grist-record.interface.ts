@@ -13,4 +13,6 @@ export interface IdentityProviderGristRecord {
   Adresse_e_mail_de_support: string;
   Utilisation_de_l_hyyyperbridge: "Oui" | "Non";
   Entra_ID: "Oui" | "Non";
+  MFA_compliant: "Oui" | "Non";
+  MFA_compliance_note: string;
 }

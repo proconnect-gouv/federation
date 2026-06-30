@@ -85,6 +85,8 @@ export class GristPublisherService {
         ? "Oui"
         : "Non",
       Entra_ID: identityProviderFromDb.isEntraID ? "Oui" : "Non",
+      MFA_compliant: identityProviderFromDb.isMfaCompliant ? "Oui" : "Non",
+      MFA_compliance_note: identityProviderFromDb.mfaComplianceNote || "",
     };
   }
 
