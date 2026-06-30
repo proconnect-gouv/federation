@@ -44,6 +44,8 @@ describe("Identity provider creation", () => {
         client_secret: "1234567890AZERTYUIOP",
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
+        isMfaCompliant: true,
+        mfaComplianceNote: "La MFA sera implémentée bientôt",
       };
 
       createIdentityProvider(idp, basicConfiguration);
@@ -75,6 +77,7 @@ describe("Identity provider creation", () => {
         client_secret: "1234567890AZERTYUIOP",
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
+        isMfaCompliant: true,
       };
       createIdentityProvider(idp, basicConfiguration);
 
@@ -99,6 +102,7 @@ describe("Identity provider creation", () => {
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
         supportEmail: "support@myidp.fr",
+        isMfaCompliant: true,
       };
       createIdentityProvider(idp, basicConfiguration);
 
@@ -123,6 +127,7 @@ describe("Identity provider creation", () => {
         client_secret: "1234567890AZERTYUIOP",
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
+        isMfaCompliant: true,
       };
       createIdentityProvider(idp, basicConfiguration);
 
@@ -152,6 +157,8 @@ describe("Identity provider creation", () => {
         id_token_encrypted_response_enc: "A256GCM",
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
+        isMfaCompliant: true,
+        mfaComplianceNote: "La MFA sera implémentée bientôt",
       };
 
       createIdentityProvider(idp, basicConfiguration);
@@ -174,12 +181,36 @@ describe("Identity provider creation", () => {
         client_secret: "1234567890AZERTYUIOP",
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
+        isMfaCompliant: true,
       };
       createIdentityProvider(idp, basicConfiguration);
 
       cy.url().should("eq", `${BASE_URL}/identity-provider`);
       cy.contains(
         `Le fournisseur d'identité MonSuperFI-Discovery-True a été créé avec succès !`,
+      ).should("exist");
+      cy.closeBanner(".alert-success");
+    });
+
+    it("if isMfaCompliant is set to false", () => {
+      const idp = {
+        name: "MonSuperFI-MfaCompliant-False",
+        title: "Mon Super FI 2 mais mieux écrit",
+        issuer: "https://issuer.fr",
+        discovery: "true",
+        discoveryUrl: "http://discoveryUrl.com",
+        clientId: "09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
+        token_endpoint_auth_method: "client_secret_post",
+        siret: "34047343800034",
+        isMfaCompliant: false,
+        mfaComplianceNote: "La MFA sera implémentée bientôt",
+      };
+      createIdentityProvider(idp, basicConfiguration);
+
+      cy.url().should("eq", `${BASE_URL}/identity-provider`);
+      cy.contains(
+        `Le fournisseur d'identité MonSuperFI-MfaCompliant-False a été créé avec succès !`,
       ).should("exist");
       cy.closeBanner(".alert-success");
     });
@@ -233,6 +264,7 @@ describe("Identity provider creation", () => {
         client_secret: "1234567890AZERTYUIOP",
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
+        isMfaCompliant: true,
       };
 
       createIdentityProvider(idp, basicConfiguration);
@@ -257,6 +289,7 @@ describe("Identity provider creation", () => {
         supportEmail: "notAnEmail",
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
+        isMfaCompliant: true,
       };
 
       createIdentityProvider(idp, basicConfiguration);
@@ -278,6 +311,7 @@ describe("Identity provider creation", () => {
         active: "true",
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
+        isMfaCompliant: true,
       };
 
       basicConfiguration.totp = false;

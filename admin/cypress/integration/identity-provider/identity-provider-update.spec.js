@@ -41,6 +41,7 @@ describe("Identity provider update", () => {
         client_secret: "1234567890AZERTYUIOP",
         siret: "34047343800034",
         token_endpoint_auth_method: "client_secret_post",
+        isMfaCompliant: true,
       };
 
       cy.visit(`/identity-provider`);
@@ -105,6 +106,7 @@ describe("Identity provider update", () => {
         client_secret: "1234567890AZERTYUIOP",
         siret: "34047343800034",
         token_endpoint_auth_method: "client_secret_post",
+        isMfaCompliant: true,
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
 
@@ -134,6 +136,7 @@ describe("Identity provider update", () => {
         clientId: "new-new-09a1a257648c1742c74d6a3d84b31943",
         client_secret: "new-new-1234567890AZERTYUIOP",
         siret: "34047343800034",
+        isMfaCompliant: true,
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
 
@@ -161,6 +164,7 @@ describe("Identity provider update", () => {
         client_secret: "new-new-1234567890AZERTYUIOP",
         siret: "34047343800034",
         supportEmail: "valid@support.fr",
+        isMfaCompliant: true,
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
 
@@ -222,6 +226,8 @@ describe("Identity provider update", () => {
         active: "true",
         siret: "34047343800034",
         token_endpoint_auth_method: "client_secret_post",
+        isMfaCompliant: false,
+        mfaComplianceNote: "Mon FI n'est pas conforme au MFA",
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
 
