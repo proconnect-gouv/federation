@@ -966,10 +966,10 @@
     path-to-regexp "8.4.2"
     tslib "2.8.1"
 
-"@nestjs/testing@^11.1.24":
-  version "11.1.24"
-  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-11.1.24.tgz#ccc4c759d6b84c09dd27c9fc0208c5a1d4cd446f"
-  integrity sha512-+4M4UAnhtprBQN0J2uI6IP0wDqhy9aH8XCMu5SO8oCi0oB04YXA4a4PAEkxmsPn7gHW4dj1u4GFteNQOWgvTJw==
+"@nestjs/testing@^11.1.27":
+  version "11.1.27"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-11.1.27.tgz#1aeb3535d8965753b42e9d931848456f70f51e5d"
+  integrity sha512-I35po13UHZZeGenLWJ3QYwh77RsLau5RcFKWBZ4waVHeARpwjtC7v7n7lGh98swLQdGmZgTnbvKaZ0B5dsUIKA==
   dependencies:
     tslib "2.8.1"
 
