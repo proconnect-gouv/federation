@@ -27,16 +27,16 @@ interface hasBusinessLogArgs {
 
 export const hasBusinessLog = async (
   args: hasBusinessLogArgs,
-): Promise<number> => {
+): Promise<string> => {
   const { event, containerName } = args;
   const stringifiedEvent = JSON.stringify(event);
   const command = `${dockerLogsCommand(containerName)} | tsx ${EXEC_TOOL_PATH} /dev/stdin '${stringifiedEvent}'`;
 
-  let exitCode = 0;
+  let exitCode: string | undefined = "UNKNOWN";
   try {
     await asyncExec(command);
   } catch (err) {
-    exitCode = err.code;
+    exitCode = (err as NodeJS.ErrnoException).code ?? "UNKNOWN";
   }
   return exitCode;
 };
