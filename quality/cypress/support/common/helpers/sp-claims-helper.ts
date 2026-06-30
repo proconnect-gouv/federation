@@ -9,10 +9,12 @@ const getUserInfo = (): ChainableElement =>
   cy.get("#userinfo").invoke("text").then(JSON.parse);
 
 export const getUserInfoProperty = (property: string): ChainableElement =>
-  getUserInfo().then((userInfo) => userInfo[property]);
+  (getUserInfo() as unknown as Cypress.Chainable<Record<string, unknown>>).then(
+    (userInfo) => userInfo[property],
+  ) as unknown as ChainableElement;
 
 export const getScopeByDescription = (description: string): string =>
-  scopes.find((scope) => scope.description === description).scopes.join(" ");
+  scopes.find((scope) => scope.description === description)!.scopes.join(" ");
 
 export const getUserInfoSignatureAlgorithmByDescription = (
   description: string,
@@ -37,14 +39,16 @@ export const checkMandatoryData = (isUserinfoSigned: boolean): void => {
   const mandatoryPatterns = isUserinfoSigned
     ? signedUserInfoMandatoryPatterns
     : nonSignedUserInfoMandatoryPatterns;
-  getUserInfo().then((userInfo) => {
-    Object.keys(mandatoryPatterns).forEach((key) =>
-      expect(userInfo[key]).to.match(
-        mandatoryPatterns[key],
-        `${key} should be present.`,
-      ),
-    );
-  });
+  (getUserInfo() as unknown as Cypress.Chainable<Record<string, unknown>>).then(
+    (userInfo) => {
+      Object.keys(mandatoryPatterns).forEach((key) =>
+        expect(String(userInfo[key])).to.match(
+          (mandatoryPatterns as Record<string, RegExp>)[key],
+          `${key} should be present.`,
+        ),
+      );
+    },
+  );
 };
 
 const aliasScopesClaims = {
@@ -56,8 +60,10 @@ const aliasScopesClaims = {
 export const getClaims = (scope: string): string[] => {
   const claims = scope
     .split(" ")
-    .map((scope: string): string =>
-      aliasScopesClaims[scope] ? aliasScopesClaims[scope] : scope,
+    .map((scope: string): string | string[] =>
+      (aliasScopesClaims as Record<string, string[]>)[scope]
+        ? (aliasScopesClaims as Record<string, string[]>)[scope]
+        : scope,
     )
     .flat();
   return [...new Set(claims)];
@@ -72,18 +78,20 @@ export const checkExpectedUserClaims = (
   const expectedClaims = getClaims(expectedScope);
   const userClaims = { ...defaultUserClaims, ...idpClaims };
 
-  getUserInfo().then((userInfo) => {
-    expectedClaims
-      .filter((claimName) => claimName !== "sub" && claimName !== "email")
-      .forEach((claimName) => {
-        expect(userInfo[claimName]).to.deep.equal(
-          userClaims[claimName],
-          `The claim "${claimName}" should be "${JSON.stringify(
-            userClaims[claimName],
-          )}"`,
-        );
-      });
-  });
+  (getUserInfo() as unknown as Cypress.Chainable<Record<string, unknown>>).then(
+    (userInfo) => {
+      expectedClaims
+        .filter((claimName) => claimName !== "sub" && claimName !== "email")
+        .forEach((claimName) => {
+          expect(userInfo[claimName]).to.deep.equal(
+            (userClaims as Record<string, unknown>)[claimName],
+            `The claim "${claimName}" should be "${JSON.stringify(
+              (userClaims as Record<string, unknown>)[claimName],
+            )}"`,
+          );
+        });
+    },
+  );
 };
 
 export const checkNoExtraClaims = (
@@ -97,13 +105,17 @@ export const checkNoExtraClaims = (
   const expectedScope = getScopeByDescription(expectedScopeDescription);
   const expectedClaims = getClaims(expectedScope);
 
-  getUserInfo().then((userInfo) => {
-    const extraClaimsName = Object.keys(userInfo).filter(
-      (key) => !mandatoryData[key] && !expectedClaims.includes(key),
-    );
-    expect(extraClaimsName).to.deep.equal(
-      [],
-      "No extra claims should be sent.",
-    );
-  });
+  (getUserInfo() as unknown as Cypress.Chainable<Record<string, unknown>>).then(
+    (userInfo) => {
+      const extraClaimsName = Object.keys(userInfo).filter(
+        (key) =>
+          !(mandatoryData as Record<string, unknown>)[key] &&
+          !expectedClaims.includes(key),
+      );
+      expect(extraClaimsName).to.deep.equal(
+        [],
+        "No extra claims should be sent.",
+      );
+    },
+  );
 };

@@ -28,7 +28,7 @@ const getSnapshotName = (
 Then(
   "la copie d'écran {string} correspond à la page actuelle sur {string}",
   function (name: string, device: string) {
-    const { title: scenarioName } = this.test;
+    const { title: scenarioName } = this.test!;
     // Wait for the page to be still before taking a screenshot
     cy.wait(750);
     prepareScreenshot();
@@ -41,7 +41,7 @@ Then(
 Then(
   "la copie d'écran {string} sans {string} correspond à la page actuelle sur {string}",
   function (name: string, hiddenSelector: string, device: string) {
-    const { title: scenarioName } = this.test;
+    const { title: scenarioName } = this.test!;
     // Wait for the page to be still before taking a screenshot
     cy.wait(750);
 

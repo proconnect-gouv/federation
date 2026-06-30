@@ -2,6 +2,7 @@
  * Generate a HTML report
  * @link https://github.com/WasiqB/multiple-cucumber-html-reporter
  */
+// @ts-expect-error — no types for this module
 import reporter from "multiple-cucumber-html-reporter";
 
 const gitLabProjectUrl =

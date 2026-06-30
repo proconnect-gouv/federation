@@ -35,7 +35,7 @@ export const forceSameSiteNone = (domains: { [key: string]: string }): void => {
 export const getCookieFromUrl = (
   cookieName: string,
   cookieUrl: string,
-): Cypress.Chainable<Cypress.Cookie> => {
+): Cypress.Chainable<Cypress.Cookie | null> => {
   const url = new URL(cookieUrl);
   const domain = url.hostname;
   return cy.getCookie(cookieName, { domain });

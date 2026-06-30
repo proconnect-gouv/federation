@@ -23,7 +23,7 @@ export const cypressLog = (violations: Result[]): void => {
       $el: nodes,
       consoleProps,
       message: `[${help}](${helpUrl})`,
-      name: `${severityIndicators[impact]} A11Y`,
+      name: `${severityIndicators[impact as keyof typeof severityIndicators]} A11Y`,
     });
 
     targets.forEach((target) => {
