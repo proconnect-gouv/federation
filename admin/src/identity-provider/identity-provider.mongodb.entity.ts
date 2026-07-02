@@ -121,4 +121,10 @@ export class IdentityProviderFromDb {
 
   @Column()
   useTheHyyyperbridge: boolean;
+
+  @Column()
+  isMfaCompliant: boolean;
+
+  @Column()
+  mfaComplianceNote: string;
 }

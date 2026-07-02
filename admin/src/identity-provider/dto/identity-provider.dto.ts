@@ -216,4 +216,12 @@ export class IdentityProviderDTO {
   @Transform(toBoolean)
   @IsBoolean()
   readonly useTheHyyyperbridge: boolean;
+
+  @Transform(toBoolean)
+  @IsBoolean()
+  readonly isMfaCompliant: boolean;
+
+  @IsOptional()
+  @IsString()
+  readonly mfaComplianceNote?: string;
 }

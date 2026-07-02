@@ -432,6 +432,42 @@
               </div>
             </div>
 
+            <%
+              let isMfaCompliantChecked = false
+              if (locals.messages.values && messages.values[0].isMfaCompliant !== undefined) {
+                isMfaCompliantChecked = messages.values[0].isMfaCompliant
+              } else {
+                isMfaCompliantChecked = true
+              }
+            %>
+            <div class="mb-3 row">
+              <label class="col-2 col-form-label">MFA compliant : </label>
+              <div class="mb-3 col-4 d-flex align-items-end">
+                <div class="form-check form-check-inline">
+                  <input type="radio" class="form-check-input is-valid" id="mfaCompliant" name="isMfaCompliant" value="true" required <%= isMfaCompliantChecked ? 'checked' : '' %>>
+                  <label class="form-check-label" for="mfaCompliant">oui</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input type="radio" class="form-check-input is-valid" id="mfaNotCompliant" name="isMfaCompliant" value="false" required <%= isMfaCompliantChecked ? '' : 'checked' %>>
+                  <label class="form-check-label" for="mfaNotCompliant">non</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label class="col-2 col-form-label" for="mfaComplianceNote">Calendrier de conformité MFA :</label>
+              <div class="col-10">
+                <textarea
+                  id="mfaComplianceNote"
+                  rows="3"
+                  name="mfaComplianceNote"
+                  class="form-control"
+                  pattern=".*"
+                  autocomplete="off"
+                  ><%= locals.messages.values && messages.values[0].mfaComplianceNote || '' %></textarea>
+              </div>
+            </div>
+
             <details>
               <summary class="mb-3">Paramètres avancés (optionnels)</summary>
 

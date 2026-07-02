@@ -40,6 +40,8 @@ function createIdentityProviderFromDb(
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: true,
     useTheHyyyperbridge: false,
+    isMfaCompliant: false,
+    mfaComplianceNote: "",
     ...partial,
   };
 }
@@ -79,6 +81,8 @@ function createIdentityProviderDto(
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: true,
     useTheHyyyperbridge: false,
+    isMfaCompliant: false,
+    mfaComplianceNote: "",
     ...partial,
   };
 }
