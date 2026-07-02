@@ -7,7 +7,7 @@ include:
 
 services:
   small:
-    image: alpine
+    image: alpine:3.23.5
     depends_on:
       - "core"
       - "fsa1-low"
@@ -15,7 +15,7 @@ services:
 
   # -- used for e2e tests
   medium:
-    image: alpine
+    image: alpine:3.23.5
     depends_on:
       - "core"
       - "admin"
@@ -32,13 +32,13 @@ services:
       - "dpa2-low"
 
   lemon-ldap:
-    image: alpine
+    image: alpine:3.23.5
     depends_on:
       - "identity-provider-llng"
       - "openldap"
 
   hybridge:
-    image: alpine
+    image: alpine:3.23.5
     depends_on:
       - "core"
       - "fsa1-low"
