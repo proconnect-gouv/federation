@@ -27,6 +27,9 @@ export class OidcProviderConfig {
   @IsArray()
   readonly supportedAcrValues: Configuration["acrValues"];
 
+  @IsArray()
+  readonly acrValuesForMfa: string[];
+
   @IsObject()
   readonly jwks: Configuration["jwks"];
 

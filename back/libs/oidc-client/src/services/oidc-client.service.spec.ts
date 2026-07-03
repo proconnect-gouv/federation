@@ -68,6 +68,7 @@ describe("OidcClientService", () => {
     supportEmail: "support@test.com",
     name: "IDP Name",
     title: "IDP Title",
+    isMfaCompliant: true,
   };
 
   const brokerMock = {
@@ -581,6 +582,68 @@ describe("OidcClientService", () => {
         idpName: idpMock.name,
         idpLabel: idpMock.title,
       });
+    });
+
+    it("should filter out mfa acr values if the idp is not compliant and there are other acr values requested", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isMfaCompliant: false,
+      });
+      configServiceMock.get.mockReturnValue({
+        acrValuesForMfa: ["eidas0-mfa", "eidas1-mfa", "eidas2", "eidas3"],
+        redirectUri: "https://rp.test/callback",
+      });
+      jest.spyOn(OidcClientService, "objToUrlParams");
+
+      // When
+      await service.getAuthorizationUrl("idp-id", {
+        claims: {
+          id_token: {
+            acr: { essential: true, values: ["eidas0", "eidas0-mfa"] },
+          },
+        },
+      });
+
+      // Then
+      expect(OidcClientService.objToUrlParams).toHaveBeenCalledWith(
+        expect.objectContaining({
+          claims: {
+            id_token: { acr: { essential: true, values: ["eidas0"] } },
+          },
+        }),
+      );
+    });
+
+    it("should remove the id_token acr requested claim if the idp is not compliant and there are no other acr values requested", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isMfaCompliant: false,
+      });
+      configServiceMock.get.mockReturnValue({
+        acrValuesForMfa: ["eidas0-mfa", "eidas1-mfa", "eidas2", "eidas3"],
+        redirectUri: "https://rp.test/callback",
+      });
+      jest.spyOn(OidcClientService, "objToUrlParams");
+
+      // When
+      await service.getAuthorizationUrl("idp-id", {
+        claims: {
+          id_token: {
+            acr: { essential: true, value: "eidas0-mfa" },
+          },
+        },
+      });
+
+      // Then
+      expect(OidcClientService.objToUrlParams).toHaveBeenCalledWith(
+        expect.objectContaining({
+          claims: {
+            id_token: {},
+          },
+        }),
+      );
     });
 
     it("should handle EntraID specific scope and remove claims", async () => {
