@@ -70,6 +70,12 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: Boolean })
   useTheHyyyperbridge: boolean;
+
+  @Prop({ type: Boolean })
+  isMfaCompliant: boolean;
+
+  @Prop({ type: String, required: false })
+  mfaComplianceNote?: string;
 }
 
 export const IdentityProviderSchema =

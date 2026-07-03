@@ -90,3 +90,11 @@ Fonctionnalité: Connexion Usager - ACR
     Quand je clique sur le bouton de connexion
     Et je m'authentifie
     Alors la cinématique a utilisé le niveau de sécurité "eidas1"
+
+  Scénario: le FI n'est pas MFA-compliant
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service requiert le claim "acr" avec les valeurs "eidas0 eidas0-mfa"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia2.fr"
+    Quand je clique sur le bouton de connexion
+    Alors la page du FI affiche requestedAcrs "eidas0" 

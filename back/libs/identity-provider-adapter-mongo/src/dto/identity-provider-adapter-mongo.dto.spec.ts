@@ -34,6 +34,7 @@ describe("Identity Provider (Data Transfer Object)", () => {
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
     useTheHyyyperbridge: false,
+    isMfaCompliant: true,
   };
 
   const discoveryIdpAdapterMongoMock = {

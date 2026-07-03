@@ -35,6 +35,8 @@ import {
   HyyyperbridgeMessageType,
   HyyyperbridgeResponseDto,
 } from "@fc/hyyyperbridge";
+import { AcrClaims } from "@fc/oidc-acr";
+import { OidcProviderConfig } from "@fc/oidc-provider";
 import { SessionService } from "@fc/session";
 import { OidcClientConfig, TokenDto } from "../dto";
 import {
@@ -313,6 +315,10 @@ export class OidcClientService {
       ...customParams,
     };
 
+    if (!idp.isMfaCompliant && params.claims?.id_token?.acr) {
+      params.claims = this.filterOutMfaAcrValuesFromClaims(params.claims);
+    }
+
     if (idp.isEntraID) {
       params.scope = "openid email profile";
       delete params.claims;
@@ -491,6 +497,32 @@ export class OidcClientService {
         error,
       );
     }
+  }
+
+  private filterOutMfaAcrValuesFromClaims(previousClaims: {
+    id_token: { acr: AcrClaims };
+  }) {
+    const nextClaims = cloneDeep(previousClaims);
+
+    const requestedAcrValues = nextClaims.id_token.acr.value
+      ? [nextClaims.id_token.acr.value]
+      : [...nextClaims.id_token.acr.values!];
+    const { acrValuesForMfa } =
+      this.config.get<OidcProviderConfig>("OidcProvider");
+
+    const nonMfaAcrValues = requestedAcrValues.filter(
+      (acrValue) => !acrValuesForMfa.includes(acrValue),
+    );
+
+    if (nonMfaAcrValues.length === 0 && nextClaims.id_token.acr.essential) {
+      delete nextClaims.id_token.acr;
+      return nextClaims;
+    }
+    nextClaims.id_token.acr = {
+      ...nextClaims.id_token.acr,
+      values: nonMfaAcrValues,
+    };
+    return nextClaims;
   }
 
   async getEndSessionUrl({
