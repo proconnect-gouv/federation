@@ -1,8 +1,13 @@
 import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
+import { get } from "lodash";
 import {
   getIdentityProviderByDescription,
   getServiceProviderByDescription,
 } from "../../common/helpers";
+
+function getDebugInfo() {
+  return cy.get(`details#open-debug-info code`).invoke("text");
+}
 
 Then(
   /je suis redirigé vers la page login du fournisseur d'identité "([^"]*)"/,
@@ -113,6 +118,19 @@ Then(
     cy.contains(`"remember_me": "${expectedValue}"`);
   },
 );
+
+Then(/la page du FI n'affiche pas de requestedAcrs/, function () {
+  getDebugInfo().then((content) => {
+    const { oidcProviderPrompt, oidcProviderParams } = JSON.parse(content);
+    const requestedAcrs: string[] = get(oidcProviderPrompt.details, "acr.value")
+      ? [get(oidcProviderPrompt.details, "acr.value")]
+      : get(oidcProviderPrompt.details, "acr.values") ||
+        oidcProviderParams?.acr_values?.split(" ") ||
+        [];
+
+    expect(requestedAcrs).to.be.empty;
+  });
+});
 
 Then("le champ identifiant correspond à {string}", function (email: string) {
   cy.get('input[name="email"]').should("have.value", email);

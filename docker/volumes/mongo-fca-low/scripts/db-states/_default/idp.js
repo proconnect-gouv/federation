@@ -39,6 +39,7 @@ const fia = {
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
     useTheHyyyperbridge: false,
+    isMfaCompliant: true,
   },
 
   // -- FIA - FIA2-LOW - Activated No support Email
@@ -81,6 +82,8 @@ const fia = {
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
     useTheHyyyperbridge: false,
+    isMfaCompliant: false,
+    mfaComplianceNote: "Bientôt !",
   },
 
   // -- Fia3-low - Deactivated
@@ -123,6 +126,7 @@ const fia = {
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
     useTheHyyyperbridge: false,
+    isMfaCompliant: true,
   },
 
   // -- FIA - MonComptePro - Activated
@@ -164,6 +168,7 @@ const fia = {
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
     useTheHyyyperbridge: false,
+    isMfaCompliant: true,
   },
   // RIE
 
@@ -207,6 +212,7 @@ const fia = {
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
     useTheHyyyperbridge: true,
+    isMfaCompliant: true,
   },
 
   // -- FIA using LemonLDAP
@@ -248,6 +254,7 @@ const fia = {
     extraAcceptedEmailDomains: [],
     isBlockingForUnlistedEmailDomainsEnabled: false,
     useTheHyyyperbridge: false,
+    isMfaCompliant: true,
   },
 };
 

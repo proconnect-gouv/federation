@@ -9,7 +9,7 @@ import { ClientProxy } from "@nestjs/microservices";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { Request } from "express";
-import { chain, cloneDeep, isObject, map } from "lodash";
+import { chain, cloneDeep, isEmpty, isObject, map } from "lodash";
 import {
   authorizationCodeGrant,
   AuthorizationResponseError,
@@ -35,6 +35,7 @@ import {
   HyyyperbridgeMessageType,
   HyyyperbridgeResponseDto,
 } from "@fc/hyyyperbridge";
+import { AcrClaims, AcrValues } from "@fc/oidc-acr";
 import { SessionService } from "@fc/session";
 import { OidcClientConfig, TokenDto } from "../dto";
 import {
@@ -287,6 +288,7 @@ export class OidcClientService {
 
   async getAuthorizationUrl(
     idpId: string,
+    { acrClaims, acrValues }: { acrClaims?: AcrClaims; acrValues?: AcrValues },
     customParams: { [key: string]: any },
   ): Promise<{
     authorizationUrl: string;
@@ -301,17 +303,26 @@ export class OidcClientService {
     const { redirectUri: redirect_uri } =
       this.config.get<OidcClientConfig>("OidcClient");
 
-    const defaultParams: { [key: string]: any } = {
+    const params: { [key: string]: any } = {
       scope: this.SCOPES,
       nonce,
       state,
       redirect_uri,
-    };
-
-    const params = {
-      ...defaultParams,
+      acr_values: null,
+      claims: {
+        id_token: {
+          amr: null,
+          acr: null,
+        },
+      },
       ...customParams,
     };
+
+    if (!isEmpty(acrClaims) && idp.isMfaCompliant) {
+      params.claims.id_token.acr = acrClaims;
+    } else if (!isEmpty(acrValues)) {
+      params.acr_values = acrValues;
+    }
 
     if (idp.isEntraID) {
       params.scope = "openid email profile";

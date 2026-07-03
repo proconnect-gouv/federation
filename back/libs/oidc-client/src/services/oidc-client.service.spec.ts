@@ -68,6 +68,7 @@ describe("OidcClientService", () => {
     supportEmail: "support@test.com",
     name: "IDP Name",
     title: "IDP Title",
+    isMfaCompliant: true,
   };
 
   const brokerMock = {
@@ -569,9 +570,16 @@ describe("OidcClientService", () => {
       });
     });
 
-    it("should return authorization URL with nonce and state", async () => {
+    it("should return authorization URL with nonce and state and acrClaims", async () => {
       // When
-      const result = await service.getAuthorizationUrl("idp-id", {});
+      const result = await service.getAuthorizationUrl(
+        "idp-id",
+        {
+          acrClaims: { essential: true, values: ["eidas1", "eidas2"] },
+          acrValues: undefined,
+        },
+        {},
+      );
 
       // Then
       expect(result).toEqual({
@@ -583,6 +591,40 @@ describe("OidcClientService", () => {
       });
     });
 
+    it("should set the id_token acr requested claim to null if the idp is not compliant", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isMfaCompliant: false,
+      });
+      configServiceMock.get.mockReturnValue({
+        redirectUri: "https://rp.test/callback",
+      });
+      jest.spyOn(OidcClientService, "objToUrlParams");
+
+      // When
+      await service.getAuthorizationUrl(
+        "idp-id",
+        {
+          acrClaims: { essential: true, values: ["eidas0", "eidas0-mfa"] },
+          acrValues: undefined,
+        },
+        {},
+      );
+
+      // Then
+      expect(OidcClientService.objToUrlParams).toHaveBeenCalledWith(
+        expect.objectContaining({
+          claims: {
+            id_token: {
+              acr: null,
+              amr: null,
+            },
+          },
+        }),
+      );
+    });
+
     it("should handle EntraID specific scope and remove claims", async () => {
       // Given
       identityProviderMock.getById.mockResolvedValue({
@@ -591,9 +633,14 @@ describe("OidcClientService", () => {
       });
 
       // When
-      await service.getAuthorizationUrl("idp-id", {
-        claims: { test: "value" },
-      });
+      await service.getAuthorizationUrl(
+        "idp-id",
+        {
+          acrClaims: { essential: true, values: ["foo"] },
+          acrValues: undefined,
+        },
+        {},
+      );
 
       // Then
       expect(openidClient.buildAuthorizationUrl).toHaveBeenCalled();
@@ -601,7 +648,11 @@ describe("OidcClientService", () => {
 
     it("should merge custom params with default params", async () => {
       // When
-      await service.getAuthorizationUrl("idp-id", { acr_values: "eidas3" });
+      await service.getAuthorizationUrl(
+        "idp-id",
+        { acrClaims: undefined, acrValues: "eidas3" },
+        {},
+      );
 
       // Then
       expect(openidClient.buildAuthorizationUrl).toHaveBeenCalled();
