@@ -114,6 +114,13 @@ Then(
   },
 );
 
+Then(
+  /la page du FI affiche requestedAcrs "([^"]*)"/,
+  function (expectedValue: string) {
+    cy.contains(`"requestedAcrs": "${expectedValue}"`);
+  },
+);
+
 Then("le champ identifiant correspond à {string}", function (email: string) {
   cy.get('input[name="email"]').should("have.value", email);
 });

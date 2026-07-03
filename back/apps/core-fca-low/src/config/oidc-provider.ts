@@ -59,6 +59,7 @@ const oidcProviderConfig: OidcProviderConfig = {
     "eidas3",
     "https://proconnect.gouv.fr/assurance/certification-dirigeant",
   ],
+  acrValuesForMfa: ["eidas0-mfa", "eidas1-mfa", "eidas2", "eidas3"],
   // Global request timeout used for any outgoing app requests.
   timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
 };

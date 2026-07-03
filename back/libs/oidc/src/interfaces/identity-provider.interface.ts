@@ -18,4 +18,6 @@ export type IdentityProviderMetadata = {
   extraAcceptedEmailDomains?: string[];
   isBlockingForUnlistedEmailDomainsEnabled: boolean;
   useTheHyyyperbridge: boolean;
+  isMfaCompliant: boolean;
+  mfaComplianceNote?: string;
 };

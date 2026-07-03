@@ -38,6 +38,11 @@ app.get("/interaction/:uid", async (req, res, next) => {
     const defaultUser = getDefaultUser();
 
     if (prompt.name === "login") {
+      const requestedAcrs = get(prompt.details, "acr.value")
+        ? [get(prompt.details, "acr.value")]
+        : get(prompt.details, "acr.values") ||
+          params?.acr_values?.split(" ") ||
+          [];
       return res.render("index", {
         title: APP_NAME,
         stylesheetUrl: STYLESHEET_URL,
@@ -56,6 +61,7 @@ app.get("/interaction/:uid", async (req, res, next) => {
             oidcProviderParams: params,
             oidcProviderSession: session,
             oidcProviderClient: client,
+            requestedAcrs: requestedAcrs.join(" "),
           },
           null,
           2,

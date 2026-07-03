@@ -108,6 +108,14 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsBoolean()
   readonly useTheHyyyperbridge: boolean;
+
+  @IsBoolean()
+  readonly isMfaCompliant: boolean;
+
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value || undefined)
+  readonly mfaComplianceNote?: string;
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
