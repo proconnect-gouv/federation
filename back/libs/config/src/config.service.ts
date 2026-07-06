@@ -31,7 +31,7 @@ export class ConfigService {
     this.configuration = deepFreeze(config);
   }
 
-  private static validate(config, schema) {
+  private static validate(config: any, schema: any) {
     const object = plainToInstance(schema, config);
     const errors = validateSync(object, validationOptions);
 

@@ -30,9 +30,9 @@ export const COOKIES = ["_session", "_interaction", "_interaction_resume"];
 @Injectable()
 export class OidcProviderService {
   private ProviderProxy = Provider;
-  private provider: Provider;
-  private callback: ReturnType<Provider["callback"]>;
-  private configuration;
+  private provider!: Provider;
+  private callback!: ReturnType<Provider["callback"]>;
+  private configuration: any;
 
   constructor(
     readonly logger: LoggerService,
@@ -53,7 +53,7 @@ export class OidcProviderService {
     try {
       this.provider = new this.ProviderProxy(issuer, {
         ...configuration,
-        httpOptions: this.getHttpOptions.bind(this),
+        httpOptions: this.getHttpOptions.bind(this) as any,
       });
       this.provider.proxy = true;
       this.callback = this.provider.callback();
@@ -130,7 +130,7 @@ export class OidcProviderService {
     return options;
   }
 
-  async getInteraction(req, res): Promise<ExtendedInteraction> {
+  async getInteraction(req: any, res: any): Promise<ExtendedInteraction> {
     const interactionDetails = await this.provider.interactionDetails(req, res);
 
     return interactionDetails as ExtendedInteraction;
@@ -143,20 +143,20 @@ export class OidcProviderService {
       amr,
       acr,
     }: {
-      amr: InteractionResults["login"]["amr"];
-      acr: InteractionResults["login"]["acr"];
+      amr: NonNullable<InteractionResults["login"]>["amr"];
+      acr: NonNullable<InteractionResults["login"]>["acr"];
     },
   ) {
     const { spIdentity } = this.sessionService.get<UserSession>("User");
 
     const sessionId = this.sessionService.getId();
-    await this.sessionService.setAlias(spIdentity.sub, sessionId);
+    await this.sessionService.setAlias(spIdentity!.sub, sessionId);
 
     const result = {
       login: {
         amr,
         acr,
-        accountId: spIdentity.sub,
+        accountId: spIdentity!.sub,
         ts: Math.floor(Date.now() / 1000),
         remember: false,
       },
@@ -183,7 +183,12 @@ export class OidcProviderService {
   }
 
   private async runMiddlewareBeforePattern(
-    { step, path, pattern, ctx },
+    {
+      step,
+      path,
+      pattern,
+      ctx,
+    }: { step: any; path: any; pattern: any; ctx: any },
     middleware: Function,
   ) {
     // run middleware BEFORE pattern occurs
@@ -193,7 +198,13 @@ export class OidcProviderService {
   }
 
   private async runMiddlewareAfterPattern(
-    { step, route, path, pattern, ctx },
+    {
+      step,
+      route,
+      path,
+      pattern,
+      ctx,
+    }: { step: any; route: any; path: any; pattern: any; ctx: any },
     middleware: Function,
   ) {
     // run middleware AFTER pattern occurred
@@ -205,7 +216,17 @@ export class OidcProviderService {
     }
   }
 
-  private shouldRunAfterPattern({ step, route, path, pattern }) {
+  private shouldRunAfterPattern({
+    step,
+    route,
+    path,
+    pattern,
+  }: {
+    step: any;
+    route: any;
+    path: any;
+    pattern: any;
+  }) {
     return (
       step === OidcProviderMiddlewareStep.AFTER &&
       /**
@@ -220,7 +241,7 @@ export class OidcProviderService {
     );
   }
 
-  private isInError(ctx) {
+  private isInError(ctx: any) {
     return ctx["oidc"]?.isError === true;
   }
 

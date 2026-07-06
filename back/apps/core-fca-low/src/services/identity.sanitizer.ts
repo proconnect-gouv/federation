@@ -88,8 +88,8 @@ export class IdentitySanitizer {
         this.logger.error({
           code: "identity-sanitizer-cached-organization-error",
           cachedOrganizationError: error,
-          cachedOrganizationErrorCause: error?.cause,
-          cachedOrganizationErrorType: error?.constructor?.name,
+          cachedOrganizationErrorCause: (error as any)?.cause,
+          cachedOrganizationErrorType: (error as any)?.constructor?.name,
         });
         identityForSp.roles = [];
       }
@@ -128,7 +128,9 @@ export class IdentitySanitizer {
         !(key in identityForSp) &&
         !["aud", "exp", "iat", "iss"].includes(key)
       ) {
-        identityForSp.custom[key] = identityForSpWithExtraProperties[key];
+        identityForSp.custom[key] = (
+          identityForSpWithExtraProperties as unknown as Record<string, unknown>
+        )[key];
       }
     });
 

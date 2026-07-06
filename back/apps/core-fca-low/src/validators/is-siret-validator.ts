@@ -55,7 +55,7 @@ export class IsSiretConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsSiret(validationOptions?: ValidationOptions) {
-  return function (object: unknown, propertyName: string) {
+  return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,

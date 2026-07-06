@@ -148,7 +148,7 @@ export class CoreFcaMiddlewareService {
     }
   }
 
-  protected async userinfoMiddleware(ctx) {
+  protected async userinfoMiddleware(ctx: any) {
     const { isSessionLoaded } = await this.loadSessionInAsyncLocalStorage(ctx);
 
     if (isSessionLoaded) {

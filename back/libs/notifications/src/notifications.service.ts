@@ -6,11 +6,11 @@ import { NotificationInterface } from "./interfaces";
 
 @Injectable()
 export class NotificationsService {
-  private listCache: NotificationInterface[];
+  private listCache!: NotificationInterface[];
 
   constructor(
     @InjectModel("Notifications")
-    private readonly notificationsModel,
+    private readonly notificationsModel: any,
     private readonly mongooseWatcher: MongooseCollectionOperationWatcherHelper,
   ) {}
 

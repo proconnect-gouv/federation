@@ -18,7 +18,7 @@ const phoneRegex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/;
 @Injectable()
 export class IsPhoneNumberSimpleValidatorConstraint implements ValidatorConstraintInterface {
   constructor(public readonly config: ConfigService) {}
-  validate(value: string): boolean {
+  validate(value: string | null | undefined): boolean {
     return typeof value === "string" && phoneRegex.test(value);
   }
 
@@ -30,7 +30,7 @@ export class IsPhoneNumberSimpleValidatorConstraint implements ValidatorConstrai
 export function IsPhoneNumberSimpleValidator(
   validationOptions?: ValidationOptions,
 ) {
-  return function (object, propertyName: string) {
+  return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,

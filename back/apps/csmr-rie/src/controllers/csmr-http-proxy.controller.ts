@@ -56,10 +56,11 @@ export class CsmrHttpProxyController {
         },
       };
     } catch (error) {
+      const err = error as any;
       const errorData = {
-        reason: `${error.message}${error?.cause?.message ? ` (${error.cause.message})` : ""}`,
-        name: error?.cause?.name || error.name,
-        code: error?.cause?.code || error.code,
+        reason: `${err.message}${err?.cause?.message ? ` (${err.cause.message})` : ""}`,
+        name: err?.cause?.name || err.name,
+        code: err?.cause?.code || err.code,
       };
 
       this.logger.error({ errorData });
