@@ -19,6 +19,7 @@ import {
 } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
+import type { Request, Response } from "express";
 import { isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
 import {
@@ -50,7 +51,11 @@ export class OidcProviderController {
       whitelist: true,
     }),
   )
-  getAuthorize(@Req() req, @Res() res, @Query() _query: AuthorizeParamsDto) {
+  getAuthorize(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() _query: AuthorizeParamsDto,
+  ) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
@@ -65,20 +70,24 @@ export class OidcProviderController {
       validationError: { target: true },
     }),
   )
-  postAuthorize(@Req() req, @Res() res, @Body() _body: AuthorizeParamsDto) {
+  postAuthorize(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() _body: AuthorizeParamsDto,
+  ) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
 
   @Get(OidcProviderRoutes.AUTHORIZATION_RESUME)
-  getAuthorizeResume(@Req() req, @Res() res) {
+  getAuthorizeResume(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
 
   @Post(OidcProviderRoutes.TOKEN)
   @Header("Content-Type", "application/json")
-  postToken(@Req() req, @Res() res) {
+  postToken(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
@@ -90,20 +99,24 @@ export class OidcProviderController {
       whitelist: true,
     }),
   )
-  revokeToken(@Req() req, @Res() res, @Body() _body: RevocationTokenParamsDTO) {
+  revokeToken(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() _body: RevocationTokenParamsDTO,
+  ) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
 
   @Get(OidcProviderRoutes.USERINFO)
   @Header("Content-Type", "application/jwt")
-  getUserInfo(@Req() req, @Res() res) {
+  getUserInfo(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
 
   @Post(OidcProviderRoutes.USERINFO)
-  postUserInfo(@Req() req, @Res() res) {
+  postUserInfo(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
@@ -115,8 +128,8 @@ export class OidcProviderController {
     }),
   )
   async getEndSession(
-    @Req() req,
-    @Res() res,
+    @Req() req: Request,
+    @Res() res: Response,
     @Query() _query: LogoutParamsDto,
     @UserSessionDecorator() userSession: ISessionService<UserSession>,
   ) {
@@ -144,11 +157,11 @@ export class OidcProviderController {
 
         userSession.set({
           orginalLogoutUrlSearchParamsFromSp: new URLSearchParams(
-            req.query,
+            req.query as Record<string, string>,
           ).toString(),
         });
 
-        return res.redirect(endSessionUrl);
+        return res.redirect(endSessionUrl!);
       }
     }
 
@@ -161,13 +174,13 @@ export class OidcProviderController {
   }
 
   @Post(OidcProviderRoutes.END_SESSION_CONFIRM)
-  postEndSessionConfirm(@Req() req, @Res() res) {
+  postEndSessionConfirm(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
 
   @Get(OidcProviderRoutes.END_SESSION_SUCCESS)
-  getEndSessionSuccess(@Req() req, @Res() res) {
+  getEndSessionSuccess(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
@@ -175,20 +188,20 @@ export class OidcProviderController {
   @Get(OidcProviderRoutes.JWKS)
   @Header("Content-Type", "application/jwk-set+json")
   @Header("cache-control", "public, max-age=600")
-  getJwks(@Req() req, @Res() res) {
+  getJwks(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
 
   @Get(OidcProviderRoutes.OPENID_CONFIGURATION)
   @Header("cache-control", "public, max-age=600")
-  getOpenidConfiguration(@Req() req, @Res() res) {
+  getOpenidConfiguration(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
 
   @Post(OidcProviderRoutes.INTROSPECTION)
-  postTokenIntrospection(@Req() req, @Res() res) {
+  postTokenIntrospection(@Req() req: Request, @Res() res: Response) {
     req.url = req.originalUrl.replace(this.prefix, "");
     return this.oidcProviderService.getCallback()(req, res);
   }
