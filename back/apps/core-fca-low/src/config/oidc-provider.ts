@@ -60,7 +60,7 @@ const oidcProviderConfig: OidcProviderConfig = {
     "https://proconnect.gouv.fr/assurance/certification-dirigeant",
   ],
   // Global request timeout used for any outgoing app requests.
-  timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
+  timeout: parseInt(process.env.REQUEST_TIMEOUT as string, 10),
 };
 
 export default oidcProviderConfig;
