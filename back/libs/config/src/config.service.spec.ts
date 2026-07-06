@@ -12,7 +12,7 @@ import { UnknownConfigurationNameError } from "./errors";
 
 class Schema {
   @IsNumber()
-  readonly foo: number;
+  readonly foo!: number;
 
   @IsObject()
   readonly I: any;
@@ -68,7 +68,7 @@ describe("ConfigService", () => {
   });
 
   describe("validate", () => {
-    let consoleError;
+    let consoleError: jest.SpyInstance;
 
     beforeEach(() => {
       consoleError = jest
@@ -146,7 +146,9 @@ describe("ConfigService", () => {
       // Given
       const part = undefined;
       // Then
-      expect(() => service.get(part)).toThrow(UnknownConfigurationNameError);
+      expect(() => service.get(part as unknown as string)).toThrow(
+        UnknownConfigurationNameError,
+      );
     });
 
     it("should throw if path is empty", () => {

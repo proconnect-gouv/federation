@@ -17,7 +17,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
-import { type Request, type Response } from "express";
+import type { Request, Response } from "express";
 import { isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
 import {
@@ -57,7 +57,7 @@ export class OidcClientController {
     @UserSessionDecorator(AfterRedirectToIdpWithEmailSessionDto)
     userSession: ISessionService<AfterRedirectToIdpWithEmailSessionDto>,
   ) {
-    const { idpLoginHint: email } = userSession.get();
+    const { idpLoginHint: email } = userSession.get()!;
 
     const identityProviders =
       await this.coreFcaService.selectIdpsFromEmail(email);
@@ -130,10 +130,10 @@ export class OidcClientController {
     await userSession.duplicate();
 
     const { idpId, idpNonce, idpState, interactionId, spId, spName } =
-      userSession.get();
+      userSession.get()!;
 
     // Remove nonce and state from the session to prevent replay attacks
-    userSession.set({ idpNonce: null, idpState: null });
+    userSession.set({ idpNonce: undefined, idpState: undefined });
 
     this.logger.track(TrackedEvent.IDP_CALLEDBACK);
 
@@ -186,7 +186,7 @@ export class OidcClientController {
       idpIdentity,
       idpId,
       account.sub,
-      claims.acr,
+      claims.acr as string,
     );
 
     userSession.set({

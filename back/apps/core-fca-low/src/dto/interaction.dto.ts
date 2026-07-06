@@ -4,5 +4,5 @@ export class Interaction {
   @IsString()
   @IsAscii()
   @Length(21, 21)
-  readonly uid: string;
+  readonly uid!: string;
 }

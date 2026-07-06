@@ -8,15 +8,15 @@ export class CsmrHttpProxyConfig {
   @IsObject()
   @ValidateNested()
   @Type(() => AppRmqConfig)
-  readonly App: AppRmqConfig;
+  readonly App!: AppRmqConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => LoggerConfig)
-  readonly Logger: LoggerConfig;
+  readonly Logger!: LoggerConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => RabbitmqConfig)
-  readonly HttpProxyBroker: RabbitmqConfig;
+  readonly HttpProxyBroker!: RabbitmqConfig;
 }

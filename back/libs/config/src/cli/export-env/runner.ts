@@ -1,6 +1,5 @@
 import ejs from "ejs";
-import { readFile, writeFile } from "fs/promises";
-import glob from "glob";
+import { glob, readFile, writeFile } from "fs/promises";
 import { format } from "prettier";
 import { MarkdownGenerator } from "./markdown-generator";
 
@@ -16,7 +15,7 @@ export class Runner {
   static async run(): Promise<void> {
     console.log("Generating documentation for env vars...");
 
-    const paths = Runner.getConfigFilesPath();
+    const paths = await Runner.getConfigFilesPath();
     const configFiles = await Runner.loadConfigs(paths);
 
     const envVarsMap = Runner.buildEnvMap(configFiles);
@@ -29,8 +28,12 @@ export class Runner {
     await writeFile(DEST_FILE, await format(page, { filepath: DEST_FILE }));
   }
 
-  static getConfigFilesPath(searchPattern = FILE_SEARCH_PATTERN): string[] {
-    const paths = glob.sync(searchPattern);
+  static async getConfigFilesPath(searchPattern = FILE_SEARCH_PATTERN) {
+    const paths = [];
+    for await (const path of glob(searchPattern)) {
+      paths.push(path);
+    }
+
     return paths;
   }
 
@@ -47,7 +50,10 @@ export class Runner {
     return envMap;
   }
 
-  static filesReducer(envMap, { path, file }) {
+  static filesReducer(
+    envMap: Record<string, any>,
+    { path, file }: { path: string; file: string },
+  ) {
     const instanceName = path.split("/")[1];
     const configPrefix = file.match(CONFIG_PREFIX_REGEX)?.[1];
 

@@ -3,29 +3,29 @@ import { IsArray, IsString } from "class-validator";
 export class ContentSecurityPolicy {
   @IsArray()
   @IsString({ each: true })
-  connectSrc: string[];
+  connectSrc!: string[];
 
   @IsArray()
   @IsString({ each: true })
-  defaultSrc: string[];
+  defaultSrc!: string[];
 
   @IsArray()
   @IsString({ each: true })
-  styleSrc: string[];
+  styleSrc!: string[];
 
   @IsArray()
   @IsString({ each: true })
-  scriptSrc: string[];
+  scriptSrc!: string[];
 
   @IsArray()
   @IsString({ each: true })
-  frameSrc: string[];
+  frameSrc!: string[];
 
   @IsArray()
   @IsString({ each: true })
-  frameAncestors: string[];
+  frameAncestors!: string[];
 
   @IsArray()
   @IsString({ each: true })
-  imgSrc: string[];
+  imgSrc!: string[];
 }

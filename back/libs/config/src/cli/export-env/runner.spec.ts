@@ -1,6 +1,5 @@
 import { renderFile } from "ejs";
-import { readFile } from "fs/promises";
-import glob from "glob";
+import { glob, readFile } from "fs/promises";
 import { format } from "prettier";
 import { MarkdownGenerator } from "./markdown-generator";
 import { Runner } from "./runner";
@@ -94,19 +93,19 @@ describe("Runner", () => {
 
     it("should find all path using globs", () => {
       // Given
-      jest.mocked(glob.sync).mockReturnValue(pathsMock);
+      jest.mocked(glob).mockReturnValue(pathsMock);
 
       // When
       Runner.getConfigFilesPath();
 
       // Then
-      expect(glob.sync).toHaveBeenCalledTimes(1);
-      expect(glob.sync).toHaveBeenCalledWith(FILE_SEARCH_PATTERN);
+      expect(glob).toHaveBeenCalledTimes(1);
+      expect(glob).toHaveBeenCalledWith(FILE_SEARCH_PATTERN);
     });
 
     it("should return the paths", () => {
       // Given
-      jest.mocked(glob.sync).mockReturnValue(pathsMock);
+      jest.mocked(glob).mockReturnValue(pathsMock);
 
       // When
       const result = Runner.getConfigFilesPath();

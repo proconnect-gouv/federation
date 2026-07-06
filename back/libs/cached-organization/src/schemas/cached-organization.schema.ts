@@ -8,52 +8,55 @@ import { Document } from "mongoose";
 })
 export class CachedOrganization extends Document {
   @Prop({ type: String, unique: true, index: true })
-  siret: string;
+  siret!: string;
 
   @Prop({ type: String })
-  activitePrincipale: string;
+  activitePrincipale!: string;
 
   @Prop({ type: String })
-  adresse: string;
+  adresse!: string;
 
   @Prop({ type: String })
-  categorieJuridique: string;
+  categorieJuridique!: string;
 
   @Prop({ type: String })
-  codeOfficielGeographique: string;
+  codeOfficielGeographique!: string;
 
   @Prop({ type: String })
-  enseigne: string;
+  enseigne!: string;
 
   @Prop({ type: Boolean })
-  estActive: boolean;
+  estActive!: boolean;
 
   @Prop({ type: Boolean })
-  estDiffusible: boolean;
+  estDiffusible!: boolean;
 
   @Prop({ type: String })
-  etatAdministratif: string;
+  etatAdministratif!: string;
 
   @Prop({ type: String })
-  libelle: string;
+  libelle!: string;
 
   @Prop({ type: String })
-  libelleActivitePrincipale: string;
+  libelleActivitePrincipale!: string;
 
   @Prop({ type: String })
-  libelleCategorieJuridique: string;
+  libelleCategorieJuridique!: string;
 
   @Prop({ type: String })
-  libelleTrancheEffectif: string;
+  libelleTrancheEffectif!: string;
 
   @Prop({ type: String })
-  nomComplet: string;
+  nomComplet!: string;
 
   @Prop({ type: Boolean })
-  siegeSocial: boolean;
+  siegeSocial!: boolean;
 
   @Prop({ type: String })
-  statutDiffusion: "partiellement_diffusible" | "diffusible" | "non_diffusible";
+  statutDiffusion!:
+    | "partiellement_diffusible"
+    | "diffusible"
+    | "non_diffusible";
 
   @Prop({ type: String })
   codePostal?: string;
@@ -65,7 +68,7 @@ export class CachedOrganization extends Document {
   trancheEffectifsUniteLegale?: string;
 
   @Prop({ type: Date })
-  updatedAt: Date;
+  updatedAt!: Date;
 }
 
 const CachedOrganizationSchema =

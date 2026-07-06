@@ -13,33 +13,33 @@ const URL_REGEX = /^https?:\/\/[^/].+$/;
 
 export class ServiceProviderAdapterMongoDTO {
   @IsBoolean()
-  readonly active: boolean;
+  readonly active!: boolean;
 
   @IsString()
-  readonly key: string;
+  readonly key!: string;
 
   @IsString()
-  readonly name: string;
+  readonly name!: string;
 
   @IsString()
   @MinLength(32)
-  readonly client_secret: string;
+  readonly client_secret!: string;
 
   @IsArray()
   @Matches(URL_REGEX, { each: true })
-  readonly redirect_uris: string[];
+  readonly redirect_uris!: string[];
 
   @IsArray()
   @Matches(URL_REGEX, { each: true })
-  readonly post_logout_redirect_uris: string[];
+  readonly post_logout_redirect_uris!: string[];
 
   @IsArray()
   @IsString({ each: true })
-  readonly scopes: string[];
+  readonly scopes!: string[];
 
   @IsString()
   @IsIn(["ES256", "RS256", "HS256"])
-  readonly id_token_signed_response_alg: "ES256" | "RS256" | "HS256";
+  readonly id_token_signed_response_alg!: "ES256" | "RS256" | "HS256";
 
   @IsOptional()
   @IsString()
@@ -70,7 +70,7 @@ export class ServiceProviderAdapterMongoDTO {
   // 'private' = sp that also accepts private sector employees
   @IsString()
   @IsIn(["private", "public"])
-  readonly type: "private" | "public";
+  readonly type!: "private" | "public";
 
   @IsOptional()
   @IsArray()

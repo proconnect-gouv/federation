@@ -3,5 +3,5 @@ import { LogLevels } from "../enums";
 
 export class LoggerConfig {
   @IsEnum(LogLevels)
-  readonly threshold: string;
+  readonly threshold!: string;
 }

@@ -9,7 +9,7 @@ import {
   otherGouvDomains,
 } from "@proconnect-gouv/proconnect.core/data";
 import { run as spellCheckEmail } from "@zootools/email-spell-checker";
-import { chain, uniq } from "lodash";
+import { uniq } from "lodash";
 import { EmailValidatorConfig } from "../dto";
 
 @Injectable()
@@ -74,12 +74,7 @@ export class EmailValidatorService {
 
   private async getIdpDomains() {
     const idps = await this.identityProviderAdapterMongoService.getList();
-    const domains = chain(idps)
-      .map((idp) => idp.fqdns)
-      .flatten()
-      .filter(Boolean)
-      .uniq()
-      .value();
+    const domains = uniq((idps ?? []).flatMap((idp) => idp.fqdns ?? []));
 
     return domains;
   }

@@ -7,6 +7,8 @@
     "outDir": "./dist",
     "types": ["node", "jest"],
     "baseUrl": "./",
+    "ignoreDeprecations": "6.0",
+    "skipLibCheck": true,
     "sourceMap": true,
     "declaration": true,
     "isolatedModules": true,

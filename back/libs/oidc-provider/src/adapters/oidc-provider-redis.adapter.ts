@@ -82,7 +82,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     return boundConstructor;
   }
 
-  private grantKeyFor(id: string): string {
+  private grantKeyFor(id: string): string | null {
     if (!id) {
       return null;
     }
@@ -90,7 +90,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     return key;
   }
 
-  private userCodeKeyFor(userCode: string): string {
+  private userCodeKeyFor(userCode: string): string | null {
     if (!userCode) {
       return null;
     }
@@ -98,7 +98,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     return key;
   }
 
-  private uidKeyFor(uid: string): string {
+  private uidKeyFor(uid: string): string | null {
     if (!uid) {
       return null;
     }
@@ -110,7 +110,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     return `${OIDC_PROVIDER_REDIS_PREFIX}:${this.contextName}:${id}`;
   }
 
-  private parsedPayload(payload) {
+  private parsedPayload(payload: string) {
     try {
       return JSON.parse(payload);
     } catch {
@@ -118,7 +118,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     }
   }
 
-  private saveKey(multi, key, data) {
+  private saveKey(multi: any, key: any, data: any) {
     let dataFormated: string;
 
     try {
@@ -141,7 +141,7 @@ export class OidcProviderRedisAdapter implements Adapter {
   }
 
   private async saveGrantId(
-    multi,
+    multi: any,
     grantId: string,
     key: string,
     expiresIn: number,
@@ -160,10 +160,10 @@ export class OidcProviderRedisAdapter implements Adapter {
   }
 
   private addSetAndExpireOnMulti(
-    key: string,
+    key: string | null,
     id: string,
     expiresIn: number,
-    multi,
+    multi: any,
   ): void {
     if (key) {
       multi.set(key, id);
@@ -216,7 +216,9 @@ export class OidcProviderRedisAdapter implements Adapter {
       return void 0;
     }
 
-    const wrappedData = typeof data === "string" ? { payload: data } : data;
+    const wrappedData = (
+      typeof data === "string" ? { payload: data } : data
+    ) as { payload: string; [key: string]: string };
     const { payload, ...rest } = wrappedData;
 
     const parsedPayload = this.parsedPayload(payload);
@@ -236,13 +238,13 @@ export class OidcProviderRedisAdapter implements Adapter {
   }
 
   async findByUid(uid: string) {
-    const id = await this.redis.client.get(this.uidKeyFor(uid));
-    return this.find(id);
+    const id = await this.redis.client.get(this.uidKeyFor(uid)!);
+    return this.find(id!);
   }
 
   async findByUserCode(userCode: string) {
-    const id = await this.redis.client.get(this.userCodeKeyFor(userCode));
-    return this.find(id);
+    const id = await this.redis.client.get(this.userCodeKeyFor(userCode)!);
+    return this.find(id!);
   }
 
   async destroy(id: string) {
@@ -253,12 +255,12 @@ export class OidcProviderRedisAdapter implements Adapter {
   async revokeByGrantId(grantId: string) {
     const multi = this.redis.client.multi();
     const tokens = await this.redis.client.lrange(
-      this.grantKeyFor(grantId),
+      this.grantKeyFor(grantId)!,
       0,
       -1,
     );
     tokens.forEach((token: string) => multi.del(token));
-    multi.del(this.grantKeyFor(grantId));
+    multi.del(this.grantKeyFor(grantId)!);
 
     await multi.exec();
   }
@@ -281,7 +283,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     if (ttl <= 0) {
       return {
         expire: -1,
-        payload: null,
+        payload: null as unknown as T,
       };
     }
 
@@ -305,10 +307,13 @@ export class OidcProviderRedisAdapter implements Adapter {
   ): Promise<{ ttl: number; value: string }> {
     const result = await this.redis.client.multi().ttl(key).get(key).exec();
 
-    const [[, ttl], [, value]] = result;
+    const [[, ttl], [, value]] = result as [
+      [unknown, number],
+      [unknown, string],
+    ];
 
     if (typeof ttl !== "number" || typeof value !== "string") {
-      return { ttl: -1, value: null };
+      return { ttl: -1, value: null as unknown as string };
     }
 
     return { ttl, value };

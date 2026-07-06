@@ -124,13 +124,13 @@ export class HealthController {
         if (excludeSet.has(name)) {
           return { name, status: "excluded" };
         }
-        return this.runCheck(name);
+        return this.runCheck(name as CheckTarget);
       }),
     );
   }
 
   private async runCheck(
-    name: string,
+    name: CheckTarget,
   ): Promise<CheckSuccessResult | CheckErrorResult> {
     try {
       await this.checks[name]();

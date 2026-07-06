@@ -6,11 +6,12 @@ import {
   IsUrl,
 } from "class-validator";
 
+// @ts-expect-error
 import { JSONWebKeySet } from "jose-v2";
 
 export class OidcClientConfig {
   @IsNumber()
-  readonly timeout: number;
+  readonly timeout!: number;
 
   @IsOptional()
   @IsObject()
@@ -20,14 +21,14 @@ export class OidcClientConfig {
     protocols: ["https"],
     require_protocol: true,
   })
-  readonly redirectUri: string;
+  readonly redirectUri!: string;
 
   @IsUrl({
     protocols: ["https"],
     require_protocol: true,
   })
-  readonly postLogoutRedirectUri: string;
+  readonly postLogoutRedirectUri!: string;
 
   @IsBoolean()
-  readonly enableHyyyperbridge: boolean;
+  readonly enableHyyyperbridge!: boolean;
 }

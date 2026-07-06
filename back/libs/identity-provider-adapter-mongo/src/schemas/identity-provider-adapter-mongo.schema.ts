@@ -4,72 +4,72 @@ import { Document } from "mongoose";
 @Schema({ collection: "provider", strict: true })
 export class IdentityProvider extends Document {
   @Prop({ type: String })
-  name: string;
+  name!: string;
 
   // Note that this will create the index if not present
   @Prop({ index: true, type: String })
-  clientID: string;
+  clientID!: string;
 
   @Prop({ type: String })
-  client_secret: string;
+  client_secret!: string;
 
   @Prop({ type: Boolean })
-  discovery: boolean;
+  discovery!: boolean;
 
   @Prop({ type: String })
-  discoveryUrl: string;
+  discoveryUrl!: string;
 
   @Prop({ type: [String] })
-  response_types: string[];
+  response_types!: string[];
 
   @Prop({ type: String })
-  id_token_signed_response_alg: string;
+  id_token_signed_response_alg!: string;
 
   @Prop({ type: String })
-  token_endpoint_auth_method: string;
+  token_endpoint_auth_method!: string;
 
   @Prop({ type: String })
-  revocation_endpoint_auth_method: string;
+  revocation_endpoint_auth_method!: string;
 
   @Prop({ type: String })
-  id_token_encrypted_response_alg: string;
+  id_token_encrypted_response_alg!: string;
 
   @Prop({ type: String })
-  id_token_encrypted_response_enc: string;
+  id_token_encrypted_response_enc!: string;
 
   @Prop({ type: String })
-  uid: string;
+  uid!: string;
 
   @Prop({ type: String })
-  userinfo_signed_response_alg: string;
+  userinfo_signed_response_alg!: string;
 
   @Prop({ type: String })
-  userinfo_encrypted_response_alg: string;
+  userinfo_encrypted_response_alg!: string;
 
   @Prop({ type: String })
-  userinfo_encrypted_response_enc: string;
+  userinfo_encrypted_response_enc!: string;
 
   @Prop({ type: String })
-  siret: string;
+  siret!: string;
 
   @Prop({ type: String, required: false })
-  supportEmail: string;
+  supportEmail!: string;
 
   @Prop({ type: Boolean })
-  isRoutingEnabled: boolean;
+  isRoutingEnabled!: boolean;
 
   @Prop({ type: Boolean })
-  isEntraID: boolean;
+  isEntraID!: boolean;
 
   @Prop({ type: [String] })
   @Prop({ type: [String] })
-  extraAcceptedEmailDomains: string[];
+  extraAcceptedEmailDomains!: string[];
 
   @Prop({ type: Boolean })
-  isBlockingForUnlistedEmailDomainsEnabled: boolean;
+  isBlockingForUnlistedEmailDomainsEnabled!: boolean;
 
   @Prop({ type: Boolean })
-  useTheHyyyperbridge: boolean;
+  useTheHyyyperbridge!: boolean;
 }
 
 export const IdentityProviderSchema =

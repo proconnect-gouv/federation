@@ -58,7 +58,7 @@ export class InteractionController {
 
   @Get(Routes.DEFAULT)
   @Header("cache-control", "no-store")
-  getDefault(@Res() res) {
+  getDefault(@Res() res: Response) {
     const { defaultRedirectUri } = this.config.get<AppConfig>("App");
     res.redirect(301, defaultRedirectUri);
   }
@@ -120,7 +120,7 @@ export class InteractionController {
     const { acrClaims } =
       this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
     const spEssentialAcr =
-      acrClaims?.value || acrClaims?.values.join(" ") || null;
+      acrClaims?.value || acrClaims?.values?.join(" ") || null;
 
     if (!canReuseActiveSession) {
       userSession.clear();
@@ -129,7 +129,7 @@ export class InteractionController {
       spLoginHint,
       spSiretHint,
       interactionId,
-      spEssentialAcr,
+      spEssentialAcr: spEssentialAcr ?? undefined,
       spId,
       spName,
       spState,
@@ -222,7 +222,7 @@ export class InteractionController {
       isSilentAuthentication,
       spEssentialAcr,
       spId,
-    } = userSessionService.get();
+    } = userSessionService.get()!;
 
     const account = await this.accountService.getAccountBySub(sub);
     if (!account || !account.active) {

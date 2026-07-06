@@ -8,7 +8,7 @@ export class CoreFcaSession {
   @ValidateNested()
   @Type(() => UserSession)
   @Expose()
-  readonly User: UserSession;
+  readonly User!: UserSession;
 
   @IsObject()
   @ValidateNested()

@@ -84,7 +84,7 @@ export async function filteredByDto<T = any>(
   const data = getTransformed<typeof dto>(plain, dto, transformOptions);
   const errors = await validate(data, validatorOptions);
   if (errors.length) {
-    return { errors, result: null };
+    return { errors, result: null as unknown as T };
   }
   const result = instanceToPlain(data) as T;
   return { errors, result };

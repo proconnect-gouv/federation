@@ -6,11 +6,11 @@ export class InteractionErrorQuery {
   @IsString()
   @MaxLength(256)
   @Transform(({ value }) => value || undefined)
-  error: string;
+  error!: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(256)
   @Transform(({ value }) => value || undefined)
-  error_description: string;
+  error_description!: string;
 }

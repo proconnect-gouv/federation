@@ -18,8 +18,8 @@ export class ApiEntrepriseService {
       this.logger.error({
         code: "api-entreprise-service-find-by-siret-error",
         apiEntrepriseFindError: error,
-        apiEntrepriseFindErrorCause: error?.cause,
-        apiEntrepriseFindErrorType: error?.constructor?.name,
+        apiEntrepriseFindErrorCause: (error as Error)?.cause,
+        apiEntrepriseFindErrorType: (error as Error)?.constructor?.name,
       });
       throw error;
     }
@@ -30,8 +30,8 @@ export class ApiEntrepriseService {
       this.logger.error({
         code: "api-entreprise-service-organization-mapping-error",
         apiEntrepriseMappingError: error,
-        apiEntrepriseMappingErrorCause: error?.cause,
-        apiEntrepriseMappingErrorType: error?.constructor?.name,
+        apiEntrepriseMappingErrorCause: (error as Error)?.cause,
+        apiEntrepriseMappingErrorType: (error as Error)?.constructor?.name,
       });
       throw error;
     }

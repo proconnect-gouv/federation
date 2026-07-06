@@ -167,8 +167,8 @@ describe("ServiceProviderAdapterMongoService", () => {
         client_secret: "client_secret",
         scope: validServiceProviderMock.scopes.join(" "),
       };
-      delete expected.key;
-      delete expected.scopes;
+      delete (expected as Record<string, unknown>).key;
+      delete (expected as Record<string, unknown>).scopes;
       service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce(expected.client_secret);
@@ -305,8 +305,8 @@ describe("ServiceProviderAdapterMongoService", () => {
           scope: "openid profile",
         },
       ];
-      delete expected[0].key;
-      delete expected[0].scopes;
+      delete (expected[0] as Record<string, unknown>).key;
+      delete (expected[0] as Record<string, unknown>).scopes;
       service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce(expected[0].client_secret);
@@ -348,8 +348,8 @@ describe("ServiceProviderAdapterMongoService", () => {
           scope: "openid profile",
         },
       ];
-      delete expected[0].key;
-      delete expected[0].scopes;
+      delete (expected[0] as Record<string, unknown>).key;
+      delete (expected[0] as Record<string, unknown>).scopes;
       service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce(expected[0].client_secret);
@@ -419,8 +419,8 @@ describe("ServiceProviderAdapterMongoService", () => {
         client_secret: "client_secret",
         scope: "openid profile",
       };
-      delete expected.key;
-      delete expected.scopes;
+      delete (expected as Record<string, unknown>).key;
+      delete (expected as Record<string, unknown>).scopes;
       service["decryptClientSecret"] = jest
         .fn()
         .mockReturnValueOnce("client_secret");

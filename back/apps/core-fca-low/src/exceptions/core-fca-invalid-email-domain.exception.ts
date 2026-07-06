@@ -15,7 +15,7 @@ export class CoreFcaInvalidEmailDomainException extends CoreFcaBaseException {
   constructor(idpName: string, email: string, contact: string) {
     super();
 
-    const emailDomain = email?.split("@").pop().toLowerCase();
+    const emailDomain = email?.split("@").pop()!.toLowerCase();
 
     this.description = `Le domaine « ${emailDomain} » que vous utilisez ne fait pas partie des domaines autorisés pour ${idpName}.`;
 

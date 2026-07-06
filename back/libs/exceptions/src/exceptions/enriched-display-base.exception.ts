@@ -8,7 +8,7 @@ export class EnrichedDisplayBaseException extends BaseException {
   public displayContact = true;
   public contactMessage =
     "Vous pouvez nous signaler cette erreur en nous écrivant.";
-  public contactHref: string;
+  public contactHref!: string;
 
   public mainAction: "contact" | "goBack" = "goBack";
   public additionalErrorLogs?: { label: string; value: string | undefined }[];

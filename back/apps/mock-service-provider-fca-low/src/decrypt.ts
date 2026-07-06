@@ -22,7 +22,7 @@ export const decrypt = (cipher: string, cipherPass: string): any => {
 
   decipher.setAuthTag(tag);
 
-  const receivedPlaintext = decipher.update(ciphertext, null, "utf8");
+  const receivedPlaintext = decipher.update(ciphertext, null as any, "utf8");
 
   try {
     decipher.final();

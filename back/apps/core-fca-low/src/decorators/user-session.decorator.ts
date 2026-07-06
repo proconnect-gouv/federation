@@ -18,7 +18,7 @@ export const UserSessionDecoratorFactory = async (
   const res = ctx.switchToHttp().getResponse();
 
   const boundSessionService = {
-    get: sessionService.get.bind(sessionService, "User"),
+    get: (() => sessionService.get("User")) as () => UserSession,
     set: sessionService.set.bind(sessionService, "User"),
     commit: sessionService.commit.bind(sessionService),
     duplicate: () => {
@@ -26,12 +26,12 @@ export const UserSessionDecoratorFactory = async (
       const cleanedData = plainToInstance(CoreFcaSession, data, {
         excludeExtraneousValues: true,
       });
-      sessionService.set.bind(sessionService, cleanedData);
+      sessionService.set.bind(sessionService, cleanedData as unknown as string);
       return sessionService.duplicate.bind(sessionService, res)();
     },
     clear: sessionService.clear.bind(sessionService),
     destroy: sessionService.destroy.bind(sessionService, res),
-  } as ISessionService<UserSession>;
+  } as unknown as ISessionService<UserSession>;
 
   const sessionData = boundSessionService.get();
 

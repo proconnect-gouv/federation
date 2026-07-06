@@ -1,7 +1,7 @@
 import { HttpStatus } from "@nestjs/common";
 import ejs from "ejs";
 import fs from "fs";
-import glob from "glob";
+import { glob } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { format } from "prettier";
 import { BaseException } from "../../exceptions/base.exception";
@@ -39,7 +39,7 @@ export default class Runner {
     return typeof param === "number" && param >= 0;
   }
 
-  static hasValidString(param: string): boolean {
+  static hasValidString(param: unknown): boolean {
     return (
       typeof param === "string" &&
       param !== null &&
@@ -66,7 +66,8 @@ export default class Runner {
     path,
     Exception,
   }: PathAndException): PathAndInstantiatedException | null {
-    const { http_status_code, scope, code } = new Exception();
+    const { http_status_code, scope, code } =
+      new (Exception as typeof BaseException)();
 
     // Retrieve static error and error description props
     const hasValidScope = Runner.hasValidNumber(scope);
@@ -84,7 +85,7 @@ export default class Runner {
 
     return {
       path,
-      Exception,
+      Exception: Exception as typeof BaseException,
     };
   }
 
@@ -104,8 +105,8 @@ export default class Runner {
       exception: Exception.name,
       http_status_code,
       path,
-      error,
-      error_description,
+      error: error ?? "",
+      error_description: error_description ?? "",
     };
 
     return data;
@@ -121,18 +122,20 @@ export default class Runner {
     return modules
       .map((module, index) => ({ path: paths[index], module }))
       .map(Runner.extractException)
-      .filter((Exception) => Boolean(Exception))
+      .filter((item): item is PathAndException => Boolean(item))
       .map(Runner.inflateException)
-      .filter(Boolean)
+      .filter((item): item is PathAndInstantiatedException => Boolean(item))
       .map(Runner.buildException);
   }
 
-  static getExceptionsFilesPath(basePaths: string[], searchPattern: string) {
+  static async getExceptionsFilesPath(
+    basePaths: string[],
+    searchPattern: string,
+  ) {
     const paths: string[] = [];
     for (const basePath of basePaths) {
       const pattern = `${basePath}${searchPattern}`;
-      const relativePaths = glob.sync(pattern);
-      for (const relativePath of relativePaths) {
+      for await (const relativePath of glob(pattern)) {
         paths.push(relativePath);
       }
     }
@@ -142,7 +145,7 @@ export default class Runner {
 
   static renderFile(file: string, data: object): Promise<string> {
     return new Promise((resolve, reject) => {
-      ejs.renderFile(file, data, (err: Error, result: string) => {
+      ejs.renderFile(file, data, (err: Error | null, result: string) => {
         if (err) return reject(err);
         return resolve(result);
       });
@@ -151,7 +154,7 @@ export default class Runner {
 
   static async run(): Promise<void> {
     console.log("Generating documentation for exceptions...");
-    const paths = Runner.getExceptionsFilesPath(
+    const paths = await Runner.getExceptionsFilesPath(
       ["libs", "apps"],
       "/**/*.exception.ts",
     );

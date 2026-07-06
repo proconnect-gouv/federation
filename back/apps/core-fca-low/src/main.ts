@@ -38,7 +38,7 @@ async function bootstrap() {
 
   const appModule = AppModule.forRoot(configService);
 
-  const httpsOptions = key && cert ? { key, cert } : null;
+  const httpsOptions = key && cert ? { key, cert } : undefined;
 
   const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**
@@ -110,7 +110,7 @@ async function bootstrap() {
   app.setViewEngine("ejs");
   app.set(
     "views",
-    viewsPaths.map((viewsPath) => {
+    viewsPaths!.map((viewsPath) => {
       return join(__dirname, viewsPath, "views");
     }),
   );
@@ -121,16 +121,16 @@ async function bootstrap() {
    * @TODO #1203 All below useStaticAssets functions need to be removed (until line 146) when webpack has been configured to load assets from @gouvfr/dsfr package
    * @ticket FC-1203
    */
-  assetsDsfrPaths.forEach(({ assetPath, prefix }) => {
+  assetsDsfrPaths!.forEach(({ assetPath, prefix }) => {
     app.useStaticAssets(join(__dirname, assetPath), {
-      maxAge: assetsCacheTtl * 1000,
+      maxAge: assetsCacheTtl! * 1000,
       prefix,
     });
   });
 
-  assetsPaths.forEach((assetsPath) => {
+  assetsPaths!.forEach((assetsPath) => {
     app.useStaticAssets(join(__dirname, assetsPath, "public"), {
-      maxAge: assetsCacheTtl * 1000,
+      maxAge: assetsCacheTtl! * 1000,
     });
   });
 

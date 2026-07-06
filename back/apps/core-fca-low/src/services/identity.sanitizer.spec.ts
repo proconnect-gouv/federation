@@ -24,17 +24,17 @@ describe("IdentitySanitizer", () => {
 
   beforeEach(() => {
     identityProvider = new IdentityProviderAdapterMongoService(
-      null,
-      null,
-      null,
+      null as any,
+      null as any,
+      null as any,
       logger,
-      null,
+      null as any,
     );
     cachedOrganizationService = new CachedOrganizationService(
-      null,
-      null,
-      null,
-      null,
+      null as any,
+      null as any,
+      null as any,
+      null as any,
     );
     cachedOrganizationService.computeRoles = jest.fn();
     cachedOrganizationService.getCachedOrganizationBySiret = jest.fn();

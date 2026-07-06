@@ -6,6 +6,7 @@ import {
   BadRequestException,
   Catch,
   HttpException,
+  HttpStatus,
 } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 import { Response } from "express";
@@ -104,7 +105,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter<HttpException> {
 
     const errorPageParams: ErrorPageParams = {
       exceptionDisplay: {
-        ...httpErrorDisplays[exception.getStatus()],
+        ...httpErrorDisplays[exception.getStatus() as HttpStatus],
         contactHref,
       },
       error,

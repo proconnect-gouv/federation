@@ -49,7 +49,7 @@ export const getDefaultUser = () => {
 
 const userStorage = new QuickLRU({ maxSize: 1000 });
 
-export const createUser = (body) => {
+export const createUser = (body: any) => {
   const { email, given_name, usual_name, siret, sub, phone_number } = body;
   const id = email + given_name + usual_name + siret + phone_number;
   // replace default property values, allowing substitution of a default value with an empty string

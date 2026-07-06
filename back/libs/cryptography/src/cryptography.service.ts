@@ -126,7 +126,11 @@ export class CryptographyService {
 
     decipher.setAuthTag(tag);
 
-    const receivedPlaintext = decipher.update(ciphertext, null, "utf8");
+    const receivedPlaintext = decipher.update(
+      ciphertext,
+      null as unknown as undefined,
+      "utf8",
+    );
 
     try {
       decipher.final();

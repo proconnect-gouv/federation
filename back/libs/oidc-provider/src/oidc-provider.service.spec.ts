@@ -59,8 +59,8 @@ describe("OidcProviderService", () => {
   const useSpy = jest.fn();
 
   const providerMock = {
-    middlewares: [],
-    use: (middleware) => {
+    middlewares: [] as Function[],
+    use: (middleware: Function) => {
       providerMock.middlewares.push(middleware);
       useSpy();
     },
@@ -125,10 +125,10 @@ describe("OidcProviderService", () => {
       oidcProviderConfigServiceMock.getConfig.mockImplementation(() => ({
         paramsMock: "paramMocks",
       }));
-      service["getConfig"] = jest.fn().mockResolvedValue({
+      (service as any)["getConfig"] = jest.fn().mockResolvedValue({
         ...configOidcProviderMock,
       });
-      service["registerMiddlewares"] = jest.fn();
+      (service as any)["registerMiddlewares"] = jest.fn();
     });
 
     it("should create oidc-provider instance", () => {

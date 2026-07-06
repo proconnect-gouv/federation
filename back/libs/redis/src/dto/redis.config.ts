@@ -12,33 +12,33 @@ import {
 
 class TlsConfig {
   @IsString()
-  readonly ca: string;
+  readonly ca!: string;
 }
 
 export class RedisConfig {
   @IsString()
   @ValidateIf(({ sentinels }) => sentinels === undefined)
-  readonly host: string;
+  readonly host!: string;
 
   @Type(() => Number)
   @IsNumber()
   @ValidateIf(({ sentinels }) => sentinels === undefined)
-  readonly port: number;
+  readonly port!: number;
 
   @IsNumber()
   @Type(() => Number)
-  readonly db: number;
+  readonly db!: number;
 
   @IsString()
   @IsOptional()
-  readonly password: string;
+  readonly password!: string;
 
   @IsArray()
   @IsObject({ each: true })
   @ValidateNested()
   @Type(() => Sentinel)
   @ValidateIf(({ host }) => host === undefined)
-  readonly sentinels: Sentinel[];
+  readonly sentinels!: Sentinel[];
 
   @IsObject()
   @IsOptional()
@@ -53,23 +53,23 @@ export class RedisConfig {
   readonly sentinelTLS?: TlsConfig;
 
   @IsBoolean()
-  readonly enableTLSForSentinelMode: boolean;
+  readonly enableTLSForSentinelMode!: boolean;
 
   @IsString()
   @IsOptional()
   @ValidateIf(({ sentinels }) => sentinels !== undefined)
-  readonly sentinelPassword: string;
+  readonly sentinelPassword!: string;
 
   @IsString()
   @ValidateIf(({ sentinels }) => sentinels !== undefined)
-  readonly name: string;
+  readonly name!: string;
 }
 
 class Sentinel {
   @IsString()
-  readonly host: string;
+  readonly host!: string;
 
   @IsNumber()
   @Type(() => Number)
-  readonly port: number;
+  readonly port!: number;
 }

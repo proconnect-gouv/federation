@@ -13,25 +13,25 @@ export class IdentityFromIdpDto {
   @MinLength(1)
   @MaxLength(256)
   @IsAscii()
-  sub: string;
+  sub!: string;
 
   @IsString()
   @MinLength(1)
   @MaxLength(256)
-  given_name: string;
+  given_name!: string;
 
   @IsString()
   @MinLength(1)
   @MaxLength(256)
-  usual_name: string;
+  usual_name!: string;
 
   @IsEmail()
-  email: string;
+  email!: string;
 
   @MinLength(1)
   @MaxLength(256)
   @IsAscii()
-  uid: string;
+  uid!: string;
 
   @IsString()
   @MinLength(1)

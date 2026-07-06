@@ -139,7 +139,7 @@ describe("OidcAcrService", () => {
           name: "login",
           reasons: ["essential_acr"],
         },
-      } as undefined as ExtendedInteraction;
+      } as unknown as ExtendedInteraction;
 
       // When
       const result = service["isEssentialAcrSatisfied"](interactionMock);
@@ -155,7 +155,7 @@ describe("OidcAcrService", () => {
           name: "login",
           reasons: ["essential_acrs"],
         },
-      } as undefined as ExtendedInteraction;
+      } as unknown as ExtendedInteraction;
 
       // When
       const result = service["isEssentialAcrSatisfied"](interactionMock);
@@ -171,7 +171,7 @@ describe("OidcAcrService", () => {
           name: "interaction-check",
           reasons: ["other_reasons"],
         },
-      } as undefined as ExtendedInteraction;
+      } as unknown as ExtendedInteraction;
 
       // When
       const result = service["isEssentialAcrSatisfied"](interactionMock);
@@ -197,7 +197,7 @@ describe("OidcAcrService", () => {
             },
           },
         },
-      } as undefined as ExtendedInteraction;
+      } as unknown as ExtendedInteraction;
 
       jest.spyOn(service, "getFilteredAcrValues").mockReturnValueOnce(["A"]);
 
@@ -229,7 +229,7 @@ describe("OidcAcrService", () => {
             },
           },
         },
-      } as undefined as ExtendedInteraction;
+      } as unknown as ExtendedInteraction;
 
       jest.spyOn(service, "getFilteredAcrValues").mockReturnValueOnce(["A"]);
 

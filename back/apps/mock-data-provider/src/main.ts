@@ -15,7 +15,7 @@ const {
   PORT,
 } = process.env;
 
-const port = parseInt(PORT, 10) || 3000;
+const port = parseInt(PORT!, 10) || 3000;
 const jwks: JWK[] = rawJwks ? JSON.parse(rawJwks) : [];
 let keys: CryptoKey[];
 let publicJwks: JsonWebKey[];
@@ -24,15 +24,15 @@ const app = express();
 
 const getProviderConfig = async () => {
   const config = await client.discovery(
-    new URL(DataProviderAdapterCore_ISSUER),
-    DataProviderAdapterCore_CLIENT_ID,
+    new URL(DataProviderAdapterCore_ISSUER!),
+    DataProviderAdapterCore_CLIENT_ID!,
     {
       introspection_signed_response_alg: signAlg,
     },
-    client.ClientSecretPost(DataProviderAdapterCore_CLIENT_SECRET),
+    client.ClientSecretPost(DataProviderAdapterCore_CLIENT_SECRET!),
   );
 
-  client.enableDecryptingResponses(config, [encryptEnc], ...keys);
+  client.enableDecryptingResponses(config, [encryptEnc!], ...keys);
   return config;
 };
 
@@ -43,7 +43,7 @@ app.get("/api/v1/jwks", (req, res, _next) => {
 app.get("/api/v1/data", async (req, res, next) => {
   try {
     const authorizationHeader = req.headers.authorization;
-    const rawAccessToken = authorizationHeader.split(" ")[1];
+    const rawAccessToken = authorizationHeader!.split(" ")[1];
     const accessToken = Buffer.from(rawAccessToken, "base64").toString("utf-8");
 
     const config = await getProviderConfig();
@@ -66,7 +66,7 @@ app.use((req, res, _next) => {
   });
 });
 
-app.use((err, req, res, _next) => {
+app.use((err: any, req: any, res: any, _next: any) => {
   console.error(err);
 
   res.status(err.status || 500).json({

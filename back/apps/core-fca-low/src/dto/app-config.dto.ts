@@ -15,28 +15,28 @@ import { SpAuthorizedFqdnsConfig } from "./sp-authorized-fqdns-config.dto";
 
 export class AppConfig extends AppGenericConfig {
   @IsString()
-  readonly defaultIdpId: string;
+  readonly defaultIdpId!: string;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => SpAuthorizedFqdnsConfig)
-  readonly spAuthorizedFqdnsConfigs: SpAuthorizedFqdnsConfig[];
+  readonly spAuthorizedFqdnsConfigs!: SpAuthorizedFqdnsConfig[];
 
   @IsString()
-  readonly defaultEmailRenater: string;
+  readonly defaultEmailRenater!: string;
 
   @ValidateNested()
   @Type(() => ContentSecurityPolicy)
-  readonly contentSecurityPolicy: ContentSecurityPolicy;
+  readonly contentSecurityPolicy!: ContentSecurityPolicy;
 
   @IsUrl()
-  readonly defaultRedirectUri: string;
+  readonly defaultRedirectUri!: string;
 
   @IsEmail()
-  readonly supportEmail: string;
+  readonly supportEmail!: string;
 
   @IsString()
-  readonly passeDroitEmailSuffix: string;
+  readonly passeDroitEmailSuffix!: string;
 
   @IsBoolean()
   @IsOptional()

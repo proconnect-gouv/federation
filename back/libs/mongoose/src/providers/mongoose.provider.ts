@@ -14,7 +14,7 @@ import { NestJsConnection } from "../interfaces";
 export class MongooseProvider {
   static connectionFactory(
     logger: LoggerService,
-    eventBus,
+    eventBus: any,
     connection: NestJsConnection,
   ): NestJsConnection {
     eventBus.publish(new MongooseConnectionReconnectedEvent());
@@ -49,7 +49,7 @@ export class MongooseProvider {
   static buildMongoParams(
     logger: LoggerService,
     config: ConfigService,
-    eventBus,
+    eventBus: any,
   ): MongooseModuleOptions {
     const {
       user,

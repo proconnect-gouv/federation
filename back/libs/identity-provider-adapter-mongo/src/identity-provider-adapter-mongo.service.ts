@@ -50,7 +50,7 @@ export const IDP_METADATA = [
 
 @Injectable()
 export class IdentityProviderAdapterMongoService implements IIdentityProviderAdapter {
-  private listCache: IdentityProviderMetadata[];
+  private listCache!: IdentityProviderMetadata[];
 
   constructor(
     @InjectModel("IdentityProvider")
@@ -112,7 +112,7 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
     if (refreshCache || !this.listCache) {
       const allIdentityProviders = await this.findAllIdentityProvider();
       this.listCache = allIdentityProviders.map((idp) =>
-        this.legacyToOpenIdPropertyName(idp),
+        this.legacyToOpenIdPropertyName(idp as unknown as IdentityProvider),
       );
     }
 
@@ -127,7 +127,7 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
 
     const provider = providers.find(({ uid }) => uid === id);
 
-    return provider;
+    return provider!;
   }
 
   async isActiveById(id: string): Promise<boolean> {
@@ -137,12 +137,12 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
   }
 
   getFqdnFromEmail(email: string | undefined): string | undefined {
-    return email?.split("@").pop().toLowerCase();
+    return email?.split("@").pop()!.toLowerCase();
   }
 
   getIdpsByEmail(email: string): Promise<IdentityProviderMetadata[]> {
     const fqdn = this.getFqdnFromEmail(email);
-    return this.getIdpsByFqdn(fqdn);
+    return this.getIdpsByFqdn(fqdn!);
   }
 
   async getIdpsByFqdn(fqdn: string): Promise<IdentityProviderMetadata[]> {
@@ -175,7 +175,9 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
     };
 
     Object.entries(mapping).forEach(([legacyName, oidcName]) => {
-      result[oidcName] = source[legacyName];
+      (result as Record<string, unknown>)[oidcName] = (
+        source as unknown as Record<string, unknown>
+      )[legacyName];
       Reflect.deleteProperty(result, legacyName);
     });
 
@@ -196,15 +198,19 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
       federationServerMetadata: {} as FederationServerMetadata,
     };
 
-    Object.entries(result).forEach(([key, value]) => {
-      if (CLIENT_METADATA.includes(key as (typeof CLIENT_METADATA)[number])) {
-        panvaFormatted.federationClientMetadata[key] = value;
-      } else if (IDP_METADATA.includes(key as (typeof IDP_METADATA)[number])) {
-        panvaFormatted.federationServerMetadata[key] = value;
-      } else {
-        panvaFormatted[key] = value;
-      }
-    });
+    Object.entries(result as Record<string, unknown>).forEach(
+      ([key, value]) => {
+        if (CLIENT_METADATA.includes(key as (typeof CLIENT_METADATA)[number])) {
+          panvaFormatted.federationClientMetadata[key] = value as any;
+        } else if (
+          IDP_METADATA.includes(key as (typeof IDP_METADATA)[number])
+        ) {
+          panvaFormatted.federationServerMetadata[key] = value as any;
+        } else {
+          (panvaFormatted as Record<string, unknown>)[key] = value;
+        }
+      },
+    );
 
     return panvaFormatted as IdentityProviderMetadata;
   }
@@ -221,7 +227,7 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
       );
 
     if (!decryptClientSecretFeature) {
-      return null;
+      return null as unknown as string;
     }
 
     return this.crypto.decrypt(

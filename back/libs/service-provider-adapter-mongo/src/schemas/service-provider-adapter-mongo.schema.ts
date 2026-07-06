@@ -4,41 +4,41 @@ import { Document } from "mongoose";
 @Schema({ strict: true, collection: "client" })
 export class ServiceProvider extends Document {
   @Prop({ type: String })
-  name: string;
+  name!: string;
 
   @Prop({ type: Boolean })
-  active: boolean;
+  active!: boolean;
 
   // Note that this will create the index if not present
   @Prop({ type: String, unique: true, index: true })
-  key: string;
+  key!: string;
 
   @Prop({ type: String })
-  client_id: string;
+  client_id!: string;
 
   @Prop({ type: String })
-  client_secret: string;
+  client_secret!: string;
 
   @Prop({ type: [String] })
-  scopes: string[];
+  scopes!: string[];
 
   @Prop({ type: [String] })
-  redirect_uris: string[];
+  redirect_uris!: string[];
 
   @Prop({ type: [String] })
-  post_logout_redirect_uris: string[];
+  post_logout_redirect_uris!: string[];
 
   @Prop({ type: String })
-  id_token_signed_response_alg: string;
+  id_token_signed_response_alg!: string;
 
   @Prop({ type: String })
-  userinfo_signed_response_alg: string;
+  userinfo_signed_response_alg!: string;
 
   @Prop({ type: String })
-  jwks_uri: string;
+  jwks_uri!: string;
 
   @Prop({ type: String })
-  type: string;
+  type!: string;
 }
 
 export const ServiceProviderSchema =

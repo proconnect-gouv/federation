@@ -45,7 +45,7 @@ describe("AsyncLocalStorageMiddleware", () => {
 
     it("should call asyncLocalStorage.run", () => {
       // When
-      middleware.use(reqMock as any, null, nextMock);
+      middleware.use(reqMock as any, null as any, nextMock);
 
       // Then
       expect(asyncLocalStorageMock.run).toHaveBeenCalledTimes(1);
@@ -56,7 +56,7 @@ describe("AsyncLocalStorageMiddleware", () => {
 
     it("should call next", () => {
       // Given
-      middleware.use(reqMock, null, nextMock);
+      middleware.use(reqMock, null as any, nextMock);
       const runCallback = asyncLocalStorageMock.run.mock.calls[0][0];
 
       // When

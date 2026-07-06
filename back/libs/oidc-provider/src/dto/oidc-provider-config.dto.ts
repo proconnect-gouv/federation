@@ -13,10 +13,10 @@ import { OidcProviderPrompt } from "../enums";
 
 export class OidcProviderConfig {
   @IsString()
-  readonly prefix: string;
+  readonly prefix!: string;
 
   @IsString()
-  readonly issuer: string;
+  readonly issuer!: string;
 
   @IsObject()
   readonly routes: Configuration["routes"];
@@ -31,15 +31,17 @@ export class OidcProviderConfig {
   readonly jwks: Configuration["jwks"];
 
   @IsNumber()
-  readonly timeout: ReturnType<Configuration["httpOptions"]>["timeout"];
+  readonly timeout!: ReturnType<
+    NonNullable<Configuration["httpOptions"]>
+  >["timeout"];
 
   @IsArray()
   @IsEnum(OidcProviderPrompt, { each: true })
-  readonly forcedPrompt: OidcProviderPrompt[];
+  readonly forcedPrompt!: OidcProviderPrompt[];
 
   @IsArray()
   @IsEnum(OidcProviderPrompt, { each: true })
-  readonly allowedPrompt: OidcProviderPrompt[];
+  readonly allowedPrompt!: OidcProviderPrompt[];
 
   @IsBoolean()
   @IsOptional()

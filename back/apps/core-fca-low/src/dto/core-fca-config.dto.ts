@@ -18,65 +18,65 @@ export class CoreFcaConfig {
   @IsObject()
   @ValidateNested()
   @Type(() => AppConfig)
-  readonly App: AppConfig;
+  readonly App!: AppConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => ApiEntrepriseConfig)
-  readonly ApiEntreprise: ApiEntrepriseConfig;
+  readonly ApiEntreprise!: ApiEntrepriseConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => ExceptionsConfig)
-  readonly Exceptions: ExceptionsConfig;
+  readonly Exceptions!: ExceptionsConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => EmailValidatorConfig)
-  readonly EmailValidator: EmailValidatorConfig;
+  readonly EmailValidator!: EmailValidatorConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => RabbitmqConfig)
-  readonly HyyyperbridgeBroker: RabbitmqConfig;
+  readonly HyyyperbridgeBroker!: RabbitmqConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => LoggerConfig)
-  readonly Logger: LoggerConfig;
+  readonly Logger!: LoggerConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => OidcProviderConfig)
-  readonly OidcProvider: OidcProviderConfig;
+  readonly OidcProvider!: OidcProviderConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => OidcClientConfig)
-  readonly OidcClient: OidcClientConfig;
+  readonly OidcClient!: OidcClientConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => MongooseConfig)
-  readonly Mongoose: MongooseConfig;
+  readonly Mongoose!: MongooseConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => RedisConfig)
-  readonly Redis: RedisConfig;
+  readonly Redis!: RedisConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => SessionConfig)
-  readonly Session: SessionConfig;
+  readonly Session!: SessionConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => ServiceProviderAdapterMongoConfig)
-  readonly ServiceProviderAdapterMongo: ServiceProviderAdapterMongoConfig;
+  readonly ServiceProviderAdapterMongo!: ServiceProviderAdapterMongoConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => IdentityProviderAdapterMongoConfig)
-  readonly IdentityProviderAdapterMongo: IdentityProviderAdapterMongoConfig;
+  readonly IdentityProviderAdapterMongo!: IdentityProviderAdapterMongoConfig;
 }

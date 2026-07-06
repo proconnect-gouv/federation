@@ -37,7 +37,7 @@ describe("MongooseProvider", () => {
   describe("buildMongoParams()", () => {
     it("should construct params with config options from connection name", () => {
       const params = MongooseProvider.buildMongoParams(
-        undefined,
+        undefined as any,
         {
           get: jest.fn().mockReturnValue({
             user: "userValue",

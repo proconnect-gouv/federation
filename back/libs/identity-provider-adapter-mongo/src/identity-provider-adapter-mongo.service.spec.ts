@@ -729,7 +729,9 @@ describe("IdentityProviderAdapterMongoService", () => {
 
     it("should return false if idp is not found", async () => {
       // Given
-      const validIdentityProviderMockWithoutActiveKey = {
+      const validIdentityProviderMockWithoutActiveKey: Partial<
+        typeof validIdentityProviderMock
+      > = {
         ...validIdentityProviderMock,
       };
       delete validIdentityProviderMockWithoutActiveKey.active;

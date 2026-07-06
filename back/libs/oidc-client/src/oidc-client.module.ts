@@ -10,7 +10,7 @@ import { IDENTITY_PROVIDER_SERVICE } from "./tokens";
 export class OidcClientModule {
   static register(
     identityProvider: Type<IIdentityProviderAdapter>,
-    identityProviderModule,
+    identityProviderModule: any,
   ): DynamicModule {
     return {
       module: OidcClientModule,

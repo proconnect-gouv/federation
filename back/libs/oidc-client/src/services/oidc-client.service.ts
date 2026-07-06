@@ -87,7 +87,7 @@ export class OidcClientService {
     private readonly session: SessionService,
   ) {}
 
-  static objToUrlParams(obj) {
+  static objToUrlParams(obj: any) {
     return new URLSearchParams(
       chain(obj)
         .omitBy((v) => v === undefined || v === null || v === "")
@@ -96,7 +96,7 @@ export class OidcClientService {
     );
   }
 
-  static getCurrentUrl = (req) =>
+  static getCurrentUrl = (req: any) =>
     new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
 
   private async fetchThroughTheHyyyperbridge(
@@ -105,8 +105,8 @@ export class OidcClientService {
   ): Promise<Response> {
     const message = {
       url,
-      headers: options.headers,
-      method: options.method,
+      headers: options!.headers,
+      method: options!.method,
       data: options?.body?.toString(),
     };
 
@@ -123,7 +123,7 @@ export class OidcClientService {
     try {
       rawHyyyperbridgeEnveloppe = await lastValueFrom(order);
     } catch (error) {
-      throw new HyyyperbridgeRabbitmqException(error);
+      throw new HyyyperbridgeRabbitmqException(error as Error);
     }
 
     const hyyyperbridgeEnveloppe = plainToInstance<
@@ -191,7 +191,7 @@ export class OidcClientService {
     const updatedOptions = {
       ...options,
       headers: {
-        ...options.headers,
+        ...options!.headers,
         "accept-encoding": "identity",
       },
     };
@@ -243,11 +243,11 @@ export class OidcClientService {
       config[customFetch] = this.fetch.bind(
         this,
         enableHyyyperbridge && idp.useTheHyyyperbridge,
-      );
+      ) as any;
     } else {
       try {
         config = await discovery(
-          new URL(idp.discoveryUrl),
+          new URL(idp.discoveryUrl!),
           idp.federationClientMetadata.client_id,
           idp.federationClientMetadata,
           ClientSecretPost(idp.federationClientMetadata.client_secret),
@@ -256,20 +256,21 @@ export class OidcClientService {
             [customFetch]: this.fetch.bind(
               this,
               enableHyyyperbridge && idp.useTheHyyyperbridge,
-            ),
+            ) as any,
           },
         );
       } catch (error) {
-        if (error.cause instanceof Response) {
+        const _err = error as any;
+        if (_err.cause instanceof Response) {
           /* istanbul ignore next */
-          const body = await error.cause.text().catch(() => "unreadable body");
+          const body = await _err.cause.text().catch(() => "unreadable body");
           this.logger.error({
             code: "oidc-client-discovery-http-error",
             reponseError: {
-              status: error.cause.status,
-              statusText: error.cause.statusText,
-              headers: Object.fromEntries(error.cause.headers?.entries()),
-              url: error.cause.url,
+              status: _err.cause.status,
+              statusText: _err.cause.statusText,
+              headers: Object.fromEntries(_err.cause.headers?.entries()),
+              url: _err.cause.url,
               body,
             },
           });
@@ -277,7 +278,7 @@ export class OidcClientService {
         const errorParams = this.getOidcClientErrorParams();
         throw new OidcClientIssuerDiscoveryFailedException(
           { ...errorParams, contactEmail: idp.supportEmail, idpName: idp.name },
-          error,
+          error as Error,
         );
       }
     }
@@ -363,16 +364,17 @@ export class OidcClientService {
         { sp_id: spId, sp_name: spName },
       );
     } catch (error) {
-      if (error.cause instanceof Response) {
+      const _err = error as any;
+      if (_err.cause instanceof Response) {
         /* istanbul ignore next */
-        const body = await error.cause.text().catch(() => "unreadable body");
+        const body = await _err.cause.text().catch(() => "unreadable body");
         this.logger.error({
           code: "oidc-client-token-http-error",
           reponseError: {
-            status: error.cause.status,
-            statusText: error.cause.statusText,
-            headers: Object.fromEntries(error.cause.headers?.entries()),
-            url: error.cause.url,
+            status: _err.cause.status,
+            statusText: _err.cause.statusText,
+            headers: Object.fromEntries(_err.cause.headers?.entries()),
+            url: _err.cause.url,
             body,
           },
         });
@@ -390,11 +392,11 @@ export class OidcClientService {
 
       throw new OidcClientTokenFailedException(
         { contactEmail: idp.supportEmail, idpName: idp.name },
-        error,
+        error as Error,
       );
     }
 
-    const claims = tokens.claims();
+    const claims = tokens.claims()!;
 
     this.logger.info({
       code: `oidc-client-info:get-token`,
@@ -425,7 +427,8 @@ export class OidcClientService {
       // and map them to equivalent eidas levels
       const proConnectAcrs = map(
         token.claims.acrs,
-        (level) => this.entraIdAcrValuesMapping[level],
+        (level) =>
+          (this.entraIdAcrValuesMapping as Record<string, string>)[level],
       ).filter(Boolean);
       const proConnectHighestAcr = this.prioritizedAcrValues.find((level) =>
         proConnectAcrs.includes(level),
@@ -472,23 +475,24 @@ export class OidcClientService {
 
       return plainIdpIdentity;
     } catch (error) {
-      if (error.cause instanceof Response) {
+      const _err = error as any;
+      if (_err.cause instanceof Response) {
         /* istanbul ignore next */
-        const body = await error.cause.text().catch(() => "unreadable body");
+        const body = await _err.cause.text().catch(() => "unreadable body");
         this.logger.error({
           code: "oidc-client-userinfo-http-error",
           reponseError: {
-            status: error.cause.status,
-            statusText: error.cause.statusText,
-            headers: Object.fromEntries(error.cause.headers?.entries()),
-            url: error.cause.url,
+            status: _err.cause.status,
+            statusText: _err.cause.statusText,
+            headers: Object.fromEntries(_err.cause.headers?.entries()),
+            url: _err.cause.url,
             body,
           },
         });
       }
       throw new OidcClientUserinfoFailedException(
         { contactEmail: idp.supportEmail, idpName: idp.name },
-        error,
+        error as Error,
       );
     }
   }

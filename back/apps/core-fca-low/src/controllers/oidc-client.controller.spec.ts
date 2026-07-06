@@ -284,8 +284,8 @@ describe("OidcClientController", () => {
       expect(userSession.get).toHaveBeenCalled();
       // Expect nonce and state removal
       expect(userSession.set).toHaveBeenCalledWith({
-        idpNonce: null,
-        idpState: null,
+        idpNonce: undefined,
+        idpState: undefined,
       });
       expect(logger.track).toHaveBeenCalledWith("IDP_CALLEDBACK");
       expect(oidcClient.getToken).toHaveBeenCalledWith({

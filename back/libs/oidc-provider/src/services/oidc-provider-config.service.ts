@@ -241,9 +241,10 @@ export class OidcProviderConfigService {
     return grant;
   };
 
-  logoutSource: Configuration["features"]["rpInitiatedLogout"]["logoutSource"] =
-    (ctx, form) => {
-      ctx.body = `<!DOCTYPE html>
+  logoutSource: NonNullable<
+    NonNullable<Configuration["features"]>["rpInitiatedLogout"]
+  >["logoutSource"] = (ctx: any, form: any) => {
+    ctx.body = `<!DOCTYPE html>
         <head>
           <title>Déconnexion</title>
         </head>
@@ -260,44 +261,45 @@ export class OidcProviderConfigService {
           </script>
         </body>
       </html>`;
-    };
+  };
 
-  postLogoutSuccessSource: Configuration["features"]["rpInitiatedLogout"]["postLogoutSuccessSource"] =
-    (ctx) => {
-      // This line magically avoids error 500: ERR_HTTP_HEADERS_SENT
-      // TODO investigate why.
-      ctx.body = "";
+  postLogoutSuccessSource: NonNullable<
+    NonNullable<Configuration["features"]>["rpInitiatedLogout"]
+  >["postLogoutSuccessSource"] = (ctx: any) => {
+    // This line magically avoids error 500: ERR_HTTP_HEADERS_SENT
+    // TODO investigate why.
+    ctx.body = "";
 
-      const res = ctx.res as unknown as Response;
-      ctx.type = "html";
-      // the render function is magically available in the koa context
-      // as oidc-provider servers is mounted behind the nest server.
-      const errorPageParams: ErrorPageParams = {
-        exceptionDisplay: {
-          title: "Déconnexion",
-          description:
-            "Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.",
-          illustration: "connexion",
-        },
-        error: {},
-      };
-      ctx.body = res.render("error", errorPageParams);
+    const res = ctx.res as unknown as Response;
+    ctx.type = "html";
+    // the render function is magically available in the koa context
+    // as oidc-provider servers is mounted behind the nest server.
+    const errorPageParams: ErrorPageParams = {
+      exceptionDisplay: {
+        title: "Déconnexion",
+        description:
+          "Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.",
+        illustration: "connexion",
+      },
+      error: {},
     };
+    ctx.body = res.render("error", errorPageParams);
+  };
 
   findAccount: Configuration["findAccount"] = async (
     _ctx: KoaContextWithOIDC,
     sub: string,
   ) => {
     const sessionId = await this.sessionService.getAlias(sub);
-    await this.sessionService.initCache(sessionId);
+    await this.sessionService.initCache(sessionId!);
 
     const { spIdentity } = this.sessionService.get<UserSession>("User");
 
     return {
-      accountId: spIdentity.sub,
+      accountId: spIdentity!.sub,
 
       async claims() {
-        return { ...spIdentity };
+        return { sub: spIdentity!.sub, ...spIdentity } as any;
       },
     };
   };

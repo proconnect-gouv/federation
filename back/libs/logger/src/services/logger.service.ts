@@ -21,7 +21,7 @@ export class LoggerService {
     [LogLevels.DEBUG]: 20,
     [LogLevels.TRACE]: 10,
   };
-  private pino: Logger<keyof CustomLogLevels>;
+  private pino!: Logger<keyof CustomLogLevels>;
 
   constructor(
     private readonly config: ConfigService,
@@ -35,38 +35,38 @@ export class LoggerService {
    * Below are the methods to wrap the pino logger levels functions.
    */
 
-  [LogLevels.FATAL](msg: string, ...args: unknown[]);
-  [LogLevels.FATAL](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.FATAL](msg: string, ...args: unknown[]): void;
+  [LogLevels.FATAL](obj: unknown, msg?: string, ...args: unknown[]): void;
   [LogLevels.FATAL](obj: unknown, msg?: string, ...args: unknown[]): void {
     this.logWithContext(LogLevels.FATAL, obj, msg, ...args);
   }
 
-  [LogLevels.ERROR](msg: string, ...args: unknown[]);
-  [LogLevels.ERROR](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.ERROR](msg: string, ...args: unknown[]): void;
+  [LogLevels.ERROR](obj: unknown, msg?: string, ...args: unknown[]): void;
   [LogLevels.ERROR](obj: unknown, msg?: string, ...args: unknown[]): void {
     this.logWithContext(LogLevels.ERROR, obj, msg, ...args);
   }
 
-  [LogLevels.WARN](msg: string, ...args: unknown[]);
-  [LogLevels.WARN](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.WARN](msg: string, ...args: unknown[]): void;
+  [LogLevels.WARN](obj: unknown, msg?: string, ...args: unknown[]): void;
   [LogLevels.WARN](obj: unknown, msg?: string, ...args: unknown[]): void {
     this.logWithContext(LogLevels.WARN, obj, msg, ...args);
   }
 
-  [LogLevels.INFO](msg: string, ...args: unknown[]);
-  [LogLevels.INFO](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.INFO](msg: string, ...args: unknown[]): void;
+  [LogLevels.INFO](obj: unknown, msg?: string, ...args: unknown[]): void;
   [LogLevels.INFO](obj: unknown, msg?: string, ...args: unknown[]): void {
     this.logWithContext(LogLevels.INFO, obj, msg, ...args);
   }
 
-  [LogLevels.DEBUG](msg: string, ...args: unknown[]);
-  [LogLevels.DEBUG](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.DEBUG](msg: string, ...args: unknown[]): void;
+  [LogLevels.DEBUG](obj: unknown, msg?: string, ...args: unknown[]): void;
   [LogLevels.DEBUG](obj: unknown, msg?: string, ...args: unknown[]): void {
     this.logWithContext(LogLevels.DEBUG, obj, msg, ...args);
   }
 
-  [LogLevels.TRACE](msg: string, ...args: unknown[]);
-  [LogLevels.TRACE](obj: unknown, msg?: string, ...args: unknown[]);
+  [LogLevels.TRACE](msg: string, ...args: unknown[]): void;
+  [LogLevels.TRACE](obj: unknown, msg?: string, ...args: unknown[]): void;
   [LogLevels.TRACE](obj: unknown, msg?: string, ...args: unknown[]): void {
     this.logWithContext(LogLevels.TRACE, obj, msg, ...args);
   }
@@ -110,7 +110,7 @@ export class LoggerService {
       customLevels,
       useOnlyCustomLevels: true,
       formatters: {
-        level(label, number) {
+        level(label: string, number: number) {
           return { levelNumber: number, level: label };
         },
       },

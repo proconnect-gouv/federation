@@ -384,10 +384,10 @@ describe("CryptographyService", () => {
       // action
       try {
         service["decrypt"](mockEncryptKey, WRONG_CIPHER);
-      } catch (e) {
+      } catch (e: unknown) {
         // expect
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe("Authentication failed !");
+        expect((e as Error).message).toBe("Authentication failed !");
       }
 
       // expect
@@ -401,10 +401,10 @@ describe("CryptographyService", () => {
       // action
       try {
         service["decrypt"](mockEncryptKey, WRONG_CIPHER);
-      } catch (e) {
+      } catch (e: unknown) {
         // expect
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe("Authentication failed !");
+        expect((e as Error).message).toBe("Authentication failed !");
       }
 
       // expect
@@ -460,10 +460,10 @@ describe("CryptographyService", () => {
       // action
       try {
         service["decrypt"](mockEncryptKey, mockCipher);
-      } catch (e) {
+      } catch (e: unknown) {
         // expect
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe("Authentication failed !");
+        expect((e as Error).message).toBe("Authentication failed !");
       }
 
       // expect
@@ -487,7 +487,7 @@ describe("CryptographyService", () => {
         // mocking a native function
 
         (_password, _salt, _iterations, _keylen, _digest, callback) => {
-          callback(undefined, mockDerivatedKey);
+          callback(null, mockDerivatedKey);
         },
       );
 
@@ -504,7 +504,7 @@ describe("CryptographyService", () => {
         // mocking a native function
 
         (_password, _salt, _iterations, _keylen, _digest, callback) => {
-          callback(undefined, mockDerivatedKey);
+          callback(null, mockDerivatedKey);
         },
       );
 
@@ -531,7 +531,7 @@ describe("CryptographyService", () => {
         // mocking a native function
 
         (_password, _salt, _iterations, _keylen, _digest, callback) => {
-          callback(failure, undefined);
+          callback(failure, null as unknown as Buffer);
         },
       );
 

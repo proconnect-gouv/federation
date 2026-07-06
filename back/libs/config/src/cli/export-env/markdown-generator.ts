@@ -1,5 +1,5 @@
 export class MarkdownGenerator {
-  static generate(envMap: object): object[] {
+  static generate(envMap: Record<string, any>): object[] {
     const sortedInstances = MarkdownGenerator.sortInstances(envMap);
 
     const markdown = sortedInstances.map(
@@ -9,7 +9,9 @@ export class MarkdownGenerator {
     return markdown;
   }
 
-  static sortInstances(envMap: object): object[] {
+  static sortInstances(
+    envMap: Record<string, any>,
+  ): { instanceName: any; envVars: any }[] {
     const sortedInstancesNames = Object.keys(envMap).sort();
 
     return sortedInstancesNames.map((instanceName: string) => {
@@ -28,17 +30,26 @@ export class MarkdownGenerator {
     });
   }
 
-  static sortInstancesEnvVars(envVarsNames: string[], envVars: object): object {
+  static sortInstancesEnvVars(
+    envVarsNames: string[],
+    envVars: Record<string, any>,
+  ): object {
     return envVarsNames.map((name) => ({
       name,
       type: envVars[name],
     }));
   }
 
-  static generateMarkdownContent({ instanceName, envVars }): object {
+  static generateMarkdownContent({
+    instanceName,
+    envVars,
+  }: {
+    instanceName: any;
+    envVars: any;
+  }): object {
     let content = "";
 
-    envVars.forEach(({ name, type }) => {
+    envVars.forEach(({ name, type }: { name: any; type: any }) => {
       content += `| ${name} | ${type} |\n`;
     });
 

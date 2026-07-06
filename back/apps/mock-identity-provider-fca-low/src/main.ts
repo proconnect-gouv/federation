@@ -2,8 +2,10 @@ import express, { urlencoded } from "express";
 import { get } from "lodash";
 import { strict as assert } from "node:assert";
 import path from "node:path";
+// @ts-expect-error
 import Provider from "oidc-provider-v8";
 import configuration from "./oidc-provider-support/configuration";
+// @ts-expect-error
 import MemoryAdapter from "./oidc-provider-support/memory_adapter.js";
 import { createUser, getDefaultUser, parseFormDataValue } from "./user-data";
 
@@ -69,7 +71,7 @@ app.get("/interaction/:uid", async (req, res, next) => {
   }
 });
 
-async function normalLogin(req, res) {
+async function normalLogin(req: any, res: any) {
   const {
     prompt: { name },
   } = await provider.interactionDetails(req, res);

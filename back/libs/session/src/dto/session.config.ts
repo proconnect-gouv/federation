@@ -21,17 +21,17 @@ import { type TemplateExposedType } from "../types";
 
 export class CookieOptions {
   @IsBoolean()
-  readonly signed: boolean;
+  readonly signed!: boolean;
 
   @IsString()
   @IsIn(["strict", "lax", "none"])
-  readonly sameSite: "none" | "lax" | "strict";
+  readonly sameSite!: "none" | "lax" | "strict";
 
   @IsBoolean()
-  readonly httpOnly: boolean;
+  readonly httpOnly!: boolean;
 
   @IsBoolean()
-  readonly secure: boolean;
+  readonly secure!: boolean;
 
   @IsNumber()
   @IsOptional()
@@ -46,45 +46,45 @@ export class SessionConfig {
    */
   @IsString()
   @Length(32, 32)
-  readonly encryptionKey: string;
+  readonly encryptionKey!: string;
 
   @IsString()
   @MinLength(2)
-  readonly prefix: string;
+  readonly prefix!: string;
 
   @ValidateNested()
   @Type(() => CookieOptions)
-  readonly cookieOptions: CookieOptions;
+  readonly cookieOptions!: CookieOptions;
 
   @IsString()
-  readonly sessionCookieName: string;
+  readonly sessionCookieName!: string;
 
   @IsArray()
-  readonly cookieSecrets: string[];
+  readonly cookieSecrets!: string[];
 
   @IsNumber()
   @IsPositive()
-  readonly lifetime: number;
+  readonly lifetime!: number;
 
   @IsNumber()
   @Min(32)
-  readonly sessionIdLength: number;
+  readonly sessionIdLength!: number;
 
   @IsArray()
   @IsStringOrRegExp({ each: true })
-  readonly middlewareIncludedRoutes: (string | RouteInfo)[];
+  readonly middlewareIncludedRoutes!: (string | RouteInfo)[];
 
   @IsArray()
   @IsStringOrRegExp({ each: true })
-  readonly middlewareExcludedRoutes: (string | RouteInfo)[];
+  readonly middlewareExcludedRoutes!: (string | RouteInfo)[];
 
   @IsObject()
   @IsOptional()
   readonly templateExposed?: TemplateExposedType;
 
   @IsBoolean()
-  readonly slidingExpiration: boolean;
+  readonly slidingExpiration!: boolean;
 
   @IsObject()
-  readonly schema: Class<CoreFcaSession>;
+  readonly schema!: Class<CoreFcaSession>;
 }

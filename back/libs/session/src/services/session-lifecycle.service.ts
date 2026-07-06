@@ -93,7 +93,7 @@ export class SessionLifecycleService {
   async refresh(req: Request, res: Response): Promise<string> {
     const { lifetime } = this.config.get<SessionConfig>("Session");
 
-    const sessionId = this.cookies.get(req);
+    const sessionId = this.cookies.get(req)!;
 
     await this.backendStorage.expire(sessionId, lifetime);
 
