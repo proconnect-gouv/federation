@@ -11,7 +11,7 @@ import {
 
 export class MongooseConfigOptions {
   @IsString()
-  readonly authSource: string;
+  readonly authSource!: string;
 
   @IsBoolean()
   @IsOptional()
@@ -33,11 +33,11 @@ export class MongooseConfigOptions {
 export class MongooseConfig {
   @IsString()
   @IsNotEmpty()
-  readonly user: string;
+  readonly user!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly password: string;
+  readonly password!: string;
 
   @IsString()
   @IsNotEmpty()
@@ -46,17 +46,17 @@ export class MongooseConfig {
 
   @IsString()
   @IsNotEmpty()
-  readonly hosts: string;
+  readonly hosts!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly database: string;
+  readonly database!: string;
 
   @IsObject()
   @ValidateNested()
   @Type(() => MongooseConfigOptions)
-  readonly options: MongooseConfigOptions;
+  readonly options!: MongooseConfigOptions;
 
   @IsNumber()
-  readonly watcherDebounceWaitDuration: number;
+  readonly watcherDebounceWaitDuration!: number;
 }

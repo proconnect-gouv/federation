@@ -2,15 +2,15 @@ import { IsArray, IsString } from "class-validator";
 
 export class SpAuthorizedFqdnsConfig {
   @IsString()
-  readonly spId: string;
+  readonly spId!: string;
 
   @IsString()
-  readonly spName: string;
+  readonly spName!: string;
 
   @IsString()
-  readonly spContact: string;
+  readonly spContact!: string;
 
   @IsArray()
   @IsString({ each: true })
-  readonly authorizedFqdns: string[];
+  readonly authorizedFqdns!: string[];
 }

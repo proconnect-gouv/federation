@@ -24,15 +24,15 @@ class HttpsOptions {
 
 class DsfrAssets {
   @IsString()
-  readonly assetPath: string;
+  readonly assetPath!: string;
 
   @IsString()
-  readonly prefix: string;
+  readonly prefix!: string;
 }
 
 export class AppConfig {
   @IsString()
-  readonly name: string;
+  readonly name!: string;
 
   /**
    * @TODO #195
@@ -40,11 +40,11 @@ export class AppConfig {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/195
    */
   @IsString()
-  readonly urlPrefix: string;
+  readonly urlPrefix!: string;
 
   @ValidateNested()
   @Type(() => HttpsOptions)
-  readonly httpsOptions: HttpsOptions;
+  readonly httpsOptions!: HttpsOptions;
 
   @IsOptional()
   @IsString()

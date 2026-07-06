@@ -3,17 +3,17 @@ import { IsIn, IsObject, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class BridgePayloadDto {
   @IsUrl()
-  readonly url: string;
+  readonly url!: string;
 
   @IsIn(["get", "post"])
   @Transform(
     /* istanbul ignore next */
     ({ value }) => value.toLowerCase(),
   )
-  readonly method: string;
+  readonly method!: string;
 
   @IsObject()
-  readonly headers: Record<string, string>;
+  readonly headers!: Record<string, string>;
 
   /**
    * this parameter is voluntary abstract.

@@ -8,22 +8,22 @@ export class FederationServerMetadata implements Pick<
   (typeof IDP_METADATA)[number]
 > {
   @IsString()
-  issuer: string;
+  issuer!: string;
 
   @IsString()
-  token_endpoint: string;
+  token_endpoint!: string;
 
   @IsString()
-  authorization_endpoint: string;
+  authorization_endpoint!: string;
 
   @IsString()
-  jwks_uri: string;
+  jwks_uri!: string;
 
   @IsString()
-  userinfo_endpoint: string;
+  userinfo_endpoint!: string;
 
   @IsString()
-  end_session_endpoint: string;
+  end_session_endpoint!: string;
 
   [metadata: string]: JsonValue | undefined;
 }

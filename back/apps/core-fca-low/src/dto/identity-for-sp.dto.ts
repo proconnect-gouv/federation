@@ -25,15 +25,15 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
   declare phone_number?: string;
 
   @IsObject()
-  custom: {
+  custom!: {
     [key: string]: unknown;
   };
 
   @IsString()
-  idp_id: string;
+  idp_id!: string;
 
   @IsString()
-  idp_acr: string;
+  idp_acr!: string;
 
   @IsString()
   @IsOptional()
@@ -50,5 +50,5 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
     ],
     { each: true },
   )
-  roles: string[];
+  roles!: string[];
 }

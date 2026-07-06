@@ -12,24 +12,24 @@ const URL_REGEX = /^https?:\/\/[^/].+$/;
 
 export class MetadataIdpAdapterMongoDTO {
   @IsString()
-  readonly uid: string;
+  readonly uid!: string;
 
   @IsOptional()
   @Matches(URL_REGEX)
   @Transform(({ value }) => value || undefined)
-  readonly url: string;
+  readonly url!: string;
 
   @IsString()
-  readonly name: string;
+  readonly name!: string;
 
   @IsString()
-  readonly title: string;
+  readonly title!: string;
 
   @IsBoolean()
-  readonly active: boolean;
+  readonly active!: boolean;
 
   @IsString()
-  readonly clientID: string;
+  readonly clientID!: string;
 
   @IsOptional()
   @IsString()
@@ -62,11 +62,11 @@ export class MetadataIdpAdapterMongoDTO {
   readonly id_token_encrypted_response_enc?: string;
 
   @IsString()
-  readonly token_endpoint_auth_method: string;
+  readonly token_endpoint_auth_method!: string;
 
   @IsString()
   @MinLength(32)
-  readonly client_secret: string;
+  readonly client_secret!: string;
 
   // issuer metadata
   @IsOptional()
@@ -75,10 +75,10 @@ export class MetadataIdpAdapterMongoDTO {
   readonly endSessionURL?: string;
 
   @IsBoolean()
-  readonly discovery: boolean;
+  readonly discovery!: boolean;
 
   @IsString()
-  readonly siret: string;
+  readonly siret!: string;
 
   @IsOptional()
   @IsString()
@@ -92,10 +92,10 @@ export class MetadataIdpAdapterMongoDTO {
   readonly fqdns?: string[];
 
   @IsBoolean()
-  readonly isRoutingEnabled: boolean;
+  readonly isRoutingEnabled!: boolean;
 
   @IsBoolean()
-  readonly isEntraID: boolean;
+  readonly isEntraID!: boolean;
 
   @IsOptional()
   @IsArray()
@@ -104,15 +104,15 @@ export class MetadataIdpAdapterMongoDTO {
   readonly extraAcceptedEmailDomains?: string[];
 
   @IsBoolean()
-  readonly isBlockingForUnlistedEmailDomainsEnabled: boolean;
+  readonly isBlockingForUnlistedEmailDomainsEnabled!: boolean;
 
   @IsBoolean()
-  readonly useTheHyyyperbridge: boolean;
+  readonly useTheHyyyperbridge!: boolean;
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
   @Matches(URL_REGEX)
-  readonly discoveryUrl: string;
+  readonly discoveryUrl!: string;
 }
 
 export class NoDiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
@@ -122,11 +122,11 @@ export class NoDiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
   readonly jwksURL?: string | undefined;
 
   @Matches(URL_REGEX)
-  readonly authzURL: string;
+  readonly authzURL!: string;
 
   @Matches(URL_REGEX)
-  readonly tokenURL: string;
+  readonly tokenURL!: string;
 
   @Matches(URL_REGEX)
-  readonly userInfoURL: string;
+  readonly userInfoURL!: string;
 }

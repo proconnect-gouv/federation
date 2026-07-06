@@ -33,16 +33,16 @@ export class TokenDto {
   @IsString()
   @MinLength(1)
   @IsAscii()
-  readonly accessToken: string;
+  readonly accessToken!: string;
 
   @IsString()
   @MinLength(1)
   @IsJWT()
-  readonly idToken: string;
+  readonly idToken!: string;
 
   @IsObject()
   @ValidateNested()
   // Only the amr and acr claims need to be validated
   @Type(() => ClaimsDto)
-  readonly claims: IDToken & ClaimsDto;
+  readonly claims!: IDToken & ClaimsDto;
 }

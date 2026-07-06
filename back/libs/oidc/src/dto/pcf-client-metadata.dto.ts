@@ -9,37 +9,37 @@ export class FederationClientMetadata implements Pick<
   (typeof CLIENT_METADATA)[number]
 > {
   @IsString()
-  client_id: string;
+  client_id!: string;
 
   @IsString()
-  client_secret: string;
+  client_secret!: string;
 
   @IsArray()
-  response_types: string[];
+  response_types!: string[];
 
   @IsString()
-  id_token_signed_response_alg: string;
+  id_token_signed_response_alg!: string;
 
   @IsString()
-  token_endpoint_auth_method: string;
+  token_endpoint_auth_method!: string;
 
   @IsString()
-  revocation_endpoint_auth_method: string;
+  revocation_endpoint_auth_method!: string;
 
   @IsString()
-  id_token_encrypted_response_alg: string;
+  id_token_encrypted_response_alg!: string;
 
   @IsString()
-  id_token_encrypted_response_enc: string;
+  id_token_encrypted_response_enc!: string;
 
   @IsString()
-  userinfo_encrypted_response_alg: string;
+  userinfo_encrypted_response_alg!: string;
 
   @IsString()
-  userinfo_encrypted_response_enc: string;
+  userinfo_encrypted_response_enc!: string;
 
   @IsString()
-  userinfo_signed_response_alg: string;
+  userinfo_signed_response_alg!: string;
 
   [metadata: string]: JsonValue | undefined;
 }

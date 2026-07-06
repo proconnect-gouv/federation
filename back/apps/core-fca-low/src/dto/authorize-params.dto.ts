@@ -15,7 +15,7 @@ const URL_REGEX = /^https?:\/\/[^/].+$/;
  */
 export class AuthorizeParamsDto {
   @IsString()
-  readonly client_id: string;
+  readonly client_id!: string;
 
   @IsOptional()
   @IsString()
@@ -26,11 +26,11 @@ export class AuthorizeParamsDto {
   readonly claims?: string;
 
   @IsString()
-  readonly response_type: string;
+  readonly response_type!: string;
 
   @IsOptional()
   @IsString()
-  readonly response_mode: string;
+  readonly response_mode!: string;
 
   @IsOptional()
   @IsString()
@@ -47,14 +47,14 @@ export class AuthorizeParamsDto {
   readonly siret_hint?: string;
 
   @IsString()
-  readonly state: string;
+  readonly state!: string;
 
   @Matches(URL_REGEX)
-  readonly redirect_uri: string;
+  readonly redirect_uri!: string;
 
   // The openid verification is made into oidc-provider
   @IsString()
-  readonly scope: string;
+  readonly scope!: string;
 
   @IsOptional()
   @IsString()

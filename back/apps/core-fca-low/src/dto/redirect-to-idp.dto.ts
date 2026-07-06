@@ -9,14 +9,14 @@ import {
 
 export class RedirectToIdp {
   @IsEmail()
-  readonly email: string;
+  readonly email!: string;
 
   @IsBoolean()
   @IsOptional()
   @Transform(({ value }) => value === "on", { toClassOnly: true })
-  readonly rememberMe: boolean;
+  readonly rememberMe!: boolean;
 
   @IsString()
   @IsAscii()
-  readonly csrfToken: string;
+  readonly csrfToken!: string;
 }

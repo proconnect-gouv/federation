@@ -3,8 +3,8 @@ import { HyyyperbridgeMessageType } from "../enums/hyyyperbridge-message-type.en
 
 export class HyyyperbridgeEnveloppeDto {
   @IsEnum(HyyyperbridgeMessageType)
-  readonly type: HyyyperbridgeMessageType;
+  readonly type!: HyyyperbridgeMessageType;
 
   @IsNotEmptyObject()
-  readonly data: object;
+  readonly data!: object;
 }
