@@ -1,6 +1,7 @@
 import { HttpStatus } from "@nestjs/common";
 import ejs from "ejs";
 import fs from "fs";
+import { glob } from "node:fs/promises";
 import { format } from "prettier";
 import { BaseException } from "../../exceptions";
 import { ExceptionClass } from "../../types";
@@ -15,6 +16,7 @@ jest.mock("ejs");
 jest.mock("prettier", () => ({
   format: jest.fn().mockResolvedValue(""),
 }));
+jest.mock("node:fs/promises");
 jest.mock("./markdown-generator");
 
 describe("Runner", () => {
@@ -271,7 +273,7 @@ describe("Runner", () => {
       // Given
       jest
         .spyOn(ejs, "renderFile")
-        .mockImplementationOnce(renderFileMockErrorImplementation);
+        .mockImplementationOnce(renderFileMockErrorImplementation as any);
       // Then
       await expect(Runner.renderFile(file, dataMock)).rejects.toEqual("error");
     });
@@ -279,7 +281,7 @@ describe("Runner", () => {
       // Given
       jest
         .spyOn(ejs, "renderFile")
-        .mockImplementationOnce(renderFileMockSuccesImplementation);
+        .mockImplementationOnce(renderFileMockSuccesImplementation as any);
       // When
       const result = await Runner.renderFile(file, dataMock);
       // Then
@@ -324,14 +326,28 @@ describe("Runner", () => {
   });
 
   describe("getExceptionsFilesPath", () => {
-    it("should call return glob.sync result", () => {
+    it("should call and return glob result", async () => {
       // Given
-      jest
-        .spyOn(glob, "sync")
-        .mockReturnValue(["/my/file/is/here.exception.ts"]);
+      let called = false;
+      const asyncIterable = {
+        [Symbol.asyncIterator]: () => ({
+          next: () => {
+            if (called) {
+              return Promise.resolve({ value: undefined, done: true });
+            }
+            called = true;
+            return Promise.resolve({
+              value: "/my/file/is/here.exception.ts",
+              done: false,
+            });
+          },
+          return: () => Promise.resolve({ value: undefined, done: true }),
+        }),
+      };
+      (glob as jest.Mock).mockReturnValue(asyncIterable as any);
       const pattern = "/**/*.exception.ts";
       // When
-      const result = Runner.getExceptionsFilesPath(["/"], pattern);
+      const result = await Runner.getExceptionsFilesPath(["/"], pattern);
       // Then
 
       expect(result).toEqual(["/my/file/is/here.exception.ts"]);
@@ -342,12 +358,12 @@ describe("Runner", () => {
     // Given
     const getExceptionsFilesPathResult: string[] = [];
     const loadExceptionsResult = [{ scope: 2 }, { scope: 4 }, { scope: 6 }];
-    const markdownGenerateResult = [];
+    const markdownGenerateResult: string[] = [];
     const renderFileResult = "";
     const generatorSpy = jest.spyOn(MarkdownGenerator, "generate");
 
     beforeEach(() => {
-      generatorSpy.mockImplementation(() => markdownGenerateResult);
+      generatorSpy.mockImplementation(() => markdownGenerateResult as any);
       mockedFormat.mockResolvedValue(renderFileResult);
       jest.spyOn(fs, "writeFileSync").mockImplementation(() => {});
       jest.spyOn(console, "log").mockImplementation(() => {});

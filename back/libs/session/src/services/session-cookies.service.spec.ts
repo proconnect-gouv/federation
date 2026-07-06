@@ -13,7 +13,7 @@ describe("SessionCookiesService", () => {
   const configMock = getConfigMock();
   const configDataMock = {
     cookieOptions: { foo: "bar" },
-    sessionCookieName: Symbol("sessionCookieName"),
+    sessionCookieName: "sessionCookieName",
   };
 
   const sessionId = "sessionId";

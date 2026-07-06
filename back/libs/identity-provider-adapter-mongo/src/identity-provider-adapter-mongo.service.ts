@@ -198,15 +198,19 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
       federationServerMetadata: {} as FederationServerMetadata,
     };
 
-    Object.entries(result).forEach(([key, value]) => {
-      if (CLIENT_METADATA.includes(key as (typeof CLIENT_METADATA)[number])) {
-        panvaFormatted.federationClientMetadata[key] = value;
-      } else if (IDP_METADATA.includes(key as (typeof IDP_METADATA)[number])) {
-        panvaFormatted.federationServerMetadata[key] = value;
-      } else {
-        panvaFormatted[key] = value;
-      }
-    });
+    Object.entries(result as Record<string, unknown>).forEach(
+      ([key, value]) => {
+        if (CLIENT_METADATA.includes(key as (typeof CLIENT_METADATA)[number])) {
+          panvaFormatted.federationClientMetadata[key] = value as any;
+        } else if (
+          IDP_METADATA.includes(key as (typeof IDP_METADATA)[number])
+        ) {
+          panvaFormatted.federationServerMetadata[key] = value as any;
+        } else {
+          (panvaFormatted as Record<string, unknown>)[key] = value;
+        }
+      },
+    );
 
     return panvaFormatted as IdentityProviderMetadata;
   }
