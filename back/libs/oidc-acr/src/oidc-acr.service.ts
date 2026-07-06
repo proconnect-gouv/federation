@@ -25,7 +25,7 @@ export class OidcAcrService {
   }: Pick<UserSession, "idpAcr" | "spEssentialAcr">): string | undefined {
     if (
       !isEmpty(spEssentialAcr) &&
-      !spEssentialAcr.split(" ").includes(idpAcr)
+      !(spEssentialAcr as string).split(" ").includes(idpAcr as string)
     ) {
       return undefined;
     }
@@ -33,7 +33,7 @@ export class OidcAcrService {
     const { supportedAcrValues } =
       this.config.get<OidcProviderConfig>("OidcProvider");
 
-    if (!Array.from(supportedAcrValues).includes(idpAcr)) {
+    if (!Array.from(supportedAcrValues ?? []).includes(idpAcr as string)) {
       // If the IdP's ACR value is not supported, fallback to 'eidas1'
       // Note: Some IdPs, especially from Fonction Publique Territoriale, may use lower ACRs
       return "eidas1";
@@ -62,7 +62,7 @@ export class OidcAcrService {
     const { supportedAcrValues } =
       this.config.get<OidcProviderConfig>("OidcProvider");
 
-    return intersection(acrValuesAsArray, Array.from(supportedAcrValues));
+    return intersection(acrValuesAsArray, Array.from(supportedAcrValues ?? []));
   }
 
   isEssentialAcrSatisfied({

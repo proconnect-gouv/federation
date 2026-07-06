@@ -7,10 +7,10 @@ import { IsArray, IsIn, IsNumber, IsOptional, IsString } from "class-validator";
 export class RabbitmqConfig {
   @IsArray()
   // @IsUrl()
-  readonly urls: string[];
+  readonly urls!: string[];
 
   @IsString()
-  readonly queue: string;
+  readonly queue!: string;
 
   /**
    * @TODO #147 Validate options (hard coded)
@@ -51,8 +51,8 @@ export class RabbitmqConfig {
     "hex",
   ])
   @IsString()
-  readonly payloadEncoding: BufferEncoding;
+  readonly payloadEncoding!: BufferEncoding;
 
   @IsNumber()
-  readonly requestTimeout: number;
+  readonly requestTimeout!: number;
 }

@@ -124,7 +124,7 @@ describe("OidcProviderConfigService", () => {
       } as unknown as KoaContextWithOIDC;
 
       // When
-      service["postLogoutSuccessSource"](ctx);
+      service["postLogoutSuccessSource"]!(ctx);
 
       // Then
       expect(renderMock).toHaveBeenCalledOnce();
@@ -134,7 +134,7 @@ describe("OidcProviderConfigService", () => {
   describe("logoutSource", () => {
     it("should render logout page", () => {
       // When
-      service["logoutSource"](ctxMock, form);
+      service["logoutSource"]!(ctxMock, form);
 
       // Then
       expect(ctxMock.body).toBeDefined();
@@ -158,7 +158,7 @@ describe("OidcProviderConfigService", () => {
       });
 
       // When
-      const result = await service.findAccount(ctxMock, sub);
+      const result = await service.findAccount!(ctxMock, sub);
 
       // Then
       expect(sessionServiceMock.getAlias).toHaveBeenCalledWith(sub);
@@ -168,7 +168,7 @@ describe("OidcProviderConfigService", () => {
       });
 
       // Claims function test
-      const claims = await result.claims(
+      const claims = await result!.claims(
         "userinfo",
         "openid given_name family_name",
         {},
@@ -190,10 +190,12 @@ describe("OidcProviderConfigService", () => {
       const params = {
         error: "access_denied",
         error_description: "Not allowed",
-      } as unknown as Parameters<OidcProviderConfigService["renderError"]>[1];
+      } as unknown as Parameters<
+        NonNullable<OidcProviderConfigService["renderError"]>
+      >[1];
 
       // When
-      await service.renderError(ctx, params, new Error("boom"));
+      await service.renderError!(ctx, params, new Error("boom"));
 
       // Then
       expect(ctx).toHaveProperty("type", "html");

@@ -13,7 +13,7 @@ import {
 } from "./oidc-provider-redis.adapter";
 
 describe("OidcProviderRedisAdapter", () => {
-  let adapter;
+  let adapter: any;
 
   const loggerMock = getLoggerMock() as unknown as LoggerService;
   const redisMock = getRedisServiceMock();
@@ -279,7 +279,10 @@ describe("OidcProviderRedisAdapter", () => {
   describe("saveKey", () => {
     it("should throw if JSON.stringiy fails", () => {
       // Given
-      const payload = { foo: "bar", circularRef: null };
+      const payload: { foo: string; circularRef: any } = {
+        foo: "bar",
+        circularRef: null,
+      };
       const keyMock = "foo";
       payload.circularRef = payload;
       // Then

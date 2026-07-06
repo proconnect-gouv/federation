@@ -93,7 +93,7 @@ describe("Identity Provider (Data Transfer Object)", () => {
         id_token_signed_response_alg: "HS512",
         userinfo_signed_response_alg: "HS512",
       });
-      delete dto.jwksURL;
+      delete (dto as Record<string, unknown>).jwksURL;
 
       // When | Action
       const result = await validateDto(

@@ -25,7 +25,7 @@ const configServiceMock = getConfigMock();
 @Schema()
 class Cat extends Document {
   @Prop()
-  name: string;
+  name!: string;
 }
 const CatSchema = SchemaFactory.createForClass(Cat);
 
@@ -67,7 +67,7 @@ describe("MongooseProvider with MongoMemoryReplSet", () => {
           watcherDebounceWaitDuration: 0,
         },
       },
-      get(path) {
+      get(path: string) {
         return get(this.configuration, path);
       },
     };
@@ -129,7 +129,7 @@ describe("MongooseProvider with MongoMemoryReplSet", () => {
           watcherDebounceWaitDuration: 0,
         },
       },
-      get(path) {
+      get(path: string) {
         return get(this.configuration, path);
       },
     };

@@ -13,7 +13,11 @@ describe("getDefaultContactHref", () => {
 
   it("should render href without params", () => {
     // When
-    const input = { code: null, id: null, message: null };
+    const input = { code: null, id: null, message: null } as unknown as {
+      code: string;
+      id: string;
+      message: string;
+    };
 
     const defaultContactHref = getDefaultContactHref(input);
 

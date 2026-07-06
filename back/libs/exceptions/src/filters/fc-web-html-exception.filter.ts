@@ -86,8 +86,8 @@ export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException>
     const { urlPrefix } = this.config.get<AppConfig>("App");
     const interactionErrorUrl = `${urlPrefix}${Routes.INTERACTION_ERROR.replace(
       ":uid",
-      interactionId,
-    )}?error=${encodeURIComponent(exception.error)}&error_description=${encodeURIComponent(exception.error_description)}`;
+      interactionId!,
+    )}?error=${encodeURIComponent(exception.error ?? "")}&error_description=${encodeURIComponent(exception.error_description ?? "")}`;
 
     const errorPageParams: ErrorPageParams = {
       error,

@@ -13,8 +13,11 @@ const falsy = ["False", "false", "off", "0", false, 0];
  * This helper function is used to cast data from process.env in config files.
  */
 export function parseBoolean(
-  property: number | boolean | string,
+  property: number | boolean | string | undefined,
 ): boolean | undefined {
+  if (property === undefined) {
+    return undefined;
+  }
   if (truthy.includes(property)) {
     return true;
   } else if (falsy.includes(property)) {

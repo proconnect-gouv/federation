@@ -24,7 +24,7 @@ export class SessionService {
   get<T>(moduleName?: string): T;
   get<T>(moduleName: string, key: keyof T): T[keyof T];
   get<T>(moduleName?: string, key?: keyof T): T | T[keyof T] {
-    return this.localStorage.get<T>(moduleName, key);
+    return this.localStorage.get<T>(moduleName!, key!);
   }
 
   set(moduleName: string, keyOrData: string | object, data?: unknown): void {

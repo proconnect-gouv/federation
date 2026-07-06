@@ -34,7 +34,7 @@ export class SessionBackendStorageService {
 
     let serializedSession: string;
     try {
-      serializedSession = await this.redis.client.get(sessionKey);
+      serializedSession = (await this.redis.client.get(sessionKey)) as string;
     } catch {
       throw new SessionStorageException();
     }
@@ -98,7 +98,7 @@ export class SessionBackendStorageService {
      * ioredis uses an old school asynchrone with callback convention,
      * the promise returns an array where the first element is the error or null on success.
      */
-    const [error] = await multi.exec();
+    const [error] = (await multi.exec()) ?? [];
 
     return !error;
   }
@@ -162,7 +162,8 @@ export class SessionBackendStorageService {
     multi.set(alias, sessionId);
     multi.expire(alias, lifetime);
 
-    const result: RedisQueryResult[] = await multi.exec();
+    const result: RedisQueryResult[] =
+      (await multi.exec()) as RedisQueryResult[];
 
     return result;
   }
@@ -177,6 +178,6 @@ export class SessionBackendStorageService {
       throw new SessionAliasNotFoundException();
     }
 
-    return value;
+    return value as string;
   }
 }

@@ -107,7 +107,7 @@ describe("SessionBackendStorageService", () => {
     beforeEach(() => {
       service["getSessionKey"] = jest.fn().mockReturnValue(sessionKey);
       service["deserialize"] = jest.fn().mockReturnValue(deserializedData);
-      service["validate"] = jest.fn();
+      (service as any)["validate"] = jest.fn();
     });
 
     it("should call getSessionKey()", async () => {

@@ -19,7 +19,7 @@ export class SessionLocalStorageService {
     if (!store) {
       return {
         data: {},
-        id: undefined,
+        id: undefined as unknown as string,
         sync: false,
       };
     }
@@ -78,7 +78,7 @@ export class SessionLocalStorageService {
    */
   private setByKey(
     moduleName: string,
-    session: object,
+    session: Record<string, any>,
     key: string,
     data: unknown,
   ): void {
@@ -93,7 +93,11 @@ export class SessionLocalStorageService {
    * Deep clones the input before assignation
    * to avoid later mutations to affect the session
    */
-  private setModule(moduleName: string, session: object, data: object): void {
+  private setModule(
+    moduleName: string,
+    session: Record<string, any>,
+    data: object,
+  ): void {
     session[moduleName] = {
       ...session[moduleName],
       ...cloneDeep(data),

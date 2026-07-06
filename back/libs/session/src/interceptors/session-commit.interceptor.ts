@@ -73,6 +73,8 @@ export class SessionCommitInterceptor implements NestInterceptor {
   }
 
   private getCleanedUpRoutes(routes: (string | RouteInfo)[]): string[] {
-    return routes.map((route: string) => route.replace("$", ""));
+    return routes.map((route: string | RouteInfo) =>
+      (route as string).replace("$", ""),
+    );
   }
 }

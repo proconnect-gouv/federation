@@ -1,7 +1,6 @@
 import { HttpStatus } from "@nestjs/common";
 import ejs from "ejs";
 import fs from "fs";
-import glob from "glob";
 import { format } from "prettier";
 import { BaseException } from "../../exceptions";
 import { ExceptionClass } from "../../types";
@@ -253,19 +252,19 @@ describe("Runner", () => {
   describe("renderFile", () => {
     // Given
     const file = "none.file";
-    const dataMock = [];
+    const dataMock: unknown[] = [];
     const renderFileResult = [Symbol("renderFileResult")];
 
     const renderFileMockErrorImplementation = (
       _a: string,
       _b: unknown,
-      callback,
-    ) => callback("error");
+      callback: (err: Error | null, str: unknown) => void,
+    ) => callback("error" as unknown as Error, undefined);
 
     const renderFileMockSuccesImplementation = (
       _a: string,
       _b: unknown,
-      callback,
+      callback: (err: Error | null, str: unknown) => void,
     ) => callback(null, renderFileResult);
 
     it("should reject the promise caused by invalid params", async () => {
@@ -341,7 +340,7 @@ describe("Runner", () => {
 
   describe("run", () => {
     // Given
-    const getExceptionsFilesPathResult = [];
+    const getExceptionsFilesPathResult: string[] = [];
     const loadExceptionsResult = [{ scope: 2 }, { scope: 4 }, { scope: 6 }];
     const markdownGenerateResult = [];
     const renderFileResult = "";

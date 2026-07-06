@@ -1,3 +1,4 @@
+// @ts-expect-error
 import policy from "../oidc-provider-support/policy";
 import { findUserById } from "../user-data";
 
@@ -54,8 +55,8 @@ export default {
     {
       client_id,
       client_secret,
-      redirect_uris: JSON.parse(stringifiedRedirectUris),
-      post_logout_redirect_uris: JSON.parse(stringifiedPostLogoutRedirectUris),
+      redirect_uris: JSON.parse(stringifiedRedirectUris!),
+      post_logout_redirect_uris: JSON.parse(stringifiedPostLogoutRedirectUris!),
       scope,
       id_token_signed_response_alg,
       userinfo_signed_response_alg,
@@ -84,7 +85,7 @@ export default {
     rpInitiatedLogout: {
       enabled: true,
       // disable logout confirmation screen
-      logoutSource: (ctx, form) => {
+      logoutSource: (ctx: any, form: any) => {
         const csrfToken = /name="xsrf" value="([a-f0-9]*)"/.exec(form)![1];
 
         ctx.type = "html";
@@ -99,7 +100,7 @@ export default {
       },
     },
   },
-  findAccount: (_ctx, id) => {
+  findAccount: (_ctx: any, id: any) => {
     const user = findUserById(id);
 
     return {
@@ -108,7 +109,7 @@ export default {
     };
   },
   interactions: {
-    url(_ctx, interaction) {
+    url(_ctx: any, interaction: any) {
       return `/interaction/${interaction.uid}`;
     },
     policy,
@@ -137,7 +138,7 @@ export default {
       },
     ],
   },
-  loadExistingGrant: async (ctx) => {
+  loadExistingGrant: async (ctx: any) => {
     // We want to skip the consent
     // inspired from https://github.com/panva/node-oidc-provider/blob/main/recipes/skip_consent.md
     // We updated the function to ensure it always return a grant.

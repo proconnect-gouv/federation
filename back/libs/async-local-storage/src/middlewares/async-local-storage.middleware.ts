@@ -5,7 +5,9 @@ import { AsyncLocalStorageService } from "../async-local-storage.service";
 @Injectable()
 export class AsyncLocalStorageMiddleware implements NestMiddleware {
   constructor(
-    private readonly asyncLocalStorage: AsyncLocalStorageService<unknown>,
+    private readonly asyncLocalStorage: AsyncLocalStorageService<
+      Record<string, unknown>
+    >,
   ) {}
 
   use(_req: Request, _res: Response, next: NextFunction) {

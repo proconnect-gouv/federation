@@ -7,7 +7,7 @@ import { PLUGIN_SERVICES } from "./tokens";
 @Module({})
 export class LoggerModule {
   static forRoot(plugins: LoggerPluginInterface[] = []): DynamicModule {
-    const imports = [];
+    const imports: any[] = [];
 
     plugins.forEach((plugin) => {
       imports.push(...plugin.imports);

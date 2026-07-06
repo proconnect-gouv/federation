@@ -38,7 +38,7 @@ describe("RabbitmqModule", () => {
       const moduleNameMock = "Foobar";
       const module = RabbitmqModule.registerFor(moduleNameMock);
       // When
-      const result = module.providers[0] as any;
+      const result = module.providers![0] as any;
       // Then
       expect(result).toHaveProperty("provide");
       expect(result.provide).toBe("FoobarBroker");
@@ -48,7 +48,7 @@ describe("RabbitmqModule", () => {
       const moduleNameMock = "Foobar";
       const module = RabbitmqModule.registerFor(moduleNameMock);
       // When
-      const result = module.providers[0] as any;
+      const result = module.providers![0] as any;
       // Then
       expect(result).toHaveProperty("useFactory");
       expect(result.useFactory).toBeInstanceOf(Function);
@@ -60,7 +60,7 @@ describe("RabbitmqModule", () => {
         return {} as ClientProxy;
       });
       const module = RabbitmqModule.registerFor(moduleNameMock);
-      const provider = module.providers[0] as any;
+      const provider = module.providers![0] as any;
       // When
       provider.useFactory(loggerMock, configServiceMock);
       // Then

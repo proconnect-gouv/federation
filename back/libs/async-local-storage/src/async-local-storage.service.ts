@@ -8,7 +8,7 @@ import { AsyncLocalStorageNotFoundException } from "./exceptions";
  * Providing T will enforce the type of the data we want to store even with the `any` type.
  */
 export class AsyncLocalStorageService<T extends Record<string, any>> {
-  private storage: AsyncLocalStorage<Map<string, unknown>>;
+  private storage!: AsyncLocalStorage<Map<string, unknown>>;
 
   onModuleInit() {
     this.storage = new AsyncLocalStorage<Map<string, unknown>>();
@@ -47,7 +47,7 @@ export class AsyncLocalStorageService<T extends Record<string, any>> {
   set<K extends keyof T>(key: K, value: T[K]) {
     const currentStore = this.storage.getStore();
 
-    currentStore.set(key as string, value);
+    currentStore!.set(key as string, value);
   }
 
   private getStore(): Map<string, unknown> | undefined {

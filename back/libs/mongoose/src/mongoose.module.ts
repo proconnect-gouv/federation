@@ -29,7 +29,7 @@ export class MongooseModule {
     });
     return {
       ...mongoose,
-      imports: [...mongoose.imports, CqrsModule],
+      imports: [...(mongoose.imports ?? []), CqrsModule],
       providers: [
         EventBus,
         MongooseCollectionOperationWatcherHelper,
@@ -46,10 +46,13 @@ export class MongooseModule {
       ...mongoose,
       imports: [CqrsModule],
       providers: [
-        ...mongoose.providers,
+        ...(mongoose.providers ?? []),
         MongooseCollectionOperationWatcherHelper,
       ],
-      exports: [...mongoose.exports, MongooseCollectionOperationWatcherHelper],
+      exports: [
+        ...(mongoose.exports ?? []),
+        MongooseCollectionOperationWatcherHelper,
+      ],
     };
   }
 }

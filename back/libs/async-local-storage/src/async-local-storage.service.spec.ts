@@ -73,7 +73,7 @@ describe("AsyncLocalStorageService", () => {
     describe("mandatory", () => {
       it("should throw an AsyncLocalStorageNotFoundException if the storage is not found", () => {
         // Given
-        service["storage"] = undefined;
+        service["storage"] = undefined as any;
 
         // When / Then
         expect(() => service.mandatory).toThrowError(
@@ -192,7 +192,7 @@ describe("AsyncLocalStorageService", () => {
 
       it("should return undefined if the storage is not found", () => {
         // Given
-        service["storage"] = undefined;
+        service["storage"] = undefined as any;
 
         // When
         const result = service["getStore"]();

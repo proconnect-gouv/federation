@@ -8,13 +8,13 @@ import { v4 as uuid } from "uuid";
 })
 class IdpIdentityKey {
   @Prop({ type: String })
-  idpSub: string;
+  idpSub!: string;
 
   @Prop({ type: String })
-  idpUid: string;
+  idpUid!: string;
 
   @Prop({ type: String })
-  idpMail: string;
+  idpMail!: string;
 }
 
 @Schema({
@@ -27,22 +27,22 @@ export class AccountFca extends Document {
    * Timestamping
    */
   @Prop({ type: Date, default: Date.now })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Prop({ type: String, default: uuid })
   declare id: string;
 
   @Prop({ type: Date, default: Date.now })
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Prop({ type: Date, default: Date.now })
-  lastConnection: Date;
+  lastConnection!: Date;
 
   /**
    * Unique sub generated from uuid
    */
   @Prop({ type: String, unique: true })
-  sub: string;
+  sub!: string;
 
   /**
    * List of identity keys for each associtated idp
@@ -51,13 +51,13 @@ export class AccountFca extends Document {
   @Prop({
     type: [IdpIdentityKey],
   })
-  idpIdentityKeys: IdpIdentityKey[];
+  idpIdentityKeys!: IdpIdentityKey[];
 
   /**
    * Active === true means it is not blocked by AC
    */
   @Prop({ type: Boolean, default: true })
-  active: boolean;
+  active!: boolean;
 }
 
 const AccountFcaSchema = SchemaFactory.createForClass(AccountFca);

@@ -81,10 +81,10 @@ export class CoreFcaService {
   async ensureIdpCanServeThisEmail(
     idpId: string,
     email: string,
-  ): Promise<boolean> {
+  ): Promise<void> {
     const identityProvider = await this.identityProvider.getById(idpId);
 
-    const emailFqdn = this.identityProvider.getFqdnFromEmail(email);
+    const emailFqdn = this.identityProvider.getFqdnFromEmail(email)!;
 
     if (identityProvider.fqdns?.includes(emailFqdn)) {
       return;

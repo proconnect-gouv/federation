@@ -8,15 +8,15 @@ export class HyyyperbridgeCsmrException extends HyyyperbridgeBaseException {
   public error_description =
     "authentication aborted due to a technical error on the authorization server";
 
-  public reference: string;
-  public name: string;
-  public reason: string;
+  public reference!: string;
+  public name!: string;
+  public reason!: string;
 
   from(error: HyyyperbridgeErrorDto) {
     const { code: reference, name, reason } = error;
-    this.reference = reference;
-    this.name = name;
-    this.reason = reason;
+    this.reference = reference as string;
+    this.name = name as string;
+    this.reason = reason as string;
     return this;
   }
 }

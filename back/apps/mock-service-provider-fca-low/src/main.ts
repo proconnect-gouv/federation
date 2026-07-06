@@ -21,15 +21,15 @@ declare module "express-session" {
 }
 
 const HOST = `https://${process.env.FQDN}`;
-const PORT = parseInt(process.env.PORT, 10) || 3000;
+const PORT = parseInt(process.env.PORT!, 10) || 3000;
 const SITE_TITLE = process.env.APP_NAME;
 const STYLESHEET_URL =
   process.env.STYLESHEET_URL || "https://unpkg.com/bamboo.css";
 const CALLBACK_URL = "/oidc-callback";
 const PC_CLIENT_ID = process.env.IdentityProviderAdapterEnv_CLIENT_ID;
 const PC_CLIENT_SECRET = decrypt(
-  process.env.IdentityProviderAdapterEnv_CLIENT_SECRET,
-  process.env.IdentityProviderAdapterEnv_CLIENT_SECRET_CIPHER_PASS,
+  process.env.IdentityProviderAdapterEnv_CLIENT_SECRET!,
+  process.env.IdentityProviderAdapterEnv_CLIENT_SECRET_CIPHER_PASS!,
 );
 const PC_PROVIDER = process.env.IdentityProviderAdapterEnv_DISCOVERY_URL;
 const PC_SCOPES =
@@ -40,7 +40,7 @@ const PC_ID_TOKEN_SIGNED_RESPONSE_ALG =
 const PC_USERINFO_SIGNED_RESPONSE_ALG =
   process.env.IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG;
 const dataProviderConfigs: { name: string; url: string }[] = JSON.parse(
-  process.env.App_DATA_APIS,
+  process.env.App_DATA_APIS!,
 );
 const ACR_VALUES_FOR_2FA =
   process.env.ACR_VALUES_FOR_2FA ||
@@ -59,7 +59,7 @@ app.use(
 );
 app.enable("trust proxy");
 
-const objToUrlParams = (obj) =>
+const objToUrlParams = (obj: any) =>
   new URLSearchParams(
     chain(obj)
       .omitBy((v) => !v)
@@ -67,16 +67,17 @@ const objToUrlParams = (obj) =>
       .value(),
   );
 
-const getCurrentUrl = (req) =>
+const getCurrentUrl = (req: any) =>
   new URL(`${req.protocol}://${req.get("host")}${req.originalUrl}`);
 
 const getProviderConfig = async () => {
   const config = await client.discovery(
-    new URL(PC_PROVIDER),
-    PC_CLIENT_ID,
+    new URL(PC_PROVIDER!),
+    PC_CLIENT_ID!,
     {
       id_token_signed_response_alg: PC_ID_TOKEN_SIGNED_RESPONSE_ALG,
-      userinfo_signed_response_alg: PC_USERINFO_SIGNED_RESPONSE_ALG || null,
+      userinfo_signed_response_alg:
+        PC_USERINFO_SIGNED_RESPONSE_ALG || undefined,
     },
     client.ClientSecretPost(PC_CLIENT_SECRET),
   );
@@ -111,7 +112,7 @@ app.get("/", (req, res, next) => {
 });
 
 const getAuthorizationControllerFactory = (extraParams: any = {}) => {
-  return async (req, res, next) => {
+  return async (req: any, res: any, next: any) => {
     try {
       const config = await getProviderConfig();
       const nonce = client.randomNonce();
@@ -170,10 +171,10 @@ app.get(CALLBACK_URL, async (req, res, next) => {
       pkceCodeVerifier: req.session.code_verifier,
     });
 
-    req.session.nonce = null;
-    req.session.state = null;
-    req.session.code_verifier = null;
-    const claims = tokens.claims();
+    req.session.nonce = undefined;
+    req.session.state = undefined;
+    req.session.code_verifier = undefined;
+    const claims = tokens.claims()!;
     req.session.userinfo = await client.fetchUserInfo(
       config,
       tokens.access_token,
@@ -199,7 +200,7 @@ app.post(
       const config = await getProviderConfig();
       const paramObject = {
         id_token_hint,
-        post_logout_redirect_uri: null,
+        post_logout_redirect_uri: null as string | null,
       };
       if (req.body?.no_redirect !== "true") {
         paramObject.post_logout_redirect_uri = `${HOST}/`;

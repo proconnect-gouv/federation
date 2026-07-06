@@ -17,7 +17,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
-import { type Request, type Response } from "express";
+import type { Request, Response } from "express";
 import { isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
 import {

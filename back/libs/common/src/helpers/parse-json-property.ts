@@ -17,10 +17,10 @@ export function parseJsonProperty(
   }
 
   try {
-    return JSON.parse(input[propertyName]);
+    return JSON.parse((input as Record<string, string>)[propertyName]);
   } catch {
     throw TypeError(
-      `property "${propertyName}" is not JSON parsable, value was: ${input[propertyName]}`,
+      `property "${propertyName}" is not JSON parsable, value was: ${(input as Record<string, string>)[propertyName]}`,
     );
   }
 }

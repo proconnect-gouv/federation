@@ -16,7 +16,7 @@ import { ServiceProvider } from "./schemas";
 
 @Injectable()
 export class ServiceProviderAdapterMongoService implements IServiceProviderAdapter {
-  private listCache: ServiceProviderMetadata[];
+  private listCache!: ServiceProviderMetadata[];
 
   constructor(
     @InjectModel("ServiceProvider")
@@ -79,7 +79,9 @@ export class ServiceProviderAdapterMongoService implements IServiceProviderAdapt
     if (refreshCache || !this.listCache) {
       const allServiceProviders = await this.findAllServiceProvider();
       this.listCache = allServiceProviders.map((serviceProvider) =>
-        this.legacyToOpenIdPropertyName(serviceProvider),
+        this.legacyToOpenIdPropertyName(
+          serviceProvider as unknown as ServiceProvider,
+        ),
       );
     }
 
@@ -93,7 +95,7 @@ export class ServiceProviderAdapterMongoService implements IServiceProviderAdapt
     const list = await this.getList(refreshCache);
     const serviceProvider: ServiceProviderMetadata = list.find(
       ({ client_id: dbId }) => dbId === spId,
-    );
+    ) as ServiceProviderMetadata;
 
     return serviceProvider;
   }
@@ -112,8 +114,8 @@ export class ServiceProviderAdapterMongoService implements IServiceProviderAdapt
       scope,
     };
 
-    delete result.key;
-    delete result.scopes;
+    delete (result as Record<string, unknown>).key;
+    delete (result as Record<string, unknown>).scopes;
 
     return result as ServiceProviderMetadata;
   }
