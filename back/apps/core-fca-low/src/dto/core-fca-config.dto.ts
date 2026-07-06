@@ -3,6 +3,7 @@ import { EmailValidatorConfig } from "@fc/email-validator/dto";
 import { ExceptionsConfig } from "@fc/exceptions/dto";
 import { IdentityProviderAdapterMongoConfig } from "@fc/identity-provider-adapter-mongo";
 import { LoggerConfig } from "@fc/logger";
+import { MailerConfig } from "@fc/mailer/dto";
 import { MongooseConfig } from "@fc/mongoose";
 import { OidcClientConfig } from "@fc/oidc-client";
 import { OidcProviderConfig } from "@fc/oidc-provider";
@@ -54,6 +55,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => OidcClientConfig)
   readonly OidcClient: OidcClientConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => MailerConfig)
+  readonly Mailer!: MailerConfig;
 
   @IsObject()
   @ValidateNested()
