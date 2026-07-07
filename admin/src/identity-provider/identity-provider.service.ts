@@ -212,6 +212,8 @@ export class IdentityProviderService {
       isBlockingForUnlistedEmailDomainsEnabled:
         identityProviderDto.isBlockingForUnlistedEmailDomainsEnabled,
       useTheHyyyperbridge: identityProviderDto.useTheHyyyperbridge,
+      isMfaCompliant: identityProviderDto.isMfaCompliant,
+      mfaComplianceNote: identityProviderDto.mfaComplianceNote,
     };
 
     if (mode === "create") {
@@ -265,6 +267,8 @@ export class IdentityProviderService {
       isBlockingForUnlistedEmailDomainsEnabled:
         inputProvider.isBlockingForUnlistedEmailDomainsEnabled,
       useTheHyyyperbridge: inputProvider.useTheHyyyperbridge,
+      isMfaCompliant: inputProvider.isMfaCompliant,
+      mfaComplianceNote: inputProvider.mfaComplianceNote,
     };
   }
 
