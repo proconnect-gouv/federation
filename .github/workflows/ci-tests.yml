@@ -21,7 +21,7 @@ jobs:
         with:
           cache: yarn
           cache-dependency-path: ./back/yarn.lock
-          node-version-file: ./back/package.json
+          node-version-file: ./back/.nvmrc
 
       - name: Install dependencies
         run: yarn install --ignore-engines --frozen-lockfile --no-progress
@@ -51,7 +51,7 @@ jobs:
         with:
           cache: yarn
           cache-dependency-path: ./back/yarn.lock
-          node-version-file: ./back/package.json
+          node-version-file: ./back/.nvmrc
 
       - name: Install quality dependencies
         run: yarn install --frozen-lockfile --no-progress
@@ -73,7 +73,7 @@ jobs:
         with:
           cache: yarn
           cache-dependency-path: ./back/yarn.lock
-          node-version-file: ./back/package.json
+          node-version-file: ./back/.nvmrc
 
       - name: Install dependencies
         run: yarn install --ignore-engines --frozen-lockfile --no-progress

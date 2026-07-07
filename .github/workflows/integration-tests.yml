@@ -16,7 +16,7 @@ jobs:
         with:
           cache: yarn
           cache-dependency-path: ./back/yarn.lock
-          node-version-file: ./back/package.json
+          node-version-file: ./back/.nvmrc
 
       - name: Install dependencies
         working-directory: ./quality
