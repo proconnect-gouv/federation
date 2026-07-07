@@ -557,6 +557,7 @@ describe("OidcClientService", () => {
   });
 
   describe("getAuthorizationUrl", () => {
+    const authorizationParams = { login_hint: "test@yopmail.com" };
     beforeEach(() => {
       identityProviderMock.getById.mockResolvedValue(idpMock);
       (openidClient.discovery as jest.Mock).mockResolvedValue({});
@@ -572,7 +573,10 @@ describe("OidcClientService", () => {
 
     it("should return authorization URL with nonce and state", async () => {
       // When
-      const result = await service.getAuthorizationUrl("idp-id", {});
+      const result = await service.getAuthorizationUrl(
+        "idp-id",
+        authorizationParams,
+      );
 
       // Then
       expect(result).toEqual({
@@ -582,6 +586,42 @@ describe("OidcClientService", () => {
         idpName: idpMock.name,
         idpLabel: idpMock.title,
       });
+    });
+
+    it("should not filter out mfa acr values if the idp is not compliant but the e-mail ends with +mfa", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isMfaCompliant: false,
+      });
+      configServiceMock.get.mockReturnValue({
+        acrValuesForMfa: ["eidas0-mfa", "eidas1-mfa", "eidas2", "eidas3"],
+        redirectUri: "https://rp.test/callback",
+        idpMfaComplianceForcingEmailSuffix: "+mfa",
+      });
+      jest.spyOn(OidcClientService, "objToUrlParams");
+
+      // When
+      await service.getAuthorizationUrl("idp-id", {
+        ...authorizationParams,
+        login_hint: "test+mfa@yopmail.com",
+        claims: {
+          id_token: {
+            acr: { essential: true, values: ["eidas0", "eidas0-mfa"] },
+          },
+        },
+      });
+
+      // Then
+      expect(OidcClientService.objToUrlParams).toHaveBeenCalledWith(
+        expect.objectContaining({
+          claims: {
+            id_token: {
+              acr: { essential: true, values: ["eidas0", "eidas0-mfa"] },
+            },
+          },
+        }),
+      );
     });
 
     it("should filter out mfa acr values if the idp is not compliant and there are other acr values requested", async () => {
@@ -598,6 +638,7 @@ describe("OidcClientService", () => {
 
       // When
       await service.getAuthorizationUrl("idp-id", {
+        ...authorizationParams,
         claims: {
           id_token: {
             acr: { essential: true, values: ["eidas0", "eidas0-mfa"] },
@@ -629,6 +670,7 @@ describe("OidcClientService", () => {
 
       // When
       await service.getAuthorizationUrl("idp-id", {
+        ...authorizationParams,
         claims: {
           id_token: {
             acr: { essential: true, value: "eidas0-mfa" },
@@ -655,6 +697,7 @@ describe("OidcClientService", () => {
 
       // When
       await service.getAuthorizationUrl("idp-id", {
+        ...authorizationParams,
         claims: { test: "value" },
       });
 
@@ -664,7 +707,10 @@ describe("OidcClientService", () => {
 
     it("should merge custom params with default params", async () => {
       // When
-      await service.getAuthorizationUrl("idp-id", { acr_values: "eidas3" });
+      await service.getAuthorizationUrl("idp-id", {
+        ...authorizationParams,
+        acr_values: "eidas3",
+      });
 
       // Then
       expect(openidClient.buildAuthorizationUrl).toHaveBeenCalled();
