@@ -31,7 +31,7 @@ export class OidcProviderConfig {
   readonly jwks: Configuration["jwks"];
 
   @IsNumber()
-  readonly timeout: ReturnType<Configuration["httpOptions"]>["timeout"];
+  readonly timeout: number;
 
   @IsArray()
   @IsEnum(OidcProviderPrompt, { each: true })

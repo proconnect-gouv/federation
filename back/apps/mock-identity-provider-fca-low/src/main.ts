@@ -2,7 +2,7 @@ import express, { urlencoded } from "express";
 import { get } from "lodash";
 import { strict as assert } from "node:assert";
 import path from "node:path";
-import Provider from "oidc-provider-v8";
+import Provider from "oidc-provider";
 import configuration from "./oidc-provider-support/configuration";
 import MemoryAdapter from "./oidc-provider-support/memory_adapter.js";
 import { createUser, getDefaultUser, parseFormDataValue } from "./user-data";
@@ -33,7 +33,7 @@ app.get("/interaction/:uid", async (req, res, next) => {
       res,
     );
 
-    const client = await provider.Client.find(params.client_id);
+    const client = await provider.Client.find(params.client_id as string);
 
     const defaultUser = getDefaultUser();
 
@@ -47,7 +47,7 @@ app.get("/interaction/:uid", async (req, res, next) => {
         acr:
           get(prompt.details, "acr.value") ||
           get(prompt.details, "acr.values.0") ||
-          params?.acr_values?.split(" ")[0] ||
+          (params?.acr_values as string | undefined)?.split(" ")[0] ||
           "eidas1",
         amr: "pwd",
         debugInfo: JSON.stringify(

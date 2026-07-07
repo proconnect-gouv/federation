@@ -1,3 +1,4 @@
+import type { Configuration } from "oidc-provider";
 import policy from "../oidc-provider-support/policy";
 import { findUserById } from "../user-data";
 
@@ -182,4 +183,4 @@ export default {
     return grant;
   },
   pkce: { required: () => false },
-};
+} as Configuration;

@@ -219,7 +219,10 @@ Then(
 Then(
   "la description de l'erreur fournisseur de service est {string}",
   function (errorDescription: string) {
-    cy.url().should("include", `error_description=${errorDescription}`);
+    cy.url().then((url) => {
+      const actual = new URL(url).searchParams.get("error_description");
+      expect(actual).to.equal(decodeURIComponent(errorDescription));
+    });
   },
 );
 

@@ -128,7 +128,7 @@ export class OidcProviderConfigService {
         requestObjectEncryptionAlgValues: ["ECDH-ES", "RSA-OAEP"],
         requestObjectEncryptionEncValues: ["A256GCM"],
         requestObjectSigningAlgValues: ["ES256", "RS256", "HS256"],
-        tokenEndpointAuthSigningAlgValues: ["ES256", "RS256"],
+        clientAuthSigningAlgValues: ["ES256", "RS256"],
         userinfoEncryptionAlgValues: ["ECDH-ES", "RSA-OAEP"],
         userinfoEncryptionEncValues: ["A256GCM"],
         userinfoSigningAlgValues: ["ES256", "RS256", "HS256"],
@@ -139,7 +139,7 @@ export class OidcProviderConfigService {
         encryption: { enabled: true },
         introspection: { enabled: true },
         jwtUserinfo: { enabled: true },
-        jwtIntrospection: { enabled: true, ack: "draft-10" },
+        jwtIntrospection: { enabled: true },
         backchannelLogout: { enabled: false },
         revocation: { enabled: true },
         rpInitiatedLogout: {
@@ -151,7 +151,7 @@ export class OidcProviderConfigService {
         resourceIndicators: { enabled: false },
       },
       findAccount: this.findAccount,
-      httpOptions: (_url) => ({ timeout }),
+      httpOptions: (_url) => ({ signal: AbortSignal.timeout(timeout) }),
       interactions: { url },
       issueRefreshToken: () => true,
       jwks,
@@ -165,7 +165,7 @@ export class OidcProviderConfigService {
       routes,
       scopes: ["openid"],
       subjectTypes: ["public"],
-      tokenEndpointAuthMethods: ["client_secret_post", "private_key_jwt"],
+      clientAuthMethods: ["client_secret_post", "private_key_jwt"],
       ttl: {
         // default values can be found in the documentation
         // https://github.com/panva/node-oidc-provider/blob/v8.x/docs/README.md#ttl

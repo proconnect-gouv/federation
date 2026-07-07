@@ -1,5 +1,4 @@
-ARG NODE_VERSION=24.16.0
-ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
+ARG NODE_IMAGE=node:24.18.0-alpine
 
 FROM ${NODE_IMAGE} AS dev_dependencies
 
@@ -8,7 +7,7 @@ WORKDIR /var/www/app
 COPY package.json yarn.lock ./
 RUN --mount=type=cache,target=/usr/local/share/.cache,id=back-yarn-cache,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
-    yarn install --ignore-engines --immutable
+    yarn install --immutable
 
 FROM ${NODE_IMAGE} AS dependencies
 
@@ -17,7 +16,7 @@ WORKDIR /var/www/app
 COPY package.json yarn.lock ./
 RUN --mount=type=cache,target=/usr/local/share/.cache,id=back-yarn-cache,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
-    yarn install --ignore-engines --immutable --production
+    yarn install --immutable --production
 
 FROM ${NODE_IMAGE} AS migrator
 
