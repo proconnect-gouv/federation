@@ -170,6 +170,7 @@ export class OidcProviderConfigService {
       ttl: {
         // default values can be found in the documentation
         // https://github.com/panva/node-oidc-provider/blob/v8.x/docs/README.md#ttl
+        AuthorizationCode: 600, // 10 minute in seconds
         Grant: sessionLifetime,
         Session: sessionLifetime,
         RefreshToken: function RefreshTokenTTL(ctx, token, client) {
