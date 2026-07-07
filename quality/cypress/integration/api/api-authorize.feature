@@ -136,7 +136,7 @@ Scénario: API authorize - Cas nominal avec response_mode (ignoré)
 
     Exemples:
       | responseType | error                     | errorDescription                    |
-      |              | invalid_request           | missing required parameter          |
+      |              | invalid_request           | missing required parameter 'response_type' |
       | inconnu      | unsupported_response_type | unsupported response_type requested |
 
   # D'après la spécification si response_type contient token ou id_token,
