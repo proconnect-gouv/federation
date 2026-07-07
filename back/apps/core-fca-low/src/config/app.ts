@@ -20,8 +20,8 @@ const appConfig: AppConfig = {
   defaultEmailRenater: env.string("DEFAULT_EMAIL_RENATER"),
   contentSecurityPolicy: {
     defaultSrc: ["'self'"],
-    styleSrc: ["'self'", "'unsafe-inline'"],
-    scriptSrc: ["'self'", "stats.data.gouv.fr", "'unsafe-inline'", "blob:"],
+    styleSrc: ["'self'"],
+    scriptSrc: ["'self'", "stats.data.gouv.fr", "blob:"],
     connectSrc: ["'self'", "stats.data.gouv.fr"],
     frameAncestors: [],
     imgSrc: ["'self'", "data:", "stats.data.gouv.fr"],
