@@ -19,10 +19,6 @@ export class ContentSecurityPolicy {
 
   @IsArray()
   @IsString({ each: true })
-  frameSrc: string[];
-
-  @IsArray()
-  @IsString({ each: true })
   frameAncestors: string[];
 
   @IsArray()
