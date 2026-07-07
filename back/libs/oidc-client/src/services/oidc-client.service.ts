@@ -29,6 +29,7 @@ import {
 } from "openid-client";
 import { lastValueFrom, timeout } from "rxjs";
 
+import { AppConfig } from "@fc/core/dto";
 import {
   HyyyperbridgeEnveloppeDto,
   HyyyperbridgeErrorDto,
@@ -317,8 +318,12 @@ export class OidcClientService {
       },
       ...customParams,
     };
+    const isIdpConsideredMfaCompliant = this.computeIsConsideredMfaCompliant(
+      idp,
+      customParams.login_hint,
+    );
 
-    if (!isEmpty(acrClaims) && idp.isMfaCompliant) {
+    if (!isEmpty(acrClaims) && isIdpConsideredMfaCompliant) {
       params.claims.id_token.acr = acrClaims;
     } else if (!isEmpty(acrValues)) {
       params.acr_values = acrValues;
@@ -502,6 +507,23 @@ export class OidcClientService {
         error,
       );
     }
+  }
+
+  private computeIsConsideredMfaCompliant(
+    idp: IdentityProviderMetadata,
+    email: string | undefined,
+  ) {
+    if (!email) {
+      return idp.isMfaCompliant;
+    }
+    const { idpMfaComplianceForcingEmailSuffix } =
+      this.config.get<AppConfig>("App");
+    // we get the part before the last @ to check if it's a "passe-droit" email
+    const emailPrefix = email.substring(0, email.lastIndexOf("@"));
+    return (
+      idp.isMfaCompliant ||
+      emailPrefix.endsWith(idpMfaComplianceForcingEmailSuffix)
+    );
   }
 
   async getEndSessionUrl({

@@ -557,6 +557,7 @@ describe("OidcClientService", () => {
   });
 
   describe("getAuthorizationUrl", () => {
+    const authorizationParams = { login_hint: "test@yopmail.com" };
     beforeEach(() => {
       identityProviderMock.getById.mockResolvedValue(idpMock);
       (openidClient.discovery as jest.Mock).mockResolvedValue({});
@@ -578,7 +579,7 @@ describe("OidcClientService", () => {
           acrClaims: { essential: true, values: ["eidas1", "eidas2"] },
           acrValues: undefined,
         },
-        {},
+        authorizationParams,
       );
 
       // Then
@@ -589,6 +590,42 @@ describe("OidcClientService", () => {
         idpName: idpMock.name,
         idpLabel: idpMock.title,
       });
+    });
+
+    it("should not set the id_token acr requested claim to null if the idp is not compliant but the e-mail ends with +mfa", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isMfaCompliant: false,
+      });
+      configServiceMock.get.mockReturnValue({
+        acrValuesForMfa: ["eidas0-mfa", "eidas1-mfa", "eidas2", "eidas3"],
+        redirectUri: "https://rp.test/callback",
+        idpMfaComplianceForcingEmailSuffix: "+mfa",
+      });
+      jest.spyOn(OidcClientService, "objToUrlParams");
+
+      // When
+      await service.getAuthorizationUrl(
+        "idp-id",
+        {
+          acrClaims: { essential: true, values: ["eidas0", "eidas0-mfa"] },
+          acrValues: undefined,
+        },
+        { login_hint: "test+mfa@yopmail.com" },
+      );
+
+      // Then
+      expect(OidcClientService.objToUrlParams).toHaveBeenCalledWith(
+        expect.objectContaining({
+          claims: {
+            id_token: {
+              acr: { essential: true, values: ["eidas0", "eidas0-mfa"] },
+              amr: null,
+            },
+          },
+        }),
+      );
     });
 
     it("should set the id_token acr requested claim to null if the idp is not compliant", async () => {
@@ -625,6 +662,40 @@ describe("OidcClientService", () => {
       );
     });
 
+    it("should remove the id_token acr requested claim if the idp is not compliant and there are no other acr values requested", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isMfaCompliant: false,
+      });
+      configServiceMock.get.mockReturnValue({
+        redirectUri: "https://rp.test/callback",
+      });
+      jest.spyOn(OidcClientService, "objToUrlParams");
+
+      // When
+      await service.getAuthorizationUrl(
+        "idp-id",
+        {
+          acrClaims: { essential: true, value: "eidas0-mfa" },
+          acrValues: undefined,
+        },
+        authorizationParams,
+      );
+
+      // Then
+      expect(OidcClientService.objToUrlParams).toHaveBeenCalledWith(
+        expect.objectContaining({
+          claims: {
+            id_token: {
+              acr: null,
+              amr: null,
+            },
+          },
+        }),
+      );
+    });
+
     it("should handle EntraID specific scope and remove claims", async () => {
       // Given
       identityProviderMock.getById.mockResolvedValue({
@@ -639,7 +710,7 @@ describe("OidcClientService", () => {
           acrClaims: { essential: true, values: ["foo"] },
           acrValues: undefined,
         },
-        {},
+        authorizationParams,
       );
 
       // Then
@@ -651,7 +722,7 @@ describe("OidcClientService", () => {
       await service.getAuthorizationUrl(
         "idp-id",
         { acrClaims: undefined, acrValues: "eidas3" },
-        {},
+        authorizationParams,
       );
 
       // Then

@@ -36,7 +36,10 @@ export class AppConfig extends AppGenericConfig {
   readonly supportEmail: string;
 
   @IsString()
-  readonly passeDroitEmailSuffix: string;
+  readonly idpRoutingForcingEmailSuffix: string;
+
+  @IsString()
+  readonly idpMfaComplianceForcingEmailSuffix: string;
 
   @IsBoolean()
   @IsOptional()
