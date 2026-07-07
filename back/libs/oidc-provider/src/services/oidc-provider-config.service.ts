@@ -149,25 +149,7 @@ export class OidcProviderConfigService {
         },
         claimsParameter: { enabled: true },
         resourceIndicators: { enabled: false },
-        requestObjects: { request: true, requestUri: true },
-      },
-      discovery: {
-        introspection_endpoint_auth_methods_supported: [
-          "client_secret_post",
-          "private_key_jwt",
-        ],
-        introspection_endpoint_auth_signing_alg_values_supported: [
-          "ES256",
-          "RS256",
-        ],
-        revocation_endpoint_auth_methods_supported: [
-          "client_secret_post",
-          "private_key_jwt",
-        ],
-        revocation_endpoint_auth_signing_alg_values_supported: [
-          "ES256",
-          "RS256",
-        ],
+        requestObjects: { requestUri: true },
       },
       findAccount: this.findAccount,
       httpOptions: (_url) => ({ signal: AbortSignal.timeout(timeout) }),
