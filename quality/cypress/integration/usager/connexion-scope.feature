@@ -1,5 +1,5 @@
 #language: fr
-@k8s
+
 Fonctionnalité: Connexion Usager - Scope
 
   Plan du Scénario: Connexion d'un usager - scope <scopeType>

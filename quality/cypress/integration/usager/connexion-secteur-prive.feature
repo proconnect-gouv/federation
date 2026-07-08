@@ -17,8 +17,3 @@ Fonctionnalité: Connexion Partenaires
     Exemples:
       | spName         | idpName      |
       | FSA - FSA1-LOW | moncomptepro |
-
-    @k8s @ignoreInteg01 @ignoreDocker
-    Exemples:
-      | spName                   | idpName             |
-      | Fournisseur de service 1 | ProConnect Identité |

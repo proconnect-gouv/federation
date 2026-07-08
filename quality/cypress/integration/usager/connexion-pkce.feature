@@ -1,5 +1,4 @@
 #language: fr
-@k8s
 Fonctionnalité: Connexion Usager - PKCE
 
   Scénario: Authentification nominale avec PKCE

@@ -1,5 +1,4 @@
 #language: fr
-@k8s
 Fonctionnalité: Connexion avec LocalStorage
 
   @ignoreInteg01

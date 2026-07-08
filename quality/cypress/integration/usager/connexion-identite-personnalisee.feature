@@ -1,5 +1,4 @@
 #language: fr
-@k8s
 Fonctionnalité: Connexion Usager personnalisé
   @ignoreInteg01
   Scénario: Connexion d'un usager - claim phone_number non renvoyé si mauvais format

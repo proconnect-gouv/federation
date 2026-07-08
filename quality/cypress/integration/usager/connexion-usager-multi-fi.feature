@@ -32,13 +32,6 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
       | Identity Provider 1 - HS256 | par défaut | tous les scopes |
       | Identity Provider 2 - ES256 | second FI  | tous les scopes |
 
-    @k8s @ignoreDocker @ignoreInteg01
-    Exemples:
-      | idpLabel                 | idpName    | scope           |
-      | Fournisseur d'identité 1 | par défaut | tous les scopes |
-      | Fournisseur d'identité 2 | second FI  | tous les scopes |
-
-  @k8s
   Scénario: Fournisseur d'identité autre
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -66,12 +59,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
       | idpLabel                                   |
       | Identity Provider 1 - eIDAS faible - ES256 |
 
-    @k8s @ignoreDocker @ignoreInteg01
-    Exemples:
-      | idpLabel                 |
-      | Fournisseur d'identité 1 |
-
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: FI par défaut est accepté par tous les fqdnToIdp
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -80,7 +68,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Alors le fournisseur d'identité "Autre (via ProConnect Identité)" est affiché
 
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: FI par défaut n'est pas accepté par l'un des fqdnToIdp
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
@@ -89,7 +77,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Alors le fournisseur d'identité "Autre (via ProConnect Identité)" n'est pas affiché
 
-  @ignoreInteg01 @k8s
+  @ignoreInteg01
   Scénario: Le FI "Autre (via ProConnect Identité)" est toujours positionné en dernier
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -118,8 +106,3 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Exemples:
       | idpLabel                                   |
       | Identity Provider 1 - eIDAS faible - ES256 |
-
-    @k8s @ignoreDocker @ignoreInteg01
-    Exemples:
-      | idpLabel                 |
-      | Fournisseur d'identité 1 |
