@@ -15,11 +15,8 @@ import idpForIntegEnv from "../../../fixtures/fca-low/integ01/identity-providers
 import spConfigsForIntegEnv from "../../../fixtures/fca-low/integ01/service-provider-configs.json";
 import spForIntegEnv from "../../../fixtures/fca-low/integ01/service-providers.json";
 // Kube MVP0
-import apiCommonForKubeMvp0Env from "../../../fixtures/fca-low/k8s/api-common.json";
 import environmentForKubeMvp0Env from "../../../fixtures/fca-low/k8s/environment.json";
-import idpConfigsForKubeMvp0Env from "../../../fixtures/fca-low/k8s/identity-provider-configs.json";
 import idpForKubeMvp0Env from "../../../fixtures/fca-low/k8s/identity-providers.json";
-import spConfigsForKubeMvp0Env from "../../../fixtures/fca-low/k8s/service-provider-configs.json";
 import spForKubeMvp0Env from "../../../fixtures/fca-low/k8s/service-providers.json";
 import {
   Environment,
@@ -58,11 +55,11 @@ const fixturesByEnv: Record<EnvKey, FixturesConfiguration> = {
     spList: spForIntegEnv,
   },
   k8s: {
-    apiCommon: apiCommonForKubeMvp0Env,
+    apiCommon: {},
     environment: environmentForKubeMvp0Env,
-    idpConfigs: idpConfigsForKubeMvp0Env,
+    idpConfigs: {},
     idpList: idpForKubeMvp0Env,
-    spConfigs: spConfigsForKubeMvp0Env,
+    spConfigs: {},
     spList: spForKubeMvp0Env,
   },
 };
