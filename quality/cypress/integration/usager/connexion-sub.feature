@@ -1,5 +1,5 @@
 #language: fr
-@k8s
+
 Fonctionnalité: Connexion Usager - Sub
 
   Scénario: retourne le même sub à deux FS différents quand j'utilise la même identité

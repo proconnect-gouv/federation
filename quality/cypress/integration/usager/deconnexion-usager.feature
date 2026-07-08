@@ -1,5 +1,5 @@
 #language: fr
-@ignoreInteg01 @k8s
+@ignoreInteg01
 Fonctionnalité: Déconnexion Usager
   Scénario: Déconnexion d'un usager avec log métier
     Etant donné que je navigue sur la page fournisseur de service

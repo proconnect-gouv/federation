@@ -1,5 +1,5 @@
 #language: fr
-@ignoreInteg01 @k8s
+@ignoreInteg01
 Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
 
   Scénario: Session avec SSO activé - Nouvelle session créée lors de l'appel à authorize (1ère connexion)
