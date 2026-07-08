@@ -1,16 +1,5 @@
 [
   {
-    "id": "71144ab3-ee1a-4401-b7b3-79b44f7daeeb",
-    "descriptions": [
-      "moncomptepro",
-      "FI bdd basé sur les URLs de moncomptepro"
-    ],
-    "title": "ProConnect Identité",
-    "url": "https://pci-local.proconnect.127.0.0.1.nip.io",
-    "signature": "ES256",
-    "fqdn": "moncomptepro.fr"
-  },
-  {
     "id": "myclientidforfia1-low",
     "descriptions": [
       "premier FI",
@@ -21,13 +10,5 @@
     "url": "https://idp1-local.proconnect.127.0.0.1.nip.io",
     "signature": "ES256",
     "fqdn": "fia1.fr"
-  },
-  {
-    "id": "myclientidforfia2-low",
-    "descriptions": ["second FI", "FI bdd basé sur les URLs de fia2"],
-    "title": "Fournisseur d'identité 2",
-    "url": "https://idp2-local.proconnect.127.0.0.1.nip.io",
-    "signature": "ES256",
-    "fqdn": "fia2.fr"
   }
 ]
