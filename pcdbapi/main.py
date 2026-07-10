@@ -156,7 +156,9 @@ async def create_oidc_client(data: OidcClient, request: Request):
 @encode_response
 async def get_oidc_client(id: str, request: Request):
     oid = validate_objectid(id)
-    if not (elt := await app.collection.find_one({"collaborators": request.state.email})):
+    if not (
+        elt := await app.collection.find_one({"_id": oid, "collaborators": request.state.email})
+    ):
         raise HTTPException(status_code=404)
     format_oidc_client(elt)
     return elt

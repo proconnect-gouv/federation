@@ -334,6 +334,33 @@ async def test_update_fields_type_validation(client, field, invalid_value):
 
 
 @pytest.mark.asyncio
+async def test_get_oidc_client_returns_requested_id(client):
+    # Create two apps for the same user
+    first_response = await api_call(
+        client, "POST", "/api/oidc_clients?email=test@example.com", json_data={"name": "First App"}
+    )
+    assert first_response.status_code == 200
+
+    second_response = await api_call(
+        client,
+        "POST",
+        "/api/oidc_clients?email=test@example.com",
+        json_data={"name": "Second App"},
+    )
+    assert second_response.status_code == 200
+    second_id = second_response.json()["_id"]
+
+    # Fetching the second app by id must not return the first app's data
+    get_response = await api_call(
+        client, "GET", f"/api/oidc_clients/{second_id}?email=test@example.com"
+    )
+    assert get_response.status_code == 200
+    retrieved = get_response.json()
+    assert retrieved["_id"] == second_id
+    assert retrieved["name"] == "Second App"
+
+
+@pytest.mark.asyncio
 async def test_oidc_client_lifecycle(client):
     # Create an app
     app_data = {
