@@ -41,7 +41,10 @@ async def verify_signature(request: Request, call_next, config: Dict):
         return JSONResponse(status_code=422, content={"detail": "Invalid email"})
 
     # Verify timestamp freshness
-    ts = int(timestamp)
+    try:
+        ts = int(timestamp)
+    except ValueError:
+        return JSONResponse(status_code=401, content={"detail": "Invalid timestamp"})
     now = int(time.time())
     if abs(now - ts) > config["max_timestamp_diff"]:
         return JSONResponse(status_code=401, content={"detail": "Timestamp expired"})
