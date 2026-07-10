@@ -165,6 +165,29 @@ async def test_invalid_timestamp(client):
 
 
 @pytest.mark.asyncio
+async def test_patch_empty_collaborators_is_rejected(client):
+    create_response = await api_call(
+        client, "POST", "/api/oidc_clients?email=test@example.com", json_data={"name": "Test App"}
+    )
+    assert create_response.status_code == 200
+    app_id = create_response.json()["_id"]
+
+    # Emptying collaborators would permanently lock everyone out
+    response = await api_call(
+        client,
+        "PATCH",
+        f"/api/oidc_clients/{app_id}?email=test@example.com",
+        json_data={"collaborators": []},
+    )
+    assert response.status_code == 422
+
+    # Owner still has access
+    list_response = await api_call(client, "GET", "/api/oidc_clients?email=test@example.com")
+    assert list_response.status_code == 200
+    assert len(list_response.json()) == 1
+
+
+@pytest.mark.asyncio
 async def test_list_oidc_clients(client):
     response = await api_call(client, "GET", "/api/oidc_clients?email=test@example.com")
     assert response.status_code == 200

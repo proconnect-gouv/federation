@@ -8,7 +8,7 @@ from typing import List, Literal
 from bson import ObjectId
 from fastapi import FastAPI, HTTPException, Request
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, ConfigDict, constr
+from pydantic import BaseModel, ConfigDict, conlist, constr
 
 from crypt import decrypt_symetric, encrypt_symetric
 from middleware import encode_response, verify_signature
@@ -36,7 +36,9 @@ class OidcClient(BaseModel):
     post_logout_redirect_uris: List[str] | None = None
     id_token_signed_response_alg: Literal["RS256", "ES256", "HS256"] | None = None
     userinfo_signed_response_alg: Literal["RS256", "ES256", "HS256"] | None = None
-    collaborators: List[str] | None = None
+    # Never empty: collaborators is the only access path, an empty list
+    # would lock everyone out of the app permanently
+    collaborators: conlist(str, min_length=1) | None = None
     active: bool | None = None
 
 
