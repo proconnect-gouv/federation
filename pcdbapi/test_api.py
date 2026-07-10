@@ -163,6 +163,16 @@ async def test_invalid_timestamp(client):
     assert response.status_code == 401
     assert response.json()["detail"] == "Timestamp expired"
 
+    # Test non-numeric timestamp
+    response = await api_call(
+        client,
+        "GET",
+        "/api/oidc_clients?email=test@example.com",
+        override_timestamp="not-a-number",
+    )
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Invalid timestamp"
+
 
 @pytest.mark.asyncio
 async def test_list_oidc_clients(client):
