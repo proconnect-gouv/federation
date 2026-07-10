@@ -5,8 +5,8 @@
  * \u0026 => &
  * \u002f => /
  */
-const VALID_EMAIL_REGEX_STRING =
-  "([a-zA-Z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,10})";
+export const VALID_EMAIL_REGEX_STRING =
+  "([a-zA-Z0-9_\\.\\-]+)@([\\da-z\\.\\-]+)\\.([a-z\\.]{2,10})";
 
 const VALID_EMAILS_REGEX_STRING = `${VALID_EMAIL_REGEX_STRING}(\n${VALID_EMAIL_REGEX_STRING})*`;
 export const VALID_EMAILS_REGEX = new RegExp(`^${VALID_EMAILS_REGEX_STRING}$`);

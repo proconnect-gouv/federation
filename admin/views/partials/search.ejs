@@ -9,6 +9,7 @@
     <div class="mb-3 mx-sm-2">
       <label for="search" class="visually-hidden">Search</label>
       <input
+        pattern="<%= locals.pattern || '*' %>"
         type="text"
         value="<%= userSearch %>"
         name="search"

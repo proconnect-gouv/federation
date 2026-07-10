@@ -16,7 +16,7 @@
             <%- include('partials/choose-items-number-to-show.ejs') -%>
           </form>
           <%- include('partials/global-errors-handler.ejs') -%>
-          <%- include('partials/search', {userSearch: querySearch, placeholder: "Rechercher par sub ou e-mail" }); %>
+          <%- include('partials/search', {userSearch: querySearch, placeholder: "Rechercher par sub ou e-mail entier", pattern: searchPattern }); %>
 
           <table class="table table-hover table-light shadow-sm">
             <thead class="thead-light">
