@@ -117,7 +117,18 @@
             <section class="mb-3 row">
               <label class="col-2 col-form-label" for="collaborators">Collaborateurices (une adresse e-mail par ligne)</label>
               <div class="col-10">
-                <textarea id="collaborators" class="form-control <%= locals.messages.errors && messages.errors[0].collaborators && 'is-invalid' %>" pattern="<%= VALID_EMAILS_REGEX %>" placeholder="Adresses e-mail des collaborateurices" name="collaborators"><%= locals.messages.values && messages.values[0].collaborators %></textarea>
+                <textarea
+                  id="collaborators"
+                  class="form-control
+                  <%= locals.messages.errors && messages.errors[0].collaborators && 'is-invalid' %>"
+                  pattern="<%= VALID_EMAILS_REGEX %>"
+                  placeholder="Adresses e-mail des collaborateurices"
+                  name="collaborators"
+                  autocomplete="off"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other"
+                ><%= locals.messages.values && messages.values[0].collaborators %></textarea>
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].collaborators) { %>
                   <p>
