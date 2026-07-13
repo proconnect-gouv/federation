@@ -76,7 +76,7 @@
               <% } %>
             </div>
 
-            <% if (locals.exceptionDisplay.displayContact || locals.interactionErrorUrl) { %>
+            <% if (locals.exceptionDisplay.displayContact || locals.interactionErrorUrl || locals.exceptionDisplay.mainAction === 'goBack') { %>
               <section>
                 <div class="fr-mt-4w">
                   <% if (locals.exceptionDisplay.displayContact) { %>
@@ -91,6 +91,11 @@
                     <% if (locals.exceptionDisplay.displayContact) { %>
                       <a class="fr-btn<%= locals.exceptionDisplay.mainAction === 'contact' ? '' : ' fr-btn--tertiary' %> fr-icon-flag-line fr-btn--icon-right fr-mr-1w" href="<%= locals.exceptionDisplay.contactHref %>">
                         Signaler l'erreur
+                      </a>
+                    <% } %>
+                    <% if (!locals.interactionErrorUrl && locals.exceptionDisplay.mainAction === 'goBack') { %>
+                      <a class="fr-btn" href="javascript:history.back()" data-testid="go-back-button">
+                        Revenir à l'étape précédente
                       </a>
                     <% } %>
                     <% if (locals.interactionErrorUrl) { %>

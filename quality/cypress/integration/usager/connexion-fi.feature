@@ -64,4 +64,5 @@ Fonctionnalité: Connexion à un FI
     Quand je reviens en arrière
     Quand je reviens en arrière
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "oidc-provider-error:session-not-found"
+    Et je ne vois pas "code erreur"
+    Et je vois "Revenir à l'étape précédente"

@@ -100,7 +100,8 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Alors je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Quand je reviens en arrière
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "oidc-provider-error:session-not-found"
+    Et je ne vois pas "code erreur"
+    Et je vois "Revenir à l'étape précédente"
 
     @ignoreInteg01
     Exemples:

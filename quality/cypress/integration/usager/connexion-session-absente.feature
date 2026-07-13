@@ -28,7 +28,8 @@ Fonctionnalité: Connexion Usager - session absente
     Quand je supprime les cookies AgentConnect
     Et je rafraîchis la page
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "oidc-provider-error:session-not-found"
+    Et je ne vois pas "code erreur"
+    Et je vois "Revenir à l'étape précédente"
 
   Scénario: Erreur lors de la connexion - session absente au retour du FI
     Etant donné que je navigue sur la page fournisseur de service
@@ -40,7 +41,8 @@ Fonctionnalité: Connexion Usager - session absente
     Et que je supprime les cookies AgentConnect
     Quand je m'authentifie
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "oidc-provider-error:session-not-found"
+    Et je ne vois pas "code erreur"
+    Et je vois "Revenir à l'étape précédente"
 
   Scénario: Erreur lors de la connexion - session absente sur la page multi FI
     Etant donné que je navigue sur la page fournisseur de service
@@ -50,4 +52,5 @@ Fonctionnalité: Connexion Usager - session absente
     Quand je supprime les cookies AgentConnect
     Et je rafraîchis la page
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "oidc-provider-error:session-not-found"
+    Et je ne vois pas "code erreur"
+    Et je vois "Revenir à l'étape précédente"

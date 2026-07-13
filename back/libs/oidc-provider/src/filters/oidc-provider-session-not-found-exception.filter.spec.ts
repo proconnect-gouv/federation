@@ -95,5 +95,21 @@ describe("OidcProviderSessionNotFoundExceptionFilter", () => {
       // Then
       expect(resMock.render).toHaveBeenCalledOnce();
     });
+
+    it("should render the error page without error details and with a go back action", () => {
+      // When
+      filter.catch(exceptionMock, hostMock as unknown as ArgumentsHost);
+
+      // Then
+      expect(resMock.render).toHaveBeenCalledWith("error", {
+        error: {},
+        exceptionDisplay: {
+          description: expect.stringContaining(
+            "Nous n’arrivons pas à vous connecter",
+          ),
+          mainAction: "goBack",
+        },
+      });
+    });
   });
 });
