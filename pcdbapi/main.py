@@ -117,7 +117,6 @@ async def create_oidc_client(data: OidcClient, request: Request):
     d = data.model_dump(exclude_unset=True)
     d.update(
         {
-            "email": request.state.email,
             "collaborators": [request.state.email],
             "createdAt": datetime.now(),
             "updatedAt": datetime.now(),

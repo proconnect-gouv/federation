@@ -30,7 +30,6 @@ describe("update a service-provider", () => {
         signupId: "123456",
         redirectUri: "https://url.com",
         redirectUriLogout: "https://url.com/logout",
-        email: "user@yopmail.com",
       };
 
       // Action
@@ -58,7 +57,6 @@ describe("update a service-provider", () => {
         signupId: "123456",
         redirectUri: "Obviously not a URL",
         redirectUriLogout: "https://url.com/logout",
-        email: "user@yopmail.com",
       };
 
       // Action

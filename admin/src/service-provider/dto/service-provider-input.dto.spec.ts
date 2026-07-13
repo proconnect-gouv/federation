@@ -8,7 +8,6 @@ describe("Service Provider Input (Data Transfer Object)", () => {
     name: "Service Provider Test",
     redirectUri: "https://localhost/",
     redirectUriLogout: "https://localhost/",
-    email: "user@yopmail.com",
     active: "true",
     type: "private",
     scopes: ["given_name"],

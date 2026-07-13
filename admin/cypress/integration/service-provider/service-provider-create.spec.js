@@ -24,7 +24,6 @@ describe("Service provider creation", () => {
     name: "MyFirstSP",
     redirectUri: "https://url.com/login",
     redirectUriLogout: "https://url.com/logout",
-    email: "user2@yopmail.com",
     type: "public",
   };
 
@@ -47,7 +46,6 @@ describe("Service provider creation", () => {
       cy.get("input#scope-openid").should("be.checked");
       cy.get("input#scope-given_name").should("be.checked");
       cy.get("input#scope-usual_name").should("be.checked");
-      cy.get("input#scope-email").should("be.checked");
       cy.get("input#scope-uid").should("be.checked");
       cy.get("input#scope-siret").should("be.checked");
       cy.get("input#scope-phone").should("be.checked");
@@ -148,21 +146,6 @@ describe("Service provider creation", () => {
       cy.url().should("eq", `${BASE_URL}/service-provider`);
       cy.contains(
         `Le fournisseur de service 2 collaborators a été créé avec succès !`,
-      );
-      cy.closeBanner(".alert-success");
-    });
-
-    it("if we add a service provider with no email", () => {
-      // Action
-      createServiceProvider(
-        { ...spData, name: "no email", email: "" },
-        basicConfiguration,
-      );
-
-      // Assert
-      cy.url().should("eq", `${BASE_URL}/service-provider`);
-      cy.contains(
-        `Le fournisseur de service no email a été créé avec succès !`,
       );
       cy.closeBanner(".alert-success");
     });
@@ -278,7 +261,6 @@ describe("Service provider creation", () => {
           name: "",
           redirectUri: "",
           redirectUriLogout: "",
-          email: "",
         },
         basicConfiguration,
       );
@@ -292,9 +274,6 @@ describe("Service provider creation", () => {
         .should("be.visible");
       cy.get('[name="redirectUri"]').should("be.empty");
       cy.get('[name="redirectUriLogout"]').should("be.empty");
-      cy.contains(`Veuillez mettre une adresse email valide.`).should(
-        "not.be.visible",
-      );
     });
 
     it("if an error occured in the form, we display an error (name)", () => {
@@ -368,23 +347,6 @@ describe("Service provider creation", () => {
         ".invalid-feedback",
         `Veuillez mettre une URL valide ( Ex: https://urlvalide.com/logout )`,
       )
-        .scrollIntoView()
-        .should("be.visible");
-    });
-
-    it("if an error occured in the form, we display an error (email)", () => {
-      // Arrange
-      const errorFs = {
-        ...spData,
-        name: "Good name",
-        email: "****",
-      };
-
-      // Action
-      createServiceProvider(errorFs, basicConfiguration);
-
-      // Assert
-      cy.contains(`Veuillez mettre une adresse email valide.`)
         .scrollIntoView()
         .should("be.visible");
     });

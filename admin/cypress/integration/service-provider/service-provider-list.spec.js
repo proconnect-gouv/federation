@@ -16,7 +16,6 @@ const fs = {
   name: "CypressFS",
   redirectUri: "https://url.com",
   redirectUriLogout: "https://url.com/logout",
-  email: "user2@yopmail.com",
 };
 
 const fs2 = { ...fs, name: "CypressFS2" };

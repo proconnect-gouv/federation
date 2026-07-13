@@ -58,7 +58,6 @@ describe("ServiceProviderController", () => {
       "FC-app.02://openid_redirect_url",
       "franceconnect://openid_redirect_url",
     ],
-    email: "v@b.com",
     active: true,
     type: "public",
     scopes: [...scopeList],
@@ -156,7 +155,6 @@ describe("ServiceProviderController", () => {
         redirect_uris: ["https://url.com"],
         post_logout_redirect_uris: [""],
         jwks_uri: "https://monfs.com/jwks",
-        email: "v@b.com",
         active: true,
         type: "public",
         secretCreatedAt: new Date(),
@@ -173,7 +171,6 @@ describe("ServiceProviderController", () => {
         redirect_uris: ["https://url.com"],
         post_logout_redirect_uris: [""],
         jwks_uri: "https://monfs.com/jwks",
-        email: "v@b.com",
         active: true,
         type: "public",
         secretCreatedAt: new Date(),
@@ -190,7 +187,6 @@ describe("ServiceProviderController", () => {
         redirect_uris: ["https://url.com"],
         post_logout_redirect_uris: [""],
         jwks_uri: "https://monfs.com/jwks",
-        email: "v@b.com",
         active: true,
         type: "public",
         secretCreatedAt: new Date(),
@@ -253,7 +249,6 @@ describe("ServiceProviderController", () => {
         redirect_uris: ["https://url.com"],
         post_logout_redirect_uris: [""],
         jwks_uri: "https://monfs.com/jwks",
-        email: "v@b.com",
         active: true,
         type: "public",
         secretCreatedAt: new Date(),
@@ -270,7 +265,6 @@ describe("ServiceProviderController", () => {
         redirect_uris: ["https://url.com"],
         jwks_uri: "https://monfs.com/jwks",
         post_logout_redirect_uris: [""],
-        email: "v@b.com",
         active: true,
         type: "public",
         secretCreatedAt: new Date(),
@@ -287,7 +281,6 @@ describe("ServiceProviderController", () => {
         redirect_uris: ["https://url.com"],
         jwks_uri: "https://monfs.com/jwks",
         post_logout_redirect_uris: [""],
-        email: "v@b.com",
         active: true,
         type: "public",
         secretCreatedAt: new Date(),
@@ -392,7 +385,6 @@ describe("ServiceProviderController", () => {
       // setup
       const spMock = {
         ...serviceProvider,
-        email: "v@b.com",
       };
 
       serviceProviderServiceMock.findById.mockImplementation(() =>
@@ -405,10 +397,9 @@ describe("ServiceProviderController", () => {
       // expect
       expect(req.flash).toHaveBeenCalledTimes(1);
       expect(req.flash).toHaveBeenCalledWith("values", {
-        ...spMock,
+        ...serviceProvider,
         redirectUri: "https://proconnect.gouv.fr",
         postLogoutUri: "https://proconnect.gouv.fr",
-        email: "v@b.com",
         userinfo_signed_response_alg: "",
       });
       expect(result).toEqual({
@@ -652,7 +643,6 @@ describe("ServiceProviderController", () => {
     it("should get a service Provider and render generate client secret view", async () => {
       const serviceProvider = {
         active: "true",
-        email: "v@b.com",
         key: "cb55015c-7fb5-49b4-9006-e523552bc3e7",
         name: "ProConnect Generate Secret 9",
         postLogoutUri: "https://proconnect.gouv.fr",
@@ -687,7 +677,6 @@ describe("ServiceProviderController", () => {
       // set up
       const serviceProvider = {
         active: "true",
-        email: "v@b.com",
         key: "cb55015c-7fb5-49b4-9006-e523552bc3e7",
         name: "FranceConnect TEST 9",
         postLogoutUri: "https://FranceConnect.com",
@@ -767,7 +756,6 @@ describe("ServiceProviderController", () => {
       redirect_uris: ["https://url.com"],
       post_logout_redirect_uris: [""],
       jwks_uri: "https://monfs.com/jwks",
-      email: "v@b.com",
       active: true,
       type: "public",
       secretCreatedAt: new Date("2019-11-08T09:52:29.984Z"),

@@ -28,7 +28,6 @@ describe("Delete service provider", () => {
     signupId: "123456",
     redirectUri: "https://url.com",
     redirectUriLogout: "https://url.com/logout",
-    email: "user2@yopmail.com",
   };
 
   beforeEach(() => {
