@@ -49,13 +49,6 @@ export class ServiceProviderDto {
   })
   readonly redirectUriLogout: string[];
 
-  @IsOptional()
-  @Matches(VALID_EMAIL_REGEX, {
-    message: "Veuillez mettre une adresse email valide.",
-  })
-  @Transform(toNullableString)
-  readonly email: string;
-
   @IsNotEmpty({
     message: "Veuillez faire un choix",
   })

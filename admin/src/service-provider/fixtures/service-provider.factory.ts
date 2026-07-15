@@ -14,7 +14,6 @@ function createServiceProviderDto(
     name: "monfs",
     redirectUri: ["https://monfs.com"],
     redirectUriLogout: ["https://monfs.com/logout"],
-    email: "jean.dupont@mail.fr",
     active: true,
     type: "private",
     scopes: [],
@@ -26,7 +25,7 @@ function createServiceProviderDto(
     introspection_encrypted_response_enc: "A128CBC-HS256",
     grant_types: ["authorization_code"],
     jwks_uri: "https://monfs.com/jwks",
-    collaborators: [],
+    collaborators: ["jeanne.dupont@example.com"],
     ...partial,
   };
 }
@@ -39,7 +38,6 @@ function createServiceProviderFromDb(
     name: "monfs",
     redirect_uris: ["https://monfs.com"],
     post_logout_redirect_uris: ["https://monfs.com/logout"],
-    email: "v@b.com",
     active: true,
     type: "private",
     scopes: [],
@@ -58,7 +56,7 @@ function createServiceProviderFromDb(
     secretUpdatedAt: new Date(),
     key: "key",
     updatedBy: "user",
-    collaborators: [],
+    collaborators: ["jeanne.dupont@example.com"],
     ...partial,
   };
 }

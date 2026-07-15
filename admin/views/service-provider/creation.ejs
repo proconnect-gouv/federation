@@ -86,34 +86,7 @@
                 </div>
               </div>
             </section>
-            <section class="mb-3 row">
-              <label class="col-2 col-form-label" for="email">Email propriétaire dans l’Espace Partenaires</label>
-              <div class="col-10">
-                <input
-                  id="email"
-                  type="text"
-                  class="form-control <%= locals.messages.errors && messages.errors[0].email && 'is-invalid' %>"
-                  placeholder="email@email.com"
-                  name="email"
-                  pattern="^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,10})$"
-                  autocomplete="off"
-                  data-1p-ignore="true"
-                  data-bwignore="true"
-                  data-form-type="other"
-                  value="<%= locals.messages.values && messages.values[0].email %>"
-                >
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].email) { %>
-                    <% messages.errors[0].email.forEach((error) => { %>
-                      <%= error %>
-                      <br>
-                    <% }) %>
-                  <% } else { %>
-                    Veuillez mettre une adresse email valide.
-                  <% } %>
-                </div>
-              </div>
-            </section>
+
             <section class="mb-3 row">
               <label class="col-2 col-form-label" for="collaborators">Collaborateurices (une adresse e-mail par ligne)</label>
               <div class="col-10">

@@ -104,7 +104,6 @@ export class ServiceProviderService {
     serviceProvider.redirect_uris = input.redirectUri;
     serviceProvider.post_logout_redirect_uris = input.redirectUriLogout;
     serviceProvider.type = input.type;
-    serviceProvider.email = input.email;
     serviceProvider.active = input.active;
     serviceProvider.updatedAt = new Date();
     serviceProvider.updatedBy = user;
@@ -246,7 +245,6 @@ export class ServiceProviderService {
       redirect_uris: serviceProviderDto.redirectUri,
       post_logout_redirect_uris: serviceProviderDto.redirectUriLogout,
       type: serviceProviderDto.type,
-      email: serviceProviderDto.email,
       scopes: serviceProviderDto.scopes,
       userinfo_signed_response_alg:
         serviceProviderDto.userinfo_signed_response_alg,

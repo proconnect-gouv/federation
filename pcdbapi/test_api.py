@@ -226,7 +226,6 @@ async def test_create_oidc_client(client):
     data = response.json()
     assert data["name"] == app_data["name"]
     assert data["collaborators"] == ["test@example.com"]
-    assert data["email"] == "test@example.com"
     assert "_id" in data
     assert len(data["client_secret"]) == 64
 
@@ -294,13 +293,6 @@ async def test_update_fields_whitelist(client):
             json_data=updates,
         )
         assert response.status_code == 422, f"Expected 422 for {k}={v}"
-
-    # Try to update the email of an app (forbidden for now)
-    updates = {"email": "other@example.com"}
-    response = await api_call(
-        client, "PATCH", f"/api/oidc_clients/{app_id}?email=test@example.com", json_data=updates
-    )
-    assert response.status_code == 422
 
     # Cannot create an app with a different email
     valid_data = {"name": "Test App", "email": "other@example.com"}
@@ -408,7 +400,7 @@ async def test_oidc_client_lifecycle(client):
     created_app = create_response.json()
     assert created_app["name"] == app_data["name"]
     assert created_app["redirect_uris"] == app_data["redirect_uris"]
-    assert created_app["email"] == "test@example.com"
+    assert created_app["collaborators"] == ["test@example.com"]
     assert created_app["createdAt"] is not None
     assert created_app["updatedAt"] is not None
     assert created_app["updatedBy"] == "espace-partenaires"

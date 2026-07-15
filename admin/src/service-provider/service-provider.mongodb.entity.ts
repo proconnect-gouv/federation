@@ -20,9 +20,6 @@ export class ServiceProviderFromDb {
   @Column()
   type: string;
 
-  @Column({ name: "email" })
-  email: string;
-
   @Column({ name: "redirect_uris" })
   // tslint:disable-next-line: variable-name
   redirect_uris: string[];

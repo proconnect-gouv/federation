@@ -386,7 +386,6 @@ describe("ServiceProviderService", () => {
           name: "proConnect",
           redirectUri: ["https://proConnect.com"],
           redirectUriLogout: ["https://proConnect.com/logout"],
-          email: "v@b2.com",
           active: true,
           type: "private",
           key: "bafe2428-3ab9-4c44-9021-46bde0cd13c5",
