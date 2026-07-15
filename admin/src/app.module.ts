@@ -32,6 +32,7 @@ import { LoggerModule } from "./logger/logger.module";
 import { LocalsInterceptor } from "./meta/locals.interceptor";
 import { ServiceProviderController } from "./service-provider/service-provider.controller";
 import { ServiceProviderModule } from "./service-provider/service-provider.module";
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { ServiceProviderModule } from "./service-provider/service-provider.modul
     MulterModule.register({
       storage: memoryStorage(),
     }),
+    HealthModule,
   ],
   providers: [LocalsInterceptor, TotpService],
   controllers: [AppController],
