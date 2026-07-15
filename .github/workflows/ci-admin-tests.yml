@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           cache: yarn
           cache-dependency-path: ./admin/yarn.lock
@@ -56,7 +56,7 @@ jobs:
           version: latest
 
       - name: Set up Node.js for federation-admin
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           cache: yarn
           cache-dependency-path: ./admin/yarn.lock
