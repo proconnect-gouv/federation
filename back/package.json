@@ -95,7 +95,7 @@
     "jest-extended": "^7.0.0",
     "jest-mock": "^30.3.0",
     "mongodb-memory-server": "^11.2.0",
-    "prettier": "^3.8.3",
+    "prettier": "^3.9.4",
     "prettier-plugin-organize-imports": "^4.3.0",
     "ts-jest": "^29.4.9",
     "ts-loader": "^9.5.7",
