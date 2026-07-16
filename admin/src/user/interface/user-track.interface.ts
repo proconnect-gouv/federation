@@ -2,11 +2,7 @@
 
 // declarative file
 export type Action =
-  | "create"
-  | "updatePassword"
-  | "enroll"
-  | "block"
-  | "delete";
+  "create" | "updatePassword" | "enroll" | "block" | "delete";
 
 export interface IUserTrack {
   action: Action;
