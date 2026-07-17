@@ -60,6 +60,7 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => MailerConfig)
   readonly Mailer: MailerConfig;
+
   @IsObject()
   @ValidateNested()
   @Type(() => MongooseConfig)

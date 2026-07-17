@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsOptional, IsString, ValidateIf } from "class-validator";
 import { TransportType } from "../enums/transport-type.enum";
 
 export class MailerConfig {
@@ -13,10 +13,10 @@ export class MailerConfig {
   readonly fromName: string;
 
   @IsString()
-  @IsOptional()
+  @ValidateIf(({ transport }) => transport === TransportType.SMTP)
   readonly smtpUrl?: string;
 
   @IsString()
-  @IsOptional()
+  @ValidateIf(({ transport }) => transport === TransportType.BREVO)
   readonly brevoApiKey?: string;
 }
