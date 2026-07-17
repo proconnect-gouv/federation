@@ -13,7 +13,7 @@ export class BrevoAdapter implements MailerService {
     private readonly config: MailerConfig,
     private readonly fetchFn: typeof globalThis.fetch,
   ) {
-    this.apiKey = config.brevoApiKey!;
+    this.apiKey = config.brevoApiKey;
   }
 
   async sendMail(dto: MailerSendOptions) {
