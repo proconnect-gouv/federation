@@ -7,7 +7,7 @@ export class MailerConfig {
   readonly transport?: TransportType;
 
   @IsString()
-  readonly fromEmail!: string;
+  readonly fromEmail: string;
 
   @IsString()
   readonly fromName!: string;
