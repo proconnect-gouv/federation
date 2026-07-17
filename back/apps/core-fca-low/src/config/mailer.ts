@@ -4,10 +4,12 @@ import { TransportType } from "@fc/mailer/enums";
 
 const env = new ConfigParser(process.env, "Mailer");
 
-export default {
+const mailerConfig: MailerConfig = {
   transport: env.string("TRANSPORT", true) as TransportType | undefined,
   fromEmail: env.string("FROM_EMAIL"),
   fromName: env.string("FROM_NAME"),
   smtpUrl: env.string("SMTP_URL", true),
   brevoApiKey: env.string("BREVO_API_KEY", true),
-} satisfies MailerConfig;
+};
+
+ export default mailerConfig;
