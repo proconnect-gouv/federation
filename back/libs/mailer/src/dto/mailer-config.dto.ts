@@ -10,7 +10,7 @@ export class MailerConfig {
   readonly fromEmail: string;
 
   @IsString()
-  readonly fromName!: string;
+  readonly fromName: string;
 
   @IsString()
   @IsOptional()
