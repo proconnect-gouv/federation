@@ -70,9 +70,7 @@ export class MockServiceProviderSession {
 2. Register middleware
 
 ```typescript
-@Module({
-  /* ... */
-})
+@Module({/* ... */})
 export class MyModule {
   constructor(private readonly config: ConfigService) {}
 
