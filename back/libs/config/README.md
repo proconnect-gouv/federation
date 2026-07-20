@@ -13,7 +13,7 @@ The module requires validation DTOs to validate provided data.
 ## Sharing variables in templates
 
 This module allows the exposition of variables into templates.  
- To expose a variable, you must configure the module with the option `templateExposed`.
+To expose a variable, you must configure the module with the option `templateExposed`.
 
 The variables are accessible in the `locals.config` namespace.
 
