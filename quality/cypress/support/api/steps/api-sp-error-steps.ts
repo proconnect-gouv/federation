@@ -34,9 +34,11 @@ Then(
       .its("headers")
       .its("location")
       .then((url) => {
-        expect(url).to.contain(
-          `error_description=${encodeURIComponent(errorDescription)}`,
-        );
+        const { searchParams, hash } = new URL(url);
+        const actual =
+          searchParams.get("error_description") ??
+          new URLSearchParams(hash.slice(1)).get("error_description");
+        expect(actual).to.equal(errorDescription);
       });
   },
 );

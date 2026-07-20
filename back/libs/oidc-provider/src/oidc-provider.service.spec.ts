@@ -137,7 +137,7 @@ describe("OidcProviderService", () => {
       // Then
       expect(service).toBeDefined();
       // Access to private property via []
-      expect(service["provider"]).toBeInstanceOf(OidcProvider.Provider);
+      expect(service["provider"]).toBeInstanceOf(OidcProvider);
     });
 
     it("should throw if provider can not be instantied", () => {
@@ -411,25 +411,6 @@ describe("OidcProviderService", () => {
 
       // Then
       expect(callback).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  describe("getHttpOptions", () => {
-    const timeoutMock = 42;
-    it("should return the timeout http options", () => {
-      // Given
-      const options = {
-        timeout: timeoutMock,
-      };
-
-      service["configuration"] = options;
-
-      // When
-      const result = service["getHttpOptions"](options);
-      // Then
-      expect(result).toStrictEqual({
-        timeout: timeoutMock,
-      });
     });
   });
 

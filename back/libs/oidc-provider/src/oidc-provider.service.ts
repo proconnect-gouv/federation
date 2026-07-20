@@ -6,7 +6,6 @@ import { SessionService } from "@fc/session";
 import { Global, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import {
-  HttpOptions,
   InteractionResults,
   KoaContextWithOIDC,
   Provider,
@@ -32,7 +31,6 @@ export class OidcProviderService {
   private ProviderProxy = Provider;
   private provider: Provider;
   private callback: ReturnType<Provider["callback"]>;
-  private configuration;
 
   constructor(
     readonly logger: LoggerService,
@@ -48,13 +46,9 @@ export class OidcProviderService {
    */
   onModuleInit() {
     const { issuer, configuration } = this.configService.getConfig(this);
-    this.configuration = configuration;
 
     try {
-      this.provider = new this.ProviderProxy(issuer, {
-        ...configuration,
-        httpOptions: this.getHttpOptions.bind(this),
-      });
+      this.provider = new this.ProviderProxy(issuer, configuration);
       this.provider.proxy = true;
       this.callback = this.provider.callback();
     } catch {
@@ -117,17 +111,6 @@ export class OidcProviderService {
 
   getCallback(): ReturnType<Provider["callback"]> {
     return this.callback;
-  }
-
-  /**
-   * Add global request timeout
-   * @see https://github.com/panva/node-oidc-provider/blob/HEAD/docs/README.md#httpoptions
-   *
-   * @param {HttpOptions} options
-   */
-  private getHttpOptions(options: HttpOptions): HttpOptions {
-    options.timeout = this.configuration.timeout;
-    return options;
   }
 
   async getInteraction(req, res): Promise<ExtendedInteraction> {
