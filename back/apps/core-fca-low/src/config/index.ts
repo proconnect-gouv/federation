@@ -6,6 +6,7 @@ import Exceptions from "./exceptions";
 import HyyyperbridgeBroker from "./hyyyperbridge-broker";
 import IdentityProviderAdapterMongo from "./identity-provider-adapter-mongo";
 import Logger from "./logger";
+import Mailer from "./mailer";
 import Mongoose from "./mongoose";
 import OidcClient from "./oidc-client";
 import OidcProvider from "./oidc-provider";
@@ -20,6 +21,7 @@ const coreFcaConfig: CoreFcaConfig = {
   Exceptions,
   HyyyperbridgeBroker,
   Logger,
+  Mailer,
   OidcProvider,
   OidcClient,
   Mongoose,

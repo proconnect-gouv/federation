@@ -89,7 +89,11 @@
       "@fc/account-fca": ["libs/account-fca/src"],
       "@fc/account-fca/*": ["libs/account-fca/src/*"],
       "@fc/logger-plugins": ["libs/logger-plugins/src"],
-      "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"]
+      "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"],
+      "@fc/mailer": ["libs/mailer/src"],
+      "@fc/mailer/*": ["libs/mailer/src/*"],
+      "@mocks/mailer": ["libs/mailer/.mocks"],
+      "@mocks/mailer/*": ["libs/mailer/.mocks/*"]
     }
   },
   "files": ["global.d.ts"],

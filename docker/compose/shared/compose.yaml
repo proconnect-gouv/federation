@@ -54,6 +54,8 @@ services:
         condition: service_completed_successfully
       rp-all:
         condition: service_started
+      maildev:
+        condition: service_healthy
       mongo:
         condition: service_healthy
       redis-pwd:

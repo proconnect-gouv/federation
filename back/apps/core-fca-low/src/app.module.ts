@@ -17,6 +17,7 @@ import {
 } from "@fc/identity-provider-adapter-mongo";
 import { LoggerModule } from "@fc/logger";
 import { LoggerRequestPlugin, LoggerSessionPlugin } from "@fc/logger-plugins";
+import { MailerModule } from "@fc/mailer";
 import { MongooseModule } from "@fc/mongoose";
 import { NotificationsModule } from "@fc/notifications";
 import { OidcAcrModule } from "@fc/oidc-acr";
@@ -61,6 +62,7 @@ export class AppModule {
         LoggerModule.forRoot([LoggerRequestPlugin, LoggerSessionPlugin]),
         // 3. Load other modules
         CqrsModule,
+        MailerModule.forRoot(),
         AsyncLocalStorageModule,
         EmailValidatorModule,
         SessionModule,
