@@ -141,6 +141,16 @@ async def test_invalid_signatures(client):
     assert response.status_code == 401
     assert response.json()["detail"] == "Invalid signature"
 
+    # Test DELETE /api/oidc_clients/{id}
+    response = await api_call(
+        client,
+        "DELETE",
+        f"/api/oidc_clients/{app_id}?email=test@example.com",
+        override_signature="invalid",
+    )
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Invalid signature"
+
 
 @pytest.mark.asyncio
 async def test_invalid_timestamp(client):
@@ -520,3 +530,55 @@ async def test_oidc_client_lifecycle(client):
     assert (
         retrieved_app["id_token_signed_response_alg"] == app_data["id_token_signed_response_alg"]
     )
+
+
+@pytest.mark.asyncio
+async def test_delete_oidc_client(client):
+    # Create an app
+    app_data = {"name": "Test App", "redirect_uris": ["https://example.com/callback"]}
+    create_response = await api_call(
+        client, "POST", "/api/oidc_clients?email=test@example.com", json_data=app_data
+    )
+    assert create_response.status_code == 200
+    app_id = create_response.json()["_id"]
+
+    # Try to delete with invalid ID
+    response = await api_call(
+        client, "DELETE", "/api/oidc_clients/1234567890?email=test@example.com"
+    )
+    assert response.status_code == 422
+
+    # Try to delete with a different email (should not find it)
+    response = await api_call(
+        client, "DELETE", f"/api/oidc_clients/{app_id}?email=other@example.com"
+    )
+    assert response.status_code == 404
+
+    # App should still exist for the owner
+    get_response = await api_call(
+        client, "GET", f"/api/oidc_clients/{app_id}?email=test@example.com"
+    )
+    assert get_response.status_code == 200
+
+    # Delete the app
+    response = await api_call(
+        client, "DELETE", f"/api/oidc_clients/{app_id}?email=test@example.com"
+    )
+    assert response.status_code == 200
+    assert response.json() == {"deleted": True}
+
+    # App should no longer be reachable
+    get_response = await api_call(
+        client, "GET", f"/api/oidc_clients/{app_id}?email=test@example.com"
+    )
+    assert get_response.status_code == 404
+
+    list_response = await api_call(client, "GET", "/api/oidc_clients?email=test@example.com")
+    assert list_response.status_code == 200
+    assert list_response.json() == []
+
+    # Deleting again should 404 (already gone)
+    response = await api_call(
+        client, "DELETE", f"/api/oidc_clients/{app_id}?email=test@example.com"
+    )
+    assert response.status_code == 404

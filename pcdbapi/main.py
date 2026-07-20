@@ -185,3 +185,13 @@ async def update_oidc_client(id: str, updates: OidcClient, request: Request):
     updated = await app.collection.find_one({"_id": oid})
     format_oidc_client(updated)
     return updated
+
+
+@app.delete("/api/oidc_clients/{id}")
+@encode_response
+async def delete_oidc_client(id: str, request: Request):
+    oid = validate_objectid(id)
+    result = await app.collection.delete_one({"_id": oid, "collaborators": request.state.email})
+    if not result.deleted_count:
+        raise HTTPException(status_code=404)
+    return {"deleted": True}
