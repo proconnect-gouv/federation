@@ -50,15 +50,21 @@ export class IdentityProviderController {
         page,
         limit,
         search: querySearch
-          ? { fields: ["name", "title", "clientID"], value: querySearch }
+          ? {
+              fields: [
+                { name: "name", searchKind: "contains" },
+                { name: "title", searchKind: "contains" },
+                { name: "clientID", searchKind: "contains" },
+              ],
+              value: querySearch,
+            }
           : undefined,
         sort: querySortField
           ? { field: querySortField, direction: querySortDirection }
-          : undefined,
-        defaultSort: {
-          field: "createdAt",
-          direction: "desc",
-        },
+          : {
+              field: "createdAt",
+              direction: "desc",
+            },
       });
 
     return {

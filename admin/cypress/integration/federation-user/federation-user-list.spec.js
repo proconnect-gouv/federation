@@ -48,6 +48,15 @@ describe("Federation user list", () => {
       cy.get("table").should("contain.text", "user-multiple-idp@fia1.fr");
     });
 
+    it("I cannot search a federation user with a string that is neither a sub nor an email", () => {
+      cy.visit(`/federation-user`);
+
+      cy.get("#searchInput").clear().type("not-a-sub-or-email");
+      cy.contains("Rechercher").click();
+
+      cy.get("table tbody tr").should("have.length", 2);
+    });
+
     it("I cannot activate a federation user if totp not filled", () => {
       cy.visit(`/federation-user`);
 

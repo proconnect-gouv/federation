@@ -12,8 +12,8 @@ import {
 } from "@nestjs/common";
 import { Roles } from "../authentication/decorator/roles.decorator";
 import { FormErrorsInterceptor } from "../form/interceptor/form-errors.interceptor";
-import { type PaginationSortDirectionType } from "../pagination";
 import { UserRole } from "../user/roles.enum";
+import { VALID_EMAIL_REGEX_STRING } from "../utils/regex/valid-email-regex";
 import { FederationUserService } from "./federation-user.service";
 
 @Controller("federation-user")
@@ -29,12 +29,12 @@ export class FederationUserController {
   async list(
     @Req() req,
     @Query("search") querySearch?: string,
-    @Query("sortField") querySortField?: string,
-    @Query("sortDirection")
-    querySortDirection: PaginationSortDirectionType = "asc",
     @Query("page") queryPage: string = "1",
     @Query("limit") queryLimit: string = "10",
   ) {
+    const UUID_REGEX_STRING =
+      "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+    const searchPattern = `^(${UUID_REGEX_STRING}|${VALID_EMAIL_REGEX_STRING})$`;
     const page = parseInt(queryPage, 10);
     const limit = parseInt(queryLimit, 10);
     const csrfToken = req.csrfToken();
@@ -43,15 +43,22 @@ export class FederationUserController {
         page,
         limit,
         search: querySearch
-          ? { fields: ["sub", "idpIdentityKeys.idpMail"], value: querySearch }
+          ? {
+              fields: [
+                {
+                  name: "sub",
+                  searchKind: "exactMatch",
+                  pattern: new RegExp(UUID_REGEX_STRING),
+                },
+                {
+                  name: "idpIdentityKeys.idpMail",
+                  searchKind: "exactMatch",
+                  pattern: new RegExp(VALID_EMAIL_REGEX_STRING),
+                },
+              ],
+              value: querySearch,
+            }
           : undefined,
-        sort: querySortField
-          ? { field: querySortField, direction: querySortDirection }
-          : undefined,
-        defaultSort: {
-          field: "createdAt",
-          direction: "desc",
-        },
       });
 
     return {
@@ -60,9 +67,8 @@ export class FederationUserController {
       csrfToken,
       page,
       limit,
-      querySortField,
-      querySortDirection,
       querySearch,
+      searchPattern,
     };
   }
 

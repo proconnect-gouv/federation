@@ -843,9 +843,14 @@ describe("ServiceProviderController", () => {
       expect(serviceProviderServiceMock.paginate).toHaveBeenCalledWith({
         page: 0,
         limit: 10,
-        search: { fields: ["name", "key"], value: search },
+        search: {
+          fields: [
+            { name: "name", searchKind: "contains" },
+            { name: "key", searchKind: "contains" },
+          ],
+          value: search,
+        },
         sort: { field: sortField, direction: sortDirection },
-        defaultSort: { field: "createdAt", direction: "desc" },
       });
     });
   });

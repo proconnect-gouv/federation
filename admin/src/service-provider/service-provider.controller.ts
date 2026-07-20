@@ -76,15 +76,20 @@ export class ServiceProviderController {
       page,
       limit,
       search: querySearch
-        ? { fields: ["name", "key"], value: querySearch }
+        ? {
+            fields: [
+              { name: "name", searchKind: "contains" },
+              { name: "key", searchKind: "contains" },
+            ],
+            value: querySearch,
+          }
         : undefined,
       sort: querySortField
         ? { field: querySortField, direction: querySortDirection }
-        : undefined,
-      defaultSort: {
-        field: "createdAt",
-        direction: "desc",
-      },
+        : {
+            field: "createdAt",
+            direction: "desc",
+          },
     });
     return {
       serviceProviders: items,
