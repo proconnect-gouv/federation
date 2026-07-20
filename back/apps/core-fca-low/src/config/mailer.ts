@@ -12,4 +12,4 @@ const mailerConfig: MailerConfig = {
   brevoApiKey: env.string("BREVO_API_KEY", true),
 };
 
- export default mailerConfig;
+export default mailerConfig;
