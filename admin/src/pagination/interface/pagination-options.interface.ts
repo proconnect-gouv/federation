@@ -8,8 +8,7 @@ export interface PaginationOptions {
 export type PaginationFieldSearchType = {
   name: string;
 } & (
-  | { searchKind: "exactMatch"; pattern: RegExp }
-  | { searchKind: "contains" }
+  { searchKind: "exactMatch"; pattern: RegExp } | { searchKind: "contains" }
 );
 
 export type PaginationSortDirectionType = "asc" | "desc";
