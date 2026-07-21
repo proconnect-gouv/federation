@@ -36,7 +36,7 @@ export const hasBusinessLog = async (
   try {
     await asyncExec(command);
   } catch (err) {
-    exitCode = err.code;
+    exitCode = Number((err as NodeJS.ErrnoException).code);
   }
   return exitCode;
 };

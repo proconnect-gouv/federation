@@ -11,52 +11,52 @@ import {
 
 export class ValidTokenIntrospection {
   @IsBoolean()
-  readonly active: boolean;
+  readonly active!: boolean;
 
   @IsString()
   @MinLength(1)
-  readonly sub: string;
+  readonly sub!: string;
 
   @IsString()
   @MinLength(1)
-  readonly client_id: string;
+  readonly client_id!: string;
 
   @IsNumber()
   @IsPositive()
-  readonly exp: number;
+  readonly exp!: number;
 
   @IsNumber()
   @IsPositive()
-  readonly iat: number;
+  readonly iat!: number;
 
   @IsString()
   @MinLength(1)
-  readonly iss: string;
+  readonly iss!: string;
 
   @IsString()
   @MinLength(1)
-  readonly scope: string;
+  readonly scope!: string;
 
   @IsString()
   @MinLength(1)
-  readonly token_type: string;
+  readonly token_type!: string;
 }
 
 class ExpiredTokenIntrospection {
   @IsBoolean()
-  readonly active: boolean;
+  readonly active!: boolean;
 }
 
 export class GetTokenIntrospectionValidTokenDto {
   @IsObject()
   @ValidateNested()
   @Type(() => ValidTokenIntrospection)
-  readonly token_introspection: ValidTokenIntrospection;
+  readonly token_introspection!: ValidTokenIntrospection;
 }
 
 export class GetTokenIntrospectionExpiredTokenDto {
   @IsObject()
   @ValidateNested()
   @Type(() => ExpiredTokenIntrospection)
-  readonly token_introspection: ExpiredTokenIntrospection;
+  readonly token_introspection!: ExpiredTokenIntrospection;
 }

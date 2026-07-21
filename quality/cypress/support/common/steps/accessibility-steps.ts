@@ -22,7 +22,7 @@ When("je vérifie l'accessibilité sur cette page", function () {
       const oldViolations = this.allViolations ?? [];
       this.allViolations = oldViolations.concat(this.newViolations);
     };
-    cy.checkA11y(null, null, violationCallback, true);
+    cy.checkA11y(undefined, undefined, violationCallback, true);
   };
   injectAxeOnce();
   checkA11y();

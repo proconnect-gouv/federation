@@ -1,6 +1,6 @@
 export interface ServiceProviderConfig extends Record<
   string,
-  string | string[]
+  string | string[] | null
 > {
   name: string;
   redirectUri: string;
@@ -9,6 +9,6 @@ export interface ServiceProviderConfig extends Record<
   scopes: string[];
   active: string;
   type: string;
-  userinfo_signed_response_alg: string;
+  userinfo_signed_response_alg: string | null;
   id_token_signed_response_alg: string;
 }

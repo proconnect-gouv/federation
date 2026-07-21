@@ -1,3 +1,4 @@
+// @ts-expect-error — no types for lodash
 import { cloneDeep } from "lodash";
 
 // Docker
@@ -75,9 +76,9 @@ const { apiCommon, environment, idpConfigs, idpList, spConfigs, spList } =
 export const getServiceProviderByDescription = (
   description: string,
 ): ServiceProvider => {
-  const serviceProvider: ServiceProvider = spList.find((serviceProvider) =>
+  const serviceProvider = spList.find((serviceProvider) =>
     serviceProvider.descriptions.includes(description),
-  );
+  ) as ServiceProvider;
   expect(
     serviceProvider,
     `A service provider matches the description '${description}'`,
@@ -92,9 +93,9 @@ export const getDefaultServiceProviderConfig = (): ServiceProviderConfig => {
 export const getIdentityProviderByDescription = (
   description: string,
 ): IdentityProvider => {
-  const identityProvider: IdentityProvider = idpList.find((identityProvider) =>
+  const identityProvider = idpList.find((identityProvider) =>
     identityProvider.descriptions.includes(description),
-  );
+  ) as IdentityProvider;
   expect(
     identityProvider,
     `An identity provider matches the description '${description}'`,
