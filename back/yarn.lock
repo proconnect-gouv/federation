@@ -3013,7 +3013,7 @@ end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
-enhanced-resolve@^5.0.0, enhanced-resolve@^5.20.0, enhanced-resolve@^5.7.0:
+enhanced-resolve@^5.20.0, enhanced-resolve@^5.7.0:
   version "5.20.1"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.20.1.tgz#eeeb3966bea62c348c40a0cc9e7912e2557d0be0"
   integrity sha512-Qohcme7V1inbAfvjItgw0EaxVX5q2rdVEZHRBrEQdRZTssLDGsL8Lwrznl8oQ/6kuTJONLaDcGjkNP247XEhcA==
@@ -4643,7 +4643,7 @@ methods@~1.1.2:
   resolved "https://registry.npmjs.org/methods/-/methods-1.1.2.tgz"
   integrity sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==
 
-micromatch@^4.0.0, micromatch@^4.0.4:
+micromatch@^4.0.4:
   version "4.0.8"
   resolved "https://registry.npmjs.org/micromatch/-/micromatch-4.0.8.tgz"
   integrity sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==
@@ -5315,7 +5315,7 @@ picomatch@4.0.2:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.2.tgz#77c742931e8f3b8820946c76cd0c1f13730d1dab"
   integrity sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==
 
-picomatch@4.0.4, picomatch@^4.0.3:
+picomatch@4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.4.tgz#fd6f5e00a143086e074dffe4c924b8fb293b0589"
   integrity sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==
@@ -5324,6 +5324,11 @@ picomatch@^2.0.4, picomatch@^2.2.3, picomatch@^2.3.1:
   version "2.3.1"
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
+
+picomatch@^4.0.0, picomatch@^4.0.3:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.5.tgz#51ea57a17d86f605f81039595fbc40ed06a55fab"
+  integrity sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==
 
 pino-abstract-transport@^3.0.0:
   version "3.0.0"
@@ -5718,7 +5723,7 @@ semver@^6.0.0, semver@^6.3.0, semver@^6.3.1:
   resolved "https://registry.npmjs.org/semver/-/semver-6.3.1.tgz"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
-semver@^7.3.4, semver@^7.3.5, semver@^7.5.3, semver@^7.5.4, semver@^7.7.3, semver@^7.7.4:
+semver@^7.3.5, semver@^7.5.3, semver@^7.5.4, semver@^7.7.3, semver@^7.7.4:
   version "7.7.4"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.7.4.tgz#28464e36060e991fa7a11d0279d2d3f3b57a7e8a"
   integrity sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==
@@ -6220,15 +6225,13 @@ ts-jest@^29.4.9:
     type-fest "^4.41.0"
     yargs-parser "^21.1.1"
 
-ts-loader@^9.5.7:
-  version "9.5.7"
-  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-9.5.7.tgz#582663e853646e18506cd5cc79feb354952731c0"
-  integrity sha512-/ZNrKgA3K3PtpMYOC71EeMWIloGw3IYEa5/t1cyz2r5/PyUwTXGzYJvcD3kfUvmhlfpz1rhV8B2O6IVTQ0avsg==
+ts-loader@^9.6.2:
+  version "9.6.2"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-9.6.2.tgz#a08f4935ddb87edbd58ce33b7b2558c2a77fdd47"
+  integrity sha512-R4iuczmtgxvtuI556s+hTZ6/7Ee03VCAk/l/M8LY1OAsUgB7YydsCxkgq9D9pKRaD7GJqUi2u8fp9zZP/ufjKA==
   dependencies:
     chalk "^4.1.0"
-    enhanced-resolve "^5.0.0"
-    micromatch "^4.0.0"
-    semver "^7.3.4"
+    picomatch "^4.0.0"
     source-map "^0.7.4"
 
 ts-node@^10.9.1:
