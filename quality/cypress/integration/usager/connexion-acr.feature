@@ -114,3 +114,11 @@ Fonctionnalité: Connexion Usager - ACR
     Alors je suis redirigé vers la page erreur du fournisseur de service
     Et le titre de l'erreur fournisseur de service est "access_denied"
     Et la description de l'erreur fournisseur de service est "requested%20ACRs%20could%20not%20be%20satisfied"
+
+  Scénario: le FI n'est pas MFA-compliant mais j'utilise un e-mail passe-droit
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service requiert le claim "acr" avec les valeurs "eidas0 eidas0-mfa"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test+mfa@fia2.fr"
+    Quand je clique sur le bouton de connexion
+    Alors la page du FI affiche requestedAcrs "eidas0 eidas0-mfa" 

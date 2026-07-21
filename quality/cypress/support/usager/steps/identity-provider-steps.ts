@@ -9,6 +9,15 @@ function getDebugInfo() {
   return cy.get(`details#open-debug-info code`).invoke("text");
 }
 
+function extractRequestedAcrs(content: string): string[] {
+  const { oidcProviderPrompt, oidcProviderParams } = JSON.parse(content);
+  return get(oidcProviderPrompt.details, "acr.value")
+    ? [get(oidcProviderPrompt.details, "acr.value")]
+    : get(oidcProviderPrompt.details, "acr.values") ||
+        oidcProviderParams?.acr_values?.split(" ") ||
+        [];
+}
+
 Then(
   /je suis redirigé vers la page login du fournisseur d'identité "([^"]*)"/,
   function (description: string) {
@@ -121,16 +130,22 @@ Then(
 
 Then(/la page du FI n'affiche pas de requestedAcrs/, function () {
   getDebugInfo().then((content) => {
-    const { oidcProviderPrompt, oidcProviderParams } = JSON.parse(content);
-    const requestedAcrs: string[] = get(oidcProviderPrompt.details, "acr.value")
-      ? [get(oidcProviderPrompt.details, "acr.value")]
-      : get(oidcProviderPrompt.details, "acr.values") ||
-        oidcProviderParams?.acr_values?.split(" ") ||
-        [];
+    const requestedAcrs: string[] = extractRequestedAcrs(content);
 
     expect(requestedAcrs).to.be.empty;
   });
 });
+
+Then(
+  /la page du FI affiche requestedAcrs "([^"]*)"/,
+  function (expectedValue: string) {
+    getDebugInfo().then((content) => {
+      const requestedAcrs: string[] = extractRequestedAcrs(content);
+
+      expect(requestedAcrs).to.deep.equal(expectedValue.split(" "));
+    });
+  },
+);
 
 Then("le champ identifiant correspond à {string}", function (email: string) {
   cy.get('input[name="email"]').should("have.value", email);

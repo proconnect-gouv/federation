@@ -32,7 +32,8 @@ const appConfig: AppConfig = {
   maintenanceDuration: env.string("MAINTENANCE_DURATION"),
   defaultRedirectUri: "https://www.proconnect.gouv.fr",
   supportEmail: "support+federation@proconnect.gouv.fr",
-  passeDroitEmailSuffix: "+proconnect",
+  idpRoutingForcingEmailSuffix: "+proconnect",
+  idpMfaComplianceForcingEmailSuffix: "+mfa",
 };
 
 export default appConfig;

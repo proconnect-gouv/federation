@@ -204,7 +204,7 @@ describe("CoreFcaService", () => {
       configServiceMock.get.mockReturnValue({
         defaultIdpId: "default-idp",
         spAuthorizedFqdnsConfigs: [],
-        passeDroitEmailSuffix: "+proconnect",
+        idpRoutingForcingEmailSuffix: "+proconnect",
       });
 
       identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("hogwarts.uk");
@@ -222,7 +222,7 @@ describe("CoreFcaService", () => {
       // Given
       configServiceMock.get.mockReturnValue({
         defaultIdpId: "",
-        passeDroitEmailSuffix: "+proconnect",
+        idpRoutingForcingEmailSuffix: "+proconnect",
       });
 
       identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("hogwarts.uk");
@@ -239,7 +239,7 @@ describe("CoreFcaService", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: "default-idp",
-        passeDroitEmailSuffix: "+proconnect",
+        idpRoutingForcingEmailSuffix: "+proconnect",
       });
 
       const idpsList = [
@@ -267,7 +267,7 @@ describe("CoreFcaService", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: "default-idp",
-        passeDroitEmailSuffix: "+proconnect",
+        idpRoutingForcingEmailSuffix: "+proconnect",
       });
 
       const idpsList = [
@@ -295,7 +295,7 @@ describe("CoreFcaService", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: "default-idp",
-        passeDroitEmailSuffix: "+proconnect",
+        idpRoutingForcingEmailSuffix: "+proconnect",
       });
 
       const idpsList = [
@@ -325,7 +325,7 @@ describe("CoreFcaService", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
         defaultIdpId: "default-idp",
-        passeDroitEmailSuffix: "+proconnect",
+        idpRoutingForcingEmailSuffix: "+proconnect",
       });
 
       const idpsList = [
