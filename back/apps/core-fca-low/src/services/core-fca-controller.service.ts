@@ -18,7 +18,6 @@ import { OidcAcrService } from "@fc/oidc-acr";
 import { OidcClientService } from "@fc/oidc-client";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { SessionService } from "@fc/session";
-import { isEmpty } from "lodash";
 
 @Injectable()
 export class CoreFcaControllerService {
@@ -95,33 +94,26 @@ export class CoreFcaControllerService {
 
     this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, idpLoginHint);
 
-    const authorizeParams: { [key: string]: any } = {
-      acr_values: null,
+    const interaction = await this.oidcProvider.getInteraction(req, res);
+    const filteredAcrParams = this.oidcAcr.getFilteredAcrParamsFromInteraction(
+      interaction,
+      idpId,
+    );
+
+    const customAuthorizeParams = {
       login_hint: idpLoginHint,
       siret_hint: spSiretHint,
       sp_id: spId,
       sp_name: spName,
       remember_me: rememberMe,
-      claims: {
-        id_token: {
-          amr: null,
-          acr: null,
-        },
-      },
     };
 
-    const interaction = await this.oidcProvider.getInteraction(req, res);
-    const { acrValues, acrClaims } =
-      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction, idpId);
-
-    if (!isEmpty(acrClaims)) {
-      authorizeParams.claims.id_token.acr = acrClaims;
-    } else if (!isEmpty(acrValues)) {
-      authorizeParams.acr_values = acrValues;
-    }
-
     const { authorizationUrl, nonce, state, idpName, idpLabel } =
-      await this.oidcClient.getAuthorizationUrl(idpId, authorizeParams);
+      await this.oidcClient.getAuthorizationUrl(
+        idpId,
+        filteredAcrParams,
+        customAuthorizeParams,
+      );
 
     const sessionPayload: UserSession = {
       idpId,
