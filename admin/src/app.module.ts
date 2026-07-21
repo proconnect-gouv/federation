@@ -26,6 +26,7 @@ import { ConfigurationController } from "./configuration/configuration.controlle
 import { ConfigurationModule } from "./configuration/configuration.module";
 import { FederationUserController } from "./federation-user/federation-user.controller";
 import { FederationUserModule } from "./federation-user/federation-user.module";
+import { HealthController } from "./health.controller";
 import { IdentityProviderController } from "./identity-provider/identity-provider.controller";
 import { IdentityProviderModule } from "./identity-provider/identity-provider.module";
 import { LoggerModule } from "./logger/logger.module";
@@ -59,7 +60,7 @@ import { ServiceProviderModule } from "./service-provider/service-provider.modul
     }),
   ],
   providers: [LocalsInterceptor, TotpService],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {
