@@ -8,8 +8,8 @@ import { ConfigService } from "@fc/config";
 import { ActiveUserSessionDto, UserSession } from "@fc/core/dto";
 import { generateErrorId } from "@fc/exceptions/helpers";
 import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService, TrackedEvent } from "@fc/logger";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import {
   OidcCtx,
   OidcProviderConfig,
@@ -28,7 +28,7 @@ export class CoreFcaMiddlewareService {
     protected readonly config: ConfigService,
     protected readonly oidcProvider: OidcProviderService,
     protected readonly sessionService: SessionService,
-    protected readonly identityProvider: IdentityProviderAdapterMongoService,
+    protected readonly identityProvider: IdentityProviderAdapter,
   ) {}
 
   protected koaHtmlErrorFormatterMiddlewareFactory(middleware: Function) {

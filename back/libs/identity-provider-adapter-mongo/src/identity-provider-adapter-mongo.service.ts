@@ -15,7 +15,7 @@ import {
   FederationServerMetadata,
   IdentityProviderMetadata,
 } from "@fc/oidc";
-import { IIdentityProviderAdapter } from "@fc/oidc-client";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 
 import { ClientMetadata, ServerMetadata } from "openid-client";
 import {
@@ -49,7 +49,7 @@ export const IDP_METADATA = [
 ] as const satisfies readonly (keyof ServerMetadata)[];
 
 @Injectable()
-export class IdentityProviderAdapterMongoService implements IIdentityProviderAdapter {
+export class IdentityProviderAdapterMongoService implements IdentityProviderAdapter {
   private listCache: IdentityProviderMetadata[];
 
   constructor(

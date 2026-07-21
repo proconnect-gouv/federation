@@ -1,12 +1,26 @@
 import { AccountFcaModule } from "@fc/account-fca";
 import { ConfigModule } from "@fc/config";
-import { IdentityProviderAdapterMongoModule } from "@fc/identity-provider-adapter-mongo";
-import { Module } from "@nestjs/common";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
+import { DynamicModule, Module, Type } from "@nestjs/common";
 import { EmailValidatorService } from "./services";
 
-@Module({
-  imports: [IdentityProviderAdapterMongoModule, ConfigModule, AccountFcaModule],
-  providers: [EmailValidatorService],
-  exports: [EmailValidatorService],
-})
-export class EmailValidatorModule {}
+@Module({})
+export class EmailValidatorModule {
+  static register(
+    identityProvider: Type<IdentityProviderAdapter>,
+    identityProviderModule,
+  ): DynamicModule {
+    return {
+      module: EmailValidatorModule,
+      imports: [identityProviderModule, ConfigModule, AccountFcaModule],
+      providers: [
+        {
+          provide: IdentityProviderAdapter,
+          useExisting: identityProvider,
+        },
+        EmailValidatorService,
+      ],
+      exports: [EmailValidatorService],
+    };
+  }
+}

@@ -4,4 +4,3 @@ export * from "./exceptions";
 export * from "./interfaces";
 export * from "./oidc-client.module";
 export * from "./services";
-export * from "./tokens";

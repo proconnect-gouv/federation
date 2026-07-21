@@ -21,7 +21,7 @@ import { MailerModule } from "@fc/mailer";
 import { MongooseModule } from "@fc/mongoose";
 import { NotificationsModule } from "@fc/notifications";
 import { OidcAcrModule } from "@fc/oidc-acr";
-import { IDENTITY_PROVIDER_SERVICE, OidcClientModule } from "@fc/oidc-client";
+import { IdentityProviderAdapter, OidcClientModule } from "@fc/oidc-client";
 import {
   OidcProviderModule,
   OidcProviderSessionNotFoundExceptionFilter,
@@ -64,7 +64,10 @@ export class AppModule {
         CqrsModule,
         MailerModule.forRoot(),
         AsyncLocalStorageModule,
-        EmailValidatorModule,
+        EmailValidatorModule.register(
+          IdentityProviderAdapterMongoService,
+          IdentityProviderAdapterMongoModule,
+        ),
         SessionModule,
         MongooseModule.forRoot(),
         RedisModule,
@@ -98,7 +101,7 @@ export class AppModule {
       providers: [
         CoreFcaService,
         {
-          provide: IDENTITY_PROVIDER_SERVICE,
+          provide: IdentityProviderAdapter,
           useExisting: IdentityProviderAdapterMongoService,
         },
         CsrfService,

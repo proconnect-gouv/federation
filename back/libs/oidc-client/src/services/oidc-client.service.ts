@@ -2,7 +2,6 @@ import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
 import { HttpProxyProtocol } from "@fc/microservices";
 import { IdentityProviderMetadata } from "@fc/oidc";
-import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
 import { RabbitmqConfig } from "@fc/rabbitmq";
 import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
@@ -52,8 +51,8 @@ import {
   OidcClientUserinfoFailedException,
 } from "../exceptions";
 import {
+  IdentityProviderAdapter,
   OidcClientSessionParams,
-  type IIdentityProviderAdapter,
 } from "../interfaces";
 
 @Injectable()
@@ -82,8 +81,7 @@ export class OidcClientService {
 
   constructor(
     private readonly config: ConfigService,
-    @Inject(IDENTITY_PROVIDER_SERVICE)
-    private readonly identityProvider: IIdentityProviderAdapter,
+    private readonly identityProvider: IdentityProviderAdapter,
     private readonly logger: LoggerService,
     @Inject("HyyyperbridgeBroker") private readonly broker: ClientProxy,
     private readonly session: SessionService,

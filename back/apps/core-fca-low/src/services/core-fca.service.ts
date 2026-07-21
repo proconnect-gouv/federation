@@ -1,8 +1,8 @@
 import { ConfigService } from "@fc/config";
 import { AppConfig } from "@fc/core/dto";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
 import { IdentityProviderMetadata } from "@fc/oidc";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import { Injectable } from "@nestjs/common";
 import { isEmpty } from "lodash";
 import {
@@ -14,7 +14,7 @@ import {
 export class CoreFcaService {
   constructor(
     private readonly config: ConfigService,
-    private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly identityProvider: IdentityProviderAdapter,
     private readonly logger: LoggerService,
   ) {}
 

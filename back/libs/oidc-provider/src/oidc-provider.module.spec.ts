@@ -11,6 +11,9 @@ class MockIdentityProviderAdapterService {
   getList = jest.fn();
   isActiveById = jest.fn();
   refreshCache = jest.fn();
+  getFqdnFromEmail = jest.fn();
+  getIdpsByEmail = jest.fn();
+  getIdpsByFqdn = jest.fn();
 }
 
 class MockServiceProviderAdapterService {

@@ -2,10 +2,10 @@ import { AccountFcaService } from "@fc/account-fca";
 import { ConfigService } from "@fc/config";
 import { InteractionErrorQuery } from "@fc/core/dto/interaction_error_query.dto";
 import { CsrfService } from "@fc/csrf";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService, TrackedEvent } from "@fc/logger";
 import { NotificationsService } from "@fc/notifications";
 import { OidcAcrService } from "@fc/oidc-acr";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
 import { type ISessionService } from "@fc/session";
@@ -47,7 +47,7 @@ export class InteractionController {
     private readonly coreFcaService: CoreFcaService,
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcAcr: OidcAcrService,
-    private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly identityProvider: IdentityProviderAdapter,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
