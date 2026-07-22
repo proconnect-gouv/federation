@@ -249,15 +249,7 @@ export class OidcProviderConfigService {
         </head>
         <body>
           ${form}
-          <script>
-            var form = document.forms[0];
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'logout';
-            input.value = 'yes';
-            form.appendChild(input);
-            form.submit();
-          </script>
+          <script src="/js/end-session-confirm.js"></script>
         </body>
       </html>`;
     };
