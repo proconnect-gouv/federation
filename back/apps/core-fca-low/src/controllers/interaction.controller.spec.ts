@@ -14,6 +14,7 @@ import { validate } from "class-validator";
 import { Request, Response } from "express";
 
 // --- Mocks for external dependencies ---
+import { EmailVerificationService } from "@fc/email-verification";
 import { AfterGetOidcCallbackSessionDto, UserSession } from "../dto";
 import {
   CoreFcaAgentAccountBlockedException,
@@ -42,6 +43,7 @@ describe("InteractionController", () => {
   let configServiceMock: any;
   let notificationsMock: any;
   let sessionServiceMock: any; // for Csrf only
+  let emailVerificationMock: any;
   let coreFcaControllerMock: any;
   let csrfServiceMock: any;
   let loggerMock: any;
@@ -79,6 +81,9 @@ describe("InteractionController", () => {
       redirectToIdpWithEmail: jest.fn(),
       redirectToIdpWithIdpId: jest.fn(),
     };
+    emailVerificationMock = {
+      computeCanAcrBeSatisfiedByPcf: jest.fn(),
+    };
     csrfServiceMock = {
       getOrCreate: jest.fn(),
     };
@@ -106,6 +111,7 @@ describe("InteractionController", () => {
         SessionService,
         NotificationsService,
         LoggerService,
+        EmailVerificationService,
       ],
     })
       .overrideProvider(AccountFcaService)
@@ -132,6 +138,8 @@ describe("InteractionController", () => {
       .useValue(notificationsMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(EmailVerificationService)
+      .useValue(emailVerificationMock)
       .compile();
 
     controller = module.get<InteractionController>(InteractionController);
@@ -389,6 +397,7 @@ describe("InteractionController", () => {
   describe("getVerify()", () => {
     beforeEach(() => {
       accountFcaMock.getAccountBySub.mockResolvedValue({ active: true });
+      configServiceMock.get.mockReturnValue({ urlPrefix: "/prefix" });
     });
     it("should successfully complete the interaction when the IdP is active and conditions are satisfied", async () => {
       const req = { sessionId: "session1" } as unknown as Request;
@@ -554,6 +563,32 @@ describe("InteractionController", () => {
       await controller.getVerify(req, res, {} as any, userSessionService);
 
       expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
+    });
+
+    it("should call redirect to email verification if acr satisfiable by Pcf ", async () => {
+      const req = { query: {} } as Request;
+      const res: Partial<Response> = { redirect: jest.fn() };
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
+          spEssentialAcr: "high",
+          idpAcr: "low",
+        }),
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
+
+      identityProviderMock.isActiveById.mockResolvedValue(true);
+      serviceProviderMock.getById.mockResolvedValue({ type: "public" });
+      oidcAcrMock.getInteractionAcr.mockReturnValue(null);
+      emailVerificationMock.computeCanAcrBeSatisfiedByPcf.mockReturnValue(true);
+
+      await controller.getVerify(
+        req,
+        res as Response,
+        {} as any,
+        userSessionService,
+      );
+
+      expect(res.redirect).toHaveBeenCalledWith("/prefix/verify-email");
     });
   });
 

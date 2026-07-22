@@ -5,6 +5,7 @@ import { CachedOrganizationModule } from "@fc/cached-organization";
 import { ConfigModule, ConfigService } from "@fc/config";
 import { CsrfModule, CsrfService } from "@fc/csrf";
 import { EmailValidatorModule } from "@fc/email-validator/email-validator.module";
+import { EmailVerificationModule } from "@fc/email-verification";
 import {
   ExceptionsModule,
   FcWebHtmlExceptionFilter,
@@ -17,7 +18,6 @@ import {
 } from "@fc/identity-provider-adapter-mongo";
 import { LoggerModule } from "@fc/logger";
 import { LoggerRequestPlugin, LoggerSessionPlugin } from "@fc/logger-plugins";
-import { MailerModule } from "@fc/mailer";
 import { MongooseModule } from "@fc/mongoose";
 import { NotificationsModule } from "@fc/notifications";
 import { OidcAcrModule } from "@fc/oidc-acr";
@@ -37,6 +37,7 @@ import { APP_FILTER } from "@nestjs/core";
 import { CqrsModule } from "@nestjs/cqrs";
 import {
   AccessibilityController,
+  EmailVerificationController,
   HealthController,
   InteractionController,
   OidcClientController,
@@ -62,7 +63,6 @@ export class AppModule {
         LoggerModule.forRoot([LoggerRequestPlugin, LoggerSessionPlugin]),
         // 3. Load other modules
         CqrsModule,
-        MailerModule.forRoot(),
         AsyncLocalStorageModule,
         EmailValidatorModule,
         SessionModule,
@@ -87,11 +87,13 @@ export class AppModule {
         AccountFcaModule,
         ApiEntrepriseModule,
         CachedOrganizationModule,
+        EmailVerificationModule,
       ],
       controllers: [
         AccessibilityController,
         HealthController,
         InteractionController,
+        EmailVerificationController,
         OidcClientController,
         OidcProviderController,
       ],

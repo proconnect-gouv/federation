@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="light">
+  <head>
+    <%- include('includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/pages/interaction.css" />
+    <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
+    <title>Vérification de l'adresse e-mail - ProConnect</title>
+  </head>
+  <body>
+    <%- include('includes/skiplinks.ejs') %> <%- include('includes/notice.ejs')
+    %> <%- include('includes/header.ejs') %>
+    <main role="main" id="content" class="fr-py-2w">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center">
+          <div class="fr-col-12 fr-col-md-8 fr-col-lg-5">
+            <h1 class="fr-h2">Confirmer votre adresse email</h1>
+            <div>
+              <form
+                autocomplete="off"
+                id="verify-email"
+                action="/api/v2/verify-email"
+                method="post"
+                class="fr-mb-4w"
+              >
+                <% if (hasSentVerificationEmail) { %>
+                <div class="fr-alert fr-alert--info fr-mb-4w">
+                  <h2 class="fr-h6">Code de vérification envoyé</h2>
+                  <p>Vérifiez les emails envoyés par <b><%= fromEmail; %></b>.</p>
+                </div>
+                <% } %>
+                <% if (errorMessage) { %>
+                  <div class="fr-alert fr-alert--error fr-mb-4w">
+                    <h2 class="fr-h6">Erreur</h2>
+                    <p><%= errorMessage %></p>
+                  </div>
+                <% } %>
+              
+                <input type="hidden" name="csrfToken" value="<%= locals.csrfToken; %>" />
+                <div class="fr-input-group fr-mb-2w">
+                  <label class="fr-label" for="verify_email_token">
+                    Code de confirmation
+                    <span class="fr-hint-text">
+                      Insérer le code à 10 chiffres reçu par email
+                    </span>
+                  </label>
+                  <input
+                    class="fr-input"
+                    required
+                    pattern="^\s*(\d\s*){10}$"
+                    type="text"
+                    id="verify_email_token"
+                    title="10 chiffres"
+                    name="verify_email_token"
+                  />
+                </div>
+                <button class="fr-btn btn--fullwidth" type="submit">
+                  Continuer
+                </button>
+              </form>
+              <form
+                action="/api/v2/verify-email"
+                method="get"
+                data-ignore-validation="true"
+              >
+                <button
+                  disabled
+                  data-countdown-end-date="<%= countdownEndDate %>"
+                  class="fr-btn fr-btn--tertiary fr-mb-2w disabled-with-countdown btn--fullwidth"
+                >
+                  Recevoir un nouveau code
+                </button>
+                <p
+                  class="countdown-container blue-france fr-hidden centered-content"
+                >
+                  <b>
+                    <span aria-hidden="true" class="fr-icon-timer-line"></span>
+                    <span class="countdown-time"></span>
+                  </b>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script type="text/javascript" src="/js/disabled-with-countdown.js"></script>
+
+    <%- include('includes/footer.ejs') %> <%- include('includes/scripts.ejs') %>
+    
+  </body>
+</html>

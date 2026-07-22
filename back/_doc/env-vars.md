@@ -31,6 +31,7 @@
 | App_MAINTENANCE_DATETIME                        | string        |
 | App_MAINTENANCE_DURATION                        | string        |
 | App_SP_AUTHORIZED_FQDNS_CONFIGS                 | json          |
+| App_VERIFICATION_EMAIL_PERCENTAGE               | number        |
 | App_VIEWS_PATHS                                 | json          |
 | EmailValidator_DOMAIN_WHITELIST                 | stringArray   |
 | EmailValidator_FEATURE_MX_RESOLUTION_VALIDATION | boolean       |

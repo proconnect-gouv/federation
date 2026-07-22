@@ -10,6 +10,7 @@ import Mailer from "./mailer";
 import Mongoose from "./mongoose";
 import OidcClient from "./oidc-client";
 import OidcProvider from "./oidc-provider";
+import RateLimiter from "./rate-limiter";
 import Redis from "./redis";
 import ServiceProviderAdapterMongo from "./service-provider-adapter-mongo";
 import Session from "./session";
@@ -25,6 +26,7 @@ const coreFcaConfig: CoreFcaConfig = {
   OidcProvider,
   OidcClient,
   Mongoose,
+  RateLimiter,
   Redis,
   ServiceProviderAdapterMongo,
   IdentityProviderAdapterMongo,

@@ -2,6 +2,7 @@ import { AccountFcaService } from "@fc/account-fca";
 import { ConfigService } from "@fc/config";
 import { InteractionErrorQuery } from "@fc/core/dto/interaction_error_query.dto";
 import { CsrfService } from "@fc/csrf";
+import { EmailVerificationService } from "@fc/email-verification";
 import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService, TrackedEvent } from "@fc/logger";
 import { NotificationsService } from "@fc/notifications";
@@ -54,6 +55,7 @@ export class InteractionController {
     private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly csrfService: CsrfService,
     private readonly logger: LoggerService,
+    private readonly emailVerification: EmailVerificationService,
   ) {}
 
   @Get(Routes.DEFAULT)
@@ -213,15 +215,15 @@ export class InteractionController {
     userSessionService: ISessionService<AfterGetOidcCallbackSessionDto>,
   ) {
     const {
-      spIdentity: { sub },
       amr,
       idpAcr,
       idpId,
-      spIdentity: { email, roles, siret, organization_label },
+      spIdentity: { sub, email, roles, siret, organization_label },
       interactionId,
       isSilentAuthentication,
       spEssentialAcr,
       spId,
+      isEmailVerifiedByPcf,
     } = userSessionService.get();
 
     const account = await this.accountService.getAccountBySub(sub);
@@ -264,15 +266,27 @@ export class InteractionController {
     const interactionAcr = this.oidcAcr.getInteractionAcr({
       idpAcr,
       spEssentialAcr,
+      isEmailVerifiedByPcf,
     });
 
     if (!interactionAcr) {
+      const canAcrBeSatisfiedByPcf =
+        this.emailVerification.computeCanAcrBeSatisfiedByPcf({
+          spEssentialAcr,
+          amr,
+          email,
+        });
+      if (canAcrBeSatisfiedByPcf) {
+        const { urlPrefix } = this.config.get<AppConfig>("App");
+        const url = `${urlPrefix}${Routes.VERIFY_EMAIL}`;
+
+        return res.redirect(url);
+      }
       return await this.oidcProvider.abortInteraction(req, res, {
         error: "access_denied",
         error_description: "requested ACRs could not be satisfied",
       });
     }
-
     const session: UserSession = {
       interactionAcr,
     };

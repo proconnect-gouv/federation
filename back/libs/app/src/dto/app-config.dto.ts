@@ -90,4 +90,7 @@ export class AppConfig {
   @IsOptional()
   @IsString()
   aidantsConnectUid?: string;
+
+  @IsNumber()
+  verificationEmailPercentage: number;
 }

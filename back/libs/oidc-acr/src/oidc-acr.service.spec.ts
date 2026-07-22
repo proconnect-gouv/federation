@@ -84,6 +84,21 @@ describe("OidcAcrService", () => {
       // Then
       expect(result).toBe("eidas1");
     });
+
+    it("should return 'eidas1-mfa' if essential ACR is 'eidas1-mfa' and email is verified by PCF", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        spEssentialAcr: "eidas1-mfa",
+        idpAcr: "B",
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAcr"](sessionDataMock);
+
+      // Then
+      expect(result).toBe("eidas1-mfa");
+    });
   });
 
   describe("getFilteredAcrValues()", () => {

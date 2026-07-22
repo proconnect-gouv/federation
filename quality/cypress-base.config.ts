@@ -7,6 +7,12 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
     supportFile: "cypress/support/index.ts",
     experimentalRunAllSpecs: true,
   },
+  expose: {
+    MAILDEV_PROTOCOL: "https",
+    MAILDEV_HOST: "maildev.docker.dev-franceconnect.fr",
+    MAILDEV_SMTP_PORT: "1025",
+    MAILDEV_API_PORT: "443",
+  },
   env: {
     // Base Configuration
     TEST_ENV: "docker",
@@ -36,6 +42,7 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
       kid: "EC",
       use: "enc",
     },
+    FEDERATION_DIR: `${process.env.PC_ROOT}/federation`,
   },
 };
 

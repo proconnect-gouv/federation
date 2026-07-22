@@ -1138,6 +1138,13 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@kitajs/html@^4.2.9":
+  version "4.2.13"
+  resolved "https://registry.yarnpkg.com/@kitajs/html/-/html-4.2.13.tgz#43fcf97b40928bde79b8c369aa999b4fc56aadc8"
+  integrity sha512-o+8e61EsoLDPTP7rsPkYolca1YFybHuxU2Lr5fWDZCUkYT/6uBlVkvnZUdCXMQKentJL9dxwpR8/xK2Q+U4LhA==
+  dependencies:
+    csstype "^3.1.3"
+
 "@koa/cors@^3.3.0":
   version "3.4.3"
   resolved "https://registry.npmjs.org/@koa/cors/-/cors-3.4.3.tgz"
@@ -1360,6 +1367,13 @@
     lodash-es "^4.17.21"
     nanoid "^5.1.5"
     tld-extract "^2.1.0"
+
+"@proconnect-gouv/proconnect.email@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.email/-/proconnect.email-1.0.2.tgz#15e100dbe6a090cde4d271dbdf3f90352abed68c"
+  integrity sha512-GNPxQ229pu4Oq/VgGWFxqeAcOYo82ccZ8fq+Q/fvXKubNA1dUOtJyg9zlbo9SFVaFPMWMxRGIdyNVIzKeNAEuA==
+  dependencies:
+    "@kitajs/html" "^4.2.9"
 
 "@proconnect-gouv/proconnect.identite@^9.1.3":
   version "9.1.3"
@@ -2851,6 +2865,11 @@ cross-spawn@^7.0.3:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+csstype@^3.1.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
+  integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
 
 debug@2.6.9, debug@~2.6.9:
   version "2.6.9"
@@ -4875,6 +4894,11 @@ nanoid@^5.1.5:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-5.1.6.tgz#30363f664797e7d40429f6c16946d6bd7a3f26c9"
   integrity sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==
 
+nanoid@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-6.0.0.tgz#8a07398e87773c6a97d158921cad826a9c344eab"
+  integrity sha512-mkUH+rPkwU2qPadJ0oJZOjeZ5Mxn8Q1UhevwkTRWNuUZzyia3h4rhzK39hxaHTk0o2OxB8W2SQ6A8k23ZDi1pQ==
+
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
@@ -5509,6 +5533,11 @@ range-parser@^1.2.1, range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/range-parser/-/range-parser-1.2.1.tgz"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
+
+rate-limiter-flexible@^11.2.0:
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/rate-limiter-flexible/-/rate-limiter-flexible-11.2.0.tgz#55262141ea4ea64c62f44d45eb94f95985549f1e"
+  integrity sha512-L0eIK+BmFMi6NcvmtEg7RSswOFKi9MMD5RhBIypFfOve+G6Jl1Xbb8qEHgK3uRzNtkOFYF0L9f7P4rSf2PnUVw==
 
 raw-body@^2.5.1, raw-body@~2.5.3:
   version "2.5.3"

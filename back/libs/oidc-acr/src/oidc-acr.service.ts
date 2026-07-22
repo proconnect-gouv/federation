@@ -22,11 +22,15 @@ export class OidcAcrService {
   getInteractionAcr({
     idpAcr,
     spEssentialAcr,
-  }: Pick<UserSession, "idpAcr" | "spEssentialAcr">): string | undefined {
-    if (
-      !isEmpty(spEssentialAcr) &&
-      !spEssentialAcr.split(" ").includes(idpAcr)
-    ) {
+    isEmailVerifiedByPcf,
+  }: Pick<UserSession, "idpAcr" | "spEssentialAcr" | "isEmailVerifiedByPcf">):
+    string | undefined {
+    const spEssentialAcrValues = spEssentialAcr?.split(" ") || [];
+    if (spEssentialAcrValues.includes("eidas1-mfa") && isEmailVerifiedByPcf) {
+      return "eidas1-mfa";
+    }
+
+    if (!isEmpty(spEssentialAcr) && !spEssentialAcrValues.includes(idpAcr)) {
       return undefined;
     }
 

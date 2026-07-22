@@ -31,7 +31,7 @@ const config: Config = {
     ],
   },
   transformIgnorePatterns: [
-    "/node_modules/@proconnect-gouv/(?!(proconnect.annuaire_entreprises|proconnect.api_entreprise|proconnect.identite)/)",
+    "/node_modules/@proconnect-gouv/(?!(proconnect.annuaire_entreprises|proconnect.api_entreprise|proconnect.identite|proconnect.email)/)",
   ],
   coverageDirectory: "./coverage",
   coverageThreshold: {

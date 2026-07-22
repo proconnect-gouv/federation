@@ -15,3 +15,4 @@ export * from "./user-session/after-get-oidc-callback-session.dto";
 export * from "./user-session/after-redirect-to-idp-with-email-session.dto";
 export * from "./user-session/after-redirect-to-idp-with-idp-id-session.dto";
 export * from "./user-session/user-session.dto";
+export * from "./verify-email.dto";
