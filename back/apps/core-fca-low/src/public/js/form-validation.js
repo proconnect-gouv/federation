@@ -17,6 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // See issue "Autofill should trigger a change event on inputs" https://issues.chromium.org/issues/41094857
     // It looks like the field is filled in within milliseconds after the DOMContentLoaded event.
     // As a workaround, we wait for 100ms to ensure the field is filled before checking the form validity.
+    if (form.getAttribute("data-ignore-validation") === "true") {
+      return;
+    }
     setTimeout(checkFormValidity, 100);
   });
 });

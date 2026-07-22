@@ -280,6 +280,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/mailer/tsconfig.lib.json"
       }
+    },
+    "email-verification": {
+      "type": "library",
+      "root": "libs/email-verification",
+      "entryFile": "index",
+      "sourceRoot": "libs/email-verification/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/email-verification/tsconfig.lib.json"
+      }
+    },
+    "rate-limiter": {
+      "type": "library",
+      "root": "libs/rate-limiter",
+      "entryFile": "index",
+      "sourceRoot": "libs/rate-limiter/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/rate-limiter/tsconfig.lib.json"
+      }
     }
   }
 }

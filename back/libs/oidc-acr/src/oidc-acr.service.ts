@@ -11,6 +11,10 @@ import { AcrClaims, AcrValues, ExtendedInteraction } from "./oidc-acr.type";
 
 @Injectable()
 export class OidcAcrService {
+  acrEmailVerificationMapping = {
+    eidas1: "eidas1-mfa",
+    eidas0: "eidas0-mfa",
+  };
   constructor(
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
@@ -22,24 +26,62 @@ export class OidcAcrService {
   getInteractionAcr({
     idpAcr,
     spEssentialAcr,
-  }: Pick<UserSession, "idpAcr" | "spEssentialAcr">): string | undefined {
-    if (
-      !isEmpty(spEssentialAcr) &&
-      !spEssentialAcr.split(" ").includes(idpAcr)
-    ) {
-      return undefined;
-    }
-
+    isEmailVerifiedByPcf,
+    amr,
+  }: Pick<
+    UserSession,
+    "idpAcr" | "spEssentialAcr" | "isEmailVerifiedByPcf" | "amr"
+  >): string | undefined {
+    const spEssentialAcrValues = spEssentialAcr?.split(" ") || [];
     const { supportedAcrValues } =
       this.config.get<OidcProviderConfig>("OidcProvider");
+    let supportedIdpAcr = idpAcr;
 
     if (!Array.from(supportedAcrValues).includes(idpAcr)) {
       // If the IdP's ACR value is not supported, fallback to 'eidas1'
       // Note: Some IdPs, especially from Fonction Publique Territoriale, may use lower ACRs
-      return "eidas1";
+      supportedIdpAcr = "eidas1";
     }
 
-    return idpAcr;
+    if (
+      isEmpty(spEssentialAcr) ||
+      spEssentialAcrValues.includes(supportedIdpAcr)
+    ) {
+      return supportedIdpAcr;
+    }
+
+    if (amr?.includes("mail") || !isEmailVerifiedByPcf) {
+      return undefined;
+    }
+
+    for (const [originalAcr, enrichedAcr] of Object.entries(
+      this.acrEmailVerificationMapping,
+    )) {
+      if (
+        spEssentialAcrValues.includes(enrichedAcr) &&
+        supportedIdpAcr === originalAcr
+      ) {
+        return enrichedAcr;
+      }
+    }
+
+    return undefined;
+  }
+
+  computeCanAcrBeSatisfiedByPcf({
+    spEssentialAcr,
+    amr,
+  }: {
+    spEssentialAcr?: string;
+    amr?: string[];
+  }) {
+    const spEssentialAcrValues = spEssentialAcr?.split(" ") || [];
+    if (amr?.includes("mail")) {
+      return false;
+    }
+    return Object.values(this.acrEmailVerificationMapping).some((acr) =>
+      spEssentialAcrValues.includes(acr),
+    );
   }
 
   getFilteredAcrValues(
