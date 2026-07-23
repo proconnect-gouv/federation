@@ -276,28 +276,16 @@ services:
       - data
 
   mongo:
-    image: mongo:8.2.11
-    command:
-      - "--keyFile"
-      - /mongodb-keyfile
-      - "--replSet"
-      - rs0
+    # Mongo 8.3.4 = docker run --rm bitnami/mongodb:latest mongod --version
+    # docker pull bitnami/mongodb:latest | grep Digest
+    image: bitnami/mongodb@sha256:08a7d03d7443a308c1e8cb911a9fb242027646253dbb3442bef45a068a66a7f8 # latest
     env_file:
       - ".env/mongo.env"
     volumes:
       - "../../volumes/mongo/initdb.d:/docker-entrypoint-initdb.d"
       - "../../volumes/mongo-fca-low/scripts:/opt/scripts"
-    post_start:
-      - command: >
-          sh -c "
-            if [ ! -f /mongodb-keyfile ]; then
-              openssl rand -base64 756 > /mongodb-keyfile &&
-              chmod 400 /mongodb-keyfile &&
-              chown mongodb:mongodb /mongodb-keyfile
-            fi
-          "
     healthcheck:
-      test: 'test $$(mongosh --host $${HOSTNAME} -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin --quiet --eval "try{rs.initiate()}catch(e){} ; rs.status().ok") -eq 1'
+      test: 'test $$(mongosh --host $${HOSTNAME} -u $${MONGODB_ROOT_USER} -p $${MONGODB_ROOT_PASSWORD} --authenticationDatabase admin --quiet --eval "rs.status().ok") -eq 1'
       interval: 5s
       timeout: 10s
       start_period: 30s
