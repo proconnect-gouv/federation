@@ -101,6 +101,26 @@ describe("ConfigParser", () => {
       // Then
       expect(result).toBe(parseBooleanMockReturnValue);
     });
+
+    it("should throw if parseBoolean returns undefined", () => {
+      // Given
+      const path = "baz";
+      parseBooleanMock.mockReturnValue(undefined);
+      // Then
+      expect(() => reader.boolean(path)).toThrow(
+        'Config "someprefix/baz" is not a valid boolean (true/false expected)',
+      );
+    });
+
+    it("should return undefined if undefinedIfEmpty is true and parseBoolean returns undefined", () => {
+      // Given
+      const path = "baz";
+      parseBooleanMock.mockReturnValue(undefined);
+      // When
+      const result = reader.boolean(path, true);
+      // Then
+      expect(result).toBe(undefined);
+    });
   });
 
   describe("json", () => {
@@ -159,13 +179,13 @@ describe("ConfigParser", () => {
       expect(result).toBe("bar");
     });
 
-    it("should return empty string if undefinedIfEmpty is false", () => {
+    it("should throw if value is empty", () => {
       // Given
       const path = "emptyString";
-      // When
-      const result = reader.string(path, false);
       // Then
-      expect(result).toBe("");
+      expect(() => reader.string(path)).toThrow(
+        'Config "someprefix/emptyString" is required but empty or missing',
+      );
     });
 
     it("should return undefined if undefinedIfEmpty is true", () => {
@@ -217,7 +237,17 @@ describe("ConfigParser", () => {
       expect(typeof result).toBe("number");
       expect(result).toBe(42);
     });
-    it("should return undefined", () => {
+
+    it("should throw if value is empty", () => {
+      // Given
+      const path = "emptyString";
+      // Then
+      expect(() => reader.number(path)).toThrow(
+        'Config "someprefix/emptyString" is required but empty or missing',
+      );
+    });
+
+    it("should return undefined if undefinedIfEmpty is true and value is empty", () => {
       // Given
       const path = "emptyString";
       // When
