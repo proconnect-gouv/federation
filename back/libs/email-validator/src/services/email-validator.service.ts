@@ -1,7 +1,7 @@
 import { AccountFcaService } from "@fc/account-fca";
 import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import { Injectable } from "@nestjs/common";
 import {
   gouvfrDomains,
@@ -16,15 +16,14 @@ import { EmailValidatorConfig } from "../dto";
 export class EmailValidatorService {
   constructor(
     private readonly logger: LoggerService,
-    private readonly identityProviderAdapterMongoService: IdentityProviderAdapterMongoService,
+    private readonly identityProvider: IdentityProviderAdapter,
     private readonly config: ConfigService,
     private readonly accountFcaService: AccountFcaService,
   ) {}
 
   async validate(email: string) {
     try {
-      const idps =
-        await this.identityProviderAdapterMongoService.getIdpsByEmail(email);
+      const idps = await this.identityProvider.getIdpsByEmail(email);
       if (idps.length > 0) {
         return { isEmailValid: true };
       }
@@ -73,7 +72,7 @@ export class EmailValidatorService {
   }
 
   private async getIdpDomains() {
-    const idps = await this.identityProviderAdapterMongoService.getList();
+    const idps = await this.identityProvider.getList();
     const domains = chain(idps)
       .map((idp) => idp.fqdns)
       .flatten()
@@ -85,8 +84,7 @@ export class EmailValidatorService {
   }
 
   private async isEmailDomainValid(email: string) {
-    const emailDomain =
-      this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
+    const emailDomain = this.identityProvider.getFqdnFromEmail(email);
     if (!emailDomain) return false;
 
     const { domainWhitelist, featureMxResolutionValidation } =

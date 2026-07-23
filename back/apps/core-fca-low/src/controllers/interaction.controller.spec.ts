@@ -1,10 +1,10 @@
 import { AccountFcaService } from "@fc/account-fca";
 import { ConfigService } from "@fc/config";
 import { CsrfService } from "@fc/csrf";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
 import { NotificationsService } from "@fc/notifications";
 import { OidcAcrService } from "@fc/oidc-acr";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import { OidcProviderService } from "@fc/oidc-provider";
 import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
 import { ISessionService, SessionService } from "@fc/session";
@@ -97,7 +97,7 @@ describe("InteractionController", () => {
         AccountFcaService,
         CoreFcaService,
         OidcProviderService,
-        IdentityProviderAdapterMongoService,
+        { provide: IdentityProviderAdapter, useValue: {} },
         ServiceProviderAdapterMongoService,
         ConfigService,
         CoreFcaControllerService,
@@ -116,7 +116,7 @@ describe("InteractionController", () => {
       .useValue(oidcProviderMock)
       .overrideProvider(OidcAcrService)
       .useValue(oidcAcrMock)
-      .overrideProvider(IdentityProviderAdapterMongoService)
+      .overrideProvider(IdentityProviderAdapter)
       .useValue(identityProviderMock)
       .overrideProvider(CoreFcaControllerService)
       .useValue(coreFcaControllerMock)

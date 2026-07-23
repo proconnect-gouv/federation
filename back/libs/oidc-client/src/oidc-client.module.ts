@@ -2,14 +2,13 @@ import { DynamicModule, Module, Type } from "@nestjs/common";
 
 import { RabbitmqModule } from "@fc/rabbitmq";
 import { SessionModule } from "@fc/session";
-import { IIdentityProviderAdapter } from "./interfaces";
+import { IdentityProviderAdapter } from "./interfaces";
 import { OidcClientService } from "./services";
-import { IDENTITY_PROVIDER_SERVICE } from "./tokens";
 
 @Module({})
 export class OidcClientModule {
   static register(
-    identityProvider: Type<IIdentityProviderAdapter>,
+    identityProvider: Type<IdentityProviderAdapter>,
     identityProviderModule,
   ): DynamicModule {
     return {
@@ -21,7 +20,7 @@ export class OidcClientModule {
       ],
       providers: [
         {
-          provide: IDENTITY_PROVIDER_SERVICE,
+          provide: IdentityProviderAdapter,
           useExisting: identityProvider,
         },
         OidcClientService,

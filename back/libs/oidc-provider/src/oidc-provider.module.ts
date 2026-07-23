@@ -3,8 +3,7 @@ import { ExceptionsModule, FcWebHtmlExceptionFilter } from "@fc/exceptions";
 import { LoggerModule } from "@fc/logger";
 import { IServiceProviderAdapter } from "@fc/oidc";
 import { OidcAcrModule } from "@fc/oidc-acr";
-import { IIdentityProviderAdapter } from "@fc/oidc-client";
-import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from "@fc/oidc/tokens";
 import { RedisModule } from "@fc/redis";
 import { SessionModule } from "@fc/session";
@@ -24,7 +23,7 @@ export class OidcProviderModule {
    */
 
   static register(
-    IdentityProviderAdapterMongoService: Type<IIdentityProviderAdapter>,
+    IdentityProviderAdapterMongoService: Type<IdentityProviderAdapter>,
     IdentityProviderAdapterMongoModule: Type<ModuleMetadata>,
     ServiceProviderClass: Type<IServiceProviderAdapter>,
     ServiceProviderModule: Type<ModuleMetadata>,
@@ -48,7 +47,7 @@ export class OidcProviderModule {
       providers: [
         FcWebHtmlExceptionFilter,
         {
-          provide: IDENTITY_PROVIDER_SERVICE,
+          provide: IdentityProviderAdapter,
           useExisting: IdentityProviderAdapterMongoService,
         },
         serviceProviderProvider,

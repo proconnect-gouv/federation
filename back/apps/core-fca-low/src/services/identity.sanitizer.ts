@@ -5,8 +5,8 @@ import { cloneDeep } from "lodash";
 import { HttpStatus, Injectable } from "@nestjs/common";
 
 import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 
 import { ApiEntrepriseConfig } from "@fc/api-entreprise";
 import { CachedOrganizationService } from "@fc/cached-organization";
@@ -18,7 +18,7 @@ import { CoreFcaInvalidIdentityException } from "../exceptions";
 export class IdentitySanitizer {
   constructor(
     private readonly logger: LoggerService,
-    private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly identityProvider: IdentityProviderAdapter,
     private readonly config: ConfigService,
     private readonly cachedOrganizationService: CachedOrganizationService,
   ) {}

@@ -1,6 +1,6 @@
 import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import { OidcCtx, OidcProviderService } from "@fc/oidc-provider";
 import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
 import { SessionService } from "@fc/session";
@@ -39,7 +39,7 @@ describe("CoreFcaMiddlewareService", () => {
         },
         { provide: SessionService, useValue: getSessionServiceMock() },
         { provide: ServiceProviderAdapterMongoService, useValue: jest.fn() },
-        { provide: IdentityProviderAdapterMongoService, useValue: jest.fn() },
+        { provide: IdentityProviderAdapter, useValue: jest.fn() },
       ],
     }).compile();
 

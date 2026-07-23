@@ -1,7 +1,7 @@
 import { AccountFcaService } from "@fc/account-fca";
 import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -45,14 +45,14 @@ describe(EmailValidatorService.name, () => {
       providers: [
         LoggerService,
         EmailValidatorService,
-        IdentityProviderAdapterMongoService,
+        { provide: IdentityProviderAdapter, useValue: {} },
         ConfigService,
         AccountFcaService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(IdentityProviderAdapterMongoService)
+      .overrideProvider(IdentityProviderAdapter)
       .useValue(identityProviderAdapterMongoMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)

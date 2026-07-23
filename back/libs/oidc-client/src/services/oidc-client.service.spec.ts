@@ -1,6 +1,6 @@
 import { ConfigService } from "@fc/config";
 import { LoggerService } from "@fc/logger";
-import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
+import { IdentityProviderAdapter } from "@fc/oidc-client";
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -84,7 +84,7 @@ describe("OidcClientService", () => {
         OidcClientService,
         ConfigService,
         LoggerService,
-        { provide: IDENTITY_PROVIDER_SERVICE, useValue: identityProviderMock },
+        { provide: IdentityProviderAdapter, useValue: identityProviderMock },
         {
           provide: "HyyyperbridgeBroker",
           useValue: brokerMock,
