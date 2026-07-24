@@ -34,6 +34,7 @@ const appConfig: AppConfig = {
   supportEmail: "support+federation@proconnect.gouv.fr",
   idpRoutingForcingEmailSuffix: "+proconnect",
   idpMfaComplianceForcingEmailSuffix: "+mfa",
+  verificationEmailPercentage: env.number("VERIFICATION_EMAIL_PERCENTAGE"),
 };
 
 export default appConfig;

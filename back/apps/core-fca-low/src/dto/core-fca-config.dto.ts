@@ -8,6 +8,7 @@ import { MongooseConfig } from "@fc/mongoose";
 import { OidcClientConfig } from "@fc/oidc-client";
 import { OidcProviderConfig } from "@fc/oidc-provider";
 import { RabbitmqConfig } from "@fc/rabbitmq/dto";
+import { RateLimiterConfig } from "@fc/rate-limiter";
 import { RedisConfig } from "@fc/redis";
 import { ServiceProviderAdapterMongoConfig } from "@fc/service-provider-adapter-mongo";
 import { SessionConfig } from "@fc/session";
@@ -65,6 +66,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => MongooseConfig)
   readonly Mongoose: MongooseConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => RateLimiterConfig)
+  readonly RateLimiter: RateLimiterConfig;
 
   @IsObject()
   @ValidateNested()

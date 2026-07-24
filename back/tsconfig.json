@@ -93,7 +93,11 @@
       "@fc/mailer": ["libs/mailer/src"],
       "@fc/mailer/*": ["libs/mailer/src/*"],
       "@mocks/mailer": ["libs/mailer/.mocks"],
-      "@mocks/mailer/*": ["libs/mailer/.mocks/*"]
+      "@mocks/mailer/*": ["libs/mailer/.mocks/*"],
+      "@fc/email-verification": ["libs/email-verification/src"],
+      "@fc/email-verification/*": ["libs/email-verification/src/*"],
+      "@fc/rate-limiter": ["libs/rate-limiter/src"],
+      "@fc/rate-limiter/*": ["libs/rate-limiter/src/*"]
     }
   },
   "files": ["global.d.ts"],

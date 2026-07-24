@@ -154,4 +154,8 @@ export class UserSession {
   @IsOptional()
   @IsBoolean()
   readonly rememberMe?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  readonly isEmailVerifiedByPcf?: boolean;
 }

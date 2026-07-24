@@ -102,11 +102,11 @@ Fonctionnalité: Connexion Usager - ACR
     Quand je m'authentifie
     Alors la cinématique a utilisé le niveau de sécurité "eidas1-mfa"
 
-  Scénario: le FI n'est pas MFA-compliant et ne retourne pas de claim acr demandé
+  Scénario: le FI n'est pas MFA-compliant, ne retourne pas de claim acr demandé et j'utilise un e-mail non autorisé
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert le claim "acr" avec les valeurs "eidas0-mfa eidas1-mfa eidas2 eidas3"
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@fia2.fr"
+    Et que j'entre l'email "autre@fia2.fr"
     Et que je clique sur le bouton de connexion
     Et que le fournisseur d'identité garantit un niveau de sécurité "eidas1"
     Et que la page du FI n'affiche pas de requestedAcrs
