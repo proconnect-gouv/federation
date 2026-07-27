@@ -49,6 +49,20 @@ updates:
         update-types:
           - "version-update:semver-major"
           - "version-update:semver-minor"
+  - package-ecosystem: "npm"
+    directory: "/mock-data-provider"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    versioning-strategy: increase
+    ignore:
+      - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
   - package-ecosystem: "docker"
     directory: "/admin"
     labels:
@@ -57,6 +71,12 @@ updates:
       interval: "weekly"
   - package-ecosystem: "docker"
     directory: "/back"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/mock-data-provider"
     labels:
       - dependencies
     schedule:

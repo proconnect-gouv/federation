@@ -109,7 +109,7 @@ jobs:
           - instance: csmr-rie
             context: ./back
           - instance: mock-data-provider
-            context: ./back
+            context: ./mock-data-provider
           - instance: mock-identity-provider-fca-low
             context: ./back
           - instance: mock-service-provider-fca-low
