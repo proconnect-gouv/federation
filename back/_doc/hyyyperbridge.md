@@ -2,9 +2,11 @@
 
 ## Objectif
 
-Pour permettre à des utilisateurs sur Internet disposant d'un accès au RIE d'accéder à des fournisseurs d'identité (FI) accessibles uniquement depuis le réseau RIE, la passerelle Hyyyperbridge met en place une rupture protocolaire.
+Pour permettre à des utilisateurs sur Internet disposant d'un accès au RIE d'accéder à des fournisseurs d'identité (FI) accessibles depuis le réseau RIE, la passerelle Hyyyperbridge met en place une rupture protocolaire.
 
-L’application Fédération (côté Internet) envoie une requête RPC via RabbitMQ. Le consumer RIE reçoit cette requête, exécute l’appel HTTP vers le FI côté RIE, puis renvoie la réponse.
+L’application Fédération Internet émet une requête RPC via RabbitMQ en utilisant le pattern de message NestJS HTTP_PROXY.
+
+Le consumer côté RIE reçoit ce message, exécute l’appel HTTP vers le FI, puis renvoie une **réponse corrélée** au demandeur.
 
 ## Principe de fonctionnement
 
