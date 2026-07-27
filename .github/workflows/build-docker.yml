@@ -95,7 +95,6 @@ jobs:
           - core-fca-low
           - core-fca-low-migrator
           - csmr-rie
-          - mock-data-provider
           - mock-identity-provider-fca-low
           - mock-service-provider-fca-low
           - api-partner
@@ -107,8 +106,6 @@ jobs:
             context: ./back
             target: migrator
           - instance: csmr-rie
-            context: ./back
-          - instance: mock-data-provider
             context: ./back
           - instance: mock-identity-provider-fca-low
             context: ./back

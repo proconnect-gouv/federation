@@ -39,9 +39,6 @@ const PC_ID_TOKEN_SIGNED_RESPONSE_ALG =
   process.env.IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG;
 const PC_USERINFO_SIGNED_RESPONSE_ALG =
   process.env.IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG;
-const dataProviderConfigs: { name: string; url: string }[] = JSON.parse(
-  process.env.App_DATA_APIS,
-);
 const ACR_VALUES_FOR_2FA =
   process.env.ACR_VALUES_FOR_2FA ||
   "eidas0-mfa eidas1-mfa eidas2 eidas3 https://proconnect.gouv.fr/assurance/self-asserted-2fa https://proconnect.gouv.fr/assurance/consistency-checked-2fa";
@@ -256,34 +253,6 @@ app.post("/fetch-userinfo", async (req, res, next) => {
       req.session?.oauth2token?.access_token,
       req.session?.idtoken?.sub,
     );
-    res.redirect("/");
-  } catch (e) {
-    console.error(e);
-    next(e);
-  }
-});
-
-app.post("/fetch-userdata", async (req, res, next) => {
-  try {
-    const encodedAccessToken = Buffer.from(
-      req.session?.oauth2token?.access_token,
-      "utf-8",
-    ).toString("base64");
-    const userdataPromises = dataProviderConfigs.map(async ({ name, url }) => {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${encodedAccessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-      return {
-        name,
-        response: await response.json(),
-      };
-    });
-    req.session.userdata = await Promise.all(userdataPromises);
-
     res.redirect("/");
   } catch (e) {
     console.error(e);

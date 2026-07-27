@@ -56,15 +56,6 @@
         "tsConfigPath": "apps/csmr-rie/tsconfig.app.json"
       }
     },
-    "mock-data-provider": {
-      "type": "application",
-      "root": "apps/mock-data-provider",
-      "entryFile": "main",
-      "sourceRoot": "apps/mock-data-provider/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/mock-data-provider/tsconfig.app.json"
-      }
-    },
     "identity-provider-adapter-mongo": {
       "type": "library",
       "root": "libs/identity-provider-adapter-mongo",

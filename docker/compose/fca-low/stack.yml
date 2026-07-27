@@ -27,9 +27,6 @@ services:
       - "fia1-low"
       - "fia2-low"
       - "moncomptepro"
-      # -- DP
-      - "dpa1-low"
-      - "dpa2-low"
 
   lemon-ldap:
     image: alpine:3.23.5
