@@ -34,7 +34,7 @@
                     <p><%= errorMessage %></p>
                   </div>
                 <% } %>
-              
+
                 <input type="hidden" name="csrfToken" value="<%= locals.csrfToken; %>" />
                 <div class="fr-input-group fr-mb-2w">
                   <label class="fr-label" for="verify_email_token">
@@ -60,7 +60,6 @@
               <form
                 action="/api/v2/verify-email"
                 method="get"
-                data-ignore-validation="true"
               >
                 <button
                   disabled
@@ -86,6 +85,6 @@
     <script type="text/javascript" src="/js/disabled-with-countdown.js"></script>
 
     <%- include('includes/footer.ejs') %> <%- include('includes/scripts.ejs') %>
-    
+
   </body>
 </html>

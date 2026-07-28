@@ -126,14 +126,15 @@ export class EmailVerificationService {
     if (isTokenExpired) {
       return true;
     }
-    if (
-      lastTokenSentAt.getTime() +
-        verificationEmailWaitingDurationBeforeResendInMs >
-      now.getTime()
-    ) {
-      return false;
+
+    const hasResendCooldownExpired =
+      now.getTime() - lastTokenSentAt.getTime() >
+      verificationEmailWaitingDurationBeforeResendInMs;
+    if (hasResendCooldownExpired) {
+      return true;
     }
-    return true;
+
+    return false;
   }
 
   async verifyEmailToken(email: string, token: string) {
