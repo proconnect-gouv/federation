@@ -36,6 +36,20 @@ updates:
           - "version-update:semver-major"
           - "version-update:semver-minor"
   - package-ecosystem: "npm"
+    directory: "/mock-identity-provider"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    versioning-strategy: increase
+    ignore:
+      - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+  - package-ecosystem: "npm"
     directory: "/quality"
     labels:
       - dependencies
@@ -69,18 +83,40 @@ updates:
       - dependencies
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"
   - package-ecosystem: "docker"
     directory: "/back"
     labels:
       - dependencies
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"
   - package-ecosystem: "docker"
     directory: "/mock-data-provider"
     labels:
       - dependencies
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"
+  - package-ecosystem: "docker"
+    directory: "/mock-identity-provider"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"
   - package-ecosystem: "docker"
     directory: "/pcdbapi"
     labels:

@@ -1,5 +1,6 @@
-import { chain } from "lodash";
+import { chain } from "lodash-es";
 import QuickLRU from "quick-lru";
+import { z } from "zod";
 
 const defaultUser = {
   sub: "1",
@@ -49,7 +50,18 @@ export const getDefaultUser = () => {
 
 const userStorage = new QuickLRU({ maxSize: 1000 });
 
-export const createUser = (body) => {
+export const userAttributesSchema = z.object({
+  email: z.string().optional().default(""),
+  given_name: z.string().optional().default(""),
+  usual_name: z.string().optional().default(""),
+  siret: z.string().optional().default(""),
+  sub: z.string().optional().default(""),
+  phone_number: z.string().optional().default(""),
+});
+
+export type UserAttributes = z.infer<typeof userAttributesSchema>;
+
+export const createUser = (body: UserAttributes) => {
   const { email, given_name, usual_name, siret, sub, phone_number } = body;
   const id = email + given_name + usual_name + siret + phone_number;
   // replace default property values, allowing substitution of a default value with an empty string

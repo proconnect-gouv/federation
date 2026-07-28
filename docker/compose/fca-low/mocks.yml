@@ -38,7 +38,7 @@ services:
     hostname: fia1-low
     extends:
       file: ../shared/compose.yaml
-      service: base-idp-mock
+      service: base-mock-identity-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/fia1-low.env"
@@ -47,7 +47,7 @@ services:
     hostname: fia2-low
     extends:
       file: ../shared/compose.yaml
-      service: base-idp-mock
+      service: base-mock-identity-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/fia2-low.env"
@@ -56,7 +56,7 @@ services:
     hostname: moncomptepro
     extends:
       file: ../shared/compose.yaml
-      service: base-idp-mock
+      service: base-mock-identity-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/moncomptepro.env"
@@ -65,7 +65,7 @@ services:
     hostname: fia-rie-low
     extends:
       file: ../shared/compose.yaml
-      service: base-idp-mock
+      service: base-mock-identity-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/fia-rie-low.env"
