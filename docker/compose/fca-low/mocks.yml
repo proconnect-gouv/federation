@@ -92,7 +92,7 @@ services:
     hostname: dpa1-low
     extends:
       file: ../shared/compose.yaml
-      service: base-dp-mock
+      service: base-mock-data-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/dpa1-low.env"
@@ -101,7 +101,7 @@ services:
     hostname: dpa2-low
     extends:
       file: ../shared/compose.yaml
-      service: base-dp-mock
+      service: base-mock-data-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/dpa2-low.env"

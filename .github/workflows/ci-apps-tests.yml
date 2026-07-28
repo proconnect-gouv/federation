@@ -1,0 +1,37 @@
+name: 💚 CI Tests - Apps 🪪
+
+on: push
+
+permissions:
+  contents: read
+
+jobs:
+  global:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - mock-data-provider
+    defaults:
+      run:
+        working-directory: ./${{ matrix.app }}
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: 🟩 Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          cache: yarn
+          cache-dependency-path: ./${{ matrix.app }}/yarn.lock
+          node-version: '24'
+
+      - name: 📦 Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: 🧹 Run lint
+        run: yarn lint
+
+      - name: 🧪 Run tests
+        run: yarn test
