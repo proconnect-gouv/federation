@@ -32,6 +32,7 @@ const sessionConfig: SessionConfig = {
     Routes.INTERACTION_ERROR,
     OidcProviderRoutes.REDIRECT_TO_SP,
     Routes.IDENTITY_PROVIDER_SELECTION,
+    Routes.VERIFY_EMAIL,
 
     // Disconnect flow
     `${OidcProviderRoutes.END_SESSION}$`,

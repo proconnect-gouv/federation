@@ -9,6 +9,7 @@ export default defineConfig({
     async setupNodeEvents(on, config) {
       return await pluginConfig(on, config);
     },
+
     specPattern:
       "cypress/integration/{accessibilité,api,exploitation,usager}/*.feature",
   },

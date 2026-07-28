@@ -34,7 +34,14 @@ describe("OidcAcrService", () => {
     jest.clearAllMocks();
 
     configServiceMock.get.mockReturnValue({
-      supportedAcrValues: ["A", "B"],
+      supportedAcrValues: [
+        "eidas0",
+        "eidas1",
+        "eidas2",
+        "eidas3",
+        "eidas0-mfa",
+        "eidas1-mfa",
+      ],
       defaultIdpId: "defaultIdpId",
     });
   });
@@ -43,8 +50,8 @@ describe("OidcAcrService", () => {
     it("should return undefined if essential ACR requirement is not satisfied", () => {
       // Given
       const sessionDataMock: UserSession = {
-        spEssentialAcr: "C",
-        idpAcr: "B",
+        spEssentialAcr: "eidas1",
+        idpAcr: "eidas0",
       };
 
       // When
@@ -57,25 +64,22 @@ describe("OidcAcrService", () => {
     it("should return the IdP ACR if essential ACR is satisfied", () => {
       // Given
       const sessionDataMock: UserSession = {
-        spEssentialAcr: "B C",
-        idpAcr: "B",
+        spEssentialAcr: "eidas0 eidas1",
+        idpAcr: "eidas0",
       };
 
       // When
       const result = service["getInteractionAcr"](sessionDataMock);
 
       // Then
-      expect(result).toBe("B");
+      expect(result).toBe("eidas0");
     });
 
     it("should return 'eidas1' if IdP ACR is unsupported", () => {
       // Given
-      configServiceMock.get.mockReturnValueOnce({
-        supportedAcrValues: ["A", "B"],
-      });
       const sessionDataMock: UserSession = {
         spEssentialAcr: undefined,
-        idpAcr: "C",
+        idpAcr: "unknown",
       };
 
       // When
@@ -84,15 +88,96 @@ describe("OidcAcrService", () => {
       // Then
       expect(result).toBe("eidas1");
     });
+
+    it("should return 'eidas1-mfa' if essential ACR is 'eidas1-mfa' and ACR is unsupported and email is verified by PCF", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        spEssentialAcr: "eidas1-mfa",
+        idpAcr: "unknown",
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAcr"](sessionDataMock);
+
+      // Then
+      expect(result).toBe("eidas1-mfa");
+    });
+
+    it("should return 'eidas0-mfa' if essential ACR is 'eidas0-mfa' and email is verified by PCF", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        spEssentialAcr: "eidas0-mfa",
+        idpAcr: "eidas0",
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAcr"](sessionDataMock);
+
+      // Then
+      expect(result).toBe("eidas0-mfa");
+    });
+
+    it("should return undefined if essential ACR is 'eidas2' and email is verified by PCF", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        spEssentialAcr: "eidas2",
+        idpAcr: "eidas1",
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAcr"](sessionDataMock);
+
+      // Then
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe("computeCanAcrBeSatisfiedByPcf", () => {
+    it("should return true when all conditions are met", () => {
+      configServiceMock.get.mockReturnValue({
+        eligibleEmailsPercentage: 100,
+      });
+
+      const result = service.computeCanAcrBeSatisfiedByPcf({
+        spEssentialAcr: "openid eidas1-mfa",
+        amr: ["pwd"],
+      });
+
+      expect(result).toBe(true);
+    });
+
+    it("should return false when eidas1-mfa is missing", () => {
+      const result = service.computeCanAcrBeSatisfiedByPcf({
+        spEssentialAcr: "openid",
+        amr: ["pwd"],
+      });
+
+      expect(result).toBe(false);
+    });
+    it("should return false when spEssentialAcr is empty", () => {
+      const result = service.computeCanAcrBeSatisfiedByPcf({
+        spEssentialAcr: undefined,
+        amr: ["pwd"],
+      });
+
+      expect(result).toBe(false);
+    });
+
+    it("should return false when amr contains mail", () => {
+      const result = service.computeCanAcrBeSatisfiedByPcf({
+        spEssentialAcr: "eidas1-mfa",
+        amr: ["mail"],
+      });
+
+      expect(result).toBe(false);
+    });
   });
 
   describe("getFilteredAcrValues()", () => {
     it("should return empty array with no requestedAcrValues provided", () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        supportedAcrValues: ["A", "B"],
-      });
-
       // When
       const result = service["getFilteredAcrValues"](undefined);
 
@@ -101,33 +186,23 @@ describe("OidcAcrService", () => {
     });
 
     it("should filter supported ACR values when given a string", () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        supportedAcrValues: ["A", "B"],
-      });
-
-      const inputAcrValues = "A C";
+      const inputAcrValues = "eidas1 eidas2 A";
 
       // When
       const result = service["getFilteredAcrValues"](inputAcrValues);
 
       // Then
-      expect(result).toEqual(["A"]);
+      expect(result).toEqual(["eidas1", "eidas2"]);
     });
 
     it("should filter supported ACR values when given an array", () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        supportedAcrValues: ["A", "B"],
-      });
-
-      const inputAcrValues = ["A", "C"];
+      const inputAcrValues = ["eidas1", "C"];
 
       // When
       const result = service["getFilteredAcrValues"](inputAcrValues);
 
       // Then
-      expect(result).toEqual(["A"]);
+      expect(result).toEqual(["eidas1"]);
     });
   });
 
@@ -193,13 +268,15 @@ describe("OidcAcrService", () => {
           details: {
             acr: {
               essential: true,
-              value: "A",
+              value: "eidas1",
             },
           },
         },
       } as undefined as ExtendedInteraction;
 
-      jest.spyOn(service, "getFilteredAcrValues").mockReturnValueOnce(["A"]);
+      jest
+        .spyOn(service, "getFilteredAcrValues")
+        .mockReturnValueOnce(["eidas1"]);
 
       // When
       const result =
@@ -209,7 +286,7 @@ describe("OidcAcrService", () => {
       expect(result).toEqual({
         acrClaims: {
           essential: true,
-          value: "A",
+          value: "eidas1",
         },
       });
     });

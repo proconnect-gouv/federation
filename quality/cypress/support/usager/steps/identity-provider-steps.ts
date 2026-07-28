@@ -89,6 +89,15 @@ When("j'utilise un compte usager dont le FI ne fournit pas d'amr", function () {
 });
 
 When(
+  "j'utilise un compte usager dont le FI fournit un amr {string}",
+  function (amr: string) {
+    cy.get('input[name="amr"]').type(`{selectAll}${amr}`, {
+      force: true,
+    });
+  },
+);
+
+When(
   "le fournisseur d'identité renvoie l'erreur {string} avec {string}",
   function (error: string, error_description: string) {
     cy.get('input[name="error"]').type(error, { force: true });

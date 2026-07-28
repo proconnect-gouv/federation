@@ -106,6 +106,12 @@ jobs:
         with:
           version: latest
 
+      - name: Set PC_ROOT environment variable
+        run: |
+          PC_ROOT=$(dirname "$(pwd)")
+          echo "PC_ROOT=$PC_ROOT" >> $GITHUB_ENV
+        working-directory: ./
+
       - name: Set FEDERATION_DIR environment variable
         working-directory: ./
         run: echo "FEDERATION_DIR=$(pwd)" >> $GITHUB_ENV
@@ -177,6 +183,12 @@ jobs:
         with:
           version: latest
 
+      - name: Set PC_ROOT environment variable
+        run: |
+          PC_ROOT=$(dirname "$(pwd)")
+          echo "PC_ROOT=$PC_ROOT" >> $GITHUB_ENV
+
+        working-directory: ./
       - name: Set FEDERATION_DIR environment variable
         working-directory: ./
         run: echo "FEDERATION_DIR=$(pwd)" >> $GITHUB_ENV
@@ -227,6 +239,6 @@ jobs:
       matrix:
         include:
           - stack: medium
-            tags: 'not @hybridge and not @ignore'
+            tags: "not @hybridge and not @ignore"
           - stack: hybridge
-            tags: '@hybridge'
+            tags: "@hybridge"

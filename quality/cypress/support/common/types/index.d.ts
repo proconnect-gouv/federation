@@ -10,6 +10,8 @@ declare global {
     interface Chainable {
       // custom commands
       clearThenType(text: string, options?: Partial<Cypress.TypeOptions>): void;
+      verifyEmail(): void;
+      resetMongo(): void;
     }
   }
 }

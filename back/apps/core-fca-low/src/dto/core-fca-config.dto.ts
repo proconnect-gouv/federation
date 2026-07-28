@@ -1,5 +1,6 @@
 import { ApiEntrepriseConfig } from "@fc/api-entreprise";
 import { EmailValidatorConfig } from "@fc/email-validator/dto";
+import { EmailVerificationConfig } from "@fc/email-verification";
 import { ExceptionsConfig } from "@fc/exceptions/dto";
 import { IdentityProviderAdapterMongoConfig } from "@fc/identity-provider-adapter-mongo";
 import { LoggerConfig } from "@fc/logger";
@@ -8,6 +9,7 @@ import { MongooseConfig } from "@fc/mongoose";
 import { OidcClientConfig } from "@fc/oidc-client";
 import { OidcProviderConfig } from "@fc/oidc-provider";
 import { RabbitmqConfig } from "@fc/rabbitmq/dto";
+import { RateLimiterConfig } from "@fc/rate-limiter";
 import { RedisConfig } from "@fc/redis";
 import { ServiceProviderAdapterMongoConfig } from "@fc/service-provider-adapter-mongo";
 import { SessionConfig } from "@fc/session";
@@ -38,6 +40,11 @@ export class CoreFcaConfig {
 
   @IsObject()
   @ValidateNested()
+  @Type(() => EmailVerificationConfig)
+  readonly EmailVerification: EmailVerificationConfig;
+
+  @IsObject()
+  @ValidateNested()
   @Type(() => RabbitmqConfig)
   readonly HyyyperbridgeBroker: RabbitmqConfig;
 
@@ -65,6 +72,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => MongooseConfig)
   readonly Mongoose: MongooseConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => RateLimiterConfig)
+  readonly RateLimiter: RateLimiterConfig;
 
   @IsObject()
   @ValidateNested()
