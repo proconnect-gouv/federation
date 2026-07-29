@@ -212,30 +212,6 @@ describe(EmailVerificationService.name, () => {
     });
   });
 
-  // describe("computeIsTokenExpired", () => {
-  //   it("should return true when the token is expired", () => {
-  //     jest.useFakeTimers().setSystemTime(new Date("2024-01-01T01:00:01.000Z"));
-
-  //     const result = service.computeIsTokenExpired(
-  //       new Date("2024-01-01T00:00:00.000Z"),
-  //     );
-
-  //     expect(result).toBe(true);
-  //     jest.useRealTimers();
-  //   });
-
-  //   it("should return false when the token is not expired", () => {
-  //     jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:30:00.000Z"));
-
-  //     const result = service.computeIsTokenExpired(
-  //       new Date("2024-01-01T00:00:00.000Z"),
-  //     );
-
-  //     expect(result).toBe(false);
-  //     jest.useRealTimers();
-  //   });
-  // });
-
   describe("verifyEmailToken", () => {
     it("should return too_many_attempts when rate limiter rejects", async () => {
       rateLimiterServiceMock.consume.mockRejectedValue(
