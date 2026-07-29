@@ -1,4 +1,3 @@
-import { AppConfig } from "@fc/app";
 import { ConfigService } from "@fc/config";
 import { CsrfService } from "@fc/csrf";
 import { LoggerService } from "@fc/logger";
@@ -89,7 +88,6 @@ export class EmailVerificationService {
   }
 
   async sendVerificationMail(email: string, token: string) {
-    const { fqdn } = this.config.get<AppConfig>("App");
     this.logger.info({
       code: "send-verification-mail",
       email,
@@ -100,7 +98,6 @@ export class EmailVerificationService {
         to: email,
         subject: "Vérification de votre adresse email",
         htmlContent: VerifyEmail({
-          baseurl: fqdn || "",
           token,
         }).toString(),
       });
