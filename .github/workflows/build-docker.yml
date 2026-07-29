@@ -97,7 +97,7 @@ jobs:
           - csmr-rie
           - mock-data-provider
           - mock-identity-provider
-          - mock-service-provider-fca-low
+          - mock-service-provider
           - fc-exploitation-v2
         include:
           - instance: core-fca-low
@@ -111,8 +111,8 @@ jobs:
             context: ./mock-data-provider
           - instance: mock-identity-provider
             context: ./mock-identity-provider
-          - instance: mock-service-provider-fca-low
-            context: ./back
+          - instance: mock-service-provider
+            context: ./mock-service-provider
           - instance: fc-exploitation-v2
             context: ./admin
         arch:

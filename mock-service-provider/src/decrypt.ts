@@ -1,11 +1,11 @@
 // exportable version of fc-exploitation/src/utils/secret-manager.service.ts
-import { createDecipheriv } from "crypto";
+import { createDecipheriv } from "node:crypto";
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;
 const CIPHER_HEAD_LENGTH = NONCE_LENGTH + AUTHTAG_LENGTH;
 
-export const decrypt = (cipher: string, cipherPass: string): any => {
+export const decrypt = (cipher: string, cipherPass: string): string => {
   const cipherBuffer = Buffer.from(cipher, "base64");
 
   if (Buffer.byteLength(cipherBuffer) <= CIPHER_HEAD_LENGTH) {
@@ -22,7 +22,7 @@ export const decrypt = (cipher: string, cipherPass: string): any => {
 
   decipher.setAuthTag(tag);
 
-  const receivedPlaintext = decipher.update(ciphertext, null, "utf8");
+  const receivedPlaintext = decipher.update(ciphertext, undefined, "utf8");
 
   try {
     decipher.final();

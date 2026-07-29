@@ -27,16 +27,6 @@
         ]
       }
     },
-    "mock-service-provider-fca-low": {
-      "type": "application",
-      "root": "apps/mock-service-provider-fca-low",
-      "entryFile": "main",
-      "sourceRoot": "apps/mock-service-provider-fca-low/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/mock-service-provider-fca-low/tsconfig.app.json",
-        "assets": ["../../../apps/mock-service-provider-fca-low/**/*.ejs"]
-      }
-    },
     "csmr-rie": {
       "type": "application",
       "root": "apps/csmr-rie",

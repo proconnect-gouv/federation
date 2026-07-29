@@ -7,7 +7,7 @@ services:
     hostname: fsa1-low
     extends:
       file: ../shared/compose.yaml
-      service: base-sp-mock
+      service: base-mock-service-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/fsa1-low.env"
@@ -16,7 +16,7 @@ services:
     hostname: fsa2-low
     extends:
       file: ../shared/compose.yaml
-      service: base-sp-mock
+      service: base-mock-service-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/fsa2-low.env"
@@ -25,7 +25,7 @@ services:
     hostname: fsa3-low
     extends:
       file: ../shared/compose.yaml
-      service: base-sp-mock
+      service: base-mock-service-provider
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/fsa3-low.env"
