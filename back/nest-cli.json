@@ -37,16 +37,6 @@
         "assets": ["../../../apps/mock-service-provider-fca-low/**/*.ejs"]
       }
     },
-    "mock-identity-provider-fca-low": {
-      "type": "application",
-      "root": "apps/mock-identity-provider-fca-low",
-      "entryFile": "main",
-      "sourceRoot": "apps/mock-identity-provider-fca-low/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/mock-identity-provider-fca-low/tsconfig.app.json",
-        "assets": ["../../../apps/mock-identity-provider-fca-low/**/*.ejs"]
-      }
-    },
     "csmr-rie": {
       "type": "application",
       "root": "apps/csmr-rie",

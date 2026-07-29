@@ -13,6 +13,7 @@ jobs:
       matrix:
         app:
           - mock-data-provider
+          - mock-identity-provider
     defaults:
       run:
         working-directory: ./${{ matrix.app }}
