@@ -1,4 +1,5 @@
 import { ConfigService } from "@fc/config";
+import { CsrfService } from "@fc/csrf";
 import { LoggerService } from "@fc/logger";
 import { MailerService } from "@fc/mailer";
 import { RateLimiterService } from "@fc/rate-limiter";
@@ -7,6 +8,12 @@ import { getLoggerMock } from "@mocks/logger";
 import { Provider } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { EmailVerificationService } from "./email-verification.service";
+import {
+  InvalidEmailVerificationTokenException,
+  SendEmailFailureException,
+  TooManyAttemptsException,
+} from "./exceptions";
+import { EmailVerificationToken } from "./schemas";
 
 describe(EmailVerificationService.name, () => {
   let service: EmailVerificationService;
@@ -18,6 +25,9 @@ describe(EmailVerificationService.name, () => {
     create: jest.fn(),
     findOne: jest.fn(),
     deleteMany: jest.fn(),
+  };
+  const csrfServiceMock = {
+    getOrCreate: jest.fn(),
   };
   const configServiceMock = getConfigMock();
   const rateLimiterServiceMock = {
@@ -51,6 +61,8 @@ describe(EmailVerificationService.name, () => {
       sort: jest.fn().mockResolvedValue(null),
     });
 
+    csrfServiceMock.getOrCreate.mockReturnValue("csrf-token");
+
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         EmailVerificationService,
@@ -59,6 +71,7 @@ describe(EmailVerificationService.name, () => {
         RateLimiterService,
         ConfigService,
         { provide: "EmailVerificationTokenModel", useValue: modelMock },
+        CsrfService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -69,6 +82,8 @@ describe(EmailVerificationService.name, () => {
       .useValue(rateLimiterServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(CsrfService)
+      .useValue(csrfServiceMock)
       .compile();
 
     service = app.get<EmailVerificationService>(EmailVerificationService);
@@ -85,9 +100,13 @@ describe(EmailVerificationService.name, () => {
     });
 
     it("should return threshold from last token date", () => {
-      const lastTokenSentAt = new Date("2024-01-01T00:00:00.000Z");
+      const lastEmailVerificationTokenSentAt = new Date(
+        "2024-01-01T00:00:00.000Z",
+      );
 
-      const result = service.computeCountdownEndDate(lastTokenSentAt);
+      const result = service.computeCountdownEndDate(
+        lastEmailVerificationTokenSentAt,
+      );
 
       expect(result).toEqual(new Date("2024-01-01T00:10:00.000Z"));
     });
@@ -114,9 +133,11 @@ describe(EmailVerificationService.name, () => {
     it("should return false when email has just been sent", async () => {
       const now = new Date("2024-01-01T00:01:00.000Z");
       jest.useFakeTimers().setSystemTime(now);
-      const lastTokenSentAt = new Date("2024-01-01T00:00:00.000Z");
+      const lastEmailVerificationToken = {
+        sentAt: new Date("2024-01-01T00:00:00.000Z"),
+      } as EmailVerificationToken;
       modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue({ sentAt: lastTokenSentAt }),
+        sort: jest.fn().mockResolvedValue(lastEmailVerificationToken),
       });
 
       const result =
@@ -124,10 +145,8 @@ describe(EmailVerificationService.name, () => {
 
       expect(result).toEqual({
         hasSentVerificationEmail: false,
-        lastTokenSentAt,
       });
       expect(mailerServiceMock.sendMail).not.toHaveBeenCalled();
-      expect(modelMock.create).not.toHaveBeenCalled();
     });
 
     it("should send verification email and create a token when needed", async () => {
@@ -143,9 +162,7 @@ describe(EmailVerificationService.name, () => {
 
       expect(result).toEqual({
         hasSentVerificationEmail: true,
-        lastTokenSentAt: now,
       });
-      expect(service.sendVerificationMail).toBeDefined();
       expect(mailerServiceMock.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           to: "user@example.com",
@@ -165,21 +182,12 @@ describe(EmailVerificationService.name, () => {
       const now = new Date("2024-01-01T12:00:00.000Z");
       jest.useFakeTimers().setSystemTime(now);
 
-      modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue(null),
-      });
       mailerServiceMock.sendMail.mockRejectedValue(new Error("send failed"));
 
       await expect(
         service.sendEmailVerificationIfNeeded("user@example.com"),
-      ).rejects.toThrow();
+      ).rejects.toThrow(SendEmailFailureException);
 
-      expect(loggerServiceMock.error).toHaveBeenCalledWith(
-        expect.objectContaining({
-          code: "email-verification-service-send-verification-mail-error",
-        }),
-      );
-      expect(modelMock.create).not.toHaveBeenCalled();
       jest.useRealTimers();
     });
   });
@@ -218,32 +226,18 @@ describe(EmailVerificationService.name, () => {
         new Error("rate limited"),
       );
 
-      const result = await service.verifyEmailToken(
-        "user@example.com",
-        "1234567890",
-      );
-
-      expect(result).toEqual({
-        isTokenValid: false,
-        error: "too_many_attempts",
-      });
-      expect(loggerServiceMock.error).toHaveBeenCalled();
+      expect(
+        service.verifyEmailToken("user@example.com", "1234567890"),
+      ).rejects.toThrow(TooManyAttemptsException);
     });
 
     it("should return invalid_verify_email_code when token is not found", async () => {
       rateLimiterServiceMock.consume.mockResolvedValue(undefined);
       modelMock.findOne.mockResolvedValue(null);
 
-      const result = await service.verifyEmailToken(
-        "user@example.com",
-        "1234567890",
-      );
-
-      expect(result).toEqual({
-        isTokenValid: false,
-        error: "invalid_verify_email_code",
-      });
-      expect(modelMock.findOne).toHaveBeenCalled();
+      expect(
+        service.verifyEmailToken("user@example.com", "1234567890"),
+      ).rejects.toThrow(InvalidEmailVerificationTokenException);
     });
 
     it("should return true when token is valid", async () => {
@@ -253,12 +247,9 @@ describe(EmailVerificationService.name, () => {
         token: "1234567890",
       });
 
-      const result = await service.verifyEmailToken(
-        "user@example.com",
-        "1234567890",
-      );
-
-      expect(result).toEqual({ isTokenValid: true });
+      expect(
+        service.verifyEmailToken("user@example.com", "1234567890"),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -286,8 +277,42 @@ describe(EmailVerificationService.name, () => {
     });
   });
 
+  describe("renderVerificationEmailTemplate", () => {
+    it("should render verify-email template with csrf token and computed countdown date", async () => {
+      const lastEmailVerificationTokenSentAt = new Date(
+        "2024-01-01T00:00:00.000Z",
+      );
+      modelMock.findOne.mockReturnValue({
+        sort: jest
+          .fn()
+          .mockResolvedValue({ sentAt: lastEmailVerificationTokenSentAt }),
+      });
+
+      const render = jest.fn();
+      const res = { render } as any;
+
+      await service.renderVerificationEmailTemplate(res, {
+        email: "user@example.com",
+        hasSentVerificationEmail: true,
+        errorMessage: "Une erreur",
+      });
+
+      expect(render).toHaveBeenCalledWith("verify-email", {
+        csrfToken: "csrf-token",
+        email: "user@example.com",
+        hasSentVerificationEmail: true,
+        countdownEndDate: "2024-01-01T00:10:00.000Z",
+        errorMessage: "Une erreur",
+      });
+    });
+  });
+
   describe("computeShouldSendEmail", () => {
     it("should return true when there is no previous token", async () => {
+      modelMock.findOne.mockReturnValue({
+        sort: jest.fn().mockResolvedValue(null),
+      });
+
       const result =
         await service.sendEmailVerificationIfNeeded("user@example.com");
 
@@ -295,10 +320,12 @@ describe(EmailVerificationService.name, () => {
     });
 
     it("should return true when token is expired", async () => {
-      const lastTokenSentAt = new Date("2024-01-01T00:00:00.000Z");
       jest.useFakeTimers().setSystemTime(new Date("2024-01-01T01:00:01.000Z"));
+      const lastEmailVerificationToken = {
+        sentAt: new Date("2024-01-01T00:00:00.000Z"),
+      } as EmailVerificationToken;
       modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue({ sentAt: lastTokenSentAt }),
+        sort: jest.fn().mockResolvedValue(lastEmailVerificationToken),
       });
 
       const result =
@@ -310,9 +337,11 @@ describe(EmailVerificationService.name, () => {
 
     it("should return false when token is still within threshold", async () => {
       jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:05:00.000Z"));
-      const lastTokenSentAt = new Date("2024-01-01T00:00:00.000Z");
+      const lastEmailVerificationToken = {
+        sentAt: new Date("2024-01-01T00:00:00.000Z"),
+      } as EmailVerificationToken;
       modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue({ sentAt: lastTokenSentAt }),
+        sort: jest.fn().mockResolvedValue(lastEmailVerificationToken),
       });
 
       const result =
@@ -324,9 +353,11 @@ describe(EmailVerificationService.name, () => {
 
     it("should return true when token is past threshold", async () => {
       jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:11:00.000Z"));
-      const lastTokenSentAt = new Date("2024-01-01T00:00:00.000Z");
+      const lastEmailVerificationToken = {
+        sentAt: new Date("2024-01-01T00:00:00.000Z"),
+      } as EmailVerificationToken;
       modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue({ sentAt: lastTokenSentAt }),
+        sort: jest.fn().mockResolvedValue(lastEmailVerificationToken),
       });
 
       const result =

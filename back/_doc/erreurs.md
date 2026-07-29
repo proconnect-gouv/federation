@@ -27,6 +27,14 @@
 | [<b>160004</b>](../libs/cryptography/src/exceptions/password-hash-failure.exception.ts) | [PasswordHashFailure](../libs/cryptography/src/exceptions/password-hash-failure.exception.ts)        | 500       | server_error | authentication aborted due to a technical error on the authorization server |
 | [<b>160005</b>](../libs/cryptography/src/exceptions/low-entropy-argument.exception.ts)  | [LowEntropyArgumentException](../libs/cryptography/src/exceptions/low-entropy-argument.exception.ts) | 500       | server_error | authentication aborted due to a technical error on the authorization server |
 
+## @fc/email-verification
+
+| Code d'erreur                                                                                            | Classe                                                                                                                            | Code HTTP | error | error_description |
+| -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------- | ----- | ----------------- |
+| [<b>170001</b>](../libs/email-verification/src/exceptions/too-many-attempts.exception.ts)                | [TooManyAttemptsException](../libs/email-verification/src/exceptions/too-many-attempts.exception.ts)                              | 500       |       |                   |
+| [<b>170002</b>](../libs/email-verification/src/exceptions/send-email-failure.exception.ts)               | [SendEmailFailureException](../libs/email-verification/src/exceptions/send-email-failure.exception.ts)                            | 500       |       |                   |
+| [<b>170003</b>](../libs/email-verification/src/exceptions/invalid-email-verification-token.exception.ts) | [InvalidEmailVerificationTokenException](../libs/email-verification/src/exceptions/invalid-email-verification-token.exception.ts) | 500       |       |                   |
+
 ## @fc/session
 
 | Code d'erreur                                                                                        | Classe                                                                                                                     | Code HTTP | error         | error_description                                                           |

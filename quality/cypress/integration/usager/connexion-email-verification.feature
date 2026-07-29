@@ -35,6 +35,7 @@ Fonctionnalité: Connexion Usager - Email verification
     Et que la page du FI n'affiche pas de requestedAcrs
     Et que je m'authentifie
     Et que je suis redirigé vers la page de vérification de l'email
+    Et qu'un e-mail a été envoyé à "pc@fia2.fr"
     Et que je rafraîchis la page
     Alors la boîte de réception contient 1 e-mail
 
@@ -49,6 +50,7 @@ Fonctionnalité: Connexion Usager - Email verification
     Et que la page du FI n'affiche pas de requestedAcrs
     Et que je m'authentifie
     Et que je suis redirigé vers la page de vérification de l'email
+    Et qu'un e-mail a été envoyé à "pc@fia2.fr"
     Et que je rentre le code de confirmation " 0000000000 "
     Alors je vois le message d'erreur "Le code rentré est invalide ou expiré."
 
@@ -64,6 +66,7 @@ Fonctionnalité: Connexion Usager - Email verification
     Et que la page du FI n'affiche pas de requestedAcrs
     Et que je m'authentifie
     Et que je suis redirigé vers la page de vérification de l'email
+    Et qu'un e-mail a été envoyé à "pc@fia2.fr"
     Et que je vois un bouton "Recevoir un nouveau code" désactivé
     Et que je rentre le code de confirmation reçu par e-mail
     Alors la cinématique a utilisé le niveau de sécurité "eidas1-mfa"
@@ -79,8 +82,9 @@ Fonctionnalité: Connexion Usager - Email verification
     Et que la page du FI n'affiche pas de requestedAcrs
     Et que je m'authentifie
     Et que je suis redirigé vers la page de vérification de l'email
+    Et qu'un e-mail a été envoyé à "pc+aaaaaaaaa@fia2.fr"
     Et que je rentre le code de confirmation "0000000000" 10 fois
     Et que je vois le message d'erreur "Le code rentré est invalide ou expiré."
     Et que je rentre le code de confirmation "0000000000"
-    Alors je vois le message d'erreur "Vous avez fait trop de tentatives, veuillez réessayer plus tard."
+    Alors je vois le message d'erreur "Vous avez dépassé le nombre de tentatives autorisées. Veuillez réessayer plus tard."
 
