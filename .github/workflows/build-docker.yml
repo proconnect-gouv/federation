@@ -98,7 +98,6 @@ jobs:
           - mock-data-provider
           - mock-identity-provider
           - mock-service-provider-fca-low
-          - api-partner
           - fc-exploitation-v2
         include:
           - instance: core-fca-low
@@ -114,8 +113,6 @@ jobs:
             context: ./mock-identity-provider
           - instance: mock-service-provider-fca-low
             context: ./back
-          - instance: api-partner
-            context: ./pcdbapi
           - instance: fc-exploitation-v2
             context: ./admin
         arch:
