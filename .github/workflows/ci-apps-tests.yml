@@ -12,6 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         app:
+          - csmr-rie
           - mock-data-provider
           - mock-identity-provider
           - mock-service-provider

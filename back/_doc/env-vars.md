@@ -5,7 +5,6 @@
 ## Instances index
 
 1. [core-fca-low](#core-fca-low)
-2. [csmr-rie](#csmr-rie)
 
 ## Variables
 
@@ -72,13 +71,3 @@
 | Redis_SENTINEL_PASSWORD                         | string        |
 | Session_COOKIE_SECRETS                          | json          |
 | Session_USERINFO_CRYPT_KEY                      | string        |
-
-### csmr-rie
-
-| Var Name         | Inferred type |
-| ---------------- | ------------- |
-| APP_NAME         | string        |
-| Logger_THRESHOLD | string        |
-| REQUEST_TIMEOUT  | string        |
-| RieBroker_QUEUE  | string        |
-| RieBroker_URLS   | json          |

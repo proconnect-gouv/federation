@@ -57,6 +57,7 @@ jobs:
             SOURCE_COMMIT=${{ github.sha }}
             INSTANCE=${{ matrix.instance }}
           context: ${{ matrix.context }}
+          file: ${{ matrix.file || '' }}
           target: ${{ matrix.target || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
@@ -106,7 +107,8 @@ jobs:
             context: ./back
             target: migrator
           - instance: csmr-rie
-            context: ./back
+            context: .
+            file: ./csmr-rie/Dockerfile
           - instance: mock-data-provider
             context: ./mock-data-provider
           - instance: mock-identity-provider

@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "es2023",
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "types": ["node", "jest", "jest-extended"],
+    "baseUrl": "./",
+    "sourceMap": true,
+    "declaration": true,
+    "isolatedModules": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "@fc/csmr-http-proxy": ["src"],
+      "@fc/csmr-http-proxy/*": ["src/*"],
+      "@fc/app": ["../back/libs/app/src"],
+      "@fc/app/*": ["../back/libs/app/src/*"],
+      "@fc/common": ["../back/libs/common/src"],
+      "@fc/common/*": ["../back/libs/common/src/*"],
+      "@fc/config": ["../back/libs/config/src"],
+      "@fc/config/*": ["../back/libs/config/src/*"],
+      "@mocks/config": ["../back/libs/config/.mocks"],
+      "@mocks/config/*": ["../back/libs/config/.mocks/*"],
+      "@fc/hyyyperbridge": ["../back/libs/hyyyperbridge/src"],
+      "@fc/hyyyperbridge/*": ["../back/libs/hyyyperbridge/src/*"],
+      "@fc/logger": ["../back/libs/logger/src"],
+      "@fc/logger/*": ["../back/libs/logger/src/*"],
+      "@mocks/logger": ["../back/libs/logger/.mocks"],
+      "@mocks/logger/*": ["../back/libs/logger/.mocks/*"],
+      "@fc/microservices": ["../back/libs/microservices/src"],
+      "@fc/microservices/*": ["../back/libs/microservices/src/*"],
+      "@fc/rabbitmq": ["../back/libs/rabbitmq/src"],
+      "@fc/rabbitmq/*": ["../back/libs/rabbitmq/src/*"],
+      "*": ["./node_modules/*"]
+    }
+  },
+  "include": ["*.js", "*.ts", "src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "coverage"]
+}
