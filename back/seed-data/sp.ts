@@ -1,4 +1,6 @@
-const fsa = {
+//
+
+export const serviceProviders = {
   // -- FSA - FSA1-LOW - Activated - HS256 - no encrypted response
   "FSA1-LOW": {
     name: "FSA - FSA1-LOW",
@@ -132,9 +134,3 @@ const fsa = {
     userinfo_signed_response_alg: "RS256",
   },
 };
-
-// -- SPs ----------
-Object.values(fsa).forEach((fs) => {
-  print(`${fs.name} > Initializing client: ${fs.name}`);
-  db.client.replaceOne({ name: fs.name }, fs, { upsert: true });
-});

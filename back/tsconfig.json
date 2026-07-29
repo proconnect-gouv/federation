@@ -100,5 +100,5 @@
   },
   "files": ["global.d.ts"],
   "include": ["*.js", "*.ts", "libs/**/*.ts", "apps/**/*.ts"],
-  "exclude": ["node_modules", "dist", "coverage", "scripts"]
+  "exclude": ["node_modules", "dist", "coverage", "scripts", "seed.mongo.ts"]
 }

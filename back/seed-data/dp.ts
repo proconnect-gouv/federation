@@ -1,4 +1,6 @@
-const dps = {
+//
+
+export const dataProviders = {
   "DPA1-LOW": {
     name: "Fournisseur de données Mock - 1",
     title: "Fournisseur de données Mock - 1",
@@ -42,8 +44,3 @@ const dps = {
     type: "private",
   },
 };
-/* ------------------------------------------------------------------------------- */
-Object.values(dps).forEach((dp) => {
-  print(`${dp.name} > Initializing data provider: ${dp.name}`);
-  db.client.replaceOne({ name: dp.name }, dp, { upsert: true });
-});

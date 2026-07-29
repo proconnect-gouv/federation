@@ -1,4 +1,6 @@
-const fia = {
+//
+
+export const identityProviders = {
   // -- FIA - FIA1-LOW - Activated
   "FIA1-LOW": {
     uid: "9c716f61-b8a1-435c-a407-ef4d677ec270",
@@ -257,9 +259,3 @@ const fia = {
     isMfaCompliant: true,
   },
 };
-
-// -- Idps ----------
-Object.values(fia).forEach((idp) => {
-  print(`${idp.name} > Initializing provider: ${idp.name}`);
-  db.provider.replaceOne({ name: idp.name }, idp, { upsert: true });
-});
