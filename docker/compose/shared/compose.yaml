@@ -306,7 +306,7 @@ services:
       - data
 
   mongo:
-    image: mongo:8.2.11
+    image: mongo:8.2.12
     command:
       - "--keyFile"
       - /mongodb-keyfile
