@@ -3,7 +3,6 @@ import { ConfigService } from "@fc/config";
 import { CsrfService, CsrfTokenGuard } from "@fc/csrf";
 import { EmailVerificationService } from "@fc/email-verification";
 import { LoggerService } from "@fc/logger";
-import { MailerConfig } from "@fc/mailer/dto";
 import { type ISessionService } from "@fc/session";
 import {
   Body,
@@ -44,7 +43,6 @@ export class EmailVerificationController {
       spIdentity: { email },
     } = userSession.get();
     const { error } = req.query;
-    const { fromEmail } = this.config.get<MailerConfig>("Mailer");
     const csrfToken = this.csrfService.getOrCreate();
 
     let emailVerificationResult;
@@ -76,7 +74,7 @@ export class EmailVerificationController {
 
     return res.render("verify-email", {
       csrfToken,
-      fromEmail,
+      email,
       hasSentVerificationEmail:
         emailVerificationResult?.hasSentVerificationEmail,
       countdownEndDate: countdownEndDate.toISOString(),
