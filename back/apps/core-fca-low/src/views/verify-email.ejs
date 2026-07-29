@@ -25,17 +25,17 @@
                 <% if (hasSentVerificationEmail) { %>
                 <div class="fr-alert fr-alert--info fr-mb-4w">
                   <h2 class="fr-h6">Code de vérification envoyé</h2>
-                  <p>Vérifiez les emails envoyés à <b><%= email; %></b>.</p>
+                  <p>Vérifiez les emails envoyés à <b><%= locals.email %></b>.</p>
                 </div>
                 <% } %>
                 <% if (errorMessage) { %>
                   <div class="fr-alert fr-alert--error fr-mb-4w">
                     <h2 class="fr-h6">Erreur</h2>
-                    <p><%= errorMessage %></p>
+                    <p><%= locals.errorMessage %></p>
                   </div>
                 <% } %>
 
-                <input type="hidden" name="csrfToken" value="<%= locals.csrfToken; %>" />
+                <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
                 <div class="fr-input-group fr-mb-2w">
                   <label class="fr-label" for="verify_email_token">
                     Code de confirmation
@@ -63,7 +63,7 @@
               >
                 <button
                   disabled
-                  data-countdown-end-date="<%= countdownEndDate %>"
+                  data-countdown-end-date="<%= locals.countdownEndDate %>"
                   class="fr-btn fr-btn--tertiary fr-mb-2w disabled-with-countdown btn--fullwidth"
                 >
                   Recevoir un nouveau code
