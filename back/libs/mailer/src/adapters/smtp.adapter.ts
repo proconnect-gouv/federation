@@ -11,10 +11,11 @@ export class SmtpAdapter implements MailerService {
   ) {}
 
   async sendMail(dto: MailerSendOptions) {
+    const emailSubjectPrefix = this.config.emailSubjectPrefix ?? "";
     const result = await this.transporter.sendMail({
       from: { name: this.config.fromName, address: this.config.fromEmail },
       to: dto.to,
-      subject: dto.subject,
+      subject: `${emailSubjectPrefix}${dto.subject}`,
       html: dto.htmlContent,
     });
     return { messageId: result.messageId };

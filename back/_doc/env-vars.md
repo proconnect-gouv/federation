@@ -39,6 +39,7 @@
 | HyyyperbridgeBroker_URLS                        | json          |
 | Logger_THRESHOLD                                | string        |
 | Mailer_BREVO_API_KEY                            | string        |
+| Mailer_EMAIL_SUBJECT_PREFIX                     | string        |
 | Mailer_FROM_EMAIL                               | string        |
 | Mailer_FROM_NAME                                | string        |
 | Mailer_SMTP_URL                                 | string        |

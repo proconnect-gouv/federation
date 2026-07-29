@@ -10,6 +10,7 @@ const mailerConfig: MailerConfig = {
   fromName: env.string("FROM_NAME"),
   smtpUrl: env.string("SMTP_URL", true),
   brevoApiKey: env.string("BREVO_API_KEY", true),
+  emailSubjectPrefix: env.string("EMAIL_SUBJECT_PREFIX", true),
 };
 
 export default mailerConfig;

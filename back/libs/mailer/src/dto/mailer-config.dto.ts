@@ -19,4 +19,8 @@ export class MailerConfig {
   @IsString()
   @ValidateIf(({ transport }) => transport === TransportType.BREVO)
   readonly brevoApiKey?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly emailSubjectPrefix?: string;
 }
