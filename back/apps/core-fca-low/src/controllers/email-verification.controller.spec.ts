@@ -64,9 +64,6 @@ describe("EmailVerificationController", () => {
           .mockReturnValue({ spIdentity: { email: "user@example.com" } }),
       } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
-      configServiceMock.get.mockReturnValue({
-        fromEmail: "noreply@example.com",
-      });
       csrfServiceMock.getOrCreate.mockReturnValue("csrf-token");
       emailVerificationMock.sendEmailVerificationIfNeeded.mockResolvedValue({
         hasSentVerificationEmail: true,
@@ -90,7 +87,7 @@ describe("EmailVerificationController", () => {
       ).toHaveBeenCalledWith(undefined);
       expect(res.render).toHaveBeenCalledWith("verify-email", {
         csrfToken: "csrf-token",
-        fromEmail: "noreply@example.com",
+        email: "user@example.com",
         hasSentVerificationEmail: true,
         countdownEndDate: "2024-01-01T01:00:00.000Z",
         errorMessage: undefined,
@@ -108,9 +105,6 @@ describe("EmailVerificationController", () => {
           .mockReturnValue({ spIdentity: { email: "user@example.com" } }),
       } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
-      configServiceMock.get.mockReturnValue({
-        fromEmail: "noreply@example.com",
-      });
       csrfServiceMock.getOrCreate.mockReturnValue("csrf-token");
       emailVerificationMock.sendEmailVerificationIfNeeded.mockResolvedValue({
         hasSentVerificationEmail: false,
@@ -129,7 +123,7 @@ describe("EmailVerificationController", () => {
         "verify-email",
         expect.objectContaining({
           csrfToken: "csrf-token",
-          fromEmail: "noreply@example.com",
+          email: "user@example.com",
           hasSentVerificationEmail: false,
           countdownEndDate: "2024-01-01T00:00:00.000Z",
           errorMessage: "Email invalide",
@@ -146,9 +140,6 @@ describe("EmailVerificationController", () => {
           .mockReturnValue({ spIdentity: { email: "user@example.com" } }),
       } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
-      configServiceMock.get.mockReturnValue({
-        fromEmail: "noreply@example.com",
-      });
       csrfServiceMock.getOrCreate.mockReturnValue("csrf-token");
       emailVerificationMock.sendEmailVerificationIfNeeded.mockRejectedValue(
         new Error("boom"),
