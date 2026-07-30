@@ -22,7 +22,7 @@ describe("EmailVerificationController", () => {
     emailVerificationMock = {
       sendEmailVerificationIfNeeded: jest.fn(),
       verifyEmailToken: jest.fn(),
-      deleteEmailTokens: jest.fn(),
+      deleteEmailToken: jest.fn(),
       findLastEmailVerificationToken: jest.fn(),
       renderVerificationEmailTemplate: jest.fn(),
     };

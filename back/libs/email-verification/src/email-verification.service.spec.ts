@@ -24,7 +24,8 @@ describe(EmailVerificationService.name, () => {
   const modelMock = {
     create: jest.fn(),
     findOne: jest.fn(),
-    deleteMany: jest.fn(),
+    deleteOne: jest.fn(),
+    findOneAndUpdate: jest.fn(),
   };
   const csrfServiceMock = {
     getOrCreate: jest.fn(),
@@ -153,10 +154,6 @@ describe(EmailVerificationService.name, () => {
       const now = new Date("2024-01-01T12:00:00.000Z");
       jest.useFakeTimers().setSystemTime(now);
 
-      modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue(null),
-      });
-
       const result =
         await service.sendEmailVerificationIfNeeded("user@example.com");
 
@@ -170,11 +167,7 @@ describe(EmailVerificationService.name, () => {
           htmlContent: expect.any(String),
         }),
       );
-      expect(modelMock.create).toHaveBeenCalledWith({
-        email: "user@example.com",
-        token: expect.any(String),
-        sentAt: now,
-      });
+      expect(modelMock.findOneAndUpdate).toHaveBeenCalled();
       jest.useRealTimers();
     });
 
@@ -240,16 +233,21 @@ describe(EmailVerificationService.name, () => {
       ).rejects.toThrow(InvalidEmailVerificationTokenException);
     });
 
-    it("should return true when token is valid", async () => {
+    it("should not throw when token is valid", async () => {
+      const now = new Date("2024-01-01T00:01:00.000Z");
+      jest.useFakeTimers().setSystemTime(now);
+
       rateLimiterServiceMock.consume.mockResolvedValue(undefined);
       modelMock.findOne.mockResolvedValue({
         email: "user@example.com",
         token: "1234567890",
+        sentAt: new Date("2024-01-01T00:00:00.000Z"),
       });
 
-      expect(
+      await expect(
         service.verifyEmailToken("user@example.com", "1234567890"),
       ).resolves.not.toThrow();
+      jest.useRealTimers();
     });
   });
 
@@ -341,6 +339,16 @@ describe(EmailVerificationService.name, () => {
 
       expect(result.hasSentVerificationEmail).toBe(true);
       jest.useRealTimers();
+    });
+  });
+
+  describe("deleteEmailToken", () => {
+    it("should call deleteOne", async () => {
+      const email = "user@example.com";
+
+      await service.deleteEmailToken(email);
+
+      expect(modelMock.deleteOne).toHaveBeenCalledWith({ email });
     });
   });
 });

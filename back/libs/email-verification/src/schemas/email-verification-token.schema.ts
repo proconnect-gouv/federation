@@ -3,7 +3,7 @@ import { Document } from "mongoose";
 
 @Schema({ collection: "emailVerificationToken", strict: true })
 export class EmailVerificationToken extends Document {
-  @Prop({ type: String, index: true })
+  @Prop({ type: String, index: true, unique: true })
   email: string;
 
   @Prop({ type: String })
