@@ -1,4 +1,7 @@
-// Disable sort-keys to separate base configuration and access env variables
+import path from "path";
+
+const REPOSITORY_ROOT = path.resolve(__dirname, "..");
+
 const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
   chromeWebSecurity: false,
   video: false,
@@ -42,7 +45,7 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
       kid: "EC",
       use: "enc",
     },
-    FEDERATION_DIR: `${process.env.PC_ROOT}/federation`,
+    FEDERATION_DIR: REPOSITORY_ROOT,
   },
 };
 
