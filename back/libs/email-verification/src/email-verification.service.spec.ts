@@ -253,30 +253,6 @@ describe(EmailVerificationService.name, () => {
     });
   });
 
-  describe("computeTokenErrorMessage", () => {
-    it("should return undefined when no error code is provided", () => {
-      expect(service.computeTokenErrorMessage(undefined)).toBeUndefined();
-    });
-
-    it("should return a message for invalid_verify_email_code", () => {
-      expect(
-        service.computeTokenErrorMessage("invalid_verify_email_code"),
-      ).toBe("Le code rentré est invalide ou expiré.");
-    });
-
-    it("should return a message for too_many_attempts", () => {
-      expect(service.computeTokenErrorMessage("too_many_attempts")).toBe(
-        "Vous avez fait trop de tentatives, veuillez réessayer plus tard.",
-      );
-    });
-
-    it("should return default message for unknown error code", () => {
-      expect(service.computeTokenErrorMessage("unknown")).toBe(
-        "Une erreur est survenue, veuillez réessayer.",
-      );
-    });
-  });
-
   describe("renderVerificationEmailTemplate", () => {
     it("should render verify-email template with csrf token and computed countdown date", async () => {
       const lastEmailVerificationTokenSentAt = new Date(

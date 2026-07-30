@@ -190,20 +190,6 @@ export class EmailVerificationService {
     }
   }
 
-  computeTokenErrorMessage(errorCode: string | undefined) {
-    if (!errorCode) {
-      return undefined;
-    }
-    switch (errorCode) {
-      case "invalid_verify_email_code":
-        return "Le code rentré est invalide ou expiré.";
-      case "too_many_attempts":
-        return "Vous avez fait trop de tentatives, veuillez réessayer plus tard.";
-      default:
-        return "Une erreur est survenue, veuillez réessayer.";
-    }
-  }
-
   deleteEmailTokens(email: string) {
     return this.model.deleteMany({ email });
   }
