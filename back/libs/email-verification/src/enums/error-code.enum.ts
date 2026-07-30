@@ -1,0 +1,5 @@
+export const enum ErrorCode {
+  TOO_MANY_ATTEMPTS = 1,
+  SEND_EMAIL_FAILURE = 2,
+  INVALID_EMAIL_VERIFICATION_TOKEN = 3,
+}

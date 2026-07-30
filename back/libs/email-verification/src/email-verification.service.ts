@@ -1,5 +1,6 @@
 import { AppConfig } from "@fc/app";
 import { ConfigService } from "@fc/config";
+import { CsrfService } from "@fc/csrf";
 import { LoggerService } from "@fc/logger";
 import { MailerService } from "@fc/mailer";
 import { RateLimiterService } from "@fc/rate-limiter";
@@ -7,9 +8,15 @@ import { RateLimiterKeyPrefix } from "@fc/rate-limiter/enum";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { VerifyEmail } from "@proconnect-gouv/proconnect.email";
+import { Response } from "express";
 import { Model } from "mongoose";
 import { customAlphabet } from "nanoid";
 import { EmailVerificationConfig } from "./dto";
+import {
+  InvalidEmailVerificationTokenException,
+  SendEmailFailureException,
+  TooManyAttemptsException,
+} from "./exceptions";
 import { EmailVerificationToken } from "./schemas";
 
 @Injectable()
@@ -21,6 +28,7 @@ export class EmailVerificationService {
     private readonly config: ConfigService,
     private readonly rateLimiter: RateLimiterService,
     private readonly logger: LoggerService,
+    private readonly csrfService: CsrfService,
   ) {}
 
   computeIsEmailEligible(email: string): boolean {
@@ -29,27 +37,30 @@ export class EmailVerificationService {
     return email.length % 10 < (eligibleEmailsPercentage / 100) * 10;
   }
 
-  computeCountdownEndDate(lastTokenSentAt: Date | undefined): Date {
+  computeCountdownEndDate(
+    lastEmailVerificationTokenSentAt: Date | undefined,
+  ): Date {
     const { verificationEmailWaitingDurationBeforeResendInMs } =
       this.config.get<EmailVerificationConfig>("EmailVerification");
-    if (!lastTokenSentAt) {
+    if (!lastEmailVerificationTokenSentAt) {
       const now = new Date();
       return new Date(
         now.getTime() + verificationEmailWaitingDurationBeforeResendInMs,
       );
     }
     return new Date(
-      lastTokenSentAt.getTime() +
+      lastEmailVerificationTokenSentAt.getTime() +
         verificationEmailWaitingDurationBeforeResendInMs,
     );
   }
 
+  async findLastEmailVerificationToken(email: string) {
+    return this.model.findOne({ email }).sort({ sentAt: -1 });
+  }
+
   async sendEmailVerificationIfNeeded(email: string) {
-    const lastEmailVerificationToken = await this.model
-      .findOne({
-        email,
-      })
-      .sort({ sentAt: -1 });
+    const lastEmailVerificationToken =
+      await this.findLastEmailVerificationToken(email);
 
     const shouldSendEmail = await this.computeShouldSendEmail(
       lastEmailVerificationToken?.sentAt,
@@ -58,36 +69,22 @@ export class EmailVerificationService {
     if (!shouldSendEmail) {
       return {
         hasSentVerificationEmail: false,
-        lastTokenSentAt: lastEmailVerificationToken?.sentAt,
       };
     }
 
     await this.deleteEmailTokens(email);
     const token = this.generateToken();
 
-    const now = new Date();
-
-    try {
-      await this.sendVerificationMail(email, token);
-    } catch (err: any) {
-      this.logger.error({
-        code: "email-verification-service-send-verification-mail-error",
-        emailVerificationSendError: err,
-        emailVerificationSendErrorCause: err?.cause,
-        emailVerificationSendErrorType: err?.constructor?.name,
-      });
-      throw err;
-    }
+    await this.sendVerificationMail(email, token);
 
     await this.model.create({
       email,
       token,
-      sentAt: now,
+      sentAt: new Date(),
     });
 
     return {
       hasSentVerificationEmail: true,
-      lastTokenSentAt: now,
     };
   }
 
@@ -98,21 +95,52 @@ export class EmailVerificationService {
       email,
     });
 
-    await this.mailer.sendMail({
-      to: email,
-      subject: "Vérification de votre adresse email",
-      htmlContent: VerifyEmail({
-        baseurl: fqdn || "",
-        token,
-      }).toString(),
-    });
+    try {
+      await this.mailer.sendMail({
+        to: email,
+        subject: "Vérification de votre adresse email",
+        htmlContent: VerifyEmail({
+          baseurl: fqdn || "",
+          token,
+        }).toString(),
+      });
+    } catch (error) {
+      throw new SendEmailFailureException(error);
+    }
+
     return;
   }
 
+  async renderVerificationEmailTemplate(
+    res: Response,
+    options: {
+      errorMessage?: string;
+      email: string;
+      hasSentVerificationEmail: boolean;
+    },
+  ) {
+    const csrfToken = this.csrfService.getOrCreate();
+
+    const lastEmailVerificationToken =
+      await this.findLastEmailVerificationToken(options.email);
+
+    const countdownEndDate = this.computeCountdownEndDate(
+      lastEmailVerificationToken?.sentAt,
+    );
+
+    return res.render("verify-email", {
+      csrfToken,
+      email: options.email,
+      hasSentVerificationEmail: options.hasSentVerificationEmail,
+      countdownEndDate: countdownEndDate.toISOString(),
+      errorMessage: options.errorMessage,
+    });
+  }
+
   private async computeShouldSendEmail(
-    lastTokenSentAt?: Date,
+    lastEmailVerificationTokenSentAt?: Date,
   ): Promise<boolean> {
-    if (!lastTokenSentAt) {
+    if (!lastEmailVerificationTokenSentAt) {
       return true;
     }
     const now = new Date();
@@ -122,13 +150,14 @@ export class EmailVerificationService {
     } = this.config.get<EmailVerificationConfig>("EmailVerification");
 
     const isTokenExpired =
-      now.getTime() - lastTokenSentAt.getTime() > tokenExpirationDurationInMs;
+      now.getTime() - lastEmailVerificationTokenSentAt.getTime() >
+      tokenExpirationDurationInMs;
     if (isTokenExpired) {
       return true;
     }
 
     const hasResendCooldownExpired =
-      now.getTime() - lastTokenSentAt.getTime() >
+      now.getTime() - lastEmailVerificationTokenSentAt.getTime() >
       verificationEmailWaitingDurationBeforeResendInMs;
     if (hasResendCooldownExpired) {
       return true;
@@ -143,14 +172,8 @@ export class EmailVerificationService {
         RateLimiterKeyPrefix.VERIFY_EMAIL_TOKEN,
         email,
       );
-    } catch (err: any) {
-      this.logger.error({
-        code: "email-verification-service-verify-email-token-rate-limiter-error",
-        emailVerificationSendError: err,
-        emailVerificationSendErrorCause: err?.cause,
-        emailVerificationSendErrorType: err?.constructor?.name,
-      });
-      return { isTokenValid: false, error: "too_many_attempts" };
+    } catch (error) {
+      throw new TooManyAttemptsException(error);
     }
     const { tokenExpirationDurationInMs } =
       this.config.get<EmailVerificationConfig>("EmailVerification");
@@ -163,9 +186,8 @@ export class EmailVerificationService {
       sentAt: { $gte: expirationTimeThreshold },
     });
     if (!emailVerificationToken) {
-      return { isTokenValid: false, error: "invalid_verify_email_code" };
+      throw new InvalidEmailVerificationTokenException();
     }
-    return { isTokenValid: true };
   }
 
   computeTokenErrorMessage(errorCode: string | undefined) {

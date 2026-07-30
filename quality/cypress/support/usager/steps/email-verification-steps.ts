@@ -37,6 +37,10 @@ Then("je suis redirigé vers la page de vérification de l'email", function () {
   cy.url().should("include", "/verify-email");
 });
 
+Then("un e-mail a été envoyé à {string}", function (email: string) {
+  cy.get(".fr-alert--info").contains(`Vérifiez les emails envoyés à ${email}`);
+});
+
 Then("je vois le message d'erreur {string}", function (message: string) {
   cy.get(".fr-alert--error").contains(message);
 });
