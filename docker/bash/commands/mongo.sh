@@ -11,5 +11,5 @@ _reset_mongodb() {
 _reset_db_core_fca_low() {
   _reset_mongodb
   echo "Reseeding core-fca-low..."
-  $DOCKER_COMPOSE exec ${NO_TTY} core yarn run seed
+  $DOCKER_COMPOSE run --rm ${NO_TTY} --no-deps core yarn run seed
 }
