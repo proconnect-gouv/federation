@@ -91,6 +91,20 @@ updates:
         update-types:
           - "version-update:semver-major"
           - "version-update:semver-minor"
+  - package-ecosystem: "npm"
+    directory: "/csmr-rie"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    versioning-strategy: increase
+    ignore:
+      - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
   - package-ecosystem: "docker"
     directory: "/admin"
     labels:
@@ -141,6 +155,12 @@ updates:
       - dependency-name: "node"
         update-types:
           - "version-update:semver-major"
+  - package-ecosystem: "docker"
+    directory: "/csmr-rie"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "docker-compose"
     directory: "/docker/compose/shared"
     ignore:

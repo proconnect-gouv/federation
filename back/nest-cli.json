@@ -27,15 +27,6 @@
         ]
       }
     },
-    "csmr-rie": {
-      "type": "application",
-      "root": "apps/csmr-rie",
-      "entryFile": "main",
-      "sourceRoot": "apps/csmr-rie/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/csmr-rie/tsconfig.app.json"
-      }
-    },
     "identity-provider-adapter-mongo": {
       "type": "library",
       "root": "libs/identity-provider-adapter-mongo",
