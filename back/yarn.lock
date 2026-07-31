@@ -1368,10 +1368,10 @@
     nanoid "^5.1.5"
     tld-extract "^2.1.0"
 
-"@proconnect-gouv/proconnect.email@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.email/-/proconnect.email-1.0.2.tgz#15e100dbe6a090cde4d271dbdf3f90352abed68c"
-  integrity sha512-GNPxQ229pu4Oq/VgGWFxqeAcOYo82ccZ8fq+Q/fvXKubNA1dUOtJyg9zlbo9SFVaFPMWMxRGIdyNVIzKeNAEuA==
+"@proconnect-gouv/proconnect.email@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@proconnect-gouv/proconnect.email/-/proconnect.email-1.1.0.tgz#9e9a82cc791f272c2d8a26d36b4c5315362ef364"
+  integrity sha512-T4p2fveNSPySf8gkNVruqya86+rRFimGBUKpSR+pNDQV5YbPaAo+7H3lzfoGus7ewNLUw/MvRqzwGWlovNg4QQ==
   dependencies:
     "@kitajs/html" "^4.2.9"
 

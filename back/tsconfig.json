@@ -2,6 +2,7 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "jsxImportSource": "@kitajs/html",
     "target": "es2023",
     "esModuleInterop": true,
     "outDir": "./dist",
