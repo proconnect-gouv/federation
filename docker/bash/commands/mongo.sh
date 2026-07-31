@@ -7,9 +7,20 @@ _reset_mongodb() {
     'mongosh --host "$HOSTNAME" -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin "$MONGO_INITDB_DATABASE" --quiet --eval "load(\"/opt/scripts/db-states/mongo-reset.js\")"'
 }
 
+# Rate limiter counters (and sessions) live in redis-pwd db 4, shared by
+# core/core-rie/fsa*-low/moncomptepro. cy.resetMongo() never touched this,
+# so re-running a rate-limit scenario within its window (e.g. VERIFY_EMAIL_TOKEN's
+# 5min) inherited leftover points from the previous run.
+_reset_redis() {
+  echo "Reseting redis-pwd to default state..."
+  $DOCKER_COMPOSE exec ${NO_TTY} redis-pwd sh -c \
+    'redis-cli -n 4 -a "$REDIS_PASSWORD" --no-auth-warning FLUSHDB'
+}
+
 # Presets for backward compatibility
 _reset_db_core_fca_low() {
   _reset_mongodb
+  _reset_redis
   echo "Reseeding core-fca-low..."
   $DOCKER_COMPOSE run --rm ${NO_TTY} --no-deps core yarn run seed
 }
