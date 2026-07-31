@@ -42,7 +42,7 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
       kid: "EC",
       use: "enc",
     },
-    FEDERATION_DIR: `${process.env.PC_ROOT}/federation`,
+    FEDERATION_DIR: process.env.FEDERATION_DIR,
   },
 };
 

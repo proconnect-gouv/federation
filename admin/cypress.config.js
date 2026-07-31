@@ -25,8 +25,8 @@ export default defineConfig({
     APP_HOME_ROLE_SECURITY:
       "https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider",
     APP_NAME: "admin",
-    FEDERATION_DIR: `${process.env.PC_ROOT}/federation`,
-    LOG_FILE_PATH: `${process.env.PC_ROOT}/federation/docker/volumes/log/fcexploitation.log`,
+    FEDERATION_DIR: process.env.FEDERATION_DIR,
+    LOG_FILE_PATH: `${process.env.FEDERATION_DIR}/docker/volumes/log/fcexploitation.log`,
   },
   pageLoadTimeout: 30000,
   viewportHeight: 1800,
