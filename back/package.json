@@ -8,6 +8,7 @@
     "build": "nest build",
     "format": "prettier --write .",
     "migrate": "migrate-mongo",
+    "seed": "node scripts/seed/main.ts",
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch --watchAssets --debug 0.0.0.0:9229",
     "start:ci": "NODE_ENV=development nest start",
