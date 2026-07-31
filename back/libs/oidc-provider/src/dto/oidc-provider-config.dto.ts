@@ -47,4 +47,8 @@ export class OidcProviderConfig {
 
   @IsUrl()
   readonly errorUriBase?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  readonly acrValuesThatRequireNewSession: string[];
 }
