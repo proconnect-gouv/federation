@@ -107,16 +107,35 @@ export class OidcAcrService {
     return intersection(acrValuesAsArray, Array.from(supportedAcrValues));
   }
 
-  isEssentialAcrSatisfied({
-    prompt,
-  }: {
-    prompt: ExtendedInteraction["prompt"];
-  }): boolean {
-    if (prompt.name === "login" && prompt.reasons.includes("essential_acr")) {
+  isEssentialAcrSatisfied(
+    interaction: ExtendedInteraction,
+    userSession: Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">,
+  ) {
+    const areThereEssentialAcrRequested =
+      this.computeAreThereEssentialAcrRequested(interaction);
+
+    if (!areThereEssentialAcrRequested) {
+      return true;
+    }
+
+    const { acrClaims } = this.getFilteredAcrParamsFromInteraction(interaction);
+    const spEssentialAcr =
+      acrClaims?.value || acrClaims?.values?.join(" ") || undefined;
+
+    const interactionAcr = this.getInteractionAcr({
+      idpAcr: userSession.idpAcr,
+      spEssentialAcr,
+      isEmailVerifiedByPcf: userSession.isEmailVerifiedByPcf,
+      amr: userSession.amr,
+    });
+
+    if (!interactionAcr) {
       return false;
     }
 
-    if (prompt.name === "login" && prompt.reasons.includes("essential_acrs")) {
+    const { acrValuesThatRequireNewSession } =
+      this.config.get<OidcProviderConfig>("OidcProvider");
+    if (acrValuesThatRequireNewSession.includes(interactionAcr)) {
       return false;
     }
 
@@ -165,5 +184,24 @@ export class OidcAcrService {
     }
 
     return {};
+  }
+
+  private computeAreThereEssentialAcrRequested(interaction: {
+    prompt: ExtendedInteraction["prompt"];
+  }): boolean {
+    const { prompt } = interaction;
+    if (prompt.name !== "login") {
+      return false;
+    }
+
+    const containsEssentialAcrs =
+      prompt.reasons.includes("essential_acr") ||
+      prompt.reasons.includes("essential_acrs");
+
+    if (!containsEssentialAcrs) {
+      return false;
+    }
+
+    return true;
   }
 }

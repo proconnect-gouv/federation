@@ -42,6 +42,7 @@ describe("OidcAcrService", () => {
         "eidas0-mfa",
         "eidas1-mfa",
       ],
+      acrValuesThatRequireNewSession: ["eidas2", "eidas3"],
       defaultIdpId: "defaultIdpId",
     });
   });
@@ -207,7 +208,136 @@ describe("OidcAcrService", () => {
   });
 
   describe("isEssentialAcrSatisfied()", () => {
-    it("should return false when prompt contains essential_acr reason", () => {
+    it("should return true when no essential ACR is requested", () => {
+      // Given
+      const interactionMock = {
+        uid: "123",
+        params: {},
+        prompt: {
+          name: "consent",
+          reasons: [],
+          details: {},
+        },
+      } as unknown as ExtendedInteraction;
+
+      const userSessionMock = {
+        idpAcr: "eidas1",
+        isEmailVerifiedByPcf: false,
+        amr: ["pwd"],
+      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">;
+
+      // When
+      const result = service.isEssentialAcrSatisfied(
+        interactionMock,
+        userSessionMock,
+      );
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it("should return false when essential ACR is requested but not satisfied", () => {
+      // Given
+      const interactionMock = {
+        uid: "123",
+        params: {},
+        prompt: {
+          name: "login",
+          reasons: ["essential_acr"],
+          details: {
+            acr: {
+              essential: true,
+              value: "eidas2",
+            },
+          },
+        },
+      } as unknown as ExtendedInteraction;
+
+      const userSessionMock = {
+        idpAcr: "eidas1",
+        isEmailVerifiedByPcf: true,
+        amr: ["pwd"],
+      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">;
+
+      // When
+      const result = service.isEssentialAcrSatisfied(
+        interactionMock,
+        userSessionMock,
+      );
+
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it("should return false when satisfied ACR requires a new session", () => {
+      // Given
+      const interactionMock = {
+        uid: "123",
+        params: {},
+        prompt: {
+          name: "login",
+          reasons: ["essential_acr"],
+          details: {
+            acr: {
+              essential: true,
+              values: ["eidas2"],
+            },
+          },
+        },
+      } as unknown as ExtendedInteraction;
+
+      const userSessionMock = {
+        idpAcr: "eidas2",
+        isEmailVerifiedByPcf: true,
+        amr: ["pwd"],
+      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">;
+
+      // When
+      const result = service.isEssentialAcrSatisfied(
+        interactionMock,
+        userSessionMock,
+      );
+
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it("should return true when essential ACR is satisfied and does not require a new session", () => {
+      // Given
+      const interactionMock = {
+        uid: "123",
+        params: {},
+        prompt: {
+          name: "login",
+          reasons: ["essential_acr"],
+          details: {
+            acr: {
+              essential: true,
+              value: "eidas1",
+            },
+          },
+        },
+      } as unknown as ExtendedInteraction;
+
+      const userSessionMock = {
+        idpAcr: "eidas1",
+        isEmailVerifiedByPcf: true,
+        amr: ["pwd"],
+      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">;
+
+      // When
+      const result = service.isEssentialAcrSatisfied(
+        interactionMock,
+        userSessionMock,
+      );
+
+      // Then
+      expect(result).toBe(true);
+    });
+  });
+
+  describe("computeAreThereEssentialAcrRequested()", () => {
+    it("should return true when prompt contains essential_acr reason", () => {
       // Given
       const interactionMock = {
         prompt: {
@@ -217,13 +347,14 @@ describe("OidcAcrService", () => {
       } as undefined as ExtendedInteraction;
 
       // When
-      const result = service["isEssentialAcrSatisfied"](interactionMock);
+      const result =
+        service["computeAreThereEssentialAcrRequested"](interactionMock);
 
       // Then
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
-    it("should return false when prompt contains essential_acrs reason", () => {
+    it("should return true when prompt contains essential_acrs reason", () => {
       // Given
       const interactionMock = {
         prompt: {
@@ -233,13 +364,31 @@ describe("OidcAcrService", () => {
       } as undefined as ExtendedInteraction;
 
       // When
-      const result = service["isEssentialAcrSatisfied"](interactionMock);
+      const result =
+        service["computeAreThereEssentialAcrRequested"](interactionMock);
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it("should return false when prompt does not contain essential ACR reasons", () => {
+      // Given
+      const interactionMock = {
+        prompt: {
+          name: "login",
+          reasons: ["other_reasons"],
+        },
+      } as undefined as ExtendedInteraction;
+
+      // When
+      const result =
+        service["computeAreThereEssentialAcrRequested"](interactionMock);
 
       // Then
       expect(result).toBe(false);
     });
 
-    it("should return true when prompt does not contain essential ACR reasons", () => {
+    it("should return false when prompt is not a login", () => {
       // Given
       const interactionMock = {
         prompt: {
@@ -249,10 +398,11 @@ describe("OidcAcrService", () => {
       } as undefined as ExtendedInteraction;
 
       // When
-      const result = service["isEssentialAcrSatisfied"](interactionMock);
+      const result =
+        service["computeAreThereEssentialAcrRequested"](interactionMock);
 
       // Then
-      expect(result).toBe(true);
+      expect(result).toBe(false);
     });
   });
 

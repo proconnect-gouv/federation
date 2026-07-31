@@ -109,8 +109,15 @@ export class InteractionController {
     const isSessionOpenedWithHintedIdp =
       !idpHint || userSession.get("idpId") === hintedIdp.uid;
 
-    const isEssentialAcrSatisfied =
-      this.oidcAcr.isEssentialAcrSatisfied(interaction);
+    const { acrClaims } =
+      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
+    const spEssentialAcr =
+      acrClaims?.value || acrClaims?.values?.join(" ") || undefined;
+
+    const isEssentialAcrSatisfied = this.oidcAcr.isEssentialAcrSatisfied(
+      interaction,
+      activeUserSession,
+    );
 
     const canReuseActiveSession =
       isUserConnectedAlready &&
@@ -119,10 +126,6 @@ export class InteractionController {
       isSessionOpenedWithHintedLogin;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
-    const { acrClaims } =
-      this.oidcAcr.getFilteredAcrParamsFromInteraction(interaction);
-    const spEssentialAcr =
-      acrClaims?.value || acrClaims?.values.join(" ") || null;
 
     if (!canReuseActiveSession) {
       userSession.clear();

@@ -87,3 +87,20 @@ Fonctionnalité: Connexion Usager - SSO
     Quand je navigue sur la page fournisseur de service "second FS"
     Et que je clique sur le bouton ProConnect deux facteurs
     Alors je suis redirigé vers la page interaction
+
+  Scénario: La session est ré-utilisée lorsque le niveau ACR est satisfait
+    Etant donné que je navigue sur la page fournisseur de service "premier FS"
+    Et que le fournisseur de service requiert le claim "acr" avec la valeur "eidas1-mfa"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que le fournisseur d'identité garantit un niveau de sécurité "eidas1-mfa"
+    Et que je m'authentifie
+    Et que je suis redirigé vers la page fournisseur de service "premier FS"
+    Et que la cinématique a utilisé le niveau de sécurité "eidas1-mfa"
+    Et que je navigue sur la page fournisseur de service "second FS"
+    Et que le fournisseur de service requiert le claim "acr" avec la valeur "eidas1-mfa"
+    Et que je clique sur le bouton ProConnect
+    Alors je suis redirigé vers la page fournisseur de service "second FS"
+    Et je suis connecté au fournisseur de service
+

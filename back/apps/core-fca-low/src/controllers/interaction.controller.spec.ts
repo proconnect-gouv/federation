@@ -63,6 +63,7 @@ describe("InteractionController", () => {
     oidcAcrMock = {
       getFilteredAcrParamsFromInteraction: jest.fn(),
       getInteractionAcr: jest.fn(),
+      areThereEssentialAcrRequested: jest.fn(),
       isEssentialAcrSatisfied: jest.fn(),
       computeCanAcrBeSatisfiedByPcf: jest.fn(),
     };
@@ -168,7 +169,6 @@ describe("InteractionController", () => {
       oidcAcrMock.getFilteredAcrParamsFromInteraction.mockReturnValue({
         acr_values: "high",
       });
-      oidcAcrMock.isEssentialAcrSatisfied.mockReturnValue(true);
       configServiceMock.get.mockReturnValue({ urlPrefix: "/prefix" });
     });
 
@@ -251,6 +251,7 @@ describe("InteractionController", () => {
         uid: "interaction123",
         params: { client_id: "sp123" },
       });
+      oidcAcrMock.isEssentialAcrSatisfied.mockReturnValue(true);
 
       await controller.getInteraction(
         req,
