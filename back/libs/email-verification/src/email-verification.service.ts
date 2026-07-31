@@ -72,16 +72,21 @@ export class EmailVerificationService {
       };
     }
 
-    await this.deleteEmailTokens(email);
     const token = this.generateToken();
 
     await this.sendVerificationMail(email, token);
 
-    await this.model.create({
-      email,
-      token,
-      sentAt: new Date(),
-    });
+    await this.model.findOneAndUpdate(
+      {
+        email,
+      },
+      {
+        email,
+        token,
+        sentAt: new Date(),
+      },
+      { upsert: true },
+    );
 
     return {
       hasSentVerificationEmail: true,
@@ -177,21 +182,24 @@ export class EmailVerificationService {
     }
     const { tokenExpirationDurationInMs } =
       this.config.get<EmailVerificationConfig>("EmailVerification");
-    const expirationTimeThreshold = new Date(
-      Date.now() - tokenExpirationDurationInMs,
-    );
+    const now = new Date();
+
     const emailVerificationToken = await this.model.findOne({
       email,
-      token,
-      sentAt: { $gte: expirationTimeThreshold },
     });
-    if (!emailVerificationToken) {
+
+    if (
+      !emailVerificationToken ||
+      emailVerificationToken.token !== token ||
+      now.getTime() - emailVerificationToken.sentAt.getTime() >
+        tokenExpirationDurationInMs
+    ) {
       throw new InvalidEmailVerificationTokenException();
     }
   }
 
-  deleteEmailTokens(email: string) {
-    return this.model.deleteMany({ email });
+  async deleteEmailToken(email: string) {
+    return this.model.deleteOne({ email });
   }
 
   private generateToken(): string {
