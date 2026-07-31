@@ -31,7 +31,6 @@ _up() {
       ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn migrations:run
       ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn fixtures:load
 
-      sleep 10 # wait for the database to be ready before creating a backup
       (cd ${FEDERATION_DIR}/admin/cypress/support/ && docker exec pc-pg-"admin"-1 bash -c "$(cat create-db-backup.sh)")
       ;;
     *)

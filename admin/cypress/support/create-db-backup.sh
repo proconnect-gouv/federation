@@ -1,7 +1,9 @@
 #!/bin/bash
 
 ## backup is used by db.sh
-psql postgres -U pg-user -c 'REVOKE CONNECT ON DATABASE "pg-backup" FROM public'
-psql postgres -U pg-user -c "SELECT \"pid\", pg_terminate_backend(pid) FROM \"pg_stat_activity\" WHERE datname='pg-backup' AND pid <> pg_backend_pid();"
-psql postgres -U pg-user -c 'DROP DATABASE  IF EXISTS "pg-backup"'
-psql postgres -U pg-user -c 'CREATE DATABASE "pg-backup" WITH TEMPLATE "pg-db"'
+## Dump lives in the pg-admin container's writable layer — same lifetime as
+## the old pg-backup database (gone if the container is recreated without
+## re-running docker-stack up's pg-admin hook).
+pg_dump -U pg-user -d pg-db --data-only --column-inserts \
+  --table='"user"' --table='password' --table='authentication_failures' \
+  -f /tmp/admin-e2e-seed.sql
