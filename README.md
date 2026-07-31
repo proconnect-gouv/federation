@@ -1,8 +1,8 @@
 # ProConnect - Fédération
 
-La solution qui vous identifie en tant que professionnel.
+ProConnect, l'accès pour les pros, validé par l'État
 
-[Plus d'information](https://github.com/numerique-gouv/proconnect-documentation?tab=readme-ov-file#-proconnect---documentation).
+[Plus d'information](https://www.proconnect.gouv.fr).
 
 ## Overview
 
