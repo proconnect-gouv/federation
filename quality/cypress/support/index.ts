@@ -49,7 +49,7 @@ Cypress.Commands.add(
 
 function verifyEmailCommand() {
   return cy
-    .maildevGetMessageBySubject("Vérification de votre adresse email")
+    .maildevGetMessageBySubject("Test - Vérification de votre adresse email")
     .then((email) => {
       cy.maildevVisitMessageById(email.id);
       cy.origin(

@@ -10,6 +10,7 @@ describe("MailerConfig (Data Transfer Object)", () => {
   const mailerConfigMock = {
     fromEmail: "no-reply@example.com",
     fromName: "ProConnect",
+    subjectPrefix: "Test - ",
   };
 
   describe("should validate", () => {

@@ -17,6 +17,7 @@ export class BrevoAdapter implements MailerService {
   }
 
   async sendMail(dto: MailerSendOptions) {
+    const emailSubjectPrefix = this.config.emailSubjectPrefix ?? "";
     const response = await this.fetchFn("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
@@ -27,7 +28,7 @@ export class BrevoAdapter implements MailerService {
       body: JSON.stringify({
         sender: { name: this.config.fromName, email: this.config.fromEmail },
         to: [{ email: dto.to }],
-        subject: dto.subject,
+        subject: `${emailSubjectPrefix}${dto.subject}`,
         htmlContent: dto.htmlContent,
       }),
     });

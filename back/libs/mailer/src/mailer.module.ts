@@ -20,16 +20,17 @@ export class MailerModule {
           inject: [ConfigService],
           useFactory: (config: ConfigService): MailerService => {
             const mailerConfig = config.get<MailerConfig>("Mailer");
-            if (mailerConfig.transport === TransportType.BREVO) {
-              return new BrevoAdapter(mailerConfig, globalThis.fetch);
+            switch (mailerConfig.transport) {
+              case TransportType.BREVO:
+                return new BrevoAdapter(mailerConfig, globalThis.fetch);
+              case TransportType.SMTP:
+                return new SmtpAdapter(
+                  mailerConfig,
+                  nodemailer.createTransport(mailerConfig.smtpUrl),
+                );
+              default:
+                return new NoneAdapter();
             }
-            if (mailerConfig.transport === TransportType.SMTP) {
-              return new SmtpAdapter(
-                mailerConfig,
-                nodemailer.createTransport(mailerConfig.smtpUrl),
-              );
-            }
-            return new NoneAdapter();
           },
         },
       ],
