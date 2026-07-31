@@ -1,5 +1,8 @@
 import { defineConfig } from "cypress";
+import path from "path";
 import pluginConfig from "./cypress/plugins";
+
+const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "..");
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -25,8 +28,8 @@ export default defineConfig({
     APP_HOME_ROLE_SECURITY:
       "https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider",
     APP_NAME: "admin",
-    FEDERATION_DIR: `${process.env.PC_ROOT}/federation`,
-    LOG_FILE_PATH: `${process.env.PC_ROOT}/federation/docker/volumes/log/fcexploitation.log`,
+    FEDERATION_DIR: REPOSITORY_ROOT,
+    LOG_FILE_PATH: `${REPOSITORY_ROOT}/docker/volumes/log/fcexploitation.log`,
   },
   pageLoadTimeout: 30000,
   viewportHeight: 1800,
