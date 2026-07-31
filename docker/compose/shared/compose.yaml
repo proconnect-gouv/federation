@@ -17,41 +17,9 @@ services:
       - data
     init: true
 
-  init-core:
-    build:
-      context: "../../../back"
-      target: production
-    working_dir: /var/www/app
-    user: ${CURRENT_UID}
-    depends_on:
-      mongo:
-        condition: service_healthy
-    volumes:
-      - "../../../back:/build/back:ro"
-      - "../../volumes/app:/opt/scripts"
-      - "../../volumes/log:/var/log/app"
-      - "../../volumes/.home:/home"
-      - "../../volumes/ssl:/etc/ssl/docker_host:ro"
-    env_file:
-      - "../shared/.env/base-app.env"
-      - "../fca-low/.env/core.env"
-    environment:
-      - NODE_OPTIONS=--experimental-strip-types
-      - Mongoose_HOSTS=mongo:27017
-      - Mongoose_TLS=false
-      - Mongoose_TLS_INSECURE=false
-      - Mongoose_TLS_ALLOW_INVALID_HOST_NAME=false
-      - Mongoose_TLS_CA_FILE=
-    tty: true
-    networks:
-      - data
-    command: "yarn run migrate up"
-
   base-core:
     extends: base-nodejs
     depends_on:
-      init-core:
-        condition: service_completed_successfully
       rp-all:
         condition: service_started
       maildev:
@@ -60,6 +28,8 @@ services:
         condition: service_healthy
       redis-pwd:
         condition: service_healthy
+    pre_start:
+      - command: yarn run migrate up
     healthcheck:
       test:
         [
