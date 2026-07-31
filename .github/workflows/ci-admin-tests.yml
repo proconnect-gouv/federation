@@ -82,6 +82,7 @@ jobs:
         working-directory: ./docker
         run: |
           ./docker-stack prune-ci
+          ./docker-stack compose build core
           ./docker-stack up admin
           ./docker-stack wait "admin" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
