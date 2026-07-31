@@ -1,7 +1,4 @@
-ARG NODE_VERSION=24.16.0
-ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
-
-FROM ${NODE_IMAGE} AS dev_dependencies
+FROM node:24.16.0-alpine AS dev_dependencies
 
 WORKDIR /var/www/app
 
@@ -10,7 +7,7 @@ RUN --mount=type=cache,target=/usr/local/share/.cache,id=back-yarn-cache,sharing
     --mount=type=tmpfs,target=/tmp \
     yarn install --ignore-engines --immutable
 
-FROM ${NODE_IMAGE} AS dependencies
+FROM node:24.16.0-alpine AS dependencies
 
 WORKDIR /var/www/app
 
@@ -19,49 +16,40 @@ RUN --mount=type=cache,target=/usr/local/share/.cache,id=back-yarn-cache,sharing
     --mount=type=tmpfs,target=/tmp \
     yarn install --ignore-engines --immutable --production
 
-FROM ${NODE_IMAGE} AS migrator
-
-WORKDIR /var/www/app
-
-COPY --from=dependencies /var/www/app/node_modules node_modules
-COPY package.json yarn.lock ./
-COPY migrate-mongo-config.js ./migrate-mongo-config.js
-COPY migrations ./migrations
-
-FROM ${NODE_IMAGE} AS dev
+FROM node:24.16.0-alpine AS dev
 
 WORKDIR /var/www/app
 
 RUN apk add --no-cache bash
 
 COPY --from=dev_dependencies /var/www/app/node_modules node_modules
-COPY . ./
+COPY package.json nest-cli.json tsconfig.json tsconfig.build.json global.d.ts migrate-mongo-config.js ./
+COPY apps ./apps
+COPY libs ./libs
+COPY migrations ./migrations
 
-CMD yarn start:dev ${NESTJS_INSTANCE}
+CMD yarn start:dev core-fca-low
 
-FROM ${NODE_IMAGE} AS builder
+FROM dev_dependencies AS builder
 
-ARG INSTANCE
+COPY nest-cli.json tsconfig.json tsconfig.build.json global.d.ts ./
+COPY apps ./apps
+COPY libs ./libs
 
-COPY . /build/back
+RUN yarn run build
 
-WORKDIR /build/back
-
-COPY --from=dev_dependencies /var/www/app/node_modules node_modules
-
-RUN yarn run build ${INSTANCE}
-
-FROM ${NODE_IMAGE} AS production
-
-ARG INSTANCE
+FROM node:24.16.0-alpine AS production
 
 ENV NODE_ENV=production
 
 VOLUME ["/etc/ssl/client_certs"]
 
-COPY --from=dependencies /var/www/app/node_modules /var/www/app/node_modules
-COPY --from=builder /build/back/dist/apps/${INSTANCE} /var/www/app/dist/instances/app
-
 WORKDIR /var/www/app
 
-CMD ["node", "/var/www/app/dist/instances/app/main.js"]
+COPY --from=dependencies /var/www/app/node_modules node_modules
+COPY --from=builder /var/www/app/dist/apps/core-fca-low dist/instances/app
+COPY package.json ./
+COPY migrate-mongo-config.js ./migrate-mongo-config.js
+COPY migrations ./migrations
+
+CMD ["node", "dist/instances/app/main.js"]
