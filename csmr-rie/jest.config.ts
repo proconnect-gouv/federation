@@ -1,6 +1,8 @@
 import type { Config } from "jest";
 import { pathsToModuleNameMapper } from "ts-jest";
-import { compilerOptions } from "./tsconfig.json";
+import { readFileSync } from "node:fs";
+
+const { compilerOptions } = JSON.parse(readFileSync("./tsconfig.json", "utf8"));
 
 const config: Config = {
   setupFiles: ["./jest-setup-file.ts"],
@@ -33,7 +35,10 @@ const config: Config = {
   roots: ["<rootDir>/src/"],
   moduleNameMapper: pathsToModuleNameMapper(
     Object.fromEntries(
-      Object.entries(compilerOptions.paths).filter(([key]) => key !== "*"),
+      Object.entries(compilerOptions.paths).filter(([key]) => key !== "*") as [
+        string,
+        string[],
+      ][],
     ),
     { prefix: "<rootDir>/" },
   ),
