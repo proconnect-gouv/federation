@@ -3,6 +3,7 @@ import { RateLimiterModule } from "@fc/rate-limiter";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { EmailVerificationService } from "./email-verification.service";
+import { EmailVerificationTokenRepository } from "./repositories";
 import { EmailVerificationTokenSchema } from "./schemas";
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { EmailVerificationTokenSchema } from "./schemas";
     ]),
     RateLimiterModule,
   ],
-  providers: [EmailVerificationService],
+  providers: [EmailVerificationTokenRepository, EmailVerificationService],
   exports: [EmailVerificationService],
 })
 export class EmailVerificationModule {}

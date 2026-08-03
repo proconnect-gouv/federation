@@ -76,7 +76,7 @@ export class EmailVerificationController {
 
     userSession.set({ isEmailVerifiedByPcf: true });
     await userSession.commit();
-    await this.emailVerification.deleteEmailToken(email);
+    await this.emailVerification.deleteEmailVerificationToken(email);
 
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 
