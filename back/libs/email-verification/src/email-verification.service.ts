@@ -5,10 +5,8 @@ import { MailerService } from "@fc/mailer";
 import { RateLimiterService } from "@fc/rate-limiter";
 import { RateLimiterKeyPrefix } from "@fc/rate-limiter/enum";
 import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
 import { VerifyEmail } from "@proconnect-gouv/proconnect.email";
 import { Response } from "express";
-import { Model } from "mongoose";
 import { customAlphabet } from "nanoid";
 import { EmailVerificationConfig } from "./dto";
 import {
@@ -16,14 +14,13 @@ import {
   SendEmailFailureException,
   TooManyAttemptsException,
 } from "./exceptions";
-import { EmailVerificationToken } from "./schemas";
+import { EmailVerificationTokenRepository } from "./repositories";
 
 @Injectable()
 export class EmailVerificationService {
   constructor(
+    private readonly emailVerificationTokenRepository: EmailVerificationTokenRepository,
     private readonly mailer: MailerService,
-    @InjectModel("EmailVerificationToken")
-    private model: Model<EmailVerificationToken>,
     private readonly config: ConfigService,
     private readonly rateLimiter: RateLimiterService,
     private readonly logger: LoggerService,
@@ -53,13 +50,9 @@ export class EmailVerificationService {
     );
   }
 
-  async findLastEmailVerificationToken(email: string) {
-    return this.model.findOne({ email }).sort({ sentAt: -1 });
-  }
-
   async sendEmailVerificationIfNeeded(email: string) {
     const lastEmailVerificationToken =
-      await this.findLastEmailVerificationToken(email);
+      await this.emailVerificationTokenRepository.findOne(email);
 
     const shouldSendEmail = await this.computeShouldSendEmail(
       lastEmailVerificationToken?.sentAt,
@@ -75,17 +68,10 @@ export class EmailVerificationService {
 
     await this.sendVerificationMail(email, token);
 
-    await this.model.findOneAndUpdate(
-      {
-        email,
-      },
-      {
-        email,
-        token,
-        sentAt: new Date(),
-      },
-      { upsert: true },
-    );
+    await this.emailVerificationTokenRepository.upsert({
+      email,
+      token,
+    });
 
     return {
       hasSentVerificationEmail: true,
@@ -124,7 +110,7 @@ export class EmailVerificationService {
     const csrfToken = this.csrfService.getOrCreate();
 
     const lastEmailVerificationToken =
-      await this.findLastEmailVerificationToken(options.email);
+      await this.emailVerificationTokenRepository.findOne(options.email);
 
     const countdownEndDate = this.computeCountdownEndDate(
       lastEmailVerificationToken?.sentAt,
@@ -181,9 +167,8 @@ export class EmailVerificationService {
       this.config.get<EmailVerificationConfig>("EmailVerification");
     const now = new Date();
 
-    const emailVerificationToken = await this.model.findOne({
-      email,
-    });
+    const emailVerificationToken =
+      await this.emailVerificationTokenRepository.findOne(email);
 
     if (
       !emailVerificationToken ||
@@ -195,8 +180,8 @@ export class EmailVerificationService {
     }
   }
 
-  async deleteEmailToken(email: string) {
-    return this.model.deleteOne({ email });
+  async deleteEmailVerificationToken(email: string) {
+    return this.emailVerificationTokenRepository.deleteOne(email);
   }
 
   private generateToken(): string {

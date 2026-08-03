@@ -13,6 +13,7 @@ import {
   SendEmailFailureException,
   TooManyAttemptsException,
 } from "./exceptions";
+import { EmailVerificationTokenRepository } from "./repositories";
 import { EmailVerificationToken } from "./schemas";
 
 describe(EmailVerificationService.name, () => {
@@ -21,11 +22,10 @@ describe(EmailVerificationService.name, () => {
   const mailerServiceMock = {
     sendMail: jest.fn(),
   };
-  const modelMock = {
-    create: jest.fn(),
+  const emailVerificationRepositoryMock = {
     findOne: jest.fn(),
+    upsert: jest.fn(),
     deleteOne: jest.fn(),
-    findOneAndUpdate: jest.fn(),
   };
   const csrfServiceMock = {
     getOrCreate: jest.fn(),
@@ -58,10 +58,6 @@ describe(EmailVerificationService.name, () => {
       }
     });
 
-    modelMock.findOne.mockReturnValue({
-      sort: jest.fn().mockResolvedValue(null),
-    });
-
     csrfServiceMock.getOrCreate.mockReturnValue("csrf-token");
 
     const app: TestingModule = await Test.createTestingModule({
@@ -71,7 +67,7 @@ describe(EmailVerificationService.name, () => {
         MailerService as Provider<MailerService>,
         RateLimiterService,
         ConfigService,
-        { provide: "EmailVerificationTokenModel", useValue: modelMock },
+        EmailVerificationTokenRepository,
         CsrfService,
       ],
     })
@@ -85,6 +81,8 @@ describe(EmailVerificationService.name, () => {
       .useValue(configServiceMock)
       .overrideProvider(CsrfService)
       .useValue(csrfServiceMock)
+      .overrideProvider(EmailVerificationTokenRepository)
+      .useValue(emailVerificationRepositoryMock)
       .compile();
 
     service = app.get<EmailVerificationService>(EmailVerificationService);
@@ -137,9 +135,9 @@ describe(EmailVerificationService.name, () => {
       const lastEmailVerificationToken = {
         sentAt: new Date("2024-01-01T00:00:00.000Z"),
       } as EmailVerificationToken;
-      modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue(lastEmailVerificationToken),
-      });
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(
+        lastEmailVerificationToken,
+      );
 
       const result =
         await service.sendEmailVerificationIfNeeded("user@example.com");
@@ -167,7 +165,7 @@ describe(EmailVerificationService.name, () => {
           htmlContent: expect.any(String),
         }),
       );
-      expect(modelMock.findOneAndUpdate).toHaveBeenCalled();
+      expect(emailVerificationRepositoryMock.upsert).toHaveBeenCalled();
       jest.useRealTimers();
     });
 
@@ -226,7 +224,7 @@ describe(EmailVerificationService.name, () => {
 
     it("should return invalid_verify_email_code when token is not found", async () => {
       rateLimiterServiceMock.consume.mockResolvedValue(undefined);
-      modelMock.findOne.mockResolvedValue(null);
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(null);
 
       expect(
         service.verifyEmailToken("user@example.com", "1234567890"),
@@ -238,7 +236,7 @@ describe(EmailVerificationService.name, () => {
       jest.useFakeTimers().setSystemTime(now);
 
       rateLimiterServiceMock.consume.mockResolvedValue(undefined);
-      modelMock.findOne.mockResolvedValue({
+      emailVerificationRepositoryMock.findOne.mockResolvedValue({
         email: "user@example.com",
         token: "1234567890",
         sentAt: new Date("2024-01-01T00:00:00.000Z"),
@@ -256,10 +254,8 @@ describe(EmailVerificationService.name, () => {
       const lastEmailVerificationTokenSentAt = new Date(
         "2024-01-01T00:00:00.000Z",
       );
-      modelMock.findOne.mockReturnValue({
-        sort: jest
-          .fn()
-          .mockResolvedValue({ sentAt: lastEmailVerificationTokenSentAt }),
+      emailVerificationRepositoryMock.findOne.mockResolvedValue({
+        sentAt: lastEmailVerificationTokenSentAt,
       });
 
       const render = jest.fn();
@@ -283,9 +279,7 @@ describe(EmailVerificationService.name, () => {
 
   describe("computeShouldSendEmail", () => {
     it("should return true when there is no previous token", async () => {
-      modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue(null),
-      });
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(null);
 
       const result =
         await service.sendEmailVerificationIfNeeded("user@example.com");
@@ -298,9 +292,9 @@ describe(EmailVerificationService.name, () => {
       const lastEmailVerificationToken = {
         sentAt: new Date("2024-01-01T00:00:00.000Z"),
       } as EmailVerificationToken;
-      modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue(lastEmailVerificationToken),
-      });
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(
+        lastEmailVerificationToken,
+      );
 
       const result =
         await service.sendEmailVerificationIfNeeded("user@example.com");
@@ -314,9 +308,9 @@ describe(EmailVerificationService.name, () => {
       const lastEmailVerificationToken = {
         sentAt: new Date("2024-01-01T00:00:00.000Z"),
       } as EmailVerificationToken;
-      modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue(lastEmailVerificationToken),
-      });
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(
+        lastEmailVerificationToken,
+      );
 
       const result =
         await service.sendEmailVerificationIfNeeded("user@example.com");
@@ -330,9 +324,9 @@ describe(EmailVerificationService.name, () => {
       const lastEmailVerificationToken = {
         sentAt: new Date("2024-01-01T00:00:00.000Z"),
       } as EmailVerificationToken;
-      modelMock.findOne.mockReturnValue({
-        sort: jest.fn().mockResolvedValue(lastEmailVerificationToken),
-      });
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(
+        lastEmailVerificationToken,
+      );
 
       const result =
         await service.sendEmailVerificationIfNeeded("user@example.com");
@@ -342,13 +336,15 @@ describe(EmailVerificationService.name, () => {
     });
   });
 
-  describe("deleteEmailToken", () => {
+  describe("deleteEmailVerificationToken", () => {
     it("should call deleteOne", async () => {
       const email = "user@example.com";
 
-      await service.deleteEmailToken(email);
+      await service.deleteEmailVerificationToken(email);
 
-      expect(modelMock.deleteOne).toHaveBeenCalledWith({ email });
+      expect(emailVerificationRepositoryMock.deleteOne).toHaveBeenCalledWith(
+        "user@example.com",
+      );
     });
   });
 });
