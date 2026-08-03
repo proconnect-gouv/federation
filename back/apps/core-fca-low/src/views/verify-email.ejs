@@ -58,9 +58,11 @@
                 </button>
               </form>
               <form
-                action="/api/v2/verify-email"
-                method="get"
+                action="/api/v2/verify-email/resend"
+                method="post"
               >
+                <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
+
                 <button
                   disabled
                   data-countdown-end-date="<%= locals.countdownEndDate %>"

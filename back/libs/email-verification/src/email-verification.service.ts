@@ -36,26 +36,30 @@ export class EmailVerificationService {
   computeCountdownEndDate(
     lastEmailVerificationTokenSentAt: Date | undefined,
   ): Date {
-    const { verificationEmailWaitingDurationBeforeResendInMs } =
+    const { verificationEmailCooldownBeforeResendInMs } =
       this.config.get<EmailVerificationConfig>("EmailVerification");
     if (!lastEmailVerificationTokenSentAt) {
       const now = new Date();
       return new Date(
-        now.getTime() + verificationEmailWaitingDurationBeforeResendInMs,
+        now.getTime() + verificationEmailCooldownBeforeResendInMs,
       );
     }
     return new Date(
       lastEmailVerificationTokenSentAt.getTime() +
-        verificationEmailWaitingDurationBeforeResendInMs,
+        verificationEmailCooldownBeforeResendInMs,
     );
   }
 
-  async sendEmailVerificationIfNeeded(email: string) {
+  async sendEmailVerificationIfNeeded(
+    email: string,
+    options?: { requestSendEmail?: boolean },
+  ): Promise<{ hasSentVerificationEmail: boolean }> {
     const lastEmailVerificationToken =
       await this.emailVerificationTokenRepository.findOne(email);
 
     const shouldSendEmail = await this.computeShouldSendEmail(
       lastEmailVerificationToken?.sentAt,
+      options?.requestSendEmail,
     );
 
     if (!shouldSendEmail) {
@@ -126,7 +130,8 @@ export class EmailVerificationService {
   }
 
   private async computeShouldSendEmail(
-    lastEmailVerificationTokenSentAt?: Date,
+    lastEmailVerificationTokenSentAt: Date | undefined,
+    requestSendEmail?: boolean,
   ): Promise<boolean> {
     if (!lastEmailVerificationTokenSentAt) {
       return true;
@@ -134,7 +139,7 @@ export class EmailVerificationService {
     const now = new Date();
     const {
       tokenExpirationDurationInMs,
-      verificationEmailWaitingDurationBeforeResendInMs,
+      verificationEmailCooldownBeforeResendInMs,
     } = this.config.get<EmailVerificationConfig>("EmailVerification");
 
     const isTokenExpired =
@@ -144,14 +149,15 @@ export class EmailVerificationService {
       return true;
     }
 
-    const hasResendCooldownExpired =
-      now.getTime() - lastEmailVerificationTokenSentAt.getTime() >
-      verificationEmailWaitingDurationBeforeResendInMs;
-    if (hasResendCooldownExpired) {
-      return true;
+    if (!requestSendEmail) {
+      return false;
     }
 
-    return false;
+    const hasResendCooldownExpired =
+      now.getTime() - lastEmailVerificationTokenSentAt.getTime() >
+      verificationEmailCooldownBeforeResendInMs;
+
+    return hasResendCooldownExpired;
   }
 
   async verifyEmailToken(email: string, token: string) {

@@ -8,9 +8,9 @@ export class EmailVerificationConfig {
 
   @IsNumber()
   @IsPositive()
-  readonly tokenExpirationDurationInMs = 60 * 60 * 1000; // 1 hour in milliseconds
+  readonly tokenExpirationDurationInMs: number;
 
   @IsNumber()
   @IsPositive()
-  readonly verificationEmailWaitingDurationBeforeResendInMs = 10 * 60 * 1000; // 10 minutes in milliseconds
+  readonly verificationEmailCooldownBeforeResendInMs: number;
 }

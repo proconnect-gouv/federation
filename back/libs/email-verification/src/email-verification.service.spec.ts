@@ -51,7 +51,7 @@ describe(EmailVerificationService.name, () => {
           return {
             eligibleEmailsPercentage: 100,
             tokenExpirationDurationInMs: 60 * 60 * 1000,
-            verificationEmailWaitingDurationBeforeResendInMs: 10 * 60 * 1000,
+            verificationEmailCooldownBeforeResendInMs: 10 * 60 * 1000,
           };
         default:
           return {};
@@ -303,7 +303,7 @@ describe(EmailVerificationService.name, () => {
       jest.useRealTimers();
     });
 
-    it("should return false when token is still within threshold", async () => {
+    it("should return false when token is still before cooldown", async () => {
       jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:05:00.000Z"));
       const lastEmailVerificationToken = {
         sentAt: new Date("2024-01-01T00:00:00.000Z"),
@@ -319,7 +319,7 @@ describe(EmailVerificationService.name, () => {
       jest.useRealTimers();
     });
 
-    it("should return true when token is past threshold", async () => {
+    it("should return false when token is past cooldown but user did not request", async () => {
       jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:11:00.000Z"));
       const lastEmailVerificationToken = {
         sentAt: new Date("2024-01-01T00:00:00.000Z"),
@@ -330,6 +330,60 @@ describe(EmailVerificationService.name, () => {
 
       const result =
         await service.sendEmailVerificationIfNeeded("user@example.com");
+
+      expect(result.hasSentVerificationEmail).toBe(false);
+      jest.useRealTimers();
+    });
+
+    it("should return false when token is not past cooldown but user requested", async () => {
+      jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:05:00.000Z"));
+      const lastEmailVerificationToken = {
+        sentAt: new Date("2024-01-01T00:00:00.000Z"),
+      } as EmailVerificationToken;
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(
+        lastEmailVerificationToken,
+      );
+
+      const result = await service.sendEmailVerificationIfNeeded(
+        "user@example.com",
+        { requestSendEmail: true },
+      );
+
+      expect(result.hasSentVerificationEmail).toBe(false);
+      jest.useRealTimers();
+    });
+
+    it("should return false when token is not past cooldown but user requested", async () => {
+      jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:05:00.000Z"));
+      const lastEmailVerificationToken = {
+        sentAt: new Date("2024-01-01T00:00:00.000Z"),
+      } as EmailVerificationToken;
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(
+        lastEmailVerificationToken,
+      );
+
+      const result = await service.sendEmailVerificationIfNeeded(
+        "user@example.com",
+        { requestSendEmail: true },
+      );
+
+      expect(result.hasSentVerificationEmail).toBe(false);
+      jest.useRealTimers();
+    });
+
+    it("should return true when token is past cooldown and user requested", async () => {
+      jest.useFakeTimers().setSystemTime(new Date("2024-01-01T00:11:00.000Z"));
+      const lastEmailVerificationToken = {
+        sentAt: new Date("2024-01-01T00:00:00.000Z"),
+      } as EmailVerificationToken;
+      emailVerificationRepositoryMock.findOne.mockResolvedValue(
+        lastEmailVerificationToken,
+      );
+
+      const result = await service.sendEmailVerificationIfNeeded(
+        "user@example.com",
+        { requestSendEmail: true },
+      );
 
       expect(result.hasSentVerificationEmail).toBe(true);
       jest.useRealTimers();

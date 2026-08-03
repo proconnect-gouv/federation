@@ -82,4 +82,28 @@ export class EmailVerificationController {
 
     return res.redirect(url);
   }
+
+  @Post(Routes.VERIFY_EMAIL_RESEND)
+  @Header("cache-control", "no-store")
+  @UseGuards(CsrfTokenGuard)
+  @UseFilters(EmailVerificationExceptionFilter)
+  async postResendVerifyEmail(
+    @Res() res: Response,
+    @UserSessionDecorator(AfterGetOidcCallbackSessionDto)
+    userSession: ISessionService<AfterGetOidcCallbackSessionDto>,
+  ): Promise<void> {
+    const {
+      spIdentity: { email },
+    } = userSession.get();
+
+    const { hasSentVerificationEmail } =
+      await this.emailVerification.sendEmailVerificationIfNeeded(email, {
+        requestSendEmail: true,
+      });
+
+    return this.emailVerification.renderVerificationEmailTemplate(res, {
+      email,
+      hasSentVerificationEmail,
+    });
+  }
 }

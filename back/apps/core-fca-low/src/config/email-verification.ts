@@ -6,7 +6,7 @@ const env = new ConfigParser(process.env, "EmailVerification");
 const emailVerificationConfig: EmailVerificationConfig = {
   eligibleEmailsPercentage: env.number("ELIGIBLE_EMAILS_PERCENTAGE"),
   tokenExpirationDurationInMs: 60 * 60 * 1000, // 1 hour
-  verificationEmailWaitingDurationBeforeResendInMs: 10 * 60 * 1000, // 10 minutes
+  verificationEmailCooldownBeforeResendInMs: 10 * 60 * 1000, // 10 minutes
 };
 
 export default emailVerificationConfig;
