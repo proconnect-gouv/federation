@@ -129,4 +129,27 @@ describe("EmailVerificationController", () => {
       );
     });
   });
+
+  describe("postResendVerifyEmail()", () => {
+    it("should resend verification email and render verify-email template", async () => {
+      const res = { redirect: jest.fn() } as unknown as Response;
+      emailVerificationMock.sendEmailVerificationIfNeeded.mockResolvedValue({
+        hasSentVerificationEmail: true,
+      });
+      const userSession = {
+        get: jest.fn().mockReturnValue({
+          spIdentity: { email: "user@example.com" },
+        }),
+        set: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
+      configServiceMock.get.mockReturnValue({ urlPrefix: "/prefix" });
+
+      await controller.postResendVerifyEmail(res as Response, userSession);
+
+      expect(
+        emailVerificationMock.sendEmailVerificationIfNeeded,
+      ).toHaveBeenCalledWith("user@example.com", { requestSendEmail: true });
+    });
+  });
 });

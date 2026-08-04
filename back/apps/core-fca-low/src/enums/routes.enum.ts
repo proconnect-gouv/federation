@@ -10,6 +10,7 @@ export enum Routes {
   REDIRECT_TO_IDP = "/redirect-to-idp",
   IDENTITY_PROVIDER_SELECTION = "/identity-provider-selection",
   VERIFY_EMAIL = "/verify-email",
+  VERIFY_EMAIL_RESEND = "/verify-email/resend",
   OIDC_CALLBACK = "/oidc-callback",
   OIDC_LOGOUT_CALLBACK = "/client/logout-callback",
 }
