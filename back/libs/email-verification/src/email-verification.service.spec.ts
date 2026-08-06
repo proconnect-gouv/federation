@@ -401,4 +401,32 @@ describe(EmailVerificationService.name, () => {
       );
     });
   });
+  describe("getValidityDuration", () => {
+    it("should return the validity duration in minutes if < 60 minutes", () => {
+      configServiceMock.get.mockReturnValue({
+        tokenExpirationDurationInMs: 30 * 60 * 1000,
+      });
+      const result = service.getValidityDuration();
+
+      expect(result).toBe("30 minutes");
+    });
+
+    it("should return the validity duration in hours if >= 60 minutes", () => {
+      configServiceMock.get.mockReturnValue({
+        tokenExpirationDurationInMs: 90 * 60 * 1000,
+      });
+      const result = service.getValidityDuration();
+
+      expect(result).toBe("1 heure 30");
+    });
+
+    it("should return the validity duration in hours with plural if >= 2 hours", () => {
+      configServiceMock.get.mockReturnValue({
+        tokenExpirationDurationInMs: 2 * 60 * 60 * 1000,
+      });
+      const result = service.getValidityDuration();
+
+      expect(result).toBe("2 heures");
+    });
+  });
 });

@@ -5,7 +5,7 @@ import { MailerService } from "@fc/mailer";
 import { RateLimiterService } from "@fc/rate-limiter";
 import { RateLimiterKeyPrefix } from "@fc/rate-limiter/enum";
 import { Injectable } from "@nestjs/common";
-import { VerifyEmail } from "@proconnect-gouv/proconnect.email";
+import { OtpEmail } from "@proconnect-gouv/proconnect.email";
 import { Response } from "express";
 import { customAlphabet } from "nanoid";
 import { EmailVerificationConfig } from "./dto";
@@ -85,15 +85,17 @@ export class EmailVerificationService {
   async sendVerificationMail(email: string, token: string) {
     this.logger.info({
       code: "send-verification-mail",
-      email,
     });
+
+    const validityDuration = this.getValidityDuration();
 
     try {
       await this.mailer.sendMail({
         to: email,
         subject: "Vérification de votre adresse email",
-        htmlContent: VerifyEmail({
+        htmlContent: OtpEmail({
           token,
+          validityDuration,
         }).toString(),
       });
     } catch (error) {
@@ -101,6 +103,22 @@ export class EmailVerificationService {
     }
 
     return;
+  }
+
+  getValidityDuration(): string {
+    const { tokenExpirationDurationInMs } =
+      this.config.get<EmailVerificationConfig>("EmailVerification");
+    const minutes = Math.floor(tokenExpirationDurationInMs / 1000 / 60);
+    if (minutes < 60) {
+      return `${minutes} minutes`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    const hoursString = `${hours} heure${hours > 1 ? "s" : ""}`;
+    if (remainingMinutes === 0) {
+      return hoursString;
+    }
+    return `${hoursString} ${remainingMinutes}`;
   }
 
   async renderVerificationEmailTemplate(
@@ -191,6 +209,6 @@ export class EmailVerificationService {
   }
 
   private generateToken(): string {
-    return customAlphabet("0123456789", 10)();
+    return customAlphabet("0123456789", 8)();
   }
 }

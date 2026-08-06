@@ -55,14 +55,12 @@ function verifyEmailCommand() {
       cy.origin(
         `${Cypress.expose("MAILDEV_PROTOCOL")}://${Cypress.expose("MAILDEV_HOST")}`,
         () => {
-          cy.contains(
-            "Pour vérifier votre adresse e-mail, merci de copier-coller ou de renseigner ce code dans l’interface de connexion ProConnect.",
-          );
+          cy.contains("Voici votre code de connexion à usage unique.");
         },
       );
       cy.go("back");
       cy.maildevDeleteMessageById(email.id);
-      return cy.maildevGetOTPCode(email.html, 10);
+      return cy.maildevGetOTPCode(email.html, 8);
     })
     .then((code) => {
       if (!code)

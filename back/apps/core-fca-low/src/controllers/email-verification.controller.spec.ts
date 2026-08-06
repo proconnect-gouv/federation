@@ -109,7 +109,7 @@ describe("EmailVerificationController", () => {
     it("should redirect to interaction verify after a valid token", async () => {
       const res = { redirect: jest.fn() } as unknown as Response;
       const body: VerifyEmailDto = {
-        verify_email_token: "0123456789",
+        verify_email_token: "01234567",
         csrfToken: "",
       };
       const userSession = {
