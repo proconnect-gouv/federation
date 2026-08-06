@@ -1,7 +1,7 @@
 const dps = {
   "DPA1-LOW": {
-    name: "Fournisseur de données Mock - 1",
-    title: "Fournisseur de données Mock - 1",
+    name: "Serveur de ressources Mock - 1",
+    title: "Serveur de ressources Mock - 1",
     active: true,
     scopes: ["groups"],
     key: "423dcbdc5a15ece61ed00ff5989d72379c26d9ed4c8e4e05a87cffae019586e0",
@@ -21,8 +21,8 @@ const dps = {
     type: "private",
   },
   "DPA2-LOW": {
-    name: "Fournisseur de données Mock - 2",
-    title: "Fournisseur de données Mock - 2",
+    name: "Serveur de ressources Mock - 2",
+    title: "Serveur de ressources Mock - 2",
     active: true,
     scopes: ["groups"],
     key: "71c27fec9540e5aa30b34f8c012154f88f8416530b25f31ba4873a2e58e3d3fe",
