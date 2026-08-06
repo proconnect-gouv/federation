@@ -423,7 +423,7 @@ describe("update a service-provider", () => {
       cy.contains(`MyFirstFSCypress`).should("be.visible");
       cy.get("a.btn-action-update").last().click();
 
-      cy.contains("Section Fournisseur de données").click();
+      cy.contains("Section Serveur de ressources").click();
 
       cy.formFill(resourceServerData, mockConfig);
       cy.get('form[name="fs-form"] button[type="submit"]').click();
