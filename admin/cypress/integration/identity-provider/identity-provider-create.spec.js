@@ -319,6 +319,61 @@ describe("Identity provider creation", () => {
       createIdentityProvider(idp, basicConfiguration);
       cy.url().should("eq", `${BASE_URL}/identity-provider/create`);
       cy.contains(`Le TOTP saisi n'est pas valide`).should("exist");
+
+      assertFormValues(idp);
+    });
+
+    it("if form is invalid and default checkbox values are used", () => {
+      const idp = {
+        name: "MonSuperFI-3",
+        title: "Mon Super FI 3 mais mieux écrit",
+        issuer: "https://issuer.fr",
+        authorizationUrl: "https://issuer.fr/auth",
+        tokenUrl: "https://issuer.fr/token",
+        discovery: "false",
+        jwksUrl: "https://issuer.fr/jwks",
+        userInfoUrl: "https://issuer.fr/me",
+        clientId: "09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
+        active: "true",
+        token_endpoint_auth_method: "client_secret_post",
+        siret: "34047343800034",
+        isMfaCompliant: true,
+      };
+
+      basicConfiguration.totp = false;
+      // check that checkboxes values are still present after the failed submission
+      cy.get("#disableRouting").should("be.checked");
+      cy.get("#enableBlocking").should("be.checked");
+
+      assertFormValues(idp);
+    });
+
+    it("if form is invalid and custom checkbox values are used", () => {
+      const idp = {
+        name: "MonSuperFI-3",
+        title: "Mon Super FI 3 mais mieux écrit",
+        issuer: "https://issuer.fr",
+        authorizationUrl: "https://issuer.fr/auth",
+        tokenUrl: "https://issuer.fr/token",
+        discovery: "false",
+        jwksUrl: "https://issuer.fr/jwks",
+        userInfoUrl: "https://issuer.fr/me",
+        clientId: "09a1a257648c1742c74d6a3d84b31943",
+        client_secret: "1234567890AZERTYUIOP",
+        active: "true",
+        token_endpoint_auth_method: "client_secret_post",
+        siret: "34047343800034",
+        isMfaCompliant: true,
+        isRoutingEnabled: true,
+        isBlockingForUnlistedEmailDomainsEnabled: false,
+      };
+
+      basicConfiguration.totp = false;
+      // check that checkboxes values are still present after the failed submission
+      cy.get("#enableRouting").should("be.checked");
+      cy.get("#disableBlocking").should("be.checked");
+
       assertFormValues(idp);
     });
   });
