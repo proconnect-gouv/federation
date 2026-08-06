@@ -1,6 +1,6 @@
 import { Transform } from "class-transformer";
 import { IsAscii, IsString, Matches } from "class-validator";
-const VERIFY_EMAIL_TOKEN_REGEX = /^\d{10}$/;
+const VERIFY_EMAIL_TOKEN_REGEX = /^\d{8}$/;
 export class VerifyEmailDto {
   @IsString()
   @Transform(({ value }) =>
