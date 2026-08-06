@@ -9,22 +9,22 @@ export class PaginationService {
 
     let where = {};
     if (options.search) {
-      const orSearch = [];
+      const searchCriteria = [];
       for (const field of options.search.fields) {
-        const searchCriteria = this.computeSearchCriteria(
+        const searchCriterion = this.computeSearchCriterion(
           field,
           options.search.value,
         );
-        if (!!searchCriteria) {
-          orSearch.push({
-            ...searchCriteria,
+        if (!!searchCriterion) {
+          searchCriteria.push({
+            ...searchCriterion,
           });
         }
       }
-      if (orSearch.length === 1) {
-        where = orSearch[0];
-      } else if (orSearch.length > 1) {
-        where = { $or: orSearch };
+      if (searchCriteria.length === 1) {
+        where = searchCriteria[0];
+      } else if (searchCriteria.length > 1) {
+        where = { $or: searchCriteria };
       }
     }
 
@@ -41,7 +41,7 @@ export class PaginationService {
     return params;
   }
 
-  computeSearchCriteria(field: PaginationFieldSearchType, value: string) {
+  computeSearchCriterion(field: PaginationFieldSearchType, value: string) {
     switch (field.searchKind) {
       case "contains":
         return { [field.name]: new RegExp(escapeRegExp(value), "i") };
