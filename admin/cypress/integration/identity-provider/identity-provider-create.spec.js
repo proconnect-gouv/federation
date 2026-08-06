@@ -296,7 +296,7 @@ describe("Identity provider creation", () => {
       cy.url().should("eq", `${BASE_URL}/identity-provider/create`);
     });
 
-    it("if the totp is invalid", () => {
+    it("if the totp is invalid and form values are preserved", () => {
       const idp = {
         name: "MonSuperFI-3",
         title: "Mon Super FI 3 mais mieux écrit",
@@ -312,6 +312,8 @@ describe("Identity provider creation", () => {
         token_endpoint_auth_method: "client_secret_post",
         siret: "34047343800034",
         isMfaCompliant: true,
+        isRoutingEnabled: true,
+        isBlockingForUnlistedEmailDomainsEnabled: true,
       };
 
       basicConfiguration.totp = false;
@@ -319,6 +321,7 @@ describe("Identity provider creation", () => {
       createIdentityProvider(idp, basicConfiguration);
       cy.url().should("eq", `${BASE_URL}/identity-provider/create`);
       cy.contains(`Le TOTP saisi n'est pas valide`).should("exist");
+
       assertFormValues(idp);
     });
   });
