@@ -27,10 +27,10 @@ export class EmailVerificationService {
     private readonly csrfService: CsrfService,
   ) {}
 
-  computeIsEmailEligible(email: string): boolean {
-    const { eligibleEmailsPercentage } =
+  getIsOtpEmailEnabled(): boolean {
+    const { isOtpEmailEnabled } =
       this.config.get<EmailVerificationConfig>("EmailVerification");
-    return email.length % 10 < (eligibleEmailsPercentage / 100) * 10;
+    return isOtpEmailEnabled;
   }
 
   computeCountdownEndDate(

@@ -1,10 +1,8 @@
-import { IsNumber, IsPositive, Max, Min } from "class-validator";
+import { IsBoolean, IsNumber, IsPositive } from "class-validator";
 
 export class EmailVerificationConfig {
-  @IsNumber({ allowInfinity: false, allowNaN: false })
-  @Min(0)
-  @Max(100)
-  readonly eligibleEmailsPercentage: number;
+  @IsBoolean()
+  readonly isOtpEmailEnabled: boolean;
 
   @IsNumber()
   @IsPositive()

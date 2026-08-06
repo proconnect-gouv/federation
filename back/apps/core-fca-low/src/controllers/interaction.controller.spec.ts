@@ -84,7 +84,7 @@ describe("InteractionController", () => {
       redirectToIdpWithIdpId: jest.fn(),
     };
     emailVerificationMock = {
-      computeIsEmailEligible: jest.fn(),
+      getIsOtpEmailEnabled: jest.fn(),
     };
     csrfServiceMock = {
       getOrCreate: jest.fn(),
@@ -582,7 +582,7 @@ describe("InteractionController", () => {
       serviceProviderMock.getById.mockResolvedValue({ type: "public" });
       oidcAcrMock.getInteractionAcr.mockReturnValue(null);
       oidcAcrMock.computeCanAcrBeSatisfiedByPcf.mockReturnValue(true);
-      emailVerificationMock.computeIsEmailEligible.mockReturnValue(true);
+      emailVerificationMock.getIsOtpEmailEnabled.mockReturnValue(true);
 
       await controller.getVerify(
         req,

@@ -274,17 +274,15 @@ export class InteractionController {
     });
 
     if (!interactionAcr) {
-      // We only redirect a certain percentage of users to the email verification flow to warm up the e-mail account
-      const isEmailEligibleToVerification =
-        this.emailVerification.computeIsEmailEligible(email);
-
+      const isOtpEmailEnabled = this.emailVerification.getIsOtpEmailEnabled();
       const canAcrBeSatisfiedByPcf = this.oidcAcr.computeCanAcrBeSatisfiedByPcf(
         {
           spEssentialAcr,
           amr,
+          isOtpEmailEnabled,
         },
       );
-      if (canAcrBeSatisfiedByPcf && isEmailEligibleToVerification) {
+      if (canAcrBeSatisfiedByPcf) {
         const { urlPrefix } = this.config.get<AppConfig>("App");
         const url = `${urlPrefix}${Routes.VERIFY_EMAIL}`;
 

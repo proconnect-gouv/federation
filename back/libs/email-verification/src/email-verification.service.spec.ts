@@ -49,7 +49,7 @@ describe(EmailVerificationService.name, () => {
           };
         case "EmailVerification":
           return {
-            eligibleEmailsPercentage: 100,
+            isOtpEmailEnabled: true,
             tokenExpirationDurationInMs: 60 * 60 * 1000,
             verificationEmailCooldownBeforeResendInMs: 10 * 60 * 1000,
           };
@@ -111,19 +111,17 @@ describe(EmailVerificationService.name, () => {
     });
   });
 
-  describe("computeIsEmailEligible", () => {
-    beforeEach(() => {
-      configServiceMock.get.mockReturnValue({
-        eligibleEmailsPercentage: 10,
-      });
-    });
-    it("should return true when email is eligible", () => {
-      const result = service.computeIsEmailEligible("aaaaaaaa@example.com");
+  describe("getIsOtpEmailEnabled", () => {
+    it("should return true when otp email is enabled", () => {
+      configServiceMock.get.mockReturnValue({ isOtpEmailEnabled: true });
+
+      const result = service.getIsOtpEmailEnabled();
       expect(result).toBe(true);
     });
 
-    it("should return false when email is not eligible", () => {
-      const result = service.computeIsEmailEligible("user@example.com");
+    it("should return false when otp email is not enabled", () => {
+      configServiceMock.get.mockReturnValue({ isOtpEmailEnabled: false });
+      const result = service.getIsOtpEmailEnabled();
       expect(result).toBe(false);
     });
   });

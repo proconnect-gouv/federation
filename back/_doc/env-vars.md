@@ -33,7 +33,7 @@
 | App_VIEWS_PATHS                                 | json          |
 | EmailValidator_DOMAIN_WHITELIST                 | stringArray   |
 | EmailValidator_FEATURE_MX_RESOLUTION_VALIDATION | boolean       |
-| EmailVerification_ELIGIBLE_EMAILS_PERCENTAGE    | number        |
+| EmailVerification_IS_OTP_EMAIL_ENABLED          | boolean       |
 | FQDN                                            | string        |
 | HyyyperbridgeBroker_QUEUE                       | string        |
 | HyyyperbridgeBroker_URLS                        | json          |
