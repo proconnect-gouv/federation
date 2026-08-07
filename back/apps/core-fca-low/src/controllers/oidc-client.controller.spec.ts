@@ -427,7 +427,7 @@ describe("OidcClientController", () => {
       );
     });
 
-    it("should process OIDC callback when identity validation errors occur (sanitization branch and FQDN mismatch)", async () => {
+    it("should process OIDC callback when identity validation errors occur (sanitization branch and attached email domain mismatch)", async () => {
       // Simulate errors so that the sanitizer is called
       const sanitizedIdentity = {
         email: "sanitized@example.com",

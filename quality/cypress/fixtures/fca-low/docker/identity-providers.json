@@ -8,7 +8,7 @@
     "title": "MonComptePro - eIDAS faible - ES256",
     "url": "https://moncomptepro.docker.dev-franceconnect.fr",
     "signature": "ES256",
-    "fqdn": "moncomptepro.fr"
+    "attachedEmailDomain": "moncomptepro.fr"
   },
   {
     "id": "9c716f61-b8a1-435c-a407-ef4d677ec270",
@@ -20,7 +20,7 @@
     "title": "Identity Provider 1 - eIDAS faible - ES256",
     "url": "https://fia1-low.docker.dev-franceconnect.fr",
     "signature": "ES256",
-    "fqdn": "fia1.fr"
+    "attachedEmailDomain": "fia1.fr"
   },
   {
     "id": "0e7c099f-fe86-49a0-b7d1-19df45397212",
@@ -28,7 +28,7 @@
     "title": "Identity Provider 2 - eIDAS faible - RS256",
     "url": "https://fia2-low.docker.dev-franceconnect.fr",
     "signature": "RS256",
-    "fqdn": "fia2.fr",
+    "attachedEmailDomain": "fia2.fr",
     "siret": ""
   },
   {
@@ -37,6 +37,6 @@
     "title": "Identity Provider RIE - eIDAS faible - ES256",
     "url": "https://fia-rie-low.docker.dev-franceconnect.fr",
     "signature": "ES256",
-    "fqdn": "fi-rie.fr"
+    "attachedEmailDomain": "fi-rie.fr"
   }
 ]

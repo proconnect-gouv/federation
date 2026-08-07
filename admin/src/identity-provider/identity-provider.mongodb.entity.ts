@@ -111,7 +111,7 @@ export class IdentityProviderFromDb {
   isEntraID: boolean;
 
   @Column()
-  fqdns: string[];
+  attachedEmailDomains: string[];
 
   @Column()
   extraAcceptedEmailDomains: string[];

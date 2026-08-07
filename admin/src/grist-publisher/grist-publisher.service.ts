@@ -75,7 +75,7 @@ export class GristPublisherService {
       URL_de_decouverte: isString(identityProviderFromDb.discoveryUrl)
         ? identityProviderFromDb.discoveryUrl
         : "",
-      Liste_des_FQDN: identityProviderFromDb.fqdns.join("\n"),
+      Liste_des_FQDN: identityProviderFromDb.attachedEmailDomains.join("\n"),
       SIRET_par_defaut: identityProviderFromDb.siret,
       Alg_ID_token: identityProviderFromDb.id_token_signed_response_alg || "",
       Alg_userinfo: identityProviderFromDb.userinfo_signed_response_alg || "",
