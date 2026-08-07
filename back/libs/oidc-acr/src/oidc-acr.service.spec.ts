@@ -145,6 +145,7 @@ describe("OidcAcrService", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: "openid eidas1-mfa",
         amr: ["pwd"],
+        isOtpEmailEnabled: true,
       });
 
       expect(result).toBe(true);
@@ -154,6 +155,7 @@ describe("OidcAcrService", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: "openid",
         amr: ["pwd"],
+        isOtpEmailEnabled: true,
       });
 
       expect(result).toBe(false);
@@ -162,6 +164,7 @@ describe("OidcAcrService", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: undefined,
         amr: ["pwd"],
+        isOtpEmailEnabled: true,
       });
 
       expect(result).toBe(false);
@@ -171,6 +174,17 @@ describe("OidcAcrService", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: "eidas1-mfa",
         amr: ["mail"],
+        isOtpEmailEnabled: true,
+      });
+
+      expect(result).toBe(false);
+    });
+
+    it("should return false when isOtpEmailEnabled is false", () => {
+      const result = service.computeCanAcrBeSatisfiedByPcf({
+        spEssentialAcr: "eidas1-mfa",
+        amr: ["pwd"],
+        isOtpEmailEnabled: false,
       });
 
       expect(result).toBe(false);

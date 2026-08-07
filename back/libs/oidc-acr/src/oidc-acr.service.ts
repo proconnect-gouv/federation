@@ -71,12 +71,17 @@ export class OidcAcrService {
   computeCanAcrBeSatisfiedByPcf({
     spEssentialAcr,
     amr,
+    isOtpEmailEnabled,
   }: {
     spEssentialAcr?: string;
     amr?: string[];
+    isOtpEmailEnabled: boolean;
   }) {
     const spEssentialAcrValues = spEssentialAcr?.split(" ") || [];
     if (amr?.includes("mail")) {
+      return false;
+    }
+    if (!isOtpEmailEnabled) {
       return false;
     }
     return Object.values(this.acrEmailVerificationMapping).some((acr) =>

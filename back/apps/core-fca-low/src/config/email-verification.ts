@@ -4,7 +4,7 @@ import { EmailVerificationConfig } from "@fc/email-verification";
 const env = new ConfigParser(process.env, "EmailVerification");
 
 const emailVerificationConfig: EmailVerificationConfig = {
-  eligibleEmailsPercentage: env.number("ELIGIBLE_EMAILS_PERCENTAGE"),
+  isOtpEmailEnabled: env.boolean("IS_OTP_EMAIL_ENABLED") || false,
   tokenExpirationDurationInMs: 60 * 60 * 1000, // 1 hour
   verificationEmailCooldownBeforeResendInMs: 10 * 60 * 1000, // 10 minutes
 };
