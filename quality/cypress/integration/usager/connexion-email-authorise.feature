@@ -5,7 +5,7 @@ Fonctionnalité: Connexion Usager - Email autorisé
     Etant donné que je navigue sur la page fournisseur de service "avec une restriction de domaine email attaché"
     Et que le fournisseur de service requiert l'accès aux informations du scope "obligatoires"
     Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "fqdnautorise@fia1.fr"
+    Et que j'entre l'email "domaine-autorise@fia1.fr"
     Et que je clique sur le bouton de connexion
     Quand je m'authentifie
     Alors je suis redirigé vers la page fournisseur de service "avec une restriction de domaine email attaché"

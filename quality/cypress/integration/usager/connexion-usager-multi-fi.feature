@@ -60,7 +60,7 @@ Fonctionnalité: Connexion Usager dont le domaine email attaché est lié à plu
       | Identity Provider 1 - eIDAS faible - ES256 |
 
   @ignoreInteg01
-  Scénario: FI par défaut est accepté par tous les fqdnToIdp
+  Scénario: FI par défaut est accepté par tous les domaines email attachés
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@polyfi.fr"
@@ -69,7 +69,7 @@ Fonctionnalité: Connexion Usager dont le domaine email attaché est lié à plu
     Alors le fournisseur d'identité "Autre (via ProConnect Identité)" est affiché
 
   @ignoreInteg01
-  Scénario: FI par défaut n'est pas accepté par l'un des fqdnToIdp
+  Scénario: FI par défaut n'est pas accepté par l'un des domaines email attachés
     Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "many@polyfi2.fr"

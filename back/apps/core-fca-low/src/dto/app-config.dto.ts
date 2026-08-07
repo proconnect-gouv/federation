@@ -11,7 +11,7 @@ import {
 
 import { AppConfig as AppGenericConfig } from "@fc/app";
 import { ContentSecurityPolicy } from "./content-secury-policy.dto";
-import { SpAuthorizedFqdnsConfig } from "./sp-authorized-fqdns-config.dto";
+import { SpAuthorizedAttachedEmailDomainsConfig } from "./sp-authorized-attached-email-domains-config.dto";
 
 export class AppConfig extends AppGenericConfig {
   @IsString()
@@ -19,8 +19,8 @@ export class AppConfig extends AppGenericConfig {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => SpAuthorizedFqdnsConfig)
-  readonly spAuthorizedFqdnsConfigs: SpAuthorizedFqdnsConfig[];
+  @Type(() => SpAuthorizedAttachedEmailDomainsConfig)
+  readonly spAuthorizedAttachedEmailDomainsConfigs: SpAuthorizedAttachedEmailDomainsConfig[];
 
   @IsString()
   readonly defaultEmailRenater: string;

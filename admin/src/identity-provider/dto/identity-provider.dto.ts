@@ -14,7 +14,7 @@ import { IsOptionalExtended, IsValidInputString } from "../../utils/validators";
 
 // tslint:disable-next-line:max-line-length
 const URL_REGEX = /^https?:\/\/[^/].+$/;
-const FQDN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
+const EMAIL_DOMAIN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 
 export class IdentityProviderDTO {
   @IsValidInputString({
@@ -182,7 +182,7 @@ export class IdentityProviderDTO {
   @Transform(({ value }) =>
     linesToArray({ value }, { shouldDeleteDuplicates: true }),
   )
-  @Matches(FQDN_REGEX, { each: true })
+  @Matches(EMAIL_DOMAIN_REGEX, { each: true })
   readonly attachedEmailDomains?: string[];
 
   @IsOptionalExtended()
@@ -206,7 +206,7 @@ export class IdentityProviderDTO {
   @Transform(({ value }) =>
     linesToArray({ value }, { shouldDeleteDuplicates: true }),
   )
-  @Matches(FQDN_REGEX, { each: true })
+  @Matches(EMAIL_DOMAIN_REGEX, { each: true })
   readonly extraAcceptedEmailDomains?: string[];
 
   @Transform(toBoolean)

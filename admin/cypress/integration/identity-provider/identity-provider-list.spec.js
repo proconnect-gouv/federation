@@ -125,7 +125,7 @@ describe("Identity provider creation", () => {
       );
     });
 
-    it("I can see the FQDNs of the FI", () => {
+    it("I can see the attached email domains of the FI", () => {
       cy.visit(
         `${BASE_URL}/identity-provider?sortField=createdAt&sortDirection=asc&page=1&limit=10&search=${fi.name}`,
       );

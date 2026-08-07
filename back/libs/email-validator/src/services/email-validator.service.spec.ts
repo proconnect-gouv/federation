@@ -12,7 +12,7 @@ describe(EmailValidatorService.name, () => {
   const configServiceMock = getConfigMock();
   const identityProviderAdapterMongoMock = {
     getIdpsByEmail: jest.fn(),
-    getFqdnFromEmail: jest.fn(),
+    getDomainFromEmail: jest.fn(),
     getList: jest.fn(),
   };
   const accountFcaServiceMock = {
@@ -35,7 +35,7 @@ describe(EmailValidatorService.name, () => {
       identityProviderAdapterMongoMock.getIdpsByEmail as jest.Mock
     ).mockResolvedValue([]);
     (
-      identityProviderAdapterMongoMock.getFqdnFromEmail as jest.Mock
+      identityProviderAdapterMongoMock.getDomainFromEmail as jest.Mock
     ).mockReturnValue(testDomain);
     (accountFcaServiceMock.checkEmailExists as jest.Mock).mockResolvedValue(
       false,
@@ -170,7 +170,7 @@ describe(EmailValidatorService.name, () => {
 
     it("should return false when no domain can be extracted from the email", async () => {
       // Given
-      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValue(null);
+      identityProviderAdapterMongoMock.getDomainFromEmail.mockReturnValue(null);
 
       // When
       const result = await service.validate(testEmail);
@@ -192,7 +192,7 @@ describe(EmailValidatorService.name, () => {
 
       // Then
       expect(
-        identityProviderAdapterMongoMock.getFqdnFromEmail,
+        identityProviderAdapterMongoMock.getDomainFromEmail,
       ).toHaveBeenCalledWith(testEmail);
       expect(global.fetch).not.toHaveBeenCalled();
       expect(result).toEqual({ isEmailValid: false, suggestion: "" });
@@ -210,7 +210,7 @@ describe(EmailValidatorService.name, () => {
 
       // Then
       expect(
-        identityProviderAdapterMongoMock.getFqdnFromEmail,
+        identityProviderAdapterMongoMock.getDomainFromEmail,
       ).toHaveBeenCalledWith(testEmail);
       expect(global.fetch).not.toHaveBeenCalled();
       expect(result).toEqual({ isEmailValid: true });
@@ -229,7 +229,7 @@ describe(EmailValidatorService.name, () => {
 
       // Then
       expect(
-        identityProviderAdapterMongoMock.getFqdnFromEmail,
+        identityProviderAdapterMongoMock.getDomainFromEmail,
       ).toHaveBeenCalledWith(testEmail);
       expect(global.fetch).toHaveBeenCalledWith(
         `https://dns.google/resolve?name=${encodeURIComponent(testDomain)}&type=MX`,
@@ -276,7 +276,7 @@ describe(EmailValidatorService.name, () => {
       } as unknown as Response);
 
       identityProviderAdapterMongoMock.getList.mockResolvedValue([]);
-      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValue(
+      identityProviderAdapterMongoMock.getDomainFromEmail.mockReturnValue(
         "test.exmple.com",
       );
 
@@ -297,7 +297,7 @@ describe(EmailValidatorService.name, () => {
       identityProviderAdapterMongoMock.getList.mockResolvedValue([
         { attachedEmailDomains: ["test.example.com"] },
       ]);
-      identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValue(
+      identityProviderAdapterMongoMock.getDomainFromEmail.mockReturnValue(
         "test.exmple.com",
       );
 

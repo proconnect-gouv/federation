@@ -97,11 +97,11 @@ describe("IdentityProviderController", () => {
       const itemId = new ObjectId();
       //
       // //Mocking Items
-      const mockFqdns = ["fqdn1.fr", "fqdn2.fr"];
+      const mockAttachedEmailDomains = ["domain1.fr", "domain2.fr"];
 
       const itemTest1 = identityProviderFactory.createIdentityProviderFromDb({
         _id: itemId,
-        attachedEmailDomains: mockFqdns,
+        attachedEmailDomains: mockAttachedEmailDomains,
       });
 
       const itemTest2 = { ...itemTest1 };
@@ -128,7 +128,7 @@ describe("IdentityProviderController", () => {
       expect(listResult.totalItems).toEqual(3);
       expect(listResult.identityProviders.length).toEqual(3);
       expect(listResult.identityProviders[0].attachedEmailDomains).toEqual(
-        mockFqdns,
+        mockAttachedEmailDomains,
       );
     });
   });

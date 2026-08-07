@@ -24,7 +24,7 @@ describe("CoreFcaService", () => {
     getById: jest.fn(),
     getList: jest.fn(),
     getIdpsByEmail: jest.fn(),
-    getFqdnFromEmail: jest.fn(),
+    getDomainFromEmail: jest.fn(),
   };
 
   const identityProviderMockResponse = {
@@ -65,10 +65,10 @@ describe("CoreFcaService", () => {
   });
 
   describe("ensureEmailIsAuthorizedForSp", () => {
-    it("should return nothing if spAuthorizedFqdnsConfigs is empty", () => {
+    it("should return nothing if spAuthorizedAttachedEmailDomainsConfigs is empty", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
-        spAuthorizedFqdnsConfigs: [],
+        spAuthorizedAttachedEmailDomainsConfigs: [],
       });
 
       // When / Then
@@ -77,15 +77,15 @@ describe("CoreFcaService", () => {
       ).not.toThrow();
     });
 
-    it("should return nothing if spAuthorizedFqdnsConfigs is not empty but no config is found for the current sp", () => {
+    it("should return nothing if spAuthorizedAttachedEmailDomainsConfigs is not empty but no config is found for the current sp", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
-        spAuthorizedFqdnsConfigs: [
+        spAuthorizedAttachedEmailDomainsConfigs: [
           {
             spId: "sp1",
             spName: "Barad-Dur",
             spContact: "sauron@palantir.morgoth",
-            authorizedFqdns: ["mordor.orc"],
+            authorizedAttachedEmailDomains: ["mordor.orc"],
           },
         ],
       });
@@ -99,12 +99,12 @@ describe("CoreFcaService", () => {
     it("should throw an error if the email is not authorized", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
-        spAuthorizedFqdnsConfigs: [
+        spAuthorizedAttachedEmailDomainsConfigs: [
           {
             spId: spIdMock,
             spName: "Barad-Dur",
             spContact: "sauron@palantir.morgoth",
-            authorizedFqdns: ["mordor.orc"],
+            authorizedAttachedEmailDomains: ["mordor.orc"],
           },
         ],
       });
@@ -120,17 +120,17 @@ describe("CoreFcaService", () => {
 
     it("should return nothing if the email is authorized", () => {
       configServiceMock.get.mockReturnValueOnce({
-        spAuthorizedFqdnsConfigs: [
+        spAuthorizedAttachedEmailDomainsConfigs: [
           {
             spId: spIdMock,
             spName: "Barad-Dur",
             spContact: "sauron@palantir.morgoth",
-            authorizedFqdns: ["mordor.orc"],
+            authorizedAttachedEmailDomains: ["mordor.orc"],
           },
         ],
       });
 
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("mordor.orc");
+      identityProviderMock.getDomainFromEmail.mockReturnValueOnce("mordor.orc");
 
       expect(() =>
         service["ensureEmailIsAuthorizedForSp"](spIdMock, "gollum@mordor.orc"),
@@ -203,11 +203,13 @@ describe("CoreFcaService", () => {
 
       configServiceMock.get.mockReturnValue({
         defaultIdpId: "default-idp",
-        spAuthorizedFqdnsConfigs: [],
+        spAuthorizedAttachedEmailDomainsConfigs: [],
         idpRoutingForcingEmailSuffix: "+proconnect",
       });
 
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("hogwarts.uk");
+      identityProviderMock.getDomainFromEmail.mockReturnValueOnce(
+        "hogwarts.uk",
+      );
       identityProviderMock.getById.mockResolvedValueOnce(mockDefaultIdp);
       identityProviderMock.getIdpsByEmail.mockResolvedValueOnce([]);
 
@@ -225,7 +227,9 @@ describe("CoreFcaService", () => {
         idpRoutingForcingEmailSuffix: "+proconnect",
       });
 
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("hogwarts.uk");
+      identityProviderMock.getDomainFromEmail.mockReturnValueOnce(
+        "hogwarts.uk",
+      );
       identityProviderMock.getIdpsByEmail.mockResolvedValueOnce([]);
 
       // When
@@ -253,7 +257,9 @@ describe("CoreFcaService", () => {
         },
       ];
 
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("hogwarts.uk");
+      identityProviderMock.getDomainFromEmail.mockReturnValueOnce(
+        "hogwarts.uk",
+      );
       identityProviderMock.getIdpsByEmail.mockResolvedValueOnce(idpsList);
 
       // When
@@ -281,7 +287,9 @@ describe("CoreFcaService", () => {
         },
       ];
 
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("hogwarts.uk");
+      identityProviderMock.getDomainFromEmail.mockReturnValueOnce(
+        "hogwarts.uk",
+      );
       identityProviderMock.getIdpsByEmail.mockResolvedValueOnce(idpsList);
 
       // When
@@ -309,7 +317,9 @@ describe("CoreFcaService", () => {
         },
       ];
 
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("hogwarts.uk");
+      identityProviderMock.getDomainFromEmail.mockReturnValueOnce(
+        "hogwarts.uk",
+      );
       identityProviderMock.getIdpsByEmail.mockResolvedValueOnce(idpsList);
 
       // When
@@ -339,7 +349,9 @@ describe("CoreFcaService", () => {
         },
       ];
 
-      identityProviderMock.getFqdnFromEmail.mockReturnValueOnce("hogwarts.uk");
+      identityProviderMock.getDomainFromEmail.mockReturnValueOnce(
+        "hogwarts.uk",
+      );
       identityProviderMock.getIdpsByEmail.mockResolvedValueOnce(idpsList);
 
       // When
@@ -358,7 +370,7 @@ describe("CoreFcaService", () => {
         defaultIdpId: "default-idp",
         supportEmail: "support@example.com",
       });
-      identityProviderMock.getFqdnFromEmail.mockReturnValue("hogwarts.uk");
+      identityProviderMock.getDomainFromEmail.mockReturnValue("hogwarts.uk");
     });
 
     it("should not throw if idp can serve email domain", async () => {
@@ -379,7 +391,7 @@ describe("CoreFcaService", () => {
     it("should not throw if blocking is disabled for idp", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "idp1",
-        attachedEmailDomains: ["fqdn1.fr", "fqdn1bis.fr"],
+        attachedEmailDomains: ["domain1.fr", "domain1bis.fr"],
         isBlockingForUnlistedEmailDomainsEnabled: false,
       });
 
@@ -394,7 +406,7 @@ describe("CoreFcaService", () => {
     it("should not throw when domain is listed in extraDomainList", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "idp1",
-        attachedEmailDomains: ["fqdn1.fr", "fqdn1bis.fr"],
+        attachedEmailDomains: ["domain1.fr", "domain1bis.fr"],
         extraAcceptedEmailDomains: ["hogwarts.uk"],
         isBlockingForUnlistedEmailDomainsEnabled: true,
       });
@@ -410,7 +422,7 @@ describe("CoreFcaService", () => {
     it("should not throw when using default attached email domain", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "default-idp",
-        attachedEmailDomains: ["fqdn1.fr"],
+        attachedEmailDomains: ["domain1.fr"],
         isBlockingForUnlistedEmailDomainsEnabled: true,
       });
 
@@ -425,7 +437,7 @@ describe("CoreFcaService", () => {
     it("should throw when none of the above conditions is fulfilled", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "idp1",
-        attachedEmailDomains: ["fqdn1.fr"],
+        attachedEmailDomains: ["domain1.fr"],
         isBlockingForUnlistedEmailDomainsEnabled: true,
       });
 
