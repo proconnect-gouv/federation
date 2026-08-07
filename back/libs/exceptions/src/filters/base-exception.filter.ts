@@ -5,7 +5,7 @@ import { Routes } from "@fc/core/enums/routes.enum";
 import { LoggerService } from "@fc/logger";
 import { SessionService } from "@fc/session";
 import { ArgumentsHost, Catch, Injectable } from "@nestjs/common";
-import { BaseExceptionFilter } from "@nestjs/core";
+import { BaseExceptionFilter as NestBaseExceptionFilter } from "@nestjs/core";
 import { Response } from "express";
 import { ExceptionsConfig } from "../dto";
 import { BaseException, EnrichedDisplayBaseException } from "../exceptions";
@@ -20,7 +20,7 @@ import { ErrorPageParams } from "../types";
 
 @Catch(BaseException)
 @Injectable()
-export class FcWebHtmlExceptionFilter extends BaseExceptionFilter<BaseException> {
+export class BaseExceptionFilter extends NestBaseExceptionFilter<BaseException> {
   constructor(
     protected readonly config: ConfigService,
     protected readonly session: SessionService,

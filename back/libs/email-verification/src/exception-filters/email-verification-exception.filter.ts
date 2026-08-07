@@ -1,5 +1,5 @@
 import { ConfigService } from "@fc/config";
-import { FcWebHtmlExceptionFilter } from "@fc/exceptions/filters";
+import { BaseExceptionFilter } from "@fc/exceptions/filters";
 import { LoggerService } from "@fc/logger";
 import { SessionService } from "@fc/session";
 import { Catch, Injectable } from "@nestjs/common";
@@ -9,7 +9,7 @@ import { EmailVerificationBaseException } from "../exceptions";
 
 @Catch(EmailVerificationBaseException)
 @Injectable()
-export class EmailVerificationExceptionFilter extends FcWebHtmlExceptionFilter {
+export class EmailVerificationExceptionFilter extends BaseExceptionFilter {
   constructor(
     protected readonly config: ConfigService,
     protected readonly session: SessionService,
