@@ -1,6 +1,6 @@
 export interface IdentityProvider {
   descriptions: string[];
-  fqdn?: string;
+  attachedEmailDomain?: string;
   id: string;
   signature: string;
   title: string;

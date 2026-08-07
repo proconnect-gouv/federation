@@ -218,7 +218,7 @@ describe("CoreFcaService", () => {
       expect(response).toEqual([mockDefaultIdp]);
     });
 
-    it("should return no idps if no idp is mapped for fqdn and no default idp is set", async () => {
+    it("should return no idps if no idp is mapped for attached email domain and no default idp is set", async () => {
       // Given
       configServiceMock.get.mockReturnValue({
         defaultIdpId: "",
@@ -407,7 +407,7 @@ describe("CoreFcaService", () => {
       expect(res).toBeUndefined();
     });
 
-    it("should not throw when using default fqdn", async () => {
+    it("should not throw when using default attached email domain", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "default-idp",
         attachedEmailDomains: ["fqdn1.fr"],

@@ -60,9 +60,9 @@
             <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
               <% if (identityProvider.attachedEmailDomains) { %>
                 <a class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>">
-                  <% identityProvider.attachedEmailDomains.forEach((fqdn) => { %>
+                  <% identityProvider.attachedEmailDomains.forEach((attachedEmailDomain) => { %>
                     <span>
-                      <%= fqdn %>
+                      <%= attachedEmailDomain %>
                     </span>
                   <% }); %>
                 </a>

@@ -61,7 +61,7 @@ export class CoreFcaService {
         emailPrefix.endsWith(idpRoutingForcingEmailSuffix),
     );
 
-    // when there is no idp mapped for this fqdn
+    // when there is no idp mapped for this attached email domain
     // we check if there is or not a default idp set in the app
     // if yes, we return the default idp
     // if no, we return an empty config and we deduce that the default idp is not accepted

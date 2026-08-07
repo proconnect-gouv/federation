@@ -9,6 +9,6 @@
     "title": "Fournisseur d'identité 1",
     "url": "https://idp1-local.proconnect.127.0.0.1.nip.io",
     "signature": "ES256",
-    "fqdn": "fia1.fr"
+    "attachedEmailDomain": "fia1.fr"
   }
 ]

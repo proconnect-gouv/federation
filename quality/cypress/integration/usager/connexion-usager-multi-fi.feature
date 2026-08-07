@@ -1,5 +1,5 @@
 #language: fr
-Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
+Fonctionnalité: Connexion Usager dont le domaine email attaché est lié à plusieurs fi
 
   Plan du Scénario: Connexion d'un usager au FI <idpLabel>
     Etant donné que je navigue sur la page fournisseur de service
