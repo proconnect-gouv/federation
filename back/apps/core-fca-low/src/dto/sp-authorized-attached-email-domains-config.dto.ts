@@ -1,6 +1,6 @@
 import { IsArray, IsString } from "class-validator";
 
-export class SpAuthorizedFqdnsConfig {
+export class SpAuthorizedAttachedEmailDomainsConfig {
   @IsString()
   readonly spId: string;
 
@@ -12,5 +12,5 @@ export class SpAuthorizedFqdnsConfig {
 
   @IsArray()
   @IsString({ each: true })
-  readonly authorizedFqdns: string[];
+  readonly authorizedAttachedEmailDomains: string[];
 }

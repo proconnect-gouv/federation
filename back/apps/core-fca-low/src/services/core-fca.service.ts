@@ -49,19 +49,20 @@ export class CoreFcaService {
   async selectIdpsFromEmail(
     email: string,
   ): Promise<IdentityProviderMetadata[]> {
-    const idpsFromFqdn = await this.identityProvider.getIdpsByEmail(email);
+    const idpsAttachedToEmailDomain =
+      await this.identityProvider.getIdpsByEmail(email);
 
     // we get the part before the last @ to check if it's a "passe-droit" email
     const emailPrefix = email.substring(0, email.lastIndexOf("@"));
 
     const { idpRoutingForcingEmailSuffix } = this.config.get<AppConfig>("App");
-    const idpsWithRoutingEnabled = idpsFromFqdn.filter(
+    const idpsWithRoutingEnabled = idpsAttachedToEmailDomain.filter(
       (idp) =>
         idp.isRoutingEnabled ||
         emailPrefix.endsWith(idpRoutingForcingEmailSuffix),
     );
 
-    // when there is no idp mapped for this fqdn
+    // when there is no idp mapped for this attached email domain
     // we check if there is or not a default idp set in the app
     // if yes, we return the default idp
     // if no, we return an empty config and we deduce that the default idp is not accepted
@@ -85,13 +86,13 @@ export class CoreFcaService {
   ): Promise<boolean> {
     const identityProvider = await this.identityProvider.getById(idpId);
 
-    const emailFqdn = this.identityProvider.getFqdnFromEmail(email);
+    const emailDomain = this.identityProvider.getDomainFromEmail(email);
 
-    if (identityProvider.fqdns?.includes(emailFqdn)) {
+    if (identityProvider.attachedEmailDomains?.includes(emailDomain)) {
       return;
     }
 
-    if (identityProvider.extraAcceptedEmailDomains?.includes(emailFqdn)) {
+    if (identityProvider.extraAcceptedEmailDomains?.includes(emailDomain)) {
       return;
     }
 
@@ -122,27 +123,29 @@ export class CoreFcaService {
    * Only policemen can connect to Uniforces.
    */
   ensureEmailIsAuthorizedForSp(spId: string, email: string): void {
-    const fqdnFromEmail = this.identityProvider.getFqdnFromEmail(email);
-    const { spAuthorizedFqdnsConfigs } = this.config.get<AppConfig>("App");
+    const emailDomain = this.identityProvider.getDomainFromEmail(email);
+    const { spAuthorizedAttachedEmailDomainsConfigs } =
+      this.config.get<AppConfig>("App");
 
-    const authorizedFqdnsConfig = spAuthorizedFqdnsConfigs.find((config) => {
-      return config.spId === spId;
-    });
+    const authorizedAttachedEmailDomainsConfig =
+      spAuthorizedAttachedEmailDomainsConfigs.find((config) => {
+        return config.spId === spId;
+      });
 
-    if (isEmpty(authorizedFqdnsConfig)) return;
+    if (isEmpty(authorizedAttachedEmailDomainsConfig)) return;
 
     if (
-      authorizedFqdnsConfig.authorizedFqdns.some(
-        (fqdnInConfig) => fqdnInConfig === fqdnFromEmail,
+      authorizedAttachedEmailDomainsConfig.authorizedAttachedEmailDomains.some(
+        (emailDomainInConfig) => emailDomainInConfig === emailDomain,
       )
     ) {
       return;
     }
 
     throw new CoreFcaUnauthorizedEmailException(
-      authorizedFqdnsConfig.spName,
-      authorizedFqdnsConfig.spContact,
-      authorizedFqdnsConfig.authorizedFqdns,
+      authorizedAttachedEmailDomainsConfig.spName,
+      authorizedAttachedEmailDomainsConfig.spContact,
+      authorizedAttachedEmailDomainsConfig.authorizedAttachedEmailDomains,
     );
   }
 }

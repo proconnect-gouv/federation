@@ -20,14 +20,14 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
   constructor(
     spName: string,
     spContact: string,
-    authorizedFqdns: string[] = [],
+    authorizedAttachedEmailDomains: string[] = [],
   ) {
     super();
     this.description = `Vous essayez de vous connecter à ${spName}.
 
 Réessayez en utilisant votre adresse email professionnelle :
 
-✅ ${authorizedFqdns.join(", ")}
+✅ ${authorizedAttachedEmailDomains.join(", ")}
 ❌ gmail, yahoo, orange`;
 
     this.contactMessage = `Si cela ne fonctionne pas, contactez le support utilisateur du service ${spName} pour régler le problème.`;

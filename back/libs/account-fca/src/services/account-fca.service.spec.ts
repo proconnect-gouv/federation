@@ -130,7 +130,7 @@ describe("AccountFcaService", () => {
       const result = await service.getOrCreateAccount(
         "uid",
         "sub",
-        "email@fqdn",
+        "email@domain",
       );
 
       expect(result).toEqual(existingAccount);
@@ -148,7 +148,7 @@ describe("AccountFcaService", () => {
       const result = await service.getOrCreateAccount(
         "uid",
         "sub",
-        "email@fqdn",
+        "email@domain",
       );
 
       // First we looked for the exact account by sub and uid
@@ -164,7 +164,7 @@ describe("AccountFcaService", () => {
       expect(modelMock.findOne.mock.calls[1][0]).toMatchObject({
         idpIdentityKeys: {
           $elemMatch: {
-            idpMail: "email@fqdn",
+            idpMail: "email@domain",
             idpUid: "default-idp",
           },
         },
@@ -179,7 +179,7 @@ describe("AccountFcaService", () => {
       const result = await service.getOrCreateAccount(
         "default-idp",
         "sub",
-        "email@fqdn",
+        "email@domain",
       );
 
       // Looking for an existing account by sub and uid fails, but…
@@ -207,14 +207,14 @@ describe("AccountFcaService", () => {
       const result = await service.getOrCreateAccount(
         "default-idp",
         "sub",
-        "email@fqdn",
+        "email@domain",
       );
 
       expect(result.sub).toBe(mockUuid);
       expect(result.idpIdentityKeys).toContainEqual({
         idpUid: "default-idp",
         idpSub: "sub",
-        idpMail: "email@fqdn",
+        idpMail: "email@domain",
       });
     });
 
@@ -228,14 +228,14 @@ describe("AccountFcaService", () => {
       const result = await service.getOrCreateAccount(
         "uid",
         "sub",
-        "email@fqdn",
+        "email@domain",
       );
 
       expect(result.sub).toBe(mockUuid);
       expect(result.idpIdentityKeys).toContainEqual({
         idpUid: "uid",
         idpSub: "sub",
-        idpMail: "email@fqdn",
+        idpMail: "email@domain",
       });
     });
 
@@ -258,7 +258,7 @@ describe("AccountFcaService", () => {
       const result = await service.getOrCreateAccount(
         "new-uid",
         "new-sub",
-        "email@fqdn",
+        "email@domain",
       );
 
       expect(result.idpIdentityKeys).toEqual([
@@ -270,7 +270,7 @@ describe("AccountFcaService", () => {
         {
           idpUid: "new-uid",
           idpSub: "new-sub",
-          idpMail: "email@fqdn",
+          idpMail: "email@domain",
         },
       ]);
     });
@@ -294,14 +294,14 @@ describe("AccountFcaService", () => {
       const result = await service.getOrCreateAccount(
         "existing-uid",
         "existing-sub",
-        "email@fqdn",
+        "email@domain",
       );
 
       expect(result.idpIdentityKeys).toEqual([
         {
           idpUid: "existing-uid",
           idpSub: "existing-sub",
-          idpMail: "email@fqdn",
+          idpMail: "email@domain",
         },
       ]);
     });
@@ -310,10 +310,10 @@ describe("AccountFcaService", () => {
     it("should return false when an account with the email exists", async () => {
       modelMock.exists.mockResolvedValue({ _id: "1" });
 
-      const result = await service.checkEmailExists("email@fqdn");
+      const result = await service.checkEmailExists("email@domain");
 
       expect(modelMock.exists).toHaveBeenCalledWith({
-        idpIdentityKeys: { $elemMatch: { idpMail: "email@fqdn" } },
+        idpIdentityKeys: { $elemMatch: { idpMail: "email@domain" } },
       });
       expect(result).toBe(true);
     });
@@ -321,10 +321,10 @@ describe("AccountFcaService", () => {
     it("should return true when no account with the email exists", async () => {
       modelMock.exists.mockResolvedValue(null);
 
-      const result = await service.checkEmailExists("missing@fqdn");
+      const result = await service.checkEmailExists("missing@domain");
 
       expect(modelMock.exists).toHaveBeenCalledWith({
-        idpIdentityKeys: { $elemMatch: { idpMail: "missing@fqdn" } },
+        idpIdentityKeys: { $elemMatch: { idpMail: "missing@domain" } },
       });
       expect(result).toBe(false);
     });

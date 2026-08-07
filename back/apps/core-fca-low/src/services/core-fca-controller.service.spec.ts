@@ -94,7 +94,7 @@ describe("CoreFcaControllerService", () => {
       if (key === "App")
         return {
           defaultIdpId: "idpIdMockValue",
-          spAuthorizedFqdnsConfigs: [],
+          spAuthorizedAttachedEmailDomainsConfigs: [],
           urlPrefix: "/app",
         } as unknown as AppConfig;
       return {} as any;
@@ -203,7 +203,7 @@ describe("CoreFcaControllerService", () => {
         if (key === "App")
           return {
             defaultIdpId: "anotherIdp",
-            spAuthorizedFqdnsConfigs: [],
+            spAuthorizedAttachedEmailDomainsConfigs: [],
           } as unknown as AppConfig;
         return {} as any;
       });

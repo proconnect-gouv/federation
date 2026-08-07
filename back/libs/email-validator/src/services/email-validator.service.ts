@@ -75,7 +75,7 @@ export class EmailValidatorService {
   private async getIdpDomains() {
     const idps = await this.identityProviderAdapterMongoService.getList();
     const domains = chain(idps)
-      .map((idp) => idp.fqdns)
+      .map((idp) => idp.attachedEmailDomains)
       .flatten()
       .filter(Boolean)
       .uniq()
@@ -86,7 +86,7 @@ export class EmailValidatorService {
 
   private async isEmailDomainValid(email: string) {
     const emailDomain =
-      this.identityProviderAdapterMongoService.getFqdnFromEmail(email);
+      this.identityProviderAdapterMongoService.getDomainFromEmail(email);
     if (!emailDomain) return false;
 
     const { domainWhitelist, featureMxResolutionValidation } =

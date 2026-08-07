@@ -16,7 +16,9 @@ const appConfig: AppConfig = {
   },
   fqdn: process.env.FQDN,
   defaultIdpId: env.string("DEFAULT_IDP_UID"),
-  spAuthorizedFqdnsConfigs: env.json("SP_AUTHORIZED_FQDNS_CONFIGS"),
+  spAuthorizedAttachedEmailDomainsConfigs: env.json(
+    "SP_AUTHORIZED_ATTACHED_EMAIL_DOMAINS_CONFIGS",
+  ),
   defaultEmailRenater: env.string("DEFAULT_EMAIL_RENATER"),
   contentSecurityPolicy: {
     defaultSrc: ["'self'"],

@@ -33,7 +33,7 @@ Fonctionnalité: Connexion à un FI
 
   # use this test only when using core-fca-rie
   @ignore
-  Scénario: J'utilise un fqdn ne redirigeant vers aucun FI et il n'y a pas de FI par défaut
+  Scénario: J'utilise un domaine email attaché ne redirigeant vers aucun FI et il n'y a pas de FI par défaut
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@unknown.fr"

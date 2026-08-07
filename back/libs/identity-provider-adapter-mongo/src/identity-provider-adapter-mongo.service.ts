@@ -136,19 +136,21 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
     return Boolean(idp?.active);
   }
 
-  getFqdnFromEmail(email: string | undefined): string | undefined {
+  getDomainFromEmail(email: string | undefined): string | undefined {
     return email?.split("@").pop().toLowerCase();
   }
 
   getIdpsByEmail(email: string): Promise<IdentityProviderMetadata[]> {
-    const fqdn = this.getFqdnFromEmail(email);
-    return this.getIdpsByFqdn(fqdn);
+    const attachedEmailDomain = this.getDomainFromEmail(email);
+    return this.getIdpsAttachedToEmailDomain(attachedEmailDomain);
   }
 
-  async getIdpsByFqdn(fqdn: string): Promise<IdentityProviderMetadata[]> {
+  async getIdpsAttachedToEmailDomain(
+    attachedEmailDomain: string,
+  ): Promise<IdentityProviderMetadata[]> {
     const allIdentityProviders = await this.getList();
     const filteredIdps = allIdentityProviders.filter((idp) =>
-      idp.fqdns?.includes(fqdn),
+      idp.attachedEmailDomains?.includes(attachedEmailDomain),
     );
 
     return filteredIdps;

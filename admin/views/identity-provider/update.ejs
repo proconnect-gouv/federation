@@ -67,22 +67,22 @@
             </div>
 
             <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="fqdns">Domaines email associés (un domaine par ligne) :</label>
+              <label class="col-2 col-form-label" for="attachedEmailDomains">Domaines email associés (un domaine par ligne) :</label>
               <div class="col-10">
                 <textarea
-                  id="fqdns"
+                  id="attachedEmailDomains"
                   rows="3"
-                  name="fqdns"
-                  class="form-control <%= locals.messages.errors && messages.errors[0].fqdns && 'is-invalid' %>"
+                  name="attachedEmailDomains"
+                  class="form-control <%= locals.messages.errors && messages.errors[0].attachedEmailDomains && 'is-invalid' %>"
                   pattern="^([\da-z\.-]+)\.([a-z\.]{2,10})$"
                   autocomplete="off"
                   data-1p-ignore="true"
                   data-bwignore="true"
-                  data-form-type="other"><%= locals.messages.values && messages.values[0].fqdns instanceof Array ? messages.values[0].fqdns.join('\n') : '' %></textarea>
+                  data-form-type="other"><%= locals.messages.values && messages.values[0].attachedEmailDomains instanceof Array ? messages.values[0].attachedEmailDomains.join('\n') : '' %></textarea>
                 <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].fqdns) { %>
+                  <% if (locals.messages.errors && messages.errors[0].attachedEmailDomains) { %>
                   <p>
-                    <% messages.errors[0].fqdns.forEach((error) => { %>
+                    <% messages.errors[0].attachedEmailDomains.forEach((error) => { %>
                     <%= error %>
                     <br>
                     <% }) %>
