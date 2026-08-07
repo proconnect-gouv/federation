@@ -87,7 +87,7 @@ export class CoreFcaService {
 
     const emailFqdn = this.identityProvider.getFqdnFromEmail(email);
 
-    if (identityProvider.fqdns?.includes(emailFqdn)) {
+    if (identityProvider.attachedEmailDomains?.includes(emailFqdn)) {
       return;
     }
 

@@ -242,9 +242,9 @@ describe("IdentityProviderAdapterMongoService", () => {
 
   describe("getIdpsByFqdn", () => {
     const idpListMock = [
-      { id: "1", fqdns: ["default-fqdn.fr"] },
-      { id: "2", fqdns: ["abc.fr"] },
-      { id: "3", fqdns: ["foo.fr", "default-fqdn.fr"] },
+      { id: "1", attachedEmailDomains: ["default-fqdn.fr"] },
+      { id: "2", attachedEmailDomains: ["abc.fr"] },
+      { id: "3", attachedEmailDomains: ["foo.fr", "default-fqdn.fr"] },
     ];
     beforeEach(() => {
       service.getList = jest.fn().mockResolvedValueOnce(idpListMock);

@@ -170,7 +170,7 @@ describe("IdentityProviderService", () => {
         clientId: "09a1a257648c1742c74d6a3d84b31943",
         client_secret: "1234567890AZERTYUIOP",
         active: true,
-        fqdns: ["my-fqdn.fr"],
+        attachedEmailDomains: ["my-fqdn.fr"],
       });
 
     const transformedIntoEntity =
@@ -203,7 +203,7 @@ describe("IdentityProviderService", () => {
         userinfo_signed_response_alg: "ES256",
         userInfoURL: "https://issuer.fr/userinfo",
         uid: "default_uid",
-        fqdns: ["my-fqdn.fr"],
+        attachedEmailDomains: ["my-fqdn.fr"],
       });
 
     beforeEach(() => {

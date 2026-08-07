@@ -148,7 +148,7 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
   async getIdpsByFqdn(fqdn: string): Promise<IdentityProviderMetadata[]> {
     const allIdentityProviders = await this.getList();
     const filteredIdps = allIdentityProviders.filter((idp) =>
-      idp.fqdns?.includes(fqdn),
+      idp.attachedEmailDomains?.includes(fqdn),
     );
 
     return filteredIdps;

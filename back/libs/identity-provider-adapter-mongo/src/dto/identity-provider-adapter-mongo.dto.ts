@@ -89,7 +89,7 @@ export class MetadataIdpAdapterMongoDTO {
   @IsArray()
   @IsString({ each: true })
   @Transform(({ value }) => value || undefined)
-  readonly fqdns?: string[];
+  readonly attachedEmailDomains?: string[];
 
   @IsBoolean()
   readonly isRoutingEnabled: boolean;

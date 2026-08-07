@@ -20,7 +20,7 @@ const fi = {
   userInfoUrl: "https://issuer.fr/me",
   statusUrl: "https://issuer.fr/state",
   discovery: "false",
-  fqdns: "yopmail.com",
+  attachedEmailDomains: "yopmail.com",
   discoveryUrl: "https://issuer.fr/discoveryUrl",
   jwksUrl: "https://issuer.fr/discovery",
   clientId: "09a1a257648c1742c74d6a3d84b31943",

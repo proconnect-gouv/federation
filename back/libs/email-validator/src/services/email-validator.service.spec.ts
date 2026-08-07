@@ -72,10 +72,10 @@ describe(EmailValidatorService.name, () => {
     it("should return a list of domains from IdPs", async () => {
       // Given
       const mockIdps = [
-        { fqdns: ["idp1.example.com", "idp2.example.com"] },
-        { fqdns: ["idp3.example.com"] },
-        { fqdns: [] }, // IdP with no domains
-        { fqdns: null }, // IdP with null domains
+        { attachedEmailDomains: ["idp1.example.com", "idp2.example.com"] },
+        { attachedEmailDomains: ["idp3.example.com"] },
+        { attachedEmailDomains: [] }, // IdP with no domains
+        { attachedEmailDomains: null }, // IdP with null domains
       ];
       identityProviderAdapterMongoMock.getList.mockResolvedValue(mockIdps);
 
@@ -295,7 +295,7 @@ describe(EmailValidatorService.name, () => {
       } as unknown as Response);
 
       identityProviderAdapterMongoMock.getList.mockResolvedValue([
-        { fqdns: ["test.example.com"] },
+        { attachedEmailDomains: ["test.example.com"] },
       ]);
       identityProviderAdapterMongoMock.getFqdnFromEmail.mockReturnValue(
         "test.exmple.com",

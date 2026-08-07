@@ -75,7 +75,7 @@ export class EmailValidatorService {
   private async getIdpDomains() {
     const idps = await this.identityProviderAdapterMongoService.getList();
     const domains = chain(idps)
-      .map((idp) => idp.fqdns)
+      .map((idp) => idp.attachedEmailDomains)
       .flatten()
       .filter(Boolean)
       .uniq()

@@ -364,7 +364,7 @@ describe("CoreFcaService", () => {
     it("should not throw if idp can serve email domain", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "idp1",
-        fqdns: ["hogwarts.uk"],
+        attachedEmailDomains: ["hogwarts.uk"],
         isBlockingForUnlistedEmailDomainsEnabled: true,
       });
 
@@ -379,7 +379,7 @@ describe("CoreFcaService", () => {
     it("should not throw if blocking is disabled for idp", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "idp1",
-        fqdns: ["fqdn1.fr", "fqdn1bis.fr"],
+        attachedEmailDomains: ["fqdn1.fr", "fqdn1bis.fr"],
         isBlockingForUnlistedEmailDomainsEnabled: false,
       });
 
@@ -394,7 +394,7 @@ describe("CoreFcaService", () => {
     it("should not throw when domain is listed in extraDomainList", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "idp1",
-        fqdns: ["fqdn1.fr", "fqdn1bis.fr"],
+        attachedEmailDomains: ["fqdn1.fr", "fqdn1bis.fr"],
         extraAcceptedEmailDomains: ["hogwarts.uk"],
         isBlockingForUnlistedEmailDomainsEnabled: true,
       });
@@ -410,7 +410,7 @@ describe("CoreFcaService", () => {
     it("should not throw when using default fqdn", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "default-idp",
-        fqdns: ["fqdn1.fr"],
+        attachedEmailDomains: ["fqdn1.fr"],
         isBlockingForUnlistedEmailDomainsEnabled: true,
       });
 
@@ -425,7 +425,7 @@ describe("CoreFcaService", () => {
     it("should throw when none of the above conditions is fulfilled", async () => {
       identityProviderMock.getById.mockResolvedValueOnce({
         uid: "idp1",
-        fqdns: ["fqdn1.fr"],
+        attachedEmailDomains: ["fqdn1.fr"],
         isBlockingForUnlistedEmailDomainsEnabled: true,
       });
 

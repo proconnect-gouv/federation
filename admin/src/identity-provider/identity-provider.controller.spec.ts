@@ -101,7 +101,7 @@ describe("IdentityProviderController", () => {
 
       const itemTest1 = identityProviderFactory.createIdentityProviderFromDb({
         _id: itemId,
-        fqdns: mockFqdns,
+        attachedEmailDomains: mockFqdns,
       });
 
       const itemTest2 = { ...itemTest1 };
@@ -127,7 +127,9 @@ describe("IdentityProviderController", () => {
       // Expected
       expect(listResult.totalItems).toEqual(3);
       expect(listResult.identityProviders.length).toEqual(3);
-      expect(listResult.identityProviders[0].fqdns).toEqual(mockFqdns);
+      expect(listResult.identityProviders[0].attachedEmailDomains).toEqual(
+        mockFqdns,
+      );
     });
   });
 

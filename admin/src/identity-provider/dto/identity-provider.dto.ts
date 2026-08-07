@@ -183,7 +183,7 @@ export class IdentityProviderDTO {
     linesToArray({ value }, { shouldDeleteDuplicates: true }),
   )
   @Matches(FQDN_REGEX, { each: true })
-  readonly fqdns?: string[];
+  readonly attachedEmailDomains?: string[];
 
   @IsOptionalExtended()
   @IsString()
