@@ -11,15 +11,14 @@
   "scripts": {
     "clean": "rm -rf cypress/fixtures.out && rm -rf cypress/reports && rm -rf cypress/screenshots && rm -rf cypress/videos",
     "format": "prettier --write .",
-    "lint": "tsc --noEmit && prettier --check .",
+    "lint": "prettier --check . && yarn run type:check",
     "report": "tsx ./scripts/multiple-cucumber-html-reporter",
-    "start:low": "cypress open --e2e --config-file cypress-fca-low.config.ts",
-    "test:low": "yarn clean && yarn test:low:ci",
-    "test:low:base": "cypress run --config-file cypress-fca-low.config.ts",
-    "test:low:chrome-desktop": "yarn test:low:base --browser chrome --headless",
-    "test:low:chrome-mobile": "yarn test:low:base --browser chrome --headless --config viewportWidth=320,viewportHeight=568",
-    "test:low:ci": "yarn test:low:chrome-desktop --env TAGS='not @ignore'",
-    "test:low:snapshot": "cypress run --headless --config-file cypress-fca-low-visual.config.ts"
+    "test:e2e:studio": "cypress open --e2e --config-file cypress-fca-low.config.ts",
+    "test:e2e": "cypress run --config-file cypress-fca-low.config.ts",
+    "test:e2e:chrome-desktop": "yarn test:e2e --browser chrome --headless",
+    "test:e2e:chrome-mobile": "yarn test:e2e --browser chrome --headless --config viewportWidth=320,viewportHeight=568",
+    "test:snapshot": "cypress run --headless --config-file cypress-fca-low-visual.config.ts",
+    "type:check": "tsc --noEmit"
   },
   "prettier": {
     "plugins": [
