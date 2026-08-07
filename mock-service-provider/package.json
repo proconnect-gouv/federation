@@ -6,9 +6,10 @@
   "scripts": {
     "start": "node src/main.ts",
     "start:dev": "node --watch src/main.ts",
-    "lint": "tsc --noEmit && prettier --check .",
+    "lint": "prettier --check . && yarn run type:check",
     "format": "prettier --write .",
-    "test": "node --experimental-strip-types --test src/app.test.ts"
+    "test": "node --experimental-strip-types --test src/app.test.ts",
+    "type:check": "tsc --noEmit"
   },
   "dependencies": {
     "body-parser": "^2.3.0",

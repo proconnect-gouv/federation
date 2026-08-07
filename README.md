@@ -207,7 +207,7 @@ yarn start:low
 ```bash
 dks switch medium
 cd $PC_ROOT/federation/admin
-yarn test:e2e:open
+yarn test:e2e:studio
 ```
 
 ### Run all quality tests for PCF Core
@@ -215,7 +215,7 @@ yarn test:e2e:open
 ```bash
 dks switch medium
 cd $PC_ROOT/federation/quality
-yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @ignore'
+yarn test:e2e:chrome-desktop --env TAGS='not @hybridge and not @ignore'
 ```
 
 ### Run all quality tests for PCF Hybridge
@@ -223,7 +223,7 @@ yarn test:low:chrome-desktop --env TAGS='not @hybridge and not @ignore'
 ```bash
 dks switch hybridge
 cd $PC_ROOT/federation/quality
-yarn test:low:chrome-desktop --env TAGS='@hybridge'
+yarn test:e2e:chrome-desktop --env TAGS='@hybridge'
 ```
 
 ## Visualization Tests
@@ -231,7 +231,7 @@ yarn test:low:chrome-desktop --env TAGS='@hybridge'
 ```bash
 dks switch small
 cd $PC_ROOT/federation/quality
-yarn test:low:snapshot
+yarn test:snapshot
 ```
 
 ## Run other tests
@@ -251,7 +251,7 @@ yarn lint --fix
 ```bash
 cd $PC_ROOT/federation/quality
 # Get the credentials from a team member
-CYPRESS_TEST_ENV=integ01 CYPRESS_EXPLOIT_USER_NAME=proconnect-test-local CYPRESS_EXPLOIT_USER_PASS='xxx' CYPRESS_EXPLOIT_USER_TOTP='xxx' yarn start:low
+CYPRESS_TEST_ENV=integ01 CYPRESS_EXPLOIT_USER_NAME=proconnect-test-local CYPRESS_EXPLOIT_USER_PASS='xxx' CYPRESS_EXPLOIT_USER_TOTP='xxx' yarn test:e2e:studio
 ```
 
 ## Add a migration script

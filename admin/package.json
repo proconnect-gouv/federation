@@ -13,7 +13,7 @@
     "console:dev": "ts-node -r tsconfig-paths/register src/console.ts",
     "fixtures:load": "fixtures load fixtures --dataSource src/dataSource.ts --require=ts-node/register --require=tsconfig-paths/register",
     "format": "prettier --write .",
-    "lint": "tsc --noEmit && prettier --check .",
+    "lint": "prettier --check . && yarn run type:check",
     "migrations:run": "yarn typeorm migration:run && echo '\n\n ***Make sure to load fixtures and create backup DB for E2E***\n from you host run:\n > ./cypress/support/db.sh exploitation create'",
     "prestart": "yarn run prebuild",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
@@ -21,10 +21,10 @@
     "test": "jest",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cypress run --e2e",
-    "test:e2e:exploitation": "cypress run --browser chrome",
-    "test:e2e:open": "cypress open --e2e",
+    "test:e2e": "cypress run --browser chrome",
+    "test:e2e:studio": "cypress open --e2e",
     "test:watch": "jest --watch",
+    "type:check": "tsc --noEmit",
     "typeorm": "ts-node node_modules/typeorm/cli.js --dataSource src/dataSource.ts"
   },
   "jest": {

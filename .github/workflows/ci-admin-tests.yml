@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Run lint
+      - name: Check code style and transpilation
         run: yarn lint
 
       - name: Run tests
@@ -86,7 +86,7 @@ jobs:
           ./docker-stack wait "admin" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests
-        run: yarn test:e2e:exploitation -c video=false
+        run: yarn test:e2e -c video=false
 
       - name: Post failing tests
         if: failure()
