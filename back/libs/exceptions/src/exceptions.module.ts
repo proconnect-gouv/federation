@@ -3,17 +3,13 @@ import { LoggerModule } from "@fc/logger";
 import { SessionModule } from "@fc/session";
 import { Module } from "@nestjs/common";
 import {
-  FcWebHtmlExceptionFilter,
+  BaseExceptionFilter,
   HttpExceptionFilter,
-  UnknownHtmlExceptionFilter,
+  UnknownExceptionFilter,
 } from "./filters";
 
 @Module({
   imports: [SessionModule, ConfigModule, LoggerModule],
-  providers: [
-    UnknownHtmlExceptionFilter,
-    FcWebHtmlExceptionFilter,
-    HttpExceptionFilter,
-  ],
+  providers: [UnknownExceptionFilter, BaseExceptionFilter, HttpExceptionFilter],
 })
 export class ExceptionsModule {}

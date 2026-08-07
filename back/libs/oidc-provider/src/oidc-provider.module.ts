@@ -1,5 +1,5 @@
 import { ConfigModule } from "@fc/config";
-import { ExceptionsModule, FcWebHtmlExceptionFilter } from "@fc/exceptions";
+import { BaseExceptionFilter, ExceptionsModule } from "@fc/exceptions";
 import { LoggerModule } from "@fc/logger";
 import { IServiceProviderAdapter } from "@fc/oidc";
 import { OidcAcrModule } from "@fc/oidc-acr";
@@ -46,7 +46,7 @@ export class OidcProviderModule {
         LoggerModule,
       ],
       providers: [
-        FcWebHtmlExceptionFilter,
+        BaseExceptionFilter,
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useExisting: IdentityProviderAdapterMongoService,

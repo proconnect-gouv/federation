@@ -9,7 +9,7 @@ import { HttpExceptionFilter } from "./http-exception.filter";
 
 @Catch()
 @Injectable()
-export class UnknownHtmlExceptionFilter extends HttpExceptionFilter {
+export class UnknownExceptionFilter extends HttpExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {
     const wrapped = new InternalServerErrorException(exception);
 

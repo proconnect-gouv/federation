@@ -7,10 +7,10 @@ import { CsrfModule, CsrfService } from "@fc/csrf";
 import { EmailValidatorModule } from "@fc/email-validator/email-validator.module";
 import { EmailVerificationModule } from "@fc/email-verification";
 import {
+  BaseExceptionFilter,
   ExceptionsModule,
-  FcWebHtmlExceptionFilter,
   HttpExceptionFilter,
-  UnknownHtmlExceptionFilter,
+  UnknownExceptionFilter,
 } from "@fc/exceptions";
 import {
   IdentityProviderAdapterMongoModule,
@@ -110,11 +110,11 @@ export class AppModule {
         IdentitySanitizer,
         {
           provide: APP_FILTER,
-          useClass: UnknownHtmlExceptionFilter,
+          useClass: UnknownExceptionFilter,
         },
         {
           provide: APP_FILTER,
-          useClass: FcWebHtmlExceptionFilter,
+          useClass: BaseExceptionFilter,
         },
         {
           provide: APP_FILTER,
