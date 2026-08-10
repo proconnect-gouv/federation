@@ -35,9 +35,6 @@ export class ServiceProvider extends Document {
   userinfo_signed_response_alg: string;
 
   @Prop({ type: String })
-  jwks_uri: string;
-
-  @Prop({ type: String })
   type: string;
 }
 

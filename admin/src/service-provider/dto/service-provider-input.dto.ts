@@ -103,12 +103,6 @@ export class ServiceProviderDto {
   // tslint:disable-next-line: variable-name
   readonly grant_types?: string[] | null;
 
-  @IsOptional()
-  @Matches(URL_REGEX)
-  @Transform(toNullableString)
-  // tslint:disable-next-line: variable-name
-  readonly jwks_uri?: string | null;
-
   @Transform(linesToArray)
   @IsOptionalExtended()
   @Matches(VALID_EMAIL_REGEX, {

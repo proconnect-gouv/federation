@@ -115,7 +115,6 @@ export class ServiceProviderService {
       input.introspection_signed_response_alg;
     serviceProvider.response_types = input.response_types;
     serviceProvider.grant_types = input.grant_types;
-    serviceProvider.jwks_uri = input.jwks_uri;
     serviceProvider.collaborators = input.collaborators;
 
     /*
@@ -250,7 +249,6 @@ export class ServiceProviderService {
         serviceProviderDto.introspection_signed_response_alg,
       response_types: serviceProviderDto.response_types,
       grant_types: serviceProviderDto.grant_types,
-      jwks_uri: serviceProviderDto.jwks_uri,
       active: serviceProviderDto.active,
       client_secret: this.secretManager.encrypt(
         this.secretAdapter.generateSecret(),

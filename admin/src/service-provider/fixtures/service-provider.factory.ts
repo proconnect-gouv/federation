@@ -22,7 +22,6 @@ function createServiceProviderDto(
     response_types: ["code"],
     introspection_signed_response_alg: "RS256",
     grant_types: ["authorization_code"],
-    jwks_uri: "https://monfs.com/jwks",
     collaborators: ["jeanne.dupont@example.com"],
     ...partial,
   };
@@ -44,7 +43,6 @@ function createServiceProviderFromDb(
     response_types: ["code"],
     introspection_signed_response_alg: "RS256",
     grant_types: ["authorization_code"],
-    jwks_uri: "https://monfs.com/jwks",
     client_secret: "clientSecret",
     createdAt: new Date(),
     secretCreatedAt: new Date(),

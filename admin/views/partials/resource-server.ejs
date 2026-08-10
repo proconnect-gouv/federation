@@ -41,24 +41,5 @@
                 </p>
             </div>
         </div>
-
-        <div class="mb-3 row">
-            <label class="col-2 col-form-label" for="jwks_uri">jwks_uri :</label>
-            <div class="col-10">
-                <input id="jwks_uri" type="text" class="form-control <%= locals.messages.errors && messages.errors[0].jwks_uri && 'is-invalid' %>" name="jwks_uri" value="<%= locals.messages.values && messages.values[0].jwks_uri %>">
-                <div class="invalid-feedback">
-                    <% if (locals.messages.errors && messages.errors[0].jwks_uri) { %>
-                        <p>
-                            <% messages.errors[0].jwks_uri.forEach((error) => { %>
-                                <%= error %>
-                                <br>
-                            <% }) %>
-                        </p>
-                    <% } else { %>
-                        Veuillez mettre une jwks_uri valide au format https://issuer.fr/jwks
-                    <% } %>
-                </div>
-            </div>
-        </div>
     </details>
 </div>

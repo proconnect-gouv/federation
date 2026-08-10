@@ -80,9 +80,5 @@ export class ServiceProviderFromDb {
   grant_types?: string[] | null;
 
   @Column()
-  // tslint:disable-next-line: variable-name
-  jwks_uri: string;
-
-  @Column()
   collaborators: string[];
 }

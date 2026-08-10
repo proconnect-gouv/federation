@@ -412,7 +412,6 @@ describe("update a service-provider", () => {
         introspection_signed_response_alg: "ES256",
         response_types: "code",
         grant_types: "authorization_code\nrefresh_token",
-        jwks_uri: "https://example.com/jwks",
       };
 
       // Action
