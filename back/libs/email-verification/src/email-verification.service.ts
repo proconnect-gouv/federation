@@ -62,6 +62,14 @@ export class EmailVerificationService {
       options?.requestSendEmail,
     );
 
+    this.logger.info({
+      code: "send-email-verification-if-needed",
+      lastEmailVerificationTokenSentAt:
+        lastEmailVerificationToken?.sentAt?.toISOString(),
+      requestSendEmail: options?.requestSendEmail,
+      shouldSendEmail,
+    });
+
     if (!shouldSendEmail) {
       return {
         hasSentVerificationEmail: false,
