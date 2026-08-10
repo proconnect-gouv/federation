@@ -1,4 +1,4 @@
-const fia = {
+const identityProviders = {
   // -- FIA - FIA1-LOW - Activated
   "FIA1-LOW": {
     uid: "9c716f61-b8a1-435c-a407-ef4d677ec270",
@@ -259,7 +259,7 @@ const fia = {
 };
 
 // -- Idps ----------
-Object.values(fia).forEach((idp) => {
-  print(`${idp.name} > Initializing provider: ${idp.name}`);
-  db.provider.replaceOne({ name: idp.name }, idp, { upsert: true });
+Object.values(identityProviders).forEach((identityProvider) => {
+  print(`${identityProvider.name} > Initializing provider: ${identityProvider.name}`);
+  db.provider.replaceOne({ name: identityProvider.name }, identityProvider, { upsert: true });
 });

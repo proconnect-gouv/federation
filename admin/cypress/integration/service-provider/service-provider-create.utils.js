@@ -3,7 +3,7 @@ const BASE_URL = Cypress.config("baseUrl");
 export function createServiceProvider(serviceProviderInfo, configuration) {
   cy.url().should("eq", `${BASE_URL}/service-provider`);
   cy.contains("Créer un fournisseur de service").click();
-  cy.contains("Section Fournisseur de données").click();
+  cy.contains("Section Serveur de ressources").click();
 
   const {
     name,

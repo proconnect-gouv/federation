@@ -1,10 +1,10 @@
-print("Initializing SPs...");
-load("/opt/scripts/db-states/_default/sp.js");
+print("Initializing Service Providers...");
+load("/opt/scripts/db-states/_default/service-providers.js");
 
 /* ------------------------------------------------------------------------------- */
 
-print("Initializing IDPs...");
-load("/opt/scripts/db-states/_default/idp.js");
+print("Initializing Identity Providers...");
+load("/opt/scripts/db-states/_default/identity-providers.js");
 
 /* ------------------------------------------------------------------------------- */
 
@@ -18,5 +18,5 @@ load("/opt/scripts/db-states/_default/scopes.js");
 
 /* ------------------------------------------------------------------------------- */
 
-print("Initializing Data providers...");
-load("/opt/scripts/db-states/_default/dp.js");
+print("Initializing Resource Servers...");
+load("/opt/scripts/db-states/_default/resource-servers.js");
