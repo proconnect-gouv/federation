@@ -73,14 +73,6 @@ export class ServiceProviderFromDb {
 
   @Column()
   // tslint:disable-next-line: variable-name
-  introspection_encrypted_response_alg?: string | null;
-
-  @Column()
-  // tslint:disable-next-line: variable-name
-  introspection_encrypted_response_enc?: string | null;
-
-  @Column()
-  // tslint:disable-next-line: variable-name
   response_types?: string[] | null;
 
   @Column()

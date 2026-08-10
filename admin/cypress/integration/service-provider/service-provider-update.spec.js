@@ -410,8 +410,6 @@ describe("update a service-provider", () => {
 
       const resourceServerData = {
         introspection_signed_response_alg: "ES256",
-        introspection_encrypted_response_alg: "RSA-OAEP",
-        introspection_encrypted_response_enc: "A256GCM",
         response_types: "code",
         grant_types: "authorization_code\nrefresh_token",
         jwks_uri: "https://example.com/jwks",

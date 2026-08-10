@@ -15,27 +15,6 @@
         </div>
 
         <div class="mb-3 row">
-            <label class="col-2 col-form-label" for="introspection_encrypted_response_alg">introspection_encrypted_response_alg :</label>
-            <div class="col-10">
-                <select class="form-select" name="introspection_encrypted_response_alg">
-                    <option value="" <%= !messages.values || messages.values[0].introspection_encrypted_response_alg === null ? 'selected' : '' %>>[VIDE] - config FS par défaut</option>
-                    <option value="ECDH-ES" <%= messages.values && messages.values[0].introspection_encrypted_response_alg === "ECDH-ES" ? 'selected' : '' %>>ECDH-ES - config FD par défaut</option>
-                    <option value="RSA-OAEP" <%= messages.values && messages.values[0].introspection_encrypted_response_alg === "RSA-OAEP" ? 'selected' : '' %>>RSA-OAEP - config FD</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
-            <label class="col-2 col-form-label" for="introspection_encrypted_response_enc">introspection_encrypted_response_enc : </label>
-            <div class="col-10">
-                <select class="form-select" name="introspection_encrypted_response_enc">
-                    <option value="" <%= !messages.values || messages.values[0].introspection_encrypted_response_enc === null ? 'selected' : '' %>>[VIDE] - config FS par défaut</option>
-                    <option value="A256GCM" <%= messages.values && messages.values[0].introspection_encrypted_response_enc === "A256GCM" ? 'selected' : '' %>>A256GCM - config FD par défaut</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="mb-3 row">
             <label class="col-2 col-form-label" for="response_types">response_types :</label>
             <div class="col-10">
                 <textarea id="response_types" class="form-control" name="response_types" pattern=".*"><%= locals.messages.values && messages.values[0].response_types %></textarea>
