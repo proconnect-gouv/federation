@@ -1,7 +1,7 @@
 #language: fr
 Fonctionnalité: Connexion Usager - Redirection vers FI avec email
 
-  Plan du Scénario: Connexion d'un usager - fqdn <idpDescription>
+  Plan du Scénario: Connexion d'un usager - domaine email attaché <idpDescription>
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "<email>"
@@ -22,7 +22,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
       | albus.dumbledore@example.com | moncomptepro   |
 
   @ignoreDocker
-  Plan du Scénario: Connexion d'un usager - fqdn <idpDescription> (redirection vers FI seulement)
+  Plan du Scénario: Connexion d'un usager - domaine email attaché <idpDescription> (redirection vers FI seulement)
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "<email>"
@@ -35,7 +35,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
       | hades@developpement-durable.gouv.fr | cerbere        |
 
   @ignoreInteg01
-  Scénario: Connexion d'un usager - fqdn non reconnu et non service public
+  Scénario: Connexion d'un usager - domaine email attaché non reconnu et non service public
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "albus.dumbledore@example.com"
@@ -47,7 +47,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et le code d'erreur est "Y500015"
 
   @ignoreInteg01
-  Scénario: Connexion d'un usager - fqdn non reconnu et non service public mais FS acceptant le privé
+  Scénario: Connexion d'un usager - domaine email attaché non reconnu et non service public mais FS acceptant le privé
     Etant donné que je navigue sur la page fournisseur de service "acceptant le privé"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "albus.dumbledore@example.com"

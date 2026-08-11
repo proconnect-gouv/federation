@@ -207,7 +207,7 @@ export class IdentityProviderService {
       supportEmail: identityProviderDto.supportEmail,
       isRoutingEnabled: identityProviderDto.isRoutingEnabled,
       isEntraID: identityProviderDto.isEntraID,
-      fqdns: identityProviderDto.fqdns,
+      attachedEmailDomains: identityProviderDto.attachedEmailDomains,
       extraAcceptedEmailDomains: identityProviderDto.extraAcceptedEmailDomains,
       isBlockingForUnlistedEmailDomainsEnabled:
         identityProviderDto.isBlockingForUnlistedEmailDomainsEnabled,
@@ -262,7 +262,7 @@ export class IdentityProviderService {
       issuer: inputProvider.url,
       isRoutingEnabled: inputProvider.isRoutingEnabled,
       isEntraID: inputProvider.isEntraID,
-      fqdns: inputProvider.fqdns,
+      attachedEmailDomains: inputProvider.attachedEmailDomains,
       extraAcceptedEmailDomains: inputProvider.extraAcceptedEmailDomains,
       isBlockingForUnlistedEmailDomainsEnabled:
         inputProvider.isBlockingForUnlistedEmailDomainsEnabled,

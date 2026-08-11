@@ -20,7 +20,7 @@ const fi = {
   userInfoUrl: "https://issuer.fr/me",
   statusUrl: "https://issuer.fr/state",
   discovery: "false",
-  fqdns: "yopmail.com",
+  attachedEmailDomains: "yopmail.com",
   discoveryUrl: "https://issuer.fr/discoveryUrl",
   jwksUrl: "https://issuer.fr/discovery",
   clientId: "09a1a257648c1742c74d6a3d84b31943",
@@ -125,7 +125,7 @@ describe("Identity provider creation", () => {
       );
     });
 
-    it("I can see the FQDNs of the FI", () => {
+    it("I can see the attached email domains of the FI", () => {
       cy.visit(
         `${BASE_URL}/identity-provider?sortField=createdAt&sortDirection=asc&page=1&limit=10&search=${fi.name}`,
       );

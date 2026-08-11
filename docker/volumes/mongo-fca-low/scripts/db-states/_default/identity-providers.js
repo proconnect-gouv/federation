@@ -33,7 +33,7 @@ const identityProviders = {
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-    fqdns: ["fia1.fr", "polyfi.fr", "polyfi2.fr", "abcd.com"],
+    attachedEmailDomains: ["fia1.fr", "polyfi.fr", "polyfi2.fr", "abcd.com"],
     isRoutingEnabled: true,
     isEntraID: false,
     extraAcceptedEmailDomains: [],
@@ -76,7 +76,7 @@ const identityProviders = {
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-    fqdns: ["fia2.fr", "polyfi.fr", "polyfi2.fr"],
+    attachedEmailDomains: ["fia2.fr", "polyfi.fr", "polyfi2.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
     extraAcceptedEmailDomains: [],
@@ -120,7 +120,7 @@ const identityProviders = {
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-    fqdns: ["fia3.fr"],
+    attachedEmailDomains: ["fia3.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
     extraAcceptedEmailDomains: [],
@@ -162,7 +162,7 @@ const identityProviders = {
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-    fqdns: ["moncomptepro.fr", "polyfi.fr"],
+    attachedEmailDomains: ["moncomptepro.fr", "polyfi.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
     extraAcceptedEmailDomains: [],
@@ -206,7 +206,7 @@ const identityProviders = {
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-    fqdns: ["fi-rie.fr"],
+    attachedEmailDomains: ["fi-rie.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
     extraAcceptedEmailDomains: [],
@@ -248,7 +248,7 @@ const identityProviders = {
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-    fqdns: [],
+    attachedEmailDomains: [],
     isRoutingEnabled: true,
     isEntraID: false,
     extraAcceptedEmailDomains: [],

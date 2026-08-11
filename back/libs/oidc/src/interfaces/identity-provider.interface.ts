@@ -12,7 +12,7 @@ export type IdentityProviderMetadata = {
   discoveryUrl?: string;
   siret: string;
   supportEmail?: string;
-  fqdns?: string[];
+  attachedEmailDomains?: string[];
   isRoutingEnabled: boolean;
   isEntraID: boolean;
   extraAcceptedEmailDomains?: string[];

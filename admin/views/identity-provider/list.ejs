@@ -27,7 +27,7 @@
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "name", fieldName: "Nom du FI (mire)" }); %>
           </th>
           <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Nom technique</th>
-          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Fqdns</th>
+          <th scope="col" class="col-3 border border-bottom-0 border-top-0 border-end-0 border-secondary">Domaine email attaché</th>
           <th scope="col" class="col-1 border border-bottom-0 border-top-0 border-end-0 border-secondary">
             <%- include('partials/sort-table', { uri: "/identity-provider", fieldToSortOn: "active", fieldName: "Activé" }); %>
           </th>
@@ -58,11 +58,11 @@
               <% } %>
             </td>
             <td class="border border-bottom-0 border-top-0 border-end-0 border-secondary">
-              <% if (identityProvider.fqdns) { %>
+              <% if (identityProvider.attachedEmailDomains) { %>
                 <a class="text-dark" href="<%= APP_ROOT %>/identity-provider/<%= identityProvider._id %>">
-                  <% identityProvider.fqdns.forEach((fqdn) => { %>
+                  <% identityProvider.attachedEmailDomains.forEach((attachedEmailDomain) => { %>
                     <span>
-                      <%= fqdn %>
+                      <%= attachedEmailDomain %>
                     </span>
                   <% }); %>
                 </a>
