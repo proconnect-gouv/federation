@@ -7,9 +7,9 @@
             <div class="col-10">
                 <select class="form-select" name="introspection_signed_response_alg">
                     <option value="" <%= !messages.values || messages.values[0].introspection_signed_response_alg === null ? 'selected' : '' %>>[VIDE] - config FS par défaut</option>
-                    <option value="HS256" <%= messages.values && messages.values[0].introspection_signed_response_alg === "HS256" ? 'selected' : '' %>>HS256 - config FD par défaut</option>
-                    <option value="ES256" <%= messages.values && messages.values[0].introspection_signed_response_alg === "ES256" ? 'selected' : '' %>>ES256 - config FD</option>
-                    <option value="RS256" <%= messages.values && messages.values[0].introspection_signed_response_alg === "RS256" ? 'selected' : '' %>>RS256 - config FD</option>
+                    <option value="HS256" <%= messages.values && messages.values[0].introspection_signed_response_alg === "HS256" ? 'selected' : '' %>>HS256 - config SR par défaut</option>
+                    <option value="ES256" <%= messages.values && messages.values[0].introspection_signed_response_alg === "ES256" ? 'selected' : '' %>>ES256 - config SR</option>
+                    <option value="RS256" <%= messages.values && messages.values[0].introspection_signed_response_alg === "RS256" ? 'selected' : '' %>>RS256 - config SR</option>
                 </select>
             </div>
         </div>
@@ -21,7 +21,7 @@
                 <p>
                 <ul>
                     <li>"default" = configuration FS par défaut (laisse le champ vide pour laisser le core mettre la valeur par défaut)</li>
-                    <li>"none" = configuration FD par défaut (remplit le champ avec un tableau vide pour désactiver les valeurs par défaut)</li>
+                    <li>"none" = configuration SR par défaut (remplit le champ avec un tableau vide pour désactiver les valeurs par défaut)</li>
                     <li>sinon, une entrée par ligne (ex : "code")</li>
                 </ul>
                 </p>
@@ -35,7 +35,7 @@
                 <p>
                 <ul>
                     <li>"default" = configuration FS par défaut (laisse le champ vide pour laisser le core mettre la valeur par défaut)</li>
-                    <li>"none" = configuration FD par défaut (remplit le champ avec un tableau vide pour désactiver les valeurs par défaut)</li>
+                    <li>"none" = configuration SR par défaut (remplit le champ avec un tableau vide pour désactiver les valeurs par défaut)</li>
                     <li>sinon, une entrée par ligne (ex : "authorization_code" suivi de "refresh_token")</li>
                 </ul>
                 </p>

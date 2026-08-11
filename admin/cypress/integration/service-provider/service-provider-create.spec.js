@@ -181,7 +181,7 @@ describe("Service provider creation", () => {
       // Action
       const resourceServerData = {
         name: "MyFirstRS",
-        introspection_signed_response_alg: "HS256 - config FD par défaut",
+        introspection_signed_response_alg: "HS256 - config SR par défaut",
         response_types: "none",
         grant_types: "none",
       };
