@@ -100,7 +100,7 @@ export class EmailVerificationService {
     try {
       await this.mailer.sendMail({
         to: email,
-        subject: "Vérification de votre adresse email",
+        subject: "Code à usage unique",
         htmlContent: OtpEmail({
           token,
           validityDuration,

@@ -159,7 +159,7 @@ describe(EmailVerificationService.name, () => {
       expect(mailerServiceMock.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           to: "user@example.com",
-          subject: "Vérification de votre adresse email",
+          subject: "Code à usage unique",
           htmlContent: expect.any(String),
         }),
       );
@@ -188,7 +188,7 @@ describe(EmailVerificationService.name, () => {
       expect(mailerServiceMock.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           to: "user@example.com",
-          subject: "Vérification de votre adresse email",
+          subject: "Code à usage unique",
         }),
       );
     });
@@ -203,7 +203,7 @@ describe(EmailVerificationService.name, () => {
       expect(mailerServiceMock.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           to: "user@example.com",
-          subject: "Vérification de votre adresse email",
+          subject: "Code à usage unique",
         }),
       );
     });
