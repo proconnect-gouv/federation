@@ -218,7 +218,8 @@ export class InteractionController {
     userSessionService: ISessionService<AfterGetOidcCallbackSessionDto>,
   ) {
     const {
-      amr,
+      idpAmr,
+      spAmr,
       idpAcr,
       idpId,
       spIdentity: { sub, email, roles, siret, organization_label },
@@ -270,7 +271,7 @@ export class InteractionController {
       idpAcr,
       spEssentialAcr,
       isEmailVerifiedByPcf,
-      amr,
+      idpAmr,
     });
 
     if (!interactionAcr) {
@@ -278,7 +279,7 @@ export class InteractionController {
       const canAcrBeSatisfiedByPcf = this.oidcAcr.computeCanAcrBeSatisfiedByPcf(
         {
           spEssentialAcr,
-          amr,
+          idpAmr,
           isOtpEmailEnabled,
         },
       );
@@ -301,7 +302,7 @@ export class InteractionController {
     this.logger.track(TrackedEvent.FC_VERIFIED);
 
     return this.oidcProvider.finishInteraction(req, res, {
-      amr,
+      amr: spAmr,
       acr: interactionAcr,
     });
   }

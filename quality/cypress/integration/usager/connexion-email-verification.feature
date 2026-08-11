@@ -39,14 +39,15 @@ Fonctionnalité: Connexion Usager - Email verification
     Et que je rentre le code de confirmation " 00000000 "
     Alors je vois le message d'erreur "Le code rentré est invalide ou expiré."
 
-
   Scénario: on vérifie mon e-mail, je rentre le bon code
     Etant donné que je navigue sur la page fournisseur de service
     Et que la base de données est réinitialisée
     Et que le fournisseur de service requiert le claim "acr" avec les valeurs "eidas0-mfa eidas1-mfa eidas2 eidas3"
+    Et que le fournisseur de service requiert le claim "amr"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "pc@fia2.fr"
     Et que je clique sur le bouton de connexion
+    Et que j'utilise un compte usager dont le FI fournit un amr "pwd"
     Et que le fournisseur d'identité garantit un niveau de sécurité "eidas1"
     Et que la page du FI n'affiche pas de requestedAcrs
     Et que je m'authentifie
@@ -55,6 +56,7 @@ Fonctionnalité: Connexion Usager - Email verification
     Et que je vois un bouton "Recevoir un nouveau code" désactivé
     Et que je rentre le code de confirmation reçu par e-mail
     Alors la cinématique a utilisé le niveau de sécurité "eidas1-mfa"
+    Et la cinématique a renvoyé l'amr "pwd,mail"
 
   Scénario: la session est ré-utilisée si un autre fournisseur de service demande le même ACR
     Etant donné que je navigue sur la page fournisseur de service "premier FS"

@@ -97,6 +97,7 @@ export const setAsRequestedClaims = (
 ): void => {
   updateCustomParams((customParams) => {
     customParams["claims"]["id_token"] = {
+      ...customParams["claims"]["id_token"],
       [claim]: { essential: true },
     };
 
