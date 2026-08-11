@@ -37,7 +37,7 @@ export class IdentityProviderService {
     }
   }
 
-  async countIdentityProviders() {
+  async countIdentityProviders(): Promise<number> {
     return this.identityProviderRepository.count();
   }
 

@@ -143,11 +143,11 @@
             </div>
 
             <%
-              let isBlockingForUnlistedEmailDomainsEnabledChecked = false
+              let isBlockingForUnlistedEmailDomainsEnabledChecked = true
               if (locals.messages.values && messages.values[0].isBlockingForUnlistedEmailDomainsEnabled !== undefined) {
                 isBlockingForUnlistedEmailDomainsEnabledChecked = messages.values[0].isBlockingForUnlistedEmailDomainsEnabled
               } else {
-                isBlockingForUnlistedEmailDomainsEnabledChecked = false
+                isBlockingForUnlistedEmailDomainsEnabledChecked = true
               }
             %>
             <div class="mb-3 row">
