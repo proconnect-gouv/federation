@@ -1,4 +1,4 @@
-FROM node:24.18.1-alpine AS app
+FROM node:24.19.0-alpine AS app
 
 WORKDIR /var/www/app
 
