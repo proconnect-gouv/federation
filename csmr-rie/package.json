@@ -7,11 +7,12 @@
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch --debug 0.0.0.0:9229",
     "start:ci": "NODE_ENV=development nest start",
-    "lint": "tsc --noEmit && prettier --check .",
+    "lint": "prettier --check . && yarn run type:check",
     "format": "prettier --write .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage",
+    "type:check": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.28",

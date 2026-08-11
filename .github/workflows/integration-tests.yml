@@ -31,14 +31,14 @@ jobs:
       - name: Start cypress e2e tests
         working-directory: ./quality
         env:
-          CYPRESS_PLATFORM: 'fca-low'
-          CYPRESS_TEST_ENV: 'integ01'
+          CYPRESS_PLATFORM: "fca-low"
+          CYPRESS_TEST_ENV: "integ01"
           CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
           CYPRESS_EXPLOIT_USER_NAME: ${{ secrets.CYPRESS_EXPLOIT_USER_NAME }}
           CYPRESS_EXPLOIT_USER_PASS: ${{ secrets.CYPRESS_EXPLOIT_USER_PASS }}
           CYPRESS_EXPLOIT_USER_TOTP: ${{ secrets.CYPRESS_EXPLOIT_USER_TOTP }}
         run: |
-          yarn test:low:chrome-desktop -c video=false --env TAGS="not @ignore"
+          yarn test:e2e:chrome-desktop -c video=false --env TAGS="not @ignore"
           yarn report
 
       - name: Upload Cypress Artifacts

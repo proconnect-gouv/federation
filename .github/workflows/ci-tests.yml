@@ -31,11 +31,8 @@ jobs:
           yarn doc
           git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
 
-      - name: Check code style
+      - name: Check code style and transpilation
         run: yarn lint
-
-      - name: Check transpilation
-        run: yarn tsc --noEmit
 
   test_static_quality:
     runs-on: ubuntu-24.04
@@ -56,7 +53,7 @@ jobs:
       - name: Install quality dependencies
         run: yarn install --frozen-lockfile --no-progress
 
-      - name: Check code style
+      - name: Check code style and transpilation
         run: yarn lint
 
   test_unit_back:
@@ -132,7 +129,7 @@ jobs:
 
       - name: Test snapshots
         run: |
-          yarn test:low:snapshot -c video=false
+          yarn test:snapshot -c video=false
           yarn report
 
       - name: Create artifacts-logs directory
@@ -210,7 +207,7 @@ jobs:
 
       - name: Execute e2e tests
         run: |
-          yarn test:low:chrome-desktop -c video=false --env TAGS="${{ matrix.tags }}"
+          yarn test:e2e:chrome-desktop -c video=false --env TAGS="${{ matrix.tags }}"
           yarn report
 
       - name: Create artifacts-logs directory
