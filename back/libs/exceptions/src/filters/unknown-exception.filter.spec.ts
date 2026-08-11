@@ -7,7 +7,7 @@ import { getSessionServiceMock } from "@mocks/session";
 import { ArgumentsHost } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { HttpExceptionFilter } from "./http-exception.filter";
-import { UnknownHtmlExceptionFilter } from "./unknown-html-exception.filter";
+import { UnknownExceptionFilter } from "./unknown-exception.filter";
 
 // Avoid importing the real HttpExceptionFilter (which pulls heavy deps) during this spec
 jest.mock("./http-exception.filter", () => ({
@@ -16,8 +16,8 @@ jest.mock("./http-exception.filter", () => ({
   },
 }));
 
-describe("UnknownHtmlExceptionFilter", () => {
-  let filter: UnknownHtmlExceptionFilter;
+describe("UnknownExceptionFilter", () => {
+  let filter: UnknownExceptionFilter;
 
   const configMock = getConfigMock();
   const loggerMock = getLoggerMock();
@@ -37,7 +37,7 @@ describe("UnknownHtmlExceptionFilter", () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UnknownHtmlExceptionFilter,
+        UnknownExceptionFilter,
         ConfigService,
         SessionService,
         LoggerService,
@@ -50,7 +50,7 @@ describe("UnknownHtmlExceptionFilter", () => {
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .compile();
-    filter = module.get<UnknownHtmlExceptionFilter>(UnknownHtmlExceptionFilter);
+    filter = module.get<UnknownExceptionFilter>(UnknownExceptionFilter);
 
     spyParent = jest
       .spyOn(HttpExceptionFilter.prototype, "catch")

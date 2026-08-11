@@ -14,15 +14,15 @@ import { ArgumentsHost } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { BaseException } from "../exceptions/base.exception";
 import { generateErrorId } from "../helpers";
-import { FcWebHtmlExceptionFilter } from "./fc-web-html-exception.filter";
+import { BaseExceptionFilter } from "./base-exception.filter";
 
 jest.mock("../helpers/", () => ({
   ...jest.requireActual("../helpers/"),
   generateErrorId: jest.fn(),
 }));
 
-describe("FcWebHtmlExceptionFilter", () => {
-  let filter: FcWebHtmlExceptionFilter;
+describe("BaseExceptionFilter", () => {
+  let filter: BaseExceptionFilter;
 
   const generateErrorIdMock = jest.mocked(generateErrorId);
 
@@ -61,7 +61,7 @@ describe("FcWebHtmlExceptionFilter", () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FcWebHtmlExceptionFilter,
+        BaseExceptionFilter,
         ConfigService,
         SessionService,
         LoggerService,
@@ -75,7 +75,7 @@ describe("FcWebHtmlExceptionFilter", () => {
       .useValue(configMock)
       .compile();
 
-    filter = module.get<FcWebHtmlExceptionFilter>(FcWebHtmlExceptionFilter);
+    filter = module.get<BaseExceptionFilter>(BaseExceptionFilter);
 
     hostMock.switchToHttp.mockReturnThis();
     hostMock.getResponse.mockReturnValue(resMock);
