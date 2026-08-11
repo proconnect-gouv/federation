@@ -69,7 +69,7 @@
     "migrate-mongo": "^14.0.7",
     "mongoose": "^9.7.2",
     "nanoid": "^6.0.0",
-    "nodemailer": "^9.0.3",
+    "nodemailer": "^9.0.4",
     "oidc-provider": "7.14.3",
     "oidc-provider-v8": "npm:oidc-provider@^8.8.0",
     "openapi-fetch": "^0.17.0",
