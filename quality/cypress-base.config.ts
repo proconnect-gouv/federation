@@ -34,17 +34,6 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
     FC_ACCESS_PASS: "",
     // Other Configuration
     LOG_CONTAINER_NAME: "pc-core-1",
-    // Keys used by the dp mock on the local stack
-    EC_ENC_PRIV_KEY: {
-      crv: "P-256",
-      x: "85iY2dD3NhgK-zyQe00NQSvLuS_GHbU_mcA2Z__QEow",
-      y: "n3zXtgfQGgHHaiI-ApcSkDvlYsE2DOrFFOvpHuECoPg",
-      d: "PlWeN6yarMmop2jzFGkp9F5a6iEnRVwIqnM_huXp7zg",
-      kty: "EC",
-      alg: "ECDH-ES",
-      kid: "EC",
-      use: "enc",
-    },
     FEDERATION_DIR: REPOSITORY_ROOT,
   },
 };

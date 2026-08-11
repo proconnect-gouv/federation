@@ -113,13 +113,8 @@ export class ServiceProviderService {
       input.id_token_signed_response_alg;
     serviceProvider.introspection_signed_response_alg =
       input.introspection_signed_response_alg;
-    serviceProvider.introspection_encrypted_response_alg =
-      input.introspection_encrypted_response_alg;
-    serviceProvider.introspection_encrypted_response_enc =
-      input.introspection_encrypted_response_enc;
     serviceProvider.response_types = input.response_types;
     serviceProvider.grant_types = input.grant_types;
-    serviceProvider.jwks_uri = input.jwks_uri;
     serviceProvider.collaborators = input.collaborators;
 
     /*
@@ -252,13 +247,8 @@ export class ServiceProviderService {
         serviceProviderDto.id_token_signed_response_alg,
       introspection_signed_response_alg:
         serviceProviderDto.introspection_signed_response_alg,
-      introspection_encrypted_response_alg:
-        serviceProviderDto.introspection_encrypted_response_alg,
-      introspection_encrypted_response_enc:
-        serviceProviderDto.introspection_encrypted_response_enc,
       response_types: serviceProviderDto.response_types,
       grant_types: serviceProviderDto.grant_types,
-      jwks_uri: serviceProviderDto.jwks_uri,
       active: serviceProviderDto.active,
       client_secret: this.secretManager.encrypt(
         this.secretAdapter.generateSecret(),

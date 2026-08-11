@@ -182,11 +182,8 @@ describe("Service provider creation", () => {
       const resourceServerData = {
         name: "MyFirstRS",
         introspection_signed_response_alg: "HS256 - config FD par défaut",
-        introspection_encrypted_response_alg: "ECDH-ES - config FD par défaut",
-        introspection_encrypted_response_enc: "A256GCM - config FD par défaut",
         response_types: "none",
         grant_types: "none",
-        jwks_uri: "https://example.com/jwks",
       };
       createServiceProvider(resourceServerData, basicConfiguration);
 

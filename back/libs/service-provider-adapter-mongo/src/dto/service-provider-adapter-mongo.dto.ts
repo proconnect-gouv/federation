@@ -51,21 +51,6 @@ export class ServiceProviderAdapterMongoDTO {
   @Transform(({ value }) => value || undefined)
   readonly introspection_signed_response_alg?: string;
 
-  @IsOptional()
-  @IsString()
-  @Transform(({ value }) => value || undefined)
-  readonly introspection_encrypted_response_alg?: string;
-
-  @IsOptional()
-  @IsString()
-  @Transform(({ value }) => value || undefined)
-  readonly introspection_encrypted_response_enc?: string;
-
-  @IsOptional()
-  @Matches(URL_REGEX)
-  @Transform(({ value }) => value || undefined)
-  readonly jwks_uri?: string;
-
   // 'public' = sp that accepts public servants only
   // 'private' = sp that also accepts private sector employees
   @IsString()

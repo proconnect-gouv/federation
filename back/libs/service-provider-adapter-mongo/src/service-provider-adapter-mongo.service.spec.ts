@@ -36,7 +36,6 @@ describe("ServiceProviderAdapterMongoService", () => {
     post_logout_redirect_uris: ["https://sp-site.fr/post_logout_redirect_uris"],
     id_token_signed_response_alg: "ES256",
     userinfo_signed_response_alg: "ES256",
-    jwks_uri: "https://sp-site.fr/jwks-uri",
     type: "public",
   };
 

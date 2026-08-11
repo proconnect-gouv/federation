@@ -90,18 +90,6 @@ export class ServiceProviderDto {
   readonly introspection_signed_response_alg?: string | null;
 
   @IsOptional()
-  @IsString()
-  @Transform(toNullableString)
-  // tslint:disable-next-line: variable-name
-  readonly introspection_encrypted_response_alg?: string | null;
-
-  @IsOptional()
-  @IsString()
-  @Transform(toNullableString)
-  // tslint:disable-next-line: variable-name
-  readonly introspection_encrypted_response_enc?: string | null;
-
-  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   @Transform(defaultNoneOrLinesToNullableArray)
@@ -114,12 +102,6 @@ export class ServiceProviderDto {
   @Transform(defaultNoneOrLinesToNullableArray)
   // tslint:disable-next-line: variable-name
   readonly grant_types?: string[] | null;
-
-  @IsOptional()
-  @Matches(URL_REGEX)
-  @Transform(toNullableString)
-  // tslint:disable-next-line: variable-name
-  readonly jwks_uri?: string | null;
 
   @Transform(linesToArray)
   @IsOptionalExtended()

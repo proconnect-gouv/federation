@@ -8,7 +8,6 @@ Fonctionnalité: API - token-introspection
     Et l'entête de la réponse a une propriété "content-type" égale à "application/token-introspection+jwt; charset=utf-8"
     Et l'entête de la réponse n'a pas de propriété "set-cookie"
     Et le corps de la réponse contient un JWT d'introspection
-    Et l'entête du JWE a une propriété "alg" égale à "ECDH-ES"
     Et l'entête du JWS a une propriété "alg" égale à "ES256"
     Et le payload du JWT a 4 propriétés
     Et le payload du JWT a une propriété "token_introspection"

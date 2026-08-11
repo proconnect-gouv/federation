@@ -12,9 +12,8 @@ Then("le corps de la réponse contient un JWT d'introspection", function () {
     .its("body")
     .then((body) => {
       expect(body).to.be.a("string");
-      expect(body.length).to.be.greaterThan(500);
-      const jwk = Cypress.env("EC_ENC_PRIV_KEY");
-      cy.task("getJwtContent", { jwk, jwt: body }).then((jwtContent) => {
+      expect(body.length).to.be.greaterThan(50);
+      cy.task("getJwtContent", { jwt: body }).then((jwtContent) => {
         const content = JSON.stringify(jwtContent, null, 2);
         cy.document().then((document) => {
           document.documentElement.innerHTML = content;

@@ -10,11 +10,8 @@ export function createServiceProvider(serviceProviderInfo, configuration) {
     redirectUri,
     redirectUriLogout,
     introspection_signed_response_alg,
-    introspection_encrypted_response_alg,
-    introspection_encrypted_response_enc,
     response_types,
     grant_types,
-    jwks_uri,
     collaborators,
   } = serviceProviderInfo;
 
@@ -24,11 +21,8 @@ export function createServiceProvider(serviceProviderInfo, configuration) {
       redirectUri,
       redirectUriLogout,
       introspection_signed_response_alg,
-      introspection_encrypted_response_alg,
-      introspection_encrypted_response_enc,
       response_types,
       grant_types,
-      jwks_uri,
       collaborators,
     }),
     configuration,
