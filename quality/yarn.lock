@@ -616,10 +616,10 @@
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-2.2.0.tgz#1311378ed247df6d58f8eb8941921965e97e5747"
   integrity sha512-b8XEupJibegiXV+tDUseI8oLQc8ei3d/4Jkb2RpbHh3MfE054ov3uIz2dhFkB3FI8iwYkEh0gGCApkrYggkPNg==
 
-"@simonsmith/cypress-image-snapshot@^10.0.4":
-  version "10.0.4"
-  resolved "https://registry.yarnpkg.com/@simonsmith/cypress-image-snapshot/-/cypress-image-snapshot-10.0.4.tgz#0ce5e03a0c627f00cf67fbad6e281b612f70fe6b"
-  integrity sha512-DIxnlRLnicyCVf6QXvdj72FTvKWX1u3dmAPRPBWmTq5or/BDLcOJYwxEkt0CsXTAIOyCi1SdQHFlzWbWok5e4g==
+"@simonsmith/cypress-image-snapshot@^10.1.1":
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/@simonsmith/cypress-image-snapshot/-/cypress-image-snapshot-10.1.1.tgz#057f2e1db026d24b74709924a0256935c020e58e"
+  integrity sha512-+k1SREWJhp+qe8ui+VO4+ZZhidKoGXEqGEZku8rmhjSag98kI5AZbP6LlXBIu14/N9OfGjU+UD2Q0/sv31H/tQ==
   dependencies:
     "@types/pixelmatch" "^5.2.6"
     chalk "^4.1.2"
