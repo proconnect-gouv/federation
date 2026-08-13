@@ -30,6 +30,7 @@ services:
         condition: service_healthy
     pre_start:
       - command: yarn run migrate up
+      - command: yarn run seed
     healthcheck:
       test:
         [
