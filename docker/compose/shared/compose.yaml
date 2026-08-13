@@ -20,7 +20,7 @@ services:
   init-core:
     build:
       context: "../../../back"
-      target: migrator
+      target: production
     working_dir: /var/www/app
     user: ${CURRENT_UID}
     depends_on:

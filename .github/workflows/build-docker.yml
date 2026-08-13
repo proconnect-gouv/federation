@@ -94,7 +94,6 @@ jobs:
       matrix:
         instance:
           - core-fca-low
-          - core-fca-low-migrator
           - csmr-rie
           - mock-data-provider
           - mock-identity-provider
@@ -103,9 +102,6 @@ jobs:
         include:
           - instance: core-fca-low
             context: ./back
-          - instance: core-fca-low-migrator
-            context: ./back
-            target: migrator
           - instance: csmr-rie
             context: .
             file: ./csmr-rie/Dockerfile
