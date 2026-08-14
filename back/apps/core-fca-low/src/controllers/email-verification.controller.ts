@@ -67,6 +67,7 @@ export class EmailVerificationController {
   ): Promise<void> {
     const { verify_email_token } = body;
     const {
+      spAmr,
       spIdentity: { email },
       interactionId,
     } = userSession.get();
@@ -74,8 +75,10 @@ export class EmailVerificationController {
 
     await this.emailVerification.verifyEmailToken(email, verify_email_token);
 
-    userSession.set({ isEmailVerifiedByPcf: true });
+    const newSpAmr = spAmr ? [...spAmr, "mail"] : ["mail"];
+    userSession.set({ isEmailVerifiedByPcf: true, spAmr: newSpAmr });
     await userSession.commit();
+
     await this.emailVerification.deleteEmailVerificationToken(email);
 
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;

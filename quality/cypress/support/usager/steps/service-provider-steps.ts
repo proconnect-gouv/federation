@@ -5,6 +5,8 @@ import {
   checkMandatoryData,
   checkNoExtraClaims,
   getIdentityProviderByDescription,
+  getIdToken,
+  getIdTokenProperty,
   getScopeByDescription,
   getServiceProviderByDescription,
   getUserInfoProperty,
@@ -202,11 +204,13 @@ Then(
 );
 
 Then("la cinématique a renvoyé l'amr {string}", function (amrValue: string) {
-  cy.contains(`"amr": [\n    "${amrValue}"\n  ],`);
+  getIdTokenProperty("amr").should("deep.equal", amrValue.split(","));
 });
 
 Then("la cinématique n'a pas renvoyé d'amr", function () {
-  cy.get("#idtoken").contains('"amr": ').should("not.exist");
+  getIdToken().then((idToken) => {
+    expect(idToken).to.not.have.property("amr");
+  });
 });
 
 Then(

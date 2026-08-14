@@ -8,6 +8,12 @@ const defaultUserClaims = getDefaultUser();
 const getUserInfo = (): ChainableElement =>
   cy.get("#userinfo").invoke("text").then(JSON.parse);
 
+export const getIdToken = (): ChainableElement =>
+  cy.get("#idtoken").invoke("text").then(JSON.parse);
+
+export const getIdTokenProperty = (property: string): ChainableElement =>
+  getIdToken().then((idToken) => idToken[property]);
+
 export const getUserInfoProperty = (property: string): ChainableElement =>
   getUserInfo().then((userInfo) => userInfo[property]);
 

@@ -316,7 +316,8 @@ describe("OidcClientController", () => {
         "user@example.com",
       );
       expect(userSession.set).toHaveBeenNthCalledWith(2, {
-        amr: "amr-value",
+        spAmr: "amr-value",
+        idpAmr: "amr-value",
         idpIdToken: "id-token",
         idpAcr: "acr-value",
       });
@@ -449,7 +450,8 @@ describe("OidcClientController", () => {
         "idp123",
       );
       expect(userSession.set).toHaveBeenCalledWith({
-        amr: "amr-value",
+        idpAmr: "amr-value",
+        spAmr: "amr-value",
         idpIdToken: "id-token",
         idpAcr: "acr-value",
       });

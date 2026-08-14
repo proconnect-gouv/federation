@@ -27,10 +27,10 @@ export class OidcAcrService {
     idpAcr,
     spEssentialAcr,
     isEmailVerifiedByPcf,
-    amr,
+    idpAmr,
   }: Pick<
     UserSession,
-    "idpAcr" | "spEssentialAcr" | "isEmailVerifiedByPcf" | "amr"
+    "idpAcr" | "spEssentialAcr" | "isEmailVerifiedByPcf" | "idpAmr"
   >): string | undefined {
     const spEssentialAcrValues = spEssentialAcr?.split(" ") || [];
     const { supportedAcrValues } =
@@ -50,7 +50,7 @@ export class OidcAcrService {
       return supportedIdpAcr;
     }
 
-    if (amr?.includes("mail") || !isEmailVerifiedByPcf) {
+    if (idpAmr?.includes("mail") || !isEmailVerifiedByPcf) {
       return undefined;
     }
 
@@ -70,15 +70,15 @@ export class OidcAcrService {
 
   computeCanAcrBeSatisfiedByPcf({
     spEssentialAcr,
-    amr,
+    idpAmr,
     isOtpEmailEnabled,
   }: {
     spEssentialAcr?: string;
-    amr?: string[];
+    idpAmr?: string[];
     isOtpEmailEnabled: boolean;
   }) {
     const spEssentialAcrValues = spEssentialAcr?.split(" ") || [];
-    if (amr?.includes("mail")) {
+    if (idpAmr?.includes("mail")) {
       return false;
     }
     if (!isOtpEmailEnabled) {
@@ -114,7 +114,10 @@ export class OidcAcrService {
 
   isEssentialAcrSatisfied(
     interaction: ExtendedInteraction,
-    userSession: Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">,
+    userSession: Pick<
+      UserSession,
+      "idpAcr" | "isEmailVerifiedByPcf" | "idpAmr"
+    >,
   ) {
     const areThereEssentialAcrRequested =
       this.computeAreThereEssentialAcrRequested(interaction);
@@ -131,7 +134,7 @@ export class OidcAcrService {
       idpAcr: userSession.idpAcr,
       spEssentialAcr,
       isEmailVerifiedByPcf: userSession.isEmailVerifiedByPcf,
-      amr: userSession.amr,
+      idpAmr: userSession.idpAmr,
     });
 
     if (!interactionAcr) {

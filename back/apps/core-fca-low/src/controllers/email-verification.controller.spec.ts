@@ -106,7 +106,7 @@ describe("EmailVerificationController", () => {
   });
 
   describe("postVerifyEmail()", () => {
-    it("should redirect to interaction verify after a valid token", async () => {
+    it("should redirect to interaction verify after a valid token and update amr", async () => {
       const res = { redirect: jest.fn() } as unknown as Response;
       const body: VerifyEmailDto = {
         verify_email_token: "01234567",
@@ -116,6 +116,35 @@ describe("EmailVerificationController", () => {
         get: jest.fn().mockReturnValue({
           spIdentity: { email: "user@example.com" },
           interactionId: "interaction123",
+          spAmr: ["pwd"],
+        }),
+        set: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
+      configServiceMock.get.mockReturnValue({ urlPrefix: "/prefix" });
+
+      await controller.postVerifyEmail(res as Response, body, userSession);
+
+      expect(userSession.set).toHaveBeenCalledWith({
+        isEmailVerifiedByPcf: true,
+        spAmr: ["pwd", "mail"],
+      });
+      expect(res.redirect).toHaveBeenCalledWith(
+        "/prefix/interaction/interaction123/verify",
+      );
+    });
+
+    it("should redirect to interaction verify after a valid token and set amr if not present", async () => {
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const body: VerifyEmailDto = {
+        verify_email_token: "01234567",
+        csrfToken: "",
+      };
+      const userSession = {
+        get: jest.fn().mockReturnValue({
+          spIdentity: { email: "user@example.com" },
+          interactionId: "interaction123",
+          spAmr: undefined,
         }),
         set: jest.fn(),
         commit: jest.fn(),

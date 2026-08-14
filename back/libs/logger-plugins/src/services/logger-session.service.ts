@@ -15,7 +15,8 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
 
     const sessionId = sessionService.getId();
     const {
-      amr,
+      spAmr,
+      idpAmr,
       browsingSessionId,
       interactionId,
       interactionAcr,
@@ -34,7 +35,8 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
     } = sessionService.get<UserSession>("User") || {};
 
     const context = {
-      amr,
+      spAmr,
+      idpAmr,
       browsingSessionId,
       idpAcr,
       idpBelongingPopulation: idpIdentity?.belonging_population,

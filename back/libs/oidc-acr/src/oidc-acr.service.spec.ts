@@ -144,7 +144,7 @@ describe("OidcAcrService", () => {
 
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: "openid eidas1-mfa",
-        amr: ["pwd"],
+        idpAmr: ["pwd"],
         isOtpEmailEnabled: true,
       });
 
@@ -154,7 +154,7 @@ describe("OidcAcrService", () => {
     it("should return false when eidas1-mfa is missing", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: "openid",
-        amr: ["pwd"],
+        idpAmr: ["pwd"],
         isOtpEmailEnabled: true,
       });
 
@@ -163,7 +163,7 @@ describe("OidcAcrService", () => {
     it("should return false when spEssentialAcr is empty", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: undefined,
-        amr: ["pwd"],
+        idpAmr: ["pwd"],
         isOtpEmailEnabled: true,
       });
 
@@ -173,7 +173,7 @@ describe("OidcAcrService", () => {
     it("should return false when amr contains mail", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: "eidas1-mfa",
-        amr: ["mail"],
+        idpAmr: ["mail"],
         isOtpEmailEnabled: true,
       });
 
@@ -183,7 +183,7 @@ describe("OidcAcrService", () => {
     it("should return false when isOtpEmailEnabled is false", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: "eidas1-mfa",
-        amr: ["pwd"],
+        idpAmr: ["pwd"],
         isOtpEmailEnabled: false,
       });
 
@@ -237,8 +237,8 @@ describe("OidcAcrService", () => {
       const userSessionMock = {
         idpAcr: "eidas1",
         isEmailVerifiedByPcf: false,
-        amr: ["pwd"],
-      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">;
+        idpAmr: ["pwd"],
+      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "idpAmr">;
 
       // When
       const result = service.isEssentialAcrSatisfied(
@@ -270,8 +270,8 @@ describe("OidcAcrService", () => {
       const userSessionMock = {
         idpAcr: "eidas1",
         isEmailVerifiedByPcf: true,
-        amr: ["pwd"],
-      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">;
+        idpAmr: ["pwd"],
+      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "idpAmr">;
 
       // When
       const result = service.isEssentialAcrSatisfied(
@@ -303,8 +303,8 @@ describe("OidcAcrService", () => {
       const userSessionMock = {
         idpAcr: "eidas2",
         isEmailVerifiedByPcf: true,
-        amr: ["pwd"],
-      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">;
+        idpAmr: ["pwd"],
+      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "idpAmr">;
 
       // When
       const result = service.isEssentialAcrSatisfied(
@@ -336,8 +336,8 @@ describe("OidcAcrService", () => {
       const userSessionMock = {
         idpAcr: "eidas1",
         isEmailVerifiedByPcf: true,
-        amr: ["pwd"],
-      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "amr">;
+        idpAmr: ["pwd"],
+      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "idpAmr">;
 
       // When
       const result = service.isEssentialAcrSatisfied(
