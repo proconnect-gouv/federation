@@ -9,7 +9,6 @@ const rieBrokerConfig: RabbitmqConfig = {
   queueOptions: {
     durable: true,
   },
-  payloadEncoding: "base64",
 
   // Global request timeout used for any outgoing app requests.
   requestTimeout: parseInt(process.env.REQUEST_TIMEOUT, 10),

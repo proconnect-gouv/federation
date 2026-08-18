@@ -4,7 +4,6 @@ import { RabbitmqConfig } from "@fc/rabbitmq";
 const env = new ConfigParser(process.env, "HyyyperbridgeBroker");
 
 const hyyyperbridgeBrokerConfig: RabbitmqConfig = {
-  payloadEncoding: "base64",
   queue: env.string("QUEUE"),
   queueOptions: { durable: true },
   // Global request timeout used for any outgoing app requests.
