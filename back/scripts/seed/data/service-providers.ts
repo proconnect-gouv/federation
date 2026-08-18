@@ -7,9 +7,11 @@ export const serviceProviders = {
     title: "FSA - FSA1-LOW Title",
     redirect_uris: [
       "https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback",
+      "https://sp1-local.proconnect.127.0.0.1.nip.io/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsa1-low.docker.dev-franceconnect.fr/",
+      "https://sp1-local.proconnect.127.0.0.1.nip.io/",
     ],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
@@ -50,9 +52,11 @@ export const serviceProviders = {
     title: "FSA - FSA2-LOW Title",
     redirect_uris: [
       "https://fsa2-low.docker.dev-franceconnect.fr/oidc-callback",
+      "https://sp2-local.proconnect.127.0.0.1.nip.io/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsa2-low.docker.dev-franceconnect.fr/",
+      "https://sp2-local.proconnect.127.0.0.1.nip.io/",
     ],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
@@ -92,9 +96,11 @@ export const serviceProviders = {
     title: "FSA - FSA3-LOW Title",
     redirect_uris: [
       "https://fsa3-low.docker.dev-franceconnect.fr/oidc-callback",
+      "https://sp3-local.proconnect.127.0.0.1.nip.io/",
     ],
     post_logout_redirect_uris: [
       "https://fsa3-low.docker.dev-franceconnect.fr/",
+      "https://sp3-local.proconnect.127.0.0.1.nip.io/",
     ],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
