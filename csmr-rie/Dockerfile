@@ -29,7 +29,6 @@ RUN yarn build
 
 FROM node:24.16.0-alpine AS production
 ENV NODE_ENV=production
-VOLUME ["/etc/ssl/client_certs"]
 WORKDIR /var/www/app/csmr-rie
 COPY --from=dependencies /var/www/app/csmr-rie/node_modules node_modules
 COPY --from=builder /var/www/app/csmr-rie/dist dist
