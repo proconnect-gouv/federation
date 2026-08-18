@@ -27,6 +27,7 @@ COPY package.json nest-cli.json tsconfig.json tsconfig.build.json global.d.ts mi
 COPY apps ./apps
 COPY libs ./libs
 COPY migrations ./migrations
+COPY scripts/seed ./scripts/seed
 
 CMD yarn start:dev core-fca-low
 

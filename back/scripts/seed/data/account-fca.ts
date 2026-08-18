@@ -1,7 +1,11 @@
-const accountsFca = {
+//
+
+import { ObjectId } from "mongodb";
+
+export const accountsFca = {
   // -- User E000001 already deactivated for test purpose
   deactivated: {
-    _id: ObjectId("5d7a1f9242026edfc3e8a91e"),
+    _id: new ObjectId("5d7a1f9242026edfc3e8a91e"),
     sub: "2c98c3a8-5094-45e9-9c85-7e453323c328",
     createdAt: new Date("2024-05-11T11:16:23.540Z"),
     idpIdentityKeys: [
@@ -17,7 +21,7 @@ const accountsFca = {
   },
   // -- User 12355 with multiple idp sub
   multipleIdpSub: {
-    _id: ObjectId("5eedbcb60c59aa5a1f1a56e3"),
+    _id: new ObjectId("5eedbcb60c59aa5a1f1a56e3"),
     sub: "d68cec59-ed65-48ab-bfbf-1ca65dd807f8",
     createdAt: new Date("2024-05-11T11:16:23.540Z"),
     lastConnection: new Date("2024-05-11T11:16:23.540Z"),
@@ -38,8 +42,3 @@ const accountsFca = {
     __v: 1,
   },
 };
-
-Object.entries(accountsFca).forEach(([key, account]) => {
-  print(`${key} > Initializing user account: ${key}...`);
-  db.accountFca.replaceOne({ _id: account._id }, account, { upsert: true });
-});

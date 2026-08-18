@@ -1,4 +1,6 @@
-const resourceServers = {
+//
+
+export const resourceServers = {
   "DPA1-LOW": {
     name: "Serveur de ressources Mock - 1",
     title: "Serveur de ressources Mock - 1",
@@ -36,8 +38,3 @@ const resourceServers = {
     type: "private",
   },
 };
-/* ------------------------------------------------------------------------------- */
-Object.values(resourceServers).forEach((resourceServer) => {
-  print(`${resourceServer.name} > Initializing data provider: ${resourceServer.name}`);
-  db.client.replaceOne({ name: resourceServer.name }, resourceServer, { upsert: true });
-});
