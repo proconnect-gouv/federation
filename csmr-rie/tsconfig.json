@@ -15,7 +15,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@fc/csmr-http-proxy": ["src"],
       "@fc/csmr-http-proxy/*": ["src/*"],
       "@fc/app": ["../back/libs/app/src"],
       "@fc/app/*": ["../back/libs/app/src/*"],

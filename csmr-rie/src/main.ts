@@ -1,5 +1,5 @@
 import { ConfigService } from "@fc/config";
-import { CsmrHttpProxyConfig } from "@fc/csmr-http-proxy";
+import { CsmrHttpProxyConfig } from "@fc/csmr-http-proxy/dto";
 import { NestLoggerService } from "@fc/logger";
 import { RabbitmqConfig } from "@fc/rabbitmq";
 import { NestFactory } from "@nestjs/core";
