@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: Connexion Usager - Email autorisé
   Scénario: Connexion à un FS qui limite les emails avec un email authorisé
     Etant donné que je navigue sur la page fournisseur de service "avec une restriction de domaine email attaché"

@@ -18,7 +18,6 @@ const [
 ] = process.argv;
 
 // Fetch Test Run Context
-const testEnv = process.env.CYPRESS_TEST_ENV || "docker";
 const gitBranch = process.env.CI_COMMIT_REF_NAME || "";
 const gitCommit = process.env.CI_COMMIT_SHORT_SHA || "";
 const gitMergeRequest = process.env.CI_OPEN_MERGE_REQUESTS || "N/A";
@@ -27,7 +26,7 @@ const device = gitBuild === "local" ? "Docker Local" : "Docker GitLab";
 
 // Add metadata
 
-const reportName = `fca-low ${gitBranch} (${testEnv})`;
+const reportName = `fca-low ${gitBranch} (docker)`;
 
 const gitMergeRequestId = gitMergeRequest.split("!").pop();
 const gitMergeRequestLink =
@@ -41,7 +40,7 @@ const gitBuildLink =
 const customData = {
   data: [
     { label: "Project", value: "fca-low" },
-    { label: "Environment", value: testEnv },
+    { label: "Environment", value: "docker" },
     { label: "Branch", value: gitBranch },
     { label: "Commit", value: gitCommit },
     { label: "Merge Request", value: gitMergeRequestLink },

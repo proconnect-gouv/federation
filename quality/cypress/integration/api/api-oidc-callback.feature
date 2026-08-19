@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: API - oidc-callback
 
   Scénario: API oidc-callback - state manquant
@@ -51,7 +50,7 @@ Fonctionnalité: API - oidc-callback
     Et que je clique sur le bouton de connexion
     Et que je prépare une requête "oidc-callback"
     Et que je mets le state fourni par AC dans le paramètre "state" de la requête
-    Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
+    Et que je mets "https://idp1-local.proconnect.127.0.0.1.nip.io" dans le paramètre "iss" de la requête
     Et que je retire le paramètre "code" de la requête
     Quand je lance la requête
     Alors le statut de la réponse est 400
@@ -69,7 +68,7 @@ Fonctionnalité: API - oidc-callback
     Et que je clique sur le bouton de connexion
     Et que je prépare une requête "oidc-callback"
     Et que je mets le state fourni par AC dans le paramètre "state" de la requête
-    Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
+    Et que je mets "https://idp1-local.proconnect.127.0.0.1.nip.io" dans le paramètre "iss" de la requête
     Et que je mets "" dans le paramètre "code" de la requête
     Quand je lance la requête
     Alors le statut de la réponse est 400
@@ -98,7 +97,7 @@ Fonctionnalité: API - oidc-callback
     Et que je clique sur le bouton de connexion
     Et que je prépare une requête "oidc-callback"
     Et que je mets le state fourni par AC dans le paramètre "state" de la requête
-    Et que je mets "https://fia1-low.docker.dev-franceconnect.fr" dans le paramètre "iss" de la requête
+    Et que je mets "https://idp1-local.proconnect.127.0.0.1.nip.io" dans le paramètre "iss" de la requête
     Quand je lance la requête
     Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "text/html"

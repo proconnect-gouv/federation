@@ -13,7 +13,6 @@ Fonctionnalité: Connexion Partenaires
     Et le message d'erreur est "The user's roles are: []; the user is linked to the non-public organization: Octo-technology (SIRET: 41816609600069)"
     Et le lien est celui par défaut avec le fs "<spName>", le fi "<idpName>" et l'erreur "Y500015"
 
-    @ignoreInteg01
     Exemples:
       | spName         | idpName      |
       | FSA - FSA1-LOW | moncomptepro |

@@ -71,7 +71,7 @@ git clone git@github.com:proconnect-gouv/federation.git
 dks switch small
 ```
 
-On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion with: `test@fia1.fr`
+On https://sp1-local.proconnect.127.0.0.1.nip.io/, you can test the connexion with: `test@fia1.fr`
 
 You are now connected to fsa1!
 
@@ -85,7 +85,7 @@ Start it with:
 dks switch medium
 ```
 
-Then go to https://exploitation-fca-low.docker.dev-franceconnect.fr/login.
+Then go to https://admin-local.proconnect.127.0.0.1.nip.io/login.
 
 Login with:
 
@@ -97,9 +97,9 @@ More credentials can be found here : `federation-admin/shared/fixtures/User.yml`
 
 ### Testing the installation
 
-You will then find a list of accessible URLs here: https://hello.docker.dev-franceconnect.fr.
+You will then find a list of accessible URLs here: https://proconnect.127.0.0.1.nip.io.
 
-Most URLs follow the same pattern <app-name>.docker.dev-franceconnect.fr
+Most URLs follow the pattern <role>-local.proconnect.127.0.0.1.nip.io
 
 On any URL, if you got a 502, it might still be booting, wait one minute, then reload.
 
@@ -244,14 +244,6 @@ cd $PC_ROOT/federation/back
 yarn static
 cd $PC_ROOT/federation/admin
 yarn lint --fix
-```
-
-## Run test against integ01 env
-
-```bash
-cd $PC_ROOT/federation/quality
-# Get the credentials from a team member
-CYPRESS_TEST_ENV=integ01 CYPRESS_EXPLOIT_USER_NAME=proconnect-test-local CYPRESS_EXPLOIT_USER_PASS='xxx' CYPRESS_EXPLOIT_USER_TOTP='xxx' yarn test:e2e:studio
 ```
 
 ## Add a migration script

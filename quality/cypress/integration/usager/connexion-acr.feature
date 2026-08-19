@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: Connexion Usager - ACR
 
   Plan du Scénario: Authentification avec acr "<acr>" exigé

@@ -23,7 +23,6 @@ Fonctionnalité: Connexion Usager - SSO
       | login consent     | login              |
       | disabled          | login consent      |
 
-  @ignoreInteg01
   Scénario: Déconnexion d'un FS seulement et SSO terminé
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -47,7 +46,6 @@ Fonctionnalité: Connexion Usager - SSO
 
   # Il faut modifier le FS mock pour pouvoir avoir un état connecté/déconnecté
   # bloqué par https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1213
-  @ignoreInteg01
   Scénario: Déconnexion de plusieurs FS
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -74,7 +72,6 @@ Fonctionnalité: Connexion Usager - SSO
     Et je clique sur le bouton ProConnect
     Et je suis redirigé vers la page interaction
 
-  @ignoreInteg01
   Scénario: La session n'est pas ré-utilisée lorsque le niveau ACR n'est pas satisfait
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que le fournisseur de service demande le claim "acr"

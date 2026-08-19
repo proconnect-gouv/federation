@@ -1,6 +1,5 @@
 #language: fr
 Fonctionnalité: Connexion Usager personnalisé
-  @ignoreInteg01
   Scénario: Connexion d'un usager - claim phone_number non renvoyé si mauvais format
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "tous les scopes"
@@ -33,7 +32,6 @@ Fonctionnalité: Connexion Usager personnalisé
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500006"
 
-  @ignoreInteg01
   Scénario: Connexion d'un usager avec un FI sans supportEmail - mauvais format d'email et vérification de l'erreur
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -46,7 +44,6 @@ Fonctionnalité: Connexion Usager personnalisé
     Et le lien vers le support est affiché
     Et le lien correspond à l'erreur Y500006 avec l'email "incorrect"
 
-  @ignoreInteg01
   Scénario: Connexion d'un usager - mauvais format de siret avec siret par défaut
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -56,7 +53,6 @@ Fonctionnalité: Connexion Usager personnalisé
     Et que je m'authentifie
     Alors le siret transmis au fournisseur de service est le suivant "81801912700021"
 
-  @ignoreInteg01
   Scénario: Connexion d'un usager - mauvais format de siret sans siret par défaut
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -67,7 +63,6 @@ Fonctionnalité: Connexion Usager personnalisé
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500006"
 
-  @ignoreInteg01
   Scénario: Connexion d'un usager - siret non fourni sans siret par défaut
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect

@@ -1,7 +1,6 @@
 #language: fr
 Fonctionnalité: Connexion avec LocalStorage
 
-  @ignoreInteg01
   Plan du Scénario: Case "Mémoriser mon adresse sur cet appareil" cochée puis décochée
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -27,28 +26,6 @@ Fonctionnalité: Connexion avec LocalStorage
       | email                        | idpDescription |
       | albus.dumbledore@example.com | moncomptepro   |
       | albus.dumbledore@fia1.fr     | par défaut     |
-
-  @ignoreDocker
-  Scénario: Case "Mémoriser mon adresse sur cet appareil" cochée puis décochée
-    Etant donné que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "albus.dumbledore@fia1.fr"
-    Et que je clique sur la checkbox "Mémoriser mon adresse sur cet appareil"
-    Quand je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité "par défaut"
-    Alors la page du FI affiche remember_me "true"
-    Quand je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton ProConnect
-    Et que je suis redirigé vers la page interaction
-    Alors le champ email correspond à "albus.dumbledore@fia1.fr"
-    Quand je clique sur la checkbox "Mémoriser mon adresse sur cet appareil"
-    Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité "par défaut"
-    Alors la page du FI affiche remember_me "false"
-    Quand je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton ProConnect
-    Et que je suis redirigé vers la page interaction
-    Alors le champ email correspond à ""
 
   Scénario: Case "Mémoriser mon adresse sur cet appareil" décochée
     Etant donné que je navigue sur la page fournisseur de service

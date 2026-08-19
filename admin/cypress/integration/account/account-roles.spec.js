@@ -8,7 +8,7 @@ import {
 
 describe("Account", () => {
   before(() => cy.resetEnv("postgres"));
-  it("should redirect the not connected user to https://fc-exploitation.docker.dev-franceconnect.fr/login", () => {
+  it("should redirect the not connected user to https://admin-local.proconnect.127.0.0.1.nip.io/login", () => {
     cy.visit(`/account`);
     cy.url().should("contain", `/login`);
   });
