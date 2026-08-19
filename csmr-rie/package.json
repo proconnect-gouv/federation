@@ -15,7 +15,7 @@
     "type:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.28",
+    "@nestjs/common": "^11.1.29",
     "@nestjs/core": "^11.1.28",
     "@nestjs/microservices": "^11.1.29",
     "@nestjs/platform-express": "^11.1.28",
