@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: Connexion Usager - Email verification
   Scénario: le FI n'est pas MFA-compliant mais j'utilise un e-mail passe-droit
     Etant donné que je navigue sur la page fournisseur de service

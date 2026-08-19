@@ -5,6 +5,8 @@ export  NODE_VERSION
 DOCKER_COMPOSE="docker compose"
 
 _up() {
+  _ssl_generate
+
   # get asked services
   local services=${@}
 

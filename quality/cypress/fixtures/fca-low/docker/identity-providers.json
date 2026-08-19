@@ -6,7 +6,7 @@
       "FI bdd basé sur les URLs de moncomptepro"
     ],
     "title": "MonComptePro - eIDAS faible - ES256",
-    "url": "https://moncomptepro.docker.dev-franceconnect.fr",
+    "url": "https://moncomptepro-local.proconnect.127.0.0.1.nip.io",
     "signature": "ES256",
     "attachedEmailDomain": "moncomptepro.fr"
   },
@@ -18,7 +18,7 @@
       "FI bdd basé sur les URLs de fia1"
     ],
     "title": "Identity Provider 1 - eIDAS faible - ES256",
-    "url": "https://fia1-low.docker.dev-franceconnect.fr",
+    "url": "https://idp1-local.proconnect.127.0.0.1.nip.io",
     "signature": "ES256",
     "attachedEmailDomain": "fia1.fr"
   },
@@ -26,7 +26,7 @@
     "id": "0e7c099f-fe86-49a0-b7d1-19df45397212",
     "descriptions": ["second FI"],
     "title": "Identity Provider 2 - eIDAS faible - RS256",
-    "url": "https://fia2-low.docker.dev-franceconnect.fr",
+    "url": "https://idp2-local.proconnect.127.0.0.1.nip.io",
     "signature": "RS256",
     "attachedEmailDomain": "fia2.fr",
     "siret": ""
@@ -35,7 +35,7 @@
     "id": "c6ecab5e-dc67-4390-af57-fe208e97b649",
     "descriptions": ["Identity Provider RIE - eIDAS faible - ES256"],
     "title": "Identity Provider RIE - eIDAS faible - ES256",
-    "url": "https://fia-rie-low.docker.dev-franceconnect.fr",
+    "url": "https://idp-rie-local.proconnect.127.0.0.1.nip.io",
     "signature": "ES256",
     "attachedEmailDomain": "fi-rie.fr"
   }

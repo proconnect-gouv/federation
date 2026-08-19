@@ -1,5 +1,5 @@
 #language: fr
-@ignoreDocker
+@ignore
 Fonctionnalité: Connexion Usager - ACR with PCI
   Scénario: Ne déclenche pas de mfa dans ProConnect Identité si pas demandé par le FS
     Etant donné que je navigue sur la page fournisseur de service

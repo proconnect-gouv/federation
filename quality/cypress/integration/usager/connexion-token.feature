@@ -1,7 +1,6 @@
 #language: fr
 Fonctionnalité: Connexion Usager - Token
 
-  @ignoreInteg01
   Scénario: Token non valide après révocation
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect

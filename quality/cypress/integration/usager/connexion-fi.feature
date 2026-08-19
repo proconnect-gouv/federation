@@ -1,7 +1,6 @@
 #language: fr
 Fonctionnalité: Connexion à un FI
 
-  @ignoreInteg01 @k8s
   Scénario: Je me rends sur la page du FI et je récupère correctement le sp_id
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -10,7 +9,6 @@ Fonctionnalité: Connexion à un FI
     Et je suis redirigé vers la page login du fournisseur d'identité "par défaut"
     Alors la page du FI affiche l'id du FS "premier FS"
 
-  @ignoreInteg01 @k8s
   Scénario: Je me rends sur la page du FI et je récupère correctement le sp_name
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -19,7 +17,6 @@ Fonctionnalité: Connexion à un FI
     Et je suis redirigé vers la page login du fournisseur d'identité "par défaut"
     Alors la page du FI affiche le nom du FS "premier FS"
 
-  @ignoreInteg01 @k8s
   Scénario: J'utilise un fournisseur d'identité désactivé
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -42,7 +39,6 @@ Fonctionnalité: Connexion à un FI
     Et le titre de la page d'erreur est "Accès impossible"
     Et le code d'erreur est "Y500001"
 
-  @ignoreInteg01
   Scénario: Affichage d'une erreur technique lorsque le FI n'est pas joignable
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
@@ -53,7 +49,6 @@ Fonctionnalité: Connexion à un FI
     Et le message d'erreur est "something went wrong"
     Et le code d'erreur est "Y020031"
 
-  @ignoreInteg01 @k8s
   Scénario: Retour en arrière après une connexion réussie
     Étant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect

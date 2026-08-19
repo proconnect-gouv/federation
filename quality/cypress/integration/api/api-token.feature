@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: API - token
 
 Scénario: API token - cas nominal
@@ -30,7 +29,7 @@ Scénario: API token - cas nominal
   Et le payload du JWT a une propriété "acr" égale à "eidas1"
   Et le payload du JWT a une propriété "amr"
   Et le payload du JWT a une propriété "nonce"
-  Et le payload du JWT a une propriété "iss" égale à "https://core-fca-low.docker.dev-franceconnect.fr/api/v2"
+  Et le payload du JWT a une propriété "iss" égale à "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2"
 
 Scénario: API token - code invalide
   Etant donné que je prépare une requête "token"
@@ -71,7 +70,7 @@ Scénario: API token - id_token
   Et le payload du JWT a une propriété "sub"
   Et le payload du JWT a une propriété "acr" égale à "eidas1"
   Et le payload du JWT a une propriété "amr"
-  Et le payload du JWT a une propriété "iss" égale à "https://core-fca-low.docker.dev-franceconnect.fr/api/v2"
+  Et le payload du JWT a une propriété "iss" égale à "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2"
 
 Scénario: API token - PKCE sans client_secret
   Etant donné que je navigue sur la page fournisseur de service
@@ -141,7 +140,7 @@ Scénario: API token - refresh token
   Et le payload du JWT a une propriété "acr" égale à "eidas1"
   Et le payload du JWT a une propriété "amr"
   Et le payload du JWT a une propriété "nonce"
-  Et le payload du JWT a une propriété "iss" égale à "https://core-fca-low.docker.dev-franceconnect.fr/api/v2"
+  Et le payload du JWT a une propriété "iss" égale à "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2"
 
 Scénario: API token - refresh token invalide
   Etant donné que je navigue sur la page fournisseur de service

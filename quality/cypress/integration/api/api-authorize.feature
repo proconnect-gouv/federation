@@ -17,17 +17,6 @@ Fonctionnalité: API - authorize
       | inconnu                         |
       | my-service-provider-deactivated |
 
-  @ignoreDocker
-  Scénario: API authorize - localhost autorisé en integ
-    Etant donné que je prépare une requête "authorize"
-    Et que je mets "214f336f-fa6d-463a-818b-c80a3e74cd1c" dans le paramètre "client_id" de la requête
-    Et que je mets "http://localhost:3000/login-callback" dans le paramètre "redirect_uri" de la requête
-    Quand je lance la requête
-    Alors le statut de la réponse est 200
-    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
-    Et le corps de la réponse contient une page web
-    Et je suis redirigé vers la page interaction
-
   Plan du Scénario: API authorize - Cas nominal prompt=<prompt>
     Etant donné que je prépare une requête "authorize"
     Et que je mets "<prompt>" dans le paramètre "prompt" de la requête

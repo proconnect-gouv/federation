@@ -19,7 +19,7 @@
           "display": "auto",
           "logo": "configure.png",
           "name": "WebSSO Manager",
-          "uri": "https://manager.llng.docker.dev-franceconnect.fr/manager.html"
+          "uri": "https://manager.llng-local.proconnect.127.0.0.1.nip.io/manager.html"
         },
         "type": "application"
       },
@@ -29,7 +29,7 @@
           "display": "auto",
           "logo": "database.png",
           "name": "Notifications explorer",
-          "uri": "https://manager.llng.docker.dev-franceconnect.fr/notifications.html"
+          "uri": "https://manager.llng-local.proconnect.127.0.0.1.nip.io/notifications.html"
         },
         "type": "application"
       },
@@ -39,7 +39,7 @@
           "display": "auto",
           "logo": "database.png",
           "name": "Sessions explorer",
-          "uri": "https://manager.llng.docker.dev-franceconnect.fr/sessions.html"
+          "uri": "https://manager.llng-local.proconnect.127.0.0.1.nip.io/sessions.html"
         },
         "type": "application"
       },
@@ -53,7 +53,7 @@
           "display": "on",
           "logo": "help.png",
           "name": "Local documentation",
-          "uri": "https://manager.llng.docker.dev-franceconnect.fr/doc/"
+          "uri": "https://manager.llng-local.proconnect.127.0.0.1.nip.io/doc/"
         },
         "type": "application"
       },
@@ -144,10 +144,10 @@
   "decryptValueRule": 0,
   "demoExportedVars": {},
   "displaySessionId": 1,
-  "domain": "llng.docker.dev-franceconnect.fr",
+  "domain": "llng-local.proconnect.127.0.0.1.nip.io",
   "exportedHeaders": {
-    "auth.llng.docker.dev-franceconnect.fr": {},
-    "manager.llng.docker.dev-franceconnect.fr": {}
+    "auth.llng-local.proconnect.127.0.0.1.nip.io": {},
+    "manager.llng-local.proconnect.127.0.0.1.nip.io": {}
   },
   "exportedVars": {},
   "ext2fActivation": 0,
@@ -249,10 +249,10 @@
     "namespace": "lemonldap-ng-sessions"
   },
   "locationRules": {
-    "auth.llng.docker.dev-franceconnect.fr": {
+    "auth.llng-local.proconnect.127.0.0.1.nip.io": {
       "default": "accept"
     },
-    "manager.llng.docker.dev-franceconnect.fr": {
+    "manager.llng-local.proconnect.127.0.0.1.nip.io": {
       "default": "accept"
     }
   },
@@ -270,7 +270,7 @@
   "mailFrom": "noreply@example.com",
   "mailSessionKey": "mail",
   "mailTimeout": 0,
-  "mailUrl": "https://auth.llng.docker.dev-franceconnect.fr/resetpwd",
+  "mailUrl": "https://auth.llng-local.proconnect.127.0.0.1.nip.io/resetpwd",
   "managerDn": "cn=admin,dc=docker,dc=dev-franceconnect,dc=fr",
   "managerPassword": "password",
   "max2FDevices": 10,
@@ -341,7 +341,7 @@
       "oidcRPMetaDataOptionsLogoutSessionRequired": 0,
       "oidcRPMetaDataOptionsLogoutType": "front",
       "oidcRPMetaDataOptionsPublic": 1,
-      "oidcRPMetaDataOptionsRedirectUris": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia-llng-low",
+      "oidcRPMetaDataOptionsRedirectUris": "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/oidc-callback/fia-llng-low",
       "oidcRPMetaDataOptionsRefreshToken": 0,
       "oidcRPMetaDataOptionsRequirePKCE": 0,
       "oidcRPMetaDataOptionsRule": "1",
@@ -422,7 +422,7 @@
     "LockDirectory": "/var/lib/lemonldap-ng/psessions/lock"
   },
   "port": 443,
-  "portal": "https://auth.llng.docker.dev-franceconnect.fr/",
+  "portal": "https://auth.llng-local.proconnect.127.0.0.1.nip.io/",
   "portalAntiFrame": 1,
   "portalCheckLogins": 1,
   "portalDisplayAppslist": 1,
@@ -443,8 +443,8 @@
   "portalSkinRules": {},
   "portalUserAttr": "_user",
   "post": {
-    "auth.llng.docker.dev-franceconnect.fr": {},
-    "manager.llng.docker.dev-franceconnect.fr": {}
+    "auth.llng-local.proconnect.127.0.0.1.nip.io": {},
+    "manager.llng-local.proconnect.127.0.0.1.nip.io": {}
   },
   "proxyAuthnLevel": 2,
   "radius2fActivation": 0,
@@ -454,10 +454,10 @@
   "redirectFormMethod": "get",
   "registerDB": "LDAP",
   "registerTimeout": 0,
-  "registerUrl": "https://auth.llng.docker.dev-franceconnect.fr/register",
+  "registerUrl": "https://auth.llng-local.proconnect.127.0.0.1.nip.io/register",
   "reloadTimeout": 5,
   "reloadUrls": {
-    "localhost": "https://reload.llng.docker.dev-franceconnect.fr/reload"
+    "localhost": "https://reload.llng-local.proconnect.127.0.0.1.nip.io/reload"
   },
   "remoteGlobalStorage": "Lemonldap::NG::Common::Apache::Session::SOAP",
   "remoteGlobalStorageOptions": {
@@ -553,8 +553,8 @@
   "userDB": "LDAP",
   "utotp2fActivation": 0,
   "vhostOptions": {
-    "auth.llng.docker.dev-franceconnect.fr": {},
-    "manager.llng.docker.dev-franceconnect.fr": {}
+    "auth.llng-local.proconnect.127.0.0.1.nip.io": {},
+    "manager.llng-local.proconnect.127.0.0.1.nip.io": {}
   },
   "viewerHiddenKeys": "samlIDPMetaDataNodes samlSPMetaDataNodes",
   "webIDAuthnLevel": 1,

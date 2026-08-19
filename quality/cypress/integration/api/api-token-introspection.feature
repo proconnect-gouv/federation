@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: API - token-introspection
   Scénario: Cas nominal
     Etant donné que je prépare une requête "token-introspection"

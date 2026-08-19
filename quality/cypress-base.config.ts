@@ -12,13 +12,12 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
   },
   expose: {
     MAILDEV_PROTOCOL: "https",
-    MAILDEV_HOST: "maildev.docker.dev-franceconnect.fr",
+    MAILDEV_HOST: "maildev-local.proconnect.127.0.0.1.nip.io",
     MAILDEV_SMTP_PORT: "1025",
     MAILDEV_API_PORT: "443",
   },
   env: {
     // Base Configuration
-    TEST_ENV: "docker",
     TAGS: "not @ignore",
     // Test environment access
     EXPLOIT_ADMIN_NAME: "jean_moust",

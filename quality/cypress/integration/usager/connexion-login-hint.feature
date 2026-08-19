@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: Connexion Usager - login_hint
 
   Scénario: ProConnect fournit le login_hint au FI

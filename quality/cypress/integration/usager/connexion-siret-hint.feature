@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: Connexion Usager - siret_hint
   Scénario: Le FS fournit le siret_hint à ProConnect
     Etant donné que je navigue sur la page fournisseur de service

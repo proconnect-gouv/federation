@@ -1,7 +1,6 @@
 #language: fr
 Fonctionnalité: Connexion Usager - idp_hint
 
-  @ignoreInteg01
   Scénario: Connexion avec idp_hint valide
     Etant donné que je navigue sur la page fournisseur de service
     Quand je rentre l'id du fournisseur d'identité "par défaut" dans le champ idp_hint
@@ -10,7 +9,6 @@ Fonctionnalité: Connexion Usager - idp_hint
     Et je m'authentifie
     Et je suis connecté au fournisseur de service
 
-  @ignoreInteg01
   Scénario: Connexion avec idp_hint valide et session ouverte avec le même FI
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -25,7 +23,6 @@ Fonctionnalité: Connexion Usager - idp_hint
     Et que je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page fournisseur de service "second FS"
 
-  @ignoreInteg01
   Scénario: Connexion avec idp_hint valide et session ouverte avec un FI différent
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect
@@ -48,7 +45,6 @@ Fonctionnalité: Connexion Usager - idp_hint
     Et le titre de l'erreur fournisseur de service est "idp_hint_not_found"
     Et la description de l'erreur fournisseur de service est "provided%20idp_hint%20could%20not%20be%20found"
 
-  @ignoreInteg01
   Scénario: SSO après une cinématique idp_hint non terminée
     Etant donné que je navigue sur la page fournisseur de service "premier FS"
     Et que je clique sur le bouton ProConnect

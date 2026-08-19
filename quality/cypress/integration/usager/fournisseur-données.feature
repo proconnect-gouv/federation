@@ -1,5 +1,4 @@
 #language: fr
-@ignoreInteg01
 Fonctionnalité: Fournisseur Données
   Scénario: Access token valide avec un scope groups
     Etant donné que je navigue sur la page fournisseur de service "éligible au scope groups"

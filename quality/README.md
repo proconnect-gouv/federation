@@ -16,31 +16,17 @@ FCA end-to-end tests are implemented using a testing framework based on Cypress 
 
 ## Environment Variables
 
-| Environment Variable | Description                       | Comment                                      |
-| -------------------- | --------------------------------- | -------------------------------------------- |
-| TEST_ENV             | Test environment                  | `docker`, `k8s` or `integ01`, etc.           |
-| TAGS                 | Tags expression                   | `not @ignore`                                |
-| EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/k8s                  |
-| EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/k8s                  |
-| EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/k8s                  |
-| EXPLOIT_USER_NAME    | Exploitation operator username    | needed only for integ01/k8s                  |
-| EXPLOIT_USER_PASS    | Exploitation operator password    | needed only for integ01/k8s                  |
-| EXPLOIT_USER_TOTP    | Exploitation operator totp secret | needed only for integ01/k8s                  |
-| FC_ACCESS_USER       | FranceConnect network username    | needed on recette/integ01 outside FC network |
-| FC_ACCESS_PASS       | FranceConnect network password    | needed on recette/integ01 outside FC network |
-
-## Cross Domain Testing
-
-On integ01 environment, the AgentConnect, FS and FI websites are using different domains.
-In order to run tests with Cypress,
-
-- we need to navigate to the different URLs via a unique page listing all the websites URLs
-  - [Read more about Same superdomain per test](https://docs.cypress.io/guides/guides/web-security#Same-superdomain-per-test)
-- we need to disable the chrome web security to allow redirections to different domains
-  - [Read more about Disabling Web Security](https://docs.cypress.io/guides/guides/web-security#Set-chromeWebSecurity-to-false)
-- we need to use Cookies with samesite=none (intercept in beforeEach hook)
-  - [beforeEach hook](fca/cypress/support/common/steps/hooks.ts)
-  - [Read more about SameSite cookie attribute](https://developer.mozilla.org/fr/docs/Web/HTTP/Headers/Set-Cookie/SameSite)
+| Environment Variable | Description                       | Comment                              |
+| -------------------- | --------------------------------- | ------------------------------------ |
+| TAGS                 | Tags expression                   | `not @ignore`                        |
+| EXPLOIT_ADMIN_NAME   | Exploitation admin username       |                                      |
+| EXPLOIT_ADMIN_PASS   | Exploitation admin password       |                                      |
+| EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    |                                      |
+| EXPLOIT_USER_NAME    | Exploitation operator username    |                                      |
+| EXPLOIT_USER_PASS    | Exploitation operator password    |                                      |
+| EXPLOIT_USER_TOTP    | Exploitation operator totp secret |                                      |
+| FC_ACCESS_USER       | FranceConnect network username    | needed on recette outside FC network |
+| FC_ACCESS_PASS       | FranceConnect network password    | needed on recette outside FC network |
 
 ## Create a test pipeline
 
@@ -88,31 +74,10 @@ yarn test:e2e
 yarn test:e2e:studio
 ```
 
-#### Run the tests from Cypress UI for integ01 environment
-
-1. Update `cypress-fca-low-base.config.ts` by changing the following env attributes
-
-```json
-"TEST_ENV": "integ01",
-"EXPLOIT_USER_NAME": "<your integ01 operator user>",
-"EXPLOIT_USER_PASS": "<your integ01 operator password>",
-"EXPLOIT_USER_TOTP": "<your integ01 operator totp secret",
-"FC_ACCESS_USER": "<ProConnect access user for HTTP Basic Authentication>",
-"FC_ACCESS_PASS": "<ProConnect access password for HTTP Basic Authentication>",
-```
-
-4. Open Cypress UI to run tests on FCA-LOW against integ01 environment
-
-```shell
-yarn test:e2e:studio
-```
-
-5. Run the `usager` tests (user connection) or `exploitation` tests (if you have an operator user)
-
 ### Generate the Cucumber HTML report
 
 ```shell
-CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=integ01 yarn report
+CYPRESS_PLATFORM=fca-low yarn report
 ```
 
 ### Filter tests
