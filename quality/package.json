@@ -43,7 +43,7 @@
     "globals": "^17.8.0",
     "jose": "^6.2.4",
     "lodash": "^4.18.1",
-    "multiple-cucumber-html-reporter": "^3.10.0",
+    "multiple-cucumber-html-reporter": "^4.2.0",
     "otpauth": "^9.5.1",
     "otplib": "^13.4.1",
     "prettier": "^3.9.6",
