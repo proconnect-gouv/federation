@@ -10,8 +10,13 @@ document.addEventListener(
 
       try {
         const endDateInSeconds = new Date(rawEndDate).getTime() / 1000;
-        const nowInSeconds = new Date().getTime() / 1000;
-        let secondsToEndDate = Math.round(endDateInSeconds - nowInSeconds);
+
+        const getSecondsToEndDate = () => {
+          const nowInSeconds = new Date().getTime() / 1000;
+          return Math.round(endDateInSeconds - nowInSeconds);
+        };
+
+        let secondsToEndDate = getSecondsToEndDate();
 
         if (secondsToEndDate <= 0) {
           element.disabled = false;
@@ -21,6 +26,7 @@ document.addEventListener(
         countdownContainer.classList.remove("fr-hidden");
         element.disabled = true;
         const updateCountdown = () => {
+          secondsToEndDate = getSecondsToEndDate();
           if (secondsToEndDate > 0) {
             const minutes = Math.floor(secondsToEndDate / 60);
             const seconds = String(secondsToEndDate % 60).padStart(2, "0");
@@ -34,10 +40,7 @@ document.addEventListener(
 
         updateCountdown();
 
-        let intervalId = setInterval(function () {
-          secondsToEndDate--;
-          updateCountdown();
-        }, 1000);
+        let intervalId = setInterval(updateCountdown, 1000);
       } catch (error) {
         console.error(error);
         // silently fails
