@@ -1,5 +1,5 @@
 {
   "name": "docker",
-  "adminRootUrl": "https://exploitation-fca-low.docker.dev-franceconnect.fr",
-  "federationRootUrl": "https://core-fca-low.docker.dev-franceconnect.fr"
+  "adminRootUrl": "https://admin-local.proconnect.127.0.0.1.nip.io",
+  "federationRootUrl": "https://federation-local.proconnect.127.0.0.1.nip.io"
 }

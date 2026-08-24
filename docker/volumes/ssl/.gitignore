@@ -1,0 +1,5 @@
+app.crt
+app.key
+docker-stack-ca.crt
+docker-stack-ca.key
+docker-stack-ca.srl

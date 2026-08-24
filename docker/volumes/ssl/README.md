@@ -1,5 +1,22 @@
 # Docker Stack PKI
 
+## Certificat de développement local (`app.crt`)
+
+Le certificat wildcard `*.proconnect.127.0.0.1.nip.io` est généré via `mkcert`.
+
+```shell
+dks ssl
+```
+
+Cette commande :
+1. installe la CA locale mkcert dans le store système (`mkcert -install`)
+2. génère `app.crt` / `app.key` dans ce dossier
+3. copie la CA racine mkcert dans `docker-stack-ca.crt`
+
+Ces fichiers sont ignorés par git (voir `.gitignore`). Ils sont régénérés localement et en CI à chaque `dks up`.
+
+---
+
 Procédure pour générer un certificat signé avec l'autorité de certification local de développement (Docker Stack CA).
 
 > L'exemple ci-dessous a été utilisé pour générer le certificat `mongo.pem`
@@ -51,11 +68,13 @@ IP.1  = 127.0.0.1
 
 ## Signer la CSR
 
+`docker-stack-ca.key` n'existe plus dans ce dossier (`dks ssl` ne copie que `rootCA.pem`, jamais la clé). Utilisez la clé de la CA mkcert (`$(mkcert -CAROOT)/rootCA-key.pem`) :
+
 ```shell
 > openssl x509 -req \
     -in requests/mongo.csr \
     -CA docker-stack-ca.crt \
-    -CAkey docker-stack-ca.key \
+    -CAkey "$(mkcert -CAROOT)/rootCA-key.pem" \
     -CAcreateserial \
     -out mongo.crt \
     -days 3650 \
@@ -100,11 +119,3 @@ Vous pouvez ajouter le certificat CA `docker-stack-ca.crt` dans votre navigateur
 ```shell
 > sudo trust anchor --store docker-stack-ca.crt
 ```
-
-## Le cas de `app.crt`
-
-Le certificat `app.crt` est un certificat "générique" utilisé abusivement afin de simplifier la configuration de la docker stack.
-
-Ce certificat est à la fois `client` et `serveur` avec un wildcard `*.docker.dev-franceconnect.fr`
-
-> voir la conf `./requests/app.req.conf`

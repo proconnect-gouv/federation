@@ -10,10 +10,10 @@ export const identityProviders = {
     title: "Identity Provider 1 - eIDAS faible - ES256",
     trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
-    url: "https://fia1-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia1-low.docker.dev-franceconnect.fr/",
+    url: "https://idp1-local.proconnect.127.0.0.1.nip.io/",
+    statusURL: "https://idp1-local.proconnect.127.0.0.1.nip.io/",
     discoveryUrl:
-      "https://fia1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://idp1-local.proconnect.127.0.0.1.nip.io/.well-known/openid-configuration",
     discovery: true,
     clientID: "myclientidforfia1-low",
     client_secret:
@@ -21,7 +21,7 @@ export const identityProviders = {
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fia1-low.docker.dev-franceconnect.fr/user/session/end",
+      "https://idp1-local.proconnect.127.0.0.1.nip.io/user/session/end",
     id_token_signed_response_alg: "ES256",
     token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
@@ -30,10 +30,10 @@ export const identityProviders = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/client/logout-callback",
     ],
     attachedEmailDomains: ["fia1.fr", "polyfi.fr", "polyfi2.fr", "abcd.com"],
     isRoutingEnabled: true,
@@ -53,10 +53,10 @@ export const identityProviders = {
     title: "Identity Provider 2 - eIDAS faible - RS256",
     trustedIdentity: false,
     supportEmail: "",
-    url: "https://fia2-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia2-low.docker.dev-franceconnect.fr/",
+    url: "https://idp2-local.proconnect.127.0.0.1.nip.io/",
+    statusURL: "https://idp2-local.proconnect.127.0.0.1.nip.io/",
     discoveryUrl:
-      "https://fia2-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://idp2-local.proconnect.127.0.0.1.nip.io/.well-known/openid-configuration",
     discovery: true,
     clientID: "myclientidforfia2-low",
     client_secret:
@@ -64,7 +64,7 @@ export const identityProviders = {
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fia2-low.docker.dev-franceconnect.fr/user/session/end",
+      "https://idp2-local.proconnect.127.0.0.1.nip.io/user/session/end",
     id_token_signed_response_alg: "RS256",
     token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
@@ -73,10 +73,10 @@ export const identityProviders = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia2-low",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/oidc-callback/fia2-low",
     ],
     post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/client/logout-callback",
     ],
     attachedEmailDomains: ["fia2.fr", "polyfi.fr", "polyfi2.fr"],
     isRoutingEnabled: true,
@@ -117,10 +117,10 @@ export const identityProviders = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/client/logout-callback",
     ],
     attachedEmailDomains: ["fia3.fr"],
     isRoutingEnabled: true,
@@ -140,9 +140,9 @@ export const identityProviders = {
     title: "Identity Provider MonComptePro",
     trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
-    url: "https://moncomptepro.docker.dev-franceconnect.fr",
+    url: "https://moncomptepro-local.proconnect.127.0.0.1.nip.io",
     discoveryUrl:
-      "https://moncomptepro.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://moncomptepro-local.proconnect.127.0.0.1.nip.io/.well-known/openid-configuration",
     discovery: true,
     clientID: "myclientidformoncomptepro",
     client_secret:
@@ -150,7 +150,7 @@ export const identityProviders = {
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://moncomptepro.docker.dev-franceconnect.fr/user/session/end",
+      "https://moncomptepro-local.proconnect.127.0.0.1.nip.io/user/session/end",
     id_token_signed_response_alg: "ES256",
     token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
@@ -159,10 +159,10 @@ export const identityProviders = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/client/logout-callback",
     ],
     attachedEmailDomains: ["moncomptepro.fr", "polyfi.fr"],
     isRoutingEnabled: true,
@@ -183,10 +183,10 @@ export const identityProviders = {
     title: "Identity Provider RIE - eIDAS faible - ES256",
     trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
-    url: "https://fia-rie-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia-rie-low.docker.dev-franceconnect.fr/",
+    url: "https://idp-rie-local.proconnect.127.0.0.1.nip.io/",
+    statusURL: "https://idp-rie-local.proconnect.127.0.0.1.nip.io/",
     discoveryUrl:
-      "https://fia-rie-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://idp-rie-local.proconnect.127.0.0.1.nip.io/.well-known/openid-configuration",
     discovery: true,
     clientID: "myclientidforfia-rie-low",
     client_secret:
@@ -194,7 +194,7 @@ export const identityProviders = {
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fia-rie-low.docker.dev-franceconnect.fr/user/session/end",
+      "https://idp-rie-local.proconnect.127.0.0.1.nip.io/user/session/end",
     id_token_signed_response_alg: "ES256",
     token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
@@ -203,10 +203,10 @@ export const identityProviders = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/client/logout-callback",
     ],
     attachedEmailDomains: ["fi-rie.fr"],
     isRoutingEnabled: true,
@@ -226,9 +226,9 @@ export const identityProviders = {
     title: "Identity Provider LemonLDAP",
     trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
-    url: "https://auth.llng.docker.dev-franceconnect.fr",
+    url: "https://auth.llng-local.proconnect.127.0.0.1.nip.io",
     discoveryUrl:
-      "https://auth.llng.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://auth.llng-local.proconnect.127.0.0.1.nip.io/.well-known/openid-configuration",
     discovery: true,
     clientID: "myclientidforllng",
     client_secret:
@@ -236,7 +236,7 @@ export const identityProviders = {
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://auth.llng.docker.dev-franceconnect.fr/oauth2/logout",
+      "https://auth.llng-local.proconnect.127.0.0.1.nip.io/oauth2/logout",
     id_token_signed_response_alg: "RS256",
     token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
@@ -245,10 +245,10 @@ export const identityProviders = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "RS256",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia-llng-low",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/oidc-callback/fia-llng-low",
     ],
     post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
+      "https://federation-local.proconnect.127.0.0.1.nip.io/api/v2/client/logout-callback",
     ],
     attachedEmailDomains: [],
     isRoutingEnabled: true,
