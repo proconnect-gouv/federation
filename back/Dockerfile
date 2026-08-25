@@ -39,6 +39,7 @@ COPY libs ./libs
 
 RUN yarn run build
 COPY apps/core-fca-low/src/views dist/apps/core-fca-low/views
+COPY apps/core-fca-low/src/public dist/apps/core-fca-low/public
 
 FROM node:24.16.0-alpine AS production
 
