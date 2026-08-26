@@ -11,8 +11,12 @@ import { LoggerService } from "@fc/logger";
 import { ApiEntrepriseConfig } from "@fc/api-entreprise";
 import { CachedOrganizationService } from "@fc/cached-organization";
 import { IdentityProviderMetadata } from "@fc/oidc";
+import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from "../dto";
-import { CoreFcaInvalidIdentityException } from "../exceptions";
+import {
+  CoreFcaApiSireneDownException,
+  CoreFcaInvalidIdentityException,
+} from "../exceptions";
 
 @Injectable()
 export class IdentitySanitizer {
@@ -91,6 +95,11 @@ export class IdentitySanitizer {
           cachedOrganizationErrorCause: error?.cause,
           cachedOrganizationErrorType: error?.constructor?.name,
         });
+
+        if (error instanceof ApiEntrepriseConnectionError) {
+          throw new CoreFcaApiSireneDownException();
+        }
+
         identityForSp.roles = [];
       }
     } else {

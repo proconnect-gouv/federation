@@ -2,8 +2,12 @@ import { CachedOrganizationService } from "@fc/cached-organization";
 import { ConfigService } from "@fc/config";
 import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
 import { LoggerService } from "@fc/logger";
+import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { IdentityFromIdpDto } from "../dto/identity-from-idp.dto";
-import { CoreFcaInvalidIdentityException } from "../exceptions";
+import {
+  CoreFcaApiSireneDownException,
+  CoreFcaInvalidIdentityException,
+} from "../exceptions";
 import { IdentitySanitizer } from "./identity.sanitizer";
 
 jest.mock("@fc/logger");
@@ -249,6 +253,47 @@ describe("IdentitySanitizer", () => {
         }),
       );
       expect(result.roles).toEqual([]);
+    });
+
+    it("should throw CoreFcaApiSireneDownException when getCachedOrganizationBySiret throws an ApiEntrepriseConnectionError", async () => {
+      const idpId = "idp1";
+      const sub = "sub123";
+      const acr = "acr1";
+      const identityFromIdp = {
+        sub: "123",
+        email: "test@test.com",
+        given_name: "John",
+        usual_name: "Doe",
+        uid: "UID123",
+        siret: "12345678900007",
+      };
+
+      config.get = jest.fn().mockReturnValue({
+        featureFetchOrganizationData: true,
+      });
+
+      const connectionError = new ApiEntrepriseConnectionError(
+        "connection failed",
+      );
+      (
+        cachedOrganizationService.getCachedOrganizationBySiret as jest.Mock
+      ).mockRejectedValue(connectionError);
+
+      await expect(
+        identitySanitizer.transformIdentity(
+          identityFromIdp as IdentityFromIdpDto,
+          idpId,
+          sub,
+          acr,
+        ),
+      ).rejects.toThrow(CoreFcaApiSireneDownException);
+
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: "identity-sanitizer-cached-organization-error",
+          cachedOrganizationErrorType: "ApiEntrepriseConnectionError",
+        }),
+      );
     });
 
     it("should not throw CoreFcaInvalidIdentityException when phone number is invalid", async () => {
