@@ -50,19 +50,29 @@ export const getDefaultUser = () => {
 
 const userStorage = new QuickLRU({ maxSize: 1000 });
 
-export const userAttributesSchema = z.object({
-  email: z.string().optional().default(""),
-  given_name: z.string().optional().default(""),
-  usual_name: z.string().optional().default(""),
-  siret: z.string().optional().default(""),
-  sub: z.string().optional().default(""),
-  phone_number: z.string().optional().default(""),
-});
+export const userAttributesSchema = z
+  .object({
+    email: z.string().optional().default(""),
+    given_name: z.string().optional().default(""),
+    usual_name: z.string().optional().default(""),
+    siret: z.string().optional().default(""),
+    sub: z.string().optional().default(""),
+    phone_number: z.string().optional().default(""),
+  })
+  .passthrough();
 
 export type UserAttributes = z.infer<typeof userAttributesSchema>;
 
 export const createUser = (body: UserAttributes) => {
-  const { email, given_name, usual_name, siret, sub, phone_number } = body;
+  const {
+    email,
+    given_name,
+    usual_name,
+    siret,
+    sub,
+    phone_number,
+    ...customAttributes
+  } = body;
   const id = email + given_name + usual_name + siret + phone_number;
   // replace default property values, allowing substitution of a default value with an empty string
   const user = chain({
@@ -73,6 +83,9 @@ export const createUser = (body: UserAttributes) => {
     siret,
     sub,
     phone_number,
+    ...(Object.keys(customAttributes).length > 0
+      ? { idp_custom_attributes: customAttributes }
+      : {}),
   })
     // as per https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse
     // > If a Claim is not returned, that Claim Name SHOULD be omitted from the JSON object representing the Claims;
