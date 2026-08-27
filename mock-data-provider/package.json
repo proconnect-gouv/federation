@@ -14,7 +14,7 @@
   "dependencies": {
     "express": "^5.2.1",
     "jose": "^6.2.9",
-    "openid-client": "^6.8.5",
+    "openid-client": "^6.8.6",
     "zod": "^4.4.3"
   },
   "devDependencies": {
