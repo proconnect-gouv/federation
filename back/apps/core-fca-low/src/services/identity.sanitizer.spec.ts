@@ -5,7 +5,7 @@ import { LoggerService } from "@fc/logger";
 import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { IdentityFromIdpDto } from "../dto/identity-from-idp.dto";
 import {
-  CoreFcaApiSireneDownException,
+  CoreFcaApiEntrepriseConnectionException,
   CoreFcaInvalidIdentityException,
 } from "../exceptions";
 import { IdentitySanitizer } from "./identity.sanitizer";
@@ -255,7 +255,7 @@ describe("IdentitySanitizer", () => {
       expect(result.roles).toEqual([]);
     });
 
-    it("should throw CoreFcaApiSireneDownException when getCachedOrganizationBySiret throws an ApiEntrepriseConnectionError", async () => {
+    it("should throw CoreFcaApiEntrepriseConnectionException when getCachedOrganizationBySiret throws an ApiEntrepriseConnectionError", async () => {
       const idpId = "idp1";
       const sub = "sub123";
       const acr = "acr1";
@@ -286,7 +286,7 @@ describe("IdentitySanitizer", () => {
           sub,
           acr,
         ),
-      ).rejects.toThrow(CoreFcaApiSireneDownException);
+      ).rejects.toThrow(CoreFcaApiEntrepriseConnectionException);
 
       expect(logger.error).toHaveBeenCalledWith(
         expect.objectContaining({

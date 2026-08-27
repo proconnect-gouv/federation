@@ -14,7 +14,7 @@ import { IdentityProviderMetadata } from "@fc/oidc";
 import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from "../dto";
 import {
-  CoreFcaApiSireneDownException,
+  CoreFcaApiEntrepriseConnectionException,
   CoreFcaInvalidIdentityException,
 } from "../exceptions";
 
@@ -97,7 +97,7 @@ export class IdentitySanitizer {
         });
 
         if (error instanceof ApiEntrepriseConnectionError) {
-          throw new CoreFcaApiSireneDownException();
+          throw new CoreFcaApiEntrepriseConnectionException();
         }
 
         identityForSp.roles = [];

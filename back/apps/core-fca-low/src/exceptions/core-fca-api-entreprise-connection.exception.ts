@@ -2,13 +2,13 @@ import { HttpStatus } from "@nestjs/common";
 import { ErrorCode } from "../enums";
 import { CoreFcaBaseException } from "./core-fca-base.exception";
 
-export class CoreFcaApiSireneDownException extends CoreFcaBaseException {
-  public code = ErrorCode.API_SIRENE_DOWN;
+export class CoreFcaApiEntrepriseConnectionException extends CoreFcaBaseException {
+  public code = ErrorCode.API_ENTREPRISE_CONNECTION_ERROR;
   public http_status_code = HttpStatus.SERVICE_UNAVAILABLE;
 
   public error = "temporarily_unavailable";
   public error_description =
-    "authentication temporarily unavailable due to sirene api failure";
+    "authentication temporarily unavailable due to `API entreprise` failure";
 
   public illustration = "default-error";
   public title =
