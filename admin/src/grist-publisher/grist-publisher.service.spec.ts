@@ -52,6 +52,47 @@ describe("GristPublisherService", () => {
   });
 
   describe("publishIdentityProviders", () => {
+    it("should return false when Grist records response does not contain a records array", async () => {
+      const mockGristConfig = {
+        ...baseMockGristConfig,
+        gristIdentityProvidersTableId: "identity-providers-table",
+        gristNetworkName: "test-network",
+        gristEnvironmentName: "test-env",
+      };
+      (configService.get as jest.Mock).mockReturnValue(mockGristConfig);
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ message: "unexpected payload" }),
+      });
+
+      await expect(service.publishIdentityProviders([])).resolves.toBe(false);
+      expect(loggerService.error).toHaveBeenCalledWith(
+        "Unexpected Grist records response shape for table identity-providers-table",
+      );
+    });
+
+    it("should return false when Grist records fetch fails", async () => {
+      const mockGristConfig = {
+        ...baseMockGristConfig,
+        gristIdentityProvidersTableId: "identity-providers-table",
+        gristNetworkName: "test-network",
+        gristEnvironmentName: "test-env",
+      };
+      (configService.get as jest.Mock).mockReturnValue(mockGristConfig);
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        statusText: "Unauthorized",
+        text: jest.fn().mockResolvedValue("invalid api key"),
+      });
+
+      await expect(service.publishIdentityProviders([])).resolves.toBe(false);
+      expect(loggerService.error).toHaveBeenCalledWith(
+        "Could not fetch Grist records: Unauthorized (invalid api key)",
+      );
+    });
+
     it("should add a new identity provider when it does not exist in Grist", async () => {
       const mockGristConfig = {
         ...baseMockGristConfig,
