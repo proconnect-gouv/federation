@@ -727,10 +727,10 @@ once@^1.4.0:
   dependencies:
     wrappy "1"
 
-openid-client@^6.8.5:
-  version "6.8.5"
-  resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-6.8.5.tgz#99ba03960a618a8955dad7d2b60432bf328d95c4"
-  integrity sha512-jNGC/5wnTYwCcEUe2ss0IRUmVRQcgxM0A1nLb3eX/9llqNbMWOQd2xd+qDAgfVCpA5Qh96Y1cdnkfbva6+bSdA==
+openid-client@^6.8.6:
+  version "6.8.6"
+  resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-6.8.6.tgz#aa44a0ff8c2bb0dd9d969223d43bdd07a9e29476"
+  integrity sha512-lsfMRH/GCgMiGCRnBRY3e70uogkgOessPaTOhP3rw/dxqNOZHwOazWx+m6jt5EVk3ecRFULl0TwWpk9Qnw3RKQ==
   dependencies:
     jose "^6.2.8"
     oauth4webapi "^3.8.7"
