@@ -15,8 +15,8 @@
     "type:check": "tsc --noEmit"
   },
   "dependencies": {
+    "@nestjs/core": "^11.1.29",
     "@nestjs/common": "^11.1.29",
-    "@nestjs/core": "^11.1.28",
     "@nestjs/microservices": "^11.1.29",
     "@nestjs/platform-express": "^11.1.28",
     "amqp-connection-manager": "^5.0.0",
