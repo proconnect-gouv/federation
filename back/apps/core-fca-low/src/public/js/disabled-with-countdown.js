@@ -1,3 +1,27 @@
+const getSecondsUntil = (endDateInSeconds) =>
+  Math.round(endDateInSeconds - Date.now() / 1000);
+
+const updateCountdown = (
+  endDateInSeconds,
+  countdownContainer,
+  countdownText,
+  element,
+  intervalId,
+) => {
+  const secondsToEndDate = getSecondsUntil(endDateInSeconds);
+
+  if (secondsToEndDate > 0) {
+    const minutes = Math.floor(secondsToEndDate / 60);
+    const seconds = String(secondsToEndDate % 60).padStart(2, "0");
+    countdownText.textContent = `Disponible dans ${minutes}:${seconds}min`;
+    return;
+  }
+
+  countdownContainer.classList.add("fr-hidden");
+  element.disabled = false;
+  if (intervalId) clearInterval(intervalId);
+};
+
 document.addEventListener(
   "DOMContentLoaded",
   function () {
@@ -10,33 +34,33 @@ document.addEventListener(
 
       try {
         const endDateInSeconds = new Date(rawEndDate).getTime() / 1000;
-        const nowInSeconds = new Date().getTime() / 1000;
-        let secondsToEndDate = Math.round(endDateInSeconds - nowInSeconds);
 
-        if (secondsToEndDate <= 0) {
+        const secondsToEndDate = getSecondsUntil(endDateInSeconds);
+
+        if (secondsToEndDate < 1) {
           element.disabled = false;
           return;
         }
 
         countdownContainer.classList.remove("fr-hidden");
         element.disabled = true;
-        const updateCountdown = () => {
-          if (secondsToEndDate > 0) {
-            const minutes = Math.floor(secondsToEndDate / 60);
-            const seconds = String(secondsToEndDate % 60).padStart(2, "0");
-            countdownText.textContent = `Disponible dans ${minutes}:${seconds}min`;
-          } else {
-            countdownContainer.classList.add("fr-hidden");
-            element.disabled = false;
-            clearInterval(intervalId);
-          }
-        };
+        let intervalId;
+        updateCountdown(
+          endDateInSeconds,
+          countdownContainer,
+          countdownText,
+          element,
+          intervalId,
+        );
 
-        updateCountdown();
-
-        let intervalId = setInterval(function () {
-          secondsToEndDate--;
-          updateCountdown();
+        intervalId = setInterval(() => {
+          updateCountdown(
+            endDateInSeconds,
+            countdownContainer,
+            countdownText,
+            element,
+            intervalId,
+          );
         }, 1000);
       } catch (error) {
         console.error(error);
