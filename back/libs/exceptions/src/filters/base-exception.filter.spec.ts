@@ -1,8 +1,8 @@
 import { ConfigService } from "@fc/config";
 import {
-  CoreFcaAgentNotFromPublicServiceException,
-  CoreFcaBaseException,
-  CoreFcaInvalidIdentityException,
+  AgentNotFromPublicServiceException,
+  FederationBaseException,
+  InvalidIdentityException,
 } from "@fc/core";
 import { LoggerService } from "@fc/logger";
 import { OidcClientTokenValidationFailedException } from "@fc/oidc-client";
@@ -36,7 +36,7 @@ describe("BaseExceptionFilter", () => {
     getResponse: jest.fn(),
   };
 
-  class ExceptionMock extends CoreFcaBaseException {
+  class ExceptionMock extends FederationBaseException {
     message = "message";
     code = "code";
   }
@@ -118,7 +118,7 @@ describe("BaseExceptionFilter", () => {
 
     it("should render the error template with a UI-less static CoreFca exception", () => {
       // When
-      const coreFcaException = new CoreFcaInvalidIdentityException(
+      const coreFcaException = new InvalidIdentityException(
         "error_msg",
         "anyone",
       );
@@ -231,7 +231,7 @@ describe("BaseExceptionFilter", () => {
 
     it("should render the error template with displayContact and no contactHref", () => {
       // When
-      const coreFcaException = new CoreFcaAgentNotFromPublicServiceException(
+      const coreFcaException = new AgentNotFromPublicServiceException(
         "error_msg",
       );
       const inputMock = {

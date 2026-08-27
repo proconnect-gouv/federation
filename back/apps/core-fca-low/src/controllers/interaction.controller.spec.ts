@@ -17,8 +17,8 @@ import { Request, Response } from "express";
 import { EmailVerificationService } from "@fc/email-verification";
 import { AfterGetOidcCallbackSessionDto, UserSession } from "../dto";
 import {
-  CoreFcaAgentAccountBlockedException,
-  CoreFcaAgentNotFromPublicServiceException,
+  AgentAccountBlockedException,
+  AgentNotFromPublicServiceException,
 } from "../exceptions";
 import { CoreFcaControllerService, CoreFcaService } from "../services";
 import { InteractionController } from "./interaction.controller";
@@ -489,7 +489,7 @@ describe("InteractionController", () => {
       );
     });
 
-    it("should throw CoreFcaAgentNotFromPublicServiceException for private sector identity not allowed by SP", async () => {
+    it("should throw AgentNotFromPublicServiceException for private sector identity not allowed by SP", async () => {
       const req = { query: {} } as Request;
       const res = {} as Response;
       const userSessionService = {
@@ -505,10 +505,10 @@ describe("InteractionController", () => {
 
       await expect(
         controller.getVerify(req, res, {} as any, userSessionService),
-      ).rejects.toThrow(CoreFcaAgentNotFromPublicServiceException);
+      ).rejects.toThrow(AgentNotFromPublicServiceException);
     });
 
-    it("should throw CoreFcaAgentNotFromPublicServiceException for private sector identity not allowed by SP and log error if mismatch", async () => {
+    it("should throw AgentNotFromPublicServiceException for private sector identity not allowed by SP and log error if mismatch", async () => {
       const req = { query: {} } as Request;
       const res = {} as Response;
       const userSessionService = {
@@ -524,10 +524,10 @@ describe("InteractionController", () => {
 
       await expect(
         controller.getVerify(req, res, {} as any, userSessionService),
-      ).rejects.toThrow(CoreFcaAgentNotFromPublicServiceException);
+      ).rejects.toThrow(AgentNotFromPublicServiceException);
     });
 
-    it("should throw CoreFcaAgentAccountBlockedException if the account is inactive", async () => {
+    it("should throw AgentAccountBlockedException if the account is inactive", async () => {
       const req = { query: {} } as Request;
       const res = {} as Response;
       const userSessionService = {
@@ -544,7 +544,7 @@ describe("InteractionController", () => {
 
       await expect(
         controller.getVerify(req, res, {} as any, userSessionService),
-      ).rejects.toThrow(CoreFcaAgentAccountBlockedException);
+      ).rejects.toThrow(AgentAccountBlockedException);
     });
 
     it("should call abort interaction when interactionAcr is not satisfied", async () => {

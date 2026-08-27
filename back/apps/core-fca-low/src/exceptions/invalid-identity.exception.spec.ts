@@ -1,6 +1,6 @@
-import { CoreFcaInvalidIdentityException } from "./core-fca-invalid-identity.exception";
+import { InvalidIdentityException } from "./invalid-identity.exception";
 
-describe("CoreFcaInvalidIdentityException", () => {
+describe("InvalidIdentityException", () => {
   describe("constructor", () => {
     it("should set properties", () => {
       // Given
@@ -9,7 +9,7 @@ describe("CoreFcaInvalidIdentityException", () => {
       const validationTarget = '{email: "myemail@mail.fr"}';
 
       // When
-      const result = new CoreFcaInvalidIdentityException(
+      const result = new InvalidIdentityException(
         "error_msg",
         contact,
         validationConstraints,
@@ -27,7 +27,7 @@ describe("CoreFcaInvalidIdentityException", () => {
       const contact = "contact@email.fr";
 
       // When
-      const result = new CoreFcaInvalidIdentityException("error_msg", contact);
+      const result = new InvalidIdentityException("error_msg", contact);
 
       // Then
       expect(result.contact).toBe(contact);

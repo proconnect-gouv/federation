@@ -1,8 +1,8 @@
 import { HttpStatus } from "@nestjs/common";
 import { ErrorCode } from "../enums";
-import { CoreFcaBaseException } from "./core-fca-base.exception";
+import { FederationBaseException } from "./federation-base.exception";
 
-export class CoreFcaAgentAccountBlockedException extends CoreFcaBaseException {
+export class AgentAccountBlockedException extends FederationBaseException {
   public code = ErrorCode.BLOCKED_ACCOUNT;
   public http_status_code = HttpStatus.BAD_REQUEST;
 

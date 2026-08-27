@@ -17,7 +17,7 @@ import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 import { getSessionServiceMock } from "@mocks/session";
 
-import { CoreFcaAgentNoIdpException } from "../exceptions";
+import { NoIdpException } from "../exceptions";
 import { CoreFcaControllerService } from "./core-fca-controller.service";
 
 describe("CoreFcaControllerService", () => {
@@ -235,7 +235,7 @@ describe("CoreFcaControllerService", () => {
 
       await expect(
         service.redirectToIdpWithEmail(reqMock, resMock, email, true),
-      ).rejects.toThrow(CoreFcaAgentNoIdpException);
+      ).rejects.toThrow(NoIdpException);
 
       expect(emailValidatorServiceMock.validate).toHaveBeenCalledWith(email);
       expect(sessionServiceMock.set).toHaveBeenCalledWith("User", {

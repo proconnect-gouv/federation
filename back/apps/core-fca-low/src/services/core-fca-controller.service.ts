@@ -10,7 +10,7 @@ import {
   UserSession,
 } from "@fc/core/dto";
 import { Routes } from "@fc/core/enums";
-import { CoreFcaAgentNoIdpException } from "@fc/core/exceptions";
+import { NoIdpException } from "@fc/core/exceptions";
 import { CoreFcaService } from "@fc/core/services/core-fca.service";
 import { EmailValidatorService } from "@fc/email-validator/services";
 import { LoggerService, TrackedEvent } from "@fc/logger";
@@ -71,7 +71,7 @@ export class CoreFcaControllerService {
       const { spName } =
         this.session.get<AfterGetInteractionSessionDto>("User");
 
-      throw new CoreFcaAgentNoIdpException(spName, email);
+      throw new NoIdpException(spName, email);
     }
 
     if (idpsFromEmail.length > 1) {

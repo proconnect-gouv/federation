@@ -1,5 +1,5 @@
 import { EnrichedDisplayBaseException } from "@fc/exceptions/exceptions";
 
-export class CoreFcaBaseException extends EnrichedDisplayBaseException {
+export class FederationBaseException extends EnrichedDisplayBaseException {
   public scope = 50;
 }
