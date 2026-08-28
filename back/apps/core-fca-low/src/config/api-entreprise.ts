@@ -10,6 +10,7 @@ const apiEntrepriseConfig: ApiEntrepriseConfig = {
   featureFetchOrganizationData: env.boolean("FEATURE_FETCH_ORGANIZATION_DATA"),
   organizationSiret: "13002526500013",
   cachedTTL: 86400000, // 24h
+  cacheTTLWhenApiEntrepriseIsDown: 7776000000, // 90 days
 };
 
 export default apiEntrepriseConfig;

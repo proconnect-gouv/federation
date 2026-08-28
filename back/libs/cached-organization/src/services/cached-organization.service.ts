@@ -4,11 +4,13 @@ import { Model } from "mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { computeServicePublicInfo } from "@proconnect-gouv/proconnect.identite/services/organization";
+import { OrganizationInfo } from "@proconnect-gouv/proconnect.identite/types";
 
 import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
 
 import { LoggerService } from "@fc/logger";
+import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { CachedOrganization } from "../schemas";
 
 @Injectable()
@@ -56,8 +58,22 @@ export class CachedOrganizationService {
       return storedCachedOrganization;
     }
 
-    const organizationInfo =
-      await this.apiEntrepriseService.getOrganizationBySiret(siret);
+    let organizationInfo: OrganizationInfo;
+
+    try {
+      organizationInfo =
+        await this.apiEntrepriseService.getOrganizationBySiret(siret);
+    } catch (error) {
+      if (
+        !isEmpty(storedCachedOrganization) &&
+        error instanceof ApiEntrepriseConnectionError &&
+        this.isFallbackCacheValid(storedCachedOrganization)
+      ) {
+        return storedCachedOrganization;
+      }
+
+      throw error;
+    }
 
     const updatedCachedOrganization = await this.model.findOneAndUpdate(
       {
@@ -72,6 +88,15 @@ export class CachedOrganizationService {
     );
 
     return updatedCachedOrganization;
+  }
+
+  private isFallbackCacheValid(cachedOrganization: CachedOrganization) {
+    const { cacheTTLWhenApiEntrepriseIsDown } =
+      this.configService.get<ApiEntrepriseConfig>("ApiEntreprise");
+    return (
+      Date.now() - cachedOrganization.updatedAt.getTime() <=
+      cacheTTLWhenApiEntrepriseIsDown
+    );
   }
 
   private isExpired(cachedOrganization: CachedOrganization) {
