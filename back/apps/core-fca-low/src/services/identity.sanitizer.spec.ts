@@ -5,8 +5,8 @@ import { LoggerService } from "@fc/logger";
 import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { IdentityFromIdpDto } from "../dto/identity-from-idp.dto";
 import {
-  CoreFcaApiEntrepriseConnectionException,
-  CoreFcaInvalidIdentityException,
+  ApiEntrepriseConnectionException,
+  InvalidIdentityException,
 } from "../exceptions";
 import { IdentitySanitizer } from "./identity.sanitizer";
 
@@ -78,7 +78,7 @@ describe("IdentitySanitizer", () => {
       expect(result).toEqual(expect.objectContaining(validIdentity));
     });
 
-    it("should throw CoreFcaInvalidIdentityException when validation fails", async () => {
+    it("should throw InvalidIdentityException when validation fails", async () => {
       const invalidIdentity = {
         sub: "",
         email: "invalid",
@@ -90,10 +90,10 @@ describe("IdentitySanitizer", () => {
 
       await expect(
         identitySanitizer.getValidatedIdentityFromIdp(invalidIdentity, idpId),
-      ).rejects.toThrow(CoreFcaInvalidIdentityException);
+      ).rejects.toThrow(InvalidIdentityException);
     });
 
-    it("should not throw CoreFcaInvalidIdentityException when phone number is an empty string", async () => {
+    it("should not throw InvalidIdentityException when phone number is an empty string", async () => {
       const invalidIdentity = {
         sub: "123",
         email: "test@test.com",
@@ -112,7 +112,7 @@ describe("IdentitySanitizer", () => {
       expect(result.phone_number).toEqual("");
     });
 
-    it("should not throw CoreFcaInvalidIdentityException when phone number is an array", async () => {
+    it("should not throw InvalidIdentityException when phone number is an array", async () => {
       const invalidIdentity = {
         sub: "123",
         email: "test@test.com",
@@ -255,7 +255,7 @@ describe("IdentitySanitizer", () => {
       expect(result.roles).toEqual([]);
     });
 
-    it("should throw CoreFcaApiEntrepriseConnectionException when getCachedOrganizationBySiret throws an ApiEntrepriseConnectionError", async () => {
+    it("should throw ApiEntrepriseConnectionException when getCachedOrganizationBySiret throws an ApiEntrepriseConnectionError", async () => {
       const idpId = "idp1";
       const sub = "sub123";
       const acr = "acr1";
@@ -286,7 +286,7 @@ describe("IdentitySanitizer", () => {
           sub,
           acr,
         ),
-      ).rejects.toThrow(CoreFcaApiEntrepriseConnectionException);
+      ).rejects.toThrow(ApiEntrepriseConnectionException);
 
       expect(logger.error).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -296,7 +296,7 @@ describe("IdentitySanitizer", () => {
       );
     });
 
-    it("should not throw CoreFcaInvalidIdentityException when phone number is invalid", async () => {
+    it("should not throw InvalidIdentityException when phone number is invalid", async () => {
       const idpId = "idp1";
       const sub = "sub123";
       const acr = "acr1";
@@ -319,7 +319,7 @@ describe("IdentitySanitizer", () => {
       expect(result.phone_number).toBeUndefined();
     });
 
-    it("should not throw CoreFcaInvalidIdentityException when phone number is an array", async () => {
+    it("should not throw InvalidIdentityException when phone number is an array", async () => {
       const idpId = "idp1";
       const sub = "sub123";
       const acr = "acr1";
@@ -342,7 +342,7 @@ describe("IdentitySanitizer", () => {
       expect(result.phone_number).toBeUndefined();
     });
 
-    it("should throw CoreFcaInvalidIdentityException when siret is missing and no default is provided", async () => {
+    it("should throw InvalidIdentityException when siret is missing and no default is provided", async () => {
       const idpId = "idp1";
       const sub = "sub123";
       const acr = "acr1";
@@ -365,7 +365,7 @@ describe("IdentitySanitizer", () => {
           sub,
           acr,
         ),
-      ).rejects.toThrow(CoreFcaInvalidIdentityException);
+      ).rejects.toThrow(InvalidIdentityException);
     });
   });
 });

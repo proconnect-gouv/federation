@@ -1,8 +1,8 @@
 import { HttpStatus } from "@nestjs/common";
 import { ErrorCode } from "../enums";
-import { CoreFcaBaseException } from "./core-fca-base.exception";
+import { FederationBaseException } from "./federation-base.exception";
 
-export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
+export class InvalidIdentityException extends FederationBaseException {
   public code = ErrorCode.INVALID_IDENTITY;
   public http_status_code = HttpStatus.BAD_REQUEST;
   public error = "server_error";

@@ -36,8 +36,8 @@ import {
 } from "../dto";
 import { Routes } from "../enums";
 import {
-  CoreFcaAgentAccountBlockedException,
-  CoreFcaAgentNotFromPublicServiceException,
+  AgentAccountBlockedException,
+  AgentNotFromPublicServiceException,
 } from "../exceptions";
 import { CoreFcaControllerService, CoreFcaService } from "../services";
 
@@ -232,7 +232,7 @@ export class InteractionController {
 
     const account = await this.accountService.getAccountBySub(sub);
     if (!account || !account.active) {
-      throw new CoreFcaAgentAccountBlockedException();
+      throw new AgentAccountBlockedException();
     }
 
     this.coreFcaService.ensureEmailIsAuthorizedForSp(spId, email);
@@ -262,7 +262,7 @@ export class InteractionController {
     const doesNotAcceptPrivateSectorEmployees = spType === "public";
 
     if (!isRoleAgentPublic && doesNotAcceptPrivateSectorEmployees) {
-      throw new CoreFcaAgentNotFromPublicServiceException(
+      throw new AgentNotFromPublicServiceException(
         `The user's roles are: [${roles.join(", ")}]; the user is linked to the non-public organization: ${organization_label} (SIRET: ${siret})`,
       );
     }

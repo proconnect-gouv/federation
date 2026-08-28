@@ -8,7 +8,7 @@ import { IdentityProviderMetadata } from "@fc/oidc";
 import { getConfigMock } from "@mocks/config";
 import { getLoggerMock } from "@mocks/logger";
 
-import { CoreFcaInvalidEmailDomainException } from "../exceptions";
+import { InvalidEmailDomainException } from "../exceptions";
 import { CoreFcaService } from "./core-fca.service";
 
 describe("CoreFcaService", () => {
@@ -446,7 +446,7 @@ describe("CoreFcaService", () => {
           "idp1",
           "hermione.granger@hogwarts.uk",
         ),
-      ).rejects.toThrow(CoreFcaInvalidEmailDomainException);
+      ).rejects.toThrow(InvalidEmailDomainException);
     });
   });
 

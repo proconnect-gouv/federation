@@ -14,8 +14,8 @@ import { IdentityProviderMetadata } from "@fc/oidc";
 import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from "../dto";
 import {
-  CoreFcaApiEntrepriseConnectionException,
-  CoreFcaInvalidIdentityException,
+  ApiEntrepriseConnectionException,
+  InvalidIdentityException,
 } from "../exceptions";
 
 @Injectable()
@@ -97,7 +97,7 @@ export class IdentitySanitizer {
         });
 
         if (error instanceof ApiEntrepriseConnectionError) {
-          throw new CoreFcaApiEntrepriseConnectionException();
+          throw new ApiEntrepriseConnectionException();
         }
 
         identityForSp.roles = [];
@@ -190,7 +190,7 @@ export class IdentitySanitizer {
       identityProvider.supportEmail ||
       this.config.get<AppConfig>("App").supportEmail;
 
-    const exception = new CoreFcaInvalidIdentityException(
+    const exception = new InvalidIdentityException(
       identityValidationErrors.toString(),
       contact,
       JSON.stringify(

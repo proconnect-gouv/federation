@@ -1,8 +1,8 @@
 import { HttpStatus } from "@nestjs/common";
 import { ErrorCode } from "../enums";
-import { CoreFcaBaseException } from "./core-fca-base.exception";
+import { FederationBaseException } from "./federation-base.exception";
 
-export class CoreFcaApiEntrepriseConnectionException extends CoreFcaBaseException {
+export class ApiEntrepriseConnectionException extends FederationBaseException {
   public code = ErrorCode.API_ENTREPRISE_CONNECTION_ERROR;
   public http_status_code = HttpStatus.SERVICE_UNAVAILABLE;
 

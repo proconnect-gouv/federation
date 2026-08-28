@@ -1,8 +1,8 @@
 import { HttpStatus } from "@nestjs/common";
 import { ErrorCode } from "../enums";
-import { CoreFcaBaseException } from "./core-fca-base.exception";
+import { FederationBaseException } from "./federation-base.exception";
 
-export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
+export class UnauthorizedEmailException extends FederationBaseException {
   public code = ErrorCode.UNAUTHORIZED_EMAIL;
   public http_status_code = HttpStatus.BAD_REQUEST;
 

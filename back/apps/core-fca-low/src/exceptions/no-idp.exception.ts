@@ -1,9 +1,9 @@
 import { HttpStatus } from "@nestjs/common";
 import { escape } from "lodash";
 import { ErrorCode } from "../enums";
-import { CoreFcaBaseException } from "./core-fca-base.exception";
+import { FederationBaseException } from "./federation-base.exception";
 
-export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
+export class NoIdpException extends FederationBaseException {
   constructor(
     public spName: string = "le service",
     public email: string,

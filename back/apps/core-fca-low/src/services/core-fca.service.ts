@@ -6,8 +6,8 @@ import { IdentityProviderMetadata } from "@fc/oidc";
 import { Injectable } from "@nestjs/common";
 import { isEmpty } from "lodash";
 import {
-  CoreFcaInvalidEmailDomainException,
-  CoreFcaUnauthorizedEmailException,
+  InvalidEmailDomainException,
+  UnauthorizedEmailException,
 } from "../exceptions";
 
 @Injectable()
@@ -112,7 +112,7 @@ export class CoreFcaService {
       identityProvider.supportEmail ||
       this.config.get<AppConfig>("App").supportEmail;
 
-    throw new CoreFcaInvalidEmailDomainException(
+    throw new InvalidEmailDomainException(
       identityProvider.name,
       email,
       contact,
@@ -142,7 +142,7 @@ export class CoreFcaService {
       return;
     }
 
-    throw new CoreFcaUnauthorizedEmailException(
+    throw new UnauthorizedEmailException(
       authorizedAttachedEmailDomainsConfig.spName,
       authorizedAttachedEmailDomainsConfig.spContact,
       authorizedAttachedEmailDomainsConfig.authorizedAttachedEmailDomains,

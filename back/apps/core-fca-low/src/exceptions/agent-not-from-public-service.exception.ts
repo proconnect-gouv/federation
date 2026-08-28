@@ -1,8 +1,8 @@
 import { HttpStatus } from "@nestjs/common";
 import { ErrorCode } from "../enums";
-import { CoreFcaBaseException } from "./core-fca-base.exception";
+import { FederationBaseException } from "./federation-base.exception";
 
-export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseException {
+export class AgentNotFromPublicServiceException extends FederationBaseException {
   public code = ErrorCode.AGENT_NOT_FOUND;
   public http_status_code = HttpStatus.BAD_REQUEST;
 
