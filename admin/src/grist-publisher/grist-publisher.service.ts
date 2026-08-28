@@ -15,12 +15,17 @@ export class GristPublisherService {
     private readonly config: ConfigService,
   ) {}
 
-  async publishServiceProviders(serviceProviders: ServiceProviderFromDb[]) {
+  async publishServiceProviders(
+    serviceProviders: ServiceProviderFromDb[],
+  ): Promise<boolean> {
     const { gristServiceProvidersTableId } = this.config.get("grist");
     const previousServiceProviderRecords =
       await this.getProviderRecordsFromGrist<ServiceProviderGristRecord>(
         gristServiceProvidersTableId,
       );
+    if (!previousServiceProviderRecords) {
+      return false;
+    }
 
     const nextServiceProviderRecords = serviceProviders.map((serviceProvider) =>
       this.transformServiceProviderToGristRecord(serviceProvider),
@@ -37,13 +42,18 @@ export class GristPublisherService {
     );
   }
 
-  async publishIdentityProviders(identityProviders: IdentityProviderFromDb[]) {
+  async publishIdentityProviders(
+    identityProviders: IdentityProviderFromDb[],
+  ): Promise<boolean> {
     const { gristIdentityProvidersTableId } = this.config.get("grist");
 
     const previousIdentityProviderRecords =
       await this.getProviderRecordsFromGrist<IdentityProviderGristRecord>(
         gristIdentityProvidersTableId,
       );
+    if (!previousIdentityProviderRecords) {
+      return false;
+    }
 
     const nextIdentityProviderRecords = identityProviders.map(
       (identityProvider) =>
@@ -113,8 +123,8 @@ export class GristPublisherService {
   private computeRecordUpdates<
     providerT extends { UID: string; Reseau: string; Environnement: string },
   >(
-    previousGristRecords: GristRecord<providerT>[],
-    nextProviderRecords: providerT[],
+    previousGristRecords: GristRecord<providerT>[] = [],
+    nextProviderRecords: providerT[] = [],
   ) {
     const recordIdsToDelete: number[] = [];
     const recordsToUpsert: providerT[] = [];
@@ -173,7 +183,7 @@ export class GristPublisherService {
       recordsToUpsert: providerT[];
     },
     tableId: string,
-  ) {
+  ): Promise<boolean> {
     const successes = await Promise.all([
       this.deleteGristRecords(recordIdsToDelete, tableId),
       this.upsertGristRecords(recordsToUpsert, tableId),
@@ -182,7 +192,9 @@ export class GristPublisherService {
     return successes.every((success) => success);
   }
 
-  private async getProviderRecordsFromGrist<providerT>(tableId: string) {
+  private async getProviderRecordsFromGrist<providerT>(
+    tableId: string,
+  ): Promise<GristRecord<providerT>[] | null> {
     const {
       gristDomain,
       gristDocId,
@@ -203,8 +215,21 @@ export class GristPublisherService {
         Authorization: `Bearer ${gristApiKey}`,
       },
     });
+    if (!response.ok) {
+      const responseText = await response.text();
+      this.logger.error(
+        `Could not fetch Grist records: ${response.statusText} (${responseText})`,
+      );
+      return null;
+    }
 
     const data = await response.json();
+    if (!Array.isArray(data?.records)) {
+      this.logger.error(
+        `Unexpected Grist records response shape for table ${tableId}`,
+      );
+      return null;
+    }
 
     return data.records as GristRecord<providerT>[];
   }

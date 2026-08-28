@@ -264,7 +264,7 @@ export class ServiceProviderService {
     };
   }
 
-  private async publishServiceProvidersToGrist() {
+  private async publishServiceProvidersToGrist(): Promise<boolean> {
     const allServiceProviders = await this.serviceProviderRepository.find();
     return this.gristPublisherService.publishServiceProviders(
       allServiceProviders,
