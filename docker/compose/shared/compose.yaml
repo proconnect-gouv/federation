@@ -166,7 +166,7 @@ services:
   ####################
 
   rp-all:
-    image: nginx:1.31.3
+    image: nginx:1.31.4
     container_name: pc-rp-all
     environment:
       DHPARAM_GENERATION: "false"
