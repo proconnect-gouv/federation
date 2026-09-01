@@ -77,10 +77,9 @@ export class ServiceProviderService {
       id: saveOperation.identifiers[0].id,
     });
 
-    const hasGristPublicationSucceeded =
-      await this.publishServiceProvidersToGrist();
+    const gristPublicationResult = await this.publishServiceProvidersToGrist();
 
-    return { hasGristPublicationSucceeded };
+    return { gristPublicationResult };
   }
 
   async findById(id: string): Promise<ServiceProviderFromDb> {
@@ -143,10 +142,9 @@ export class ServiceProviderService {
 
     await this.serviceProviderRepository.save(serviceProvider);
 
-    const hasGristPublicationSucceeded =
-      await this.publishServiceProvidersToGrist();
+    const gristPublicationResult = await this.publishServiceProvidersToGrist();
 
-    return { hasGristPublicationSucceeded };
+    return { gristPublicationResult };
   }
 
   /**
@@ -160,10 +158,9 @@ export class ServiceProviderService {
       ids.map((id) => this.deleteServiceProviderById(id, user)),
     );
 
-    const hasGristPublicationSucceeded =
-      await this.publishServiceProvidersToGrist();
+    const gristPublicationResult = await this.publishServiceProvidersToGrist();
 
-    return { hasGristPublicationSucceeded };
+    return { gristPublicationResult };
   }
 
   async deleteServiceProviderById(id: string, user: string) {
@@ -185,10 +182,9 @@ export class ServiceProviderService {
       name: serviceProvider.key,
     });
 
-    const hasGristPublicationSucceeded =
-      await this.publishServiceProvidersToGrist();
+    const gristPublicationResult = await this.publishServiceProvidersToGrist();
 
-    return { hasGristPublicationSucceeded, hasDeletionSucceeded };
+    return { gristPublicationResult, hasDeletionSucceeded };
   }
 
   async generateNewSecret(
@@ -264,10 +260,17 @@ export class ServiceProviderService {
     };
   }
 
-  private async publishServiceProvidersToGrist(): Promise<boolean> {
-    const allServiceProviders = await this.serviceProviderRepository.find();
-    return this.gristPublisherService.publishServiceProviders(
-      allServiceProviders,
-    );
+  private async publishServiceProvidersToGrist(): Promise<
+    { ok: true } | { ok: false; error: string }
+  > {
+    try {
+      const allServiceProviders = await this.serviceProviderRepository.find();
+      return await this.gristPublisherService.publishServiceProviders(
+        allServiceProviders,
+      );
+    } catch (error: any) {
+      this.logger.error(error);
+      return { ok: false, error: error.message };
+    }
   }
 }

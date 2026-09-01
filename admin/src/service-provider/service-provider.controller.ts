@@ -136,13 +136,16 @@ export class ServiceProviderController {
     @Res() res,
   ) {
     try {
-      const { hasGristPublicationSucceeded } =
+      const { gristPublicationResult } =
         await this.serviceProviderService.createServiceProvider(
           createServiceProviderDto,
           req.user.username,
         );
-      if (!hasGristPublicationSucceeded) {
-        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
+      if (gristPublicationResult.ok === false) {
+        req.flash("globalError", {
+          code: "GRIST_PUBLICATION_FAILED",
+          details: gristPublicationResult.error,
+        });
       }
     } catch (error) {
       req.flash(
@@ -225,14 +228,17 @@ export class ServiceProviderController {
     @Res() res,
   ) {
     try {
-      const { hasGristPublicationSucceeded } =
+      const { gristPublicationResult } =
         await this.serviceProviderService.update(
           id,
           updateServiceProviderDto,
           req.user.username,
         );
-      if (!hasGristPublicationSucceeded) {
-        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
+      if (gristPublicationResult.ok === false) {
+        req.flash("globalError", {
+          code: "GRIST_PUBLICATION_FAILED",
+          details: gristPublicationResult.error,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -260,13 +266,16 @@ export class ServiceProviderController {
     @Body() body,
   ) {
     try {
-      const { hasGristPublicationSucceeded } =
+      const { gristPublicationResult } =
         await this.serviceProviderService.deleteServiceProviderById(
           id,
           req.user.username,
         );
-      if (!hasGristPublicationSucceeded) {
-        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
+      if (gristPublicationResult.ok === false) {
+        req.flash("globalError", {
+          code: "GRIST_PUBLICATION_FAILED",
+          details: gristPublicationResult.error,
+        });
       }
     } catch (error) {
       req.flash("globalError", error.message);
@@ -292,13 +301,16 @@ export class ServiceProviderController {
   ) {
     const { deleteItems = [], name } = body;
     try {
-      const { hasGristPublicationSucceeded } =
+      const { gristPublicationResult } =
         await this.serviceProviderService.deleteManyServiceProvidersById(
           deleteItems,
           req.user.username,
         );
-      if (!hasGristPublicationSucceeded) {
-        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
+      if (gristPublicationResult.ok === false) {
+        req.flash("globalError", {
+          code: "GRIST_PUBLICATION_FAILED",
+          details: gristPublicationResult.error,
+        });
       }
     } catch (error) {
       req.flash("globalError", error.message);

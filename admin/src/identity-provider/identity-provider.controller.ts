@@ -119,13 +119,16 @@ export class IdentityProviderController {
     @Res() res,
   ) {
     try {
-      const { hasGristPublicationSucceeded } =
+      const { gristPublicationResult } =
         await this.identityProviderService.create(
           identityProviderDto,
           req.user.username,
         );
-      if (!hasGristPublicationSucceeded) {
-        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
+      if (gristPublicationResult.ok === false) {
+        req.flash("globalError", {
+          code: "GRIST_PUBLICATION_FAILED",
+          details: gristPublicationResult.error,
+        });
       }
     } catch (error) {
       req.flash("globalError", error.message);
@@ -186,14 +189,17 @@ export class IdentityProviderController {
     @Res() res,
   ) {
     try {
-      const { hasGristPublicationSucceeded } =
+      const { gristPublicationResult } =
         await this.identityProviderService.update(
           id,
           identityProviderDto,
           req.user.username,
         );
-      if (!hasGristPublicationSucceeded) {
-        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
+      if (gristPublicationResult.ok === false) {
+        req.flash("globalError", {
+          code: "GRIST_PUBLICATION_FAILED",
+          details: gristPublicationResult.error,
+        });
       }
     } catch (error) {
       req.flash("globalError", error.message);
@@ -220,13 +226,16 @@ export class IdentityProviderController {
     @Body() body,
   ) {
     try {
-      const { hasGristPublicationSucceeded } =
+      const { gristPublicationResult } =
         await this.identityProviderService.deleteIdentityProvider(
           id,
           req.user.username,
         );
-      if (!hasGristPublicationSucceeded) {
-        req.flash("globalError", { code: "GRIST_PUBLICATION_FAILED" });
+      if (gristPublicationResult.ok === false) {
+        req.flash("globalError", {
+          code: "GRIST_PUBLICATION_FAILED",
+          details: gristPublicationResult.error,
+        });
       }
     } catch (error) {
       req.flash("globalError", error.message);

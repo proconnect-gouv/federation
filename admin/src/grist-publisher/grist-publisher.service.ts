@@ -17,15 +17,12 @@ export class GristPublisherService {
 
   async publishServiceProviders(
     serviceProviders: ServiceProviderFromDb[],
-  ): Promise<boolean> {
+  ): Promise<{ ok: true }> {
     const { gristServiceProvidersTableId } = this.config.get("grist");
     const previousServiceProviderRecords =
       await this.getProviderRecordsFromGrist<ServiceProviderGristRecord>(
         gristServiceProvidersTableId,
       );
-    if (!previousServiceProviderRecords) {
-      return false;
-    }
 
     const nextServiceProviderRecords = serviceProviders.map((serviceProvider) =>
       this.transformServiceProviderToGristRecord(serviceProvider),
@@ -44,16 +41,13 @@ export class GristPublisherService {
 
   async publishIdentityProviders(
     identityProviders: IdentityProviderFromDb[],
-  ): Promise<boolean> {
+  ): Promise<{ ok: true }> {
     const { gristIdentityProvidersTableId } = this.config.get("grist");
 
     const previousIdentityProviderRecords =
       await this.getProviderRecordsFromGrist<IdentityProviderGristRecord>(
         gristIdentityProvidersTableId,
       );
-    if (!previousIdentityProviderRecords) {
-      return false;
-    }
 
     const nextIdentityProviderRecords = identityProviders.map(
       (identityProvider) =>
@@ -183,18 +177,25 @@ export class GristPublisherService {
       recordsToUpsert: providerT[];
     },
     tableId: string,
-  ): Promise<boolean> {
-    const successes = await Promise.all([
+  ): Promise<{ ok: true }> {
+    const results = await Promise.all([
       this.deleteGristRecords(recordIdsToDelete, tableId),
       this.upsertGristRecords(recordsToUpsert, tableId),
     ]);
 
-    return successes.every((success) => success);
+    const errors = results
+      .filter((result) => !result.ok)
+      .map((e: { ok: false; error: string }) => e.error);
+    if (errors.length > 0) {
+      throw new Error(errors.join("\n"));
+    }
+
+    return { ok: true };
   }
 
   private async getProviderRecordsFromGrist<providerT>(
     tableId: string,
-  ): Promise<GristRecord<providerT>[] | null> {
+  ): Promise<GristRecord<providerT>[]> {
     const {
       gristDomain,
       gristDocId,
@@ -217,26 +218,26 @@ export class GristPublisherService {
     });
     if (!response.ok) {
       const responseText = await response.text();
-      this.logger.error(
+      throw new Error(
         `Could not fetch Grist records: ${response.statusText} (${responseText})`,
       );
-      return null;
     }
-
     const data = await response.json();
     if (!Array.isArray(data?.records)) {
-      this.logger.error(
-        `Unexpected Grist records response shape for table ${tableId}`,
+      throw new Error(
+        `Unexpected Grist records response shape for table ${tableId}: ${JSON.stringify(data)}`,
       );
-      return null;
     }
 
     return data.records as GristRecord<providerT>[];
   }
 
-  private async deleteGristRecords(recordIds: number[], tableId: string) {
+  private async deleteGristRecords(
+    recordIds: number[],
+    tableId: string,
+  ): Promise<{ ok: true } | { ok: false; error: string }> {
     if (recordIds.length === 0) {
-      return true;
+      return { ok: true };
     }
     const { gristDomain, gristDocId, gristApiKey } = this.config.get("grist");
     const gristDocUrl = `https://${gristDomain}/api/docs/${gristDocId}/tables/${tableId}/records/delete`;
@@ -250,26 +251,29 @@ export class GristPublisherService {
         body: JSON.stringify(recordIds),
       });
       if (deleteResponse.ok) {
-        return true;
+        return { ok: true };
       } else {
         const responseText = await deleteResponse.text();
+        const errorMessage = `Could not delete Grist records: ${deleteResponse.statusText} (${responseText})`;
 
-        this.logger.error(
-          `Could not delete Grist records: ${deleteResponse.statusText} (${responseText})`,
-        );
-        return false;
+        this.logger.error(errorMessage);
+        return { ok: false, error: errorMessage };
       }
-    } catch (error) {
-      this.logger.error(`Could not delete records from Grist: ${error}`);
-      return false;
+    } catch (error: any) {
+      this.logger.error(error);
+      const errorMessage = `Could not delete Grist records: ${error.message}`;
+      return { ok: false, error: errorMessage };
     }
   }
 
   private async upsertGristRecords<
     providerT extends { UID: string; Reseau: string; Environnement: string },
-  >(records: providerT[], tableId: string) {
+  >(
+    records: providerT[],
+    tableId: string,
+  ): Promise<{ ok: true } | { ok: false; error: string }> {
     if (records.length === 0) {
-      return true;
+      return { ok: true };
     }
     const MAX_RECORDS_PER_REQUEST = 100;
     const { gristDomain, gristDocId, gristApiKey } = this.config.get("grist");
@@ -285,17 +289,17 @@ export class GristPublisherService {
 
     const recordUpdatesChunks = chunk(recordUpdates, MAX_RECORDS_PER_REQUEST);
     for (const recordUpdatesChunk of recordUpdatesChunks) {
-      const success = await this.performGristUpsertRequest<providerT>({
+      const result = await this.performGristUpsertRequest<providerT>({
         gristDocUrl,
         gristApiKey,
         recordUpdates: recordUpdatesChunk,
       });
-      if (!success) {
-        return false;
+      if (!result.ok) {
+        return result;
       }
     }
 
-    return true;
+    return { ok: true };
   }
 
   private async performGristUpsertRequest<providerT>({
@@ -309,7 +313,7 @@ export class GristPublisherService {
       fields: providerT;
       require: { UID: string; Reseau: string; Environnement: string };
     }>;
-  }) {
+  }): Promise<{ ok: true } | { ok: false; error: string }> {
     this.logger.info(`Upserting ${recordUpdates.length} records to Grist...`);
     try {
       const response = await fetch(gristDocUrl, {
@@ -322,17 +326,17 @@ export class GristPublisherService {
       });
 
       if (response.ok) {
-        return true;
+        return { ok: true };
       } else {
         const responseText = await response.text();
-        this.logger.error(
-          `Could not update Grist: ${response.statusText} (${responseText})`,
-        );
-        return false;
+        const errorMessage = `Could not update Grist: ${response.statusText} (${responseText})`;
+        this.logger.error(errorMessage);
+        return { ok: false, error: errorMessage };
       }
-    } catch (error) {
-      this.logger.error(`Could not update Grist: ${error}`);
-      return false;
+    } catch (error: any) {
+      this.logger.error(error);
+      const errorMessage = `Could not update Grist: ${error.message}`;
+      return { ok: false, error: errorMessage };
     }
   }
 }
