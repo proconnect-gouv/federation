@@ -136,6 +136,122 @@ describe("OidcAcrService", () => {
     });
   });
 
+  describe("getInteractionAmr()", () => {
+    it("should return undefined if idpAmr is undefined", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        idpAmr: undefined,
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined if idpAmr is an empty array", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        idpAmr: [],
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined if idpAmr is not an array", () => {
+      // Given
+      const sessionDataMock = {
+        idpAmr: "pwd",
+        isEmailVerifiedByPcf: true,
+      } as unknown as UserSession;
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toBeUndefined();
+    });
+
+    it("should return idpAmr enriched with 'mail' if email is verified by PCF", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        idpAmr: ["pwd"],
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toEqual(["pwd", "mail"]);
+    });
+
+    it("should not mutate the original idpAmr when adding 'mail'", () => {
+      // Given
+      const idpAmr = ["pwd"];
+      const sessionDataMock: UserSession = {
+        idpAmr,
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(idpAmr).toEqual(["pwd"]);
+      expect(result).not.toBe(idpAmr);
+    });
+
+    it("should return idpAmr unchanged if email is verified by PCF but 'mail' is already present", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        idpAmr: ["pwd", "mail"],
+        isEmailVerifiedByPcf: true,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toEqual(["pwd", "mail"]);
+    });
+
+    it("should return idpAmr unchanged if email is not verified by PCF", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        idpAmr: ["pwd"],
+        isEmailVerifiedByPcf: false,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toEqual(["pwd"]);
+    });
+
+    it("should return idpAmr unchanged if isEmailVerifiedByPcf is undefined", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        idpAmr: ["pwd"],
+        isEmailVerifiedByPcf: undefined,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toEqual(["pwd"]);
+    });
+  });
+
   describe("computeCanAcrBeSatisfiedByPcf", () => {
     it("should return true when all conditions are met", () => {
       configServiceMock.get.mockReturnValue({

@@ -145,11 +145,9 @@ export class OidcClientController {
       spId,
       spName,
     });
-    const { amr } = claims;
 
     userSession.set({
-      idpAmr: amr,
-      spAmr: amr,
+      idpAmr: claims.amr,
       idpIdToken: idToken,
       idpAcr: claims.acr,
     });

@@ -388,17 +388,6 @@ describe(EmailVerificationService.name, () => {
     });
   });
 
-  describe("deleteEmailVerificationToken", () => {
-    it("should call deleteOne", async () => {
-      const email = "user@example.com";
-
-      await service.deleteEmailVerificationToken(email);
-
-      expect(emailVerificationRepositoryMock.deleteOne).toHaveBeenCalledWith(
-        "user@example.com",
-      );
-    });
-  });
   describe("getValidityDuration", () => {
     it("should return the validity duration in minutes if < 60 minutes", () => {
       configServiceMock.get.mockReturnValue({

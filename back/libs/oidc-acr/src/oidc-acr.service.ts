@@ -68,6 +68,21 @@ export class OidcAcrService {
     return undefined;
   }
 
+  getInteractionAmr({
+    idpAmr,
+    isEmailVerifiedByPcf,
+  }: Pick<UserSession, "idpAmr" | "isEmailVerifiedByPcf">) {
+    if (!idpAmr || isEmpty(idpAmr) || !isArray(idpAmr)) {
+      return undefined;
+    }
+
+    if (isEmailVerifiedByPcf && !idpAmr.includes("mail")) {
+      return [...idpAmr, "mail"];
+    }
+
+    return idpAmr;
+  }
+
   computeCanAcrBeSatisfiedByPcf({
     spEssentialAcr,
     idpAmr,

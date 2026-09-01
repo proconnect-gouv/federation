@@ -33,6 +33,7 @@ export class IdentityForSpDto extends IdentityFromIdpDto {
   idp_id: string;
 
   @IsString()
+  /** @deprecated This field is sent to some SP for historical reason and should not be used for new implementations */
   idp_acr: string;
 
   @IsString()
