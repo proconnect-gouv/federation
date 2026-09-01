@@ -19,4 +19,7 @@ export class ApiEntrepriseConfig {
 
   @IsNumber()
   readonly cachedTTL: number;
+
+  @IsNumber()
+  readonly cacheTTLWhenApiEntrepriseIsDown: number;
 }
