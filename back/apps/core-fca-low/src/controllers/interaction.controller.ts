@@ -219,7 +219,6 @@ export class InteractionController {
   ) {
     const {
       idpAmr,
-      spAmr,
       idpAcr,
       idpId,
       spIdentity: { sub, email, roles, siret, organization_label },
@@ -294,7 +293,14 @@ export class InteractionController {
         error_description: "requested ACRs could not be satisfied",
       });
     }
+
+    const interactionAmr = this.oidcAcr.getInteractionAmr({
+      idpAmr,
+      isEmailVerifiedByPcf,
+    });
+
     const session: UserSession = {
+      interactionAmr,
       interactionAcr,
     };
     userSessionService.set(session);
@@ -302,7 +308,7 @@ export class InteractionController {
     this.logger.track(TrackedEvent.FC_VERIFIED);
 
     return this.oidcProvider.finishInteraction(req, res, {
-      amr: spAmr,
+      amr: interactionAmr,
       acr: interactionAcr,
     });
   }

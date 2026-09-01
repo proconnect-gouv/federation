@@ -63,6 +63,7 @@ describe("InteractionController", () => {
     oidcAcrMock = {
       getFilteredAcrParamsFromInteraction: jest.fn(),
       getInteractionAcr: jest.fn(),
+      getInteractionAmr: jest.fn(),
       areThereEssentialAcrRequested: jest.fn(),
       isEssentialAcrSatisfied: jest.fn(),
       computeCanAcrBeSatisfiedByPcf: jest.fn(),

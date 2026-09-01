@@ -41,12 +41,12 @@ export class UserSession {
   @IsOptional()
   @IsArray()
   @Expose()
-  readonly idpAmr?: string[];
+  readonly interactionAmr?: string[];
 
   @IsOptional()
   @IsArray()
   @Expose()
-  readonly spAmr?: string[];
+  readonly idpAmr?: string[];
 
   @IsOptional()
   @IsBoolean()

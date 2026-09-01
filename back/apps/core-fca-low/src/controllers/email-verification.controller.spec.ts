@@ -116,7 +116,6 @@ describe("EmailVerificationController", () => {
         get: jest.fn().mockReturnValue({
           spIdentity: { email: "user@example.com" },
           interactionId: "interaction123",
-          spAmr: ["pwd"],
         }),
         set: jest.fn(),
         commit: jest.fn(),
@@ -127,7 +126,6 @@ describe("EmailVerificationController", () => {
 
       expect(userSession.set).toHaveBeenCalledWith({
         isEmailVerifiedByPcf: true,
-        spAmr: ["pwd", "mail"],
       });
       expect(res.redirect).toHaveBeenCalledWith(
         "/prefix/interaction/interaction123/verify",

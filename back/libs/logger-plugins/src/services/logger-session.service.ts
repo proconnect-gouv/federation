@@ -15,17 +15,17 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
 
     const sessionId = sessionService.getId();
     const {
-      spAmr,
-      idpAmr,
       browsingSessionId,
       interactionId,
       interactionAcr,
+      interactionAmr,
       spId,
       spEssentialAcr,
       spName,
       spIdentity,
       spSiretHint,
       spLoginHint,
+      idpAmr,
       idpId,
       idpAcr,
       idpName,
@@ -35,10 +35,9 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
     } = sessionService.get<UserSession>("User") || {};
 
     const context = {
-      spAmr,
-      idpAmr,
       browsingSessionId,
       idpAcr,
+      idpAmr,
       idpBelongingPopulation: idpIdentity?.belonging_population,
       idpEmail: idpIdentity?.email,
       idpEmailFqdn: idpIdentity?.email?.split("@").pop().toLowerCase(),
@@ -52,6 +51,7 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
       idpSub: idpIdentity?.sub,
       interactionAcr,
       interactionId,
+      interactionAmr,
       sessionId,
       spCustom: spIdentity?.custom,
       spEssentialAcr,

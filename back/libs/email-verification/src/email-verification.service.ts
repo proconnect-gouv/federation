@@ -210,10 +210,8 @@ export class EmailVerificationService {
     ) {
       throw new InvalidEmailVerificationTokenException();
     }
-  }
 
-  async deleteEmailVerificationToken(email: string) {
-    return this.emailVerificationTokenRepository.deleteOne(email);
+    await this.emailVerificationTokenRepository.deleteOne(email);
   }
 
   private generateToken(): string {
