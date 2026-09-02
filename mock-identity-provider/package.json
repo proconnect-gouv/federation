@@ -14,7 +14,7 @@
     "ejs": "^6.0.1",
     "express": "^5.2.1",
     "lodash-es": "^4.18.1",
-    "oidc-provider": "^8.8.0",
+    "oidc-provider": "^9.11.5",
     "quick-lru": "^7.3.0",
     "zod": "^4.4.3"
   },
@@ -24,7 +24,7 @@
     "@types/express": "^5.0.6",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.5.5",
-    "@types/oidc-provider": "8.8.1",
+    "@types/oidc-provider": "9.11.1",
     "@types/supertest": "^7.2.1",
     "prettier": "^3.9.6",
     "prettier-plugin-organize-imports": "^4.3.0",
