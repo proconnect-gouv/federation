@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "express": "^5.2.1",
-    "jose": "^6.2.9",
+    "jose": "^6.2.10",
     "openid-client": "^6.8.7",
     "zod": "^4.4.3"
   },

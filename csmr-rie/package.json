@@ -15,10 +15,10 @@
     "type:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@nestjs/core": "^11.1.29",
+    "@nestjs/core": "^11.2.3",
     "@nestjs/common": "^11.2.1",
     "@nestjs/microservices": "^11.2.1",
-    "@nestjs/platform-express": "^11.2.1",
+    "@nestjs/platform-express": "^11.2.3",
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^2.0.1",
     "class-transformer": "^0.5.1",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.24",
-    "@nestjs/testing": "^11.1.29",
+    "@nestjs/testing": "^11.2.3",
     "@types/deep-freeze": "^0.1.2",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
