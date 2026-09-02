@@ -173,9 +173,9 @@
               <label class="col-2 col-form-label" for="id_token_signed_response_alg">id_token_signed_response_alg : </label>
               <div class="col-10">
                 <select class="form-select" name="id_token_signed_response_alg" required>
+                  <option value="RS256" <%= messages.values && messages.values[0].id_token_signed_response_alg === "RS256" ? 'selected' : '' %>>RS256</option>
                   <option value="HS256" <%= messages.values && messages.values[0].id_token_signed_response_alg === "HS256" ? 'selected' : '' %>>HS256</option>
                   <option value="ES256" <%= messages.values && messages.values[0].id_token_signed_response_alg === "ES256" ? 'selected' : '' %>>ES256</option>
-                  <option value="RS256" <%= messages.values && messages.values[0].id_token_signed_response_alg === "RS256" ? 'selected' : '' %>>RS256</option>
                 </select>
               </div>
             </div>
@@ -183,10 +183,10 @@
               <label class="col-2 col-form-label" for="userinfo_signed_response_alg">userinfo_signed_response_alg * : </label>
               <div class="col-10">
                 <select class="form-select" name="userinfo_signed_response_alg">
-                  <option value="" <%= messages.values && messages.values[0].userinfo_signed_response_alg === "" ? 'selected' : '' %>>Aucun</option>
+                  <option value="RS256" <%= messages.values && messages.values[0].userinfo_signed_response_alg === "RS256" ? 'selected' : '' %>>RS256</option>
                   <option value="HS256" <%= messages.values && messages.values[0].userinfo_signed_response_alg === "HS256" ? 'selected' : '' %>>HS256</option>
                   <option value="ES256" <%= messages.values && messages.values[0].userinfo_signed_response_alg === "ES256" ? 'selected' : '' %>>ES256</option>
-                  <option value="RS256" <%= messages.values && messages.values[0].userinfo_signed_response_alg === "RS256" ? 'selected' : '' %>>RS256</option>
+                  <option value="" <%= messages.values && messages.values[0].userinfo_signed_response_alg === "" ? 'selected' : '' %>>Aucun</option>
                 </select>
                 <div class="invalid-feedback">
                   Veuillez choisir un userinfo_signed_response_alg parmis les options proposées.
