@@ -61,10 +61,9 @@ export class IdentityProviderService {
       name: identityProviderDto.name,
     });
 
-    const hasGristPublicationSucceeded =
-      await this.publishIdentityProvidersToGrist();
+    const gristPublicationResult = await this.publishIdentityProvidersToGrist();
 
-    return { identityProviderId, hasGristPublicationSucceeded };
+    return { identityProviderId, gristPublicationResult };
   }
 
   async findById(
@@ -122,10 +121,9 @@ export class IdentityProviderService {
     // Save the updated provider
     await this.identityProviderRepository.save(existingProvider);
 
-    const hasGristPublicationSucceeded =
-      await this.publishIdentityProvidersToGrist();
+    const gristPublicationResult = await this.publishIdentityProvidersToGrist();
 
-    return { identityProviderId, hasGristPublicationSucceeded };
+    return { identityProviderId, gristPublicationResult };
   }
 
   async deleteIdentityProvider(id: string, user: string) {
@@ -148,7 +146,13 @@ export class IdentityProviderService {
     const hasDeletionSucceeded = result.affected === 1;
 
     // we do not know how to update grist after a deletion
-    return { hasGristPublicationSucceeded: false, hasDeletionSucceeded };
+    return {
+      gristPublicationResult: {
+        ok: false,
+        error: "Deletion not handled by our grist publisher",
+      },
+      hasDeletionSucceeded,
+    };
   }
 
   async paginate(options: PaginationOptions) {
@@ -273,10 +277,15 @@ export class IdentityProviderService {
   }
 
   private async publishIdentityProvidersToGrist() {
-    const allIdentityProviders = await this.identityProviderRepository.find();
+    try {
+      const allIdentityProviders = await this.identityProviderRepository.find();
 
-    return this.gristPublisherService.publishIdentityProviders(
-      allIdentityProviders,
-    );
+      return await this.gristPublisherService.publishIdentityProviders(
+        allIdentityProviders,
+      );
+    } catch (error: any) {
+      this.logger.error(error);
+      return { ok: false, error: error.message as string };
+    }
   }
 }

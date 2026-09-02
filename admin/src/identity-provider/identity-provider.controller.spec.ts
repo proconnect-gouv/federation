@@ -199,7 +199,7 @@ describe("IdentityProviderController", () => {
     it("should call successfully the service provider create function", async () => {
       // set
       serviceMock.create.mockResolvedValueOnce({
-        hasGristPublicationSucceeded: true,
+        gristPublicationResult: { ok: true },
       });
       // action
       await identityProviderController.createIdentityProvider(
@@ -313,7 +313,7 @@ describe("IdentityProviderController", () => {
     it("should call the update function from the identity provider service", async () => {
       // set
       serviceMock.update.mockResolvedValueOnce({
-        hasGristPublicationSucceeded: true,
+        gristPublicationResult: { ok: true },
       });
 
       // action
@@ -363,8 +363,8 @@ describe("IdentityProviderController", () => {
       const body = { name: "name" };
 
       // action
-      serviceMock.deleteIdentityProvider.mockImplementationOnce(() => {
-        return {};
+      serviceMock.deleteIdentityProvider.mockResolvedValueOnce({
+        gristPublicationResult: { ok: true },
       });
       await identityProviderController.deleteIdentityProvider(
         id,

@@ -407,7 +407,7 @@ describe("ServiceProviderController", () => {
   describe("serviceProviderUpdate()", () => {
     it("should update a servicerProvider and return to the serviceProvider page", async () => {
       serviceProviderServiceMock.update.mockResolvedValue({
-        hasGristPublicationSucceeded: true,
+        gristPublicationResult: { ok: true },
       });
 
       await serviceProviderController.serviceProviderUpdate(
@@ -424,7 +424,7 @@ describe("ServiceProviderController", () => {
 
     it("should call serviceProviderService.update()", async () => {
       serviceProviderServiceMock.update.mockResolvedValue({
-        hasGristPublicationSucceeded: true,
+        gristPublicationResult: { ok: true },
       });
 
       // When
@@ -464,7 +464,7 @@ describe("ServiceProviderController", () => {
 
     it("should update a servicerProvider with URIScheme for redirectUri field and return to the serviceProvider page", async () => {
       serviceProviderServiceMock.update.mockResolvedValue({
-        hasGristPublicationSucceeded: true,
+        gristPublicationResult: { ok: true },
       });
       ((ServiceProviderDtoMock.redirectUri = [
         "https://url.com",
@@ -486,7 +486,7 @@ describe("ServiceProviderController", () => {
 
     it("should update a servicerProvider with URIScheme for redirectUriLogout field and return to the serviceProvider page", async () => {
       serviceProviderServiceMock.update.mockResolvedValue({
-        hasGristPublicationSucceeded: true,
+        gristPublicationResult: { ok: true },
       });
       ((ServiceProviderDtoMock.redirectUriLogout = [
         "https://url.com",
@@ -514,9 +514,9 @@ describe("ServiceProviderController", () => {
       const body = { name: "name" };
 
       // action
-      serviceProviderServiceMock.deleteServiceProviderById.mockReturnValueOnce(
-        {},
-      );
+      serviceProviderServiceMock.deleteServiceProviderById.mockReturnValueOnce({
+        gristPublicationResult: { ok: true },
+      });
       await serviceProviderController.deleteServiceProvider(
         key,
         req,
@@ -575,7 +575,7 @@ describe("ServiceProviderController", () => {
 
       // action
       serviceProviderServiceMock.deleteManyServiceProvidersById.mockReturnValueOnce(
-        {},
+        { gristPublicationResult: { ok: true } },
       );
       await serviceProviderController.deleteServiceProviders(
         deleteServiceProviderDto,

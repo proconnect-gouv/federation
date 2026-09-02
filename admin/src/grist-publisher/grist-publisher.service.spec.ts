@@ -66,9 +66,10 @@ describe("GristPublisherService", () => {
         json: jest.fn().mockResolvedValue({ message: "unexpected payload" }),
       });
 
-      await expect(service.publishIdentityProviders([])).resolves.toBe(false);
-      expect(loggerService.error).toHaveBeenCalledWith(
-        "Unexpected Grist records response shape for table identity-providers-table",
+      await expect(service.publishIdentityProviders([])).rejects.toEqual(
+        new Error(
+          `Unexpected Grist records response shape for table identity-providers-table: {"message":"unexpected payload"}`,
+        ),
       );
     });
 
@@ -87,9 +88,10 @@ describe("GristPublisherService", () => {
         text: jest.fn().mockResolvedValue("invalid api key"),
       });
 
-      await expect(service.publishIdentityProviders([])).resolves.toBe(false);
-      expect(loggerService.error).toHaveBeenCalledWith(
-        "Could not fetch Grist records: Unauthorized (invalid api key)",
+      expect(service.publishIdentityProviders([])).rejects.toEqual(
+        new Error(
+          "Could not fetch Grist records: Unauthorized (invalid api key)",
+        ),
       );
     });
 

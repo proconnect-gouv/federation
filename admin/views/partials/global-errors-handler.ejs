@@ -1,5 +1,14 @@
 <% if (locals.messages.globalError) { %>
 <div class="alert alert-danger mt-3">
 <%= messages.globalError[0].code && ERROR_CODE_TRANSLATIONS[messages.globalError[0].code] ? ERROR_CODE_TRANSLATIONS[messages.globalError[0].code] : messages.globalError[0] %>
+<%
+if (messages.globalError[0].details) {%>
+    <details>
+        <summary>Details</summary>
+        <%= messages.globalError[0].details %>
+    </details>
+<%
+}
+%>
 </div>
 <% } %>
