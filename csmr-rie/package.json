@@ -17,7 +17,7 @@
   "dependencies": {
     "@nestjs/core": "^11.2.3",
     "@nestjs/common": "^11.2.1",
-    "@nestjs/microservices": "^11.2.1",
+    "@nestjs/microservices": "^11.2.3",
     "@nestjs/platform-express": "^11.2.3",
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^2.0.1",
