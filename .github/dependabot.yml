@@ -29,6 +29,8 @@ updates:
       interval: "weekly"
     cooldown:
       default-days: 7
+      exclude:
+        - "@proconnect-gouv/*"
     versioning-strategy: increase
     ignore:
       - dependency-name: "@types/node"
