@@ -38,7 +38,7 @@ describe("update a service-provider", () => {
       // Assert
       cy.url().should(
         "eq",
-        "https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider",
+        "https://admin-local.proconnect.127.0.0.1.nip.io/service-provider",
       );
       cy.contains(
         `Le fournisseur de service ${fs.name} a été créé avec succès !`,
