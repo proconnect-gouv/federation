@@ -45,7 +45,7 @@ export default function configuration(config: EnvConfig): Configuration {
         "website",
         "zoneinfo",
       ],
-      openid: ["sub"],
+      openid: ["sub", "idp_custom_attributes"],
       // ProConnect claims
       siret: ["siret"],
       // Deprecated ProConnect claims

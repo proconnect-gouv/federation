@@ -17,7 +17,7 @@
             </div>
             <br>
             <details>
-                <summary id="open-custom-configuration">Usage avancé</summary>
+                <summary id="open-custom-configuration">Champs supplémentaires</summary>
                 <p><small>
                     Liste des valeurs qui seront typés en sortie de l'idp : 'true', 'false', 'null', 'undefined', 'empty', 'empty-array'. Les champs laissés vide ne seront pas renvoyés.
                 </small></p>
@@ -64,6 +64,22 @@
             <br>
             <button type="submit">Se connecter</button>
         </form>
+        <br>
+        <details>
+            <summary id="open-advanced-configuration">Usage avancé</summary>
+            <form action="/interaction/<%= locals.uid %>/login/advanced" method="post">
+                <p>
+                    Pour toute valeur custom, ajoutez ici vos clés/valeurs au format JSON.
+                </p>
+                <textarea
+                    name="attributes"
+                    cols="50"
+                    rows="12"
+                ><%= JSON.stringify(locals.defaultAttributes, null, 2) %></textarea>
+                <button id="advanced-connection">Connexion personnalisée</button>
+            </form>
+        </details>
+        <br>
         <details id="open-debug-info">
             <summary>Informations de débogage</summary>
             <pre><code><%= locals.debugInfo %></code></pre>

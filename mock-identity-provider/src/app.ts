@@ -12,7 +12,6 @@ import {
   parseFormDataValue,
   userAttributesSchema,
 } from "./user-data.ts";
-
 export type { EnvConfig };
 
 const loginBodySchema = userAttributesSchema.extend({
@@ -52,18 +51,32 @@ export function createApp(config: EnvConfig) {
     const defaultUser = getDefaultUser();
 
     if (prompt.name === "login") {
+      const acr =
+        get(prompt.details, "acr.value") ||
+        get(prompt.details, "acr.values.0") ||
+        (params?.["acr_values"] as string | undefined)?.split(" ")[0] ||
+        "eidas1";
+      const amr = "pwd";
+      const email = params?.["login_hint"] || defaultUser.email;
+
       return res.render("index", {
         title: config.APP_NAME,
         stylesheetUrl: config.STYLESHEET_URL,
         uid,
-        email: params?.["login_hint"] || defaultUser.email,
+        email,
         defaultUser,
-        acr:
-          get(prompt.details, "acr.value") ||
-          get(prompt.details, "acr.values.0") ||
-          (params?.["acr_values"] as string | undefined)?.split(" ")[0] ||
-          "eidas1",
-        amr: "pwd",
+        acr,
+        amr,
+        defaultAttributes: {
+          email,
+          given_name: defaultUser.given_name,
+          usual_name: defaultUser.usual_name,
+          siret: defaultUser.siret,
+          sub: defaultUser.sub,
+          phone_number: defaultUser.phone_number,
+          acr,
+          amr,
+        },
         debugInfo: JSON.stringify(
           {
             oidcProviderPrompt: prompt,
@@ -80,12 +93,38 @@ export function createApp(config: EnvConfig) {
     return next(new Error("unsupported_prompt"));
   });
 
+  function parseAttributesJson(raw: unknown): Record<string, unknown> {
+    if (typeof raw !== "string" || raw.trim() === "") return {};
+
+    try {
+      const parsed = JSON.parse(raw);
+      if (
+        typeof parsed !== "object" ||
+        parsed === null ||
+        Array.isArray(parsed)
+      ) {
+        throw new Error("Le JSON doit représenter un objet");
+      }
+      return parsed as Record<string, unknown>;
+    } catch (err) {
+      throw new Error(
+        `Impossible de parser le champ "attributes" : ${(err as Error).message}`,
+      );
+    }
+  }
+
   async function normalLogin(req: Request, res: Response) {
     const {
       prompt: { name },
     } = await provider.interactionDetails(req, res);
     assert.equal(name, "login");
-    const { acr, amr, ...userAttributes } = loginBodySchema.parse(req.body);
+
+    const { error, error_description, ...formFields } = req.body;
+    const attributes = parseAttributesJson(req.body["attributes"]);
+    const { acr, amr, ...userAttributes } = loginBodySchema.parse({
+      ...formFields,
+      ...attributes,
+    });
     const userId = createUser(userAttributes);
 
     const loginResult: {
@@ -114,7 +153,6 @@ export function createApp(config: EnvConfig) {
     };
     return result;
   }
-
   app.post(
     "/interaction/:uid/login",
     urlencoded({ extended: false }),
@@ -130,7 +168,58 @@ export function createApp(config: EnvConfig) {
     },
   );
 
+  app.post(
+    "/interaction/:uid/login/advanced",
+    urlencoded({ extended: false }),
+    async (req, res) => {
+      let result;
+      try {
+        result = await advancedLogin(req, res);
+      } catch (err) {
+        result = {
+          error: "invalid_request",
+          error_description: (err as Error).message,
+        };
+      }
+      await provider.interactionFinished(req, res, result);
+    },
+  );
+
   app.use(provider.callback());
+
+  async function advancedLogin(req: Request, res: Response) {
+    const {
+      prompt: { name },
+    } = await provider.interactionDetails(req, res);
+    assert.equal(name, "login");
+
+    const attributes = parseAttributesJson(req.body["attributes"]);
+    const { acr, amr, ...userAttributes } = loginBodySchema.parse(attributes);
+    const userId = createUser(userAttributes);
+
+    const loginResult: {
+      accountId: string;
+      acr?: any;
+      amr?: string[];
+      ts: number;
+    } = {
+      accountId: userId,
+      ts: Date.now(),
+    };
+
+    if (acr !== "") {
+      loginResult.acr = parseFormDataValue(acr);
+    }
+
+    if (amr !== "") {
+      loginResult.amr = amr.split(",");
+    }
+
+    return {
+      login: loginResult,
+      consent: {},
+    };
+  }
 
   return { app };
 }
