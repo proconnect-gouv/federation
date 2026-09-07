@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { JWK } = require("jose-v2");
+const { JWK } = require("jose");
 
 /**
  * Execute this function to generate the JSON Object Signing and Encryption

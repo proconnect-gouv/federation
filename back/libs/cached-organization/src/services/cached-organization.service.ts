@@ -10,7 +10,10 @@ import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
 
 import { LoggerService } from "@fc/logger";
-import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
+import {
+  ApiEntrepriseConnectionError,
+  ApiEntrepriseError,
+} from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { CachedOrganization } from "../schemas";
 
 @Injectable()
@@ -66,7 +69,8 @@ export class CachedOrganizationService {
     } catch (error) {
       if (
         !isEmpty(storedCachedOrganization) &&
-        error instanceof ApiEntrepriseConnectionError &&
+        (error instanceof ApiEntrepriseConnectionError ||
+          error instanceof ApiEntrepriseError) &&
         this.isFallbackCacheValid(storedCachedOrganization)
       ) {
         return storedCachedOrganization;

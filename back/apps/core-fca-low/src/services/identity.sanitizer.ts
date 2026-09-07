@@ -11,7 +11,10 @@ import { LoggerService } from "@fc/logger";
 import { ApiEntrepriseConfig } from "@fc/api-entreprise";
 import { CachedOrganizationService } from "@fc/cached-organization";
 import { IdentityProviderMetadata } from "@fc/oidc";
-import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
+import {
+  ApiEntrepriseConnectionError,
+  ApiEntrepriseError,
+} from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { AppConfig, IdentityForSpDto, IdentityFromIdpDto } from "../dto";
 import {
   ApiEntrepriseConnectionException,
@@ -96,7 +99,10 @@ export class IdentitySanitizer {
           cachedOrganizationErrorType: error?.constructor?.name,
         });
 
-        if (error instanceof ApiEntrepriseConnectionError) {
+        if (
+          error instanceof ApiEntrepriseConnectionError ||
+          error instanceof ApiEntrepriseError
+        ) {
           throw new ApiEntrepriseConnectionException();
         }
 
