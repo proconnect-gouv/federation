@@ -12,6 +12,8 @@ import {
   parseFormDataValue,
   userAttributesSchema,
 } from "./user-data.ts";
+import type { UserAttributes } from "./user-data.ts";
+
 export type { EnvConfig };
 
 const loginBodySchema = userAttributesSchema.extend({
@@ -34,11 +36,55 @@ export function createApp(config: EnvConfig) {
     res.json({ status: "ok" });
   });
 
-  const provider = new Provider(`https://${config.FQDN}`, {
-    adapter: MemoryAdapter,
-    ...configuration(config),
-  });
-  provider.proxy = true;
+  const customClaimNames = new Set<string>();
+
+  const createProvider = () => {
+    const providerConfig = configuration(config);
+    // We let users add custom fields in advanced login mode to simulate
+    // custom IdP user info properties.
+    // Reusing the default `openid` scope lets us carry them without adding
+    // admin-facing configuration just for the mock.
+    const openidClaims = [...(providerConfig.claims?.["openid"] ?? [])];
+
+    customClaimNames.forEach((claimName) => {
+      openidClaims.push(claimName);
+    });
+
+    providerConfig.claims = {
+      ...providerConfig.claims,
+      openid: openidClaims,
+    };
+
+    const provider = new Provider(`https://${config.FQDN}`, {
+      adapter: MemoryAdapter,
+      ...providerConfig,
+    });
+    provider.proxy = true;
+    return provider;
+  };
+
+  let provider = createProvider();
+
+  const registerCustomClaims = (userAttributes: Record<string, unknown>) => {
+    Object.keys(userAttributes).forEach((claimName) => {
+      if (
+        !customClaimNames.has(claimName) &&
+        ![
+          "email",
+          "given_name",
+          "usual_name",
+          "siret",
+          "sub",
+          "phone_number",
+          "acr",
+          "amr",
+        ].includes(claimName)
+      ) {
+        customClaimNames.add(claimName);
+        provider = createProvider();
+      }
+    });
+  };
 
   app.get("/interaction/:uid", async (req, res, next) => {
     const { uid, prompt, params, session } = await provider.interactionDetails(
@@ -67,16 +113,20 @@ export function createApp(config: EnvConfig) {
         defaultUser,
         acr,
         amr,
-        defaultAttributes: {
-          email,
-          given_name: defaultUser.given_name,
-          usual_name: defaultUser.usual_name,
-          siret: defaultUser.siret,
-          sub: defaultUser.sub,
-          phone_number: defaultUser.phone_number,
-          acr,
-          amr,
-        },
+        defaultParamsValue: JSON.stringify(
+          {
+            email,
+            given_name: defaultUser.given_name,
+            usual_name: defaultUser.usual_name,
+            siret: defaultUser.siret,
+            sub: defaultUser.sub,
+            phone_number: defaultUser.phone_number,
+            acr,
+            amr,
+          },
+          null,
+          2,
+        ),
         debugInfo: JSON.stringify(
           {
             oidcProviderPrompt: prompt,
@@ -93,38 +143,12 @@ export function createApp(config: EnvConfig) {
     return next(new Error("unsupported_prompt"));
   });
 
-  function parseAttributesJson(raw: unknown): Record<string, unknown> {
-    if (typeof raw !== "string" || raw.trim() === "") return {};
-
-    try {
-      const parsed = JSON.parse(raw);
-      if (
-        typeof parsed !== "object" ||
-        parsed === null ||
-        Array.isArray(parsed)
-      ) {
-        throw new Error("Le JSON doit représenter un objet");
-      }
-      return parsed as Record<string, unknown>;
-    } catch (err) {
-      throw new Error(
-        `Impossible de parser le champ "attributes" : ${(err as Error).message}`,
-      );
-    }
-  }
-
-  async function normalLogin(req: Request, res: Response) {
+  async function handleBasicLogin(req: Request, res: Response) {
     const {
       prompt: { name },
     } = await provider.interactionDetails(req, res);
     assert.equal(name, "login");
-
-    const { error, error_description, ...formFields } = req.body;
-    const attributes = parseAttributesJson(req.body["attributes"]);
-    const { acr, amr, ...userAttributes } = loginBodySchema.parse({
-      ...formFields,
-      ...attributes,
-    });
+    const { acr, amr, ...userAttributes } = loginBodySchema.parse(req.body);
     const userId = createUser(userAttributes);
 
     const loginResult: {
@@ -161,7 +185,7 @@ export function createApp(config: EnvConfig) {
       if (req.body["error"]) {
         result = req.body;
       } else {
-        result = await normalLogin(req, res);
+        result = await handleBasicLogin(req, res);
       }
 
       await provider.interactionFinished(req, res, result);
@@ -169,12 +193,13 @@ export function createApp(config: EnvConfig) {
   );
 
   app.post(
-    "/interaction/:uid/login/advanced",
+    "/interaction/:uid/advanced-login",
     urlencoded({ extended: false }),
+
     async (req, res) => {
       let result;
       try {
-        result = await advancedLogin(req, res);
+        result = await handleAdvancedLogin(req, res);
       } catch (err) {
         result = {
           error: "invalid_request",
@@ -185,17 +210,23 @@ export function createApp(config: EnvConfig) {
     },
   );
 
-  app.use(provider.callback());
+  app.use((req, res, _next) => {
+    return provider.callback()(req, res);
+  });
 
-  async function advancedLogin(req: Request, res: Response) {
+  async function handleAdvancedLogin(req: Request, res: Response) {
     const {
       prompt: { name },
     } = await provider.interactionDetails(req, res);
     assert.equal(name, "login");
 
-    const attributes = parseAttributesJson(req.body["attributes"]);
-    const { acr, amr, ...userAttributes } = loginBodySchema.parse(attributes);
-    const userId = createUser(userAttributes);
+    const advancedLoginParams = JSON.parse(
+      req.body["advanced-login-params"] as string,
+    ) as Record<string, unknown>;
+
+    const { acr, amr, ...userAttributes } = advancedLoginParams;
+    const userId = createUser(userAttributes as UserAttributes);
+    registerCustomClaims(userAttributes);
 
     const loginResult: {
       accountId: string;
@@ -208,12 +239,14 @@ export function createApp(config: EnvConfig) {
     };
 
     if (acr !== "") {
-      loginResult.acr = parseFormDataValue(acr);
+      loginResult.acr = parseFormDataValue(acr as string);
     }
 
     if (amr !== "") {
-      loginResult.amr = amr.split(",");
+      loginResult.amr = (amr as string).split(",");
     }
+
+    console.log("loginResult:", loginResult);
 
     return {
       login: loginResult,
