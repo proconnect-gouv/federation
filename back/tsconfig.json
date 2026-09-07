@@ -97,7 +97,8 @@
       "@fc/email-verification/*": ["libs/email-verification/src/*"],
       "@fc/rate-limiter": ["libs/rate-limiter/src"],
       "@fc/rate-limiter/*": ["libs/rate-limiter/src/*"]
-    }
+    },
+    "skipLibCheck": true
   },
   "files": ["global.d.ts"],
   "include": ["*.js", "*.ts", "libs/**/*.ts", "apps/**/*.ts"],

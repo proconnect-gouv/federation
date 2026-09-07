@@ -6,7 +6,7 @@ import {
   IsUrl,
 } from "class-validator";
 
-import { JSONWebKeySet } from "jose-v2";
+import { JSONWebKeySet } from "jose";
 
 export class OidcClientConfig {
   @IsNumber()
