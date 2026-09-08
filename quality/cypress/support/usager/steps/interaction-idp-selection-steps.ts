@@ -16,6 +16,15 @@ Then("je choisis le fournisseur d'identité {string}", function (text: string) {
 });
 
 Then(
+  "le fournisseur d'identité {string} est sélectionné",
+  function (text: string) {
+    cy.get('input[name="identityProviderUid"]:checked')
+      .next("label")
+      .should("contain", text);
+  },
+);
+
+Then(
   "je clique sur le fournisseur d'identité {string}",
   function (text: string) {
     cy.contains("label", text).click();
