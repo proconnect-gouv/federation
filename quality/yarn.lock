@@ -1351,10 +1351,10 @@ cypress-on-fix@^1.1.0:
   dependencies:
     debug "^4.3.7"
 
-cypress-plugin-api@^2.12.1:
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/cypress-plugin-api/-/cypress-plugin-api-2.12.1.tgz#fc269d9eb51327a15e73bc06288d330899a7b37d"
-  integrity sha512-F7XW0QB4HM613bduffy3jzVPgSK/PWVCxWmzl3NDjPVb8CJ5n0PIrKxZcaLfKamP5qgzMf4lLPY/qrhtqtqIwQ==
+cypress-plugin-api@^2.12.2:
+  version "2.12.2"
+  resolved "https://registry.yarnpkg.com/cypress-plugin-api/-/cypress-plugin-api-2.12.2.tgz#afc67693d2cf38bd1c7c149d1c99666c163cc48d"
+  integrity sha512-QZG8WkLix/8hAD9OBi2EH7JvSc8BgbMe5k8UW5Dirt62J+cf1csL51DrUc53R0JhD7m1Td6c3Llen1Q3VodHqw==
   dependencies:
     prismjs "^1.30.0"
     set-cookie-parser "^3.0.1"
