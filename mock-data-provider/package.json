@@ -15,7 +15,7 @@
     "express": "^5.2.1",
     "jose": "^6.2.10",
     "openid-client": "^6.8.7",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.8",
