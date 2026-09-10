@@ -99,6 +99,7 @@ jobs:
           - mock-identity-provider
           - mock-service-provider
           - fc-exploitation-v2
+          - statisticat
         include:
           - instance: core-fca-low
             context: ./back
@@ -113,6 +114,8 @@ jobs:
             context: ./mock-service-provider
           - instance: fc-exploitation-v2
             context: ./admin
+          - instance: statisticat
+            context: ./statisticat
         arch:
           - amd64
           - arm64
