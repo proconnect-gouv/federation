@@ -29,8 +29,8 @@ services:
       redis-pwd:
         condition: service_healthy
     pre_start:
-      - command: yarn run migrate up
-      - command: yarn run seed
+      - command: npm run migrate -- up
+      - command: npm run seed
     healthcheck:
       test:
         [

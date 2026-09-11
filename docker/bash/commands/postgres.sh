@@ -2,15 +2,15 @@
 
 _migrations_postgres() {
   cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec ${NO_TTY} "${1}" yarn typeorm:migrations-run
+  $DOCKER_COMPOSE exec ${NO_TTY} "${1}" npm run typeorm:migrations-run
 }
 
 _migrations_generate_postgres() {
   cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec ${NO_TTY} "${1}" yarn typeorm:migrations-generate "${2}"
+  $DOCKER_COMPOSE exec ${NO_TTY} "${1}" npm run typeorm:migrations-generate -- "${2}"
 }
 
 _fixtures_postgres() {
   cd ${WORKING_DIR}
-  $DOCKER_COMPOSE exec ${NO_TTY} "${1}" yarn typeorm:fixtures:load
+  $DOCKER_COMPOSE exec ${NO_TTY} "${1}" npm run typeorm:fixtures:load
 }

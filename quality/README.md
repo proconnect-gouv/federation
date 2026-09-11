@@ -76,7 +76,7 @@ docker-stack start-all
 2. Run Cypress tests on FCA-LOW against docker environment
 
 ```shell
-yarn test:e2e
+npm run test:e2e
 ```
 
 #### Run the tests from Cypress UI for docker environment
@@ -85,7 +85,7 @@ yarn test:e2e
 1. Open Cypress UI to run tests on FCA-LOW against docker environment
 
 ```shell
-yarn test:e2e:studio
+npm run test:e2e:studio
 ```
 
 #### Run the tests from Cypress UI for integ01 environment
@@ -104,7 +104,7 @@ yarn test:e2e:studio
 4. Open Cypress UI to run tests on FCA-LOW against integ01 environment
 
 ```shell
-yarn test:e2e:studio
+npm run test:e2e:studio
 ```
 
 5. Run the `usager` tests (user connection) or `exploitation` tests (if you have an operator user)
@@ -112,7 +112,7 @@ yarn test:e2e:studio
 ### Generate the Cucumber HTML report
 
 ```shell
-CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=integ01 yarn report
+CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=integ01 npm run report
 ```
 
 ### Filter tests
@@ -141,19 +141,19 @@ The visual validations are done on Electron 114 headless in the terminal.
 ### Run the snapshot tests
 
 ```shell
-yarn test:snapshot
+npm run test:snapshot
 ```
 
 ### Update the base image files for all of your tests
 
 ```shell
-yarn test:snapshot --env updateSnapshots=true
+npm run test:snapshot -- --env updateSnapshots=true
 ```
 
 ### Prevent test failures when an image diff does not pass
 
 ```shell
-yarn test:snapshot --env failOnSnapshotDiff=false
+npm run test:snapshot -- --env failOnSnapshotDiff=false
 ```
 
 ## Plugins VSCode

@@ -19,22 +19,26 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./admin/yarn.lock
+          cache: npm
+          cache-dependency-path: ./admin/package-lock.json
           node-version-file: ./admin/package.json
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+        continue-on-error: true
 
       - name: Check code style and transpilation
-        run: yarn lint
+        run: npm run lint
 
       - name: Run tests
-        run: yarn test
+        run: npm test
 
       - name: Run coverage
         run: |
-          yarn test --coverage
+          npm test -- --coverage
           ./scripts/coverage.sh
 
   e2e-exploitation:
@@ -58,12 +62,12 @@ jobs:
       - name: Set up Node.js for federation-admin
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./admin/yarn.lock
+          cache: npm
+          cache-dependency-path: ./admin/package-lock.json
           node-version-file: ./admin/package.json
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Set PC_ROOT environment variable
         run: |
@@ -87,7 +91,7 @@ jobs:
           ./docker-stack wait "admin" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
 
       - name: Start tests
-        run: yarn test:e2e -c video=false
+        run: npm run test:e2e -- -c video=false
 
       - name: Post failing tests
         if: failure()

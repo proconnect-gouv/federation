@@ -7,7 +7,7 @@
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch --debug 0.0.0.0:9229",
     "start:ci": "NODE_ENV=development nest start",
-    "lint": "prettier --check . && yarn run type:check",
+    "lint": "prettier --check . && npm run type:check",
     "format": "prettier --write .",
     "test": "jest",
     "test:watch": "jest --watch",

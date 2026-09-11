@@ -26,15 +26,23 @@ jobs:
       - name: 🟩 Set up Node.js
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./${{ matrix.app }}/yarn.lock
+          cache: npm
+          cache-dependency-path: ./${{ matrix.app }}/package-lock.json
           node-version: "24"
 
       - name: 📦 Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
+
+      - name: 🔍 Audit dependencies
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: 🔍 Audit provenance signatures
+        run: npm audit signatures
+        continue-on-error: true
 
       - name: Check code style and transpilation
-        run: yarn lint
+        run: npm run lint
 
       - name: 🧪 Run tests
-        run: yarn test
+        run: npm test
