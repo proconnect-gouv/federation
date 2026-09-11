@@ -22,9 +22,12 @@ const fs2 = { ...fs, name: "CypressFS2" };
 const fs3 = { ...fs, name: "CypressFS3" };
 
 describe("Service provider list", () => {
+  let creationDate;
+
   before(() => {
     cy.resetEnv("mongo");
     cy.login(USER_OPERATOR, USER_PASS);
+    creationDate = getTodayDate();
     createServiceProvider(fs, basicConfiguration);
     createServiceProvider(fs2, basicConfiguration);
     createServiceProvider(fs3, basicConfiguration);
@@ -44,9 +47,8 @@ describe("Service provider list", () => {
       cy.get(".time-client-id")
         .last()
         .then((item) => {
-          const todayDate = getTodayDate();
           const test = item[0].textContent;
-          expect(todayDate).to.equal(test);
+          expect(creationDate).to.equal(test);
         });
     });
 
@@ -59,9 +61,8 @@ describe("Service provider list", () => {
       cy.get(".time-secret")
         .last()
         .then((item) => {
-          const todayDate = getTodayDate();
           const test = item[0].textContent;
-          expect(todayDate).to.equal(test);
+          expect(creationDate).to.equal(test);
         });
     });
 

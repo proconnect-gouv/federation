@@ -78,13 +78,16 @@ jobs:
       - name: Set ADMIN_ROOT environment variable
         run: echo "ADMIN_ROOT=$(pwd)" >> $GITHUB_ENV
 
+      - name: Install mkcert
+        uses: ./.github/actions/install-mkcert
+
       - name: Start docker stack
         working-directory: ./docker
         run: |
           ./docker-stack prune-ci
           ./docker-stack compose build core
           ./docker-stack up admin
-          ./docker-stack wait "admin" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login" "240"
+          ./docker-stack wait "admin" "https://admin-local.proconnect.127.0.0.1.nip.io/login" "240"
 
       - name: Start tests
         run: yarn test:e2e -c video=false

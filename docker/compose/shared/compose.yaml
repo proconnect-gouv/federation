@@ -185,29 +185,29 @@ services:
       public:
         aliases:
           # FCA LOW
-          - core-fca-low.docker.dev-franceconnect.fr
-          - bridge-proxy-rie.docker.dev-franceconnect.fr
-          - fca-low-front.docker.dev-franceconnect.fr
-          - fsa1-low.docker.dev-franceconnect.fr
-          - fsa2-low.docker.dev-franceconnect.fr
-          - fsa3-low.docker.dev-franceconnect.fr
-          - fia1-low.docker.dev-franceconnect.fr
-          - fia2-low.docker.dev-franceconnect.fr
-          - moncomptepro.docker.dev-franceconnect.fr
+          - federation-local.proconnect.127.0.0.1.nip.io
+          - bridge-proxy-rie-local.proconnect.127.0.0.1.nip.io
+          - front-local.proconnect.127.0.0.1.nip.io
+          - sp1-local.proconnect.127.0.0.1.nip.io
+          - sp2-local.proconnect.127.0.0.1.nip.io
+          - sp3-local.proconnect.127.0.0.1.nip.io
+          - idp1-local.proconnect.127.0.0.1.nip.io
+          - idp2-local.proconnect.127.0.0.1.nip.io
+          - moncomptepro-local.proconnect.127.0.0.1.nip.io
           # Aliases to access exploitation from test runner
           # TODO: Move those aliases to exploitation network once runner workaround found
-          - exploitation-fca-low.docker.dev-franceconnect.fr
-          - exploitation-high.docker.dev-franceconnect.fr
+          - admin-local.proconnect.127.0.0.1.nip.io
+          - admin-high-local.proconnect.127.0.0.1.nip.io
           # Mock Data Provider
-          - dpa1-low.docker.dev-franceconnect.fr
-          - dpa2-low.docker.dev-franceconnect.fr
+          - dpa1-local.proconnect.127.0.0.1.nip.io
+          - dpa2-local.proconnect.127.0.0.1.nip.io
           # Generic
-          - docker.dev-franceconnect.fr
+          - proconnect.127.0.0.1.nip.io
       fc:
       rie:
         aliases:
-          - auth.llng.docker.dev-franceconnect.fr
-          - fia-rie-low.docker.dev-franceconnect.fr
+          - auth.llng-local.proconnect.127.0.0.1.nip.io
+          - idp-rie-local.proconnect.127.0.0.1.nip.io
       exploitation:
 
   squid:
@@ -217,8 +217,8 @@ services:
         soft: 1048576
         hard: 1048576
     extra_hosts:
-      - auth.llng.docker.dev-franceconnect.fr:172.16.1.254
-      - fia-rie-low.docker.dev-franceconnect.fr:172.16.1.254
+      - auth.llng-local.proconnect.127.0.0.1.nip.io:172.16.1.254
+      - idp-rie-local.proconnect.127.0.0.1.nip.io:172.16.1.254
     networks:
       - public
       - fc

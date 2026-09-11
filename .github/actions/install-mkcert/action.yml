@@ -1,0 +1,12 @@
+name: Install mkcert
+description: Download and install the mkcert binary
+
+runs:
+  using: composite
+  steps:
+    - name: Install mkcert
+      shell: bash
+      run: |
+        curl -JLO "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64"
+        chmod +x mkcert-v1.4.4-linux-amd64
+        sudo mv mkcert-v1.4.4-linux-amd64 /usr/local/bin/mkcert
