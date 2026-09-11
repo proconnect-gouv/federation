@@ -10,7 +10,7 @@ const oidcClientConfig: OidcClientConfig = {
   // This duration is in seconds and is typically set to 6000 in most environments,
   // which equals 100 minutes.
   // This value is unusually high and should be reassessed in the future.
-  timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
+  timeout: parseInt(process.env.REQUEST_TIMEOUT as string, 10),
   // This value is not used in the current implementation.
   jwks: {
     keys: env.json("CRYPTO_ENC_LOCALE_PRIV_KEYS"),
