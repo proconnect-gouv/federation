@@ -183,10 +183,49 @@
                 </div>
               </div>
             </div>
+
+
+            <%
+            var isUseDiscoveryUrlChecked = (locals.messages.values && messages.values[0].discovery === true) || !locals.messages.values 
+            %>
+            
             <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="jwksUrl"> JWKS URL <span class=<%= locals.messages.values && messages.values[0].discovery === true ? 'd-none' : '' %>>*</span> : </label>
+              <label class="col-2 col-form-label">Utiliser la discovery URL : </label>
+              <div class="mb-3 col-4 d-flex align-items-end">
+                <div class="form-check form-check-inline">
+                  <input type="radio" class="form-check-input is-valid" id="discovery" name="discovery" value="true" <%= isUseDiscoveryUrlChecked ? 'checked' : '' %>>
+                  <label class="form-check-label" for="discovery">oui</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input type="radio" class="form-check-input is-valid" id="no-discovery" name="discovery" value="false" <%= !isUseDiscoveryUrlChecked ? 'checked' :'' %>>
+                  <label class="form-check-label" for="no-discovery">non</label>
+                </div>
+              </div>
+            </div>
+
+             <div class="mb-3 row <%= isUseDiscoveryUrlChecked ? '' : 'd-none' %>" id="discovery-url-row">
+              <label class="col-2 col-form-label" for="discoveryUrl">Discovery URL <span class=<%= isUseDiscoveryUrlChecked ? '' : 'd-none' %>>*</span> :</label>
               <div class="col-10">
-                <input id="jwksUrl" type="text" <%= locals.messages.values && messages.values[0].discovery ? 'disabled' : 'required'%> class="form-control <%= locals.messages.errors && messages.errors[0].jwksUrl && 'is-invalid' %>" name="jwksUrl" value="<%= locals.messages.values && messages.values[0].jwksUrl %>" pattern="^https?:\/\/[^/].+$">
+                <input id="discoveryUrl" <%= isUseDiscoveryUrlChecked ? 'required' :'disabled' %> type="text" class="form-control <%= locals.messages.errors && messages.errors[0].discoveryUrl && 'is-invalid' %>" name="discoveryUrl" value="<%= locals.messages.values && messages.values[0].discoveryUrl %>" pattern="^https?:\/\/[^/].+$">
+                <div class="invalid-feedback">
+                  <% if (locals.messages.errors && messages.errors[0].discoveryUrl) { %>
+                  <p>
+                    <% messages.errors[0].discoveryUrl.forEach((error) => { %>
+                    <%= error %>
+                    <br>
+                    <% }) %>
+                  </p>
+                  <% } else { %>
+                  Veuillez mettre une discovery URL valide au format https://issuer.fr/.well-known/openid-configuration
+                  <% } %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 row <%= !isUseDiscoveryUrlChecked ? '' : 'd-none' %>" id="jwks-url-row">
+              <label class="col-2 col-form-label" for="jwksUrl"> JWKS URL <span class=<%= isUseDiscoveryUrlChecked ? 'd-none' : '' %>>*</span> : </label>
+              <div class="col-10">
+                <input id="jwksUrl" type="text" <%= isUseDiscoveryUrlChecked ? 'disabled' : 'required' %> class="form-control <%= locals.messages.errors && messages.errors[0].jwksUrl && 'is-invalid' %>" name="jwksUrl" value="<%= locals.messages.values && messages.values[0].jwksUrl %>" pattern="^https?:\/\/[^/].+$">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].jwksUrl) { %>
                   <p>
@@ -201,11 +240,10 @@
                 </div>
               </div>
             </div>
-
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="tokenUrl">Token URL <span class=<%= locals.messages.values && messages.values[0].discovery === true ? 'd-none' : '' %>>*</span> :</label>
+            <div class="mb-3 row <%= !isUseDiscoveryUrlChecked ? '' : 'd-none' %>" id="token-url-row">
+              <label class="col-2 col-form-label" for="tokenUrl">Token URL <span class=<%= isUseDiscoveryUrlChecked ? 'd-none' : '' %>>*</span> :</label>
               <div class="col-10">
-                <input id="tokenUrl" type="text" <%= locals.messages.values && messages.values[0].discovery ? 'disabled' : 'required'%> class="form-control <%= locals.messages.errors && messages.errors[0].tokenUrl && 'is-invalid' %>" name="tokenUrl" value="<%= locals.messages.values && messages.values[0].tokenUrl %>" pattern="^https?:\/\/[^/].+$">
+                <input id="tokenUrl" type="text" <%= isUseDiscoveryUrlChecked ? 'disabled' : 'required' %> class="form-control <%= locals.messages.errors && messages.errors[0].tokenUrl && 'is-invalid' %>" name="tokenUrl" value="<%= locals.messages.values && messages.values[0].tokenUrl %>" pattern="^https?:\/\/[^/].+$">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].tokenUrl) { %>
                   <p>
@@ -220,10 +258,10 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="userInfoUrl">UserInfo URL <span class=<%= locals.messages.values && messages.values[0].discovery === true ? 'd-none' : '' %>>*</span>:</label>
+            <div class="mb-3 row <%= !isUseDiscoveryUrlChecked ? '' : 'd-none' %>" id="userinfo-url-row">
+              <label class="col-2 col-form-label" for="userInfoUrl">UserInfo URL <span class=<%= isUseDiscoveryUrlChecked ? 'd-none' : '' %>>*</span> :</label>
               <div class="col-10">
-                <input id="userInfoUrl" <%= locals.messages.values && messages.values[0].discovery ? 'disabled' : 'required' %> type="text" class="form-control userInfoUrl <%= locals.messages.errors && messages.errors[0].userInfoUrl && 'is-invalid' %>" name="userInfoUrl" value="<%= locals.messages.values && messages.values[0].userInfoUrl %>" pattern="^https?:\/\/[^/].+$">
+                <input id="userInfoUrl" <%= isUseDiscoveryUrlChecked ? 'disabled' : 'required' %> type="text" class="form-control userInfoUrl <%= locals.messages.errors && messages.errors[0].userInfoUrl && 'is-invalid' %>" name="userInfoUrl" value="<%= locals.messages.values && messages.values[0].userInfoUrl %>" pattern="^https?:\/\/[^/].+$">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].userInfoUrl) { %>
                   <p>
@@ -238,10 +276,10 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="authorizationUrl">Authorization URL <span class=<%= locals.messages.values && messages.values[0].discovery === true ? 'd-none' : '' %>>*</span> : </label>
+            <div class="mb-3 row <%= !isUseDiscoveryUrlChecked ? '' : 'd-none' %>" id="authorization-url-row">
+              <label class="col-2 col-form-label" for="authorizationUrl">Authorization URL <span class=<%= isUseDiscoveryUrlChecked ? 'd-none' : '' %>>*</span> :</label>
               <div class="col-10">
-                <input id="authorizationUrl" <%= locals.messages.values && messages.values[0].discovery ? 'disabled' : 'required' %> type="text" class="form-control <%= locals.messages.errors && messages.errors[0].authorizationUrl && 'is-invalid' %>" name="authorizationUrl" value="<%= locals.messages.values && messages.values[0].authorizationUrl %>" pattern="^https?:\/\/[^/].+$">
+                <input id="authorizationUrl" <%= isUseDiscoveryUrlChecked ? 'disabled' : 'required' %> type="text" class="form-control <%= locals.messages.errors && messages.errors[0].authorizationUrl && 'is-invalid' %>" name="authorizationUrl" value="<%= locals.messages.values && messages.values[0].authorizationUrl %>" pattern="^https?:\/\/[^/].+$">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].authorizationUrl) { %>
                   <p>
@@ -292,37 +330,9 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label">Utiliser la discovery URL : </label>
-              <div class="mb-3 col-4 d-flex align-items-end">
-                <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid" id="discovery" name="discovery" value="true" <%= locals.messages.values && messages.values[0].discovery ? 'checked' : '' %>>
-                  <label class="form-check-label" for="discovery">oui</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input type="radio" class="form-check-input is-valid" id="no-discovery" name="discovery" value="false" <%= locals.messages.values && !messages.values[0].discovery ? 'checked' :'' %>>
-                  <label class="form-check-label" for="no-discovery">non</label>
-                </div>
-              </div>
-            </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="discoveryUrl">Discovery URL <span class=<%= locals.messages.values && messages.values[0].discovery === false ? 'd-none' : '' %>>*</span> :</label>
-              <div class="col-10">
-                <input id="discoveryUrl" <%= messages.values[0].discovery === false ? 'disabled' : 'required' %> type="text" class="form-control <%= locals.messages.errors && messages.errors[0].discoveryUrl && 'is-invalid' %>" name="discoveryUrl" value="<%= locals.messages.values && messages.values[0].discoveryUrl %>" pattern="^https?:\/\/[^/].+$">
-                <div class="invalid-feedback">
-                  <% if (locals.messages.errors && messages.errors[0].discoveryUrl) { %>
-                  <p>
-                    <% messages.errors[0].discoveryUrl.forEach((error) => { %>
-                    <%= error %>
-                    <br>
-                    <% }) %>
-                  </p>
-                  <% } else { %>
-                  Veuillez mettre une discovery URL valide au format https://issuer.fr/.well-known/openid-configuration
-                  <% } %>
-                </div>
-              </div>
-            </div>
+           
+
+
             <div class="mb-3 row">
               <label class="col-2 col-form-label" for="clientId">Client ID * :</label>
               <div class="col-10">
