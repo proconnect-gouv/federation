@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node src/main.ts",
     "start:dev": "node --watch src/main.ts",
-    "lint": "prettier --check . && yarn run type:check",
+    "lint": "prettier --check . && npm run type:check",
     "format": "prettier --write .",
     "test": "node --test src/app.test.ts",
     "type:check": "tsc --noEmit"
