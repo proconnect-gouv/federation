@@ -19,20 +19,24 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./back/yarn.lock
+          cache: npm
+          cache-dependency-path: ./back/package-lock.json
           node-version-file: ./back/package.json
 
       - name: Install dependencies
-        run: yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: npm ci
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+        continue-on-error: true
 
       - name: Check doc
         run: |
-          yarn doc
+          npm run doc
           git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
 
       - name: Check code style and transpilation
-        run: yarn lint
+        run: npm run lint
 
   test_static_quality:
     runs-on: ubuntu-24.04
@@ -46,15 +50,15 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./back/yarn.lock
-          node-version-file: ./back/package.json
+          cache: npm
+          cache-dependency-path: ./quality/package-lock.json
+          node-version-file: ./quality/package.json
 
       - name: Install quality dependencies
-        run: yarn install --frozen-lockfile --no-progress
+        run: npm ci
 
       - name: Check code style and transpilation
-        run: yarn lint
+        run: npm run lint
 
   test_unit_back:
     runs-on: ubuntu-24.04
@@ -68,15 +72,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./back/yarn.lock
+          cache: npm
+          cache-dependency-path: ./back/package-lock.json
           node-version-file: ./back/package.json
 
       - name: Install dependencies
-        run: yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: npm ci
+
+      - name: Pre-fetch MongoDB memory-server binary
+        run: node node_modules/mongodb-memory-server/postinstall.js
 
       - name: Test code coverage
-        run: yarn test --coverage
+        run: npm test -- --coverage
 
   test_snapshot:
     runs-on: ubuntu-24.04
@@ -90,8 +97,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./quality/yarn.lock
+          cache: npm
+          cache-dependency-path: ./quality/package-lock.json
           node-version-file: ./quality/package.json
 
       - name: Set up dockerx
@@ -125,12 +132,17 @@ jobs:
           ./docker-stack up small
 
       - name: Install quality dependencies
-        run: yarn install --frozen-lockfile --no-progress
+        run: npm ci
+
+      - name: Install cypress binary
+        run: |
+          npx cypress install
+          npx cypress verify
 
       - name: Test snapshots
         run: |
-          yarn test:snapshot -c video=false
-          yarn report
+          npm run test:snapshot -- -c video=false
+          npm run report
 
       - name: Create artifacts-logs directory
         if: failure()
@@ -167,8 +179,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./quality/yarn.lock
+          cache: npm
+          cache-dependency-path: ./quality/package-lock.json
           node-version-file: ./quality/package.json
 
       - name: Set up dockerx
@@ -203,12 +215,17 @@ jobs:
           ./docker-stack up "${{ matrix.stack }}"
 
       - name: Install quality dependencies
-        run: yarn install --frozen-lockfile --no-progress
+        run: npm ci
+
+      - name: Install cypress binary
+        run: |
+          npx cypress install
+          npx cypress verify
 
       - name: Execute e2e tests
         run: |
-          yarn test:e2e:chrome-desktop -c video=false --env TAGS="${{ matrix.tags }}"
-          yarn report
+          npm run test:e2e:chrome-desktop -- -c video=false --env TAGS="${{ matrix.tags }}"
+          npm run report
 
       - name: Create artifacts-logs directory
         if: failure()

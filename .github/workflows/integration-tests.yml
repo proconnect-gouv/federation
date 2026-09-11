@@ -14,19 +14,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          cache: yarn
-          cache-dependency-path: ./back/yarn.lock
-          node-version-file: ./back/package.json
+          cache: npm
+          cache-dependency-path: ./quality/package-lock.json
+          node-version-file: ./quality/package.json
 
       - name: Install dependencies
         working-directory: ./quality
-        run: yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: npm ci
 
       - name: Cypress install
         working-directory: ./quality
         run: |
-          yarn cypress install
-          yarn cypress verify
+          npx cypress install
+          npx cypress verify
 
       - name: Start cypress e2e tests
         working-directory: ./quality
@@ -38,8 +38,8 @@ jobs:
           CYPRESS_EXPLOIT_USER_PASS: ${{ secrets.CYPRESS_EXPLOIT_USER_PASS }}
           CYPRESS_EXPLOIT_USER_TOTP: ${{ secrets.CYPRESS_EXPLOIT_USER_TOTP }}
         run: |
-          yarn test:e2e:chrome-desktop -c video=false --env TAGS="not @ignore"
-          yarn report
+          npm run test:e2e:chrome-desktop -- -c video=false --env TAGS="not @ignore"
+          npm run report
 
       - name: Upload Cypress Artifacts
         if: failure()

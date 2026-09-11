@@ -2,9 +2,9 @@ FROM node:24.21.0-alpine AS app
 
 WORKDIR /var/www/app
 
-COPY package.json yarn.lock ./
-RUN --mount=type=cache,target=/usr/local/share/.cache,id=mock-data-provider-yarn-cache,sharing=locked \
-    yarn install --immutable --production
+COPY package.json package-lock.json .npmrc ./
+RUN --mount=type=cache,target=/npm-cache,id=mock-data-provider-npm-cache,sharing=locked \
+    npm ci --omit=dev --cache=/npm-cache
 COPY src/ ./src/
 
 FROM app AS dev

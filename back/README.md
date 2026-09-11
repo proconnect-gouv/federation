@@ -40,7 +40,7 @@ L'échange entre le FI et PCF est encapsulé dans l'échange entre PCF et le FS.
 
 _:warning: Les actions/contournements effectuées doivent régulièrement être mises à jour en fonction de l'évolution des dépendances_
 
-Cette section reprend des rapports de checkmarx et yarn audit.
+Cette section reprend des rapports de checkmarx et npm audit.
 
 Elle indique les contres mesures qui ont dû être prises pour palier au problème remonté.
 

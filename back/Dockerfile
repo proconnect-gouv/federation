@@ -2,19 +2,19 @@ FROM node:24.16.0-alpine AS dev_dependencies
 
 WORKDIR /var/www/app
 
-COPY package.json yarn.lock ./
-RUN --mount=type=cache,target=/usr/local/share/.cache,id=back-yarn-cache,sharing=locked \
+COPY package.json package-lock.json .npmrc ./
+RUN --mount=type=cache,target=/npm-cache,id=back-npm-cache,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
-    yarn install --ignore-engines --immutable
+    npm ci --cache=/npm-cache
 
 FROM node:24.16.0-alpine AS dependencies
 
 WORKDIR /var/www/app
 
-COPY package.json yarn.lock ./
-RUN --mount=type=cache,target=/usr/local/share/.cache,id=back-yarn-cache,sharing=locked \
+COPY package.json package-lock.json .npmrc ./
+RUN --mount=type=cache,target=/npm-cache,id=back-npm-cache,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
-    yarn install --ignore-engines --immutable --production
+    npm ci --omit=dev --cache=/npm-cache
 
 FROM node:24.16.0-alpine AS dev
 
@@ -29,7 +29,7 @@ COPY libs ./libs
 COPY migrations ./migrations
 COPY scripts/seed ./scripts/seed
 
-CMD yarn start:dev core-fca-low
+CMD npm run start:dev -- core-fca-low
 
 FROM dev_dependencies AS builder
 
@@ -37,7 +37,7 @@ COPY nest-cli.json tsconfig.json tsconfig.build.json global.d.ts ./
 COPY apps ./apps
 COPY libs ./libs
 
-RUN yarn run build
+RUN npm run build
 COPY apps/core-fca-low/src/views dist/apps/core-fca-low/views
 COPY apps/core-fca-low/src/public dist/apps/core-fca-low/public
 

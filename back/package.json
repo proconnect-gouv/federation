@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch --watchAssets --debug 0.0.0.0:9229",
     "start:ci": "NODE_ENV=development nest start",
-    "lint": "prettier --check . && yarn run type:check",
+    "lint": "prettier --check . && npm run type:check",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -20,10 +20,10 @@
     "type:check": "tsc --noEmit",
     "doc:exceptions": "tsx libs/exceptions/src/cli/export-exceptions",
     "doc:env": "tsx libs/config/src/cli/export-env",
-    "doc": "yarn doc:exceptions && yarn doc:env",
-    "static": "yarn doc && tsc --noEmit && prettier --write ."
+    "doc": "npm run doc:exceptions && npm run doc:env",
+    "static": "npm run doc && tsc --noEmit && prettier --write ."
   },
-  "resolutions": {
+  "overrides": {
     "cookie-signature": "1.2.0",
     "string-width": "4.2.0"
   },
@@ -111,5 +111,7 @@
   "engines": {
     "node": "24.16.0"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "allowScripts": {
+    "@nestjs/core": false
+  }
 }
