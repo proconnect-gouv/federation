@@ -38,14 +38,6 @@ export class GetDiscoveryDto {
 
   @IsString({ each: true })
   @IsArray()
-  readonly introspection_endpoint_auth_methods_supported: string[];
-
-  @IsString({ each: true })
-  @IsArray()
-  readonly introspection_endpoint_auth_signing_alg_values_supported: string[];
-
-  @IsString({ each: true })
-  @IsArray()
   readonly introspection_signing_alg_values_supported: string[];
 
   @IsString({ each: true })
@@ -122,14 +114,6 @@ export class GetDiscoveryDto {
 
   @IsString({ each: true })
   @IsArray()
-  readonly revocation_endpoint_auth_methods_supported: string[];
-
-  @IsString({ each: true })
-  @IsArray()
-  readonly revocation_endpoint_auth_signing_alg_values_supported: string[];
-
-  @IsString({ each: true })
-  @IsArray()
   readonly claim_types_supported: string[];
 
   @IsString({ each: true })
@@ -155,4 +139,8 @@ export class GetDiscoveryDto {
   @IsString({ each: true })
   @IsArray()
   readonly request_object_encryption_enc_values_supported: string[];
+
+  @IsString()
+  @MinLength(1)
+  readonly pushed_authorization_request_endpoint: string;
 }

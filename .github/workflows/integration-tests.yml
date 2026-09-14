@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./quality
-        run: yarn install --ignore-engines --frozen-lockfile --no-progress
+        run: yarn install --frozen-lockfile --no-progress
 
       - name: Cypress install
         working-directory: ./quality
