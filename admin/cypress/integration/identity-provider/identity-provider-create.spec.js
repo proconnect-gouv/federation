@@ -25,8 +25,8 @@ describe("Identity provider creation", () => {
     it("should set the identity provider to default values when created", () => {
       cy.url().should("eq", `${BASE_URL}/identity-provider`);
       cy.contains("Créer un fournisseur d'identité").click();
-      cy.get('[name="discovery"]:checked').should("have.value", "false");
-      cy.get('[name="discoveryUrl"]').should("be.disabled");
+      cy.get('[name="discovery"]:checked').should("have.value", "true");
+      cy.get('[name="discoveryUrl"]').should("not.be.disabled");
     });
 
     it("if all fields are provided", () => {
@@ -69,10 +69,7 @@ describe("Identity provider creation", () => {
         name: "MonSuperFI-2",
         title: "Mon Super FI 2 mais mieux écrit",
         issuer: "https://issuer.fr",
-        authorizationUrl: "https://issuer.fr/auth",
-        jwksUrl: "https://issuer.fr/jwks",
-        tokenUrl: "https://issuer.fr/token",
-        userInfoUrl: "https://issuer.fr/me",
+        discoveryUrl: "https://issuer.fr/discovery",
         clientId: "09a1a257648c1742c74d6a3d84b31943",
         client_secret: "1234567890AZERTYUIOP",
         token_endpoint_auth_method: "client_secret_post",
@@ -93,10 +90,7 @@ describe("Identity provider creation", () => {
         name: "MonSuperFI-2",
         title: "Mon Super FI 2 mais mieux écrit",
         issuer: "https://issuer.fr",
-        authorizationUrl: "https://issuer.fr/auth",
-        jwksUrl: "https://issuer.fr/jwks",
-        tokenUrl: "https://issuer.fr/token",
-        userInfoUrl: "https://issuer.fr/me",
+        discoveryUrl: "https://issuer.fr/discovery",
         clientId: "09a1a257648c1742c74d6a3d84b31943",
         client_secret: "1234567890AZERTYUIOP",
         token_endpoint_auth_method: "client_secret_post",
@@ -232,13 +226,9 @@ describe("Identity provider creation", () => {
       )
         .scrollIntoView()
         .should("exist");
+
       cy.contains(
         `Veuillez mettre une issuer URL valide au format https://issuer.fr`,
-      )
-        .scrollIntoView()
-        .should("exist");
-      cy.contains(
-        `Veuillez mettre une token URL valide au format https://issuer.fr/token`,
       )
         .scrollIntoView()
         .should("exist");

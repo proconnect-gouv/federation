@@ -4,18 +4,18 @@ export function changeDiscovery() {
   document
     .querySelector("#no-discovery")
     .addEventListener("change", function () {
-      _handleState("discoveryUrl", true);
-      _handleState("userInfoUrl", false);
-      _handleState("authorizationUrl", false);
-      _handleState("tokenUrl", false);
+      _handleState("discovery-url-row", true);
+      _handleState("userinfo-url-row", false);
+      _handleState("authorization-url-row", false);
+      _handleState("token-url-row", false);
       displayJwksUrlField();
     });
 
   document.querySelector("#discovery").addEventListener("change", function () {
-    _handleState("discoveryUrl", false);
-    _handleState("userInfoUrl", true);
-    _handleState("authorizationUrl", true);
-    _handleState("tokenUrl", true);
+    _handleState("discovery-url-row", false);
+    _handleState("userinfo-url-row", true);
+    _handleState("authorization-url-row", true);
+    _handleState("token-url-row", true);
     displayJwksUrlField();
   });
 }
@@ -57,22 +57,25 @@ export function displayJwksUrlField() {
     asymmetricSignature.includes(userInfoSignedResponseAlgValue);
 
   const isJwksUrlOptional = discovery || !useAsymmetricSignature;
-  _handleState("jwksUrl", isJwksUrlOptional);
+  _handleState("jwks-url-row", isJwksUrlOptional);
 }
 
 // Handle changes for input state & label wording
-const _handleState = (inputName, isDisabled) => {
-  const requiredLabel = document.querySelector(`label[for=${inputName}] span`);
-  const input = document.querySelector(`input[name=${inputName}]`);
+const _handleState = (rowName, isDisabled) => {
+  const row = document.getElementById(rowName);
+  const requiredLabel = document.querySelector(`#${rowName} label span`);
+  const input = document.querySelector(`#${rowName} input`);
   input.disabled = isDisabled;
   input.required = !isDisabled;
   if (isDisabled) {
+    row.classList.add("d-none");
     requiredLabel.classList.add("d-none");
     if (input.classList.contains("is-invalid")) {
       input.classList.add("is-invalid-disabled");
       input.classList.remove("is-invalid");
     }
   } else {
+    row.classList.remove("d-none");
     requiredLabel.classList.remove("d-none");
     if (input.classList.contains("is-invalid-disabled")) {
       input.classList.add("is-invalid");
