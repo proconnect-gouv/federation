@@ -1,5 +1,6 @@
 import { ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
+import { MailerService } from "@fc/mailer";
 import { RedisService } from "@fc/redis";
 import { HttpStatus } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -11,6 +12,7 @@ describe("HealthController", () => {
   let mongoConnectionMock: { readyState: number };
   let redisServiceMock: { client: { ping: jest.Mock } };
   let apiEntrepriseMock: { getOrganizationBySiret: jest.Mock };
+  let mailerServiceMock: { ping: jest.Mock };
   let hyyyperbridgeMock: { send: jest.Mock };
   let configServiceMock: { get: jest.Mock };
   let resMock: { status: jest.Mock };
@@ -25,6 +27,9 @@ describe("HealthController", () => {
     };
     hyyyperbridgeMock = {
       send: jest.fn().mockReturnValue(of("pong")),
+    };
+    mailerServiceMock = {
+      ping: jest.fn().mockResolvedValue(true),
     };
     configServiceMock = {
       get: jest.fn().mockReturnValue({ enableHyyyperbridge: true }),
@@ -55,6 +60,10 @@ describe("HealthController", () => {
         {
           provide: "HyyyperbridgeBroker",
           useValue: hyyyperbridgeMock,
+        },
+        {
+          provide: MailerService,
+          useValue: mailerServiceMock,
         },
       ],
     }).compile();
@@ -180,6 +189,7 @@ describe("HealthController", () => {
             "[+]mongodb ok",
             "[+]redis ok",
             "[+]api-entreprise ok",
+            "[+]mailer ok",
             "[+]hyyyperbridge ok",
             "readyz check passed",
           ].join("\n"),
@@ -202,6 +212,7 @@ describe("HealthController", () => {
             "[-]mongodb failed (Mongo connection not ready (readyState=0))",
             "[-]redis failed (ECONNREFUSED)",
             "[+]api-entreprise ok",
+            "[+]mailer ok",
             "[+]hyyyperbridge ok",
             "readyz check failed",
           ].join("\n"),
