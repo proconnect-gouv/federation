@@ -86,6 +86,23 @@ Fonctionnalité: Connexion Usager dont le domaine email attaché est lié à plu
     Quand je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
     Alors le fournisseur d'identité "Autre (via ProConnect Identité)" est positionné en dernier dans la liste des fournisseurs d'identité
 
+  Scénario: Le dernier FI utilisé est présélectionné 
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@polyfi.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
+    Et que je choisis le fournisseur d'identité "Identity Provider 1 - eIDAS faible - ES256"
+    Et que je suis redirigé vers la page login du fournisseur d'identité "par défaut"
+    Et que je m'authentifie
+    Et que je suis redirigé vers la page fournisseur de service "par défaut"
+    Et que je clique sur le bouton de déconnexion
+    Et que je suis redirigé vers la page fournisseur de service "par défaut"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@polyfi.fr"
+    Quand je clique sur le bouton de connexion
+    Alors le fournisseur d'identité "Identity Provider 1 - eIDAS faible - ES256" est sélectionné
+
   @ignoreInteg01
   Plan du Scénario: Retour en arrière après une connexion multi FI réussie
     Étant donné que je navigue sur la page fournisseur de service
