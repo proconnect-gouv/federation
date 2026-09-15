@@ -117,6 +117,9 @@ jobs:
         working-directory: ./docker
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Install mkcert
+        uses: ./.github/actions/install-mkcert
+
       - name: Start docker stack
         working-directory: ./docker
         run: |
@@ -194,6 +197,9 @@ jobs:
         working-directory: ./docker
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Install mkcert
+        uses: ./.github/actions/install-mkcert
 
       - name: Start docker stack
         working-directory: ./docker
