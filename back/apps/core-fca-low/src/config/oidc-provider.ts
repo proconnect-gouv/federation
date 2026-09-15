@@ -61,7 +61,7 @@ const oidcProviderConfig: OidcProviderConfig = {
   ],
   acrValuesThatRequireNewSession: ["eidas2", "eidas3"],
   // Global request timeout used for any outgoing app requests.
-  timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
+  timeout: parseInt(process.env.REQUEST_TIMEOUT as string, 10),
 };
 
 export default oidcProviderConfig;
