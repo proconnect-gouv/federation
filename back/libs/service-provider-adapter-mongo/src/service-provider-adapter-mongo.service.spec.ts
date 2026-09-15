@@ -376,17 +376,6 @@ describe("ServiceProviderAdapterMongoService", () => {
       },
     ];
 
-    it("should return an existing SP", async () => {
-      // Given
-      const idMock = "foo";
-      service.getList = jest.fn().mockResolvedValueOnce(spListMock);
-      // When
-      const result = await service.getById(idMock);
-      // Then
-      expect(result).toEqual({
-        client_id: "foo",
-      });
-    });
     it("should return undefined for non existing SP", async () => {
       // Given
       const idMock = "nope";

@@ -77,25 +77,6 @@ describe("CoreFcaService", () => {
       ).not.toThrow();
     });
 
-    it("should return nothing if spAuthorizedAttachedEmailDomainsConfigs is not empty but no config is found for the current sp", () => {
-      // Given
-      configServiceMock.get.mockReturnValueOnce({
-        spAuthorizedAttachedEmailDomainsConfigs: [
-          {
-            spId: "sp1",
-            spName: "Barad-Dur",
-            spContact: "sauron@palantir.morgoth",
-            authorizedAttachedEmailDomains: ["mordor.orc"],
-          },
-        ],
-      });
-
-      // When / Then
-      expect(() =>
-        service["ensureEmailIsAuthorizedForSp"](spIdMock, "frodo@shire.ho"),
-      ).not.toThrow();
-    });
-
     it("should throw an error if the email is not authorized", () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({

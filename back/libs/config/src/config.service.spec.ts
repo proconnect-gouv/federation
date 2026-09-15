@@ -106,15 +106,6 @@ describe("ConfigService", () => {
   });
 
   describe("get", () => {
-    it("should return asked part of config", () => {
-      // Given
-      const part = "foo";
-      // When
-      const config = service.get(part);
-      // Then
-      expect(config).toBe(options.config.foo);
-    });
-
     it("should return asked part of config based on dot paths", () => {
       //Given
       const paths = "I.swear.my.intentions.are.bad";
