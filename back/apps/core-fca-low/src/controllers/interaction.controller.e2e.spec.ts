@@ -8,7 +8,10 @@ import {
   createIdentityProvider,
   Fia1IdentityProviderDocument,
 } from "@mocks/identity-provider-adapter-mongo";
-import { getSessionServiceMock } from "@mocks/session";
+import {
+  AfterGetOidcCallbackSessionDocument,
+  getSessionServiceMock,
+} from "@mocks/session";
 import {
   createServiceProvider,
   Fsa1ServiceProviderDocument,
@@ -80,44 +83,7 @@ describe("InteractionController", () => {
             ...getSessionServiceMock(),
             // Full valid AfterGetOidcCallbackSessionDto shape: UserSessionDecorator
             // runs class-validator on this before the controller executes.
-            get: () => ({
-              browsingSessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-              spId: "fsa_fsa1_low_key",
-              spName: "FSA - FSA1-LOW",
-              interactionId: "1234567890-1234567890",
-              spState: "test-state",
-              reusesActiveSession: false,
-              rememberMe: false,
-              idpLoginHint: "user@example.com",
-              idpId: Fia1IdentityProviderDocument.uid,
-              idpName: "fia1-low",
-              idpLabel: "fia1-low",
-              idpIdToken:
-                "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.c2lnbmF0dXJlLXBhcnQ",
-              idpAcr: "eidas1",
-              isSilentAuthentication: false,
-              idpIdentity: {
-                sub: "idp-sub-1",
-                given_name: "Jane",
-                usual_name: "Doe",
-                email: "user@example.com",
-                uid: "idp-uid-1",
-              },
-              spIdentity: {
-                sub: "user-sub",
-                given_name: "Jane",
-                usual_name: "Doe",
-                email: "user@example.com",
-                uid: "user-sub",
-                siret: "81801912700021",
-                phone_number: "0600000000",
-                custom: {},
-                idp_id: Fia1IdentityProviderDocument.uid,
-                idp_acr: "eidas1",
-                organization_label: "Test Org",
-                roles: ["agent_public"],
-              },
-            }),
+            get: () => AfterGetOidcCallbackSessionDocument,
           })
           .overrideProvider(AccountFcaService)
           .useValue({ getAccountBySub: async () => ({ active: true }) }),
