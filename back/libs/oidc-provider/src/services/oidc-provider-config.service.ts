@@ -1,4 +1,5 @@
 import { ConfigService } from "#libs/config";
+import { renderErrorPage } from "#libs/exceptions/helpers/index";
 import { ErrorPageParams } from "#libs/exceptions/types/error-page-params";
 import { LoggerService } from "#libs/logger";
 import {
@@ -258,11 +259,7 @@ export class OidcProviderConfigService {
     };
 
   postLogoutSuccessSource: Configuration["features"]["rpInitiatedLogout"]["postLogoutSuccessSource"] =
-    (ctx) => {
-      // This line magically avoids error 500: ERR_HTTP_HEADERS_SENT
-      // TODO investigate why.
-      ctx.body = "";
-
+    async (ctx) => {
       const res = ctx.res as unknown as Response;
       ctx.type = "html";
       // the render function is magically available in the koa context
@@ -276,7 +273,7 @@ export class OidcProviderConfigService {
         },
         error: {},
       };
-      ctx.body = res.render("error", errorPageParams);
+      ctx.body = await renderErrorPage(res, errorPageParams);
     };
 
   findAccount: Configuration["findAccount"] = async (
@@ -297,7 +294,7 @@ export class OidcProviderConfigService {
     };
   };
 
-  renderError: Configuration["renderError"] = (
+  renderError: Configuration["renderError"] = async (
     ctx: KoaContextWithOIDC,
     { error, error_description },
     err,
@@ -316,6 +313,6 @@ export class OidcProviderConfigService {
       exceptionDisplay: {},
       error: { code, id, message },
     };
-    ctx.body = res.render("error", errorPageParams);
+    ctx.body = await renderErrorPage(res, errorPageParams);
   };
 }

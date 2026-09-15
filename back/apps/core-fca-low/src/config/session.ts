@@ -2,6 +2,7 @@ import { ConfigParser } from "#libs/config";
 import { OidcProviderRoutes } from "#libs/oidc-provider";
 import { CookieOptions, SessionConfig } from "#libs/session";
 import { CoreFcaSession, Routes } from "#src";
+import { RequestMethod } from "@nestjs/common";
 
 const env = new ConfigParser(process.env, "Session");
 
@@ -25,7 +26,8 @@ const sessionConfig: SessionConfig = {
   middlewareIncludedRoutes: [
     // Connect flow
     OidcProviderRoutes.AUTHORIZATION,
-    `${Routes.INTERACTION}$`,
+    // Plain paths match as prefixes, a method makes the match exact
+    { path: Routes.INTERACTION, method: RequestMethod.GET },
     Routes.REDIRECT_TO_IDP,
     Routes.OIDC_CALLBACK,
     Routes.INTERACTION_VERIFY,
@@ -39,7 +41,9 @@ const sessionConfig: SessionConfig = {
     Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUESTS,
 
     // Disconnect flow
-    `${OidcProviderRoutes.END_SESSION}$`,
+    // Exact match, otherwise /session/end/confirm would recreate the session
+    // cookie right after logout
+    { path: OidcProviderRoutes.END_SESSION, method: RequestMethod.GET },
     Routes.OIDC_LOGOUT_CALLBACK,
   ],
   templateExposed: {

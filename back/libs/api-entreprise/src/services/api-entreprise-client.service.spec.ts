@@ -5,7 +5,6 @@ jest.mock(
   "@proconnect-gouv/proconnect.api_entreprise/testing/seed/v3-insee-sirene-etablissements-siret",
   () => ({ MaireClamart: { siret: "21920023500014" } }),
 );
-jest.mock("node-fetch", () => jest.fn());
 
 global.fetch = jest.fn();
 

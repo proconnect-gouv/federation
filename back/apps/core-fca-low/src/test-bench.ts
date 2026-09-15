@@ -48,8 +48,9 @@ export class TestingBench {
       },
     };
 
+    const appModule = AppModule.forRoot(configService as any);
     let moduleBuilder = Test.createTestingModule({
-      imports: [AppModule.forRoot(configService as any)],
+      imports: [appModule],
     })
       .overrideProvider(RedisService)
       .useValue({
@@ -77,7 +78,6 @@ export class TestingBench {
     );
 
     const { cookieSecrets } = configService.get<SessionConfig>("Session");
-    const appModule = AppModule.forRoot(configService as any);
     app.use(CookieParser(cookieSecrets));
     NestJsDependencyInjectionWrapper.use(app.select(appModule));
 

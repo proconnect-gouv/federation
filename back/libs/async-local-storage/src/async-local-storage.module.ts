@@ -14,6 +14,6 @@ export class AsyncLocalStorageModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AsyncLocalStorageMiddleware, AsyncLocalStorageRequestMiddleware)
-      .forRoutes("*");
+      .forRoutes("/{*path}");
   }
 }
