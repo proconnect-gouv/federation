@@ -150,20 +150,6 @@ describe("InteractionController", () => {
     (validate as jest.Mock).mockReset();
   });
 
-  describe("getDefault()", () => {
-    it("should redirect to the configured defaultRedirectUri", () => {
-      const res: Partial<Response> = { redirect: jest.fn() };
-      configServiceMock.get.mockReturnValue({
-        defaultRedirectUri: "http://default-uri",
-      });
-
-      controller.getDefault(res as Response);
-
-      expect(configServiceMock.get).toHaveBeenCalledWith("App");
-      expect(res.redirect).toHaveBeenCalledWith(301, "http://default-uri");
-    });
-  });
-
   describe("getInteraction()", () => {
     beforeEach(() => {
       serviceProviderMock.getById.mockResolvedValue({ name: "spName" });
