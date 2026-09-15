@@ -1,5 +1,14 @@
 import request from "supertest";
 
+import { AccountFcaService } from "@fc/account-fca";
+import { OidcProviderService } from "@fc/oidc-provider";
+import { SessionService } from "@fc/session";
+
+import {
+  createIdentityProvider,
+  Fia1IdentityProviderDocument,
+} from "@mocks/identity-provider-adapter-mongo";
+import { getSessionServiceMock } from "@mocks/session";
 import {
   createServiceProvider,
   Fsa1ServiceProviderDocument,
@@ -59,6 +68,99 @@ describe("InteractionController", () => {
           expect(text).toContain("Se connecter ou s'inscrire");
           expect(text).toContain(Fsa1ServiceProviderDocument.name);
         });
+    });
+  });
+
+  describe("GET /interaction/:uid/verify", () => {
+    it("should redirect back to the interaction when the IdP is inactive", async () => {
+      await using bench = await TestingBench.createTestBench((builder) =>
+        builder
+          .overrideProvider(SessionService)
+          .useValue({
+            ...getSessionServiceMock(),
+            // Full valid AfterGetOidcCallbackSessionDto shape: UserSessionDecorator
+            // runs class-validator on this before the controller executes.
+            get: () => ({
+              browsingSessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              spId: "fsa_fsa1_low_key",
+              spName: "FSA - FSA1-LOW",
+              interactionId: "1234567890-1234567890",
+              spState: "test-state",
+              reusesActiveSession: false,
+              rememberMe: false,
+              idpLoginHint: "user@example.com",
+              idpId: Fia1IdentityProviderDocument.uid,
+              idpName: "fia1-low",
+              idpLabel: "fia1-low",
+              idpIdToken:
+                "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.c2lnbmF0dXJlLXBhcnQ",
+              idpAcr: "eidas1",
+              isSilentAuthentication: false,
+              idpIdentity: {
+                sub: "idp-sub-1",
+                given_name: "Jane",
+                usual_name: "Doe",
+                email: "user@example.com",
+                uid: "idp-uid-1",
+              },
+              spIdentity: {
+                sub: "user-sub",
+                given_name: "Jane",
+                usual_name: "Doe",
+                email: "user@example.com",
+                uid: "user-sub",
+                siret: "81801912700021",
+                phone_number: "0600000000",
+                custom: {},
+                idp_id: Fia1IdentityProviderDocument.uid,
+                idp_acr: "eidas1",
+                organization_label: "Test Org",
+                roles: ["agent_public"],
+              },
+            }),
+          })
+          .overrideProvider(AccountFcaService)
+          .useValue({ getAccountBySub: async () => ({ active: true }) }),
+      );
+      const { app } = bench;
+
+      // Fia1IdentityProviderDocument has no `active` field, so isActiveById() resolves false.
+      await createIdentityProvider(app, Fia1IdentityProviderDocument);
+
+      await request(app.getHttpServer())
+        .get("/interaction/1234567890-1234567890/verify")
+        .expect(302)
+        .expect("Location", "/api/v2/interaction/1234567890-1234567890");
+    });
+  });
+
+  describe("GET /interaction/:uid/error", () => {
+    it("should call abortInteraction with the error query params", async () => {
+      await using bench = await TestingBench.createTestBench();
+      const { app } = bench;
+
+      // OidcProviderService is used app-wide (middleware registration on
+      // boot), so it can't be swapped via overrideProvider - spy on the
+      // real, already-booted instance instead. Real interactionFinished()
+      // needs full provider-internal state beyond route-level smoke scope.
+      const abortInteraction = jest
+        .spyOn(app.get(OidcProviderService), "abortInteraction")
+        .mockImplementation(async (_req, res) => {
+          res.redirect(302, "https://stub.example/aborted");
+        });
+
+      await request(app.getHttpServer())
+        .get(
+          "/interaction/1234567890-1234567890/error?error=access_denied&error_description=nope",
+        )
+        .expect(302)
+        .expect("Location", "https://stub.example/aborted");
+
+      expect(abortInteraction).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        { error: "access_denied", error_description: "nope" },
+      );
     });
   });
 });
