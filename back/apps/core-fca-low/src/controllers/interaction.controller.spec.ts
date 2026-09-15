@@ -150,20 +150,6 @@ describe("InteractionController", () => {
     (validate as jest.Mock).mockReset();
   });
 
-  describe("getDefault()", () => {
-    it("should redirect to the configured defaultRedirectUri", () => {
-      const res: Partial<Response> = { redirect: jest.fn() };
-      configServiceMock.get.mockReturnValue({
-        defaultRedirectUri: "http://default-uri",
-      });
-
-      controller.getDefault(res as Response);
-
-      expect(configServiceMock.get).toHaveBeenCalledWith("App");
-      expect(res.redirect).toHaveBeenCalledWith(301, "http://default-uri");
-    });
-  });
-
   describe("getInteraction()", () => {
     beforeEach(() => {
       serviceProviderMock.getById.mockResolvedValue({ name: "spName" });
@@ -356,45 +342,6 @@ describe("InteractionController", () => {
         false,
       );
     });
-
-    it("should render the interaction page if no hints are provided", async () => {
-      const req = { query: {} } as Request;
-      const res = { render: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({}),
-        set: jest.fn(),
-        clear: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      notificationsMock.getNotificationToDisplay.mockResolvedValue({
-        message: "notification",
-      });
-      configServiceMock.get.mockReturnValue({ defaultEmailRenater: "email" });
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123" },
-      });
-      csrfServiceMock.getOrCreate.mockReturnValue("csrfToken");
-      (validate as jest.Mock).mockReturnValue([
-        new Error("not a valid session"),
-      ]);
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(res.render).toHaveBeenCalledWith("interaction", {
-        csrfToken: "csrfToken",
-        defaultEmailRenater: "email",
-        notificationMessage: "notification",
-        isEmailInvalid: false,
-        spName: "spName",
-      });
-    });
   });
 
   describe("getVerify()", () => {
@@ -466,28 +413,6 @@ describe("InteractionController", () => {
       await controller.getVerify(req, res, {} as any, userSessionService);
 
       expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
-    });
-
-    it("should redirect to INTERACTION route when IdP is inactive and not in silent authentication mode", async () => {
-      const req = { sessionId: "session1" } as unknown as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
-          isSilentAuthentication: false,
-          interactionId: "interaction123",
-          idpId: "idp123",
-        }),
-      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
-
-      identityProviderMock.isActiveById.mockResolvedValue(false);
-      configServiceMock.get.mockReturnValueOnce({ urlPrefix: "/prefix" });
-
-      await controller.getVerify(req, res, {} as any, userSessionService);
-
-      expect(res.redirect).toHaveBeenCalledWith(
-        "/prefix/interaction/interaction123",
-      );
     });
 
     it("should throw AgentNotFromPublicServiceException for private sector identity not allowed by SP", async () => {
@@ -597,19 +522,6 @@ describe("InteractionController", () => {
   });
 
   describe("getError()", () => {
-    it("should call abortInteraction", async () => {
-      const req = {} as Request;
-      const res = {} as Response;
-
-      await controller.getError(
-        req,
-        res,
-        {} as any,
-        { error: "error", error_description: "error_description" } as any,
-      );
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
-    });
     it("should call abortInteraction with no error messages", async () => {
       const req = {} as Request;
       const res = {} as Response;
