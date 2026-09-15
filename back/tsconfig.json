@@ -28,6 +28,18 @@
       "@fc/service-provider-adapter-mongo/*": [
         "libs/service-provider-adapter-mongo/src/*"
       ],
+      "@mocks/identity-provider-adapter-mongo": [
+        "libs/identity-provider-adapter-mongo/.mocks"
+      ],
+      "@mocks/identity-provider-adapter-mongo/*": [
+        "libs/identity-provider-adapter-mongo/.mocks/*"
+      ],
+      "@mocks/service-provider-adapter-mongo": [
+        "libs/service-provider-adapter-mongo/.mocks"
+      ],
+      "@mocks/service-provider-adapter-mongo/*": [
+        "libs/service-provider-adapter-mongo/.mocks/*"
+      ],
       "@fc/logger": ["libs/logger/src"],
       "@fc/logger/*": ["libs/logger/src/*"],
       "@mocks/logger": ["libs/logger/.mocks"],
