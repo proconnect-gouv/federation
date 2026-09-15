@@ -25,10 +25,10 @@ _up() {
     *"pg-admin")
       echo "  Fixtures for admin app..."
       cd ${WORKING_DIR}
-      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn typeorm schema:drop
-      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn migrations:run
-      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" yarn fixtures:load
-      ${DOCKER_COMPOSE} run --rm --no-deps ${NO_TTY} core yarn run seed
+      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" npm run typeorm -- schema:drop
+      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" npm run migrations:run
+      ${DOCKER_COMPOSE} exec ${NO_TTY} "admin" npm run fixtures:load
+      ${DOCKER_COMPOSE} run --rm --no-deps ${NO_TTY} core npm run seed
 
 
       (cd ${FEDERATION_DIR}/admin/cypress/support/ && docker exec pc-pg-"admin"-1 bash -c "$(cat create-db-backup.sh)")

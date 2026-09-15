@@ -34,18 +34,6 @@ sequenceDiagram
 
 L'échange entre le FI et PCF est encapsulé dans l'échange entre PCF et le FS. Il faut garder en tête que cette représentation reste simplifiée car il existe en vérité d'autres étapes qui s'insèrent entre ces étapes. On garde cependant une bonne vision globale de ce qu'il se passe.
 
-# Dépendances
-
-## Sécurité des dépendances
-
-_:warning: Les actions/contournements effectuées doivent régulièrement être mises à jour en fonction de l'évolution des dépendances_
-
-Cette section reprend des rapports de checkmarx et yarn audit.
-
-Elle indique les contres mesures qui ont dû être prises pour palier au problème remonté.
-
-[Sécurité des dépendances](_doc/dépendances/sécurité/README.md).
-
 # Codes erreurs des applications
 
 Cette section fait le lien avec les codes erreurs des applications.

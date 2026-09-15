@@ -7,14 +7,14 @@ RUN apk add --no-cache bash python3 make g++ lscpu
 
 WORKDIR /var/www/app
 
-COPY package.json yarn.lock ./
-RUN --mount=type=cache,target=/usr/local/share/.cache,id=admin-yarn-cache,sharing=locked \
+COPY package.json package-lock.json .npmrc ./
+RUN --mount=type=cache,target=/npm-cache,id=admin-npm-cache,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
-    yarn install --ignore-engines
+    npm ci --cache=/npm-cache
 
 COPY . ./
 
-CMD yarn start:dev
+CMD npm run start:dev
 
 
 FROM ${NODE_IMAGE} AS builder
@@ -24,20 +24,21 @@ COPY . /tmp/admin
 RUN apk add --no-cache python3 make g++ lscpu
 
 WORKDIR /tmp/admin
-RUN yarn install --ignore-engines --immutable --immutable-cache --check-cache
+RUN npm ci
 
 ## build fc-exploitation
 WORKDIR /tmp/admin
-RUN yarn run build
+RUN npm run build
 
 WORKDIR /federation-admin
 RUN mv /tmp/admin/package.json ./ && \
+    mv /tmp/admin/.npmrc ./ && \
     mv /tmp/admin/dist ./ && \
     mv /tmp/admin/views ./
 
-RUN mv /tmp/admin/yarn.lock ./ && \
-    yarn install --ignore-engines --immutable --immutable-cache --check-cache --production && \
-    rm -f package.json */package.json yarn.lock
+RUN mv /tmp/admin/package-lock.json ./ && \
+    npm ci --omit=dev && \
+    rm -f package.json */package.json package-lock.json .npmrc
 
 
 FROM ${NODE_IMAGE} AS production

@@ -29,4 +29,4 @@ services:
     networks:
       - rie
     init: true
-    command: "yarn start:dev"
+    command: "npm run start:dev"

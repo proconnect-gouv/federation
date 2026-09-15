@@ -18,8 +18,7 @@ This guide provides steps to run the ProConnect Fédération within a custom doc
 
 ## Prerequisites
 
-- Node.js (v22) installed (we suggest the usage of [nvm](https://github.com/nvm-sh/nvm))
-- Yarn (>= 1.22) installed ([doc](https://yarnpkg.com/getting-started/install))
+- Node.js (v22) installed (we suggest the usage of [nvm](https://github.com/nvm-sh/nvm)) — npm ships with Node.js, no separate install needed
 - Docker (>= v20.04) and Docker Compose (>= v2.0) installed ([doc](https://docs.docker.com/engine/install/))
 
 ### Under OS X
@@ -166,15 +165,15 @@ ProConnect expects 100% code coverage. You can test the coverage using the follo
 
 ```bash
 cd $PC_ROOT/federation/back
-yarn test --coverage --maxWorkers=50%
+npm test -- --coverage --maxWorkers=50%
 cd $PC_ROOT/federation/admin
-yarn test
+npm test
 ```
 
 If you want to check the coverage for a single file:
 
 ```bash
-yarn test:cov --collectCoverageFrom=path/to/file.ts path/to/file.spec.ts
+npm run test:cov -- --collectCoverageFrom=path/to/file.ts path/to/file.spec.ts
 ```
 
 ### Run the tests without coverage
@@ -182,7 +181,7 @@ yarn test:cov --collectCoverageFrom=path/to/file.ts path/to/file.spec.ts
 To execute the unit tests faster, you can run them without coverage.
 
 ```bash
-yarn test
+npm test
 ```
 
 ## Run the quality Tests
@@ -191,7 +190,7 @@ yarn test
 
 ```bash
 cd $PC_ROOT/federation/quality
-yarn install --frozen-lockfile
+npm ci
 ```
 
 ### Run tests from the Cypress UI
@@ -199,7 +198,7 @@ yarn install --frozen-lockfile
 ```bash
 dks switch medium
 cd $PC_ROOT/federation/quality
-yarn start:low
+npm run start:low
 ```
 
 ### Run tests for PCF Admin from the Cypress UI
@@ -207,7 +206,7 @@ yarn start:low
 ```bash
 dks switch medium
 cd $PC_ROOT/federation/admin
-yarn test:e2e:studio
+npm run test:e2e:studio
 ```
 
 ### Run all quality tests for PCF Core
@@ -215,7 +214,7 @@ yarn test:e2e:studio
 ```bash
 dks switch medium
 cd $PC_ROOT/federation/quality
-yarn test:e2e:chrome-desktop --env TAGS='not @hybridge and not @ignore'
+npm run test:e2e:chrome-desktop -- --env TAGS='not @hybridge and not @ignore'
 ```
 
 ### Run all quality tests for PCF Hybridge
@@ -223,7 +222,7 @@ yarn test:e2e:chrome-desktop --env TAGS='not @hybridge and not @ignore'
 ```bash
 dks switch hybridge
 cd $PC_ROOT/federation/quality
-yarn test:e2e:chrome-desktop --env TAGS='@hybridge'
+npm run test:e2e:chrome-desktop -- --env TAGS='@hybridge'
 ```
 
 ## Visualization Tests
@@ -231,19 +230,19 @@ yarn test:e2e:chrome-desktop --env TAGS='@hybridge'
 ```bash
 dks switch small
 cd $PC_ROOT/federation/quality
-yarn test:snapshot
+npm run test:snapshot
 ```
 
 ## Run other tests
 
 ```bash
 cd $PC_ROOT/federation/quality
-yarn lint --fix
-yarn prettier --write
+npm run lint -- --fix
+npx prettier --write
 cd $PC_ROOT/federation/back
-yarn static
+npm run static
 cd $PC_ROOT/federation/admin
-yarn lint --fix
+npm run lint -- --fix
 ```
 
 ## Run test against integ01 env
@@ -251,7 +250,7 @@ yarn lint --fix
 ```bash
 cd $PC_ROOT/federation/quality
 # Get the credentials from a team member
-CYPRESS_TEST_ENV=integ01 CYPRESS_EXPLOIT_USER_NAME=proconnect-test-local CYPRESS_EXPLOIT_USER_PASS='xxx' CYPRESS_EXPLOIT_USER_TOTP='xxx' yarn test:e2e:studio
+CYPRESS_TEST_ENV=integ01 CYPRESS_EXPLOIT_USER_NAME=proconnect-test-local CYPRESS_EXPLOIT_USER_PASS='xxx' CYPRESS_EXPLOIT_USER_TOTP='xxx' npm run test:e2e:studio
 ```
 
 ## Add a migration script
@@ -260,7 +259,7 @@ We use [migrate-mongo](https://www.npmjs.com/package/migrate-mongo) to manage th
 
 ```bash
 # in the back directory
-$ yarn run migrate create "blacklist the beatles"
+$ npm run migrate -- create "blacklist the beatles"
 Created: migrations/20250203153126-blacklist_the_beatles.ts
 Done in 0.25s.
 ```
@@ -352,4 +351,4 @@ Update `federation/back/package.json`:
 }
 ```
 
-Run yarn install.
+Run npm install.
