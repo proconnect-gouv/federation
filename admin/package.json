@@ -7,7 +7,7 @@
     "url": "git+ssh://git@gitlab.com/proconnect/proconnect-exploitation.git"
   },
   "scripts": {
-    "prebuild": "parcel build ./public/javascript/main.js --target=app && cp ./public/favicon.ico ./dist/client/ && cp -R ./public/images ./dist/client/ ",
+    "prebuild": "parcel build ./public/javascript/main.js --target=app && cp ./public/favicon.ico ./dist/client/ && cp -R ./public/images ./dist/client/ && cp ./public/robots.txt ./dist/client/",
     "build": "tsc -p tsconfig.build.json",
     "console": "node dist/console.js",
     "console:dev": "ts-node -r tsconfig-paths/register src/console.ts",
