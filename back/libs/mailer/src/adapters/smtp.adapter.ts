@@ -20,4 +20,9 @@ export class SmtpAdapter implements MailerService {
     });
     return { messageId: result.messageId };
   }
+
+  async ping(): Promise<boolean> {
+    await this.transporter.verify();
+    return true;
+  }
 }
