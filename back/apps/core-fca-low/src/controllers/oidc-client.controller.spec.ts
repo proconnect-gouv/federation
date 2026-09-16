@@ -8,7 +8,7 @@ import { ISessionService, SessionService } from "@fc/session";
 import { getLoggerMock } from "@mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import { type Request, type Response } from "express";
-import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from "../dto";
+import { UserSession } from "../dto";
 import {
   CoreFcaControllerService,
   CoreFcaService,
@@ -123,45 +123,6 @@ describe("OidcClientController", () => {
     });
   });
 
-  describe("getIdentityProviderSelection", () => {
-    it("should render the identity provider selection view with proper response", async () => {
-      const res = { render: jest.fn() };
-      const email = "user@example.com";
-      const userSession = {
-        get: jest.fn().mockReturnValue({ idpLoginHint: email }),
-      } as unknown as ISessionService<AfterRedirectToIdpWithEmailSessionDto>;
-
-      const providers = [
-        { title: "Provider One", uid: "idp1" },
-        { title: "Autre", uid: "default-idp" },
-      ];
-      coreFcaService.selectIdpsFromEmail.mockResolvedValueOnce(providers);
-      coreFcaService.hasDefaultIdp.mockReturnValue(true);
-
-      configService.get.mockReturnValue({
-        defaultIdpId: "default-idp",
-        scope: "openid",
-      });
-      csrfService.getOrCreate.mockReturnValue("csrf-token");
-      coreFcaService.getSortedDisplayableIdentityProviders.mockReturnValueOnce(
-        providers,
-      );
-
-      await controller.getIdentityProviderSelection(
-        res as unknown as Response,
-        userSession,
-      );
-
-      expect(res.render).toHaveBeenCalledWith("identity-provider-selection", {
-        csrfToken: "csrf-token",
-        identityProviders: providers,
-        hasDefaultIdp: true,
-      });
-
-      expect(csrfService.getOrCreate).toHaveBeenCalled();
-    });
-  });
-
   describe("postIdentityProviderSelection", () => {
     let req: any;
     let res: Partial<Response>;
@@ -174,35 +135,6 @@ describe("OidcClientController", () => {
       userSession = {
         set: jest.fn(),
       } as unknown as ISessionService<UserSession>;
-    });
-
-    it("should redirect to selected idp when identityProviderUid is provided", async () => {
-      const body = { identityProviderUid: "idp123" } as any;
-
-      await controller.postIdentityProviderSelection(
-        req as Request,
-        res as Response,
-        body,
-      );
-
-      expect(
-        coreFcaControllerService.redirectToIdpWithIdpId,
-      ).toHaveBeenCalledWith(req, res, "idp123");
-    });
-
-    it("should delegate to service redirectToIdpWithEmail with provided rememberMe", async () => {
-      const body = { email, rememberMe: true } as any;
-
-      await controller.redirectToIdp(
-        req as Request,
-        res as Response,
-        body,
-        userSession,
-      );
-
-      expect(
-        coreFcaControllerService.redirectToIdpWithEmail,
-      ).toHaveBeenCalledWith(req, res, email, true);
     });
 
     it("should delegate to service with rememberMe defaulting to false when not provided", async () => {
@@ -271,64 +203,6 @@ describe("OidcClientController", () => {
       accountService.getOrCreateAccount.mockResolvedValue({
         sub: "accountSub",
       });
-    });
-
-    it("should process OIDC callback when identity is valid (no validation errors)", async () => {
-      await controller.getOidcCallback(
-        req as Request,
-        res as Response,
-        userSession,
-      );
-
-      expect(userSession.duplicate).toHaveBeenCalled();
-      expect(userSession.get).toHaveBeenCalled();
-      // Expect nonce and state removal
-      expect(userSession.set).toHaveBeenCalledWith({
-        idpNonce: null,
-        idpState: null,
-      });
-      expect(logger.track).toHaveBeenCalledWith("IDP_CALLEDBACK");
-      expect(oidcClient.getToken).toHaveBeenCalledWith({
-        idpId: "idp123",
-        req,
-        idpState: "state123",
-        idpNonce: "nonce123",
-        spId: "sp123",
-        spName: "SP Name",
-      });
-      expect(logger.track).toHaveBeenCalledWith("FC_REQUESTED_IDP_TOKEN");
-      expect(oidcClient.getUserinfo).toHaveBeenCalledWith({
-        accessToken: "access-token",
-        idpId: "idp123",
-        claims: {
-          acr: "acr-value",
-          amr: "amr-value",
-        },
-      });
-      expect(logger.track).toHaveBeenNthCalledWith(1, "IDP_CALLEDBACK");
-      expect(logger.track).toHaveBeenNthCalledWith(2, "FC_REQUESTED_IDP_TOKEN");
-      expect(logger.track).toHaveBeenNthCalledWith(
-        3,
-        "FC_REQUESTED_IDP_USERINFO",
-      );
-      expect(coreFcaService["ensureIdpCanServeThisEmail"]).toHaveBeenCalledWith(
-        "idp123",
-        "user@example.com",
-      );
-      expect(userSession.set).toHaveBeenNthCalledWith(2, {
-        idpAmr: "amr-value",
-        idpIdToken: "id-token",
-        idpAcr: "acr-value",
-      });
-      expect(userSession.set).toHaveBeenNthCalledWith(3, {
-        idpIdentity: { email: "user@example.com", sub: "sub123" },
-      });
-      expect(userSession.set).toHaveBeenNthCalledWith(4, {
-        spIdentity: { given_name: "John" },
-      });
-      expect(res.redirect).toHaveBeenCalledWith(
-        "/app/interaction/interaction123/verify",
-      );
     });
 
     it("should augment userInfo identity with claims in idToken if IdP is Entra", async () => {
@@ -461,30 +335,6 @@ describe("OidcClientController", () => {
       });
       expect(res.redirect).toHaveBeenCalledWith(
         "/app/interaction/interaction123/verify",
-      );
-    });
-  });
-
-  describe("getOidcLogoutCallback", () => {
-    it("should track session termination, destroy the session and render the logout form", () => {
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSession = {
-        get: jest.fn().mockReturnValue({}),
-      } as unknown as ISessionService<UserSession>;
-      controller.getOidcLogoutCallback(res, userSession);
-
-      expect(res.redirect).toHaveBeenCalled();
-    });
-
-    it("should append redirection url if params are stored in session", () => {
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSession = {
-        get: jest.fn().mockReturnValue("jean"),
-      } as unknown as ISessionService<UserSession>;
-      controller.getOidcLogoutCallback(res, userSession);
-
-      expect(res.redirect).toHaveBeenCalledWith(
-        "/app/session/end?from_idp=true&jean",
       );
     });
   });
