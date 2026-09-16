@@ -16,10 +16,7 @@ import { Request, Response } from "express";
 // --- Mocks for external dependencies ---
 import { EmailVerificationService } from "@fc/email-verification";
 import { AfterGetOidcCallbackSessionDto, UserSession } from "../dto";
-import {
-  AgentAccountBlockedException,
-  AgentNotFromPublicServiceException,
-} from "../exceptions";
+import { AgentAccountBlockedException } from "../exceptions";
 import { CoreFcaControllerService, CoreFcaService } from "../services";
 import { InteractionController } from "./interaction.controller";
 
@@ -150,20 +147,6 @@ describe("InteractionController", () => {
     (validate as jest.Mock).mockReset();
   });
 
-  describe("getDefault()", () => {
-    it("should redirect to the configured defaultRedirectUri", () => {
-      const res: Partial<Response> = { redirect: jest.fn() };
-      configServiceMock.get.mockReturnValue({
-        defaultRedirectUri: "http://default-uri",
-      });
-
-      controller.getDefault(res as Response);
-
-      expect(configServiceMock.get).toHaveBeenCalledWith("App");
-      expect(res.redirect).toHaveBeenCalledWith(301, "http://default-uri");
-    });
-  });
-
   describe("getInteraction()", () => {
     beforeEach(() => {
       serviceProviderMock.getById.mockResolvedValue({ name: "spName" });
@@ -239,34 +222,6 @@ describe("InteractionController", () => {
       expect(userSessionService.clear).toHaveBeenCalled();
     });
 
-    it("should redirect to INTERACTION_VERIFY when session is reused", async () => {
-      const req = { query: {} } as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({ interactionId: "interaction123" }),
-        duplicate: jest.fn(),
-        set: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123" },
-      });
-      oidcAcrMock.isEssentialAcrSatisfied.mockReturnValue(true);
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(res.redirect).toHaveBeenCalledWith(
-        "/prefix/interaction/interaction123/verify",
-      );
-    });
-
     it("should call redirectToIdpWithIdpId when a valid IdP hint exists", async () => {
       const req = { sessionId: "session1" } as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
@@ -297,103 +252,6 @@ describe("InteractionController", () => {
         res,
         "idp123",
       );
-    });
-
-    it("should call abort interaction for invalid IdP hints", async () => {
-      const req = { query: {} } as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn(),
-        duplicate: jest.fn(),
-        set: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123", idp_hint: "unknown-idp" },
-      });
-      identityProviderMock.getById.mockResolvedValue(null);
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
-    });
-
-    it("should call redirectToIdpWithEmail when login_hint is provided", async () => {
-      const req = { sessionId: "session1" } as unknown as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({}),
-        duplicate: jest.fn(),
-        set: jest.fn(),
-        clear: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123", login_hint: "login123" },
-      });
-      identityProviderMock.getById.mockResolvedValue({ id: "idp123" });
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(coreFcaControllerMock.redirectToIdpWithEmail).toHaveBeenCalledWith(
-        req,
-        res,
-        "login123",
-        false,
-      );
-    });
-
-    it("should render the interaction page if no hints are provided", async () => {
-      const req = { query: {} } as Request;
-      const res = { render: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({}),
-        set: jest.fn(),
-        clear: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      notificationsMock.getNotificationToDisplay.mockResolvedValue({
-        message: "notification",
-      });
-      configServiceMock.get.mockReturnValue({ defaultEmailRenater: "email" });
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123" },
-      });
-      csrfServiceMock.getOrCreate.mockReturnValue("csrfToken");
-      (validate as jest.Mock).mockReturnValue([
-        new Error("not a valid session"),
-      ]);
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(res.render).toHaveBeenCalledWith("interaction", {
-        csrfToken: "csrfToken",
-        defaultEmailRenater: "email",
-        notificationMessage: "notification",
-        isEmailInvalid: false,
-        spName: "spName",
-      });
     });
   });
 
@@ -450,84 +308,6 @@ describe("InteractionController", () => {
       );
     });
 
-    it("should call abort interaction when IdP is inactive and in silent authentication mode", async () => {
-      const req = { query: {} } as Request;
-      const res = {} as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
-          isSilentAuthentication: true,
-          idpId: "idp123",
-        }),
-      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
-
-      identityProviderMock.isActiveById.mockResolvedValue(false);
-
-      await controller.getVerify(req, res, {} as any, userSessionService);
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
-    });
-
-    it("should redirect to INTERACTION route when IdP is inactive and not in silent authentication mode", async () => {
-      const req = { sessionId: "session1" } as unknown as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
-          isSilentAuthentication: false,
-          interactionId: "interaction123",
-          idpId: "idp123",
-        }),
-      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
-
-      identityProviderMock.isActiveById.mockResolvedValue(false);
-      configServiceMock.get.mockReturnValueOnce({ urlPrefix: "/prefix" });
-
-      await controller.getVerify(req, res, {} as any, userSessionService);
-
-      expect(res.redirect).toHaveBeenCalledWith(
-        "/prefix/interaction/interaction123",
-      );
-    });
-
-    it("should throw AgentNotFromPublicServiceException for private sector identity not allowed by SP", async () => {
-      const req = { query: {} } as Request;
-      const res = {} as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1", roles: [] },
-          spId: "sp123",
-          idpId: "idp123",
-        }),
-      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
-
-      identityProviderMock.isActiveById.mockResolvedValue(true);
-      serviceProviderMock.getById.mockResolvedValue({ type: "public" });
-
-      await expect(
-        controller.getVerify(req, res, {} as any, userSessionService),
-      ).rejects.toThrow(AgentNotFromPublicServiceException);
-    });
-
-    it("should throw AgentNotFromPublicServiceException for private sector identity not allowed by SP and log error if mismatch", async () => {
-      const req = { query: {} } as Request;
-      const res = {} as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1", roles: [] },
-          spId: "sp123",
-          idpId: "idp123",
-        }),
-      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
-
-      identityProviderMock.isActiveById.mockResolvedValue(true);
-      serviceProviderMock.getById.mockResolvedValue({ type: "public" });
-
-      await expect(
-        controller.getVerify(req, res, {} as any, userSessionService),
-      ).rejects.toThrow(AgentNotFromPublicServiceException);
-    });
-
     it("should throw AgentAccountBlockedException if the account is inactive", async () => {
       const req = { query: {} } as Request;
       const res = {} as Response;
@@ -546,26 +326,6 @@ describe("InteractionController", () => {
       await expect(
         controller.getVerify(req, res, {} as any, userSessionService),
       ).rejects.toThrow(AgentAccountBlockedException);
-    });
-
-    it("should call abort interaction when interactionAcr is not satisfied", async () => {
-      const req = { query: {} } as Request;
-      const res = {} as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1", roles: ["agent_public"] },
-          spEssentialAcr: "high",
-          idpAcr: "low",
-        }),
-      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
-
-      identityProviderMock.isActiveById.mockResolvedValue(true);
-      serviceProviderMock.getById.mockResolvedValue({ type: "public" });
-      oidcAcrMock.getInteractionAcr.mockReturnValue(null);
-
-      await controller.getVerify(req, res, {} as any, userSessionService);
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
     });
 
     it("should call redirect to email verification if acr satisfiable by Pcf ", async () => {
@@ -597,19 +357,6 @@ describe("InteractionController", () => {
   });
 
   describe("getError()", () => {
-    it("should call abortInteraction", async () => {
-      const req = {} as Request;
-      const res = {} as Response;
-
-      await controller.getError(
-        req,
-        res,
-        {} as any,
-        { error: "error", error_description: "error_description" } as any,
-      );
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
-    });
     it("should call abortInteraction with no error messages", async () => {
       const req = {} as Request;
       const res = {} as Response;

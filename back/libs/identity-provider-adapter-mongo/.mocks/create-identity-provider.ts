@@ -29,3 +29,33 @@ export async function createIdentityProvider(
 
   return identityProvider;
 }
+
+/**
+ * `active`/`title` (and any other DTO-only field, e.g.
+ * `attachedEmailDomains` — pass via `extra`) aren't declared on the
+ * `IdentityProvider` mongoose schema even though real provider
+ * documents carry them and the DTO requires/accepts them —
+ * schema/DTO drift, not a test-only concern.
+ * `createIdentityProvider`'s typed `.create()` call can't write
+ * undeclared fields under `strict: true`, so this bypasses the
+ * schema via a raw collection write to seed a genuinely active IdP.
+ */
+export async function createActiveIdentityProvider(
+  app: INestApplicationContext,
+  data: Partial<IdentityProvider>,
+  extra: Record<string, unknown> = {},
+): Promise<IdentityProvider> {
+  const identityProvider = await createIdentityProvider(app, data);
+
+  const IdentityProviderModel = app.get<Model<IdentityProvider>>(
+    getModelToken("IdentityProvider"),
+  );
+  await IdentityProviderModel.collection.updateOne(
+    { uid: data.uid },
+    { $set: { active: true, title: data.name, ...extra } },
+  );
+
+  await app.get(IdentityProviderAdapterMongoService).refreshCache();
+
+  return identityProvider;
+}

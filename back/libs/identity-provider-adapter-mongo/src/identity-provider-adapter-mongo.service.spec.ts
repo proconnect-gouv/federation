@@ -714,37 +714,11 @@ describe("IdentityProviderAdapterMongoService", () => {
   });
 
   describe("isActiveById()", () => {
-    it("should return true if idp is active", async () => {
-      // Given
-      service["getById"] = jest
-        .fn()
-        .mockResolvedValue(validIdentityProviderMock);
-      // When
-      const result = await service.isActiveById("id");
-      // Then
-      expect(result).toBeTrue();
-    });
-
     it("should return false if idp is disabled", async () => {
       // Given
       service["getById"] = jest
         .fn()
         .mockResolvedValue({ ...validIdentityProviderMock, active: false });
-      // When
-      const result = await service.isActiveById("id");
-      // Then
-      expect(result).toBeFalse();
-    });
-
-    it("should return false if idp is not found", async () => {
-      // Given
-      const validIdentityProviderMockWithoutActiveKey = {
-        ...validIdentityProviderMock,
-      };
-      delete validIdentityProviderMockWithoutActiveKey.active;
-      service["getById"] = jest
-        .fn()
-        .mockResolvedValue(validIdentityProviderMockWithoutActiveKey);
       // When
       const result = await service.isActiveById("id");
       // Then

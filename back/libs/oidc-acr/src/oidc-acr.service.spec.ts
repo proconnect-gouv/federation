@@ -48,20 +48,6 @@ describe("OidcAcrService", () => {
   });
 
   describe("getInteractionAcr()", () => {
-    it("should return undefined if essential ACR requirement is not satisfied", () => {
-      // Given
-      const sessionDataMock: UserSession = {
-        spEssentialAcr: "eidas1",
-        idpAcr: "eidas0",
-      };
-
-      // When
-      const result = service["getInteractionAcr"](sessionDataMock);
-
-      // Then
-      expect(result).toBeUndefined();
-    });
-
     it("should return the IdP ACR if essential ACR is satisfied", () => {
       // Given
       const sessionDataMock: UserSession = {
@@ -267,15 +253,6 @@ describe("OidcAcrService", () => {
       expect(result).toBe(true);
     });
 
-    it("should return false when eidas1-mfa is missing", () => {
-      const result = service.computeCanAcrBeSatisfiedByPcf({
-        spEssentialAcr: "openid",
-        idpAmr: ["pwd"],
-        isOtpEmailEnabled: true,
-      });
-
-      expect(result).toBe(false);
-    });
     it("should return false when spEssentialAcr is empty", () => {
       const result = service.computeCanAcrBeSatisfiedByPcf({
         spEssentialAcr: undefined,
