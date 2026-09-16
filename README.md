@@ -92,7 +92,7 @@ Login with:
 - Password: `georgesmoustaki`
 - TOTP: enter this secret in your totp app `KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD`
 
-More credentials can be found here : `federation-admin/shared/fixtures/User.yml`.
+More credentials can be found here : `admin/fixtures`.
 
 ### Testing the installation
 
