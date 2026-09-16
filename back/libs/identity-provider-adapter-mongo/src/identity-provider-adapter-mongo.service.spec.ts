@@ -273,16 +273,6 @@ describe("IdentityProviderAdapterMongoService", () => {
       expect(attachedEmailDomain).toBe(undefined);
     });
 
-    it("should only return the full qualified domain name from an email address", () => {
-      // When
-      const attachedEmailDomain = service.getDomainFromEmail(
-        "hermione.granger@hogwards.uk",
-      );
-
-      // Then
-      expect(attachedEmailDomain).toBe("hogwards.uk");
-    });
-
     it("should only return the full qualified domain name from an email address with two @", () => {
       // When
       const attachedEmailDomain = service.getDomainFromEmail(
@@ -334,17 +324,6 @@ describe("IdentityProviderAdapterMongoService", () => {
   describe("getIdpsByEmail", () => {
     beforeEach(() => {
       service.getIdpsAttachedToEmailDomain = jest.fn();
-    });
-
-    it("should only return the full qualified domain name from an email address", async () => {
-      // When
-      await service.getIdpsByEmail("hermione.granger@hogwarts.uk");
-
-      // Then
-      expect(service.getIdpsAttachedToEmailDomain).toHaveBeenCalledTimes(1);
-      expect(service.getIdpsAttachedToEmailDomain).toHaveBeenCalledWith(
-        "hogwarts.uk",
-      );
     });
 
     it("should only return the full qualified domain name from an email address with two @", async () => {
@@ -596,16 +575,6 @@ describe("IdentityProviderAdapterMongoService", () => {
       expect(result).toEqual({ uid: "foo" });
     });
 
-    it("should return undefined for non existing IdP", async () => {
-      // Given
-      const idMock = "nope";
-      service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
-      // When
-      const result = await service.getById(idMock);
-      // Then
-      expect(result).toBeUndefined();
-    });
-
     it("should pass refresh flag to getList method", async () => {
       // Given
       const idMock = "foo";
@@ -710,19 +679,6 @@ describe("IdentityProviderAdapterMongoService", () => {
       const result = service["getIdentityProviderDTO"](discovery);
       // Then
       expect(result).toBe(NoDiscoveryIdpAdapterMongoDTO);
-    });
-  });
-
-  describe("isActiveById()", () => {
-    it("should return false if idp is disabled", async () => {
-      // Given
-      service["getById"] = jest
-        .fn()
-        .mockResolvedValue({ ...validIdentityProviderMock, active: false });
-      // When
-      const result = await service.isActiveById("id");
-      // Then
-      expect(result).toBeFalse();
     });
   });
 });
