@@ -93,7 +93,6 @@ describe("ServiceProviderController", () => {
     "phone",
     "idp_id",
     "custom",
-    "roles",
     "organization_label",
   ];
 
