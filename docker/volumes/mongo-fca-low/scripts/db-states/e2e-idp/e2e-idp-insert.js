@@ -6,10 +6,10 @@ db.provider.replaceOne(
     name: "idp-test-update",
     active: false,
     title: "Idp test Inserted",
-    url: "https://fia2-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia2-low.docker.dev-franceconnect.fr/",
+    url: "https://idp2-local.proconnect.127.0.0.1.nip.io/",
+    statusURL: "https://idp2-local.proconnect.127.0.0.1.nip.io/",
     discoveryUrl:
-      "https://fia2-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://idp2-local.proconnect.127.0.0.1.nip.io/.well-known/openid-configuration",
     discovery: true,
     clientID: "idptest",
     client_secret:
@@ -17,7 +17,7 @@ db.provider.replaceOne(
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fia2-low.docker.dev-franceconnect.fr/user/session/end",
+      "https://idp2-local.proconnect.127.0.0.1.nip.io/user/session/end",
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "RSA-OAEP",

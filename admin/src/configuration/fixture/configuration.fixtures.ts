@@ -7,16 +7,17 @@ export const configuration: any = [
     mode: "particuliers",
     cookieSigningSecret:
       "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
-    cookieDomain: ".fcp.docker.dev-franceconnect.fr",
+    cookieDomain: ".federation-local.proconnect.127.0.0.1.nip.io",
     serverTimeout: 25000,
     accessTokenTTL: 1200,
     tracesId:
       "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     tracesSecret:
       "99c1105d041adda2c47835a82f6be9dc13e2a2731e302e6f214075aef09f5abb",
-    partnerUrl: "https://partenaires.docker.dev-franceconnect.fr",
-    issuerURL: "https://fcp.docker.dev-franceconnect.fr",
-    callbackURL: "https://fcp.docker.dev-franceconnect.fr/oidc_callback",
+    partnerUrl: "https://partenaires-local.proconnect.127.0.0.1.nip.io",
+    issuerURL: "https://federation-local.proconnect.127.0.0.1.nip.io",
+    callbackURL:
+      "https://federation-local.proconnect.127.0.0.1.nip.io/oidc_callback",
     logger: {
       level: "debug",
       slowtime: true,
@@ -56,7 +57,8 @@ export const configuration: any = [
       keyPath: "/var/lib/franceconnect/certif-client.key",
     },
     mobileConnect: {
-      callbackURL: "https://fcp.docker.dev-franceconnect.fr/mc_callback",
+      callbackURL:
+        "https://federation-local.proconnect.127.0.0.1.nip.io/mc_callback",
       authorizationURL:
         "https://liveidentity-prp.multimediabs.com/user/authorize",
       tokenURL: "https://liveidentity-prp.multimediabs.com/user/token",
@@ -66,7 +68,7 @@ export const configuration: any = [
     },
     rnipp: {
       httpsEnabled: true,
-      hostname: "mock-rnipp.docker.dev-franceconnect.fr",
+      hostname: "mock-rnipp-local.proconnect.127.0.0.1.nip.io",
 
       clientSiret: "12003704900026",
       userId: "SGMAP FranceConnect",
@@ -131,16 +133,17 @@ export const configuration: any = [
     mode: "particuliers",
     cookieSigningSecret:
       "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
-    cookieDomain: ".fcp.docker.dev-franceconnect.fr",
+    cookieDomain: ".federation-local.proconnect.127.0.0.1.nip.io",
     serverTimeout: 25000,
     accessTokenTTL: 1200,
     tracesId:
       "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     tracesSecret:
       "99c1105d041adda2c47835a82f6be9dc13e2a2731e302e6f214075aef09f5abb",
-    partnerUrl: "https://partenaires.docker.dev-franceconnect.fr",
-    issuerURL: "https://fcp.docker.dev-franceconnect.fr",
-    callbackURL: "https://fcp.docker.dev-franceconnect.fr/oidc_callback",
+    partnerUrl: "https://partenaires-local.proconnect.127.0.0.1.nip.io",
+    issuerURL: "https://federation-local.proconnect.127.0.0.1.nip.io",
+    callbackURL:
+      "https://federation-local.proconnect.127.0.0.1.nip.io/oidc_callback",
     logger: {
       level: "debug",
       slowtime: true,
@@ -180,7 +183,8 @@ export const configuration: any = [
       keyPath: "/var/lib/franceconnect/certif-client.key",
     },
     mobileConnect: {
-      callbackURL: "https://fcp.docker.dev-franceconnect.fr/mc_callback",
+      callbackURL:
+        "https://federation-local.proconnect.127.0.0.1.nip.io/mc_callback",
       authorizationURL:
         "https://liveidentity-prp.multimediabs.com/user/authorize",
       tokenURL: "https://liveidentity-prp.multimediabs.com/user/token",
@@ -190,7 +194,7 @@ export const configuration: any = [
     },
     rnipp: {
       httpsEnabled: true,
-      hostname: "mock-rnipp.docker.dev-franceconnect.fr",
+      hostname: "mock-rnipp-local.proconnect.127.0.0.1.nip.io",
       clientSiret: "12003704900026",
       userId: "SGMAP FranceConnect",
     },
@@ -284,13 +288,14 @@ export const updateData: any = {
     },
   ],
   bunyan: { path: "/var/log/fc-evt/event.log" },
-  callbackURL: "https://fcp.docker.dev-franceconnect.fr/oidc_callback",
+  callbackURL:
+    "https://federation-local.proconnect.127.0.0.1.nip.io/oidc_callback",
   companyAPI: {
     recipientSiret: "13001922700011",
     token: "So1aed1fod0pohroxooQu9Ixa0uezoh8oohie7th",
     url: "https://api.apientreprise.fr/v2/entreprises",
   },
-  cookieDomain: ".fcp.docker.dev-franceconnect.fr",
+  cookieDomain: ".federation-local.proconnect.127.0.0.1.nip.io",
   cookieSigningSecret:
     "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
   debug: {
@@ -326,7 +331,7 @@ export const updateData: any = {
     certPath: "/var/lib/franceconnect/certif-client.pem",
     keyPath: "/var/lib/franceconnect/certif-client.key",
   },
-  issuerURL: "https://fcp.docker.dev-franceconnect.fr",
+  issuerURL: "https://federation-local.proconnect.127.0.0.1.nip.io",
   logger: {
     level: "debug",
     prettyPrint: true,
@@ -349,17 +354,18 @@ export const updateData: any = {
   mobileConnect: {
     authorizationURL:
       "https://liveidentity-prp.multimediabs.com/user/authorize",
-    callbackURL: "https://fcp.docker.dev-franceconnect.fr/mc_callback",
+    callbackURL:
+      "https://federation-local.proconnect.127.0.0.1.nip.io/mc_callback",
     clientID: "fcconnect",
     client_secret: "0123456789abcdefghijklmnopqrstuvwxyz",
     tokenURL: "https://liveidentity-prp.multimediabs.com/user/token",
     userInfoURL: "https://liveidentity-prp.multimediabs.com/api/user",
   },
   mode: "particuliers",
-  partnerUrl: "https://partenaires.docker.dev-franceconnect.fr",
+  partnerUrl: "https://partenaires-local.proconnect.127.0.0.1.nip.io",
   rnipp: {
     clientSiret: "12003704900026",
-    hostname: "mock-rnipp.docker.dev-franceconnect.fr",
+    hostname: "mock-rnipp-local.proconnect.127.0.0.1.nip.io",
     httpsEnabled: true,
     userId: "SGMAP FranceConnect",
   },
