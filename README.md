@@ -8,13 +8,13 @@ ProConnect, l'accès pour les pros, validé par l'État
 
 This repository contains 3 main folders:
 
-- docker: the custom docker environnement called "docker stack"
+- docker: the custom docker environment called "docker stack"
 - back: the Node.js source code
 - quality: the end-to-end tests
 
 ## Installation Guide
 
-This guide provides steps to run the ProConnect Fédération within a custom docker environnement called "docker stack".
+This guide provides steps to run the ProConnect Fédération within a custom docker environment called "docker stack".
 
 ## Prerequisites
 
@@ -70,7 +70,7 @@ git clone git@github.com:proconnect-gouv/federation.git
 dks switch small
 ```
 
-On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion with: `test@fia1.fr`
+On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connection with: `test@fia1.fr`
 
 You are now connected to fsa1!
 
@@ -265,8 +265,8 @@ Done in 0.25s.
 ```
 
 > [!NOTE]  
-> The generated file does really match our code style and might not be very TypeScript friendly.  
-> Feel free to change it to guaranty type safety.  
+> The generated file does not really match our code style and might not be very TypeScript friendly.  
+> Feel free to change it to guarantee type safety.  
 > The files will run with [`NODE_OPTIONS="--experimental-strip-types"`](https://nodejs.org/docs/latest-v22.x/api/cli.html#--experimental-strip-types) for a year (2024) as Node.js 24 is will have this option active by default.
 
 ## Run the migration script on the mongo container
@@ -285,7 +285,7 @@ $ docker compose run --rm init-core
 
 ## Generate a new version of class-validator-0.15.1
 
-We forked the class-validator package because we needed inhertiance features and is not yet merged [into the main branch](https://github.com/typestack/class-validator/pull/2641).
+We forked the class-validator package because we needed inheritance features and it is not yet merged [into the main branch](https://github.com/typestack/class-validator/pull/2641).
 
 To update the package, follow these steps.
 
