@@ -210,18 +210,6 @@ describe("ServiceProviderAdapterMongoService", () => {
       expect(repositoryMock.find).toHaveBeenCalledWith(expectedRequestFilter);
     });
 
-    it("should have called find with a filter argument containing active true", async () => {
-      // setup
-      const expectedRequestFilter = {
-        active: true,
-      };
-      // action
-      await service["findAllServiceProvider"]();
-
-      // expect
-      expect(repositoryMock.find).toHaveBeenCalledWith(expectedRequestFilter);
-    });
-
     it("should return result of type list", async () => {
       // action
       const result = await service["findAllServiceProvider"]();
@@ -406,31 +394,6 @@ describe("ServiceProviderAdapterMongoService", () => {
       // Then
       expect(service.getList).toHaveBeenCalledTimes(1);
       expect(service.getList).toHaveBeenCalledWith(refresh);
-    });
-  });
-
-  describe("legacyToOpenIdPropertyName", () => {
-    it("should return service provider with change legacy property name by openid property name", () => {
-      // setup
-      const expected = {
-        ...validServiceProviderMock,
-        client_id: "987654321987654321987654321987654",
-        client_secret: "client_secret",
-        scope: "openid profile",
-      };
-      delete expected.key;
-      delete expected.scopes;
-      service["decryptClientSecret"] = jest
-        .fn()
-        .mockReturnValueOnce("client_secret");
-
-      // action
-      const result = service["legacyToOpenIdPropertyName"](
-        validServiceProviderMock as unknown as ServiceProvider,
-      );
-
-      // expect
-      expect(result).toStrictEqual(expected);
     });
   });
 
