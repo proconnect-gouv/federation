@@ -43,8 +43,6 @@ const oidcProviderConfig: OidcProviderConfig = {
     end_session: OidcProviderRoutes.END_SESSION,
     introspection: OidcProviderRoutes.INTROSPECTION,
     jwks: OidcProviderRoutes.JWKS,
-    pushed_authorization_request:
-      OidcProviderRoutes.PUSHED_AUTHORIZATION_REQUEST,
     registration: OidcProviderRoutes.REGISTRATION,
     revocation: OidcProviderRoutes.REVOCATION,
     token: OidcProviderRoutes.TOKEN,

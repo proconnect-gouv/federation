@@ -141,6 +141,7 @@ export class OidcProviderConfigService {
         jwtUserinfo: { enabled: true },
         jwtIntrospection: { enabled: true },
         backchannelLogout: { enabled: false },
+        pushedAuthorizationRequests: { enabled: false },
         revocation: { enabled: true },
         rpInitiatedLogout: {
           enabled: true,
