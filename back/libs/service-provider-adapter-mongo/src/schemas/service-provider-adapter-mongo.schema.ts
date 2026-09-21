@@ -36,6 +36,15 @@ export class ServiceProvider extends Document {
 
   @Prop({ type: String })
   type: string;
+
+  @Prop({ type: [String] })
+  grant_types?: string[];
+
+  @Prop({ type: String })
+  introspection_signed_response_alg?: string;
+
+  @Prop({ type: [String] })
+  response_types?: string[];
 }
 
 export const ServiceProviderSchema =
