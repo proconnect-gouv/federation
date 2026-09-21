@@ -149,7 +149,7 @@ export class IdentityProviderService {
     return {
       gristPublicationResult: {
         ok: false,
-        error: "Deletion not handled by our grist publisher",
+        error: "Deletion not handled by grist publisher",
       },
       hasDeletionSucceeded,
     };
