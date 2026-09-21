@@ -62,7 +62,6 @@ export class IdentityProvider extends Document {
   isEntraID: boolean;
 
   @Prop({ type: [String] })
-  @Prop({ type: [String] })
   extraAcceptedEmailDomains: string[];
 
   @Prop({ type: Boolean })
@@ -73,6 +72,33 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: Boolean })
   isMfaCompliant: boolean;
+
+  @Prop({ type: Boolean })
+  active: boolean;
+
+  @Prop({ type: [String] })
+  attachedEmailDomains?: string[];
+
+  @Prop({ type: String })
+  authzURL?: string;
+
+  @Prop({ type: String })
+  endSessionURL?: string;
+
+  @Prop({ type: String })
+  jwksURL?: string;
+
+  @Prop({ type: String })
+  title: string;
+
+  @Prop({ type: String })
+  tokenURL?: string;
+
+  @Prop({ type: String })
+  url?: string;
+
+  @Prop({ type: String })
+  userInfoURL?: string;
 }
 
 export const IdentityProviderSchema =
