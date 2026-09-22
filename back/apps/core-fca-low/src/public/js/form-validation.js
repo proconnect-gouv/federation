@@ -19,6 +19,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // See issue "Autofill should trigger a change event on inputs" https://issues.chromium.org/issues/41094857
     // It looks like the field is filled in within milliseconds after the DOMContentLoaded event.
     // As a workaround, we wait for 100ms to ensure the field is filled before checking the form validity.
+    //
+    // Also, `multifi-preselection.js` might change the validity state of the multi-FI selection form when the
+    // `DOMContentLoaded` event fires. It is therefore important to wait for this script to execute before setting
+    // the `disabled` property of the submit button.
     setTimeout(checkFormValidity, 100);
   });
 });
