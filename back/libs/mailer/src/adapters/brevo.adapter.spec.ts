@@ -23,45 +23,71 @@ describe("BrevoAdapter", () => {
     return { fetchFn, adapter };
   };
 
-  it("should call the Brevo API and return the messageId", async () => {
-    const { fetchFn, adapter } = setup();
-    fetchFn.mockResolvedValue({
-      ok: true,
-      json: async () => ({ messageId: "brevo-123" }),
+  describe("sendMail", () => {
+    it("should call the Brevo API and return the messageId", async () => {
+      const { fetchFn, adapter } = setup();
+      fetchFn.mockResolvedValue({
+        ok: true,
+        json: async () => ({ messageId: "brevo-123" }),
+      });
+
+      const result = await adapter.sendMail(dto);
+
+      expect(fetchFn).toHaveBeenCalledWith(
+        "https://api.brevo.com/v3/smtp/email",
+        {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "api-key": "brevo-key",
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            sender: { name: "ProConnect", email: "noreply@example.com" },
+            to: [{ email: "test@example.com" }],
+            subject: "Hello",
+            htmlContent: "<p>Hi</p>",
+          }),
+        },
+      );
+      expect(result).toEqual({ messageId: "brevo-123" });
     });
 
-    const result = await adapter.sendMail(dto);
+    it("should throw when the Brevo API responds with an error", async () => {
+      const { fetchFn, adapter } = setup();
+      fetchFn.mockResolvedValue({
+        ok: false,
+        status: 401,
+        text: async () => "unauthorized",
+      });
 
-    expect(fetchFn).toHaveBeenCalledWith(
-      "https://api.brevo.com/v3/smtp/email",
-      {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          "api-key": "brevo-key",
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          sender: { name: "ProConnect", email: "noreply@example.com" },
-          to: [{ email: "test@example.com" }],
-          subject: "Hello",
-          htmlContent: "<p>Hi</p>",
-        }),
-      },
-    );
-    expect(result).toEqual({ messageId: "brevo-123" });
+      await expect(adapter.sendMail(dto)).rejects.toThrow(
+        "Brevo API error: 401 unauthorized",
+      );
+    });
   });
 
-  it("should throw when the Brevo API responds with an error", async () => {
-    const { fetchFn, adapter } = setup();
-    fetchFn.mockResolvedValue({
-      ok: false,
-      status: 401,
-      text: async () => "unauthorized",
+  describe("ping", () => {
+    it("should return true when the Brevo API is reachable", async () => {
+      const { fetchFn, adapter } = setup();
+      fetchFn.mockResolvedValue({ ok: true });
+
+      const result = await adapter.ping();
+
+      expect(result).toBe(true);
     });
 
-    await expect(adapter.sendMail(dto)).rejects.toThrow(
-      "Brevo API error: 401 unauthorized",
-    );
+    it("should throw when the Brevo API is unreachable", async () => {
+      const { fetchFn, adapter } = setup();
+      fetchFn.mockResolvedValue({
+        ok: false,
+        status: 401,
+        text: async () => "unauthorized",
+      });
+
+      await expect(adapter.ping()).rejects.toThrow(
+        "Brevo API ping error: 401 unauthorized",
+      );
+    });
   });
 });

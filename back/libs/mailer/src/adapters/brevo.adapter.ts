@@ -42,4 +42,23 @@ export class BrevoAdapter implements MailerService {
     const data = (await response.json()) as BrevoResponse;
     return { messageId: data.messageId };
   }
+
+  async ping(): Promise<boolean> {
+    const response = await this.fetchFn(
+      "https://api.brevo.com/v3/smtp/templates",
+      {
+        method: "HEAD",
+        headers: {
+          accept: "application/json",
+          "api-key": this.apiKey,
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Brevo API ping error: ${response.status} ${await response.text()}`,
+      );
+    }
+    return true;
+  }
 }

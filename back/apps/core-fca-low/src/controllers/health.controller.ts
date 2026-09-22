@@ -1,5 +1,6 @@
 import { ApiEntrepriseService } from "@fc/api-entreprise";
 import { ConfigService } from "@fc/config";
+import { MailerService } from "@fc/mailer";
 import type { OidcClientConfig } from "@fc/oidc-client";
 import { RedisService } from "@fc/redis";
 import {
@@ -24,6 +25,7 @@ import { Routes } from "../enums";
 export enum CheckTarget {
   ApiEntreprise = "api-entreprise",
   Hyyyperbridge = "hyyyperbridge",
+  Mailer = "mailer",
   MongoDB = "mongodb",
   Redis = "redis",
 }
@@ -35,6 +37,7 @@ export class HealthController {
     @InjectConnection() private readonly mongoConnection: Connection,
     private readonly redis: RedisService,
     private readonly apiEntreprise: ApiEntrepriseService,
+    private readonly mailer: MailerService,
     @Inject("HyyyperbridgeBroker") private readonly hyyyperbridge: ClientProxy,
   ) {}
 
@@ -55,6 +58,9 @@ export class HealthController {
     // We use DINUM SIRET for the ping route
     [CheckTarget.ApiEntreprise]: async () => {
       await this.apiEntreprise.getOrganizationBySiret("13002526500013");
+    },
+    [CheckTarget.Mailer]: async () => {
+      await this.mailer.ping();
     },
     [CheckTarget.Hyyyperbridge]: async () => {
       const { enableHyyyperbridge } =
