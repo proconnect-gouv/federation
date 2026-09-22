@@ -1,6 +1,6 @@
 const LOCAL_STORAGE_LAST_FI_SELECTED = "proConnectLastFISelected";
 
-function init() {
+document.addEventListener("DOMContentLoaded", function () {
   const localStorageLastFISelected = localStorage.getItem(
     LOCAL_STORAGE_LAST_FI_SELECTED,
   );
@@ -28,6 +28,4 @@ function init() {
       );
     }
   });
-}
-
-init();
+});
