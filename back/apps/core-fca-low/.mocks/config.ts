@@ -6,11 +6,10 @@ import { RateLimiterKeyPrefix } from "@fc/rate-limiter";
 // docker/compose/fca-low/.env/core.env (the real dev config for this
 // app), minus anything only needed for HTTPS/file-backed secrets.
 // Emails and secret-looking values are explicitly fake (PR review:
-// copied real-looking ones raise needless suspicion).
-// Exception: `clientSecretEncryptKey` must stay the key the fixture
-// seeds' `client_secret` blobs were encrypted with (re-encrypted with
-// the fake key when the seeds land).
-const TEST_CONFIG: CoreFcaConfig = {
+// copied real-looking ones raise needless suspicion). The fixture
+// seeds' `client_secret` blobs are encrypted with the fake
+// `clientSecretEncryptKey` below.
+const TEST_CONFIG: Partial<CoreFcaConfig> = {
   App: {
     name: "CORE_FCA_LOW",
     urlPrefix: "/api/v2",
@@ -22,11 +21,11 @@ const TEST_CONFIG: CoreFcaConfig = {
       {
         spId: "6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77",
         spName: "FSA3-LOW",
-        spContact: "serviceclient@fsa3-low.fr",
+        spContact: "inquisitor@example.com",
         authorizedAttachedEmailDomains: ["fia1.fr", "fia2.fr"],
       },
     ],
-    defaultEmailRenater: "test@renater.agentconnect.gouv.fr",
+    defaultEmailRenater: "test@example.com",
     contentSecurityPolicy: {
       connectSrc: [],
       defaultSrc: [],
@@ -42,25 +41,7 @@ const TEST_CONFIG: CoreFcaConfig = {
     displayTestEnvWarning: false,
     displayMaintenanceNotice: false,
   },
-  ApiEntreprise: {
-    token: "CeciEstUnTokenDeTest",
-    baseUrl: "https://entreprise.api.gouv.fr",
-    shouldMockApi: true,
-    featureFetchOrganizationData: true,
-    organizationSiret: "13002526500013",
-    cachedTTL: 86400000,
-    cacheTTLWhenApiEntrepriseIsDown: 7776000000,
-  },
   Exceptions: { prefix: "Y" },
-  EmailValidator: {
-    domainWhitelist: [],
-    featureMxResolutionValidation: true,
-  },
-  EmailVerification: {
-    isOtpEmailEnabled: true,
-    tokenExpirationDurationInMs: 60 * 60 * 1000,
-    verificationEmailCooldownBeforeResendInMs: 10 * 60 * 1000,
-  },
   HyyyperbridgeBroker: {
     payloadEncoding: "base64",
     queue: "rie",
@@ -119,7 +100,7 @@ const TEST_CONFIG: CoreFcaConfig = {
           y: "o9BoK63TMCGmXjOcCZbtOTmw5HdGiy5ZzY4Qo5KG638",
           d: "sMJDu7_nEjB0SwTKuKR8XiZPHvoUkem3rdgxP39kkfQ",
           kty: "EC",
-          kid: "pkcs11:ES256:hsm",
+          kid: "CeciEstUnKidDeTest",
           use: "sig",
         },
       ],
@@ -141,20 +122,6 @@ const TEST_CONFIG: CoreFcaConfig = {
     smtpUrl: "smtp://maildev:1025",
     emailSubjectPrefix: "Test - ",
   },
-  Mongoose: {
-    // overridden per-test with the in-memory replset URI, see test-bench.ts
-    user: "fc",
-    password: "pass",
-    hosts: "mongo:27017",
-    database: "core-fca-low",
-    options: {
-      authSource: "core-fca-low",
-      tls: false,
-      tlsAllowInvalidCertificates: false,
-      tlsAllowInvalidHostnames: false,
-    },
-    watcherDebounceWaitDuration: 0,
-  },
   RateLimiter: {
     rateLimiterParams: [
       {
@@ -163,18 +130,6 @@ const TEST_CONFIG: CoreFcaConfig = {
         duration: 5 * 60,
       },
     ],
-  },
-  Redis: {
-    host: "redis-pwd",
-    port: 6379,
-    password: "CeciEstUnMotDePasseDeTest",
-    db: 4,
-    sentinels: undefined,
-    name: undefined,
-    sentinelPassword: undefined,
-    sentinelTLS: undefined,
-    tls: undefined,
-    enableTLSForSentinelMode: false,
   },
   Session: {
     encryptionKey: "CeciEstUneCleDeChiffrementTest32",
@@ -201,7 +156,6 @@ const TEST_CONFIG: CoreFcaConfig = {
     // already (missing /session/end$, a phantom /client/disconnect-from-idp
     // that matches no real route), don't repeat that mistake.
     middlewareIncludedRoutes: [
-      // Connect flow
       OidcProviderRoutes.AUTHORIZATION,
       `${Routes.INTERACTION}$`,
       Routes.REDIRECT_TO_IDP,
@@ -211,8 +165,6 @@ const TEST_CONFIG: CoreFcaConfig = {
       OidcProviderRoutes.REDIRECT_TO_SP,
       Routes.IDENTITY_PROVIDER_SELECTION,
       Routes.VERIFY_EMAIL,
-
-      // Disconnect flow
       `${OidcProviderRoutes.END_SESSION}$`,
       Routes.OIDC_LOGOUT_CALLBACK,
     ],
@@ -221,12 +173,12 @@ const TEST_CONFIG: CoreFcaConfig = {
     schema: CoreFcaSession,
   },
   ServiceProviderAdapterMongo: {
-    clientSecretEncryptKey: "JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr",
+    clientSecretEncryptKey: "CeciEstLaCleDesSecretsClients123",
   },
   IdentityProviderAdapterMongo: {
-    clientSecretEncryptKey: "JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr",
+    clientSecretEncryptKey: "CeciEstLaCleDesSecretsClients123",
     decryptClientSecretFeature: true,
   },
-} as CoreFcaConfig;
+} as Partial<CoreFcaConfig>;
 
 export default TEST_CONFIG;

@@ -28,6 +28,18 @@
       "@fc/service-provider-adapter-mongo/*": [
         "libs/service-provider-adapter-mongo/src/*"
       ],
+      "@mocks/identity-provider-adapter-mongo": [
+        "libs/identity-provider-adapter-mongo/.mocks"
+      ],
+      "@mocks/identity-provider-adapter-mongo/*": [
+        "libs/identity-provider-adapter-mongo/.mocks/*"
+      ],
+      "@mocks/service-provider-adapter-mongo": [
+        "libs/service-provider-adapter-mongo/.mocks"
+      ],
+      "@mocks/service-provider-adapter-mongo/*": [
+        "libs/service-provider-adapter-mongo/.mocks/*"
+      ],
       "@fc/logger": ["libs/logger/src"],
       "@fc/logger/*": ["libs/logger/src/*"],
       "@mocks/logger": ["libs/logger/.mocks"],
@@ -36,6 +48,8 @@
       "@fc/oidc-provider/*": ["libs/oidc-provider/src/*"],
       "@fc/oidc-client": ["libs/oidc-client/src"],
       "@fc/oidc-client/*": ["libs/oidc-client/src/*"],
+      "@mocks/oidc-client": ["libs/oidc-client/.mocks"],
+      "@mocks/oidc-client/*": ["libs/oidc-client/.mocks/*"],
       "@fc/cryptography": ["libs/cryptography/src"],
       "@fc/cryptography/*": ["libs/cryptography/src/*"],
       "@fc/core": ["apps/core-fca-low/src"],
