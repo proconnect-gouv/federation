@@ -20,7 +20,7 @@
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.8",
     "@types/express": "^5.0.6",
-    "@types/node": "^24.0.0",
+    "@types/node": "^24.13.6",
     "@types/supertest": "^7.2.1",
     "prettier": "^3.9.6",
     "supertest": "^7.3.0",
