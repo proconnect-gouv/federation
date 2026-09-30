@@ -13,6 +13,7 @@ describe("Identity Provider (Data Transfer Object)", () => {
     userInfoUrl: "https://issuer.fr/me",
     authorizationUrl: "https://issuer.fr/auth",
     statusUrl: "https://issuer.fr/state",
+    logoutUrl: "https://issuer.fr/logout",
     discovery: "false",
     clientId: "09a1a257648c1742c74d6a3d84b31943",
     client_secret: "1234567890AZERTYUIOP",
