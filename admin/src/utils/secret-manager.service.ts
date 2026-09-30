@@ -35,7 +35,7 @@ export class SecretManagerService {
   }
 
   /**
-   * Current implementation use symetrical AES-256-GCM.
+   * Current implementation use symmetric AES-256-GCM.
    * @see https://crypto.stackexchange.com/a/18092
    */
   decrypt(cipher: string): any {
