@@ -294,10 +294,10 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3 row">
-              <label class="col-2 col-form-label" for="logoutUrl">Logout URL :</label>
+            <div class="mb-3 row <%= !isUseDiscoveryUrlChecked ? '' : 'd-none' %>" id="logout-url-row">
+              <label class="col-2 col-form-label" for="logoutUrl">Logout URL <span class=<%= isUseDiscoveryUrlChecked ? 'd-none' : '' %>>*</span> :</label>
               <div class="col-10">
-                <input id="logoutUrl" type="text" class="form-control <%= locals.messages.errors && messages.errors[0].logoutUrl && 'is-invalid' %>" name="logoutUrl" value="<%= locals.messages.values && messages.values[0].logoutUrl %>" pattern="^https?:\/\/[^/].+$">
+                <input id="logoutUrl" <%= isUseDiscoveryUrlChecked ? 'disabled' : 'required' %> type="text" class="form-control <%= locals.messages.errors && messages.errors[0].logoutUrl && 'is-invalid' %>" name="logoutUrl" value="<%= locals.messages.values && messages.values[0].logoutUrl %>" pattern="^https?:\/\/[^/].+$">
                 <div class="invalid-feedback">
                   <% if (locals.messages.errors && messages.errors[0].logoutUrl) { %>
                   <p>

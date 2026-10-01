@@ -8,6 +8,7 @@ export function changeDiscovery() {
       _handleState("userinfo-url-row", false);
       _handleState("authorization-url-row", false);
       _handleState("token-url-row", false);
+      _handleState("logout-url-row", false);
       displayJwksUrlField();
     });
 
@@ -16,6 +17,7 @@ export function changeDiscovery() {
     _handleState("userinfo-url-row", true);
     _handleState("authorization-url-row", true);
     _handleState("token-url-row", true);
+    _handleState("logout-url-row", true);
     displayJwksUrlField();
   });
 }

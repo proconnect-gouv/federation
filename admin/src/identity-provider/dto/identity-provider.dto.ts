@@ -64,12 +64,12 @@ export class IdentityProviderDTO {
   })
   readonly userInfoUrl?: string;
 
-  @IsOptionalExtended()
+  @ValidateIf((i) => i.discovery === false)
   @Matches(URL_REGEX, {
     message:
       "Veuillez mettre une url valide ( Ex: https://my-user-logout.com/ )",
   })
-  readonly logoutUrl: string;
+  readonly logoutUrl?: string;
 
   @IsOptionalExtended()
   @Matches(URL_REGEX, {
