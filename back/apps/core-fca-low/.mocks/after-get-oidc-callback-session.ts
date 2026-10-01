@@ -1,0 +1,40 @@
+import type { AfterGetOidcCallbackSessionDto } from "../src/dto";
+
+export const AfterGetOidcCallbackSessionDocument: Partial<AfterGetOidcCallbackSessionDto> =
+  {
+    browsingSessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    idpAcr: "eidas1",
+    idpId: "9c716f61-b8a1-435c-a407-ef4d677ec270",
+    idpIdentity: {
+      email: "user@example.com",
+      given_name: "Jane",
+      sub: "idp-sub-1",
+      uid: "idp-uid-1",
+      usual_name: "Doe",
+    },
+    idpIdToken: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.c2lnbmF0dXJlLXBhcnQ",
+    idpLabel: "fia1-low",
+    idpLoginHint: "user@example.com",
+    idpName: "fia1-low",
+    interactionId: "1234567890-1234567890",
+    isSilentAuthentication: false,
+    rememberMe: false,
+    reusesActiveSession: false,
+    spId: "fsa_fsa1_low_key",
+    spIdentity: {
+      custom: {},
+      email: "user@example.com",
+      given_name: "Jane",
+      idp_acr: "eidas1",
+      idp_id: "9c716f61-b8a1-435c-a407-ef4d677ec270",
+      organization_label: "Test Org",
+      phone_number: "0600000000",
+      roles: ["agent_public"],
+      siret: "81801912700021",
+      sub: "user-sub",
+      uid: "user-sub",
+      usual_name: "Doe",
+    },
+    spName: "FSA - FSA1-LOW",
+    spState: "test-state",
+  };
