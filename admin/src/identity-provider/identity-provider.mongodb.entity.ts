@@ -23,9 +23,6 @@ export class IdentityProviderFromDb {
   url: string;
 
   @Column()
-  statusURL: string;
-
-  @Column()
   authzURL?: string;
 
   @Column()

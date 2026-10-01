@@ -19,7 +19,6 @@ const fi = {
   tokenUrl: "https://issuer.fr/token",
   userInfoUrl: "https://issuer.fr/me",
   logoutUrl: "https://issuer.fr/logout",
-  statusUrl: "https://issuer.fr/state",
   discovery: "false",
   attachedEmailDomains: "yopmail.com",
   discoveryUrl: "https://issuer.fr/discoveryUrl",
