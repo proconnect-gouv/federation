@@ -38,7 +38,8 @@ export class RedisConfig {
   @ValidateNested()
   @Type(() => Sentinel)
   @ValidateIf(({ host }) => host === undefined)
-  readonly sentinels: Sentinel[];
+  @IsOptional()
+  readonly sentinels?: Sentinel[];
 
   @IsObject()
   @IsOptional()
