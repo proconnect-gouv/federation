@@ -11,7 +11,6 @@ export const identityProviders = {
     trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
     url: "https://fia1-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia1-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
       "https://fia1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
@@ -54,7 +53,6 @@ export const identityProviders = {
     trustedIdentity: false,
     supportEmail: "",
     url: "https://fia2-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia2-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
       "https://fia2-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
@@ -98,7 +96,6 @@ export const identityProviders = {
     trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
     url: "https://fia3-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia3-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
       "https://fia3-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
@@ -184,7 +181,6 @@ export const identityProviders = {
     trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
     url: "https://fia-rie-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia-rie-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
       "https://fia-rie-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,

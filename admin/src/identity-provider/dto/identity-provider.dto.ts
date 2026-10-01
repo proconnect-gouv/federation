@@ -71,13 +71,6 @@ export class IdentityProviderDTO {
   })
   readonly logoutUrl?: string;
 
-  @IsOptionalExtended()
-  @Matches(URL_REGEX, {
-    message:
-      "Veuillez mettre une url valide ( Ex: https://my-status-url.com/ )",
-  })
-  readonly statusUrl: string;
-
   @ValidateIf((i) => i.discovery === true)
   @Matches(URL_REGEX, {
     message:
