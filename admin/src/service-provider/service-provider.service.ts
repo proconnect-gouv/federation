@@ -158,9 +158,13 @@ export class ServiceProviderService {
       ids.map((id) => this.deleteServiceProviderById(id, user)),
     );
 
-    const gristPublicationResult = await this.publishServiceProvidersToGrist();
-
-    return { gristPublicationResult };
+    // we do not know how to update grist after a deletion
+    return {
+      gristPublicationResult: {
+        ok: false,
+        error: "Deletion not handled by grist publisher",
+      },
+    };
   }
 
   async deleteServiceProviderById(id: string, user: string) {
@@ -182,9 +186,14 @@ export class ServiceProviderService {
       name: serviceProvider.key,
     });
 
-    const gristPublicationResult = await this.publishServiceProvidersToGrist();
-
-    return { gristPublicationResult, hasDeletionSucceeded };
+    // we do not know how to update grist after a deletion
+    return {
+      gristPublicationResult: {
+        ok: false,
+        error: "Deletion not handled by grist publisher",
+      },
+      hasDeletionSucceeded,
+    };
   }
 
   async generateNewSecret(
