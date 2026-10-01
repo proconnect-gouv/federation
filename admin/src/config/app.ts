@@ -3,8 +3,7 @@ import { Platform } from "../utils/instance.enum";
 
 export default {
   appName: process.env.APP_NAME || "Admin ProConnect",
-  appFqdn:
-    process.env.APP_FQDN || "fc-exploitation.docker.dev-franceconnect.fr",
+  appFqdn: process.env.APP_FQDN || "admin-local.proconnect.127.0.0.1.nip.io",
   environment: process.env.ENV_NAME || "development",
   app_root: process.env.APP_ROOT || "",
   commitUrlPrefix:

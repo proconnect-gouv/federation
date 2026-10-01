@@ -7,7 +7,7 @@ const REPOSITORY_ROOT = path.resolve(import.meta.dirname, "..");
 export default defineConfig({
   chromeWebSecurity: false,
   e2e: {
-    baseUrl: "https://exploitation-fca-low.docker.dev-franceconnect.fr",
+    baseUrl: "https://admin-local.proconnect.127.0.0.1.nip.io",
     excludeSpecPattern: "cypress/integration/**/*.utils.js",
     experimentalRunAllSpecs: true,
     retries: 2,
@@ -20,13 +20,13 @@ export default defineConfig({
   },
   env: {
     APP_FORBIDDEN_PAGE:
-      "https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider",
+      "https://admin-local.proconnect.127.0.0.1.nip.io/service-provider",
     APP_HOME_ROLE_ADMIN:
-      "https://exploitation-fca-low.docker.dev-franceconnect.fr/account",
+      "https://admin-local.proconnect.127.0.0.1.nip.io/account",
     APP_HOME_ROLE_OPERATOR:
-      "https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider",
+      "https://admin-local.proconnect.127.0.0.1.nip.io/service-provider",
     APP_HOME_ROLE_SECURITY:
-      "https://exploitation-fca-low.docker.dev-franceconnect.fr/service-provider",
+      "https://admin-local.proconnect.127.0.0.1.nip.io/service-provider",
     APP_NAME: "admin",
     FEDERATION_DIR: REPOSITORY_ROOT,
     LOG_FILE_PATH: `${REPOSITORY_ROOT}/docker/volumes/log/fcexploitation.log`,

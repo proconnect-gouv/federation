@@ -12,7 +12,7 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
   },
   expose: {
     MAILDEV_PROTOCOL: "https",
-    MAILDEV_HOST: "maildev.docker.dev-franceconnect.fr",
+    MAILDEV_HOST: "maildev-local.proconnect.127.0.0.1.nip.io",
     MAILDEV_SMTP_PORT: "1025",
     MAILDEV_API_PORT: "443",
   },
