@@ -43,6 +43,8 @@ describe("CoreFcaControllerService", () => {
   const coreFcaServiceMock = {
     ensureEmailIsAuthorizedForSp: jest.fn(),
     selectIdpsFromEmail: jest.fn(),
+    isIpOnRie: jest.fn(),
+    computeIsIdpOnlyAccessibleThroughRIE: jest.fn(),
   } as unknown as CoreFcaService;
 
   const idpIdMock = "idpIdMockValue";
@@ -219,6 +221,28 @@ describe("CoreFcaControllerService", () => {
       expect(resMock.redirect).toHaveBeenCalledWith(
         "http://mock-authorize-url",
       );
+    });
+
+    it("should redirect to RIE warning when the IP is on RIE", async () => {
+      // Given
+      (configServiceMock.get as jest.Mock).mockImplementation((key) => {
+        if (key === "App")
+          return {
+            rieIpRanges: ["192.168.1.0/24"],
+            urlPrefix: "/api/v2",
+          } as unknown as AppConfig;
+        return {} as any;
+      });
+      (coreFcaServiceMock.isIpOnRie as jest.Mock).mockReturnValueOnce(false);
+      (
+        coreFcaServiceMock.computeIsIdpOnlyAccessibleThroughRIE as jest.Mock
+      ).mockReturnValueOnce(true);
+
+      // When
+      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
+
+      // Then
+      expect(resMock.redirect).toHaveBeenCalledWith("/api/v2/rie-idp-warning");
     });
   });
 

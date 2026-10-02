@@ -29,6 +29,7 @@ import {
   UserSession,
 } from "../dto";
 import { PostIdentityProviderSelectionDto } from "../dto/post-identity-provider-selection.dto";
+import { AfterRedirectToRieWarningSessionDto } from "../dto/user-session/after-redirect-to-rie-warning-session.dto";
 import { Routes } from "../enums";
 import {
   CoreFcaControllerService,
@@ -95,6 +96,37 @@ export class OidcClientController {
     );
   }
 
+  @Get(Routes.RIE_IDP_WARNING)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Header("cache-control", "no-store")
+  async getRieIdpWarning(
+    @Res() res: Response,
+    @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)
+    userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
+  ) {
+    const csrfToken = this.csrfService.getOrCreate();
+    const { idpName } = userSession.get();
+
+    return res.render("rie-idp-warning", {
+      csrfToken,
+      idpName,
+    });
+  }
+
+  @Post(Routes.RIE_IDP_WARNING)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Header("cache-control", "no-store")
+  @UseGuards(CsrfTokenGuard)
+  async postRieIdpWarning(
+    @Res() res: Response,
+    @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)
+    userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
+  ) {
+    const { idpAuthorizationUrl } = userSession.get();
+
+    return res.redirect(idpAuthorizationUrl);
+  }
+
   @Post(Routes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header("cache-control", "no-store")
@@ -133,7 +165,11 @@ export class OidcClientController {
       userSession.get();
 
     // Remove nonce and state from the session to prevent replay attacks
-    userSession.set({ idpNonce: null, idpState: null });
+    userSession.set({
+      idpNonce: null,
+      idpState: null,
+      idpAuthorizationUrl: null,
+    });
 
     this.logger.track(TrackedEvent.IDP_CALLEDBACK);
 

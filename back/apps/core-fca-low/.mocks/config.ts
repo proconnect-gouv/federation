@@ -41,6 +41,7 @@ const TEST_CONFIG: CoreFcaConfig = {
     idpMfaComplianceForcingEmailSuffix: "+mfa",
     displayTestEnvWarning: false,
     displayMaintenanceNotice: false,
+    rieIpRanges: [],
   },
   ApiEntreprise: {
     token: "CeciEstUnTokenDeTest",

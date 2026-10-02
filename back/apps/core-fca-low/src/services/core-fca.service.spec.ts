@@ -194,6 +194,72 @@ describe("CoreFcaService", () => {
     });
   });
 
+  describe("isIpOnRie", () => {
+    it("should return true if the IP is within the RIE IP ranges", () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        rieIpRanges: ["192.168.1.0/24"],
+      });
+
+      // When
+      const result = service.isIpOnRie("192.168.1.42");
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it("should return false if the IP is not within the RIE IP ranges", () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        rieIpRanges: ["192.168.1.0/24"],
+      });
+
+      // When
+      const result = service.isIpOnRie("192.168.2.42");
+
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it("should return false if no IP is provided", () => {
+      // When
+      const result = service.isIpOnRie(undefined);
+
+      // Then
+      expect(result).toBe(false);
+    });
+  });
+
+  describe("computeIsIdpOnlyAccessibleThroughRIE", () => {
+    it("should return true if the idp is only accessible through RIE", async () => {
+      // Given
+      const idpId = "idp1";
+      identityProviderMock.getById.mockResolvedValueOnce({
+        useTheHyyyperbridge: true,
+      });
+
+      // When
+      const result = await service.computeIsIdpOnlyAccessibleThroughRIE(idpId);
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it("should return false if the idp is not only accessible through RIE", async () => {
+      // Given
+      const idpId = "idp1";
+      identityProviderMock.getById.mockResolvedValueOnce({
+        useTheHyyyperbridge: false,
+      });
+
+      // When
+      const result = await service.computeIsIdpOnlyAccessibleThroughRIE(idpId);
+
+      // Then
+      expect(result).toBe(false);
+    });
+  });
+
   describe("selectIdpsFromEmail", () => {
     it("should return the default idp if no idp is mapped", async () => {
       // Given

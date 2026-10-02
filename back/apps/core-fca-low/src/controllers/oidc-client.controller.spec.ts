@@ -9,6 +9,7 @@ import { getLoggerMock } from "@mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import { type Request, type Response } from "express";
 import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from "../dto";
+import { AfterRedirectToRieWarningSessionDto } from "../dto/user-session/after-redirect-to-rie-warning-session.dto";
 import {
   CoreFcaControllerService,
   CoreFcaService,
@@ -221,6 +222,45 @@ describe("OidcClientController", () => {
     });
   });
 
+  describe("getRieIdpWarning", () => {
+    it("should render the RIE IdP warning page", async () => {
+      const res = {
+        render: jest.fn(),
+      } as unknown as Response;
+      let userSession = {
+        get: jest.fn().mockReturnValue({ idpName: "IdP Name" }),
+      } as unknown as ISessionService<AfterRedirectToRieWarningSessionDto>;
+      csrfService.getOrCreate.mockReturnValue("csrf-token");
+
+      await controller.getRieIdpWarning(res, userSession);
+
+      expect(res.render).toHaveBeenCalledWith("rie-idp-warning", {
+        csrfToken: expect.any(String),
+        idpName: "IdP Name",
+      });
+    });
+  });
+
+  describe("postRieIdpWarning", () => {
+    it("should handle the POST request for RIE IdP warning", async () => {
+      const res = {
+        redirect: jest.fn(),
+      } as unknown as Response;
+
+      let userSession = {
+        get: jest.fn().mockReturnValue({
+          idpAuthorizationUrl: "https://idp.example.com/authorize",
+        }),
+      } as unknown as ISessionService<AfterRedirectToRieWarningSessionDto>;
+
+      await controller.postRieIdpWarning(res, userSession);
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        "https://idp.example.com/authorize",
+      );
+    });
+  });
+
   describe("getOidcCallback", () => {
     let req: Partial<Request>;
     let res: Partial<Response>;
@@ -286,6 +326,7 @@ describe("OidcClientController", () => {
       expect(userSession.set).toHaveBeenCalledWith({
         idpNonce: null,
         idpState: null,
+        idpAuthorizationUrl: null,
       });
       expect(logger.track).toHaveBeenCalledWith("IDP_CALLEDBACK");
       expect(oidcClient.getToken).toHaveBeenCalledWith({

@@ -31,6 +31,7 @@ const sessionConfig: SessionConfig = {
     Routes.INTERACTION_VERIFY,
     Routes.INTERACTION_ERROR,
     OidcProviderRoutes.REDIRECT_TO_SP,
+    Routes.RIE_IDP_WARNING,
     Routes.IDENTITY_PROVIDER_SELECTION,
     Routes.VERIFY_EMAIL,
 
