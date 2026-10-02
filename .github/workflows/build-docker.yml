@@ -104,8 +104,7 @@ jobs:
           - instance: core-fca-low
             context: ./back
           - instance: csmr-rie
-            context: .
-            file: ./csmr-rie/Dockerfile
+            context: ./csmr-rie
           - instance: mock-data-provider
             context: ./mock-data-provider
           - instance: mock-identity-provider
