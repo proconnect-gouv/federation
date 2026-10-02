@@ -95,6 +95,37 @@ export class OidcClientController {
     );
   }
 
+  @Get(Routes.RIE_IDP_WARNING)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Header("cache-control", "no-store")
+  async getRieIdpWarning(
+    @Res() res: Response,
+    @UserSessionDecorator(AfterRedirectToIdpWithIdpIdSessionDto)
+    _userSession: ISessionService<AfterRedirectToIdpWithIdpIdSessionDto>,
+  ) {
+    const csrfToken = this.csrfService.getOrCreate();
+    const { idpName } = _userSession.get();
+
+    return res.render("rie-idp-warning", {
+      csrfToken,
+      idpName,
+    });
+  }
+
+  @Post(Routes.RIE_IDP_WARNING)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Header("cache-control", "no-store")
+  @UseGuards(CsrfTokenGuard)
+  async postRieIdpWarning(
+    @Res() res: Response,
+    @UserSessionDecorator(AfterRedirectToIdpWithIdpIdSessionDto)
+    _userSession: ISessionService<AfterRedirectToIdpWithIdpIdSessionDto>,
+  ) {
+    const { idpAuthorizationUrl } = _userSession.get();
+
+    return res.redirect(idpAuthorizationUrl);
+  }
+
   @Post(Routes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header("cache-control", "no-store")

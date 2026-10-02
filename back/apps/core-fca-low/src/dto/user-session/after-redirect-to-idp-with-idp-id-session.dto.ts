@@ -16,4 +16,7 @@ export class AfterRedirectToIdpWithIdpIdSessionDto extends AfterRedirectToIdpWit
 
   @IsDefined()
   declare idpState: string;
+
+  @IsDefined()
+  declare idpAuthorizationUrl: string;
 }
