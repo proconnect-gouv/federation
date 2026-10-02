@@ -36,6 +36,8 @@ const appConfig: AppConfig = {
   supportEmail: "support+federation@proconnect.gouv.fr",
   idpRoutingForcingEmailSuffix: "+proconnect",
   idpMfaComplianceForcingEmailSuffix: "+mfa",
+  rieUrlSuffixes: ["rie.gouv.fr", ".ramage"],
+  rieIpRanges: [],
 };
 
 export default appConfig;

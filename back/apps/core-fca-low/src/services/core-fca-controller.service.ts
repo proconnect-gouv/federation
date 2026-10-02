@@ -121,6 +121,7 @@ export class CoreFcaControllerService {
       idpLabel,
       idpNonce: nonce,
       idpState: state,
+      idpAuthorizationUrl: authorizationUrl,
       idpIdentity: undefined,
       spIdentity: undefined,
     };
@@ -128,6 +129,14 @@ export class CoreFcaControllerService {
     this.session.set("User", sessionPayload);
 
     this.logger.track(TrackedEvent.IDP_CHOSEN);
+
+    const isBrowserIpOnRIE = this.coreFcaService.isIpOnRie(req.ip?.toString());
+
+    if (!isBrowserIpOnRIE && this.coreFcaService.isURLOnRIE(authorizationUrl)) {
+      const { urlPrefix } = this.config.get<AppConfig>("App");
+      const url = `${urlPrefix}${Routes.RIE_IDP_WARNING}`;
+      return res.redirect(url);
+    }
 
     res.redirect(authorizationUrl);
   }

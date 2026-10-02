@@ -6,8 +6,12 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  Matches,
   ValidateNested,
 } from "class-validator";
+
+const IPV4_WITH_RANGE_REGEX =
+  /^(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\/(?:3[0-2]|[12]?\d)$/;
 
 import { AppConfig as AppGenericConfig } from "@fc/app";
 import { ContentSecurityPolicy } from "./content-secury-policy.dto";
@@ -56,4 +60,11 @@ export class AppConfig extends AppGenericConfig {
   @IsString()
   @IsOptional()
   readonly maintenanceDuration?: string;
+
+  @IsString()
+  readonly rieUrlSuffixes: string[];
+
+  @IsArray()
+  @Matches(IPV4_WITH_RANGE_REGEX, { each: true })
+  readonly rieIpRanges: string[];
 }

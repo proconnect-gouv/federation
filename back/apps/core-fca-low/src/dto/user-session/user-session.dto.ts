@@ -119,6 +119,12 @@ export class UserSession {
 
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
+  @Expose()
+  readonly idpAuthorizationUrl?: string;
+
+  @IsOptional()
+  @IsString()
   @IsJWT()
   @Expose()
   readonly idpIdToken?: string;

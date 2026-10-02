@@ -4,6 +4,7 @@ import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapt
 import { LoggerService } from "@fc/logger";
 import { IdentityProviderMetadata } from "@fc/oidc";
 import { Injectable } from "@nestjs/common";
+import ipaddr from "ipaddr.js";
 import { isEmpty } from "lodash";
 import {
   InvalidEmailDomainException,
@@ -21,6 +22,24 @@ export class CoreFcaService {
   hasDefaultIdp(providersUid: string[]): boolean {
     const defaultIdpId = this.config.get<AppConfig>("App").defaultIdpId;
     return providersUid.includes(defaultIdpId);
+  }
+
+  isURLOnRIE(url: string): boolean {
+    const { rieUrlSuffixes } = this.config.get<AppConfig>("App");
+    return rieUrlSuffixes.some((suffix) => url.includes(suffix));
+  }
+
+  isIpOnRie(browserIp: string | undefined): boolean {
+    if (!browserIp) {
+      return false;
+    }
+    const { rieIpRanges } = this.config.get<AppConfig>("App");
+
+    const address = ipaddr.parse(browserIp);
+
+    return rieIpRanges.some((rieIpRange) => {
+      return address.match(ipaddr.parseCIDR(rieIpRange));
+    });
   }
 
   getSortedDisplayableIdentityProviders(
