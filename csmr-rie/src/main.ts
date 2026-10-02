@@ -1,36 +1,41 @@
-import { ConfigService } from "@fc/config";
-import { CsmrHttpProxyConfig } from "@fc/csmr-http-proxy";
-import { NestLoggerService } from "@fc/logger";
-import { RabbitmqConfig } from "@fc/rabbitmq";
-import { NestFactory } from "@nestjs/core";
-import { MicroserviceOptions, Transport } from "@nestjs/microservices";
-import { AppModule } from "./app.module";
-import configuration from "./config";
+import amqp from "amqp-connection-manager";
+import { createServer } from "node:http";
+import { z } from "zod";
+import { createRoutes } from "./http.ts";
+import { logger } from "./logger.ts";
+import { setupMessageConsumer } from "./rpc.ts";
 
-async function bootstrap() {
-  const configOptions = {
-    config: configuration,
-    schema: CsmrHttpProxyConfig,
-  };
-  const configService = new ConfigService(configOptions);
+const ConfigSchema = z.object({
+  Logger_THRESHOLD: z.enum([
+    "debug",
+    "error",
+    "fatal",
+    "info",
+    "trace",
+    "warn",
+  ]),
+  PORT: z.coerce.number().default(3000),
+  RieBroker_QUEUE: z.string(),
+  RieBroker_URLS: z
+    .string()
+    .transform((value) => JSON.parse(value))
+    .pipe(z.string().array()),
+});
 
-  const options = configService.get<RabbitmqConfig>("HttpProxyBroker");
+const config = ConfigSchema.parse(process.env);
+logger.level = config.Logger_THRESHOLD;
 
-  const appModule = AppModule.forRoot(configService);
+const connection = amqp.connect(config.RieBroker_URLS);
+connection.on("connect", () => logger.info("Connected to RabbitMQ"));
+connection.on("connectFailed", ({ err }) =>
+  logger.error({ err }, "Failed to connect to RabbitMQ"),
+);
+connection.on("disconnect", ({ err }) =>
+  logger.warn({ err }, "Disconnected from RabbitMQ"),
+);
 
-  const app = await NestFactory.create(appModule, { bufferLogs: true });
+setupMessageConsumer(connection, config.RieBroker_QUEUE);
 
-  const logger = await app.resolve(NestLoggerService);
-  app.useLogger(logger);
-
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options,
-  });
-  await Promise.all([
-    app.listen(process.env.PORT || 3000),
-    app.startAllMicroservices(),
-  ]);
-}
-
-void bootstrap();
+createServer(
+  createRoutes({ isConnected: () => connection.isConnected() }),
+).listen(config.PORT, () => logger.info(`Listening on port ${config.PORT}`));
