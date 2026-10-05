@@ -62,6 +62,7 @@ describe("ServiceProviderController", () => {
     type: "public",
     scopes: [...scopeList],
     collaborators: [],
+    isXdaEnabled: false,
   };
 
   const idParam = "05e4fadf-fda6-4ad8-ae75-b7f315843827";

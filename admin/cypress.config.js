@@ -10,7 +10,7 @@ export default defineConfig({
     baseUrl: "https://exploitation-fca-low.docker.dev-franceconnect.fr",
     excludeSpecPattern: "cypress/integration/**/*.utils.js",
     experimentalRunAllSpecs: true,
-    retries: 2,
+    retries: 0,
     setupNodeEvents(on, config) {
       return pluginConfig(on, config);
     },

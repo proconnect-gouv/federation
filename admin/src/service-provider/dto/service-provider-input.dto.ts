@@ -110,4 +110,10 @@ export class ServiceProviderDto {
     message: "Veuillez mettre une liste d'adresses email valides.",
   })
   readonly collaborators: string[];
+
+  @IsNotEmpty({
+    message: "Veuillez faire un choix",
+  })
+  @Transform(toBoolean)
+  readonly isXdaEnabled: boolean;
 }
