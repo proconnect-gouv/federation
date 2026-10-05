@@ -150,6 +150,11 @@ jobs:
         run: |
           ./docker-stack compose logs --no-color > ../quality/artifacts-logs/docker-compose.log 2>&1
           docker ps -a > ../quality/artifacts-logs/docker-ps.log 2>&1
+          # Exited containers, including retained pre_start hook containers
+          for c in $(docker ps -aq --filter status=exited --filter status=created); do
+            echo "===== $(docker inspect -f '{{.Name}} {{.Config.Cmd}} exit={{.State.ExitCode}}' $c)"
+            docker logs "$c" 2>&1
+          done > ../quality/artifacts-logs/exited-containers.log
 
       - name: Upload Cypress Artifacts
         if: failure()
