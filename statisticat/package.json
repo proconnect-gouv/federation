@@ -1,0 +1,22 @@
+{
+  "name": "statisticat",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "extract": "tsx src/extract-daily-logs.ts",
+    "extract:built": "node dist/src/extract-daily-logs.js",
+    "transfer": "tsx src/s3-transfer.ts",
+    "transfer:built": "node dist/src/s3-transfer.js"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
+  },
+  "devDependencies": {
+    "@tsconfig/strictest": "^2.0.8",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
