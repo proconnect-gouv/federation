@@ -53,7 +53,7 @@ jobs:
       - name: Upgrade Docker Compose
         uses: docker/setup-compose-action@v2
         with:
-          version: latest
+          version: v5.5.1
 
       - name: Set up Node.js for federation-admin
         uses: actions/setup-node@v7
