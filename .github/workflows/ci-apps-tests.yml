@@ -16,6 +16,7 @@ jobs:
           - mock-data-provider
           - mock-identity-provider
           - mock-service-provider
+          - statisticat
     defaults:
       run:
         working-directory: ./${{ matrix.app }}
