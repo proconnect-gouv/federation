@@ -1,1 +1,0 @@
-console.log('Transferring files from private S3 to public S3...');

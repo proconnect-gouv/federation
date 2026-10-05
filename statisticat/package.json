@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "extract": "tsx src/extract-daily-logs.ts",
-    "extract:built": "node dist/src/extract-daily-logs.js",
-    "transfer": "tsx src/s3-transfer.ts",
-    "transfer:built": "node dist/src/s3-transfer.js"
+    "extract": "tsx src/jobs/extract-daily-logs.ts",
+    "extract:built": "node dist/src/jobs/extract-daily-logs.js",
+    "transfer": "tsx src/jobs/s3-transfer.ts",
+    "transfer:built": "node dist/src/jobs/s3-transfer.js"
   },
   "prettier": {
     "plugins": [
@@ -18,5 +18,8 @@
     "@tsconfig/strictest": "^2.0.8",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1146.0"
   }
 }
