@@ -9,6 +9,7 @@ export enum Routes {
   INTERACTION_ERROR = "/interaction/:uid/error",
   REDIRECT_TO_IDP = "/redirect-to-idp",
   IDENTITY_PROVIDER_SELECTION = "/identity-provider-selection",
+  RIE_IDP_WARNING = "/rie-idp-warning",
   VERIFY_EMAIL = "/verify-email",
   VERIFY_EMAIL_RESEND = "/verify-email/resend",
   OIDC_CALLBACK = "/oidc-callback",

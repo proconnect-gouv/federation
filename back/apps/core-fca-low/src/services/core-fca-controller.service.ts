@@ -127,6 +127,21 @@ export class CoreFcaControllerService {
 
     this.session.set("User", sessionPayload);
 
+    const isBrowserIpOnRIE = this.coreFcaService.isIpOnRie(req.ip?.toString());
+    const isIdpOnlyAccessibleThroughRIE =
+      await this.coreFcaService.computeIsIdpOnlyAccessibleThroughRIE(idpId);
+
+    if (!isBrowserIpOnRIE && isIdpOnlyAccessibleThroughRIE) {
+      const { urlPrefix } = this.config.get<AppConfig>("App");
+      const url = `${urlPrefix}${Routes.RIE_IDP_WARNING}`;
+
+      this.session.set("User", {
+        idpAuthorizationUrl: authorizationUrl,
+      });
+
+      return res.redirect(url);
+    }
+
     this.logger.track(TrackedEvent.IDP_CHOSEN);
 
     res.redirect(authorizationUrl);

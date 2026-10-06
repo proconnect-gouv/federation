@@ -16,6 +16,8 @@ Fonctionnalité: Hybridge
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fi-rie.fr"
     Quand je clique sur le bouton de connexion
+    Et que la page d'avertissement d'utilisation du hybridge s'affiche pour le fournisseur d'identité "fia-rie-low"
+    Et que je clique sur le bouton Continuer
     Et je suis redirigé vers la page login du fournisseur d'identité "Identity Provider RIE - eIDAS faible - ES256"
     Et je m'authentifie
     Alors je suis connecté au fournisseur de service
