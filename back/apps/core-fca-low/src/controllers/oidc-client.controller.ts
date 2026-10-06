@@ -164,6 +164,14 @@ export class OidcClientController {
     const { idpId, idpNonce, idpState, interactionId, spId, spName } =
       userSession.get();
 
+    const isBrowserIpOnRIE = this.coreFcaService.isIpOnRie(req.ip?.toString());
+    const isIdpOnlyAccessibleThroughRIE =
+      await this.coreFcaService.computeIsIdpOnlyAccessibleThroughRIE(idpId);
+
+    if (isIdpOnlyAccessibleThroughRIE && !isBrowserIpOnRIE) {
+      this.logger.info({ code: "false-negative-rie-access" });
+    }
+
     // Remove nonce and state from the session to prevent replay attacks
     userSession.set({
       idpNonce: null,
