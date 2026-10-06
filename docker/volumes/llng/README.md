@@ -14,7 +14,7 @@ Pour lancer la commande docker : `docker-stack llng-configure`
 
 ## Interface de configuration
 
-Une interface existe également afin de pouvoir modifier la configuration. Il faut se rendre à l'adresse suivante : `https://manager.llng.docker.dev-franceconnect.fr/`
+Une interface existe également afin de pouvoir modifier la configuration. Il faut se rendre à l'adresse suivante : `https://manager.llng-local.proconnect.127.0.0.1.nip.io/`
 
 ### Documentation 2.0
 

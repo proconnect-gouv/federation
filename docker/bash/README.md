@@ -122,7 +122,7 @@ wait_for_nodejs container-name, URL [max_time, delay_between_retries, max_retrie
 Usage is shell / CI:
 
 ```bash
-> dks wait "fc-exploitation" "https://fc-exploitation.docker.dev-franceconnect.fr"
+> dks wait "fc-exploitation" "https://admin-local.proconnect.127.0.0.1.nip.io"
 ```
 
 This will print curl logs on case of failure to reach the app.
