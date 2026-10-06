@@ -63,6 +63,8 @@ describe("OidcClientController", () => {
       redirectToIdpWithEmail: jest.fn(),
     };
     coreFcaService = {
+      isIpOnRie: jest.fn(),
+      computeIsIdpOnlyAccessibleThroughRIE: jest.fn(),
       hasDefaultIdp: jest.fn(),
       ensureIdpCanServeThisEmail: jest.fn(),
       selectIdpsFromEmail: jest.fn(),
@@ -370,6 +372,23 @@ describe("OidcClientController", () => {
       expect(res.redirect).toHaveBeenCalledWith(
         "/app/interaction/interaction123/verify",
       );
+    });
+
+    it("should log false-negative-rie-access when IdP is only accessible through RIE and browser IP is not on RIE", async () => {
+      coreFcaService.isIpOnRie.mockReturnValue(false);
+      coreFcaService.computeIsIdpOnlyAccessibleThroughRIE.mockResolvedValue(
+        true,
+      );
+
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+
+      expect(logger.info).toHaveBeenCalledWith({
+        code: "false-negative-rie-access",
+      });
     });
 
     it("should augment userInfo identity with claims in idToken if IdP is Entra", async () => {
