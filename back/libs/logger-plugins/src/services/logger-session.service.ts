@@ -59,6 +59,7 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
       spLoginHint,
       spLoginHintFqdn: spLoginHint?.split("@").pop().toLowerCase(),
       spName,
+      spRoles: spIdentity?.roles,
       spSiret: spIdentity?.siret,
       spSiretHint,
       spSub: spIdentity?.sub,
