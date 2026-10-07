@@ -7,21 +7,17 @@ services:
   hybridge-rie:
     hostname: hybridge-rie
     build:
-      context: "../../.."
-      dockerfile: "csmr-rie/Dockerfile"
+      context: "../../../csmr-rie"
       target: dev
     user: ${CURRENT_UID}
     depends_on:
       - broker
     volumes:
-      - "../../../csmr-rie/src:/var/www/app/csmr-rie/src:ro"
-      - "../../../back/libs:/var/www/app/back/libs:ro"
+      - "../../../csmr-rie/src:/var/www/app/src:ro"
       - "../../volumes/app:/opt/scripts"
       - "../../volumes/log/:/var/log/app"
       - "../../volumes/.home:/home"
       - ../../volumes/ssl:/etc/ssl/docker_host:ro
-    tmpfs:
-      - /var/www/app/csmr-rie/dist:mode=777
     env_file:
       - "../shared/.env/base-app.env"
       - "../fca-low/.env/hybridge-rie.env"
@@ -29,4 +25,3 @@ services:
     networks:
       - rie
     init: true
-    command: "npm run start:dev"
