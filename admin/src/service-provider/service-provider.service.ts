@@ -115,6 +115,7 @@ export class ServiceProviderService {
     serviceProvider.response_types = input.response_types;
     serviceProvider.grant_types = input.grant_types;
     serviceProvider.collaborators = input.collaborators;
+    serviceProvider.isXdaEnabled = input.isXdaEnabled;
 
     /*
      * Since we have "legacy SPs" with no scope at all, we want to describe some rules
@@ -257,6 +258,7 @@ export class ServiceProviderService {
       secretUpdatedBy: user,
       key,
       collaborators: serviceProviderDto.collaborators,
+      isXdaEnabled: serviceProviderDto.isXdaEnabled,
     };
   }
 

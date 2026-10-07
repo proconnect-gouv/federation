@@ -23,6 +23,7 @@ function createServiceProviderDto(
     introspection_signed_response_alg: "RS256",
     grant_types: ["authorization_code"],
     collaborators: ["jeanne.dupont@example.com"],
+    isXdaEnabled: false,
     ...partial,
   };
 }
@@ -51,6 +52,7 @@ function createServiceProviderFromDb(
     key: "key",
     updatedBy: "user",
     collaborators: ["jeanne.dupont@example.com"],
+    isXdaEnabled: false,
     ...partial,
   };
 }

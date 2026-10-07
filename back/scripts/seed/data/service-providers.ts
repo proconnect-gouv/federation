@@ -42,6 +42,7 @@ export const serviceProviders = {
     introspection_signed_response_alg: null,
     id_token_signed_response_alg: "HS256",
     userinfo_signed_response_alg: null,
+    isXdaEnabled: false,
   },
 
   // -- FSA - FSA2-LOW - Activated - ES256 - encrypted response - No post-logout-redirect-uri - Accept private
@@ -84,6 +85,7 @@ export const serviceProviders = {
     introspection_signed_response_alg: null,
     id_token_signed_response_alg: "ES256",
     userinfo_signed_response_alg: "ES256",
+    isXdaEnabled: false,
   },
 
   // -- FSA - FSA3-LOW - Activated - RS256 - encrypted response - not autorized to request amr claim
@@ -126,5 +128,6 @@ export const serviceProviders = {
     introspection_signed_response_alg: null,
     id_token_signed_response_alg: "RS256",
     userinfo_signed_response_alg: "RS256",
+    isXdaEnabled: false,
   },
 };

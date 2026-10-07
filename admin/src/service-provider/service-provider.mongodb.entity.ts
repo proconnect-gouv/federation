@@ -81,4 +81,7 @@ export class ServiceProviderFromDb {
 
   @Column()
   collaborators: string[];
+
+  @Column()
+  isXdaEnabled: boolean;
 }
