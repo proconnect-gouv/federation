@@ -11,6 +11,7 @@ import {
   getBusinessLogs,
   hasBusinessLog,
 } from "./log-plugin";
+import { countCrossDeviceAuthenticationRequests } from "./mongo-plugin";
 import { getTotp } from "./otp-plugin";
 
 const pluginConfig = async (
@@ -24,6 +25,7 @@ const pluginConfig = async (
 
   on("task", {
     clearBusinessLog,
+    countCrossDeviceAuthenticationRequests,
     createHexaHash,
     getBusinessLogs,
     getJwtContent,

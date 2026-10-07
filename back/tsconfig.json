@@ -95,6 +95,12 @@
       "@mocks/mailer/*": ["libs/mailer/.mocks/*"],
       "@fc/email-verification": ["libs/email-verification/src"],
       "@fc/email-verification/*": ["libs/email-verification/src/*"],
+      "@fc/cross-device-authentication": [
+        "libs/cross-device-authentication/src"
+      ],
+      "@fc/cross-device-authentication/*": [
+        "libs/cross-device-authentication/src/*"
+      ],
       "@fc/rate-limiter": ["libs/rate-limiter/src"],
       "@fc/rate-limiter/*": ["libs/rate-limiter/src/*"]
     },

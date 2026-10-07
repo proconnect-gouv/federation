@@ -21,7 +21,11 @@
             <p class="fr-my-6b">
               La connexion n'est peut-être pas disponible sur Internet
             </p>
-            <form action="/api/v2/rie-idp-warning" method="POST">
+            <form
+              class="fr-mb-2w"
+              action="/api/v2/proceed-to-cross-device-authentication"
+              method="POST"
+            >
               <input
                 type="hidden"
                 name="csrfToken"
@@ -29,15 +33,34 @@
               />
 
               <button class="fr-btn btn--fullwidth" type="submit">
-                Continuer quand même
-              </button>
-              <button
-                type="button"
-                class="fr-btn fr-btn--tertiary-no-outline btn--fullwidth fr-mt-2w go-back-link"
-              >
-                Revenir à l'étape précédente
+                Continuer en Cross-Device
               </button>
             </form>
+
+            <form
+              class="fr-mb-2w"
+              action="/api/v2/proceed-to-idp"
+              method="POST"
+            >
+              <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= locals.csrfToken %>"
+              />
+
+              <button
+                class="fr-btn btn--fullwidth fr-btn--tertiary-no-outline"
+                type="submit"
+              >
+                Continuer quand même
+              </button>
+            </form>
+            <button
+              type="button"
+              class="fr-btn fr-btn--tertiary-no-outline btn--fullwidth go-back-link"
+            >
+              Revenir à l'étape précédente
+            </button>
           </div>
         </div>
       </div>

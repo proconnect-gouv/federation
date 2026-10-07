@@ -113,11 +113,11 @@ export class OidcClientController {
     });
   }
 
-  @Post(Routes.RIE_IDP_WARNING)
+  @Post(Routes.PROCEED_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header("cache-control", "no-store")
   @UseGuards(CsrfTokenGuard)
-  async postRieIdpWarning(
+  async postProceedToIdp(
     @Res() res: Response,
     @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)
     userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
