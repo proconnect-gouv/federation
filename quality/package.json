@@ -46,7 +46,7 @@
     "multiple-cucumber-html-reporter": "^3.10.0",
     "otpauth": "^9.5.1",
     "otplib": "^13.5.0",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.9",
     "tsx": "^4.23.15",
     "typescript": "5.9.3"
   },
