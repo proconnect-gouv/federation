@@ -4,10 +4,11 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "extract": "tsx src/jobs/extract-daily-logs.ts",
-    "extract:built": "node dist/src/jobs/extract-daily-logs.js",
-    "transfer": "tsx src/jobs/s3-transfer.ts",
-    "transfer:built": "node dist/src/jobs/s3-transfer.js"
+    "extract:dev": "tsx src/jobs/extract-daily-logs.ts",
+    "extract": "node dist/src/jobs/extract-daily-logs.js",
+    "test": "jest",
+    "transfer:dev": "tsx src/jobs/s3-transfer.ts",
+    "transfer": "node dist/src/jobs/s3-transfer.js"
   },
   "prettier": {
     "plugins": [
@@ -15,7 +16,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
     "@tsconfig/strictest": "^2.0.8",
+    "babel-jest": "^30.5.2",
+    "jest": "^30.5.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
