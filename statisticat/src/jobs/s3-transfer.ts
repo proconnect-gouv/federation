@@ -2,6 +2,7 @@ import {
   ListObjectsV2Command,
   S3Client,
   GetObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 
@@ -40,34 +41,45 @@ async function initializeS3Clients(): Promise<{
 async function transferCSVFromPrivateToPublic(
   privateS3Client: S3Client,
   privateBucketName: string,
-  fileKey: string,
+  csvFileKey: string,
   publicS3Client: S3Client,
   publicBucketName: string,
 ): Promise<void> {
   const source = await privateS3Client.send(
-    new GetObjectCommand({ Bucket: privateBucketName, Key: fileKey }),
+    new GetObjectCommand({ Bucket: privateBucketName, Key: csvFileKey }),
   );
 
+  console.log(`Fetched source object for key: ${csvFileKey}`);
+
   if (!source.Body) {
-    throw new Error(`Objet vide ou introuvable : ${fileKey}`);
+    throw new Error(`Objet vide ou introuvable : ${csvFileKey}`);
   }
 
   await new Upload({
     client: publicS3Client,
     params: {
       Bucket: publicBucketName,
-      Key: fileKey,
+      Key: `${csvFileKey}`,
       Body: source.Body,
       ContentType: source.ContentType,
     },
   }).done();
+
+  // delete the source object from the private S3 bucket after successful transfer
+  await privateS3Client.send(
+    new DeleteObjectCommand({ Bucket: privateBucketName, Key: csvFileKey }),
+  );
+  console.log(`Deleted source object from private S3 bucket: ${csvFileKey}`);
 }
 
 async function transfer(): Promise<any> {
   const { privateS3Client, publicS3Client } = await initializeS3Clients();
 
   // Step 1: List CSV files available in the private-network S3 bucket
-  const s3PrivateParams = { Bucket: "proconnect-preprod-statistiques" };
+  const s3PrivateParams = {
+    Bucket:
+      process.env.PRIVATE_S3_BUCKET_NAME || "proconnect-preprod-statistiques",
+  };
   const command = new ListObjectsV2Command(s3PrivateParams);
 
   let filesOnS3: any;
@@ -79,34 +91,30 @@ async function transfer(): Promise<any> {
   }
 
   if (!filesOnS3?.Contents?.length) {
-    console.log("ℹ️ No CSV file found in private-network S3 bucket");
+    console.log("ℹ️  No CSV file found in private-network S3 bucket");
     return;
   }
 
   // Step 2: Transfer the CSV file from private-network S3 to internet-reachable S3
-  const fileKeys = filesOnS3.Contents?.map((file) => file.Key) || [];
+  const fileKeys =
+    filesOnS3.Contents?.map((file) =>
+      file.Key && file.Key.endsWith(".csv") ? file.Key : null,
+    ).filter(Boolean) || [];
   console.log("📄 CSV files to transfer:", fileKeys);
 
   let transferCount = 0;
-  for (const fileKey of fileKeys) {
-    console.log(`Transferring file: ${fileKey}`);
+  for (const csvFileKey of fileKeys) {
+    console.log(`Transferring file: ${csvFileKey}`);
 
     await transferCSVFromPrivateToPublic(
       privateS3Client,
       s3PrivateParams.Bucket,
-      fileKey,
+      csvFileKey,
       publicS3Client,
-      "proconnect-preprod-statistiques-public",
+      process.env.PUBLIC_S3_BUCKET_NAME || "proconnect-statistiques-preprod",
     );
 
-    // Step 3: Delete the CSV file from private-network S3 bucket after successful transfer
-    // todo: implement deletion from private-network S3 after successful transfer
-    // aws_private s3 rm "s3://{{ .Values.storage.statsPrivateNetworkS3.bucketName }}/$CSV_FILE" --region {{ .Values.storage.statsPrivateNetworkS3.region | quote }} --endpoint-url {{ .Values.storage.statsPrivateNetworkS3.endpointUrl | quote }}
-
-    // clean local file after transfer
-    // rm "$LOCAL_FILE"
-
-    console.log(`✅ File transferred and deleted from source: ${fileKey}`);
+    console.log(`✅ File transferred and deleted from source: ${csvFileKey}`);
     transferCount++;
   }
 
