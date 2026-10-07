@@ -7,7 +7,6 @@ db.provider.replaceOne(
     active: false,
     title: "Idp test Inserted",
     url: "https://fia2-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fia2-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
       "https://fia2-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
