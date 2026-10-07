@@ -32,8 +32,11 @@ const sessionConfig: SessionConfig = {
     Routes.INTERACTION_ERROR,
     OidcProviderRoutes.REDIRECT_TO_SP,
     Routes.RIE_IDP_WARNING,
+    Routes.PROCEED_TO_CROSS_DEVICE_AUTHENTICATION,
+    Routes.PROCEED_TO_IDP,
     Routes.IDENTITY_PROVIDER_SELECTION,
     Routes.VERIFY_EMAIL,
+    Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUESTS,
 
     // Disconnect flow
     `${OidcProviderRoutes.END_SESSION}$`,

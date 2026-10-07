@@ -42,6 +42,7 @@ services:
     depends_on:
       - "core"
       - "fsa1-low"
+      - "fsa2-low"
       - "fia1-low"
       ### RIE
       - "squid"

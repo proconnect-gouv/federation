@@ -45,6 +45,9 @@ export class ServiceProvider extends Document {
 
   @Prop({ type: [String] })
   response_types?: string[];
+
+  @Prop({ type: Boolean })
+  isXdaEnabled: boolean;
 }
 
 export const ServiceProviderSchema =

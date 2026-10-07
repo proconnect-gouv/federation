@@ -4,6 +4,7 @@ import { ConfigService } from "#libs/config";
 import { CsrfService } from "#libs/csrf";
 import { LoggerService } from "#libs/logger";
 import { OidcClientService } from "#libs/oidc-client";
+import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
 import { ISessionService, SessionService } from "#libs/session";
 import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -35,6 +36,7 @@ describe("OidcClientController", () => {
   let sessionService: any;
   let sanitizer: any;
   let csrfService: any;
+  let serviceProvider: any;
 
   beforeEach(async () => {
     accountService = {
@@ -82,6 +84,7 @@ describe("OidcClientController", () => {
       transformIdentity: jest.fn(),
     };
     csrfService = { getOrCreate: jest.fn() };
+    serviceProvider = { getById: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OidcClientController],
@@ -95,6 +98,7 @@ describe("OidcClientController", () => {
         SessionService,
         IdentitySanitizer,
         CsrfService,
+        ServiceProviderAdapterMongoService,
       ],
     })
       .overrideProvider(AccountFcaService)
@@ -115,6 +119,8 @@ describe("OidcClientController", () => {
       .useValue(sanitizer)
       .overrideProvider(CsrfService)
       .useValue(csrfService)
+      .overrideProvider(ServiceProviderAdapterMongoService)
+      .useValue(serviceProvider)
       .compile();
 
     controller = module.get<OidcClientController>(OidcClientController);
@@ -225,20 +231,41 @@ describe("OidcClientController", () => {
   });
 
   describe("getRieIdpWarning", () => {
-    it("should render the RIE IdP warning page", async () => {
-      const res = {
+    let res: Response;
+    let userSession: ISessionService<AfterRedirectToRieWarningSessionDto>;
+
+    beforeEach(() => {
+      res = {
         render: jest.fn(),
       } as unknown as Response;
-      let userSession = {
-        get: jest.fn().mockReturnValue({ idpName: "IdP Name" }),
+      userSession = {
+        get: jest.fn().mockReturnValue({ idpName: "IdP Name", spId: "sp123" }),
       } as unknown as ISessionService<AfterRedirectToRieWarningSessionDto>;
       csrfService.getOrCreate.mockReturnValue("csrf-token");
+    });
+
+    it("should render the RIE IdP warning page with cross device authentication enabled", async () => {
+      serviceProvider.getById.mockResolvedValue({ isXdaEnabled: true });
+
+      await controller.getRieIdpWarning(res, userSession);
+
+      expect(serviceProvider.getById).toHaveBeenCalledWith("sp123");
+      expect(res.render).toHaveBeenCalledWith("rie-idp-warning", {
+        csrfToken: expect.any(String),
+        idpName: "IdP Name",
+        isXdaEnabled: true,
+      });
+    });
+
+    it("should render the RIE IdP warning page with cross device authentication disabled when isXdaEnabled is false", async () => {
+      serviceProvider.getById.mockResolvedValue({ isXdaEnabled: false });
 
       await controller.getRieIdpWarning(res, userSession);
 
       expect(res.render).toHaveBeenCalledWith("rie-idp-warning", {
         csrfToken: expect.any(String),
         idpName: "IdP Name",
+        isXdaEnabled: false,
       });
     });
   });
@@ -255,7 +282,7 @@ describe("OidcClientController", () => {
         }),
       } as unknown as ISessionService<AfterRedirectToRieWarningSessionDto>;
 
-      await controller.postRieIdpWarning(res, userSession);
+      await controller.postProceedToIdp(res, userSession);
 
       expect(res.redirect).toHaveBeenCalledWith(
         "https://idp.example.com/authorize",

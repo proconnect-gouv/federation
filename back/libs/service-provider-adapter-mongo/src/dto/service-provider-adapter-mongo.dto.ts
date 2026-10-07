@@ -68,4 +68,7 @@ export class ServiceProviderAdapterMongoDTO {
   @IsString({ each: true })
   @Transform(({ value }) => value || undefined)
   readonly grant_types?: string[];
+
+  @IsBoolean()
+  readonly isXdaEnabled: boolean;
 }

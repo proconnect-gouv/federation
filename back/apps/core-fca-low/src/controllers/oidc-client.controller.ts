@@ -4,6 +4,7 @@ import { CsrfService, CsrfTokenGuard } from "#libs/csrf";
 import { LoggerService, TrackedEvent } from "#libs/logger";
 import { OidcClientService } from "#libs/oidc-client";
 import { OidcProviderRoutes } from "#libs/oidc-provider";
+import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
 import { type ISessionService } from "#libs/session";
 import {
   Body,
@@ -48,6 +49,7 @@ export class OidcClientController {
     private readonly coreFcaControllerService: CoreFcaControllerService,
     private readonly sanitizer: IdentitySanitizer,
     private readonly csrfService: CsrfService,
+    private readonly serviceProvider: ServiceProviderAdapterMongoService,
   ) {}
 
   @Get(Routes.IDENTITY_PROVIDER_SELECTION)
@@ -105,19 +107,21 @@ export class OidcClientController {
     userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
   ) {
     const csrfToken = this.csrfService.getOrCreate();
-    const { idpName } = userSession.get();
+    const { idpName, spId } = userSession.get();
+    const { isXdaEnabled } = await this.serviceProvider.getById(spId);
 
     return res.render("rie-idp-warning", {
       csrfToken,
       idpName,
+      isXdaEnabled,
     });
   }
 
-  @Post(Routes.RIE_IDP_WARNING)
+  @Post(Routes.PROCEED_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header("cache-control", "no-store")
   @UseGuards(CsrfTokenGuard)
-  async postRieIdpWarning(
+  async postProceedToIdp(
     @Res() res: Response,
     @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)
     userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,

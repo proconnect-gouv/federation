@@ -18,6 +18,7 @@ export const resourceServers = {
     response_types: [],
     grant_types: [],
     type: "private",
+    isXdaEnabled: false,
   },
   "DPA2-LOW": {
     name: "Serveur de ressources Mock - 2",
@@ -36,5 +37,6 @@ export const resourceServers = {
     response_types: [],
     grant_types: [],
     type: "private",
+    isXdaEnabled: false,
   },
 };
