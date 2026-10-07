@@ -6,9 +6,11 @@
     "build": "tsc",
     "extract:dev": "tsx src/jobs/extract-daily-logs.ts",
     "extract": "node dist/src/jobs/extract-daily-logs.js",
+    "lint": "prettier --check . && npm run type:check",
     "test": "jest",
     "transfer:dev": "tsx src/jobs/s3-transfer.ts",
-    "transfer": "node dist/src/jobs/s3-transfer.js"
+    "transfer": "node dist/src/jobs/s3-transfer.js",
+    "type:check": "tsc --noEmit"
   },
   "prettier": {
     "plugins": [
@@ -17,14 +19,22 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.29.7",
     "@babel/preset-typescript": "^7.29.7",
     "@tsconfig/strictest": "^2.0.8",
+    "aws-sdk-client-mock": "^4.1.0",
     "babel-jest": "^30.5.2",
     "jest": "^30.5.2",
+    "prettier": "^3.9.9",
+    "prettier-plugin-organize-imports": "^4.3.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1146.0"
+    "@aws-sdk/client-s3": "^3.1146.0",
+    "@aws-sdk/lib-storage": "^3.1147.0"
+  },
+  "engines": {
+    "node": "^24.18.0"
   }
 }
