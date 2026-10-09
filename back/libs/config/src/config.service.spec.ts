@@ -6,7 +6,7 @@ import { IsNumber, IsObject } from "class-validator";
  * are not working, therefore, we can't go through barrel files,
  * but need to specify the full path to the helper
  */
-import { AppHelper } from "@fc/app/helpers/app-helper";
+import { AppHelper } from "#libs/app/helpers/app-helper";
 import { ConfigService } from "./config.service";
 import { UnknownConfigurationNameError } from "./errors";
 
@@ -17,8 +17,8 @@ class Schema {
   @IsObject()
   readonly I: any;
 }
-jest.mock("@fc/app/helpers/app-helper");
-jest.mock("@fc/common/helpers/dto-validation", () => ({
+jest.mock("#libs/app/helpers/app-helper");
+jest.mock("#libs/common/helpers/dto-validation", () => ({
   getDtoErrors: jest.fn(),
 }));
 

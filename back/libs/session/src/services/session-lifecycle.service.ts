@@ -1,5 +1,5 @@
-import { ConfigService } from "@fc/config";
-import { CryptographyService } from "@fc/cryptography";
+import { ConfigService } from "#libs/config";
+import { CryptographyService } from "#libs/cryptography";
 import { Injectable } from "@nestjs/common";
 import { Request, Response } from "express";
 import { cloneDeep } from "lodash";

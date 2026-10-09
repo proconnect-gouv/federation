@@ -1,4 +1,4 @@
-import { ConfigService } from "@fc/config";
+import { ConfigService } from "#libs/config";
 import { Inject, Injectable } from "@nestjs/common";
 import pino, { Logger } from "pino";
 import { trackedEventSteps } from "../config/tracked-event-steps";

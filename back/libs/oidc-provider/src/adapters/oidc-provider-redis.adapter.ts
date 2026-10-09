@@ -1,5 +1,5 @@
-import { IServiceProviderAdapter } from "@fc/oidc";
-import { RedisService } from "@fc/redis";
+import { IServiceProviderAdapter } from "#libs/oidc";
+import { RedisService } from "#libs/redis";
 import { isEmpty } from "lodash";
 import { Adapter, AdapterConstructor } from "oidc-provider";
 import {

@@ -1,6 +1,6 @@
-import { ConfigService } from "@fc/config";
-import { CryptographyService } from "@fc/cryptography";
-import { getConfigMock } from "@mocks/config";
+import { ConfigService } from "#libs/config";
+import { CryptographyService } from "#libs/cryptography";
+import { getConfigMock } from "#mocks/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Request, Response } from "express";
 import { SessionCannotCommitUndefinedSession } from "../exceptions";
@@ -9,7 +9,7 @@ import { SessionCookiesService } from "./session-cookies.service";
 import { SessionLifecycleService } from "./session-lifecycle.service";
 import { SessionLocalStorageService } from "./session-local-storage.service";
 
-jest.mock("@fc/common");
+jest.mock("#libs/common");
 
 describe("SessionLifecycleService", () => {
   let service: SessionLifecycleService;

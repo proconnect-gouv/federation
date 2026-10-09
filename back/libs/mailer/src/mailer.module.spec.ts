@@ -1,4 +1,4 @@
-import { ConfigModule } from "@fc/config";
+import { ConfigModule } from "#libs/config";
 import { Test } from "@nestjs/testing";
 import nodemailer from "nodemailer";
 

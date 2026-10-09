@@ -1,15 +1,15 @@
-import { AccountFcaService } from "@fc/account-fca";
-import { ConfigService } from "@fc/config";
-import { InteractionErrorQuery } from "@fc/core/dto/interaction_error_query.dto";
-import { CsrfService } from "@fc/csrf";
-import { EmailVerificationService } from "@fc/email-verification";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService, TrackedEvent } from "@fc/logger";
-import { NotificationsService } from "@fc/notifications";
-import { OidcAcrService } from "@fc/oidc-acr";
-import { OidcProviderService } from "@fc/oidc-provider";
-import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
-import { type ISessionService } from "@fc/session";
+import { AccountFcaService } from "#libs/account-fca";
+import { ConfigService } from "#libs/config";
+import { CsrfService } from "#libs/csrf";
+import { EmailVerificationService } from "#libs/email-verification";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService, TrackedEvent } from "#libs/logger";
+import { NotificationsService } from "#libs/notifications";
+import { OidcAcrService } from "#libs/oidc-acr";
+import { OidcProviderService } from "#libs/oidc-provider";
+import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
+import { type ISessionService } from "#libs/session";
+import { InteractionErrorQuery } from "#src/dto/interaction_error_query.dto";
 import {
   Controller,
   Get,

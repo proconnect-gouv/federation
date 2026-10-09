@@ -1,8 +1,8 @@
-import { ConfigService } from "@fc/config";
-import { AppConfig } from "@fc/core/dto";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
-import { IdentityProviderMetadata } from "@fc/oidc";
+import { ConfigService } from "#libs/config";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService } from "#libs/logger";
+import { IdentityProviderMetadata } from "#libs/oidc";
+import { AppConfig } from "#src/dto/index";
 import { Injectable } from "@nestjs/common";
 import ipaddr from "ipaddr.js";
 import { isEmpty } from "lodash";

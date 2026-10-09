@@ -1,8 +1,8 @@
-import { ConfigService } from "@fc/config";
-import { CryptographyService } from "@fc/cryptography";
-import { LoggerService } from "@fc/logger";
-import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
-import { IServiceProviderAdapter, ServiceProviderMetadata } from "@fc/oidc";
+import { ConfigService } from "#libs/config";
+import { CryptographyService } from "#libs/cryptography";
+import { LoggerService } from "#libs/logger";
+import { MongooseCollectionOperationWatcherHelper } from "#libs/mongoose";
+import { IServiceProviderAdapter, ServiceProviderMetadata } from "#libs/oidc";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { plainToInstance } from "class-transformer";

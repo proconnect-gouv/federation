@@ -1,10 +1,10 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { TrackedEvent } from "@fc/logger/enums";
-import { OidcClientService } from "@fc/oidc-client";
-import { OidcProviderRoutes } from "@fc/oidc-provider/enums";
-import { OidcProviderService } from "@fc/oidc-provider/oidc-provider.service";
-import { type ISessionService } from "@fc/session";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { TrackedEvent } from "#libs/logger/enums/index";
+import { OidcClientService } from "#libs/oidc-client";
+import { OidcProviderRoutes } from "#libs/oidc-provider/enums/index";
+import { OidcProviderService } from "#libs/oidc-provider/oidc-provider.service";
+import { type ISessionService } from "#libs/session";
 import {
   Body,
   Controller,

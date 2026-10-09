@@ -1,10 +1,10 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { TrackedEvent } from "@fc/logger/enums";
-import { OidcClientService } from "@fc/oidc-client";
-import { OidcProviderService } from "@fc/oidc-provider/oidc-provider.service";
-import { ISessionService } from "@fc/session";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { TrackedEvent } from "#libs/logger/enums/index";
+import { OidcClientService } from "#libs/oidc-client";
+import { OidcProviderService } from "#libs/oidc-provider/oidc-provider.service";
+import { ISessionService } from "#libs/session";
+import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import { validate, ValidationError } from "class-validator";
 import {

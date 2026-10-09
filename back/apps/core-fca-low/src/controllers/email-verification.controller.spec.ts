@@ -1,9 +1,9 @@
-import { ConfigService } from "@fc/config";
-import { CsrfService } from "@fc/csrf";
-import { EmailVerificationService } from "@fc/email-verification";
-import { LoggerService } from "@fc/logger";
-import { ISessionService, SessionService } from "@fc/session";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigService } from "#libs/config";
+import { CsrfService } from "#libs/csrf";
+import { EmailVerificationService } from "#libs/email-verification";
+import { LoggerService } from "#libs/logger";
+import { ISessionService, SessionService } from "#libs/session";
+import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Request, Response } from "express";
 import { AfterGetOidcCallbackSessionDto, VerifyEmailDto } from "../dto";

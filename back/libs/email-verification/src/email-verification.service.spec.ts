@@ -1,10 +1,10 @@
-import { ConfigService } from "@fc/config";
-import { CsrfService } from "@fc/csrf";
-import { LoggerService } from "@fc/logger";
-import { MailerService } from "@fc/mailer";
-import { RateLimiterService } from "@fc/rate-limiter";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigService } from "#libs/config";
+import { CsrfService } from "#libs/csrf";
+import { LoggerService } from "#libs/logger";
+import { MailerService } from "#libs/mailer";
+import { RateLimiterService } from "#libs/rate-limiter";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 import { Provider } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { EmailVerificationService } from "./email-verification.service";

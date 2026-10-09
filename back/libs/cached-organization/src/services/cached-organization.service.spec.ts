@@ -1,6 +1,6 @@
-import { ApiEntrepriseService } from "@fc/api-entreprise";
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
+import { ApiEntrepriseService } from "#libs/api-entreprise";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import {

@@ -1,9 +1,9 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { SERVICE_PROVIDER_SERVICE_TOKEN } from "@fc/oidc";
-import { SessionService } from "@fc/session";
-import { getLoggerMock } from "@mocks/logger";
-import { getSessionServiceMock } from "@mocks/session";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from "#libs/oidc";
+import { SessionService } from "#libs/session";
+import { getLoggerMock } from "#mocks/logger";
+import { getSessionServiceMock } from "#mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
 import { KoaContextWithOIDC } from "oidc-provider";
 import { OidcProviderConfigService } from "./oidc-provider-config.service";

@@ -1,6 +1,6 @@
-import { UserSession } from "@fc/core";
-import { LoggerPluginServiceInterface } from "@fc/logger";
-import { SessionService } from "@fc/session";
+import { LoggerPluginServiceInterface } from "#libs/logger";
+import { SessionService } from "#libs/session";
+import { UserSession } from "#src";
 import { Injectable } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
 

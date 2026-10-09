@@ -1,5 +1,5 @@
-import { CryptographyModule, CryptographyService } from "@fc/cryptography";
-import { SessionModule } from "@fc/session";
+import { CryptographyModule, CryptographyService } from "#libs/cryptography";
+import { SessionModule } from "#libs/session";
 import { Global, Module } from "@nestjs/common";
 import { CsrfService } from "./services";
 

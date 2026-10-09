@@ -1,9 +1,9 @@
-import { ConfigService } from "@fc/config";
-import { HttpExceptionFilter } from "@fc/exceptions";
-import { LoggerService } from "@fc/logger";
-import { OidcProviderService } from "@fc/oidc-provider";
-import { OidcProviderSessionNotFoundExceptionFilter } from "@fc/oidc-provider/filters/oidc-provider-session-not-found-exception.filter";
-import { SessionService } from "@fc/session";
+import { ConfigService } from "#libs/config";
+import { HttpExceptionFilter } from "#libs/exceptions";
+import { LoggerService } from "#libs/logger";
+import { OidcProviderService } from "#libs/oidc-provider";
+import { OidcProviderSessionNotFoundExceptionFilter } from "#libs/oidc-provider/filters/oidc-provider-session-not-found-exception.filter";
+import { SessionService } from "#libs/session";
 import {
   ArgumentsHost,
   Catch,

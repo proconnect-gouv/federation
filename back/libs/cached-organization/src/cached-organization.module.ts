@@ -1,5 +1,5 @@
-import { ApiEntrepriseModule } from "@fc/api-entreprise";
-import { MongooseModule } from "@fc/mongoose";
+import { ApiEntrepriseModule } from "#libs/api-entreprise";
+import { MongooseModule } from "#libs/mongoose";
 import { Module } from "@nestjs/common";
 import { CachedOrganizationSchema } from "./schemas";
 import { CachedOrganizationService } from "./services";

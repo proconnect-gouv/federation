@@ -1,4 +1,4 @@
-import { LoggerService } from "@fc/logger";
+import { LoggerService } from "#libs/logger";
 import { Injectable } from "@nestjs/common";
 import { toOrganizationInfo } from "@proconnect-gouv/proconnect.identite/managers/organization";
 import { OrganizationInfo } from "@proconnect-gouv/proconnect.identite/types";

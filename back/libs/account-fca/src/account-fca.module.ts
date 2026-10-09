@@ -1,4 +1,4 @@
-import { MongooseModule } from "@fc/mongoose";
+import { MongooseModule } from "#libs/mongoose";
 import { Module } from "@nestjs/common";
 import { AccountFcaSchema } from "./schemas";
 import { AccountFcaService } from "./services";

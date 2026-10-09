@@ -1,5 +1,5 @@
-import { UserSession } from "@fc/core/dto/user-session/user-session.dto";
-import { CsrfSession } from "@fc/csrf";
+import { CsrfSession } from "#libs/csrf";
+import { UserSession } from "#src/dto/user-session/user-session.dto";
 import { Expose, Type } from "class-transformer";
 import { IsObject, IsOptional, ValidateNested } from "class-validator";
 

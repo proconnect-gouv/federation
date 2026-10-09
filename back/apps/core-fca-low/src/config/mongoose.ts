@@ -1,5 +1,5 @@
-import { ConfigParser } from "@fc/config";
-import { MongooseConfig } from "@fc/mongoose";
+import { ConfigParser } from "#libs/config";
+import { MongooseConfig } from "#libs/mongoose";
 
 const env = new ConfigParser(process.env, "Mongoose");
 

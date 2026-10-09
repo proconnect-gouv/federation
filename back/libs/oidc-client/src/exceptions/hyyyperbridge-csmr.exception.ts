@@ -1,4 +1,4 @@
-import { HyyyperbridgeErrorDto } from "@fc/hyyyperbridge";
+import { HyyyperbridgeErrorDto } from "#libs/hyyyperbridge";
 import { HyyyperbridgeErrorCode } from "../enums";
 import { HyyyperbridgeBaseException } from "./hyyyperbridge-base.exception";
 

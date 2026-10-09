@@ -6,10 +6,13 @@ import { InjectModel } from "@nestjs/mongoose";
 import { computeServicePublicInfo } from "@proconnect-gouv/proconnect.identite/services/organization";
 import { OrganizationInfo } from "@proconnect-gouv/proconnect.identite/types";
 
-import { ApiEntrepriseConfig, ApiEntrepriseService } from "@fc/api-entreprise";
-import { ConfigService } from "@fc/config";
+import {
+  ApiEntrepriseConfig,
+  ApiEntrepriseService,
+} from "#libs/api-entreprise";
+import { ConfigService } from "#libs/config";
 
-import { LoggerService } from "@fc/logger";
+import { LoggerService } from "#libs/logger";
 import {
   ApiEntrepriseConnectionError,
   ApiEntrepriseError,

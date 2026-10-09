@@ -1,4 +1,4 @@
-import { NestJsDependencyInjectionWrapper } from "@fc/common";
+import { NestJsDependencyInjectionWrapper } from "#libs/common";
 import { ExecutionContext } from "@nestjs/common";
 import { validate } from "class-validator";
 import { InvalidSessionException } from "../exceptions";
