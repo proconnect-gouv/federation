@@ -1,9 +1,9 @@
-import { ConfigService } from "@fc/config";
-import { CryptographyService } from "@fc/cryptography";
-import { LoggerService } from "@fc/logger";
-import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
-import { ServiceProviderMetadata } from "@fc/oidc";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigService } from "#libs/config";
+import { CryptographyService } from "#libs/cryptography";
+import { LoggerService } from "#libs/logger";
+import { MongooseCollectionOperationWatcherHelper } from "#libs/mongoose";
+import { ServiceProviderMetadata } from "#libs/oidc";
+import { getLoggerMock } from "#mocks/logger";
 import { EventBus } from "@nestjs/cqrs";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";

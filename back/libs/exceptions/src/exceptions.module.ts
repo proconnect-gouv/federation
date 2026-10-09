@@ -1,6 +1,6 @@
-import { ConfigModule } from "@fc/config";
-import { LoggerModule } from "@fc/logger";
-import { SessionModule } from "@fc/session";
+import { ConfigModule } from "#libs/config";
+import { LoggerModule } from "#libs/logger";
+import { SessionModule } from "#libs/session";
 import { Module } from "@nestjs/common";
 import {
   BaseExceptionFilter,

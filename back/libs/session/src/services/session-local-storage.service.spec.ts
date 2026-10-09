@@ -1,5 +1,5 @@
-import { AsyncLocalStorageService } from "@fc/async-local-storage";
-import { getAsyncLocalStorageMock } from "@mocks/async-local-storage";
+import { AsyncLocalStorageService } from "#libs/async-local-storage";
+import { getAsyncLocalStorageMock } from "#mocks/async-local-storage";
 import { Test, TestingModule } from "@nestjs/testing";
 import { cloneDeep } from "lodash";
 import { SessionStoreContentInterface } from "../interfaces";

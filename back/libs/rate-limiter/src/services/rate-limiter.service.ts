@@ -1,5 +1,5 @@
-import { ConfigService } from "@fc/config";
-import { RedisService } from "@fc/redis";
+import { ConfigService } from "#libs/config";
+import { RedisService } from "#libs/redis";
 import { RateLimiterRedis } from "rate-limiter-flexible";
 
 import { Injectable } from "@nestjs/common";

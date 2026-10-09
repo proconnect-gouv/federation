@@ -1,4 +1,4 @@
-import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
+import { MongooseCollectionOperationWatcherHelper } from "#libs/mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import deepFreeze from "deep-freeze";

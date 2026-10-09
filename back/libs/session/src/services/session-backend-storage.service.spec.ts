@@ -1,10 +1,10 @@
-import { ConfigService } from "@fc/config";
-import { CryptographyService } from "@fc/cryptography";
-import { LoggerService } from "@fc/logger";
-import { RedisService } from "@fc/redis";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
-import { getRedisServiceMock, getRedisServiceMultiMock } from "@mocks/redis";
+import { ConfigService } from "#libs/config";
+import { CryptographyService } from "#libs/cryptography";
+import { LoggerService } from "#libs/logger";
+import { RedisService } from "#libs/redis";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
+import { getRedisServiceMock, getRedisServiceMultiMock } from "#mocks/redis";
 import { Test, TestingModule } from "@nestjs/testing";
 import { plainToInstance } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
@@ -18,7 +18,7 @@ import {
 } from "../exceptions";
 import { SessionBackendStorageService } from "./session-backend-storage.service";
 
-jest.mock("@fc/common");
+jest.mock("#libs/common");
 
 jest.mock("class-validator", () => ({
   ...jest.requireActual("class-validator"),

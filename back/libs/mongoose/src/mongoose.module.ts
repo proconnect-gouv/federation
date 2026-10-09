@@ -6,8 +6,8 @@ import {
   MongooseModule as MongooseNativeModule,
 } from "@nestjs/mongoose";
 
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
 import { MongooseConnectionConnectedHandler } from "./handlers";
 import { MongooseConnectionDisconnectedHandler } from "./handlers/mongoose-connection-disconnected.handler";
 import { MongooseCollectionOperationWatcherHelper } from "./helpers";

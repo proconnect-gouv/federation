@@ -1,9 +1,9 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { SessionService } from "@fc/session";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
-import { getSessionServiceMock } from "@mocks/session";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { SessionService } from "#libs/session";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
+import { getSessionServiceMock } from "#mocks/session";
 import {
   ArgumentsHost,
   BadRequestException,

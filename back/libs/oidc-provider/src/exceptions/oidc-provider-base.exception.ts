@@ -1,4 +1,4 @@
-import { BaseException } from "@fc/exceptions";
+import { BaseException } from "#libs/exceptions";
 import { errors } from "oidc-provider";
 
 export class OriginalError extends errors.OIDCProviderError {

@@ -1,4 +1,4 @@
-import { ConfigService } from "@fc/config";
+import { ConfigService } from "#libs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import crypto from "crypto";
 import {

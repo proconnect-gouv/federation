@@ -1,6 +1,6 @@
-import { AccountFcaModule } from "@fc/account-fca";
-import { ConfigModule } from "@fc/config";
-import { IdentityProviderAdapterMongoModule } from "@fc/identity-provider-adapter-mongo";
+import { AccountFcaModule } from "#libs/account-fca";
+import { ConfigModule } from "#libs/config";
+import { IdentityProviderAdapterMongoModule } from "#libs/identity-provider-adapter-mongo";
 import { Module } from "@nestjs/common";
 import { EmailValidatorService } from "./services";
 

@@ -1,5 +1,5 @@
-import { ConfigParser } from "@fc/config";
-import { LoggerConfig } from "@fc/logger";
+import { ConfigParser } from "#libs/config";
+import { LoggerConfig } from "#libs/logger";
 
 const env = new ConfigParser(process.env, "Logger");
 

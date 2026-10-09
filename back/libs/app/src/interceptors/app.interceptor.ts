@@ -1,4 +1,4 @@
-import { LoggerService } from "@fc/logger";
+import { LoggerService } from "#libs/logger";
 import {
   CallHandler,
   ExecutionContext,

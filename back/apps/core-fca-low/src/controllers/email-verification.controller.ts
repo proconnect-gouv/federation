@@ -1,11 +1,11 @@
-import { AppConfig } from "@fc/app";
-import { ConfigService } from "@fc/config";
-import { CsrfTokenGuard } from "@fc/csrf";
+import { AppConfig } from "#libs/app";
+import { ConfigService } from "#libs/config";
+import { CsrfTokenGuard } from "#libs/csrf";
 import {
   EmailVerificationExceptionFilter,
   EmailVerificationService,
-} from "@fc/email-verification";
-import { type ISessionService } from "@fc/session";
+} from "#libs/email-verification";
+import { type ISessionService } from "#libs/session";
 import {
   Body,
   Controller,

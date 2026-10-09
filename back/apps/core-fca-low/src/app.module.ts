@@ -1,38 +1,38 @@
-import { AccountFcaModule } from "@fc/account-fca";
-import { ApiEntrepriseModule } from "@fc/api-entreprise";
-import { AsyncLocalStorageModule } from "@fc/async-local-storage";
-import { CachedOrganizationModule } from "@fc/cached-organization";
-import { ConfigModule, ConfigService } from "@fc/config";
-import { CsrfModule, CsrfService } from "@fc/csrf";
-import { EmailValidatorModule } from "@fc/email-validator/email-validator.module";
-import { EmailVerificationModule } from "@fc/email-verification";
+import { AccountFcaModule } from "#libs/account-fca";
+import { ApiEntrepriseModule } from "#libs/api-entreprise";
+import { AsyncLocalStorageModule } from "#libs/async-local-storage";
+import { CachedOrganizationModule } from "#libs/cached-organization";
+import { ConfigModule, ConfigService } from "#libs/config";
+import { CsrfModule, CsrfService } from "#libs/csrf";
+import { EmailValidatorModule } from "#libs/email-validator/email-validator.module";
+import { EmailVerificationModule } from "#libs/email-verification";
 import {
   BaseExceptionFilter,
   ExceptionsModule,
   HttpExceptionFilter,
   UnknownExceptionFilter,
-} from "@fc/exceptions";
+} from "#libs/exceptions";
 import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
-} from "@fc/identity-provider-adapter-mongo";
-import { LoggerModule } from "@fc/logger";
-import { LoggerRequestPlugin, LoggerSessionPlugin } from "@fc/logger-plugins";
-import { MailerModule } from "@fc/mailer";
-import { MongooseModule } from "@fc/mongoose";
-import { NotificationsModule } from "@fc/notifications";
-import { OidcAcrModule } from "@fc/oidc-acr";
-import { IDENTITY_PROVIDER_SERVICE, OidcClientModule } from "@fc/oidc-client";
+} from "#libs/identity-provider-adapter-mongo";
+import { LoggerModule } from "#libs/logger";
+import { LoggerRequestPlugin, LoggerSessionPlugin } from "#libs/logger-plugins";
+import { MailerModule } from "#libs/mailer";
+import { MongooseModule } from "#libs/mongoose";
+import { NotificationsModule } from "#libs/notifications";
+import { OidcAcrModule } from "#libs/oidc-acr";
+import { IDENTITY_PROVIDER_SERVICE, OidcClientModule } from "#libs/oidc-client";
 import {
   OidcProviderModule,
   OidcProviderSessionNotFoundExceptionFilter,
-} from "@fc/oidc-provider";
-import { RedisModule } from "@fc/redis";
+} from "#libs/oidc-provider";
+import { RedisModule } from "#libs/redis";
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
-} from "@fc/service-provider-adapter-mongo";
-import { SessionModule } from "@fc/session";
+} from "#libs/service-provider-adapter-mongo";
+import { SessionModule } from "#libs/session";
 import { DynamicModule, Module } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 import { CqrsModule } from "@nestjs/cqrs";

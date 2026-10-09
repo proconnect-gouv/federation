@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import * as mockData from "@proconnect-gouv/proconnect.api_entreprise/testing/seed/v3-insee-sirene-etablissements-siret";
 
-import { LoggerService } from "@fc/logger";
+import { LoggerService } from "#libs/logger";
 import { omitBy } from "lodash";
 import { ApiEntrepriseClientService } from "./api-entreprise-client.service";
 import { ApiEntrepriseService } from "./api-entreprise.service";

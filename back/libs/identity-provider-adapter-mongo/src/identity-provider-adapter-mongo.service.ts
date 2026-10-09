@@ -6,16 +6,16 @@ import { Model } from "mongoose";
 import { Injectable, Type } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 
-import { ConfigService } from "@fc/config";
-import { CryptographyService } from "@fc/cryptography";
-import { LoggerService } from "@fc/logger";
-import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
+import { ConfigService } from "#libs/config";
+import { CryptographyService } from "#libs/cryptography";
+import { LoggerService } from "#libs/logger";
+import { MongooseCollectionOperationWatcherHelper } from "#libs/mongoose";
 import {
   FederationClientMetadata,
   FederationServerMetadata,
   IdentityProviderMetadata,
-} from "@fc/oidc";
-import { IIdentityProviderAdapter } from "@fc/oidc-client";
+} from "#libs/oidc";
+import { IIdentityProviderAdapter } from "#libs/oidc-client";
 
 import { ClientMetadata, ServerMetadata } from "openid-client";
 import {

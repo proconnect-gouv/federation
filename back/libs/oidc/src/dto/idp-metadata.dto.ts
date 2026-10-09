@@ -1,4 +1,4 @@
-import { IDP_METADATA } from "@fc/identity-provider-adapter-mongo";
+import { IDP_METADATA } from "#libs/identity-provider-adapter-mongo";
 import { IsString } from "class-validator";
 import { JsonValue } from "oauth4webapi";
 import { ServerMetadata } from "openid-client";

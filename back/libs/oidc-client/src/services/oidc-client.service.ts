@@ -1,9 +1,9 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { HttpProxyProtocol } from "@fc/microservices";
-import { IdentityProviderMetadata } from "@fc/oidc";
-import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
-import { RabbitmqConfig } from "@fc/rabbitmq";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { HttpProxyProtocol } from "#libs/microservices";
+import { IdentityProviderMetadata } from "#libs/oidc";
+import { IDENTITY_PROVIDER_SERVICE } from "#libs/oidc-client/tokens/index";
+import { RabbitmqConfig } from "#libs/rabbitmq";
 import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { plainToInstance } from "class-transformer";
@@ -29,15 +29,15 @@ import {
 } from "openid-client";
 import { lastValueFrom, timeout } from "rxjs";
 
-import { AppConfig } from "@fc/core/dto";
 import {
   HyyyperbridgeEnveloppeDto,
   HyyyperbridgeErrorDto,
   HyyyperbridgeMessageType,
   HyyyperbridgeResponseDto,
-} from "@fc/hyyyperbridge";
-import { AcrClaims, AcrValues } from "@fc/oidc-acr";
-import { SessionService } from "@fc/session";
+} from "#libs/hyyyperbridge";
+import { AcrClaims, AcrValues } from "#libs/oidc-acr";
+import { SessionService } from "#libs/session";
+import { AppConfig } from "#src/dto/index";
 import { OidcClientConfig, TokenDto } from "../dto";
 import {
   AuthorizationResponseErrorException,

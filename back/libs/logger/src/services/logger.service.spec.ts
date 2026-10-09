@@ -1,6 +1,6 @@
-import { ConfigService } from "@fc/config";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigService } from "#libs/config";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import pino, { Logger } from "pino";
 import { LogLevels } from "../enums";

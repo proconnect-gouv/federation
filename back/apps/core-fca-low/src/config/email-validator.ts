@@ -1,5 +1,5 @@
-import { ConfigParser } from "@fc/config";
-import type { EmailValidatorConfig } from "@fc/email-validator/dto";
+import { ConfigParser } from "#libs/config";
+import type { EmailValidatorConfig } from "#libs/email-validator/dto/index";
 
 const env = new ConfigParser(process.env, "EmailValidator");
 

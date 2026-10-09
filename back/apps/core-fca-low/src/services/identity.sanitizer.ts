@@ -4,13 +4,13 @@ import { cloneDeep } from "lodash";
 
 import { HttpStatus, Injectable } from "@nestjs/common";
 
-import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
+import { ConfigService } from "#libs/config";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService } from "#libs/logger";
 
-import { ApiEntrepriseConfig } from "@fc/api-entreprise";
-import { CachedOrganizationService } from "@fc/cached-organization";
-import { IdentityProviderMetadata } from "@fc/oidc";
+import { ApiEntrepriseConfig } from "#libs/api-entreprise";
+import { CachedOrganizationService } from "#libs/cached-organization";
+import { IdentityProviderMetadata } from "#libs/oidc";
 import {
   ApiEntrepriseConnectionError,
   ApiEntrepriseError,

@@ -4,12 +4,11 @@ import { Response } from "express";
 
 import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from "@fc/config";
-import { ActiveUserSessionDto, UserSession } from "@fc/core/dto";
-import { generateErrorId } from "@fc/exceptions/helpers";
-import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService, TrackedEvent } from "@fc/logger";
+import { ConfigService } from "#libs/config";
+import { generateErrorId } from "#libs/exceptions/helpers/index";
+import { ErrorPageParams } from "#libs/exceptions/types/error-page-params";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService, TrackedEvent } from "#libs/logger";
 import {
   OidcCtx,
   OidcProviderConfig,
@@ -17,8 +16,9 @@ import {
   OidcProviderPrompt,
   OidcProviderRoutes,
   OidcProviderService,
-} from "@fc/oidc-provider";
-import { SessionService } from "@fc/session";
+} from "#libs/oidc-provider";
+import { SessionService } from "#libs/session";
+import { ActiveUserSessionDto, UserSession } from "#src/dto/index";
 import { isString } from "lodash";
 
 @Injectable()

@@ -1,12 +1,12 @@
-import { ConfigService } from "@fc/config";
-import { UserSession } from "@fc/core";
-import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
-import { LoggerService } from "@fc/logger";
+import { ConfigService } from "#libs/config";
+import { ErrorPageParams } from "#libs/exceptions/types/error-page-params";
+import { LoggerService } from "#libs/logger";
 import {
   type IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
-} from "@fc/oidc";
-import { SessionConfig, SessionService } from "@fc/session";
+} from "#libs/oidc";
+import { SessionConfig, SessionService } from "#libs/session";
+import { UserSession } from "#src";
 import { Inject, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import { Configuration, KoaContextWithOIDC } from "oidc-provider";

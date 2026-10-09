@@ -2,11 +2,11 @@ import { get, intersection, isArray, isEmpty, isString } from "lodash";
 
 import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from "@fc/config";
-import { AppConfig, UserSession } from "@fc/core";
-import { OidcProviderConfig } from "@fc/oidc-provider";
+import { ConfigService } from "#libs/config";
+import { OidcProviderConfig } from "#libs/oidc-provider";
+import { AppConfig, UserSession } from "#src";
 
-import { LoggerService } from "@fc/logger";
+import { LoggerService } from "#libs/logger";
 import { AcrClaims, AcrValues, ExtendedInteraction } from "./oidc-acr.type";
 
 @Injectable()

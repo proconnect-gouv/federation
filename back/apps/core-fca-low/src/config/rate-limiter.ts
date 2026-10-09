@@ -1,5 +1,5 @@
-import type { RateLimiterConfig } from "@fc/rate-limiter";
-import { RateLimiterKeyPrefix } from "@fc/rate-limiter";
+import type { RateLimiterConfig } from "#libs/rate-limiter";
+import { RateLimiterKeyPrefix } from "#libs/rate-limiter";
 
 const rateLimiterConfig: RateLimiterConfig = {
   rateLimiterParams: [

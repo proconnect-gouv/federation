@@ -1,7 +1,7 @@
 import {
   AsyncLocalStorageMiddleware,
   AsyncLocalStorageRequestMiddleware,
-} from "@fc/async-local-storage";
+} from "#libs/async-local-storage";
 import { Global, MiddlewareConsumer, Module } from "@nestjs/common";
 import { AsyncLocalStorageService } from "./async-local-storage.service";
 

@@ -1,4 +1,4 @@
-import { LoggerModule } from "@fc/logger";
+import { LoggerModule } from "#libs/logger";
 import { Module } from "@nestjs/common";
 import { ApiEntrepriseService } from "./services";
 import { ApiEntrepriseClientService } from "./services/api-entreprise-client.service";

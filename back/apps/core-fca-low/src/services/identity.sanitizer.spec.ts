@@ -1,7 +1,7 @@
-import { CachedOrganizationService } from "@fc/cached-organization";
-import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
+import { CachedOrganizationService } from "#libs/cached-organization";
+import { ConfigService } from "#libs/config";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService } from "#libs/logger";
 import { ApiEntrepriseConnectionError } from "@proconnect-gouv/proconnect.api_entreprise/types";
 import { IdentityFromIdpDto } from "../dto/identity-from-idp.dto";
 import {
@@ -10,11 +10,11 @@ import {
 } from "../exceptions";
 import { IdentitySanitizer } from "./identity.sanitizer";
 
-jest.mock("@fc/logger");
-jest.mock("@fc/config");
-jest.mock("@fc/identity-provider-adapter-mongo");
-jest.mock("@fc/api-entreprise");
-jest.mock("@fc/cached-organization");
+jest.mock("#libs/logger");
+jest.mock("#libs/config");
+jest.mock("#libs/identity-provider-adapter-mongo");
+jest.mock("#libs/api-entreprise");
+jest.mock("#libs/cached-organization");
 
 describe("IdentitySanitizer", () => {
   let identitySanitizer: IdentitySanitizer;

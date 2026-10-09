@@ -9,7 +9,7 @@ import lodash from "lodash";
  * are not working, therefore, we can't go through barrel files,
  * but need to specify the full path to the helper
  */
-import { AppHelper } from "@fc/app/helpers/app-helper";
+import { AppHelper } from "#libs/app/helpers/app-helper";
 import { UnknownConfigurationNameError } from "./errors";
 import { type IConfigOptions } from "./interfaces";
 

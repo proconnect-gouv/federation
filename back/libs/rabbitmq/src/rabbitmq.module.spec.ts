@@ -4,7 +4,7 @@ import {
   Transport,
 } from "@nestjs/microservices";
 
-import { getLoggerMock } from "@mocks/logger";
+import { getLoggerMock } from "#mocks/logger";
 import { RabbitmqModule } from "./rabbitmq.module";
 
 describe("RabbitmqModule", () => {

@@ -1,4 +1,4 @@
-import { ConfigService } from "@fc/config";
+import { ConfigService } from "#libs/config";
 import { Injectable } from "@nestjs/common";
 import { Request, Response } from "express";
 import { SessionConfig } from "../dto";

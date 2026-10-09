@@ -1,5 +1,5 @@
-import { ApiEntrepriseConfig } from "@fc/api-entreprise";
-import { ConfigParser } from "@fc/config";
+import { ApiEntrepriseConfig } from "#libs/api-entreprise";
+import { ConfigParser } from "#libs/config";
 
 const env = new ConfigParser(process.env, "ApiEntreprise");
 
