@@ -3,6 +3,7 @@ import { ApiEntrepriseModule } from "@fc/api-entreprise";
 import { AsyncLocalStorageModule } from "@fc/async-local-storage";
 import { CachedOrganizationModule } from "@fc/cached-organization";
 import { ConfigModule, ConfigService } from "@fc/config";
+import { CrossDeviceAuthenticationModule } from "@fc/cross-device-authentication";
 import { CsrfModule, CsrfService } from "@fc/csrf";
 import { EmailValidatorModule } from "@fc/email-validator/email-validator.module";
 import { EmailVerificationModule } from "@fc/email-verification";
@@ -38,6 +39,7 @@ import { APP_FILTER } from "@nestjs/core";
 import { CqrsModule } from "@nestjs/cqrs";
 import {
   AccessibilityController,
+  CrossDeviceAuthenticationController,
   EmailVerificationController,
   HealthController,
   InteractionController,
@@ -90,9 +92,11 @@ export class AppModule {
         ApiEntrepriseModule,
         CachedOrganizationModule,
         EmailVerificationModule,
+        CrossDeviceAuthenticationModule,
       ],
       controllers: [
         AccessibilityController,
+        CrossDeviceAuthenticationController,
         HealthController,
         InteractionController,
         EmailVerificationController,

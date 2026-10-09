@@ -252,6 +252,15 @@
         "tsConfigPath": "libs/email-verification/tsconfig.lib.json"
       }
     },
+    "cross-device-authentication": {
+      "type": "library",
+      "root": "libs/cross-device-authentication",
+      "entryFile": "index",
+      "sourceRoot": "libs/cross-device-authentication/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cross-device-authentication/tsconfig.lib.json"
+      }
+    },
     "rate-limiter": {
       "type": "library",
       "root": "libs/rate-limiter",

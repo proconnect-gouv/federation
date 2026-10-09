@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="light">
+  <head>
+    <%- include('includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/pages/interaction.css" />
+    <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
+    <title>Cross Device Authentication - ProConnect</title>
+  </head>
+
+  <body>
+    <%- include('includes/skiplinks.ejs') %> <%- include('includes/header.ejs')
+    %>
+    <main role="main" id="content" class="fr-py-2w">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center">
+          <div class="fr-col-12 fr-col-md-8 fr-col-lg-4">
+            <h1 class="fr-my-2w fr-h4">
+              Cross Device Authentication
+            </h1>
+            <p class="fr-my-6b">
+              Veuillez suivre les instructions pour continuer en Cross-Device :
+              <ol>
+                <li>Gardez cette fenêtre ouverte pendant la durée de la manipulation</li>
+                <li>Accédez à l'url suivante depuis un ordinateur <b>connecté au RIE</b> : https://auth.agentconnect.gouv.fr/api/v2/xda</li>
+                <li>Cliquez sur la demande de cross device authentication correspondant à votre session</li>
+              </ol>
+            </p>
+
+            <button
+              type="button"
+              class="fr-btn fr-btn--tertiary-no-outline btn--fullwidth go-back-link"
+            >
+              Revenir à l'étape précédente
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script type="text/javascript" src="/js/go-back.js"></script>
+</html>
