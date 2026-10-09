@@ -16,7 +16,7 @@ describe("update a service-provider", () => {
     cy.login(USER_OPERATOR, USER_PASS);
   });
 
-  describe.only("first step: create a Service Provider", () => {
+  describe("first step: create a Service Provider", () => {
     it("Should be able to add a sp ( all ) ", () => {
       // Arrange
       const mockConfig = {
@@ -41,7 +41,7 @@ describe("update a service-provider", () => {
     });
   });
 
-  describe.only("Second step: update the Service Provider", () => {
+  describe("Second step: update the Service Provider", () => {
     it('Should select "openid" if any other scope is checked and now display "openid" as disabled', () => {
       // Arrange
       const mockConfig = {
