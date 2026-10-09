@@ -3,7 +3,7 @@ import { createServer } from "node:http";
 import { z } from "zod";
 import { createRoutes } from "./http.ts";
 import { logger } from "./logger.ts";
-import { setupMessageConsumer } from "./rpc.ts";
+import { rpcConfig, setupMessageConsumer } from "./rpc.ts";
 
 const ConfigSchema = z.object({
   Logger_THRESHOLD: z.enum([
@@ -15,6 +15,7 @@ const ConfigSchema = z.object({
     "warn",
   ]),
   PORT: z.coerce.number().default(3000),
+  REQUEST_TIMEOUT: z.coerce.number(),
   RieBroker_QUEUE: z.string(),
   RieBroker_URLS: z
     .string()
@@ -24,6 +25,7 @@ const ConfigSchema = z.object({
 
 const config = ConfigSchema.parse(process.env);
 logger.level = config.Logger_THRESHOLD;
+rpcConfig.requestTimeout = config.REQUEST_TIMEOUT;
 
 const connection = amqp.connect(config.RieBroker_URLS);
 connection.on("connect", () => logger.info("Connected to RabbitMQ"));

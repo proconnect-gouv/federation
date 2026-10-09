@@ -8,6 +8,8 @@ const INTERNAL_ERROR = { message: "Internal server error", status: "error" };
 const NO_MESSAGE_HANDLER =
   "There is no matching message handler defined in the remote service.";
 
+export const rpcConfig = { requestTimeout: 30_000 };
+
 const BridgePayloadSchema = z.object({
   data: z.string().nullish(),
   headers: z.record(z.string(), z.any()),
@@ -34,6 +36,7 @@ async function proxyRequest(payload: unknown) {
       body: data || null,
       headers: new Headers(headers),
       method,
+      signal: AbortSignal.timeout(rpcConfig.requestTimeout),
     });
     logger.info(`<-- ${request} ${res.status} ${elapsed()}`);
     return {
