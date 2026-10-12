@@ -24,6 +24,7 @@ async function bootstrap() {
     viewsPaths,
     assetsDsfrPaths,
     assetsCacheTtl,
+    matomoEnabled,
     httpsOptions: { key, cert },
     contentSecurityPolicy: {
       defaultSrc,
@@ -112,6 +113,8 @@ async function bootstrap() {
       return join(__dirname, viewsPath, "views");
     }),
   );
+
+  app.setLocal("matomoEnabled", matomoEnabled);
 
   app.set("trust proxy", 1);
 
