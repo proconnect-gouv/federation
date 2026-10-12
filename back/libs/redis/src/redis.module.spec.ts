@@ -1,7 +1,7 @@
-import { ConfigModule } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigModule } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 import { Test } from "@nestjs/testing";
 import { RedisModule } from "./redis.module";
 

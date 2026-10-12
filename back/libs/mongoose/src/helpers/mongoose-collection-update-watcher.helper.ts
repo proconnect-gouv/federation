@@ -1,5 +1,5 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
 import { Injectable, type OnModuleDestroy } from "@nestjs/common";
 import { debounce, type DebouncedFunc } from "lodash";
 import { type ChangeStream, ChangeStreamDocument } from "mongodb";

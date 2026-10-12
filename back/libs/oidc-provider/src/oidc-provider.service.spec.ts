@@ -1,9 +1,9 @@
-import { LoggerService } from "@fc/logger";
-import { RedisService } from "@fc/redis";
-import { SessionService } from "@fc/session";
-import { getLoggerMock } from "@mocks/logger";
-import { getRedisServiceMock } from "@mocks/redis";
-import { getSessionServiceMock } from "@mocks/session";
+import { LoggerService } from "#libs/logger";
+import { RedisService } from "#libs/redis";
+import { SessionService } from "#libs/session";
+import { getLoggerMock } from "#mocks/logger";
+import { getRedisServiceMock } from "#mocks/redis";
+import { getSessionServiceMock } from "#mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Response } from "express";
 import OidcProvider from "oidc-provider";

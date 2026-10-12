@@ -1,4 +1,4 @@
-import { IdentityProviderMetadata } from "@fc/oidc";
+import { IdentityProviderMetadata } from "#libs/oidc";
 
 export interface IIdentityProviderAdapter {
   getById(

@@ -1,10 +1,10 @@
-import { AccountFcaService } from "@fc/account-fca";
-import { ConfigService } from "@fc/config";
-import { CsrfService, CsrfTokenGuard } from "@fc/csrf";
-import { LoggerService, TrackedEvent } from "@fc/logger";
-import { OidcClientService } from "@fc/oidc-client";
-import { OidcProviderRoutes } from "@fc/oidc-provider";
-import { type ISessionService } from "@fc/session";
+import { AccountFcaService } from "#libs/account-fca";
+import { ConfigService } from "#libs/config";
+import { CsrfService, CsrfTokenGuard } from "#libs/csrf";
+import { LoggerService, TrackedEvent } from "#libs/logger";
+import { OidcClientService } from "#libs/oidc-client";
+import { OidcProviderRoutes } from "#libs/oidc-provider";
+import { type ISessionService } from "#libs/session";
 import {
   Body,
   Controller,

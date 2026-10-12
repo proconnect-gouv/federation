@@ -1,4 +1,4 @@
-import { RedisModule } from "@fc/redis";
+import { RedisModule } from "#libs/redis";
 import { Module } from "@nestjs/common";
 import { RateLimiterService } from "./services";
 

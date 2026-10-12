@@ -1,5 +1,5 @@
-import { MailerModule } from "@fc/mailer";
-import { RateLimiterModule } from "@fc/rate-limiter";
+import { MailerModule } from "#libs/mailer";
+import { RateLimiterModule } from "#libs/rate-limiter";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { EmailVerificationService } from "./email-verification.service";

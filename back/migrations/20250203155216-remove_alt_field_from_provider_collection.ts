@@ -1,6 +1,6 @@
 //
 
-import type { IdentityProvider } from "@fc/identity-provider-adapter-mongo/schemas";
+import type { IdentityProvider } from "#libs/identity-provider-adapter-mongo/schemas/index";
 import type { Db } from "mongodb";
 
 //

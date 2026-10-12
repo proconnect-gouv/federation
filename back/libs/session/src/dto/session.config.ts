@@ -14,8 +14,8 @@ import {
   ValidateNested,
 } from "class-validator";
 
-import { IsStringOrRegExp } from "@fc/common";
-import { CoreFcaSession } from "@fc/core";
+import { IsStringOrRegExp } from "#libs/common";
+import { CoreFcaSession } from "#src";
 import { RouteInfo, type Type as Class } from "@nestjs/common/interfaces";
 import { type TemplateExposedType } from "../types";
 

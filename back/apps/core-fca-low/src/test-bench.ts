@@ -10,10 +10,10 @@ import type { NestExpressApplication } from "@nestjs/platform-express";
 import type { TestingModuleBuilder } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import { NestJsDependencyInjectionWrapper } from "@fc/common";
-import type { ConfigService } from "@fc/config";
-import { RedisService } from "@fc/redis";
-import type { SessionConfig } from "@fc/session";
+import { NestJsDependencyInjectionWrapper } from "#libs/common";
+import type { ConfigService } from "#libs/config";
+import { RedisService } from "#libs/redis";
+import type { SessionConfig } from "#libs/session";
 
 import TEST_CONFIG from "../.mocks/config";
 import { AppModule } from "./app.module";

@@ -1,8 +1,8 @@
-import { UserSession } from "@fc/core";
-import { LoggerService } from "@fc/logger";
-import { ExtendedInteraction } from "@fc/oidc-acr";
-import { RedisService } from "@fc/redis";
-import { SessionService } from "@fc/session";
+import { LoggerService } from "#libs/logger";
+import { ExtendedInteraction } from "#libs/oidc-acr";
+import { RedisService } from "#libs/redis";
+import { SessionService } from "#libs/session";
+import { UserSession } from "#src";
 import { Global, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import {

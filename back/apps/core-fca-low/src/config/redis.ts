@@ -1,5 +1,5 @@
-import { ConfigParser } from "@fc/config";
-import { RedisConfig } from "@fc/redis";
+import { ConfigParser } from "#libs/config";
+import { RedisConfig } from "#libs/redis";
 
 const env = new ConfigParser(process.env, "Redis");
 

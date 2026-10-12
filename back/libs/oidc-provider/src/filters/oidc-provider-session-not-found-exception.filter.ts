@@ -1,6 +1,9 @@
-import { generateErrorId, getStackTraceArray } from "@fc/exceptions/helpers";
-import { ErrorPageParams } from "@fc/exceptions/types/error-page-params";
-import { LoggerService } from "@fc/logger";
+import {
+  generateErrorId,
+  getStackTraceArray,
+} from "#libs/exceptions/helpers/index";
+import { ErrorPageParams } from "#libs/exceptions/types/error-page-params";
+import { LoggerService } from "#libs/logger";
 import { ArgumentsHost, Catch, Injectable } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 import { errors } from "oidc-provider";

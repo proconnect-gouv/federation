@@ -1,5 +1,5 @@
-import { AsyncLocalStorageService } from "@fc/async-local-storage";
-import { LoggerPluginServiceInterface } from "@fc/logger";
+import { AsyncLocalStorageService } from "#libs/async-local-storage";
+import { LoggerPluginServiceInterface } from "#libs/logger";
 import { Injectable } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
 

@@ -1,6 +1,6 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { getLoggerMock } from "#mocks/logger";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { v4 as uuid, Version4Options } from "uuid";

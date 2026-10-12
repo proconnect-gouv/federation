@@ -2,22 +2,22 @@ import { Request, Response } from "express";
 
 import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from "@fc/config";
+import { ConfigService } from "#libs/config";
+import { EmailValidatorService } from "#libs/email-validator/services/index";
+import { LoggerService, TrackedEvent } from "#libs/logger";
+import { OidcAcrService } from "#libs/oidc-acr";
+import { OidcClientService } from "#libs/oidc-client";
+import { OidcProviderService } from "#libs/oidc-provider";
+import { SessionService } from "#libs/session";
 import {
   AfterGetInteractionSessionDto,
   AfterRedirectToIdpWithEmailSessionDto,
   AppConfig,
   UserSession,
-} from "@fc/core/dto";
-import { Routes } from "@fc/core/enums";
-import { NoIdpException } from "@fc/core/exceptions";
-import { CoreFcaService } from "@fc/core/services/core-fca.service";
-import { EmailValidatorService } from "@fc/email-validator/services";
-import { LoggerService, TrackedEvent } from "@fc/logger";
-import { OidcAcrService } from "@fc/oidc-acr";
-import { OidcClientService } from "@fc/oidc-client";
-import { OidcProviderService } from "@fc/oidc-provider";
-import { SessionService } from "@fc/session";
+} from "#src/dto/index";
+import { Routes } from "#src/enums/index";
+import { NoIdpException } from "#src/exceptions/index";
+import { CoreFcaService } from "#src/services/core-fca.service";
 
 @Injectable()
 export class CoreFcaControllerService {

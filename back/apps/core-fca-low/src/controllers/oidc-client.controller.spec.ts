@@ -1,11 +1,11 @@
-import { AccountFcaService } from "@fc/account-fca";
-import { validateDto } from "@fc/common";
-import { ConfigService } from "@fc/config";
-import { CsrfService } from "@fc/csrf";
-import { LoggerService } from "@fc/logger";
-import { OidcClientService } from "@fc/oidc-client";
-import { ISessionService, SessionService } from "@fc/session";
-import { getLoggerMock } from "@mocks/logger";
+import { AccountFcaService } from "#libs/account-fca";
+import { validateDto } from "#libs/common";
+import { ConfigService } from "#libs/config";
+import { CsrfService } from "#libs/csrf";
+import { LoggerService } from "#libs/logger";
+import { OidcClientService } from "#libs/oidc-client";
+import { ISessionService, SessionService } from "#libs/session";
+import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import { type Request, type Response } from "express";
 import { AfterRedirectToIdpWithEmailSessionDto, UserSession } from "../dto";
@@ -17,8 +17,8 @@ import {
 } from "../services";
 import { OidcClientController } from "./oidc-client.controller";
 
-jest.mock("@fc/common", () => ({
-  ...jest.requireActual("@fc/common"),
+jest.mock("#libs/common", () => ({
+  ...jest.requireActual("#libs/common"),
   validateDto: jest.fn(),
 }));
 

@@ -1,4 +1,4 @@
-import { ExceptionsConfig } from "@fc/exceptions/dto";
+import { ExceptionsConfig } from "#libs/exceptions/dto/index";
 
 const exceptionsConfig: ExceptionsConfig = {
   prefix: "Y",

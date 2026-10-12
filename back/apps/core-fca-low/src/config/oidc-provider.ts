@@ -1,9 +1,9 @@
-import { ConfigParser } from "@fc/config";
+import { ConfigParser } from "#libs/config";
 import {
   OidcProviderConfig,
   OidcProviderPrompt,
   OidcProviderRoutes,
-} from "@fc/oidc-provider";
+} from "#libs/oidc-provider";
 
 const env = new ConfigParser(process.env, "OidcProvider");
 

@@ -1,4 +1,4 @@
-import { ConfigModule, ConfigService } from "@fc/config";
+import { ConfigModule, ConfigService } from "#libs/config";
 import { DynamicModule, Module } from "@nestjs/common";
 import nodemailer from "nodemailer";
 import { BrevoAdapter } from "./adapters/brevo.adapter";

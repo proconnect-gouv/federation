@@ -1,5 +1,5 @@
-import { ConfigParser } from "@fc/config";
-import { ServiceProviderAdapterMongoConfig } from "@fc/service-provider-adapter-mongo";
+import { ConfigParser } from "#libs/config";
+import { ServiceProviderAdapterMongoConfig } from "#libs/service-provider-adapter-mongo";
 
 const env = new ConfigParser(process.env, "AdapterMongo");
 

@@ -1,5 +1,5 @@
-import { ConfigParser } from "@fc/config";
-import { AppConfig } from "@fc/core";
+import { ConfigParser } from "#libs/config";
+import { AppConfig } from "#src";
 
 const env = new ConfigParser(process.env, "App");
 

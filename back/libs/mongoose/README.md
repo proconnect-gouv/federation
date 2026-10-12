@@ -19,7 +19,7 @@ This library provides helpers to watch collections changes and execute arbitrary
 To start a basic Mongo Connection, just add :
 
 ```typescript
-import { MongooseModule } from "@fc/mongoose";
+import { MongooseModule } from "#libs/mongoose";
 
 MongooseModule.forRoot();
 ```
@@ -27,7 +27,7 @@ MongooseModule.forRoot();
 You can specify a specific connection name :
 
 ```typescript
-import { MongooseModule } from "@fc/mongoose";
+import { MongooseModule } from "#libs/mongoose";
 
 MongooseModule.forRoot("MongooseLegacy");
 ```
@@ -51,14 +51,14 @@ MongooseModule.forRoot("MongooseLegacy");
 Add model with the following module :
 
 ```typescript
-import { MongooseModule } from "@fc/mongoose";
+import { MongooseModule } from "#libs/mongoose";
 MongooseModule.forFeature([{ name: "Account", schema: AccountSchema }]);
 ```
 
 You can also add a specific connection name :
 
 ```typescript
-import { MongooseModule } from "@fc/mongoose";
+import { MongooseModule } from "#libs/mongoose";
 MongooseModule.forFeature(
   [{ name: "Account", schema: AccountSchema }],
   "MongooseLegacy",
@@ -78,7 +78,7 @@ watchWith(model: Model<unknown>, callback: Function): void
 The logical way to do such registration is in the NestJS `onModuleInit()` lifecycle function.
 
 ```ts
-import { MongooseCollectionOperationWatcherHelper } from "@fc/mongoose";
+import { MongooseCollectionOperationWatcherHelper } from "#libs/mongoose";
 
 @Injectable()
 class MyService {

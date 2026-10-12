@@ -1,6 +1,6 @@
-import { ConfigService } from "@fc/config";
-import { RedisService } from "@fc/redis";
-import { getConfigMock } from "@mocks/config";
+import { ConfigService } from "#libs/config";
+import { RedisService } from "#libs/redis";
+import { getConfigMock } from "#mocks/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { RateLimiterRedis } from "rate-limiter-flexible";
 import { RateLimiterKeyPrefix } from "../enum";

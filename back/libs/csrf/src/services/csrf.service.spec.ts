@@ -1,6 +1,6 @@
-import { CryptographyService } from "@fc/cryptography";
-import { SessionService } from "@fc/session";
-import { getSessionServiceMock } from "@mocks/session";
+import { CryptographyService } from "#libs/cryptography";
+import { SessionService } from "#libs/session";
+import { getSessionServiceMock } from "#mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
 import { CsrfBadTokenException } from "../exceptions";
 import { CsrfService } from "./csrf.service";

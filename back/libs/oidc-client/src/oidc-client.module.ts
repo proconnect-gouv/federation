@@ -1,7 +1,7 @@
 import { DynamicModule, Module, Type } from "@nestjs/common";
 
-import { RabbitmqModule } from "@fc/rabbitmq";
-import { SessionModule } from "@fc/session";
+import { RabbitmqModule } from "#libs/rabbitmq";
+import { SessionModule } from "#libs/session";
 import { IIdentityProviderAdapter } from "./interfaces";
 import { OidcClientService } from "./services";
 import { IDENTITY_PROVIDER_SERVICE } from "./tokens";

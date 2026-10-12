@@ -1,12 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
-import { IdentityProviderMetadata } from "@fc/oidc";
+import { ConfigService } from "#libs/config";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService } from "#libs/logger";
+import { IdentityProviderMetadata } from "#libs/oidc";
 
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 
 import { InvalidEmailDomainException } from "../exceptions";
 import { CoreFcaService } from "./core-fca.service";

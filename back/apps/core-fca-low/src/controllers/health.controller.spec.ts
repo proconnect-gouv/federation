@@ -1,7 +1,7 @@
-import { ApiEntrepriseService } from "@fc/api-entreprise";
-import { ConfigService } from "@fc/config";
-import { MailerService } from "@fc/mailer";
-import { RedisService } from "@fc/redis";
+import { ApiEntrepriseService } from "#libs/api-entreprise";
+import { ConfigService } from "#libs/config";
+import { MailerService } from "#libs/mailer";
+import { RedisService } from "#libs/redis";
 import { HttpStatus } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { of, throwError } from "rxjs";

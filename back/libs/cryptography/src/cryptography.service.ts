@@ -8,7 +8,7 @@ import {
   randomBytes,
 } from "crypto";
 
-import { ConfigService } from "@fc/config";
+import { ConfigService } from "#libs/config";
 import { Injectable } from "@nestjs/common";
 import { CryptographyConfig } from "./dto";
 import { LowEntropyArgumentException, PasswordHashFailure } from "./exceptions";

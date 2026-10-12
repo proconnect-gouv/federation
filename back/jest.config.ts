@@ -1,5 +1,4 @@
 import type { Config } from "jest";
-import { pathsToModuleNameMapper } from "ts-jest";
 import { compilerOptions } from "./tsconfig.json";
 
 const config: Config = {
@@ -44,7 +43,6 @@ const config: Config = {
   },
   testEnvironment: "node",
   roots: ["<rootDir>/apps/", "<rootDir>/libs/"],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
   preset: "ts-jest",
 };
 

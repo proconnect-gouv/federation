@@ -5,7 +5,7 @@ import {
   ValidatorConstraintInterface,
 } from "class-validator";
 
-import { ConfigService } from "@fc/config";
+import { ConfigService } from "#libs/config";
 import { Injectable } from "@nestjs/common";
 
 const phoneRegex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/;

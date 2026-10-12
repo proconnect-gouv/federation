@@ -1,4 +1,4 @@
-import { parseBoolean, parseJsonProperty } from "@fc/common";
+import { parseBoolean, parseJsonProperty } from "#libs/common";
 import { existsSync, readFileSync } from "fs";
 import { ConfigParser } from "./config-parser";
 
@@ -7,7 +7,7 @@ jest.mock("fs", () => ({
   existsSync: jest.fn(),
 }));
 
-jest.mock("@fc/common", () => ({
+jest.mock("#libs/common", () => ({
   parseBoolean: jest.fn(),
   parseJsonProperty: jest.fn(),
 }));

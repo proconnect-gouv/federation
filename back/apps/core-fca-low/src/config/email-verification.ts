@@ -1,5 +1,5 @@
-import { ConfigParser } from "@fc/config";
-import { EmailVerificationConfig } from "@fc/email-verification";
+import { ConfigParser } from "#libs/config";
+import { EmailVerificationConfig } from "#libs/email-verification";
 
 const env = new ConfigParser(process.env, "EmailVerification");
 

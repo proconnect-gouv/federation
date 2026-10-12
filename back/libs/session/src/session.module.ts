@@ -1,7 +1,7 @@
-import { AsyncLocalStorageModule } from "@fc/async-local-storage";
-import { ConfigService } from "@fc/config";
-import { CryptographyModule } from "@fc/cryptography";
-import { RedisModule } from "@fc/redis";
+import { AsyncLocalStorageModule } from "#libs/async-local-storage";
+import { ConfigService } from "#libs/config";
+import { CryptographyModule } from "#libs/cryptography";
+import { RedisModule } from "#libs/redis";
 import { Global, MiddlewareConsumer, Module } from "@nestjs/common";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { SessionConfig } from "./dto";

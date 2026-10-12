@@ -1,7 +1,7 @@
-import { ConfigService } from "@fc/config";
-import { BaseExceptionFilter } from "@fc/exceptions/filters";
-import { LoggerService } from "@fc/logger";
-import { SessionService } from "@fc/session";
+import { ConfigService } from "#libs/config";
+import { BaseExceptionFilter } from "#libs/exceptions/filters/index";
+import { LoggerService } from "#libs/logger";
+import { SessionService } from "#libs/session";
 import { Catch, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import { EmailVerificationService } from "../email-verification.service";

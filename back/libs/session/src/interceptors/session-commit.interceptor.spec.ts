@@ -1,8 +1,8 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
-import { getSessionServiceMock } from "@mocks/session";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
+import { getSessionServiceMock } from "#mocks/session";
 import { ExecutionContext } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Request } from "express";

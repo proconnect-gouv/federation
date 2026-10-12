@@ -1,7 +1,7 @@
-import { ConfigModule } from "@fc/config";
-import { LoggerModule, LoggerService } from "@fc/logger";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigModule } from "#libs/config";
+import { LoggerModule, LoggerService } from "#libs/logger";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 import { Module } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { OidcProviderModule } from "./oidc-provider.module";

@@ -34,7 +34,7 @@ export default {
 Version nouvelle config (#391)
 
 ```typescript
-import { ConfigParser } from '@fc/config';
+import { ConfigParser } from '#libs/config';
 
 const env = new ConfigParser(process.env,'Https');
 

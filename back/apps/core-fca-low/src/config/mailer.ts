@@ -1,6 +1,6 @@
-import { ConfigParser } from "@fc/config";
-import type { MailerConfig } from "@fc/mailer/dto";
-import { TransportType } from "@fc/mailer/enums";
+import { ConfigParser } from "#libs/config";
+import type { MailerConfig } from "#libs/mailer/dto/index";
+import { TransportType } from "#libs/mailer/enums/index";
 
 const env = new ConfigParser(process.env, "Mailer");
 

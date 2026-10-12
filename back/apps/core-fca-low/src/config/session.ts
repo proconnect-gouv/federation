@@ -1,7 +1,7 @@
-import { ConfigParser } from "@fc/config";
-import { CoreFcaSession, Routes } from "@fc/core";
-import { OidcProviderRoutes } from "@fc/oidc-provider";
-import { CookieOptions, SessionConfig } from "@fc/session";
+import { ConfigParser } from "#libs/config";
+import { OidcProviderRoutes } from "#libs/oidc-provider";
+import { CookieOptions, SessionConfig } from "#libs/session";
+import { CoreFcaSession, Routes } from "#src";
 
 const env = new ConfigParser(process.env, "Session");
 

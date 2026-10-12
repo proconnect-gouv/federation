@@ -1,6 +1,6 @@
-import { CoreFcaConfig, CoreFcaSession, Routes } from "@fc/core";
-import { OidcProviderRoutes } from "@fc/oidc-provider";
-import { RateLimiterKeyPrefix } from "@fc/rate-limiter";
+import { OidcProviderRoutes } from "#libs/oidc-provider";
+import { RateLimiterKeyPrefix } from "#libs/rate-limiter";
+import { CoreFcaConfig, CoreFcaSession, Routes } from "#src";
 
 // Values mirror docker/compose/shared/.env/base-app.env +
 // docker/compose/fca-low/.env/core.env (the real dev config for this

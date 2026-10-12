@@ -1,8 +1,8 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { IDENTITY_PROVIDER_SERVICE } from "@fc/oidc-client/tokens";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { IDENTITY_PROVIDER_SERVICE } from "#libs/oidc-client/tokens/index";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import * as classTransformer from "class-transformer";
 import * as classValidator from "class-validator";
@@ -10,10 +10,10 @@ import * as openidClient from "openid-client";
 import "reflect-metadata";
 import * as rxjs from "rxjs";
 
-import { getSessionServiceMock } from "@mocks/session";
+import { getSessionServiceMock } from "#mocks/session";
 
-import { HyyyperbridgeMessageType } from "@fc/hyyyperbridge";
-import { SessionService } from "@fc/session";
+import { HyyyperbridgeMessageType } from "#libs/hyyyperbridge";
+import { SessionService } from "#libs/session";
 import {
   AuthorizationResponseErrorException,
   HyyyperbridgeCsmrException,

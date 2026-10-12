@@ -1,15 +1,15 @@
-import { ConfigService } from "@fc/config";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { OidcClientTokenValidationFailedException } from "#libs/oidc-client";
+import { SessionService } from "#libs/session";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
+import { getSessionServiceMock } from "#mocks/session";
 import {
   AgentNotFromPublicServiceException,
   FederationBaseException,
   InvalidIdentityException,
-} from "@fc/core";
-import { LoggerService } from "@fc/logger";
-import { OidcClientTokenValidationFailedException } from "@fc/oidc-client";
-import { SessionService } from "@fc/session";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
-import { getSessionServiceMock } from "@mocks/session";
+} from "#src";
 import { ArgumentsHost } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { BaseException } from "../exceptions/base.exception";

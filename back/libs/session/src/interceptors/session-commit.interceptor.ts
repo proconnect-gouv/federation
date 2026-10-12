@@ -1,6 +1,6 @@
-import { AppConfig } from "@fc/app";
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
+import { AppConfig } from "#libs/app";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
 import {
   CallHandler,
   ExecutionContext,

@@ -1,5 +1,5 @@
-import { ConfigService } from "@fc/config";
-import { AppConfig } from "@fc/core/dto";
+import { ConfigService } from "#libs/config";
+import { AppConfig } from "#src/dto/index";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { filter, isEmpty, isEqual } from "lodash";

@@ -1,20 +1,20 @@
-import { AccountFcaService } from "@fc/account-fca";
-import { ConfigService } from "@fc/config";
-import { CsrfService } from "@fc/csrf";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
-import { NotificationsService } from "@fc/notifications";
-import { OidcAcrService } from "@fc/oidc-acr";
-import { OidcProviderService } from "@fc/oidc-provider";
-import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
-import { ISessionService, SessionService } from "@fc/session";
-import { getLoggerMock } from "@mocks/logger";
+import { AccountFcaService } from "#libs/account-fca";
+import { ConfigService } from "#libs/config";
+import { CsrfService } from "#libs/csrf";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService } from "#libs/logger";
+import { NotificationsService } from "#libs/notifications";
+import { OidcAcrService } from "#libs/oidc-acr";
+import { OidcProviderService } from "#libs/oidc-provider";
+import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
+import { ISessionService, SessionService } from "#libs/session";
+import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import { validate } from "class-validator";
 import { Request, Response } from "express";
 
 // --- Mocks for external dependencies ---
-import { EmailVerificationService } from "@fc/email-verification";
+import { EmailVerificationService } from "#libs/email-verification";
 import { AfterGetOidcCallbackSessionDto, UserSession } from "../dto";
 import {
   AgentAccountBlockedException,

@@ -105,7 +105,7 @@ export class SessionConfig {...}
 ### Replace sessionConfig with SessionConfig in main.ts of the app
 
 ```typescript
-import { SessionConfig } from '@fc/session';
+import { SessionConfig } from '#libs/session';
 //...
 @IsObject()
 @ValidateNested()

@@ -1,4 +1,4 @@
-import { validateDto } from "@fc/common";
+import { validateDto } from "#libs/common";
 import {
   DiscoveryIdpAdapterMongoDTO,
   MetadataIdpAdapterMongoDTO,

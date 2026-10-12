@@ -1,7 +1,7 @@
-import { ConfigModule, ConfigService } from "@fc/config";
-import { LoggerModule, LoggerService } from "@fc/logger";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
+import { ConfigModule, ConfigService } from "#libs/config";
+import { LoggerModule, LoggerService } from "#libs/logger";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 import { Injectable, type OnModuleInit } from "@nestjs/common";
 import {
   getModelToken,

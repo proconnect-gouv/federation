@@ -1,9 +1,9 @@
-import { AccountFcaService } from "@fc/account-fca";
-import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
+import { AccountFcaService } from "#libs/account-fca";
+import { ConfigService } from "#libs/config";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService } from "#libs/logger";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import { EmailValidatorService } from "./email-validator.service";
 

@@ -1,5 +1,5 @@
-import { ConfigParser } from "@fc/config";
-import { RabbitmqConfig } from "@fc/rabbitmq";
+import { ConfigParser } from "#libs/config";
+import { RabbitmqConfig } from "#libs/rabbitmq";
 
 const env = new ConfigParser(process.env, "HyyyperbridgeBroker");
 

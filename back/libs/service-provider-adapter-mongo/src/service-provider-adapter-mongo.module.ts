@@ -1,5 +1,5 @@
-import { CryptographyModule } from "@fc/cryptography";
-import { MongooseModule } from "@fc/mongoose";
+import { CryptographyModule } from "#libs/cryptography";
+import { MongooseModule } from "#libs/mongoose";
 import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { ServiceProviderSchema } from "./schemas";

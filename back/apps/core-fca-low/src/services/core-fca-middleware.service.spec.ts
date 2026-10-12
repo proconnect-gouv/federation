@@ -1,11 +1,11 @@
-import { ConfigService } from "@fc/config";
-import { IdentityProviderAdapterMongoService } from "@fc/identity-provider-adapter-mongo";
-import { LoggerService } from "@fc/logger";
-import { OidcCtx, OidcProviderService } from "@fc/oidc-provider";
-import { ServiceProviderAdapterMongoService } from "@fc/service-provider-adapter-mongo";
-import { SessionService } from "@fc/session";
-import { getLoggerMock } from "@mocks/logger";
-import { getSessionServiceMock } from "@mocks/session";
+import { ConfigService } from "#libs/config";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { LoggerService } from "#libs/logger";
+import { OidcCtx, OidcProviderService } from "#libs/oidc-provider";
+import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
+import { SessionService } from "#libs/session";
+import { getLoggerMock } from "#mocks/logger";
+import { getSessionServiceMock } from "#mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
 import { validate } from "class-validator";
 import { CoreFcaMiddlewareService } from "./core-fca-middleware.service";
@@ -14,8 +14,8 @@ jest.mock("class-validator", () => ({
   ...jest.requireActual("class-validator"),
   validate: jest.fn(),
 }));
-jest.mock("@fc/exceptions/helpers", () => ({
-  ...jest.requireActual("@fc/exceptions/helpers"),
+jest.mock("#libs/exceptions/helpers/index", () => ({
+  ...jest.requireActual("#libs/exceptions/helpers/index"),
   throwException: jest.fn(),
 }));
 

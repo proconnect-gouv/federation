@@ -1,5 +1,5 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
 import { Injectable } from "@nestjs/common";
 import { MongooseModuleOptions } from "@nestjs/mongoose";
 import { MongooseConfig } from "../dto";

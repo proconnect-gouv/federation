@@ -1,7 +1,7 @@
-import { ConfigService } from "@fc/config";
-import { CryptographyService } from "@fc/cryptography";
-import { LoggerService } from "@fc/logger";
-import { RedisService } from "@fc/redis";
+import { ConfigService } from "#libs/config";
+import { CryptographyService } from "#libs/cryptography";
+import { LoggerService } from "#libs/logger";
+import { RedisService } from "#libs/redis";
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";

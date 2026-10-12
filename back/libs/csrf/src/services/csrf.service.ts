@@ -1,5 +1,5 @@
-import { CryptographyService } from "@fc/cryptography";
-import { SessionService } from "@fc/session";
+import { CryptographyService } from "#libs/cryptography";
+import { SessionService } from "#libs/session";
 import { Injectable } from "@nestjs/common";
 import { CsrfSession } from "../dto";
 import { CsrfBadTokenException } from "../exceptions";

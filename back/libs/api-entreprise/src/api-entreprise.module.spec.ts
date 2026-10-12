@@ -1,5 +1,5 @@
-import { ConfigModule, ConfigService } from "@fc/config";
-import { LoggerModule, LoggerService } from "@fc/logger";
+import { ConfigModule, ConfigService } from "#libs/config";
+import { LoggerModule, LoggerService } from "#libs/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ApiEntrepriseModule } from "./api-entreprise.module";
 import { ApiEntrepriseService } from "./services";

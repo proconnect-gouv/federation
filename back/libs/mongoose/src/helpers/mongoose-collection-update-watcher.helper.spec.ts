@@ -1,4 +1,4 @@
-import { getLoggerMock } from "@mocks/logger";
+import { getLoggerMock } from "#mocks/logger";
 import { ChangeStreamDocument } from "mongodb";
 import { MongooseCollectionOperationWatcherHelper } from "./mongoose-collection-update-watcher.helper";
 

@@ -1,8 +1,8 @@
-import { LoggerService } from "@fc/logger";
-import { OidcProviderService } from "@fc/oidc-provider";
-import { RedisService } from "@fc/redis";
-import { getLoggerMock } from "@mocks/logger";
-import { getRedisServiceMock } from "@mocks/redis";
+import { LoggerService } from "#libs/logger";
+import { OidcProviderService } from "#libs/oidc-provider";
+import { RedisService } from "#libs/redis";
+import { getLoggerMock } from "#mocks/logger";
+import { getRedisServiceMock } from "#mocks/redis";
 import {
   OidcProviderParseRedisResponseException,
   OidcProviderStringifyPayloadForRedisException,

@@ -1,4 +1,4 @@
-import { AsyncLocalStorageService } from "@fc/async-local-storage";
+import { AsyncLocalStorageService } from "#libs/async-local-storage";
 import { Injectable } from "@nestjs/common";
 import { cloneDeep } from "lodash";
 import {

@@ -1,4 +1,4 @@
-import { BaseException } from "@fc/exceptions/exceptions";
+import { BaseException } from "#libs/exceptions/exceptions/index";
 
 export abstract class EmailVerificationBaseException extends BaseException {
   public scope = 17;

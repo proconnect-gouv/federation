@@ -1,4 +1,4 @@
-import { validateDto } from "@fc/common";
+import { validateDto } from "#libs/common";
 import { TransportType } from "../enums/transport-type.enum";
 import { MailerConfig } from "./mailer-config.dto";
 

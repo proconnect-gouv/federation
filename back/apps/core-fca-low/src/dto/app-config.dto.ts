@@ -13,7 +13,7 @@ import {
 const IPV4_WITH_RANGE_REGEX =
   /^(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\/(?:3[0-2]|[12]?\d)$/;
 
-import { AppConfig as AppGenericConfig } from "@fc/app";
+import { AppConfig as AppGenericConfig } from "#libs/app";
 import { ContentSecurityPolicy } from "./content-secury-policy.dto";
 import { SpAuthorizedAttachedEmailDomainsConfig } from "./sp-authorized-attached-email-domains-config.dto";
 

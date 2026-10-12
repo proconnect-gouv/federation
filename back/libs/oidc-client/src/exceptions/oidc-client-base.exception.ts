@@ -1,4 +1,4 @@
-import { EnrichedDisplayBaseException } from "@fc/exceptions/exceptions";
+import { EnrichedDisplayBaseException } from "#libs/exceptions/exceptions/index";
 import { isEmpty } from "class-validator";
 import { OidcClientSessionParams } from "../interfaces";
 

@@ -1,6 +1,6 @@
-import { NestJsDependencyInjectionWrapper } from "@fc/common";
-import { ISessionService } from "@fc/session/interfaces";
-import { SessionService } from "@fc/session/services";
+import { NestJsDependencyInjectionWrapper } from "#libs/common";
+import { ISessionService } from "#libs/session/interfaces/index";
+import { SessionService } from "#libs/session/services/index";
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";

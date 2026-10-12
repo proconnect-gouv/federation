@@ -1,4 +1,4 @@
-import { ConfigService } from "@fc/config";
+import { ConfigService } from "#libs/config";
 import { ApiEntrepriseClientService } from "./api-entreprise-client.service";
 
 jest.mock(

@@ -1,4 +1,4 @@
-import { parseBoolean, parseJsonProperty } from "@fc/common";
+import { parseBoolean, parseJsonProperty } from "#libs/common";
 import { existsSync, readFileSync } from "fs";
 import { isEmpty } from "lodash";
 

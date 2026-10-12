@@ -2,20 +2,20 @@ import { Request, Response } from "express";
 
 import { Test, TestingModule } from "@nestjs/testing";
 
-import { ConfigService } from "@fc/config";
-import { AppConfig, UserSession } from "@fc/core/dto";
-import { Routes } from "@fc/core/enums";
-import { CoreFcaService } from "@fc/core/services/core-fca.service";
-import { EmailValidatorService } from "@fc/email-validator/services";
-import { LoggerService } from "@fc/logger";
-import { OidcAcrService } from "@fc/oidc-acr";
-import { OidcClientConfig, OidcClientService } from "@fc/oidc-client";
-import { OidcProviderService } from "@fc/oidc-provider";
-import { SessionService } from "@fc/session";
+import { ConfigService } from "#libs/config";
+import { EmailValidatorService } from "#libs/email-validator/services/index";
+import { LoggerService } from "#libs/logger";
+import { OidcAcrService } from "#libs/oidc-acr";
+import { OidcClientConfig, OidcClientService } from "#libs/oidc-client";
+import { OidcProviderService } from "#libs/oidc-provider";
+import { SessionService } from "#libs/session";
+import { AppConfig, UserSession } from "#src/dto/index";
+import { Routes } from "#src/enums/index";
+import { CoreFcaService } from "#src/services/core-fca.service";
 
-import { getConfigMock } from "@mocks/config";
-import { getLoggerMock } from "@mocks/logger";
-import { getSessionServiceMock } from "@mocks/session";
+import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
+import { getSessionServiceMock } from "#mocks/session";
 
 import { NoIdpException } from "../exceptions";
 import { CoreFcaControllerService } from "./core-fca-controller.service";

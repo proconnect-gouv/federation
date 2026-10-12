@@ -1,6 +1,6 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
-import { SessionService } from "@fc/session";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { SessionService } from "#libs/session";
 import { Response } from "express";
 import { EmailVerificationService } from "../email-verification.service";
 import { SendEmailFailureException } from "../exceptions";

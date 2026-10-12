@@ -1,5 +1,5 @@
-import { ConfigService } from "@fc/config";
-import { LoggerService } from "@fc/logger";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
 import { DynamicModule, Module } from "@nestjs/common";
 import { ClientProxyFactory, Transport } from "@nestjs/microservices";
 import { RabbitmqConfig } from "./dto";
@@ -37,7 +37,7 @@ export class RabbitmqModule {
    * ```typescript
    *  // apps/my-app/src/config/foobar-broker.ts
    *
-   * import { RabbitmqConfig } from '@fc/rabbitmq';
+   * import { RabbitmqConfig } from '#libs/rabbitmq';
    *
    * export default {
    *   urls: <your urls array>,

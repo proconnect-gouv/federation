@@ -1,9 +1,9 @@
-import { ConfigService } from "@fc/config";
-import { AppConfig } from "@fc/core/dto";
-import { UserSession } from "@fc/core/dto/user-session/user-session.dto";
-import { Routes } from "@fc/core/enums/routes.enum";
-import { LoggerService } from "@fc/logger";
-import { SessionService } from "@fc/session";
+import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
+import { SessionService } from "#libs/session";
+import { AppConfig } from "#src/dto/index";
+import { UserSession } from "#src/dto/user-session/user-session.dto";
+import { Routes } from "#src/enums/routes.enum";
 import { ArgumentsHost, Catch, Injectable } from "@nestjs/common";
 import { BaseExceptionFilter as NestBaseExceptionFilter } from "@nestjs/core";
 import { Response } from "express";
