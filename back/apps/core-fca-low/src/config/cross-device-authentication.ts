@@ -1,0 +1,41 @@
+import { CrossDeviceAuthenticationConfig } from "#libs/cross-device-authentication";
+
+const crossDeviceAuthenticationConfig: CrossDeviceAuthenticationConfig = {
+  emojiAlphabet: [
+    "🐸",
+    "🐧",
+    "🦋",
+    "🐙",
+    "🐝",
+    "🐘",
+    "🌵",
+    "🌻",
+    "🍄",
+    "🌙",
+    "🌈",
+    "🔥",
+    "🌊",
+    "🍍",
+    "🍉",
+    "🍇",
+    "🥕",
+    "🍕",
+    "🍩",
+    "🍔",
+    "⚽",
+    "🎸",
+    "🎩",
+    "🎁",
+    "🔑",
+    "💡",
+    "📚",
+    "👑",
+    "⚓",
+    "🚗",
+    "🚲",
+    "🚀",
+  ],
+  emojiCodeLength: 5,
+};
+
+export default crossDeviceAuthenticationConfig;

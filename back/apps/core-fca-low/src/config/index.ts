@@ -1,6 +1,7 @@
 import { CoreFcaConfig } from "#src";
 import ApiEntreprise from "./api-entreprise";
 import App from "./app";
+import CrossDeviceAuthentication from "./cross-device-authentication";
 import EmailValidator from "./email-validator";
 import EmailVerification from "./email-verification";
 import Exceptions from "./exceptions";
@@ -19,6 +20,7 @@ import Session from "./session";
 const coreFcaConfig: CoreFcaConfig = {
   ApiEntreprise,
   App,
+  CrossDeviceAuthentication,
   EmailValidator,
   EmailVerification,
   Exceptions,
