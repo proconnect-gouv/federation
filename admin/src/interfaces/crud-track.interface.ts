@@ -2,7 +2,10 @@
 
 // declarative file
 export type Entity =
-  "identity-provider" | "service-provider" | "scope" | "federation-user";
+  | "identity-provider"
+  | "service-provider"
+  | "scope"
+  | "federation-user";
 
 export type Action = "create" | "update" | "delete";
 export interface ICrudTrack {
