@@ -12,6 +12,8 @@ export enum Routes {
   REDIRECT_TO_IDP = "/redirect-to-idp",
   REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUESTS = "/cross-device-authentication-requests",
   REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUEST = "/cross-device-authentication-requests/:requestId",
+  APPROVE_CROSS_DEVICE_AUTHENTICATION_REQUEST = "/cross-device-authentication-requests/:requestId/approve",
+  REJECT_CROSS_DEVICE_AUTHENTICATION_REQUEST = "/cross-device-authentication-requests/:requestId/reject",
   IDENTITY_PROVIDER_SELECTION = "/identity-provider-selection",
   RIE_IDP_WARNING = "/rie-idp-warning",
   VERIFY_EMAIL = "/verify-email",

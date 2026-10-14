@@ -55,6 +55,7 @@ const TEST_CONFIG: CoreFcaConfig = {
   CrossDeviceAuthentication: {
     emojiAlphabet: ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌", "🚗", "🚀"],
     emojiCodeLength: 4,
+    requestExpirationDurationInMs: 5 * 60 * 1000,
   },
   Exceptions: { prefix: "Y" },
   EmailValidator: {

@@ -29,6 +29,42 @@
               <% emojis.forEach(emoji => { %><span><%= emoji %></span><% }) %>
             </p>
 
+            <div class="xda-review-actions fr-mb-2w">
+              <form
+                action="/api/v2/cross-device-authentication-requests/<%= requestId %>/approve"
+                method="POST"
+              >
+                <input
+                  type="hidden"
+                  name="csrfToken"
+                  value="<%= locals.csrfToken %>"
+                />
+                <button
+                  class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-check-line btn--fullwidth"
+                  type="submit"
+                >
+                  Approuver
+                </button>
+              </form>
+
+              <form
+                action="/api/v2/cross-device-authentication-requests/<%= requestId %>/reject"
+                method="POST"
+              >
+                <input
+                  type="hidden"
+                  name="csrfToken"
+                  value="<%= locals.csrfToken %>"
+                />
+                <button
+                  class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-line btn--fullwidth"
+                  type="submit"
+                >
+                  Rejeter
+                </button>
+              </form>
+            </div>
+
             <button
               type="button"
               class="fr-btn fr-btn--tertiary-no-outline btn--fullwidth go-back-link"

@@ -38,6 +38,7 @@ export class CrossDeviceAuthenticationService {
     const result = await this.model.find({
       status: { $in: [RequestStatus.INITIATED, RequestStatus.PENDING] },
       email: email.toLowerCase(),
+      createdAt: { $gt: this.getExpirationThreshold() },
     });
     return result.map(({ id, spName, userAgent }) => ({
       id,
@@ -55,6 +56,7 @@ export class CrossDeviceAuthenticationService {
         _id: params.requestId,
         status: { $in: [RequestStatus.INITIATED, RequestStatus.PENDING] },
         email: params.email.toLowerCase(),
+        createdAt: { $gt: this.getExpirationThreshold() },
       },
       { status: RequestStatus.PENDING, updatedAt: new Date() },
       { new: true },
@@ -67,6 +69,34 @@ export class CrossDeviceAuthenticationService {
       device: formatUserAgent(request.userAgent),
       spName: request.spName,
     };
+  }
+
+  async review(params: {
+    requestId: string;
+    email: string;
+    status: RequestStatus.APPROVED | RequestStatus.REJECTED;
+  }): Promise<boolean> {
+    if (!isValidObjectId(params.requestId)) {
+      return false;
+    }
+    const request = await this.model.findOneAndUpdate(
+      {
+        _id: params.requestId,
+        status: RequestStatus.PENDING,
+        email: params.email.toLowerCase(),
+        createdAt: { $gt: this.getExpirationThreshold() },
+      },
+      { status: params.status, updatedAt: new Date() },
+    );
+    return !!request;
+  }
+
+  private getExpirationThreshold(): Date {
+    const { requestExpirationDurationInMs } =
+      this.config.get<CrossDeviceAuthenticationConfig>(
+        "CrossDeviceAuthentication",
+      );
+    return new Date(Date.now() - requestExpirationDurationInMs);
   }
 
   private generateEmojis(): string[] {
