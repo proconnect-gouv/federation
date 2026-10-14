@@ -1,3 +1,5 @@
+import { ConfigService } from "#libs/config";
+import { getConfigMock } from "#mocks/config";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { CrossDeviceAuthenticationService } from "./cross-device-authentication.service";
@@ -9,21 +11,29 @@ describe(CrossDeviceAuthenticationService.name, () => {
     insertOne: jest.fn(),
     find: jest.fn(),
   };
+  const configServiceMock = getConfigMock();
+  const emojiAlphabet = ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌"];
 
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
+    configServiceMock.get.mockReturnValue({
+      emojiAlphabet,
+      emojiCodeLength: 5,
+    });
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         CrossDeviceAuthenticationService,
+        ConfigService,
         {
           provide: getModelToken("CrossDeviceAuthenticationRequest"),
           useValue: modelMock,
         },
       ],
     })
-
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .compile();
 
     service = app.get<CrossDeviceAuthenticationService>(
@@ -52,8 +62,36 @@ describe(CrossDeviceAuthenticationService.name, () => {
 
       expect(result).toEqual({
         _id: "request-id",
-        emojis: ["😀", "😎", "🤖", "👾"],
+        emojis: expect.any(Array),
       });
+      expect(modelMock.insertOne).toHaveBeenCalledWith({
+        status: "initiated",
+        emojis: result.emojis,
+        userAgent: "Mozilla/5.0",
+        spName: "My SP",
+        email: "user@example.com",
+        browsingSessionId: "browsing-session-id",
+      });
+    });
+  });
+
+  describe("emojis", () => {
+    it("should generate distinct emojis from the configured alphabet", async () => {
+      modelMock.insertOne.mockResolvedValue({ _id: "request-id" });
+
+      const { emojis } = await service.create({
+        userAgent: "Mozilla/5.0",
+        spName: "My SP",
+        email: "user@example.com",
+        browsingSessionId: "browsing-session-id",
+      });
+
+      expect(configServiceMock.get).toHaveBeenCalledWith(
+        "CrossDeviceAuthentication",
+      );
+      expect(emojis).toHaveLength(5);
+      expect(new Set(emojis).size).toBe(5);
+      emojis.forEach((emoji) => expect(emojiAlphabet).toContain(emoji));
     });
   });
 

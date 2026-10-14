@@ -1,4 +1,5 @@
 import { ApiEntrepriseConfig } from "#libs/api-entreprise";
+import { CrossDeviceAuthenticationConfig } from "#libs/cross-device-authentication";
 import { EmailValidatorConfig } from "#libs/email-validator/dto/index";
 import { EmailVerificationConfig } from "#libs/email-verification";
 import { ExceptionsConfig } from "#libs/exceptions/dto/index";
@@ -27,6 +28,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => ApiEntrepriseConfig)
   readonly ApiEntreprise: ApiEntrepriseConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CrossDeviceAuthenticationConfig)
+  readonly CrossDeviceAuthentication: CrossDeviceAuthenticationConfig;
 
   @IsObject()
   @ValidateNested()

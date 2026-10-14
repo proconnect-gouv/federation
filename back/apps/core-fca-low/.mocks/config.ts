@@ -52,6 +52,10 @@ const TEST_CONFIG: CoreFcaConfig = {
     cachedTTL: 86400000,
     cacheTTLWhenApiEntrepriseIsDown: 7776000000,
   },
+  CrossDeviceAuthentication: {
+    emojiAlphabet: ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌", "🚗", "🚀"],
+    emojiCodeLength: 4,
+  },
   Exceptions: { prefix: "Y" },
   EmailValidator: {
     domainWhitelist: [],
