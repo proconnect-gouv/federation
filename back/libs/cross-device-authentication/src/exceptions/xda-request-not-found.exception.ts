@@ -11,5 +11,5 @@ export class XdaRequestNotFound extends XdaBaseException {
 
   public title = "Demande Cross-Device introuvable";
   public description =
-    "Cette demande de connexion Cross-Device n’existe pas, a déjà été examinée ou ne vous est pas destinée.";
+    "Cette demande de connexion Cross-Device n’existe pas, a expiré, a déjà été traitée ou ne vous est pas destinée.";
 }

@@ -1,5 +1,8 @@
+import { AppConfig } from "#libs/app";
+import { ConfigService } from "#libs/config";
 import {
   CrossDeviceAuthenticationService,
+  RequestStatus,
   XdaNotEnabled,
   XdaRequestNotFound,
 } from "#libs/cross-device-authentication";
@@ -28,6 +31,7 @@ export class CrossDeviceAuthenticationController {
     private readonly crossDeviceAuthenticationService: CrossDeviceAuthenticationService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly csrfService: CsrfService,
+    private readonly config: ConfigService,
   ) {}
   @Post(Routes.PROCEED_TO_CROSS_DEVICE_AUTHENTICATION)
   @Header("cache-control", "no-store")
@@ -86,6 +90,7 @@ export class CrossDeviceAuthenticationController {
     @UserSessionDecorator(ActiveUserSessionDto)
     userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
+    const csrfToken = this.csrfService.getOrCreate();
     const { idpIdentity } = userSession.get();
     const result = await this.crossDeviceAuthenticationService.markAsPending({
       requestId,
@@ -96,9 +101,67 @@ export class CrossDeviceAuthenticationController {
     }
 
     res.render("review-cross-device-authentication-request", {
+      csrfToken,
+      requestId,
       emojis: result.emojis,
       device: result.device,
       spName: result.spName,
     });
+  }
+
+  @Post(Routes.APPROVE_CROSS_DEVICE_AUTHENTICATION_REQUEST)
+  @Header("cache-control", "no-store")
+  @UseGuards(CsrfTokenGuard)
+  async approveCrossDeviceAuthenticationRequest(
+    @Res() res: Response,
+    @Param("requestId") requestId: string,
+    @UserSessionDecorator(ActiveUserSessionDto)
+    userSession: ISessionService<ActiveUserSessionDto>,
+  ): Promise<void> {
+    return this.reviewRequest(
+      res,
+      requestId,
+      userSession,
+      RequestStatus.APPROVED,
+    );
+  }
+
+  @Post(Routes.REJECT_CROSS_DEVICE_AUTHENTICATION_REQUEST)
+  @Header("cache-control", "no-store")
+  @UseGuards(CsrfTokenGuard)
+  async rejectCrossDeviceAuthenticationRequest(
+    @Res() res: Response,
+    @Param("requestId") requestId: string,
+    @UserSessionDecorator(ActiveUserSessionDto)
+    userSession: ISessionService<ActiveUserSessionDto>,
+  ): Promise<void> {
+    return this.reviewRequest(
+      res,
+      requestId,
+      userSession,
+      RequestStatus.REJECTED,
+    );
+  }
+
+  private async reviewRequest(
+    res: Response,
+    requestId: string,
+    userSession: ISessionService<ActiveUserSessionDto>,
+    status: RequestStatus.APPROVED | RequestStatus.REJECTED,
+  ): Promise<void> {
+    const { idpIdentity } = userSession.get();
+    const isReviewed = await this.crossDeviceAuthenticationService.review({
+      requestId,
+      email: idpIdentity.email,
+      status,
+    });
+    if (!isReviewed) {
+      throw new XdaRequestNotFound();
+    }
+
+    const { urlPrefix } = this.config.get<AppConfig>("App");
+    res.redirect(
+      `${urlPrefix}${Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUESTS}`,
+    );
   }
 }

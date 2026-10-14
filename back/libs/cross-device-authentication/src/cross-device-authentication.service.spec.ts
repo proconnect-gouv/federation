@@ -3,6 +3,7 @@ import { getConfigMock } from "#mocks/config";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { CrossDeviceAuthenticationService } from "./cross-device-authentication.service";
+import { RequestStatus } from "./enums";
 
 describe(CrossDeviceAuthenticationService.name, () => {
   let service: CrossDeviceAuthenticationService;
@@ -21,6 +22,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
     configServiceMock.get.mockReturnValue({
       emojiAlphabet,
       emojiCodeLength: 5,
+      requestExpirationDurationInMs: 5 * 60 * 1000,
     });
 
     const app: TestingModule = await Test.createTestingModule({
@@ -97,7 +99,15 @@ describe(CrossDeviceAuthenticationService.name, () => {
   });
 
   describe("getAwaitingRequests", () => {
-    it("should find the initiated and pending requests for the lowercased email", async () => {
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("should find the unexpired initiated and pending requests for the lowercased email", async () => {
       modelMock.find.mockResolvedValue([
         {
           id: "request-id",
@@ -113,6 +123,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
       expect(modelMock.find).toHaveBeenCalledWith({
         status: { $in: ["initiated", "pending"] },
         email: "user@example.com",
+        createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
       });
       expect(result).toEqual([
         { id: "request-id", spName: "My SP", device: "Firefox sur Windows" },
@@ -151,6 +162,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
           _id: requestId,
           status: { $in: ["initiated", "pending"] },
           email: "user@example.com",
+          createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
         },
         {
           status: "pending",
@@ -183,6 +195,65 @@ describe(CrossDeviceAuthenticationService.name, () => {
       });
 
       expect(result).toBeNull();
+      expect(modelMock.findOneAndUpdate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("review", () => {
+    const requestId = "65a1b2c3d4e5f60718293a4b";
+
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it.each([RequestStatus.APPROVED, RequestStatus.REJECTED] as const)(
+      "should set the status of the user's unexpired pending request to %s",
+      async (status) => {
+        modelMock.findOneAndUpdate.mockResolvedValue({ id: requestId });
+
+        const result = await service.review({
+          requestId,
+          email: "User@Example.com",
+          status,
+        });
+
+        expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(
+          {
+            _id: requestId,
+            status: "pending",
+            email: "user@example.com",
+            createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+          },
+          { status, updatedAt: new Date("2026-01-01T10:00:00.000Z") },
+        );
+        expect(result).toBe(true);
+      },
+    );
+
+    it("should return false when no unexpired pending request matches", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue(null);
+
+      const result = await service.review({
+        requestId,
+        email: "user@example.com",
+        status: RequestStatus.APPROVED,
+      });
+
+      expect(result).toBe(false);
+    });
+
+    it("should return false without querying when the id is not a valid ObjectId", async () => {
+      const result = await service.review({
+        requestId: "not-an-object-id",
+        email: "user@example.com",
+        status: RequestStatus.APPROVED,
+      });
+
+      expect(result).toBe(false);
       expect(modelMock.findOneAndUpdate).not.toHaveBeenCalled();
     });
   });

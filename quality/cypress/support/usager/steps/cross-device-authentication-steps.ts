@@ -83,3 +83,18 @@ Then(
     cy.get(".xda-emojis span").should("have.length", 5);
   },
 );
+
+Then(
+  "je suis redirigé vers la liste des demandes d'authentification cross-device en cours",
+  function () {
+    cy.location("pathname").should(
+      "eq",
+      "/api/v2/cross-device-authentication-requests",
+    );
+    cy.contains("h1", REVIEW_PAGE_TITLE).should("be.visible");
+  },
+);
+
+Then("je ne vois aucune demande d'authentification cross-device", function () {
+  cy.contains("Aucune demande de connexion en cours.").should("be.visible");
+});

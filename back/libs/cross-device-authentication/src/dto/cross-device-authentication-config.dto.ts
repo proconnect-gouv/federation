@@ -21,4 +21,8 @@ export class CrossDeviceAuthenticationConfig {
   @IsInt()
   @IsPositive()
   readonly emojiCodeLength: number;
+
+  @IsInt()
+  @IsPositive()
+  readonly requestExpirationDurationInMs: number;
 }
