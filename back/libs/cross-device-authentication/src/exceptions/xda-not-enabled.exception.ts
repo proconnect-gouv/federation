@@ -1,8 +1,8 @@
 import { HttpStatus } from "@nestjs/common";
 import { ErrorCode } from "../enums";
-import { FederationBaseException } from "./federation-base.exception";
+import { XdaBaseException } from "./xda-base.exception";
 
-export class XdaNotEnabled extends FederationBaseException {
+export class XdaNotEnabled extends XdaBaseException {
   public code = ErrorCode.XDA_NOT_ENABLED;
   public http_status_code = HttpStatus.FORBIDDEN;
 
@@ -10,9 +10,7 @@ export class XdaNotEnabled extends FederationBaseException {
   public error_description =
     "cross device authentication is not enabled for this service provider";
 
-  public illustration = "access-restricted-error";
   public title = "Connexion Cross-Device indisponible";
-  public displayContact = false;
 
   constructor(public spName: string) {
     super();

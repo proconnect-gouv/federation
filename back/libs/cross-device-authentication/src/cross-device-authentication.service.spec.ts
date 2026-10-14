@@ -10,6 +10,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
   const modelMock = {
     insertOne: jest.fn(),
     find: jest.fn(),
+    findOneAndUpdate: jest.fn(),
   };
   const configServiceMock = getConfigMock();
   const emojiAlphabet = ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌"];
@@ -95,18 +96,94 @@ describe(CrossDeviceAuthenticationService.name, () => {
     });
   });
 
-  describe("getInitiatedRequests", () => {
-    it("should find the initiated requests for the lowercased email", async () => {
-      const requests = [{ id: "request-id" }];
-      modelMock.find.mockResolvedValue(requests);
+  describe("getAwaitingRequests", () => {
+    it("should find the initiated and pending requests for the lowercased email", async () => {
+      modelMock.find.mockResolvedValue([
+        {
+          id: "request-id",
+          status: "initiated",
+          spName: "My SP",
+          userAgent:
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
+        },
+      ]);
 
-      const result = await service.getInitiatedRequests("User@Example.com");
+      const result = await service.getAwaitingRequests("User@Example.com");
 
       expect(modelMock.find).toHaveBeenCalledWith({
-        status: "initiated",
+        status: { $in: ["initiated", "pending"] },
         email: "user@example.com",
       });
-      expect(result).toBe(requests);
+      expect(result).toEqual([
+        { id: "request-id", spName: "My SP", device: "Firefox sur Windows" },
+      ]);
+    });
+  });
+
+  describe("markAsPending", () => {
+    const requestId = "65a1b2c3d4e5f60718293a4b";
+
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("should set the status of the user's awaiting request to pending", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue({
+        id: requestId,
+        status: "pending",
+        spName: "My SP",
+        userAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
+        emojis: ["😀", "😎", "🤖", "👾"],
+      });
+
+      const result = await service.markAsPending({
+        requestId,
+        email: "User@Example.com",
+      });
+
+      expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(
+        {
+          _id: requestId,
+          status: { $in: ["initiated", "pending"] },
+          email: "user@example.com",
+        },
+        {
+          status: "pending",
+          updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+        },
+        { new: true },
+      );
+      expect(result).toEqual({
+        emojis: ["😀", "😎", "🤖", "👾"],
+        device: "Firefox sur Windows",
+        spName: "My SP",
+      });
+    });
+
+    it("should return null when no awaiting request matches", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue(null);
+
+      const result = await service.markAsPending({
+        requestId,
+        email: "user@example.com",
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it("should return null without querying when the id is not a valid ObjectId", async () => {
+      const result = await service.markAsPending({
+        requestId: "not-an-object-id",
+        email: "user@example.com",
+      });
+
+      expect(result).toBeNull();
+      expect(modelMock.findOneAndUpdate).not.toHaveBeenCalled();
     });
   });
 });

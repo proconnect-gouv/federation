@@ -2,7 +2,7 @@ import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
 import { getEnv, getServiceProviderByDescription } from "../../common/helpers";
 
 const RIE_IDP_NAME = "fia-rie-low";
-const REVIEW_PAGE_TITLE = "Session actives de Cross Device Authentication";
+const REVIEW_PAGE_TITLE = "Demandes de connexion en cours";
 
 const loginOnRieIdp = (email: string): void => {
   const serviceProvider = getServiceProviderByDescription("par défaut");
@@ -75,3 +75,11 @@ Then("je vois une seule demande d'authentification cross-device", function () {
   cy.contains("h1", REVIEW_PAGE_TITLE).should("be.visible");
   cy.get("main ul li").should("have.length", 1);
 });
+
+Then(
+  "je vois les emojis de la demande d'authentification cross-device",
+  function () {
+    cy.contains("h1", "Demande de connexion").should("be.visible");
+    cy.get(".xda-emojis span").should("have.length", 5);
+  },
+);
