@@ -8,3 +8,4 @@ export * from "./invalid-session.exception";
 export * from "./no-idp.exception";
 export * from "./unauthorized-email.exception";
 export * from "./xda-not-enabled.exception";
+export * from "./xda-request-not-found.exception";

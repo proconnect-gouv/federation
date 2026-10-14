@@ -61,3 +61,15 @@
     align-items: center;
   }
 }
+
+.xda-requests-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.xda-emojis {
+  display: flex;
+  justify-content: space-between;
+}

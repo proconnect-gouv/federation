@@ -4,7 +4,7 @@
     <%- include('includes/head.ejs') %>
     <link rel="stylesheet" href="/css/pages/interaction.css" />
     <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
-    <title>Requêtes Cross Device Authentication - ProConnect</title>
+    <title>Demandes de connexion - ProConnect</title>
   </head>
 
   <body>
@@ -15,37 +15,40 @@
         <div class="fr-grid-row fr-grid-row--center">
           <div class="fr-col-12 fr-col-md-8 fr-col-lg-4">
             <h1 class="fr-my-2w fr-h4">
-              Session actives de Cross Device Authentication
+              Demandes de connexion en cours
             </h1>
 
-            <% if (pendingRequests.length > 0) { %>
+            <% if (awaitingRequests.length > 0) { %>
               <ul class="fr-raw-list">
-                <% pendingRequests.forEach(request => { %>
-                  <li class="fr-mb-3w">
+                <% awaitingRequests.forEach(awaitingRequest => { %>
+                  <li class="fr-mb-3w xda-requests-list-item">
                     <p class="fr-mb-1w">
-                      <strong><%= request.device %></strong><br />
-                      Service : <%= request.spName %>
+                      <strong><%= awaitingRequest.device %></strong><br />
+                      Service : <%= awaitingRequest.spName %>
                     </p>
-                    <button disabled type="button" class="fr-btn fr-btn--secondary">
-                      Examiner
-                    </button>
+                    <form
+                      action="/api/v2/cross-device-authentication-requests/<%= awaitingRequest.id %>"
+                      method="POST"
+                    >
+                      <input
+                        type="hidden"
+                        name="csrfToken"
+                        value="<%= locals.csrfToken %>"
+                      />
+                      <button type="submit" class="fr-btn fr-btn--secondary">
+                        Examiner
+                      </button>
+                    </form>
                   </li>
                 <% }) %>
               </ul>
             <% } else { %>
-              <p>Aucune session active de Cross Device Authentication.</p>
+              <p>Aucune demande de connexion en cours.</p>
             <% } %>
 
-            <button
-              type="button"
-              class="fr-btn fr-btn--tertiary-no-outline btn--fullwidth go-back-link"
-            >
-              Revenir à l'étape précédente
-            </button>
           </div>
         </div>
       </div>
     </main>
   </body>
-  <script type="text/javascript" src="/js/go-back.js"></script>
 </html>
