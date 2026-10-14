@@ -1,4 +1,8 @@
-import { CrossDeviceAuthenticationService } from "#libs/cross-device-authentication";
+import {
+  CrossDeviceAuthenticationService,
+  XdaNotEnabled,
+  XdaRequestNotFound,
+} from "#libs/cross-device-authentication";
 import { CsrfService } from "#libs/csrf";
 import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
 import { ISessionService } from "#libs/session";
@@ -6,7 +10,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { Request, Response } from "express";
 import { ActiveUserSessionDto } from "../dto/user-session/active-user-session.dto";
 import { AfterRedirectToRieWarningSessionDto } from "../dto/user-session/after-redirect-to-rie-warning-session.dto";
-import { XdaNotEnabled } from "../exceptions";
 import { CrossDeviceAuthenticationController } from "./cross-device-authentication.controller";
 
 describe("CrossDeviceAuthenticationController", () => {
@@ -19,7 +22,8 @@ describe("CrossDeviceAuthenticationController", () => {
   beforeEach(async () => {
     crossDeviceAuthenticationServiceMock = {
       create: jest.fn(),
-      getInitiatedRequests: jest.fn(),
+      getAwaitingRequests: jest.fn(),
+      markAsPending: jest.fn(),
     };
     serviceProviderMock = { getById: jest.fn() };
     res = { render: jest.fn() } as unknown as Response;
@@ -37,7 +41,10 @@ describe("CrossDeviceAuthenticationController", () => {
       .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderMock)
       .overrideProvider(CsrfService)
-      .useValue({ check: jest.fn() })
+      .useValue({
+        check: jest.fn(),
+        getOrCreate: jest.fn().mockReturnValue("csrf-token"),
+      })
       .compile();
 
     controller = module.get<CrossDeviceAuthenticationController>(
@@ -125,16 +132,8 @@ describe("CrossDeviceAuthenticationController", () => {
           .fn()
           .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
       } as unknown as ISessionService<ActiveUserSessionDto>;
-      crossDeviceAuthenticationServiceMock.getInitiatedRequests.mockResolvedValue(
-        [
-          {
-            id: "request-id",
-            status: "initiated",
-            spName: "My SP",
-            userAgent:
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
-          },
-        ],
+      crossDeviceAuthenticationServiceMock.getAwaitingRequests.mockResolvedValue(
+        [{ id: "request-id", spName: "My SP", device: "Firefox sur Windows" }],
       );
 
       await controller.reviewCrossDeviceAuthenticationRequests(
@@ -143,12 +142,13 @@ describe("CrossDeviceAuthenticationController", () => {
       );
 
       expect(
-        crossDeviceAuthenticationServiceMock.getInitiatedRequests,
+        crossDeviceAuthenticationServiceMock.getAwaitingRequests,
       ).toHaveBeenCalledWith("user@example.com");
       expect(res.render).toHaveBeenCalledWith(
         "review-cross-device-authentication-requests",
         {
-          pendingRequests: [
+          csrfToken: "csrf-token",
+          awaitingRequests: [
             {
               id: "request-id",
               spName: "My SP",
@@ -157,6 +157,58 @@ describe("CrossDeviceAuthenticationController", () => {
           ],
         },
       );
+    });
+  });
+
+  describe("reviewCrossDeviceAuthenticationRequest()", () => {
+    const userSession = {
+      get: jest
+        .fn()
+        .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
+    } as unknown as ISessionService<ActiveUserSessionDto>;
+
+    it("should mark the request as pending and render its emojis", async () => {
+      crossDeviceAuthenticationServiceMock.markAsPending.mockResolvedValue({
+        spName: "My SP",
+        device: "Firefox sur Windows",
+        emojis: ["😀", "😎", "🤖", "👾"],
+      });
+
+      await controller.reviewCrossDeviceAuthenticationRequest(
+        res,
+        "request-id",
+        userSession,
+      );
+
+      expect(
+        crossDeviceAuthenticationServiceMock.markAsPending,
+      ).toHaveBeenCalledWith({
+        requestId: "request-id",
+        email: "user@example.com",
+      });
+      expect(res.render).toHaveBeenCalledWith(
+        "review-cross-device-authentication-request",
+        {
+          spName: "My SP",
+          device: "Firefox sur Windows",
+          emojis: ["😀", "😎", "🤖", "👾"],
+        },
+      );
+    });
+
+    it("should throw when no awaiting request matches for the user", async () => {
+      crossDeviceAuthenticationServiceMock.markAsPending.mockResolvedValue(
+        null,
+      );
+
+      await expect(
+        controller.reviewCrossDeviceAuthenticationRequest(
+          res,
+          "request-id",
+          userSession,
+        ),
+      ).rejects.toThrow(XdaRequestNotFound);
+      expect(res.render).not.toHaveBeenCalled();
     });
   });
 });
