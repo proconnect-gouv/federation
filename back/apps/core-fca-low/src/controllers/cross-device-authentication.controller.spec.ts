@@ -1,5 +1,7 @@
+import { ConfigService } from "#libs/config";
 import {
   CrossDeviceAuthenticationService,
+  RequestStatus,
   XdaNotEnabled,
   XdaRequestNotFound,
 } from "#libs/cross-device-authentication";
@@ -24,9 +26,10 @@ describe("CrossDeviceAuthenticationController", () => {
       create: jest.fn(),
       getAwaitingRequests: jest.fn(),
       markAsPending: jest.fn(),
+      review: jest.fn(),
     };
     serviceProviderMock = { getById: jest.fn() };
-    res = { render: jest.fn() } as unknown as Response;
+    res = { render: jest.fn(), redirect: jest.fn() } as unknown as Response;
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CrossDeviceAuthenticationController],
@@ -34,6 +37,7 @@ describe("CrossDeviceAuthenticationController", () => {
         CrossDeviceAuthenticationService,
         ServiceProviderAdapterMongoService,
         CsrfService,
+        ConfigService,
       ],
     })
       .overrideProvider(CrossDeviceAuthenticationService)
@@ -45,6 +49,8 @@ describe("CrossDeviceAuthenticationController", () => {
         check: jest.fn(),
         getOrCreate: jest.fn().mockReturnValue("csrf-token"),
       })
+      .overrideProvider(ConfigService)
+      .useValue({ get: jest.fn().mockReturnValue({ urlPrefix: "/api/v2" }) })
       .compile();
 
     controller = module.get<CrossDeviceAuthenticationController>(
@@ -189,6 +195,8 @@ describe("CrossDeviceAuthenticationController", () => {
       expect(res.render).toHaveBeenCalledWith(
         "review-cross-device-authentication-request",
         {
+          csrfToken: "csrf-token",
+          requestId: "request-id",
           spName: "My SP",
           device: "Firefox sur Windows",
           emojis: ["😀", "😎", "🤖", "👾"],
@@ -209,6 +217,47 @@ describe("CrossDeviceAuthenticationController", () => {
         ),
       ).rejects.toThrow(XdaRequestNotFound);
       expect(res.render).not.toHaveBeenCalled();
+    });
+  });
+
+  describe.each([
+    {
+      method: "approveCrossDeviceAuthenticationRequest",
+      status: RequestStatus.APPROVED,
+    },
+    {
+      method: "rejectCrossDeviceAuthenticationRequest",
+      status: RequestStatus.REJECTED,
+    },
+  ] as const)("$method()", ({ method, status }) => {
+    const userSession = {
+      get: jest
+        .fn()
+        .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
+    } as unknown as ISessionService<ActiveUserSessionDto>;
+
+    it(`should set the request status to ${status} and redirect to the requests list`, async () => {
+      crossDeviceAuthenticationServiceMock.review.mockResolvedValue(true);
+
+      await controller[method](res, "request-id", userSession);
+
+      expect(crossDeviceAuthenticationServiceMock.review).toHaveBeenCalledWith({
+        requestId: "request-id",
+        email: "user@example.com",
+        status,
+      });
+      expect(res.redirect).toHaveBeenCalledWith(
+        "/api/v2/cross-device-authentication-requests",
+      );
+    });
+
+    it("should throw when the request is not pending, expired or not owned by the user", async () => {
+      crossDeviceAuthenticationServiceMock.review.mockResolvedValue(false);
+
+      await expect(
+        controller[method](res, "request-id", userSession),
+      ).rejects.toThrow(XdaRequestNotFound);
+      expect(res.redirect).not.toHaveBeenCalled();
     });
   });
 });

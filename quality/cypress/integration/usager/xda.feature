@@ -20,6 +20,9 @@ Fonctionnalité: Authentification cross-device (XDA)
     Alors je vois une seule demande d'authentification cross-device
     Quand je clique sur le bouton "Examiner"
     Alors je vois les emojis de la demande d'authentification cross-device
+    Quand je clique sur le bouton "Approuver"
+    Alors je suis redirigé vers la liste des demandes d'authentification cross-device en cours
+    Et je ne vois aucune demande d'authentification cross-device
 
   Scénario: Le bouton Se connecter via un appareil vérifié n'est pas affiché si le FS n'a pas activé l'authentification cross-device
     Etant donné que je navigue sur la page fournisseur de service "second FS"
