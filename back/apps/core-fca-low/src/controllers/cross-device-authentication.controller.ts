@@ -1,4 +1,7 @@
-import { CrossDeviceAuthenticationService } from "#libs/cross-device-authentication";
+import {
+  CrossDeviceAuthenticationService,
+  formatUserAgent,
+} from "#libs/cross-device-authentication";
 import { CsrfTokenGuard } from "#libs/csrf";
 import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
 import { type ISessionService } from "#libs/session";
@@ -60,10 +63,17 @@ export class CrossDeviceAuthenticationController {
     userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
     const { idpIdentity } = userSession.get();
-    const pendingRequests =
+    const initiatedRequests =
       await this.crossDeviceAuthenticationService.getInitiatedRequests(
         idpIdentity.email,
       );
+    const pendingRequests = initiatedRequests.map(
+      ({ id, spName, userAgent }) => ({
+        id,
+        spName,
+        device: formatUserAgent(userAgent),
+      }),
+    );
     res.render("review-cross-device-authentication-requests", {
       pendingRequests,
     });

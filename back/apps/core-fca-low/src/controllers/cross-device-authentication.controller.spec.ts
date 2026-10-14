@@ -125,9 +125,16 @@ describe("CrossDeviceAuthenticationController", () => {
           .fn()
           .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
       } as unknown as ISessionService<ActiveUserSessionDto>;
-      const pendingRequests = [{ _id: "request-id" }];
       crossDeviceAuthenticationServiceMock.getInitiatedRequests.mockResolvedValue(
-        pendingRequests,
+        [
+          {
+            id: "request-id",
+            status: "initiated",
+            spName: "My SP",
+            userAgent:
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
+          },
+        ],
       );
 
       await controller.reviewCrossDeviceAuthenticationRequests(
@@ -140,7 +147,15 @@ describe("CrossDeviceAuthenticationController", () => {
       ).toHaveBeenCalledWith("user@example.com");
       expect(res.render).toHaveBeenCalledWith(
         "review-cross-device-authentication-requests",
-        { pendingRequests },
+        {
+          pendingRequests: [
+            {
+              id: "request-id",
+              spName: "My SP",
+              device: "Firefox sur Windows",
+            },
+          ],
+        },
       );
     });
   });

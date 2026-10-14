@@ -19,10 +19,16 @@
             </h1>
 
             <% if (pendingRequests.length > 0) { %>
-              <ul>
+              <ul class="fr-raw-list">
                 <% pendingRequests.forEach(request => { %>
-                  <li>
-                    ID: <%= request.id %> - <%= request.status %> - <%= request.userAgent %> - <%= request.spName %>
+                  <li class="fr-mb-3w">
+                    <p class="fr-mb-1w">
+                      <strong><%= request.device %></strong><br />
+                      Service : <%= request.spName %>
+                    </p>
+                    <button disabled type="button" class="fr-btn fr-btn--secondary">
+                      Examiner
+                    </button>
                   </li>
                 <% }) %>
               </ul>
