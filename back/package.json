@@ -19,6 +19,9 @@
     "#libs/rabbitmq/*": "./libs/rabbitmq/src/*.ts",
     "#libs/rate-limiter/*": "./libs/rate-limiter/src/*.ts",
     "#libs/session/*": "./libs/session/src/*.ts",
+    "#libs/cross-device-authentication/*": [
+      "libs/cross-device-authentication/src/*.ts"
+    ],
     "#mocks/*": "./libs/*/.mocks/index.ts",
     "#src": "./apps/core-fca-low/src/index.ts",
     "#src/*": "./apps/core-fca-low/src/*.ts"

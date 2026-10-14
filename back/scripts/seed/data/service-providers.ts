@@ -42,7 +42,7 @@ export const serviceProviders = {
     introspection_signed_response_alg: null,
     id_token_signed_response_alg: "HS256",
     userinfo_signed_response_alg: null,
-    isXdaEnabled: false,
+    isXdaEnabled: true,
   },
 
   // -- FSA - FSA2-LOW - Activated - ES256 - encrypted response - No post-logout-redirect-uri - Accept private
