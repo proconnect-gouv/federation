@@ -11,6 +11,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
   const modelMock = {
     insertOne: jest.fn(),
     find: jest.fn(),
+    findOne: jest.fn(),
     findOneAndUpdate: jest.fn(),
   };
   const configServiceMock = getConfigMock();
@@ -128,6 +129,81 @@ describe(CrossDeviceAuthenticationService.name, () => {
       expect(result).toEqual([
         { id: "request-id", spName: "My SP", device: "Firefox sur Windows" },
       ]);
+    });
+  });
+
+  describe("getRequest", () => {
+    const requestId = "65a1b2c3d4e5f60718293a4b";
+
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("should only look up a non-expired request bound to the browsing session", async () => {
+      modelMock.findOne.mockResolvedValue({
+        status: "initiated",
+        emojis: ["😀", "😎", "🤖", "👾"],
+      });
+
+      await service.getRequest({ requestId, browsingSessionId: "bsid" });
+
+      expect(modelMock.findOne).toHaveBeenCalledWith({
+        _id: requestId,
+        browsingSessionId: "bsid",
+        createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+      });
+    });
+
+    it("should return the status and the emojis of the request", async () => {
+      modelMock.findOne.mockResolvedValue({
+        status: "pending",
+        emojis: ["😀", "😎", "🤖", "👾"],
+      });
+
+      const result = await service.getRequest({
+        requestId,
+        browsingSessionId: "bsid",
+      });
+
+      expect(result).toEqual({
+        status: "pending",
+        emojis: ["😀", "😎", "🤖", "👾"],
+      });
+    });
+
+    it("should return null when no request matches", async () => {
+      modelMock.findOne.mockResolvedValue(null);
+
+      const result = await service.getRequest({
+        requestId,
+        browsingSessionId: "bsid",
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it("should return null without querying when the id is not a valid ObjectId", async () => {
+      const result = await service.getRequest({
+        requestId: "not-an-object-id",
+        browsingSessionId: "bsid",
+      });
+
+      expect(result).toBeNull();
+      expect(modelMock.findOne).not.toHaveBeenCalled();
+    });
+
+    it("should return null without querying when the browsing session id is missing", async () => {
+      const result = await service.getRequest({
+        requestId,
+        browsingSessionId: "",
+      });
+
+      expect(result).toBeNull();
+      expect(modelMock.findOne).not.toHaveBeenCalled();
     });
   });
 

@@ -4,7 +4,7 @@
     <%- include('includes/head.ejs') %>
     <link rel="stylesheet" href="/css/pages/interaction.css" />
     <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
-    <title>Cross Device Authentication - ProConnect</title>
+    <title>Se connecter via un appareil vérifié - ProConnect</title>
   </head>
 
   <body>
@@ -15,16 +15,34 @@
         <div class="fr-grid-row fr-grid-row--center">
           <div class="fr-col-12 fr-col-md-8 fr-col-lg-4">
             <h1 class="fr-my-2w fr-h4">
-              Cross Device Authentication
+              Se connecter via un appareil vérifié
             </h1>
-            <p class="fr-my-6b">
-              <ol>
-                <li>Sur votre poste de travail sécurisé, accédez à l'URL suivante : https://auth.agentconnect.gouv.fr/api/v2/cross-device-authentication-requests</li>
-                <li>Connectez-vous avec vos identifiants ProConnect habituels</li>
-                <li>Approuvez la requête</li>
-                <li>Ensuite, revenez sur cette fenêtre pour comparer les emojis affichés</li>
-              </ol>
+            <p class="fr-mb-2w">
+              Pour vous connecter depuis cet appareil, vous devez disposer d'une
+              session active sur ProConnect Fédération depuis votre appareil
+              vérifié (par exemple votre poste de travail sur le RIE).
             </p>
+            <p class="fr-mb-4w">
+              Pour vous en assurer, initiez une connexion sur Docteur ProConnect
+              depuis votre appareil vérifié, puis cliquez sur le bouton
+              ci-dessous.
+            </p>
+
+            <form
+              class="fr-mb-2w"
+              action="/api/v2/proceed-to-cross-device-authentication"
+              method="POST"
+            >
+              <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= locals.csrfToken %>"
+              />
+
+              <button class="fr-btn btn--fullwidth" type="submit">
+                Commencer l'authentification
+              </button>
+            </form>
 
             <button
               type="button"
