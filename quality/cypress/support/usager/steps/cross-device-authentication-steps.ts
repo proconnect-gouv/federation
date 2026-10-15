@@ -33,6 +33,10 @@ const browserSessions: Partial<
   Record<Browser, { setup: () => void; options?: Cypress.SessionOptions }>
 > = {};
 
+// cy.session() only caches the cookies set during its setup, so the waiting
+// page (and the session cookie it relies on) is saved to be restored later.
+let waitingPageState: { url: string; cookies: Cypress.Cookie[] } | undefined;
+
 const useBrowser = (browser: Browser): void => {
   const { setup, options } = browserSessions[browser] ?? {
     setup: () => {},
@@ -67,9 +71,54 @@ Then(
   "je suis redirigé vers la page d'authentification cross-device",
   function () {
     cy.url().should("include", "/proceed-to-cross-device-authentication");
-    cy.contains("h1", "Cross Device Authentication").should("be.visible");
+    cy.contains("h1", "Se connecter via un appareil vérifié").should(
+      "be.visible",
+    );
   },
 );
+
+Then(
+  "je suis redirigé vers la page d'attente d'authentification cross-device",
+  function () {
+    cy.url().should("include", "/cross-device-authentication-waiting/");
+    cy.contains("h1", "Connexion via un appareil vérifié").should("be.visible");
+    cy.url().then((url) => {
+      cy.getCookies().then((cookies) => {
+        waitingPageState = { url, cookies };
+      });
+    });
+  },
+);
+
+When(
+  "je retourne sur la page d'attente d'authentification cross-device du navigateur internet",
+  function () {
+    useBrowser("internet");
+    cy.then(() => {
+      if (!waitingPageState) {
+        throw new Error("The cross-device waiting page was never visited");
+      }
+      const { url, cookies } = waitingPageState;
+      cookies.forEach(
+        ({ name, value, domain, path, secure, httpOnly, sameSite }) =>
+          cy.setCookie(name, value, {
+            domain,
+            path,
+            secure,
+            httpOnly,
+            sameSite,
+          }),
+      );
+      cy.visit(url);
+    });
+  },
+);
+
+Then("je vois que l'authentification cross-device est approuvée", function () {
+  cy.contains(
+    "Connexion réussie, vous allez être redirigé vers votre Fournisseur de Service",
+  ).should("be.visible");
+});
 
 Then("je vois une seule demande d'authentification cross-device", function () {
   cy.contains("h1", REVIEW_PAGE_TITLE).should("be.visible");
