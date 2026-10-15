@@ -984,6 +984,66 @@ describe("OidcClientService", () => {
       expect(result.claims.acr).toBe("eidas3");
     });
 
+    it("should map EntraID acrs c4 to eidas1-mfa", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isEntraID: true,
+      });
+      const tokensWithAcrs = {
+        ...tokensMock,
+        claims: jest
+          .fn()
+          .mockReturnValue({ sub: "user-sub", acrs: ["c4", "other"] }),
+      };
+      (openidClient.authorizationCodeGrant as jest.Mock).mockResolvedValue(
+        tokensWithAcrs,
+      );
+
+      // When
+      const result = await service.getToken({
+        idpId: "idp-id",
+        req: reqMock as any,
+        idpState: "state",
+        idpNonce: "nonce",
+        spId: "sp-id",
+        spName: "sp-name",
+      });
+
+      // Then
+      expect(result.claims.acr).toBe("eidas1-mfa");
+    });
+
+    it("should prioritize eidas1-mfa over eidas1 when both are reported", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        isEntraID: true,
+      });
+      const tokensWithAcrs = {
+        ...tokensMock,
+        claims: jest
+          .fn()
+          .mockReturnValue({ sub: "user-sub", acrs: ["c1", "c4"] }),
+      };
+      (openidClient.authorizationCodeGrant as jest.Mock).mockResolvedValue(
+        tokensWithAcrs,
+      );
+
+      // When
+      const result = await service.getToken({
+        idpId: "idp-id",
+        req: reqMock as any,
+        idpState: "state",
+        idpNonce: "nonce",
+        spId: "sp-id",
+        spName: "sp-name",
+      });
+
+      // Then
+      expect(result.claims.acr).toBe("eidas1-mfa");
+    });
+
     it("should log token claims", async () => {
       // Given
       const freshTokensMock = {
