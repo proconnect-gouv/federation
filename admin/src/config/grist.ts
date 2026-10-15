@@ -1,4 +1,5 @@
 export default {
+  featureShouldSyncGrist: process.env.FEATURE_SHOULD_SYNC_GRIST === "true",
   gristDomain: process.env.GRIST_DOMAIN,
   gristDocId: process.env.GRIST_DOC_ID,
   gristApiKey: process.env.GRIST_API_KEY,

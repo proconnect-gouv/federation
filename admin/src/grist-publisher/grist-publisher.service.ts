@@ -18,6 +18,11 @@ export class GristPublisherService {
   async publishServiceProviders(
     serviceProviders: ServiceProviderFromDb[],
   ): Promise<{ ok: true }> {
+    const { featureShouldSyncGrist } = this.config.get("grist");
+
+    if (!featureShouldSyncGrist) {
+      return { ok: true };
+    }
     const { gristServiceProvidersTableId } = this.config.get("grist");
     const previousServiceProviderRecords =
       await this.getProviderRecordsFromGrist<ServiceProviderGristRecord>(
@@ -42,6 +47,10 @@ export class GristPublisherService {
   async publishIdentityProviders(
     identityProviders: IdentityProviderFromDb[],
   ): Promise<{ ok: true }> {
+    const { featureShouldSyncGrist } = this.config.get("grist");
+    if (!featureShouldSyncGrist) {
+      return { ok: true };
+    }
     const { gristIdentityProvidersTableId } = this.config.get("grist");
 
     const previousIdentityProviderRecords =
