@@ -5,5 +5,5 @@
   nomodule
   src="/dsfr/dist.nomodule.min.js"
 ></script>
-<script type="text/javascript" src="/js/matomo.js"></script>
+<% if (locals.matomoEnabled) { %><script type="text/javascript" src="/js/matomo.js"></script><% } %>
 <script type="text/javascript" src="/js/form-validation.js"></script>

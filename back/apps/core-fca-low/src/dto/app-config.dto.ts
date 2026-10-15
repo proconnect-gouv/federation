@@ -61,6 +61,10 @@ export class AppConfig extends AppGenericConfig {
   @IsOptional()
   readonly maintenanceDuration?: string;
 
+  @IsBoolean()
+  @IsOptional()
+  readonly matomoEnabled?: boolean;
+
   @IsArray()
   @Matches(IPV4_WITH_RANGE_REGEX, { each: true })
   readonly rieIpRanges: string[];

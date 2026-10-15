@@ -25,6 +25,7 @@
 | App_DSFR_ASSETS_PATHS                            | json          |
 | App_FEATURE_DISPLAY_MAINTENANCE_NOTICE           | boolean       |
 | App_FEATURE_DISPLAY_TEST_ENV_WARNING             | boolean       |
+| App_FEATURE_MATOMO_ENABLED                       | boolean       |
 | App_HTTPS_SERVER_CERT                            | file          |
 | App_HTTPS_SERVER_KEY                             | file          |
 | App_MAINTENANCE_DATETIME                         | string        |
