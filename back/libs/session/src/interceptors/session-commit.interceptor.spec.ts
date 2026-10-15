@@ -3,7 +3,7 @@ import { LoggerService } from "#libs/logger";
 import { getConfigMock } from "#mocks/config";
 import { getLoggerMock } from "#mocks/logger";
 import { getSessionServiceMock } from "#mocks/session";
-import { ExecutionContext } from "@nestjs/common";
+import { ExecutionContext, RequestMethod } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Request } from "express";
 import { SessionService } from "../services";
@@ -88,7 +88,7 @@ describe("SessionCommitInterceptor", () => {
     const routes = ["/some/route", "/some/other/route"];
 
     beforeEach(() => {
-      interceptor["getCleanedUpRoutes"] = jest.fn().mockReturnValue(routes);
+      interceptor["getRoutePaths"] = jest.fn().mockReturnValue(routes);
       configServiceMock.get
         .mockReturnValueOnce({
           urlPrefix: "/prefix",
@@ -108,7 +108,7 @@ describe("SessionCommitInterceptor", () => {
 
     it("should not call sessionService.commit if route is not included", async () => {
       // Given
-      interceptor["getCleanedUpRoutes"] = jest
+      interceptor["getRoutePaths"] = jest
         .fn()
         .mockReturnValueOnce(["/not/that/route"]);
 
@@ -134,13 +134,16 @@ describe("SessionCommitInterceptor", () => {
     });
   });
 
-  describe("getCleanedUpRoutes", () => {
-    it("should return an array of strings with $ removed", () => {
+  describe("getRoutePaths", () => {
+    it("should return the paths of string and RouteInfo routes", () => {
       // Given
-      const routes = ["/some/route$", "/some/other/$route"];
+      const routes = [
+        "/some/route",
+        { path: "/some/other/route", method: RequestMethod.GET },
+      ];
 
       // When
-      const result = interceptor["getCleanedUpRoutes"](routes);
+      const result = interceptor["getRoutePaths"](routes);
 
       // Then
       expect(result).toEqual(["/some/route", "/some/other/route"]);
