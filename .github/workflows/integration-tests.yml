@@ -38,7 +38,7 @@ jobs:
           CYPRESS_EXPLOIT_USER_PASS: ${{ secrets.CYPRESS_EXPLOIT_USER_PASS }}
           CYPRESS_EXPLOIT_USER_TOTP: ${{ secrets.CYPRESS_EXPLOIT_USER_TOTP }}
         run: |
-          npm run test:e2e:chrome-desktop -- -c video=false --env TAGS="not @ignore"
+          npm run test:e2e:chrome-desktop -- -c video=false --env tags="not @ignore"
           npm run report
 
       - name: Upload Cypress Artifacts
