@@ -76,9 +76,10 @@ export class OidcClientService {
     c1: "eidas1",
     c2: "eidas2",
     c3: "eidas3",
+    c4: "eidas1-mfa",
   };
 
-  prioritizedAcrValues = ["eidas3", "eidas2", "eidas1"];
+  prioritizedAcrValues = ["eidas3", "eidas2", "eidas1-mfa", "eidas1"];
 
   constructor(
     private readonly config: ConfigService,
