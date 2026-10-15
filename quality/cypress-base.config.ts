@@ -19,7 +19,7 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
   env: {
     // Base Configuration
     TEST_ENV: "docker",
-    TAGS: "not @ignore",
+    tags: "not @ignore",
     // Test environment access
     EXPLOIT_ADMIN_NAME: "jean_moust",
     EXPLOIT_ADMIN_PASS: "georgesmoustaki",
