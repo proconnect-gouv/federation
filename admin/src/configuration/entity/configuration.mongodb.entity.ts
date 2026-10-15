@@ -1,4 +1,5 @@
-import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
+import { ObjectId } from "mongodb";
+import { Column, Entity, ObjectIdColumn } from "typeorm";
 import { type IApplicationApiAuthorization } from "../interface/application-api-authorization.interface";
 import { type IBuyan } from "../interface/buyan.interface";
 import { type ICompanyAPI } from "../interface/company-API.interface";
