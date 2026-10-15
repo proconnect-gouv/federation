@@ -62,6 +62,7 @@ export class LoggerSessionService implements LoggerPluginServiceInterface {
       spSiret: spIdentity?.siret,
       spSiretHint,
       spSub: spIdentity?.sub,
+      roles: spIdentity?.roles,
     };
 
     return context;
