@@ -1,7 +1,7 @@
 import { ConfigParser } from "#libs/config";
 import { OidcProviderRoutes } from "#libs/oidc-provider";
 import { CookieOptions, SessionConfig } from "#libs/session";
-import { CoreFcaSession, Routes } from "#src";
+import { CoreFcaSession, PollingRoutes, Routes } from "#src";
 
 const env = new ConfigParser(process.env, "Session");
 
@@ -32,11 +32,15 @@ const sessionConfig: SessionConfig = {
     Routes.INTERACTION_ERROR,
     OidcProviderRoutes.REDIRECT_TO_SP,
     Routes.RIE_IDP_WARNING,
-    Routes.PROCEED_TO_CROSS_DEVICE_AUTHENTICATION,
+    Routes.CREATE_CROSS_DEVICE_AUTHENTICATION_REQUEST,
+    Routes.CROSS_DEVICE_AUTHENTICATION_FLOW,
+    PollingRoutes.CROSS_DEVICE_AUTHENTICATION_STATUS,
+    Routes.CROSS_DEVICE_AUTHENTICATION_EMOJIS_DISPLAYED,
     Routes.PROCEED_TO_IDP,
     Routes.IDENTITY_PROVIDER_SELECTION,
     Routes.VERIFY_EMAIL,
     Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUESTS,
+    PollingRoutes.CROSS_DEVICE_AUTHENTICATION_NOT_REVIEWED_REQUESTS,
 
     // Disconnect flow
     `${OidcProviderRoutes.END_SESSION}$`,

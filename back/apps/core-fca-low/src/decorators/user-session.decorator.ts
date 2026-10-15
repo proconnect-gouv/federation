@@ -8,8 +8,16 @@ import { Class } from "type-fest";
 import { CoreFcaSession, UserSession } from "../dto";
 import { InvalidSessionException } from "../exceptions";
 
+interface UserSessionDecoratorOptions {
+  userSessionDto?: Class<UserSession>;
+  exception?: Class<Error, [string]>;
+}
+
 export const UserSessionDecoratorFactory = async (
-  userSessionDto: Class<UserSession> = UserSession,
+  {
+    userSessionDto = UserSession,
+    exception = InvalidSessionException,
+  }: UserSessionDecoratorOptions = {},
   ctx: ExecutionContext,
 ): Promise<ISessionService<UserSession>> => {
   const sessionService =
@@ -39,12 +47,17 @@ export const UserSessionDecoratorFactory = async (
   const validationErrors = await validate(object as object);
 
   if (validationErrors.length) {
-    throw new InvalidSessionException(validationErrors.toString());
+    throw new exception(validationErrors.toString());
   }
 
   return boundSessionService;
 };
 
-export const UserSessionDecorator = createParamDecorator(
+const UserSessionParamDecorator = createParamDecorator(
   UserSessionDecoratorFactory,
 );
+
+export const UserSessionDecorator = (
+  userSessionDto?: Class<UserSession>,
+  exception?: Class<Error, [string]>,
+) => UserSessionParamDecorator({ userSessionDto, exception });

@@ -1,0 +1,29 @@
+<div
+  class="xda-request-item fr-col-12 fr-grid-row"
+  data-request-id="<%= notReviewedRequest.id %>"
+>
+  <div class="fr-col-10">
+    <h2 class="fr-h5">Demande de connexion</h2>
+    <p class="xda-details fr-mb-2w">
+      Navigateur : <strong><%= notReviewedRequest.device %></strong><br />
+      Date : <strong>le <time
+        datetime="<%= notReviewedRequest.createdAt.toISOString() %>"
+        data-local-date
+      ></time></strong><br />
+      Service : <strong><%= notReviewedRequest.spName %></strong>
+    </p>
+  </div>
+  <div class="fr-col-2">
+    <form
+      action="/api/v2/cross-device-authentication-requests/<%= notReviewedRequest.id %>"
+      method="POST"
+    >
+      <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
+      <button type="submit" class="fr-btn fr-btn--secondary btn--fullwidth">
+        Vérifier<span class="fr-sr-only">
+          la demande de connexion à <%= notReviewedRequest.spName %> depuis
+          <%= notReviewedRequest.device %></span>
+      </button>
+    </form>
+  </div>
+</div>
