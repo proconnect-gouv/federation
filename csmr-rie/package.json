@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "amqp-connection-manager": "5.0.0",
-    "amqplib": "2.0.1",
+    "amqplib": "2.2.0",
     "pino": "10.4.0",
     "zod": "4.6.5"
   },
