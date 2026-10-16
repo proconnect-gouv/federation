@@ -15,6 +15,7 @@ const oidcClientConfig: OidcClientConfig = {
   jwks: {
     keys: env.json("CRYPTO_ENC_LOCALE_PRIV_KEYS"),
   },
+  isLocalhostAllowed: env.boolean("FEATURE_ALLOW_LOCALHOST"),
   postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_LOGOUT_CALLBACK}`,
   redirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_CALLBACK}`,
   enableHyyyperbridge: env.boolean("FEATURE_ENABLE_HYYYPERBRIDGE"),
