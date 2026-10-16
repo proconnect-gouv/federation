@@ -3,10 +3,12 @@ import {
   IsNumber,
   IsObject,
   IsOptional,
-  IsUrl,
+  Matches,
 } from "class-validator";
 
 import { JSONWebKeySet } from "jose";
+
+const URL_REGEX = /^https?:\/\/[^/].+$/;
 
 export class OidcClientConfig {
   @IsNumber()
@@ -16,16 +18,10 @@ export class OidcClientConfig {
   @IsObject()
   readonly jwks?: JSONWebKeySet;
 
-  @IsUrl({
-    protocols: ["https"],
-    require_protocol: true,
-  })
+  @Matches(URL_REGEX)
   readonly redirectUri: string;
 
-  @IsUrl({
-    protocols: ["https"],
-    require_protocol: true,
-  })
+  @Matches(URL_REGEX)
   readonly postLogoutRedirectUri: string;
 
   @IsBoolean()
