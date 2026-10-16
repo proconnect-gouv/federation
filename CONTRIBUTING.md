@@ -69,6 +69,23 @@ Thank you for your interest in contributing! We welcome improvements, bug fixes,
 * Link related Trello cards using the Trello Power-Up.
 * Feel free to include illustrative GIFs to demonstrate changes.
 
+#### Suggested template
+
+When a PR needs more than the default description, structure it as:
+
+```markdown
+**Problem**
+What is broken, missing, or needed, and why it matters.
+
+**Proposal**
+What this PR does about it.
+
+**Tests** (optional)
+How the change was verified (manual steps, new/updated automated tests).
+```
+
+`**Context**` can be used instead of `**Problem**` when there isn't a problem being fixed (e.g. a refactor or a new capability).
+
 ---
 
 ## Questions or Help
