@@ -56,6 +56,7 @@
 | Mongoose_USER                                    | string        |
 | Mongoose_WATCHER_DEBOUNCE_WAIT_DURATION          | number        |
 | OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEYS           | json          |
+| OidcClient_FEATURE_ALLOW_LOCALHOST               | boolean       |
 | OidcClient_FEATURE_ENABLE_HYYYPERBRIDGE          | boolean       |
 | OidcProvider_COOKIES_KEYS                        | json          |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS          | json          |
