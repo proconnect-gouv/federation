@@ -4,6 +4,7 @@ import {
   OidcProviderPrompt,
   OidcProviderRoutes,
 } from "#libs/oidc-provider";
+import oidcClient from "./oidc-client";
 
 const env = new ConfigParser(process.env, "OidcProvider");
 
@@ -28,7 +29,7 @@ const oidcProviderConfig: OidcProviderConfig = {
   },
   errorUriBase: env.string("ERROR_URI_BASE"),
   forcedPrompt: [OidcProviderPrompt.LOGIN],
-  issuer: `https://${process.env.FQDN}${env.string("PREFIX")}`,
+  issuer: `${oidcClient.isHttpAllowed ? "http" : "https"}://${process.env.FQDN}${env.string("PREFIX")}`,
   jwks: {
     keys: [
       ...env.json("CRYPTO_SIG_ES256_PRIV_KEYS"),

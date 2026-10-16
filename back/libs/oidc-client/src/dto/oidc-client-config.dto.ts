@@ -1,12 +1,33 @@
 import {
+  buildMessage,
   IsBoolean,
   IsNumber,
   IsObject,
   IsOptional,
-  IsUrl,
+  isURL,
+  ValidateBy,
 } from "class-validator";
 
 import { JSONWebKeySet } from "jose";
+
+function IsCallbackUrl(): PropertyDecorator {
+  return ValidateBy({
+    name: "isCallbackUrl",
+    validator: {
+      defaultMessage: buildMessage(
+        (eachPrefix, { object }) =>
+          `${eachPrefix}$property must be an ${(object as OidcClientConfig).isHttpAllowed ? "http or https" : "https"} URL`,
+      ),
+      validate: (value, { object }) =>
+        isURL(value, {
+          protocols: (object as OidcClientConfig).isHttpAllowed
+            ? ["http", "https"]
+            : ["https"],
+          require_protocol: true,
+        }),
+    },
+  });
+}
 
 export class OidcClientConfig {
   @IsNumber()
@@ -16,16 +37,14 @@ export class OidcClientConfig {
   @IsObject()
   readonly jwks?: JSONWebKeySet;
 
-  @IsUrl({
-    protocols: ["https"],
-    require_protocol: true,
-  })
+  @IsOptional()
+  @IsBoolean()
+  readonly isHttpAllowed?: boolean;
+
+  @IsCallbackUrl()
   readonly redirectUri: string;
 
-  @IsUrl({
-    protocols: ["https"],
-    require_protocol: true,
-  })
+  @IsCallbackUrl()
   readonly postLogoutRedirectUri: string;
 
   @IsBoolean()

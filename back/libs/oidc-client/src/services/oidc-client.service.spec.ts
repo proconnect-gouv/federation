@@ -444,6 +444,40 @@ describe("OidcClientService", () => {
       expect(service.fetch).toHaveBeenCalledWith(true, "url", {});
     });
 
+    it("should allow insecure requests on non-discovery config when isHttpAllowed", async () => {
+      // Given
+      configServiceMock.get.mockReturnValue({ isHttpAllowed: true });
+      const configMock = { some: "config" };
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        discovery: false,
+      });
+      (openidClient.Configuration as jest.Mock).mockReturnValue(configMock);
+
+      // When
+      await service.getProviderConfig("idp-id");
+
+      // Then
+      expect(openidClient.allowInsecureRequests).toHaveBeenCalledWith(
+        configMock,
+      );
+    });
+
+    it("should not allow insecure requests on non-discovery config by default", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue({
+        ...idpMock,
+        discovery: false,
+      });
+      (openidClient.Configuration as jest.Mock).mockReturnValue({});
+
+      // When
+      await service.getProviderConfig("idp-id");
+
+      // Then
+      expect(openidClient.allowInsecureRequests).not.toHaveBeenCalled();
+    });
+
     it("should throw OidcClientIssuerDiscoveryFailedException on discovery failure", async () => {
       // Given
       identityProviderMock.getById.mockResolvedValue(idpMock);
@@ -525,6 +559,45 @@ describe("OidcClientService", () => {
           timeout: 6000,
           [openidClient.customFetch]: expect.any(Function),
         }),
+      );
+    });
+
+    it("should allow insecure discovery requests when isHttpAllowed", async () => {
+      // Given
+      configServiceMock.get.mockReturnValue({ isHttpAllowed: true });
+      identityProviderMock.getById.mockResolvedValue(idpMock);
+      (openidClient.discovery as jest.Mock).mockResolvedValue({});
+
+      // When
+      await service.getProviderConfig("idp-id");
+
+      // Then
+      expect(openidClient.discovery).toHaveBeenCalledWith(
+        expect.any(URL),
+        expect.any(String),
+        expect.any(Object),
+        expect.any(Function),
+        expect.objectContaining({
+          execute: [openidClient.allowInsecureRequests],
+        }),
+      );
+    });
+
+    it("should not allow insecure discovery requests by default", async () => {
+      // Given
+      identityProviderMock.getById.mockResolvedValue(idpMock);
+      (openidClient.discovery as jest.Mock).mockResolvedValue({});
+
+      // When
+      await service.getProviderConfig("idp-id");
+
+      // Then
+      expect(openidClient.discovery).toHaveBeenCalledWith(
+        expect.any(URL),
+        expect.any(String),
+        expect.any(Object),
+        expect.any(Function),
+        expect.objectContaining({ execute: [] }),
       );
     });
 

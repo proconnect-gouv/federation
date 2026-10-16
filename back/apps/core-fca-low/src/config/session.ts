@@ -2,6 +2,7 @@ import { ConfigParser } from "#libs/config";
 import { OidcProviderRoutes } from "#libs/oidc-provider";
 import { CookieOptions, SessionConfig } from "#libs/session";
 import { CoreFcaSession, Routes } from "#src";
+import oidcClient from "./oidc-client";
 
 const env = new ConfigParser(process.env, "Session");
 
@@ -9,7 +10,7 @@ const cookieOptions: CookieOptions = {
   signed: true,
   sameSite: "lax",
   httpOnly: true,
-  secure: true,
+  secure: !oidcClient.isHttpAllowed,
 };
 
 const sessionConfig: SessionConfig = {

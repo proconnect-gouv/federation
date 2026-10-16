@@ -5,6 +5,9 @@ import app from "./app";
 
 const env = new ConfigParser(process.env, "OidcClient");
 
+const isHttpAllowed = env.boolean("FEATURE_ALLOW_HTTP");
+const scheme = isHttpAllowed ? "http" : "https";
+
 const oidcClientConfig: OidcClientConfig = {
   // Global request timeout for all outgoing application requests.
   // This duration is in seconds and is typically set to 6000 in most environments,
@@ -15,8 +18,9 @@ const oidcClientConfig: OidcClientConfig = {
   jwks: {
     keys: env.json("CRYPTO_ENC_LOCALE_PRIV_KEYS"),
   },
-  postLogoutRedirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_LOGOUT_CALLBACK}`,
-  redirectUri: `https://${app.fqdn}${app.urlPrefix}${Routes.OIDC_CALLBACK}`,
+  isHttpAllowed,
+  postLogoutRedirectUri: `${scheme}://${app.fqdn}${app.urlPrefix}${Routes.OIDC_LOGOUT_CALLBACK}`,
+  redirectUri: `${scheme}://${app.fqdn}${app.urlPrefix}${Routes.OIDC_CALLBACK}`,
   enableHyyyperbridge: env.boolean("FEATURE_ENABLE_HYYYPERBRIDGE"),
 };
 

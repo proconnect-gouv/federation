@@ -11,6 +11,7 @@ import { validate } from "class-validator";
 import { Request } from "express";
 import { chain, cloneDeep, isEmpty, isObject, map } from "lodash";
 import {
+  allowInsecureRequests,
   authorizationCodeGrant,
   AuthorizationResponseError,
   buildAuthorizationUrl,
@@ -220,7 +221,7 @@ export class OidcClientService {
     config: Configuration;
     idp: IdentityProviderMetadata;
   }> {
-    const { timeout, enableHyyyperbridge } =
+    const { timeout, enableHyyyperbridge, isHttpAllowed } =
       this.config.get<OidcClientConfig>("OidcClient");
     const idp = await this.identityProvider.getById(issuerId);
 
@@ -247,6 +248,9 @@ export class OidcClientService {
         this,
         enableHyyyperbridge && idp.useTheHyyyperbridge,
       );
+      if (isHttpAllowed) {
+        allowInsecureRequests(config);
+      }
     } else {
       try {
         config = await discovery(
@@ -260,6 +264,7 @@ export class OidcClientService {
               this,
               enableHyyyperbridge && idp.useTheHyyyperbridge,
             ),
+            execute: isHttpAllowed ? [allowInsecureRequests] : [],
           },
         );
       } catch (error) {
