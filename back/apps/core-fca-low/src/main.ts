@@ -1,6 +1,7 @@
 import { NestJsDependencyInjectionWrapper } from "#libs/common";
 import { ConfigService } from "#libs/config";
 import { NestLoggerService } from "#libs/logger";
+import { OidcClientConfig } from "#libs/oidc-client";
 import { SessionConfig } from "#libs/session";
 import { AppConfig, CoreFcaConfig } from "#src";
 import { NestFactory } from "@nestjs/core";
@@ -35,6 +36,7 @@ async function bootstrap() {
       imgSrc,
     },
   } = configService.get<AppConfig>("App");
+  const { isHttpAllowed } = configService.get<OidcClientConfig>("OidcClient");
 
   const appModule = AppModule.forRoot(configService);
 
@@ -88,6 +90,7 @@ async function bootstrap() {
          * is too restricting. We don't have a precise domain to restrain to.
          */
         formAction: null,
+        ...(isHttpAllowed && { upgradeInsecureRequests: null }),
       },
     }),
   );
