@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         app:
-          - hyperbridge
+          - hybridge
           - mock-data-provider
           - mock-identity-provider
           - mock-service-provider
