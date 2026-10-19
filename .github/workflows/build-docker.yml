@@ -95,7 +95,7 @@ jobs:
       matrix:
         instance:
           - core-fca-low
-          - hyperbridge
+          - hybridge
           - mock-data-provider
           - mock-identity-provider
           - mock-service-provider
@@ -103,8 +103,8 @@ jobs:
         include:
           - instance: core-fca-low
             context: ./back
-          - instance: hyperbridge
-            context: ./hyperbridge
+          - instance: hybridge
+            context: ./hybridge
           - instance: mock-data-provider
             context: ./mock-data-provider
           - instance: mock-identity-provider

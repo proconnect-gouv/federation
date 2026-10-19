@@ -7,13 +7,13 @@ services:
   hybridge-rie:
     hostname: hybridge-rie
     build:
-      context: "../../../hyperbridge"
+      context: "../../../hybridge"
       target: dev
     user: ${CURRENT_UID}
     depends_on:
       - broker
     volumes:
-      - "../../../hyperbridge/src:/var/www/app/src:ro"
+      - "../../../hybridge/src:/var/www/app/src:ro"
       - "../../volumes/app:/opt/scripts"
       - "../../volumes/log/:/var/log/app"
       - "../../volumes/.home:/home"
