@@ -205,8 +205,6 @@ export class IdentityProviderService {
         identityProviderDto.id_token_encrypted_response_alg,
       id_token_encrypted_response_enc:
         identityProviderDto.id_token_encrypted_response_enc,
-      token_endpoint_auth_method:
-        identityProviderDto.token_endpoint_auth_method,
       supportEmail: identityProviderDto.supportEmail,
       isRoutingEnabled: identityProviderDto.isRoutingEnabled,
       isEntraID: identityProviderDto.isEntraID,

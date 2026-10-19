@@ -22,7 +22,6 @@ export const identityProviders = {
     endSessionURL:
       "https://fia1-low.docker.dev-franceconnect.fr/user/session/end",
     id_token_signed_response_alg: "ES256",
-    token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
     id_token_encrypted_response_enc: "",
     userinfo_signed_response_alg: "ES256",
@@ -64,7 +63,6 @@ export const identityProviders = {
     endSessionURL:
       "https://fia2-low.docker.dev-franceconnect.fr/user/session/end",
     id_token_signed_response_alg: "RS256",
-    token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
     id_token_encrypted_response_enc: "",
     userinfo_signed_response_alg: "",
@@ -107,7 +105,6 @@ export const identityProviders = {
     endSessionURL:
       "https://fia3-low.docker.dev-franceconnect.fr/user/session/end",
     id_token_signed_response_alg: "ES256",
-    token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
     id_token_encrypted_response_enc: "",
     userinfo_signed_response_alg: "ES256",
@@ -149,7 +146,6 @@ export const identityProviders = {
     endSessionURL:
       "https://moncomptepro.docker.dev-franceconnect.fr/user/session/end",
     id_token_signed_response_alg: "ES256",
-    token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
     id_token_encrypted_response_enc: "",
     userinfo_signed_response_alg: "ES256",
@@ -192,7 +188,6 @@ export const identityProviders = {
     endSessionURL:
       "https://fia-rie-low.docker.dev-franceconnect.fr/user/session/end",
     id_token_signed_response_alg: "ES256",
-    token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
     id_token_encrypted_response_enc: "",
     userinfo_signed_response_alg: "ES256",
@@ -234,7 +229,6 @@ export const identityProviders = {
     endSessionURL:
       "https://auth.llng.docker.dev-franceconnect.fr/oauth2/logout",
     id_token_signed_response_alg: "RS256",
-    token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "",
     id_token_encrypted_response_enc: "A256GCM",
     userinfo_signed_response_alg: "RS256",
