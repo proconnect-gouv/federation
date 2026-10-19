@@ -20,7 +20,7 @@ sequenceDiagram
     autonumber
     participant Core as Core FCA (OidcClientService)
     participant RMQ as RabbitMQ (queue: rie)
-    participant RIE as CSMR RIE (@MessagePattern HTTP_PROXY)
+    participant RIE as Hybridge (@MessagePattern HTTP_PROXY)
     participant IDP as IdP cible (HTTP)
 
     Core->>RMQ: send("HTTP_PROXY", message)
@@ -40,7 +40,7 @@ sequenceDiagram
     autonumber
     participant Core as Core FCA (OidcClientService)
     participant RMQ as RabbitMQ
-    participant RIE as CSMR RIE
+    participant RIE as Hybridge
     participant IDP as IdP cible
 
     Core->>RMQ: send("HTTP_PROXY", message).pipe(timeout)

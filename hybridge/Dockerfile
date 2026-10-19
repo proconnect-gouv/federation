@@ -3,7 +3,7 @@ FROM node:24.21.0-alpine AS app
 WORKDIR /var/www/app
 
 COPY package.json package-lock.json .npmrc ./
-RUN --mount=type=cache,target=/npm-cache,id=csmr-rie-npm-cache,sharing=locked \
+RUN --mount=type=cache,target=/npm-cache,id=hybridge-npm-cache,sharing=locked \
     npm ci --omit=dev --cache=/npm-cache
 COPY src/ ./src/
 
