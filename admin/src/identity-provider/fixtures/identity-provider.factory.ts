@@ -71,7 +71,6 @@ function createIdentityProviderDto(
     token_endpoint_auth_method: "client_secret_post",
     attachedEmailDomains: [],
     post_logout_redirect_uris: [],
-    redirect_uris: [],
     siret: "",
     supportEmail: "support@email.fr",
     isRoutingEnabled: true,
