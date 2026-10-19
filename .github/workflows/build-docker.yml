@@ -95,7 +95,7 @@ jobs:
       matrix:
         instance:
           - core-fca-low
-          - csmr-rie
+          - hyperbridge
           - mock-data-provider
           - mock-identity-provider
           - mock-service-provider
@@ -103,8 +103,8 @@ jobs:
         include:
           - instance: core-fca-low
             context: ./back
-          - instance: csmr-rie
-            context: ./csmr-rie
+          - instance: hyperbridge
+            context: ./hyperbridge
           - instance: mock-data-provider
             context: ./mock-data-provider
           - instance: mock-identity-provider
