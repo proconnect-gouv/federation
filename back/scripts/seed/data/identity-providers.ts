@@ -28,9 +28,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "ES256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
-    ],
     attachedEmailDomains: ["fia1.fr", "polyfi.fr", "polyfi2.fr", "abcd.com"],
     isRoutingEnabled: true,
     isEntraID: false,
@@ -67,9 +64,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
-    ],
     attachedEmailDomains: ["fia2.fr", "polyfi.fr", "polyfi2.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
@@ -107,9 +101,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "ES256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
-    ],
     attachedEmailDomains: ["fia3.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
@@ -146,9 +137,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "ES256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
-    ],
     attachedEmailDomains: ["moncomptepro.fr", "polyfi.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
@@ -186,9 +174,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "ES256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
-    ],
     attachedEmailDomains: ["fi-rie.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
@@ -225,9 +210,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "RS256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "RS256",
-    post_logout_redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
-    ],
     attachedEmailDomains: [],
     isRoutingEnabled: true,
     isEntraID: false,

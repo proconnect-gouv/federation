@@ -70,7 +70,6 @@ function createIdentityProviderDto(
     id_token_encrypted_response_enc: "A256GCM",
     token_endpoint_auth_method: "client_secret_post",
     attachedEmailDomains: [],
-    post_logout_redirect_uris: [],
     siret: "",
     supportEmail: "support@email.fr",
     isRoutingEnabled: true,
