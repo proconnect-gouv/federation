@@ -18,7 +18,6 @@ db.provider.replaceOne(
     endSessionURL:
       "https://fia2-low.docker.dev-franceconnect.fr/user/session/end",
     id_token_signed_response_alg: "HS256",
-    token_endpoint_auth_method: "client_secret_post",
     id_token_encrypted_response_alg: "RSA-OAEP",
     id_token_encrypted_response_enc: "A256GCM",
     userinfo_signed_response_alg: "HS256",

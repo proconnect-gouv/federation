@@ -149,15 +149,6 @@ export class IdentityProviderDTO {
   readonly id_token_encrypted_response_enc?: string;
 
   @IsOptional()
-  @IsIn(["client_secret_post"], {
-    message:
-      "<strong>token_endpoint_auth_method</strong> doit être une des valeurs suivantes: client_secret_post",
-  })
-  // oidc defined variable name
-  // tslint:disable-next-line: variable-name
-  readonly token_endpoint_auth_method?: string;
-
-  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   // oidc defined variable name

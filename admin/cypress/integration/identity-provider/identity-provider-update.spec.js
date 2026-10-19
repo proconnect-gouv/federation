@@ -39,7 +39,6 @@ describe("Identity provider update", () => {
         clientId: "09a1a257648c1742c74d6a3d84b31943",
         client_secret: "1234567890AZERTYUIOP",
         siret: "34047343800034",
-        token_endpoint_auth_method: "client_secret_post",
         isMfaCompliant: true,
       };
 
@@ -102,7 +101,6 @@ describe("Identity provider update", () => {
         clientId: "09a1a257648c1742c74d6a3d84b31943",
         client_secret: "1234567890AZERTYUIOP",
         siret: "34047343800034",
-        token_endpoint_auth_method: "client_secret_post",
         isMfaCompliant: true,
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
@@ -190,7 +188,6 @@ describe("Identity provider update", () => {
         id_token_signed_response_alg: "ES256",
         id_token_encrypted_response_alg: "RSA-OAEP",
         id_token_encrypted_response_enc: "A256GCM",
-        token_endpoint_auth_method: "client_secret_post",
       };
       updateIdentityProvider(fiToUpdateName, idp, basicConfiguration);
       cy.get("#successBanner")
@@ -216,7 +213,6 @@ describe("Identity provider update", () => {
         client_secret: "new-1234567890AZERTYUIOP",
         active: "true",
         siret: "34047343800034",
-        token_endpoint_auth_method: "client_secret_post",
         isMfaCompliant: false,
         mfaComplianceNote: "Mon FI n'est pas conforme au MFA",
       };

@@ -91,11 +91,6 @@ export class IdentityProviderFromDb {
   id_token_encrypted_response_enc?: string;
 
   @Column()
-  // oidc defined variable name
-  // tslint:disable-next-line: variable-name
-  token_endpoint_auth_method?: string;
-
-  @Column()
   siret: string;
 
   @Column()

@@ -194,7 +194,6 @@ describe("IdentityProviderService", () => {
         jwksURL: "https://issuer.fr/discovery",
         siret: "",
         supportEmail: "support@email.fr",
-        token_endpoint_auth_method: "client_secret_post",
         tokenURL: "https://issuer.fr/token",
         userinfo_encrypted_response_alg: "RSA-OAEP",
         userinfo_encrypted_response_enc: "ES256",
@@ -446,7 +445,6 @@ describe("IdentityProviderService", () => {
         id_token_signed_response_alg: "ES256",
         siret: "",
         supportEmail: "support@email.fr",
-        token_endpoint_auth_method: "client_secret_post",
 
         userinfo_encrypted_response_alg: "RSA-OAEP",
         userinfo_encrypted_response_enc: "ES256",
@@ -476,7 +474,6 @@ describe("IdentityProviderService", () => {
         jwksURL: "https://issuer.fr/discovery",
         siret: "",
         supportEmail: "support@email.fr",
-        token_endpoint_auth_method: "client_secret_post",
         tokenURL: "https://issuer.fr/token",
         userinfo_encrypted_response_alg: "RSA-OAEP",
         userinfo_encrypted_response_enc: "ES256",
