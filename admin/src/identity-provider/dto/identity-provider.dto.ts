@@ -1,6 +1,5 @@
 import { Transform } from "class-transformer";
 import {
-  IsArray,
   IsBoolean,
   IsIn,
   IsOptional,
@@ -156,13 +155,6 @@ export class IdentityProviderDTO {
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
   readonly token_endpoint_auth_method?: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  // oidc defined variable name
-  // tslint:disable-next-line: variable-name
-  readonly post_logout_redirect_uris?: string[];
 
   @IsOptional()
   @Transform(({ value }) =>
