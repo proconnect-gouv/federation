@@ -28,9 +28,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "ES256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
-    ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
@@ -70,9 +67,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia2-low",
-    ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
@@ -113,9 +107,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "ES256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
-    ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
@@ -155,9 +146,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "ES256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
-    ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
@@ -198,9 +186,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "ES256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
-    ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
@@ -240,9 +225,6 @@ export const identityProviders = {
     userinfo_signed_response_alg: "RS256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "RS256",
-    redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia-llng-low",
-    ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],

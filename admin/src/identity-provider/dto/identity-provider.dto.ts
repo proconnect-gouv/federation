@@ -162,13 +162,6 @@ export class IdentityProviderDTO {
   @IsString({ each: true })
   // oidc defined variable name
   // tslint:disable-next-line: variable-name
-  readonly redirect_uris?: string[];
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  // oidc defined variable name
-  // tslint:disable-next-line: variable-name
   readonly post_logout_redirect_uris?: string[];
 
   @IsOptional()
