@@ -8,7 +8,6 @@ export const identityProviders = {
     siret: "81801912700021",
     active: true,
     title: "Identity Provider 1 - eIDAS faible - ES256",
-    trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
     url: "https://fia1-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
@@ -50,7 +49,6 @@ export const identityProviders = {
     siret: "",
     active: true,
     title: "Identity Provider 2 - eIDAS faible - RS256",
-    trustedIdentity: false,
     supportEmail: "",
     url: "https://fia2-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
@@ -93,7 +91,6 @@ export const identityProviders = {
     siret: "12345678910007",
     active: false,
     title: "Identity Provider 3 (désactivé)",
-    trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
     url: "https://fia3-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
@@ -135,7 +132,6 @@ export const identityProviders = {
     siret: "12345678910009",
     active: true,
     title: "Identity Provider MonComptePro",
-    trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
     url: "https://moncomptepro.docker.dev-franceconnect.fr",
     discoveryUrl:
@@ -178,7 +174,6 @@ export const identityProviders = {
     siret: "12345678910010",
     active: true,
     title: "Identity Provider RIE - eIDAS faible - ES256",
-    trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
     url: "https://fia-rie-low.docker.dev-franceconnect.fr/",
     discoveryUrl:
@@ -220,7 +215,6 @@ export const identityProviders = {
     siret: "12345678910011",
     active: true,
     title: "Identity Provider LemonLDAP",
-    trustedIdentity: false,
     supportEmail: "support+federation@proconnect.gouv.fr",
     url: "https://auth.llng.docker.dev-franceconnect.fr",
     discoveryUrl:
