@@ -75,17 +75,21 @@ export class CoreFcaService {
     const emailPrefix = email.substring(0, email.lastIndexOf("@"));
 
     const { idpRoutingForcingEmailSuffix } = this.config.get<AppConfig>("App");
-    const idpsWithRoutingEnabled = idpsAttachedToEmailDomain.filter(
-      (idp) =>
-        idp.isRoutingEnabled ||
-        emailPrefix.endsWith(idpRoutingForcingEmailSuffix),
+    const activeIdpsWithRoutingEnabled = idpsAttachedToEmailDomain.filter(
+      (idp) => {
+        const routingEnabled =
+          idp.isRoutingEnabled ||
+          emailPrefix.endsWith(idpRoutingForcingEmailSuffix);
+
+        return idp.active && routingEnabled;
+      },
     );
 
     // when there is no idp mapped for this attached email domain
     // we check if there is or not a default idp set in the app
     // if yes, we return the default idp
     // if no, we return an empty config and we deduce that the default idp is not accepted
-    if (isEmpty(idpsWithRoutingEnabled)) {
+    if (isEmpty(activeIdpsWithRoutingEnabled)) {
       const { defaultIdpId } = this.config.get<AppConfig>("App");
 
       if (!defaultIdpId) {
@@ -95,7 +99,7 @@ export class CoreFcaService {
       return [await this.identityProvider.getById(defaultIdpId)];
     }
 
-    return idpsWithRoutingEnabled;
+    return activeIdpsWithRoutingEnabled;
   }
 
   // check if the idp is allowed to authenticate the user with this email
