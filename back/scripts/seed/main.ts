@@ -125,6 +125,10 @@ async function main() {
   await client.connect();
   const db = client.db(Mongoose_DATABASE);
 
+  await db.collection("client").createIndex({ key: 1 }, { unique: true });
+  await db.collection("provider").createIndex({ uid: 1 }, { unique: true });
+  await db.collection("accountFca").createIndex({ sub: 1 }, { unique: true });
+
   console.log("Initializing Service Providers...");
   for (const serviceProvider of serviceProviderDocuments) {
     await db
