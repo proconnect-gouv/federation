@@ -18,7 +18,95 @@ const {
   Mongoose_TLS_INSECURE,
   Mongoose_TLS,
   Mongoose_USER,
+  SEED_ONLY,
 } = process.env;
+
+//
+
+function seedOverride(
+  key: string,
+  field: "CLIENT_ID" | "CLIENT_SECRET" | "ORIGIN" | "UID",
+) {
+  return process.env[`SEED_${key.replaceAll("-", "_")}_${field}`];
+}
+
+function withOrigin(url: string, origin: string | undefined) {
+  if (!origin) return url;
+  return new URL(origin).origin + url.slice(new URL(url).origin.length);
+}
+
+function clientDocument<
+  Client extends {
+    client_secret: string;
+    key: string;
+    post_logout_redirect_uris: string[];
+    redirect_uris: string[];
+  },
+>(key: string, client: Client) {
+  const origin = seedOverride(key, "ORIGIN");
+  return {
+    ...client,
+    client_secret: seedOverride(key, "CLIENT_SECRET") ?? client.client_secret,
+    key: seedOverride(key, "CLIENT_ID") ?? client.key,
+    post_logout_redirect_uris: client.post_logout_redirect_uris.map((uri) =>
+      withOrigin(uri, origin),
+    ),
+    redirect_uris: client.redirect_uris.map((uri) => withOrigin(uri, origin)),
+  };
+}
+
+const onlyKeys = SEED_ONLY?.split(",");
+const unknownKeys = (onlyKeys ?? []).filter(
+  (key) =>
+    !(
+      key in identityProviders ||
+      key in resourceServers ||
+      key in serviceProviders
+    ),
+);
+if (unknownKeys.length > 0) {
+  throw new Error(`Unknown SEED_ONLY entries: ${unknownKeys.join(", ")}`);
+}
+const isSelected = (key: string) => onlyKeys?.includes(key) ?? true;
+
+const serviceProviderDocuments = Object.entries(serviceProviders)
+  .filter(([key]) => isSelected(key))
+  .map(([key, serviceProvider]) => clientDocument(key, serviceProvider));
+
+const resourceServerDocuments = Object.entries(resourceServers)
+  .filter(([key]) => isSelected(key))
+  .map(([key, resourceServer]) => clientDocument(key, resourceServer));
+
+const seededUids = Object.fromEntries(
+  Object.entries(identityProviders).map(([key, { uid }]) => [
+    uid,
+    seedOverride(key, "UID") ?? uid,
+  ]),
+);
+
+const identityProviderDocuments = Object.entries(identityProviders)
+  .filter(([key]) => isSelected(key))
+  .map(([key, identityProvider]) => {
+    const origin = seedOverride(key, "ORIGIN");
+    return {
+      ...identityProvider,
+      clientID: seedOverride(key, "CLIENT_ID") ?? identityProvider.clientID,
+      client_secret:
+        seedOverride(key, "CLIENT_SECRET") ?? identityProvider.client_secret,
+      discoveryUrl: withOrigin(identityProvider.discoveryUrl, origin),
+      endSessionURL: withOrigin(identityProvider.endSessionURL, origin),
+      uid: seededUids[identityProvider.uid],
+      url: withOrigin(identityProvider.url, origin),
+    };
+  });
+
+const accountDocuments = Object.values(accountsFca).map((account) => ({
+  ...account,
+  idpIdentityKeys: account.idpIdentityKeys.map((identityKey) => ({
+    ...identityKey,
+    idpUid: seededUids[identityKey.idpUid] ?? identityKey.idpUid,
+  })),
+}));
 
 //
 
@@ -38,37 +126,37 @@ async function main() {
   const db = client.db(Mongoose_DATABASE);
 
   console.log("Initializing Service Providers...");
-  for (const serviceProvider of Object.values(serviceProviders)) {
+  for (const serviceProvider of serviceProviderDocuments) {
     await db
       .collection("client")
-      .replaceOne({ name: serviceProvider.name }, serviceProvider, {
+      .replaceOne({ key: serviceProvider.key }, serviceProvider, {
         upsert: true,
       });
   }
 
   console.log("Initializing Resource Servers...");
-  for (const resourceServer of Object.values(resourceServers)) {
+  for (const resourceServer of resourceServerDocuments) {
     await db
       .collection("client")
-      .replaceOne({ name: resourceServer.name }, resourceServer, {
+      .replaceOne({ key: resourceServer.key }, resourceServer, {
         upsert: true,
       });
   }
 
   console.log("Initializing Identity Providers...");
-  for (const identityProvider of Object.values(identityProviders)) {
+  for (const identityProvider of identityProviderDocuments) {
     await db
       .collection("provider")
-      .replaceOne({ name: identityProvider.name }, identityProvider, {
+      .replaceOne({ uid: identityProvider.uid }, identityProvider, {
         upsert: true,
       });
   }
 
   console.log("Initializing FCA accounts...");
-  for (const account of Object.values(accountsFca)) {
+  for (const account of accountDocuments) {
     await db
       .collection("accountFca")
-      .replaceOne({ _id: account._id }, account, { upsert: true });
+      .replaceOne({ sub: account.sub }, account, { upsert: true });
   }
 
   await client.close();
