@@ -18,95 +18,37 @@ const {
   Mongoose_TLS_INSECURE,
   Mongoose_TLS,
   Mongoose_USER,
-  SEED_ONLY,
+  SEED_OVERRIDES,
 } = process.env;
 
 //
 
-function seedOverride(
-  key: string,
-  field: "CLIENT_ID" | "CLIENT_SECRET" | "ORIGIN" | "UID",
-) {
-  return process.env[`SEED_${key.replaceAll("-", "_")}_${field}`];
-}
+const overrides: Record<string, object> | undefined = SEED_OVERRIDES
+  ? JSON.parse(SEED_OVERRIDES)
+  : undefined;
 
-function withOrigin(url: string, origin: string | undefined) {
-  if (!origin) return url;
-  return new URL(origin).origin + url.slice(new URL(url).origin.length);
-}
-
-function clientDocument<
-  Client extends {
-    client_secret: string;
-    key: string;
-    post_logout_redirect_uris: string[];
-    redirect_uris: string[];
-  },
->(key: string, client: Client) {
-  const origin = seedOverride(key, "ORIGIN");
-  return {
-    ...client,
-    client_secret: seedOverride(key, "CLIENT_SECRET") ?? client.client_secret,
-    key: seedOverride(key, "CLIENT_ID") ?? client.key,
-    post_logout_redirect_uris: client.post_logout_redirect_uris.map((uri) =>
-      withOrigin(uri, origin),
-    ),
-    redirect_uris: client.redirect_uris.map((uri) => withOrigin(uri, origin)),
-  };
-}
-
-const onlyKeys = SEED_ONLY?.split(",");
-const unknownKeys = (onlyKeys ?? []).filter(
-  (key) =>
-    !(
-      key in identityProviders ||
-      key in resourceServers ||
-      key in serviceProviders
-    ),
+const seedKeys = Object.keys({
+  ...accountsFca,
+  ...identityProviders,
+  ...resourceServers,
+  ...serviceProviders,
+});
+const unknownKeys = Object.keys(overrides ?? {}).filter(
+  (key) => !seedKeys.includes(key),
 );
 if (unknownKeys.length > 0) {
-  throw new Error(`Unknown SEED_ONLY entries: ${unknownKeys.join(", ")}`);
+  throw new Error(`Unknown SEED_OVERRIDES entries: ${unknownKeys.join(", ")}`);
 }
-const isSelected = (key: string) => onlyKeys?.includes(key) ?? true;
 
-const serviceProviderDocuments = Object.entries(serviceProviders)
-  .filter(([key]) => isSelected(key))
-  .map(([key, serviceProvider]) => clientDocument(key, serviceProvider));
+const seeded = <Entry extends object>(entries: Record<string, Entry>) =>
+  Object.entries(entries)
+    .filter(([key]) => !overrides || key in overrides)
+    .map(([key, entry]) => ({ ...entry, ...overrides?.[key] }));
 
-const resourceServerDocuments = Object.entries(resourceServers)
-  .filter(([key]) => isSelected(key))
-  .map(([key, resourceServer]) => clientDocument(key, resourceServer));
-
-const seededUids = Object.fromEntries(
-  Object.entries(identityProviders).map(([key, { uid }]) => [
-    uid,
-    seedOverride(key, "UID") ?? uid,
-  ]),
-);
-
-const identityProviderDocuments = Object.entries(identityProviders)
-  .filter(([key]) => isSelected(key))
-  .map(([key, identityProvider]) => {
-    const origin = seedOverride(key, "ORIGIN");
-    return {
-      ...identityProvider,
-      clientID: seedOverride(key, "CLIENT_ID") ?? identityProvider.clientID,
-      client_secret:
-        seedOverride(key, "CLIENT_SECRET") ?? identityProvider.client_secret,
-      discoveryUrl: withOrigin(identityProvider.discoveryUrl, origin),
-      endSessionURL: withOrigin(identityProvider.endSessionURL, origin),
-      uid: seededUids[identityProvider.uid],
-      url: withOrigin(identityProvider.url, origin),
-    };
-  });
-
-const accountDocuments = Object.values(accountsFca).map((account) => ({
-  ...account,
-  idpIdentityKeys: account.idpIdentityKeys.map((identityKey) => ({
-    ...identityKey,
-    idpUid: seededUids[identityKey.idpUid] ?? identityKey.idpUid,
-  })),
-}));
+const serviceProviderDocuments = seeded(serviceProviders);
+const resourceServerDocuments = seeded(resourceServers);
+const identityProviderDocuments = seeded(identityProviders);
+const accountDocuments = seeded(accountsFca);
 
 //
 
