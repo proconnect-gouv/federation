@@ -30,15 +30,27 @@ Thank you for your interest in contributing! We welcome improvements, bug fixes,
 
 ### Message format
 
-* Use [Gitmoji](https://gitmoji.dev/) for an emoji prefix (e.g., `✨`, `🐛`, `💄`).
+* Use Gitmoji from within the [proconnect release action list](https://github.com/proconnect-gouv/release-action/blob/main/src/plugin.ts#L11-L68)
 * Write a short subject that clearly describes the change; it will appear in the changelog.
 
     * Example: `💄 change duplicate icon`
 
 ### Commit body
 
-* Include detailed context or rationale here.
-* Do **not** post PR details or discussion in external chat channels; document them in the commit instead.
+* Structure the commit body like so:
+
+```markdown
+**Problem**
+What is broken, missing, or needed, and why it matters.
+
+**Proposal**
+What this PR does about it.
+
+**Boy Scout** (optional)
+Additional cleanup conducted in the commit.
+```
+
+* Do **not** post PR details or discussion in external chat channels; document them in the commit body instead.
 
 ---
 
@@ -61,12 +73,13 @@ Thank you for your interest in contributing! We welcome improvements, bug fixes,
 
 ### Description
 
-* **Single-commit PR**: the default description is usually sufficient.
+* **Single-commit PR**: the default description from the commit body is usually enough.
 * **When needed**, add context, for example:
 
     * Database migrations to run: `npm run migrate`
     * This PR reverts #123.
-* Link related Trello cards using the Trello Power-Up.
+* Include any screenshot that helps demonstrate the change.
+* Add a link to related Trello cards using the Trello Power-Up.
 * Feel free to include illustrative GIFs to demonstrate changes.
 
 ---
