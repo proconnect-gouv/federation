@@ -277,7 +277,7 @@ services:
       - data
 
   mongo:
-    image: mongo:9.0.2
+    image: mongo:9.0.4
     command:
       - "--keyFile"
       - /mongodb-keyfile
