@@ -1,4 +1,4 @@
-FROM node:24.21.0-alpine AS dev_dependencies
+FROM node:24.22.1-alpine AS dev_dependencies
 
 WORKDIR /var/www/app
 
@@ -7,7 +7,7 @@ RUN --mount=type=cache,target=/npm-cache,id=back-npm-cache,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
     npm ci --cache=/npm-cache
 
-FROM node:24.21.0-alpine AS dependencies
+FROM node:24.22.1-alpine AS dependencies
 
 WORKDIR /var/www/app
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/npm-cache,id=back-npm-cache,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
     npm ci --omit=dev --cache=/npm-cache
 
-FROM node:24.21.0-alpine AS dev
+FROM node:24.22.1-alpine AS dev
 
 WORKDIR /var/www/app
 
@@ -41,7 +41,7 @@ RUN npm run build
 COPY apps/core-fca-low/src/views dist/apps/core-fca-low/views
 COPY apps/core-fca-low/src/public dist/apps/core-fca-low/public
 
-FROM node:24.21.0-alpine AS production
+FROM node:24.22.1-alpine AS production
 
 ENV NODE_ENV=production
 
