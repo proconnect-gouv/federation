@@ -18,7 +18,37 @@ const {
   Mongoose_TLS_INSECURE,
   Mongoose_TLS,
   Mongoose_USER,
+  SEED_OVERRIDES,
 } = process.env;
+
+//
+
+const overrides: Record<string, object> | undefined = SEED_OVERRIDES
+  ? JSON.parse(SEED_OVERRIDES)
+  : undefined;
+
+const seedKeys = Object.keys({
+  ...accountsFca,
+  ...identityProviders,
+  ...resourceServers,
+  ...serviceProviders,
+});
+const unknownKeys = Object.keys(overrides ?? {}).filter(
+  (key) => !seedKeys.includes(key),
+);
+if (unknownKeys.length > 0) {
+  throw new Error(`Unknown SEED_OVERRIDES entries: ${unknownKeys.join(", ")}`);
+}
+
+const seeded = <Entry extends object>(entries: Record<string, Entry>) =>
+  Object.entries(entries)
+    .filter(([key]) => !overrides || key in overrides)
+    .map(([key, entry]) => ({ ...entry, ...overrides?.[key] }));
+
+const serviceProviderDocuments = seeded(serviceProviders);
+const resourceServerDocuments = seeded(resourceServers);
+const identityProviderDocuments = seeded(identityProviders);
+const accountDocuments = seeded(accountsFca);
 
 //
 
@@ -37,38 +67,42 @@ async function main() {
   await client.connect();
   const db = client.db(Mongoose_DATABASE);
 
+  await db.collection("client").createIndex({ key: 1 }, { unique: true });
+  await db.collection("provider").createIndex({ uid: 1 }, { unique: true });
+  await db.collection("accountFca").createIndex({ sub: 1 }, { unique: true });
+
   console.log("Initializing Service Providers...");
-  for (const serviceProvider of Object.values(serviceProviders)) {
+  for (const serviceProvider of serviceProviderDocuments) {
     await db
       .collection("client")
-      .replaceOne({ name: serviceProvider.name }, serviceProvider, {
+      .replaceOne({ key: serviceProvider.key }, serviceProvider, {
         upsert: true,
       });
   }
 
   console.log("Initializing Resource Servers...");
-  for (const resourceServer of Object.values(resourceServers)) {
+  for (const resourceServer of resourceServerDocuments) {
     await db
       .collection("client")
-      .replaceOne({ name: resourceServer.name }, resourceServer, {
+      .replaceOne({ key: resourceServer.key }, resourceServer, {
         upsert: true,
       });
   }
 
   console.log("Initializing Identity Providers...");
-  for (const identityProvider of Object.values(identityProviders)) {
+  for (const identityProvider of identityProviderDocuments) {
     await db
       .collection("provider")
-      .replaceOne({ name: identityProvider.name }, identityProvider, {
+      .replaceOne({ uid: identityProvider.uid }, identityProvider, {
         upsert: true,
       });
   }
 
   console.log("Initializing FCA accounts...");
-  for (const account of Object.values(accountsFca)) {
+  for (const account of accountDocuments) {
     await db
       .collection("accountFca")
-      .replaceOne({ _id: account._id }, account, { upsert: true });
+      .replaceOne({ sub: account.sub }, account, { upsert: true });
   }
 
   await client.close();
