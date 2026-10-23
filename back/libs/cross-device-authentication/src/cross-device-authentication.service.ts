@@ -47,6 +47,21 @@ export class CrossDeviceAuthenticationService {
     }));
   }
 
+  async getRequest(params: { requestId: string; browsingSessionId: string }) {
+    if (!isValidObjectId(params.requestId) || !params.browsingSessionId) {
+      return null;
+    }
+    const request = await this.model.findOne({
+      _id: params.requestId,
+      browsingSessionId: params.browsingSessionId,
+      createdAt: { $gt: this.getExpirationThreshold() },
+    });
+    if (!request) {
+      return null;
+    }
+    return { status: request.status, emojis: request.emojis };
+  }
+
   async markAsPending(params: { requestId: string; email: string }) {
     if (!isValidObjectId(params.requestId)) {
       return null;
