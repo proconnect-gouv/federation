@@ -116,18 +116,21 @@ describe("OidcProviderConfigService", () => {
   });
 
   describe("postLogoutSuccessSource", () => {
-    it("should set a body property to koa context", () => {
+    it("should set a body property to koa context", async () => {
       // Given
-      const renderMock = jest.fn();
+      const renderMock = jest.fn((_view, _params, callback) =>
+        callback(null, "rendered-html"),
+      );
       const ctx = {
         res: { render: renderMock },
       } as unknown as KoaContextWithOIDC;
 
       // When
-      service["postLogoutSuccessSource"](ctx);
+      await service["postLogoutSuccessSource"](ctx);
 
       // Then
       expect(renderMock).toHaveBeenCalledOnce();
+      expect(ctx).toHaveProperty("body", "rendered-html");
     });
   });
 
@@ -182,7 +185,9 @@ describe("OidcProviderConfigService", () => {
     it("should set ctx.type to html and render the error template with details", async () => {
       // Given
       const renderReturnMock = "rendered-html";
-      const renderMock = jest.fn().mockReturnValue(renderReturnMock);
+      const renderMock = jest.fn((_view, _params, callback) =>
+        callback(null, renderReturnMock),
+      );
       const ctx = {
         res: { render: renderMock },
       } as unknown as KoaContextWithOIDC;
@@ -198,14 +203,18 @@ describe("OidcProviderConfigService", () => {
       // Then
       expect(ctx).toHaveProperty("type", "html");
       expect(renderMock).toHaveBeenCalledTimes(1);
-      expect(renderMock).toHaveBeenCalledWith("error", {
-        error: {
-          code: "oidc-provider-rendered-error:access_denied",
-          id: expect.any(String),
-          message: "Not allowed",
+      expect(renderMock).toHaveBeenCalledWith(
+        "error",
+        {
+          error: {
+            code: "oidc-provider-rendered-error:access_denied",
+            id: expect.any(String),
+            message: "Not allowed",
+          },
+          exceptionDisplay: {},
         },
-        exceptionDisplay: {},
-      });
+        expect.any(Function),
+      );
       expect(ctx).toHaveProperty("body", renderReturnMock);
     });
   });

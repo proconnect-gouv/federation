@@ -5,7 +5,10 @@ import { Response } from "express";
 import { Injectable } from "@nestjs/common";
 
 import { ConfigService } from "#libs/config";
-import { generateErrorId } from "#libs/exceptions/helpers/index";
+import {
+  generateErrorId,
+  renderErrorPage,
+} from "#libs/exceptions/helpers/index";
 import { ErrorPageParams } from "#libs/exceptions/types/error-page-params";
 import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
 import { LoggerService, TrackedEvent } from "#libs/logger";
@@ -49,7 +52,7 @@ export class CoreFcaMiddlewareService {
           exceptionDisplay: {},
           error: { code, id },
         };
-        ctx.body = res.render("error", errorPageParams);
+        ctx.body = await renderErrorPage(res, errorPageParams);
 
         throw err;
       }
