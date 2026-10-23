@@ -2,3 +2,6 @@
 # We disable formating to prevent format changes and keep git diff understandable
 tsconfig.json
 *.ejs
+
+# Vendored Matomo Tag Manager container, kept as-is (see scripts/update-matomo-container.ts)
+apps/core-fca-low/src/public/matomo/

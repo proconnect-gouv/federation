@@ -23,7 +23,7 @@ const appConfig: AppConfig = {
   contentSecurityPolicy: {
     defaultSrc: ["'self'"],
     styleSrc: ["'self'"],
-    scriptSrc: ["'self'", "stats.data.gouv.fr", "blob:"],
+    scriptSrc: ["'self'", "blob:"],
     connectSrc: ["'self'", "stats.data.gouv.fr"],
     frameAncestors: [],
     imgSrc: ["'self'", "data:", "stats.data.gouv.fr"],
