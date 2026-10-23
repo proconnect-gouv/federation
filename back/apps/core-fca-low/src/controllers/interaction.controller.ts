@@ -100,10 +100,13 @@ export class InteractionController {
       !spLoginHint || userSession.get("idpIdentity")?.email === spLoginHint;
 
     const hintedIdp = await this.identityProvider.getById(idpHint);
-    if (idpHint && isEmpty(hintedIdp)) {
+    if (idpHint && !hintedIdp?.active) {
+      this.logger.track(TrackedEvent.FC_IDP_DISABLED);
+
       return await this.oidcProvider.abortInteraction(req, res, {
-        error: "idp_hint_not_found",
-        error_description: "provided idp_hint could not be found",
+        error: "invalid_request",
+        error_description:
+          "The specified idp_hint does not match any registered and active identity provider.",
       });
     }
     const isSessionOpenedWithHintedIdp =
@@ -222,8 +225,6 @@ export class InteractionController {
       idpAcr,
       idpId,
       spIdentity: { sub, email, roles, siret, organization_label },
-      interactionId,
-      isSilentAuthentication,
       spEssentialAcr,
       spId,
       isEmailVerifiedByPcf,
@@ -238,22 +239,13 @@ export class InteractionController {
 
     const isIdpActive = await this.identityProvider.isActiveById(idpId);
     if (!isIdpActive) {
-      if (isSilentAuthentication) {
-        return await this.oidcProvider.abortInteraction(req, res, {
-          error: "login_required",
-          error_description: "end-user authentication is required",
-        });
-      }
-
-      const { urlPrefix } = this.config.get<AppConfig>("App");
-
       this.logger.track(TrackedEvent.FC_IDP_DISABLED);
 
-      const url = `${urlPrefix}${Routes.INTERACTION.replace(
-        ":uid",
-        interactionId,
-      )}`;
-      return res.redirect(url);
+      return await this.oidcProvider.abortInteraction(req, res, {
+        error: "access_denied",
+        error_description:
+          "The user's identity provider is not active in ProConnect.",
+      });
     }
 
     const { type: spType } = await this.serviceProvider.getById(spId);
@@ -326,7 +318,9 @@ export class InteractionController {
 
     return await this.oidcProvider.abortInteraction(req, res, {
       error: error || "server_error",
-      error_description: error_description || "An unexpected error occurred",
+      error_description:
+        error_description ||
+        "authentication aborted due to a technical error on the authorization server",
     });
   }
 }
