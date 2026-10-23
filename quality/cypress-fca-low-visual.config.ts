@@ -13,6 +13,6 @@ export default defineConfig({
   },
   env: {
     ...baseConfig.env,
-    TAGS: "@validationVisuelle and not @ignore",
+    tags: "@validationVisuelle and not @ignore",
   },
 });

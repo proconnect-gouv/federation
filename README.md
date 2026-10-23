@@ -214,7 +214,7 @@ npm run test:e2e:studio
 ```bash
 dks switch medium
 cd $PC_ROOT/federation/quality
-npm run test:e2e:chrome-desktop -- --env TAGS='not @hybridge and not @ignore'
+npm run test:e2e:chrome-desktop -- --env tags='not @hybridge and not @ignore'
 ```
 
 ### Run all quality tests for PCF Hybridge
@@ -222,7 +222,7 @@ npm run test:e2e:chrome-desktop -- --env TAGS='not @hybridge and not @ignore'
 ```bash
 dks switch hybridge
 cd $PC_ROOT/federation/quality
-npm run test:e2e:chrome-desktop -- --env TAGS='@hybridge'
+npm run test:e2e:chrome-desktop -- --env tags='@hybridge'
 ```
 
 ## Visualization Tests

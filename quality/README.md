@@ -19,7 +19,7 @@ FCA end-to-end tests are implemented using a testing framework based on Cypress 
 | Environment Variable | Description                       | Comment                                      |
 | -------------------- | --------------------------------- | -------------------------------------------- |
 | TEST_ENV             | Test environment                  | `docker`, `k8s` or `integ01`, etc.           |
-| TAGS                 | Tags expression                   | `not @ignore`                                |
+| tags                 | Tags expression                   | `not @ignore`                                |
 | EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/k8s                  |
 | EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/k8s                  |
 | EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/k8s                  |
