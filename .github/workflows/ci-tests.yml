@@ -220,7 +220,7 @@ jobs:
 
       - name: Execute e2e tests
         run: |
-          npm run test:e2e:chrome-desktop -- -c video=false --env TAGS="${{ matrix.tags }}"
+          npm run test:e2e:chrome-desktop -- -c video=false --env tags="${{ matrix.tags }}"
           npm run report
 
       - name: Create artifacts-logs directory

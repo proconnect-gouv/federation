@@ -17,6 +17,13 @@
         <div class="card-body">
           <form method="POST" action="<%= APP_ROOT %>/service-provider/<%= id%>?_method=PATCH" data-init="validForm" id="fs-form" name="fs-form" data-select="form" novalidate>
             <section class="mb-3 row">
+              <span class="col-2 col-form-label">Client ID :</span>
+              <div class="col-10">
+                <p id="key" class="form-control-plaintext mb-0"><%= locals.messages.values && messages.values[0].key %></p>
+              </div>
+            </section>
+
+            <section class="mb-3 row">
               <label class="col-2 col-form-label" for="name">Nom du fournisseur de service (mire) : </label>
               <div class="col-10">
                 <input

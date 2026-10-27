@@ -42,6 +42,25 @@ describe("update a service-provider", () => {
   });
 
   describe("Second step: update the Service Provider", () => {
+    it("Should display the client id as plain text", () => {
+      // Arrange
+      const spName = "MyFirstFSCypress";
+
+      // Action
+      cy.visit(`/service-provider?page=1&limit=9000`);
+
+      cy.contains("tr.fs", spName)
+        .find("a.key")
+        .invoke("text")
+        .then((clientId) => {
+          cy.contains("tr.fs", spName).find(`a[id^="provider-"]`).click();
+
+          // Assert
+          cy.get("#key").should("have.text", clientId.trim());
+          cy.get("#key").should("not.match", "input");
+        });
+    });
+
     it('Should select "openid" if any other scope is checked and now display "openid" as disabled', () => {
       // Arrange
       const mockConfig = {
