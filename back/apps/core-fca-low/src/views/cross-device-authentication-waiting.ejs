@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="light">
+  <head>
+    <%- include('includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/pages/interaction.css" />
+    <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
+    <title>Connexion via un appareil vérifié - ProConnect</title>
+  </head>
+
+  <body>
+    <%- include('includes/skiplinks.ejs') %> <%- include('includes/header.ejs')
+    %>
+    <main role="main" id="content" class="fr-py-2w">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center">
+          <div
+            class="fr-col-12 fr-col-md-8 fr-col-lg-4 xda-waiting"
+            data-status-url="/api/v2/cross-device-authentication-status/<%= requestId %>"
+            data-status="<%= status %>"
+            aria-live="polite"
+          >
+            <h1 class="fr-my-2w fr-h4">Connexion via un appareil vérifié</h1>
+
+            <div data-xda-section="initiated" class="fr-hidden">
+              <p class="fr-mb-2w">
+                Depuis votre appareil vérifié, rendez-vous sur la page des
+                demandes de connexion et sélectionnez cette demande.
+              </p>
+            </div>
+
+            <div data-xda-section="pending" class="fr-hidden">
+              <p class="fr-mb-1w">
+                Vérifiez que les emojis ci-dessous sont identiques à ceux
+                affichés sur votre appareil vérifié, puis approuvez la demande :
+              </p>
+              <p class="fr-h2 fr-container xda-emojis">
+                <% emojis.forEach(emoji => { %><span><%= emoji %></span><% }) %>
+              </p>
+            </div>
+
+            <div data-xda-section="approved" class="fr-hidden">
+              <div class="fr-alert fr-alert--success fr-mb-2w">
+                <p>
+                  Connexion réussie, vous allez être redirigé vers votre
+                  Fournisseur de Service
+                </p>
+              </div>
+            </div>
+
+            <div data-xda-section="rejected" class="fr-hidden">
+              <div class="fr-alert fr-alert--error fr-mb-2w">
+                <p>Connexion refusée</p>
+              </div>
+            </div>
+
+            <div data-xda-section="error" class="fr-hidden">
+              <div class="fr-alert fr-alert--error fr-mb-2w">
+                <p>
+                  Cette demande de connexion a expiré ou est introuvable.
+                  Veuillez recommencer.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script type="text/javascript" src="/js/xda-polling.js"></script>
+</html>
