@@ -62,9 +62,6 @@ export class MetadataIdpAdapterMongoDTO {
   readonly id_token_encrypted_response_enc?: string;
 
   @IsString()
-  readonly token_endpoint_auth_method: string;
-
-  @IsString()
   @MinLength(32)
   readonly client_secret: string;
 
