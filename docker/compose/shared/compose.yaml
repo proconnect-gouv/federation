@@ -319,7 +319,7 @@ services:
 
   maildev:
     hostname: maildev
-    image: maildev/maildev:2.2.1
+    image: maildev/maildev:3.0.0
     networks:
       - data
       - public
