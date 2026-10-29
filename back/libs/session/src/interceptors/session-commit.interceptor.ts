@@ -39,22 +39,9 @@ export class SessionCommitInterceptor implements NestInterceptor {
 
     const currentRoute = req.route.path.replace(urlPrefix, "");
 
-    /**
-     * @todo #1551 Fix route paths to avoid any double execution of middlewares
-     *
-     * Currently some route paths are contained in other route paths, which
-     * causes the middleware to be executed multiple times.
-     *
-     * Example: `/interaction/:uid` is contained in `/interaction/:uid/verify`
-     *
-     * The temporary fix is to set a dollar sign at the end of the route path that may be contained in another route path.
-     * But this results in interceptor not recognizing the route path and not committing the session.
-     *
-     * We should instead set route names to non ambiguous values.
-     */
-    const cleanedUpRoutes = this.getCleanedUpRoutes(middlewareIncludedRoutes);
+    const routePaths = this.getRoutePaths(middlewareIncludedRoutes);
 
-    if (cleanedUpRoutes.includes(currentRoute)) {
+    if (routePaths.includes(currentRoute)) {
       /**
        * @todo #1429 Remove try catch block
        *
@@ -72,7 +59,9 @@ export class SessionCommitInterceptor implements NestInterceptor {
     }
   }
 
-  private getCleanedUpRoutes(routes: (string | RouteInfo)[]): string[] {
-    return routes.map((route: string) => route.replace("$", ""));
+  private getRoutePaths(routes: (string | RouteInfo)[]): string[] {
+    return routes.map((route) =>
+      typeof route === "string" ? route : route.path,
+    );
   }
 }
