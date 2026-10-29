@@ -6,6 +6,9 @@ import {
   type ListObjectsV2CommandOutput,
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
+import { NodeHttpHandler } from "@smithy/node-http-handler";
+import { HttpsProxyAgent } from "https-proxy-agent";
+import { HttpProxyAgent } from "http-proxy-agent";
 
 function getRequiredEnv(name: string): string {
   const value = process.env[name];
@@ -21,6 +24,9 @@ function initializeS3Clients(): {
   privateS3Client: S3Client;
   publicS3Client: S3Client;
 } {
+  const privateProxyUrl = process.env["PRIVATE_S3_PROXY_URL"];
+  const publicProxyUrl = process.env["INTERNET_S3_PROXY_URL"];
+
   const privateS3Client = new S3Client({
     endpoint: getRequiredEnv("PRIVATE_S3_ENDPOINT"),
     region: getRequiredEnv("PRIVATE_S3_REGION"),
@@ -29,6 +35,14 @@ function initializeS3Clients(): {
       accessKeyId: getRequiredEnv("PRIVATE_NETWORK_S3_ACCESS_KEY_ID"),
       secretAccessKey: getRequiredEnv("PRIVATE_NETWORK_S3_SECRET_ACCESS_KEY"),
     },
+    ...(privateProxyUrl
+      ? {
+          requestHandler: new NodeHttpHandler({
+            httpsAgent: new HttpsProxyAgent(privateProxyUrl),
+            httpAgent: new HttpProxyAgent(privateProxyUrl),
+          }),
+        }
+      : {}),
   });
 
   const publicS3Client = new S3Client({
@@ -41,6 +55,14 @@ function initializeS3Clients(): {
         "INTERNET_REACHABLE_S3_SECRET_ACCESS_KEY",
       ),
     },
+    ...(publicProxyUrl
+      ? {
+          requestHandler: new NodeHttpHandler({
+            httpsAgent: new HttpsProxyAgent(publicProxyUrl),
+            httpAgent: new HttpProxyAgent(publicProxyUrl),
+          }),
+        }
+      : {}),
   });
 
   return {

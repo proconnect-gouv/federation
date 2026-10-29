@@ -16,6 +16,15 @@ import {
   type GetObjectCommandOutput,
 } from "@aws-sdk/client-s3";
 import { Readable } from "node:stream";
+
+jest.mock("https-proxy-agent", () => ({
+  HttpsProxyAgent: jest.fn(),
+}));
+
+jest.mock("http-proxy-agent", () => ({
+  HttpProxyAgent: jest.fn(),
+}));
+
 import transfer from "./s3-transfer-job.js";
 
 type S3Mock = AwsClientStub<S3Client>;
