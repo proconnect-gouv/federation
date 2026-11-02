@@ -66,7 +66,9 @@ describe("CoreFcaMiddlewareService", () => {
     const mockCtx = {
       oidc: {},
       req: {},
-      res: { render: jest.fn() },
+      res: {
+        render: jest.fn((_view, _params, callback) => callback(null, "")),
+      },
     };
     const middleware = jest.fn().mockRejectedValue(new Error("Test Error"));
     const formatter = (service as any).koaHtmlErrorFormatterMiddlewareFactory(

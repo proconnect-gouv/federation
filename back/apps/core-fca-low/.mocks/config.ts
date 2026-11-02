@@ -1,6 +1,7 @@
 import { OidcProviderRoutes } from "#libs/oidc-provider";
 import { RateLimiterKeyPrefix } from "#libs/rate-limiter";
 import { CoreFcaConfig, CoreFcaSession, Routes } from "#src";
+import { RequestMethod } from "@nestjs/common";
 
 // Values mirror docker/compose/shared/.env/base-app.env +
 // docker/compose/fca-low/.env/core.env (the real dev config for this
@@ -209,7 +210,8 @@ const TEST_CONFIG: CoreFcaConfig = {
     middlewareIncludedRoutes: [
       // Connect flow
       OidcProviderRoutes.AUTHORIZATION,
-      `${Routes.INTERACTION}$`,
+      // Plain paths match as prefixes, a method makes the match exact
+      { path: Routes.INTERACTION, method: RequestMethod.GET },
       Routes.REDIRECT_TO_IDP,
       Routes.OIDC_CALLBACK,
       Routes.INTERACTION_VERIFY,
@@ -219,7 +221,9 @@ const TEST_CONFIG: CoreFcaConfig = {
       Routes.VERIFY_EMAIL,
 
       // Disconnect flow
-      `${OidcProviderRoutes.END_SESSION}$`,
+      // Exact match, otherwise /session/end/confirm would recreate the session
+      // cookie right after logout
+      { path: OidcProviderRoutes.END_SESSION, method: RequestMethod.GET },
       Routes.OIDC_LOGOUT_CALLBACK,
     ],
     templateExposed: { User: { spName: true, idpName: true } },

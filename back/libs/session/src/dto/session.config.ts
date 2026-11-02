@@ -14,7 +14,7 @@ import {
   ValidateNested,
 } from "class-validator";
 
-import { IsStringOrRegExp } from "#libs/common";
+import { IsMiddlewareRoute } from "#libs/common";
 import { CoreFcaSession } from "#src";
 import { RouteInfo, type Type as Class } from "@nestjs/common/interfaces";
 import { type TemplateExposedType } from "../types";
@@ -71,11 +71,11 @@ export class SessionConfig {
   readonly sessionIdLength: number;
 
   @IsArray()
-  @IsStringOrRegExp({ each: true })
+  @IsMiddlewareRoute({ each: true })
   readonly middlewareIncludedRoutes: (string | RouteInfo)[];
 
   @IsArray()
-  @IsStringOrRegExp({ each: true })
+  @IsMiddlewareRoute({ each: true })
   readonly middlewareExcludedRoutes: (string | RouteInfo)[];
 
   @IsObject()
