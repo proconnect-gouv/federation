@@ -49,11 +49,15 @@ jobs:
       - name: Set up dockerx
         uses: docker/setup-buildx-action@v4
 
-      # Workaround for https://github.com/docker/compose/issues/12892
+      - name: Read Docker Compose version
+        id: compose-version
+        working-directory: ./
+        run: echo "version=$(sed -n 's|^FROM docker/compose-bin:||p' .github/docker-compose/Dockerfile)" >> "$GITHUB_OUTPUT"
+
       - name: Upgrade Docker Compose
         uses: docker/setup-compose-action@v2
         with:
-          version: v5.5.1
+          version: ${{ steps.compose-version.outputs.version }}
 
       - name: Set up Node.js for federation-admin
         uses: actions/setup-node@v7

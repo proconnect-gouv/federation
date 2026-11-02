@@ -163,6 +163,12 @@ updates:
       - dependencies
     schedule:
       interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/.github/docker-compose"
+    labels:
+      - dependencies
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "docker-compose"
     directory: "/docker/compose/shared"
     ignore:
