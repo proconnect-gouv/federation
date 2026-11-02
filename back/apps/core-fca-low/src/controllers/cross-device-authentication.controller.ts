@@ -3,6 +3,7 @@ import { ConfigService } from "#libs/config";
 import {
   CrossDeviceAuthenticationService,
   RequestStatus,
+  XdaInvalidSession,
   XdaNotEnabled,
   XdaRequestNotFound,
 } from "#libs/cross-device-authentication";
@@ -108,7 +109,7 @@ export class CrossDeviceAuthenticationController {
   @Header("cache-control", "no-store")
   async reviewCrossDeviceAuthenticationRequests(
     @Res() res: Response,
-    @UserSessionDecorator(ActiveUserSessionDto)
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
     userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
     const csrfToken = this.csrfService.getOrCreate();
