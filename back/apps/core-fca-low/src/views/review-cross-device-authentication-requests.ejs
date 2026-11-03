@@ -30,8 +30,12 @@
                     data-request-id="<%= awaitingRequest.id %>"
                   >
                     <p class="fr-mb-1w">
-                      <strong><%= awaitingRequest.device %></strong><br />
-                      Service : <%= awaitingRequest.spName %>
+                      Navigateur : <strong><%= awaitingRequest.device %></strong><br />
+                      Date : <strong>le <time
+                        datetime="<%= awaitingRequest.createdAt.toISOString() %>"
+                        data-local-date
+                      ><%= awaitingRequest.createdAt.toISOString() %></time></strong><br />
+                      Service : <strong><%= awaitingRequest.spName %></strong>
                     </p>
                     <form
                       action="/api/v2/cross-device-authentication-requests/<%= awaitingRequest.id %>"
@@ -58,5 +62,6 @@
       </div>
     </main>
   </body>
+  <script type="text/javascript" src="/js/local-date.js"></script>
   <script type="module" src="/js/xda-polling-requests.js"></script>
 </html>

@@ -40,10 +40,11 @@ export class CrossDeviceAuthenticationService {
       email: email.toLowerCase(),
       createdAt: { $gt: this.getExpirationThreshold() },
     });
-    return result.map(({ id, spName, userAgent }) => ({
+    return result.map(({ id, spName, userAgent, createdAt }) => ({
       id,
       spName,
       device: formatUserAgent(userAgent),
+      createdAt,
     }));
   }
 

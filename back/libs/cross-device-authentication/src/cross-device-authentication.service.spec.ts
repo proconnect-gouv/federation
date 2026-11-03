@@ -116,6 +116,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
           spName: "My SP",
           userAgent:
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
+          createdAt: new Date("2026-01-01T09:58:00.000Z"),
         },
       ]);
 
@@ -127,7 +128,12 @@ describe(CrossDeviceAuthenticationService.name, () => {
         createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
       });
       expect(result).toEqual([
-        { id: "request-id", spName: "My SP", device: "Firefox sur Windows" },
+        {
+          id: "request-id",
+          spName: "My SP",
+          device: "Firefox sur Windows",
+          createdAt: new Date("2026-01-01T09:58:00.000Z"),
+        },
       ]);
     });
   });

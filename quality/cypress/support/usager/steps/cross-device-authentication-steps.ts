@@ -123,6 +123,9 @@ Then("je vois que l'authentification cross-device est approuvée", function () {
 Then("je vois une seule demande d'authentification cross-device", function () {
   cy.contains("h1", REVIEW_PAGE_TITLE).should("be.visible");
   cy.get("main ul li").should("have.length", 1);
+  cy.get("main ul li time[data-local-date]")
+    .invoke("text")
+    .should("match", /^\d{2}\/\d{2}\/\d{4} à \d{2}:\d{2}$/);
 });
 
 Then(
