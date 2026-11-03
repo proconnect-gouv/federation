@@ -217,6 +217,32 @@ export class InteractionController {
     @UserSessionDecorator(AfterGetOidcCallbackSessionDto)
     userSessionService: ISessionService<AfterGetOidcCallbackSessionDto>,
   ) {
+    // Our session and the oidc-provider interaction are tracked by two
+    // independent cookies. Make sure the session we are about to rely on
+    // was built for the interaction oidc-provider is about to finish,
+    // otherwise a session built for a service provider A could be used
+    // to complete an interaction for a service provider B.
+    const { uid: currentInteractionId } =
+      await this.oidcProvider.getInteraction(req, res);
+    const { interactionId: sessionInteractionId } = userSessionService.get();
+
+    if (currentInteractionId !== sessionInteractionId) {
+      this.logger.warn({
+        code: "session_interaction_mismatch",
+        currentInteractionId,
+        sessionInteractionId,
+      });
+
+      // Restart the current interaction: the session is either reused for
+      // the right service provider (SSO) or cleared.
+      const { urlPrefix } = this.config.get<AppConfig>("App");
+      const url = `${urlPrefix}${Routes.INTERACTION.replace(
+        ":uid",
+        currentInteractionId,
+      )}`;
+      return res.redirect(url);
+    }
+
     const {
       idpAmr,
       idpAcr,

@@ -1,5 +1,5 @@
 import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
-import { getIdentityProviderByDescription } from "../../common/helpers";
+import { getEnv, getIdentityProviderByDescription } from "../../common/helpers";
 
 Then("je suis redirigé vers la page interaction", function () {
   cy.get('[data-testid="interaction-connection-button"]').should("be.visible");
@@ -51,3 +51,34 @@ Then("je suis redirigé vers la page de déconnexion", function () {
     "Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.",
   );
 });
+
+// Matches GET /api/v2/interaction/:uid but not /api/v2/interaction/:uid/verify
+const INTERACTION_PAGE_URL = /\/api\/v2\/interaction\/[^/?]+(\?.*)?$/;
+
+Given(
+  "je paramètre un intercepteur pour ne pas afficher la page interaction",
+  function () {
+    // Stub the interaction page once so that the core does not refresh its
+    // own session with the new interaction, as an attacker would do.
+    // The oidc-provider interaction cookie is still set by /authorize.
+    cy.intercept(
+      { method: "GET", url: INTERACTION_PAGE_URL, times: 1 },
+      (req) => req.reply(200, "interaction page skipped"),
+    ).as("PCF:Interaction");
+  },
+);
+
+When(
+  "je navigue directement sur la page de vérification de l'interaction",
+  function () {
+    const { federationRootUrl } = getEnv();
+    cy.wait("@PCF:Interaction")
+      .its("request.url")
+      .then((url: string) => {
+        const { pathname } = new URL(url);
+        cy.visit(`${federationRootUrl}${pathname}/verify`, {
+          failOnStatusCode: false,
+        });
+      });
+  },
+);

@@ -401,6 +401,9 @@ describe("InteractionController", () => {
     beforeEach(() => {
       accountFcaMock.getAccountBySub.mockResolvedValue({ active: true });
       configServiceMock.get.mockReturnValue({ urlPrefix: "/prefix" });
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: "interaction123",
+      });
     });
     it("should successfully complete the interaction when the IdP is active and conditions are satisfied", async () => {
       const req = { sessionId: "session1" } as unknown as Request;
@@ -455,6 +458,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          interactionId: "interaction123",
           spIdentity: { sub: "user1" },
           isSilentAuthentication: true,
           idpId: "idp123",
@@ -495,6 +499,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          interactionId: "interaction123",
           spIdentity: { sub: "user1", roles: [] },
           spId: "sp123",
           idpId: "idp123",
@@ -514,6 +519,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          interactionId: "interaction123",
           spIdentity: { sub: "user1", roles: [] },
           spId: "sp123",
           idpId: "idp123",
@@ -533,6 +539,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          interactionId: "interaction123",
           spIdentity: { sub: "user1" },
           spId: "sp123",
           idpId: "idp123",
@@ -553,6 +560,7 @@ describe("InteractionController", () => {
       const res = {} as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          interactionId: "interaction123",
           spIdentity: { sub: "user1", roles: ["agent_public"] },
           spEssentialAcr: "high",
           idpAcr: "low",
@@ -573,6 +581,7 @@ describe("InteractionController", () => {
       const res: Partial<Response> = { redirect: jest.fn() };
       const userSessionService = {
         get: jest.fn().mockReturnValue({
+          interactionId: "interaction123",
           spIdentity: { sub: "user1", roles: ["agent_public"] },
           spEssentialAcr: "high",
           idpAcr: "low",
@@ -593,6 +602,58 @@ describe("InteractionController", () => {
       );
 
       expect(res.redirect).toHaveBeenCalledWith("/prefix/verify-email");
+    });
+
+    describe("when the session was built for another interaction", () => {
+      // Non-regression: a session obtained through a full authentication on
+      // a service provider A (accepting private sector employees) must not be
+      // usable to finish an interaction started by a service provider B
+      // (public only) while skipping the GET /interaction/:uid step.
+      const req = { query: {} } as Request;
+      let res: Response;
+      let userSessionService: ISessionService<AfterGetOidcCallbackSessionDto>;
+
+      beforeEach(() => {
+        res = { redirect: jest.fn() } as unknown as Response;
+        userSessionService = {
+          get: jest.fn().mockReturnValue({
+            spIdentity: { sub: "user1", roles: [] },
+            interactionId: "interactionA",
+            spId: "spA",
+            idpId: "idp123",
+          }),
+          set: jest.fn(),
+        } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
+        identityProviderMock.isActiveById.mockResolvedValue(true);
+        serviceProviderMock.getById.mockImplementation((id: string) =>
+          Promise.resolve({ type: id === "spB" ? "public" : "private" }),
+        );
+        oidcAcrMock.getInteractionAcr.mockReturnValue("eidas1");
+      });
+
+      it("should not finish the interaction and restart it when the interaction id differs", async () => {
+        oidcProviderMock.getInteraction.mockResolvedValue({
+          uid: "interactionB",
+        });
+
+        await controller.getVerify(req, res, {} as any, userSessionService);
+
+        expect(oidcProviderMock.finishInteraction).not.toHaveBeenCalled();
+        expect(res.redirect).toHaveBeenCalledWith(
+          "/prefix/interaction/interactionB",
+        );
+      });
+
+      it("should finish the interaction when the session matches the interaction", async () => {
+        oidcProviderMock.getInteraction.mockResolvedValue({
+          uid: "interactionA",
+        });
+
+        await controller.getVerify(req, res, {} as any, userSessionService);
+
+        expect(oidcProviderMock.finishInteraction).toHaveBeenCalled();
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
     });
   });
 
