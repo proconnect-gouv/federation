@@ -1,7 +1,4 @@
-ARG NODE_VERSION=24.22.1
-ARG NODE_IMAGE=node:${NODE_VERSION}-alpine
-
-FROM ${NODE_IMAGE} AS dev
+FROM node:24.22.1-alpine AS dev
 
 RUN apk add --no-cache bash python3 make g++ lscpu
 
@@ -17,7 +14,7 @@ COPY . ./
 CMD npm run start:dev
 
 
-FROM ${NODE_IMAGE} AS builder
+FROM node:24.22.1-alpine AS builder
 
 COPY . /tmp/admin
 
@@ -41,7 +38,7 @@ RUN mv /tmp/admin/package-lock.json ./ && \
     rm -f package.json */package.json package-lock.json .npmrc
 
 
-FROM ${NODE_IMAGE} AS production
+FROM node:24.22.1-alpine AS production
 
 ENV NODE_ENV=production
 
