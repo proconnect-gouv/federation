@@ -19,17 +19,8 @@ export class IdentityProvider extends Document {
   @Prop({ type: String })
   discoveryUrl: string;
 
-  @Prop({ type: [String] })
-  response_types: string[];
-
   @Prop({ type: String })
   id_token_signed_response_alg: string;
-
-  @Prop({ type: String })
-  token_endpoint_auth_method: string;
-
-  @Prop({ type: String })
-  revocation_endpoint_auth_method: string;
 
   @Prop({ type: String })
   id_token_encrypted_response_alg: string;

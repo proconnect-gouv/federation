@@ -1,4 +1,4 @@
-import { IsArray, IsString } from "class-validator";
+import { IsString } from "class-validator";
 
 import { CLIENT_METADATA } from "#libs/identity-provider-adapter-mongo";
 import { JsonValue } from "oauth4webapi";
@@ -14,17 +14,8 @@ export class FederationClientMetadata implements Pick<
   @IsString()
   client_secret: string;
 
-  @IsArray()
-  response_types: string[];
-
   @IsString()
   id_token_signed_response_alg: string;
-
-  @IsString()
-  token_endpoint_auth_method: string;
-
-  @IsString()
-  revocation_endpoint_auth_method: string;
 
   @IsString()
   id_token_encrypted_response_alg: string;
