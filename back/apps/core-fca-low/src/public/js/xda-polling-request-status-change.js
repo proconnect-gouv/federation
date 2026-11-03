@@ -1,0 +1,35 @@
+import { startPolling } from "./polling-utils.js";
+
+const POLLING_INTERVAL_IN_MS = 2000;
+const FINAL_STATUSES = ["approved", "rejected", "error"];
+
+const showSection = (container, status) => {
+  container.querySelectorAll("[data-xda-section]").forEach((section) => {
+    const isVisible = section.getAttribute("data-xda-section") === status;
+    section.classList.toggle("fr-hidden", !isVisible);
+  });
+};
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+    const container = document.querySelector(".xda-waiting");
+    if (!container) return;
+
+    const initialStatus = container.getAttribute("data-status");
+    showSection(container, initialStatus);
+
+    if (FINAL_STATUSES.includes(initialStatus)) return;
+
+    startPolling({
+      url: container.getAttribute("data-status-url"),
+      intervalInMs: POLLING_INTERVAL_IN_MS,
+      onResult: (result) => {
+        const status = result?.status ?? "error";
+        showSection(container, status);
+        return !FINAL_STATUSES.includes(status);
+      },
+    });
+  },
+  false,
+);

@@ -125,6 +125,20 @@ export class CrossDeviceAuthenticationController {
     });
   }
 
+  @Get(Routes.CROSS_DEVICE_AUTHENTICATION_AWAITING_REQUESTS)
+  @Header("cache-control", "no-store")
+  async getCrossDeviceAuthenticationAwaitingRequests(
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
+  ): Promise<{ awaitingRequestIds: string[] }> {
+    const { idpIdentity } = userSession.get();
+    const awaitingRequests =
+      await this.crossDeviceAuthenticationService.getAwaitingRequests(
+        idpIdentity.email,
+      );
+    return { awaitingRequestIds: awaitingRequests.map(({ id }) => id) };
+  }
+
   @Post(Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUEST)
   @Header("cache-control", "no-store")
   @UseGuards(CsrfTokenGuard)

@@ -281,6 +281,34 @@ describe("CrossDeviceAuthenticationController", () => {
     });
   });
 
+  describe("getCrossDeviceAuthenticationAwaitingRequests()", () => {
+    it("should return the ids of the requests linked to the user email", async () => {
+      const userSession = {
+        get: jest
+          .fn()
+          .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
+      } as unknown as ISessionService<ActiveUserSessionDto>;
+      crossDeviceAuthenticationServiceMock.getAwaitingRequests.mockResolvedValue(
+        [
+          { id: "request-id-1", spName: "My SP", device: "Firefox" },
+          { id: "request-id-2", spName: "My SP", device: "Chrome" },
+        ],
+      );
+
+      const result =
+        await controller.getCrossDeviceAuthenticationAwaitingRequests(
+          userSession,
+        );
+
+      expect(
+        crossDeviceAuthenticationServiceMock.getAwaitingRequests,
+      ).toHaveBeenCalledWith("user@example.com");
+      expect(result).toEqual({
+        awaitingRequestIds: ["request-id-1", "request-id-2"],
+      });
+    });
+  });
+
   describe("reviewCrossDeviceAuthenticationRequest()", () => {
     const userSession = {
       get: jest

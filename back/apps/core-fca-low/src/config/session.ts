@@ -39,6 +39,7 @@ const sessionConfig: SessionConfig = {
     Routes.IDENTITY_PROVIDER_SELECTION,
     Routes.VERIFY_EMAIL,
     Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUESTS,
+    Routes.CROSS_DEVICE_AUTHENTICATION_AWAITING_REQUESTS,
 
     // Disconnect flow
     `${OidcProviderRoutes.END_SESSION}$`,

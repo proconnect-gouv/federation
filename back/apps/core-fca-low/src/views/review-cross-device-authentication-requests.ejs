@@ -13,7 +13,11 @@
     <main role="main" id="content" class="fr-py-2w">
       <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--center">
-          <div class="fr-col-12 fr-col-md-8 fr-col-lg-4">
+          <div
+            class="fr-col-12 fr-col-md-8 fr-col-lg-4 xda-review-requests"
+            data-awaiting-requests-url="/api/v2/cross-device-authentication-awaiting-requests"
+            aria-live="polite"
+          >
             <h1 class="fr-my-2w fr-h4">
               Demandes de connexion en cours
             </h1>
@@ -21,7 +25,10 @@
             <% if (awaitingRequests.length > 0) { %>
               <ul class="fr-raw-list">
                 <% awaitingRequests.forEach(awaitingRequest => { %>
-                  <li class="fr-mb-3w xda-requests-list-item">
+                  <li
+                    class="fr-mb-3w xda-requests-list-item"
+                    data-request-id="<%= awaitingRequest.id %>"
+                  >
                     <p class="fr-mb-1w">
                       <strong><%= awaitingRequest.device %></strong><br />
                       Service : <%= awaitingRequest.spName %>
@@ -51,4 +58,5 @@
       </div>
     </main>
   </body>
+  <script type="module" src="/js/xda-polling-requests.js"></script>
 </html>

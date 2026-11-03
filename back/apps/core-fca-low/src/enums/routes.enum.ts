@@ -13,6 +13,7 @@ export enum Routes {
   PROCEED_TO_IDP = "/proceed-to-idp",
   REDIRECT_TO_IDP = "/redirect-to-idp",
   REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUESTS = "/cross-device-authentication-requests",
+  CROSS_DEVICE_AUTHENTICATION_AWAITING_REQUESTS = "/cross-device-authentication-awaiting-requests",
   REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUEST = "/cross-device-authentication-requests/:requestId",
   APPROVE_CROSS_DEVICE_AUTHENTICATION_REQUEST = "/cross-device-authentication-requests/:requestId/approve",
   REJECT_CROSS_DEVICE_AUTHENTICATION_REQUEST = "/cross-device-authentication-requests/:requestId/reject",
