@@ -52,6 +52,15 @@ describe("GristPublisherService", () => {
   });
 
   describe("publishIdentityProviders", () => {
+    it("should skip publication when Grist domain is not configured", async () => {
+      (configService.get as jest.Mock).mockReturnValue({});
+
+      await expect(service.publishIdentityProviders([])).resolves.toEqual({
+        ok: true,
+      });
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
     it("should return false when Grist records response does not contain a records array", async () => {
       const mockGristConfig = {
         ...baseMockGristConfig,
@@ -217,6 +226,15 @@ describe("GristPublisherService", () => {
   });
 
   describe("publishServiceProviders", () => {
+    it("should skip publication when Grist domain is not configured", async () => {
+      (configService.get as jest.Mock).mockReturnValue({});
+
+      await expect(service.publishServiceProviders([])).resolves.toEqual({
+        ok: true,
+      });
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
     it("should add a new service provider when it does not exist in Grist", async () => {
       const mockGristConfig = {
         ...baseMockGristConfig,
