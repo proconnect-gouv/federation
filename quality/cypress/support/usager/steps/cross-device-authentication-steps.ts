@@ -133,6 +133,15 @@ Then(
   },
 );
 
+Then("les emojis de la XDA ne sont pas affichés", function () {
+  cy.get(".xda-emojis").should("not.be.visible");
+});
+
+Then("je vois les emojis de la XDA", function () {
+  cy.get(".xda-emojis").should("be.visible");
+  cy.get(".xda-emojis span").should("have.length", 5);
+});
+
 Then(
   "je suis redirigé vers la liste des demandes d'authentification cross-device en cours",
   function () {

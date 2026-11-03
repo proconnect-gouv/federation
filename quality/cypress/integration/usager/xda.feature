@@ -17,6 +17,9 @@ Fonctionnalité: Authentification cross-device (XDA)
     Et que je suis redirigé vers la page d'authentification cross-device
     Et que je clique sur le bouton "Commencer l'authentification"
     Et que je suis redirigé vers la page d'attente d'authentification cross-device
+    Et les emojis de la XDA ne sont pas affichés
+    Et que je clique sur le bouton "Afficher les emojis"
+    Et je vois les emojis de la XDA
     Et que j'utilise le navigateur "RIE"
     Et que je navigue sur la page "/api/v2/cross-device-authentication-requests"
     Alors je vois une seule demande d'authentification cross-device

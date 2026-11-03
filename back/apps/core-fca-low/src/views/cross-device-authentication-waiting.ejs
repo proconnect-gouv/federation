@@ -21,24 +21,35 @@
           >
             <h1 class="fr-my-2w fr-h4">Connexion via un appareil vérifié</h1>
 
-            <div data-xda-section="initiated" class="fr-hidden">
+            <div data-xda-status-section="initiated" class="fr-hidden">
               <p class="fr-mb-2w">
                 Depuis votre appareil vérifié, rendez-vous sur la page des
                 demandes de connexion et sélectionnez cette demande.
               </p>
             </div>
 
-            <div data-xda-section="pending" class="fr-hidden">
+            <div data-xda-status-section="pending" class="fr-hidden">
               <p class="fr-mb-1w">
-                Vérifiez que les emojis ci-dessous sont identiques à ceux
-                affichés sur votre appareil vérifié, puis approuvez la demande :
+                Vérifiez que les emojis sont identiques à ceux affichés sur
+                votre appareil vérifié, puis approuvez la demande.
               </p>
-              <p class="fr-h2 fr-container xda-emojis">
+            </div>
+
+            <div data-xda-status-section="initiated pending" class="fr-hidden">
+              <button
+                type="button"
+                class="fr-btn fr-mb-2w"
+                id="xda-show-emojis-button"
+                aria-controls="xda-emojis"
+              >
+                Afficher les emojis
+              </button>
+              <p id="xda-emojis" class="fr-h2 fr-container xda-emojis fr-hidden">
                 <% emojis.forEach(emoji => { %><span><%= emoji %></span><% }) %>
               </p>
             </div>
 
-            <div data-xda-section="approved" class="fr-hidden">
+            <div data-xda-status-section="approved" class="fr-hidden">
               <div class="fr-alert fr-alert--success fr-mb-2w">
                 <p>
                   Connexion réussie, vous allez être redirigé vers votre
@@ -47,13 +58,13 @@
               </div>
             </div>
 
-            <div data-xda-section="rejected" class="fr-hidden">
+            <div data-xda-status-section="rejected" class="fr-hidden">
               <div class="fr-alert fr-alert--error fr-mb-2w">
                 <p>Connexion refusée</p>
               </div>
             </div>
 
-            <div data-xda-section="error" class="fr-hidden">
+            <div data-xda-status-section="error" class="fr-hidden">
               <div class="fr-alert fr-alert--error fr-mb-2w">
                 <p>
                   Cette demande de connexion a expiré ou est introuvable.
