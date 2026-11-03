@@ -2,7 +2,7 @@ import { ConfigService } from "#libs/config";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { randomInt } from "crypto";
-import { isValidObjectId, Model } from "mongoose";
+import { isValidObjectId, Model, Types } from "mongoose";
 import { CrossDeviceAuthenticationConfig } from "./dto";
 import { RequestStatus } from "./enums";
 import { formatUserAgent } from "./helpers";
@@ -16,22 +16,17 @@ export class CrossDeviceAuthenticationService {
     private readonly config: ConfigService,
   ) {}
 
-  async create(params: {
+  async findOrCreateRequest(params: {
     userAgent: string;
     spName: string;
     email: string;
     browsingSessionId: string;
-  }) {
-    const emojis = this.generateEmojis();
-    const { _id } = await this.model.insertOne({
-      status: RequestStatus.INITIATED,
-      emojis,
-      userAgent: params.userAgent,
-      spName: params.spName,
-      email: params.email.toLowerCase(),
-      browsingSessionId: params.browsingSessionId,
-    });
-    return { _id, emojis };
+  }): Promise<{ _id: Types.ObjectId }> {
+    const latestRecentRequest = await this.findLatestRecentRequest(params);
+    if (latestRecentRequest) {
+      return { _id: latestRecentRequest._id };
+    }
+    return this.createRequest(params);
   }
 
   async getAwaitingRequests(email: string) {
@@ -105,6 +100,40 @@ export class CrossDeviceAuthenticationService {
       { status: params.status, updatedAt: new Date() },
     );
     return !!request;
+  }
+
+  private async findLatestRecentRequest(params: {
+    spName: string;
+    email: string;
+    browsingSessionId: string;
+  }) {
+    return this.model.findOne(
+      {
+        spName: params.spName,
+        email: params.email.toLowerCase(),
+        browsingSessionId: params.browsingSessionId,
+        createdAt: { $gt: this.getExpirationThreshold() },
+      },
+      { _id: true },
+      { sort: { createdAt: -1 } },
+    );
+  }
+
+  private async createRequest(params: {
+    userAgent: string;
+    spName: string;
+    email: string;
+    browsingSessionId: string;
+  }) {
+    const { _id } = await this.model.insertOne({
+      status: RequestStatus.INITIATED,
+      emojis: this.generateEmojis(),
+      userAgent: params.userAgent,
+      spName: params.spName,
+      email: params.email.toLowerCase(),
+      browsingSessionId: params.browsingSessionId,
+    });
+    return { _id };
   }
 
   private getExpirationThreshold(): Date {

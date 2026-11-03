@@ -61,7 +61,7 @@ export class CrossDeviceAuthenticationController {
     await this.ensureXdaIsEnabled(spId, spName);
 
     const { _id: requestId } =
-      await this.crossDeviceAuthenticationService.create({
+      await this.crossDeviceAuthenticationService.findOrCreateRequest({
         userAgent: req.headers["user-agent"] || "",
         spName,
         email: idpLoginHint,

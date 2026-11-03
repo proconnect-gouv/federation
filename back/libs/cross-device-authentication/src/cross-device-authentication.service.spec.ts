@@ -45,7 +45,14 @@ describe(CrossDeviceAuthenticationService.name, () => {
     );
   });
 
-  describe("create", () => {
+  describe("findOrCreateRequest", () => {
+    const params = {
+      userAgent: "Mozilla/5.0",
+      spName: "My SP",
+      email: "User@Example.com",
+      browsingSessionId: "browsing-session-id",
+    };
+
     beforeEach(() => {
       jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
     });
@@ -54,48 +61,55 @@ describe(CrossDeviceAuthenticationService.name, () => {
       jest.useRealTimers();
     });
 
-    it("should store an initiated request with a hashed device secret", async () => {
+    it("should return the latest unexpired request of the browsing session for the lowercased email and the service provider", async () => {
+      modelMock.findOne.mockResolvedValue({ _id: "existing-request-id" });
+
+      const result = await service.findOrCreateRequest(params);
+
+      expect(modelMock.findOne).toHaveBeenCalledWith(
+        {
+          spName: "My SP",
+          email: "user@example.com",
+          browsingSessionId: "browsing-session-id",
+          createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+        },
+        { _id: true },
+        { sort: { createdAt: -1 } },
+      );
+      expect(modelMock.insertOne).not.toHaveBeenCalled();
+      expect(result).toEqual({ _id: "existing-request-id" });
+    });
+
+    it("should store an initiated request when there is no recent request", async () => {
+      modelMock.findOne.mockResolvedValue(null);
       modelMock.insertOne.mockResolvedValue({ _id: "request-id" });
 
-      const result = await service.create({
-        userAgent: "Mozilla/5.0",
-        spName: "My SP",
-        email: "User@Example.com",
-        browsingSessionId: "browsing-session-id",
-      });
+      const result = await service.findOrCreateRequest(params);
 
-      expect(result).toEqual({
-        _id: "request-id",
-        emojis: expect.any(Array),
-      });
+      expect(result).toEqual({ _id: "request-id" });
       expect(modelMock.insertOne).toHaveBeenCalledWith({
         status: "initiated",
-        emojis: result.emojis,
+        emojis: expect.any(Array),
         userAgent: "Mozilla/5.0",
         spName: "My SP",
         email: "user@example.com",
         browsingSessionId: "browsing-session-id",
       });
     });
-  });
 
-  describe("emojis", () => {
     it("should generate distinct emojis from the configured alphabet", async () => {
+      modelMock.findOne.mockResolvedValue(null);
       modelMock.insertOne.mockResolvedValue({ _id: "request-id" });
 
-      const { emojis } = await service.create({
-        userAgent: "Mozilla/5.0",
-        spName: "My SP",
-        email: "user@example.com",
-        browsingSessionId: "browsing-session-id",
-      });
+      await service.findOrCreateRequest(params);
 
+      const { emojis } = modelMock.insertOne.mock.calls[0][0];
       expect(configServiceMock.get).toHaveBeenCalledWith(
         "CrossDeviceAuthentication",
       );
       expect(emojis).toHaveLength(5);
       expect(new Set(emojis).size).toBe(5);
-      emojis.forEach((emoji) => expect(emojiAlphabet).toContain(emoji));
+      emojis.forEach((emoji: string) => expect(emojiAlphabet).toContain(emoji));
     });
   });
 

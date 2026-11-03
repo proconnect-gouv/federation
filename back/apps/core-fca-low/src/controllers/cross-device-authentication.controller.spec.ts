@@ -23,7 +23,7 @@ describe("CrossDeviceAuthenticationController", () => {
 
   beforeEach(async () => {
     crossDeviceAuthenticationServiceMock = {
-      create: jest.fn(),
+      findOrCreateRequest: jest.fn(),
       getRequest: jest.fn(),
       getAwaitingRequests: jest.fn(),
       markAsPending: jest.fn(),
@@ -99,13 +99,15 @@ describe("CrossDeviceAuthenticationController", () => {
 
     beforeEach(() => {
       serviceProviderMock.getById.mockResolvedValue({ isXdaEnabled: true });
-      crossDeviceAuthenticationServiceMock.create.mockResolvedValue({
-        _id: "request-id",
-        emojis: ["😀", "😎", "🤖", "👾"],
-      });
+      crossDeviceAuthenticationServiceMock.findOrCreateRequest.mockResolvedValue(
+        {
+          _id: "request-id",
+          emojis: ["😀", "😎", "🤖", "👾"],
+        },
+      );
     });
 
-    it("should create a request and redirect to the waiting page", async () => {
+    it("should find or create a request and redirect to the waiting page", async () => {
       const req = {
         headers: { "user-agent": "Mozilla/5.0" },
       } as unknown as Request;
@@ -116,7 +118,9 @@ describe("CrossDeviceAuthenticationController", () => {
         userSession,
       );
 
-      expect(crossDeviceAuthenticationServiceMock.create).toHaveBeenCalledWith({
+      expect(
+        crossDeviceAuthenticationServiceMock.findOrCreateRequest,
+      ).toHaveBeenCalledWith({
         userAgent: "Mozilla/5.0",
         spName: "My SP",
         email: "user@example.com",
@@ -136,9 +140,9 @@ describe("CrossDeviceAuthenticationController", () => {
         userSession,
       );
 
-      expect(crossDeviceAuthenticationServiceMock.create).toHaveBeenCalledWith(
-        expect.objectContaining({ userAgent: "" }),
-      );
+      expect(
+        crossDeviceAuthenticationServiceMock.findOrCreateRequest,
+      ).toHaveBeenCalledWith(expect.objectContaining({ userAgent: "" }));
     });
 
     it("should refuse to create a request when isXdaEnabled is false for the service provider", async () => {
@@ -151,7 +155,7 @@ describe("CrossDeviceAuthenticationController", () => {
 
       expect(serviceProviderMock.getById).toHaveBeenCalledWith("sp-id");
       expect(
-        crossDeviceAuthenticationServiceMock.create,
+        crossDeviceAuthenticationServiceMock.findOrCreateRequest,
       ).not.toHaveBeenCalled();
       expect(res.redirect).not.toHaveBeenCalled();
     });

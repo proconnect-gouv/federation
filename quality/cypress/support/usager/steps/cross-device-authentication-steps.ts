@@ -90,6 +90,20 @@ Then(
   },
 );
 
+When("je reviens sur la page d'authentification cross-device", function () {
+  cy.go("back");
+  cy.contains("h1", "Se connecter via un appareil vérifié").should(
+    "be.visible",
+  );
+});
+
+Then(
+  "je suis redirigé vers la même page d'attente d'authentification cross-device",
+  function () {
+    cy.url().should("eq", waitingPageState?.url);
+  },
+);
+
 When(
   "je retourne sur la page d'attente d'authentification cross-device du navigateur internet",
   function () {
