@@ -43,7 +43,8 @@
     "doc:exceptions": "tsx libs/exceptions/src/cli/export-exceptions",
     "doc:env": "tsx libs/config/src/cli/export-env",
     "doc": "npm run doc:exceptions && npm run doc:env",
-    "static": "npm run doc && tsc --noEmit && prettier --write ."
+    "static": "npm run doc && tsc --noEmit && prettier --write .",
+    "update-matomo-container": "node scripts/update-matomo-container.ts"
   },
   "overrides": {
     "cookie-signature": "1.2.0",
