@@ -19,43 +19,47 @@
             data-status="<%= status %>"
             aria-live="polite"
           >
-            <h1 class="fr-my-2w fr-h4">Connexion via un appareil vérifié</h1>
+            <h1
+              data-xda-status-section="initiated pending"
+              class="fr-my-2w fr-h4"
+            >
+              Autorisez cet appareil depuis l'ordinateur RIE
+            </h1>
 
-            <div data-xda-status-section="initiated" class="fr-hidden">
-              <p class="fr-mb-2w">
-                Depuis votre appareil vérifié, rendez-vous sur la page des
-                demandes de connexion et sélectionnez cette demande.
-              </p>
-            </div>
-
-            <div data-xda-status-section="pending" class="fr-hidden">
-              <p class="fr-mb-1w">
-                Vérifiez que les emojis sont identiques à ceux affichés sur
-                votre appareil vérifié, puis approuvez la demande.
-              </p>
-            </div>
-
-            <div data-xda-status-section="initiated pending" class="fr-hidden">
-              <button
-                type="button"
-                class="fr-btn fr-mb-2w"
-                id="xda-show-emojis-button"
-                aria-controls="xda-emojis"
-              >
-                Afficher les emojis
-              </button>
-              <p id="xda-emojis" class="fr-h2 fr-container xda-emojis fr-hidden">
+            <ol data-xda-status-section="initiated pending">
+              <li>
+                Sur votre ordinateur RIE, vous devriez voir une demande de
+                connexion en cours.
+              </li>
+              <li>
+                Si celle-ci correspond à votre demande, cliquez sur "Examiner".
+              </li>
+              <li>
+                Cliquez sur le bouton "Afficher les emojis" ci-dessous.
+                <button
+                  type="button"
+                  class="fr-btn fr-btn--secondary fr-my-2w btn--fullwidth"
+                  id="xda-show-emojis-button"
+                  aria-controls="xda-emojis"
+                >
+                  Afficher les emojis
+                </button>
+                <p id="xda-emojis" class="fr-h2 fr-container xda-emojis fr-hidden fr-my-2w">
                 <% emojis.forEach(emoji => { %><span><%= emoji %></span><% }) %>
-              </p>
-            </div>
-
-            <div data-xda-status-section="approved" class="fr-hidden">
-              <div class="fr-alert fr-alert--success fr-mb-2w">
-                <p>
-                  Connexion réussie, vous allez être redirigé vers votre
-                  Fournisseur de Service
                 </p>
-              </div>
+              </li>
+              <li>
+                Sur votre ordinateur RIE, vérifiez que les emojis affichés
+                correspondent à ceux ci-dessous. Si oui, cliquez sur "Oui".
+              </li>
+            </ol>
+
+            <div
+              data-xda-status-section="approved"
+              class="fr-hidden d-flex flex-column"
+            >
+              <h2 class="fr-my-2w fr-h5">✅ Votre session est active</h2>
+              <p>Vous pouvez continuer sur ce service.</p>
             </div>
 
             <div data-xda-status-section="rejected" class="fr-hidden">

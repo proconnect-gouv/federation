@@ -3,6 +3,7 @@ import { getEnv, getServiceProviderByDescription } from "../../common/helpers";
 
 const RIE_IDP_NAME = "fia-rie-low";
 const REVIEW_PAGE_TITLE = "Demandes de connexion en cours";
+const XDA_PAGE_TITLE = "Autorisez cet appareil depuis l'ordinateur RIE";
 
 const loginOnRieIdp = (email: string): void => {
   const serviceProvider = getServiceProviderByDescription("par défaut");
@@ -71,9 +72,7 @@ Then(
   "je suis redirigé vers la page d'authentification cross-device",
   function () {
     cy.url().should("include", "/proceed-to-cross-device-authentication");
-    cy.contains("h1", "Se connecter via un appareil vérifié").should(
-      "be.visible",
-    );
+    cy.contains("h1", XDA_PAGE_TITLE).should("be.visible");
   },
 );
 
@@ -81,7 +80,7 @@ Then(
   "je suis redirigé vers la page d'attente d'authentification cross-device",
   function () {
     cy.url().should("include", "/cross-device-authentication-waiting/");
-    cy.contains("h1", "Connexion via un appareil vérifié").should("be.visible");
+    cy.contains("h1", XDA_PAGE_TITLE).should("be.visible");
     cy.url().then((url) => {
       cy.getCookies().then((cookies) => {
         waitingPageState = { url, cookies };
@@ -92,9 +91,8 @@ Then(
 
 When("je reviens sur la page d'authentification cross-device", function () {
   cy.go("back");
-  cy.contains("h1", "Se connecter via un appareil vérifié").should(
-    "be.visible",
-  );
+  cy.url().should("include", "/proceed-to-cross-device-authentication");
+  cy.contains("h1", XDA_PAGE_TITLE).should("be.visible");
 });
 
 Then(
@@ -129,9 +127,7 @@ When(
 );
 
 Then("je vois que l'authentification cross-device est approuvée", function () {
-  cy.contains(
-    "Connexion réussie, vous allez être redirigé vers votre Fournisseur de Service",
-  ).should("be.visible");
+  cy.contains("Votre session est active").should("be.visible");
 });
 
 Then("je vois une seule demande d'authentification cross-device", function () {
@@ -145,7 +141,7 @@ Then("je vois une seule demande d'authentification cross-device", function () {
 Then(
   "je vois les emojis de la demande d'authentification cross-device",
   function () {
-    cy.contains("h1", "Demande de connexion").should("be.visible");
+    cy.contains("h1", "Vérifiez votre session").should("be.visible");
     cy.get(".xda-emojis span").should("have.length", 5);
   },
 );

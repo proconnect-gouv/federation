@@ -4,7 +4,7 @@
     <%- include('includes/head.ejs') %>
     <link rel="stylesheet" href="/css/pages/interaction.css" />
     <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
-    <title>Demande de connexion - ProConnect</title>
+    <title>Vérification de session - ProConnect</title>
   </head>
 
   <body>
@@ -14,21 +14,16 @@
       <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--center">
           <div class="fr-col-12 fr-col-md-8 fr-col-lg-4">
-            <h1 class="fr-my-2w fr-h4">
-              Demande de connexion
+            <h1 class="fr-mb-4w fr-h4">
+              Vérifiez votre session
             </h1>
-            <p class="fr-mb-1w">
-              <strong><%= device %></strong><br />
-              Service : <%= spName %>
-            </p>
-            <p class="fr-mb-1w">
-              Vérifiez que les emojis ci-dessous sont identiques à ceux affichés
-              sur l'autre appareil :
-            </p>
-            <p class="fr-h2 fr-container xda-emojis">
+        
+            <p class="fr-h2 fr-container xda-emojis fr-mb-4w">
               <% emojis.forEach(emoji => { %><span><%= emoji %></span><% }) %>
             </p>
-
+            <p class="fr-mb-2w">
+              Les symboles affichés sont-ils identiques sur vos deux appareils ?
+            </p>
             <div class="xda-review-actions fr-mb-2w">
               <form
                 action="/api/v2/cross-device-authentication-requests/<%= requestId %>/approve"
@@ -43,7 +38,7 @@
                   class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-check-line btn--fullwidth"
                   type="submit"
                 >
-                  Approuver
+                  Oui
                 </button>
               </form>
 
@@ -60,7 +55,7 @@
                   class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-line btn--fullwidth"
                   type="submit"
                 >
-                  Rejeter
+                  Non
                 </button>
               </form>
             </div>
