@@ -1,6 +1,7 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import "reflect-metadata";
+import { VALID_INPUT_STRING_REGEX } from "../../utils/regex/valid-input-string-regex";
 import { IndisponibiliteDTO } from "./indisponibilite.dto";
 
 describe("Indisponibilite (Data Transfer Object)", () => {
@@ -33,7 +34,7 @@ describe("Indisponibilite (Data Transfer Object)", () => {
     // Then | Assert
     expect(result.length).toEqual(1);
     expect(result[0].constraints.matches).toEqual(
-      "message must match /^[A-Za-z0-9-\\sàâéêèëîïôùç\\'\\.,!]+$/ regular expression",
+      `message must match ${VALID_INPUT_STRING_REGEX} regular expression`,
     );
   });
 });

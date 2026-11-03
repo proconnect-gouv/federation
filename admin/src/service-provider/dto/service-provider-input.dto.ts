@@ -12,6 +12,7 @@ import {
 } from "class-validator";
 import { AlgoValue } from "../../enum";
 import { VALID_EMAIL_REGEX } from "../../utils/regex/valid-email-regex";
+import { VALID_INPUT_STRING_REGEX } from "../../utils/regex/valid-input-string-regex";
 import {
   defaultNoneOrLinesToNullableArray,
   linesToArray,
@@ -20,13 +21,12 @@ import {
   toNullableString,
 } from "../../utils/transforms/string.transform";
 import { IsOptionalExtended } from "../../utils/validators/is-optional-extended.validator";
-import { IsValidInputString } from "../../utils/validators/is-valid-input-string";
 
 const { ES256, RS256, HS256 } = AlgoValue;
 
 const URL_REGEX = /^https?:\/\/[^/].+$/;
 export class ServiceProviderDto {
-  @IsValidInputString({
+  @Matches(VALID_INPUT_STRING_REGEX, {
     message: `Veuillez mettre un nom valide ( Majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
   })
   @IsNotEmpty({

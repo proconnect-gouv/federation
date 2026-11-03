@@ -8,20 +8,21 @@ import {
   Matches,
   ValidateIf,
 } from "class-validator";
+import { VALID_INPUT_STRING_REGEX } from "../../utils/regex/valid-input-string-regex";
 import { linesToArray, toBoolean } from "../../utils/transforms";
-import { IsOptionalExtended, IsValidInputString } from "../../utils/validators";
+import { IsOptionalExtended } from "../../utils/validators";
 
 // tslint:disable-next-line:max-line-length
 const URL_REGEX = /^https?:\/\/[^/].+$/;
 const EMAIL_DOMAIN_REGEX = /^([\da-z\.-]+)\.([a-z\.]{2,10})$/;
 
 export class IdentityProviderDTO {
-  @IsValidInputString({
+  @Matches(VALID_INPUT_STRING_REGEX, {
     message: `Veuillez mettre un nom valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
   })
   readonly name: string;
 
-  @IsValidInputString({
+  @Matches(VALID_INPUT_STRING_REGEX, {
     message: `Veuillez mettre un titre valide (majuscule, minuscule, nombres et '.:_/!+- [espace] )`,
   })
   readonly title: string;
