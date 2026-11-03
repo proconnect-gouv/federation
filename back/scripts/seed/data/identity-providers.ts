@@ -2,7 +2,7 @@
 
 export const identityProviders = {
   // -- FIA - FIA1-LOW - Activated
-  "FIA1-LOW": {
+  mock_idp1: {
     uid: "9c716f61-b8a1-435c-a407-ef4d677ec270",
     name: "fia1-low",
     siret: "81801912700021",
@@ -37,7 +37,7 @@ export const identityProviders = {
   },
 
   // -- FIA - FIA2-LOW - Activated No support Email
-  "FIA2-LOW": {
+  mock_idp2: {
     uid: "0e7c099f-fe86-49a0-b7d1-19df45397212",
     name: "fia2-low",
     siret: "",
@@ -108,7 +108,7 @@ export const identityProviders = {
   },
 
   // -- FIA - MonComptePro - Activated
-  MONCOMPTEPRO: {
+  mock_pci: {
     uid: "71144ab3-ee1a-4401-b7b3-79b44f7daeeb",
     name: "moncomptepro",
     siret: "12345678910009",
@@ -144,7 +144,7 @@ export const identityProviders = {
   // RIE
 
   // -- FIA - FIA-RIE-LOW - Activated
-  "FIA-RIE-LOW": {
+  mock_idp_rie: {
     uid: "c6ecab5e-dc67-4390-af57-fe208e97b649",
     name: "fia-rie-low",
     siret: "12345678910010",
@@ -205,6 +205,39 @@ export const identityProviders = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "RS256",
     attachedEmailDomains: [],
+    isRoutingEnabled: true,
+    isEntraID: false,
+    extraAcceptedEmailDomains: [],
+    isBlockingForUnlistedEmailDomainsEnabled: false,
+    useTheHyyyperbridge: false,
+    isMfaCompliant: true,
+  },
+
+  // -- Passerelle RENATER - Deactivated locally
+  oidc2fer: {
+    uid: "oidc2fer",
+    name: "Passerelle RENATER",
+    siret: "13002526500013",
+    active: false,
+    title: "Passerelle RENATER",
+    supportEmail: "support+federation@proconnect.gouv.fr",
+    url: "https://renater.docker.dev-franceconnect.fr/",
+    statusURL: "https://renater.docker.dev-franceconnect.fr/",
+    discoveryUrl:
+      "https://renater.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+    discovery: true,
+    clientID: "oidc2fer",
+    client_secret:
+      "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+    endSessionURL: "",
+    id_token_signed_response_alg: "RS256",
+    token_endpoint_auth_method: "client_secret_post",
+    id_token_encrypted_response_alg: "",
+    id_token_encrypted_response_enc: "",
+    userinfo_signed_response_alg: "RS256",
+    userinfo_encrypted_response_alg: "",
+    userinfo_encrypted_response_enc: "",
+    attachedEmailDomains: ["formation.renater.fr"],
     isRoutingEnabled: true,
     isEntraID: false,
     extraAcceptedEmailDomains: [],

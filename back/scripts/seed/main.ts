@@ -18,7 +18,25 @@ const {
   Mongoose_TLS_INSECURE,
   Mongoose_TLS,
   Mongoose_USER,
+  SEED_OVERRIDES,
 } = process.env;
+
+//
+
+const overrides: unknown = SEED_OVERRIDES
+  ? JSON.parse(SEED_OVERRIDES)
+  : undefined;
+
+const ownProperty = (value: unknown, key: string): unknown =>
+  typeof value === "object" && value !== null
+    ? Object.getOwnPropertyDescriptor(value, key)?.value
+    : undefined;
+
+const seeds = {
+  accountFca: { entries: accountsFca, id: "sub" },
+  client: { entries: { ...resourceServers, ...serviceProviders }, id: "key" },
+  provider: { entries: identityProviders, id: "uid" },
+};
 
 //
 
@@ -34,42 +52,28 @@ async function main() {
     },
   );
 
-  await client.connect();
-  const db = client.db(Mongoose_DATABASE);
-
-  console.log("Initializing Service Providers...");
-  for (const serviceProvider of Object.values(serviceProviders)) {
-    await db
-      .collection("client")
-      .replaceOne({ name: serviceProvider.name }, serviceProvider, {
-        upsert: true,
-      });
-  }
-
-  console.log("Initializing Resource Servers...");
-  for (const resourceServer of Object.values(resourceServers)) {
-    await db
-      .collection("client")
-      .replaceOne({ name: resourceServer.name }, resourceServer, {
-        upsert: true,
-      });
-  }
-
-  console.log("Initializing Identity Providers...");
-  for (const identityProvider of Object.values(identityProviders)) {
-    await db
-      .collection("provider")
-      .replaceOne({ name: identityProvider.name }, identityProvider, {
-        upsert: true,
-      });
-  }
-
-  console.log("Initializing FCA accounts...");
-  for (const account of Object.values(accountsFca)) {
-    await db
-      .collection("accountFca")
-      .replaceOne({ _id: account._id }, account, { upsert: true });
-  }
+  const result = await client.bulkWrite(
+    Object.entries(seeds).flatMap(([collection, { entries, id }]) =>
+      Object.entries<Record<string, unknown>>(entries).flatMap(
+        ([name, entry]) => {
+          const override =
+            overrides === undefined
+              ? {}
+              : ownProperty(ownProperty(overrides, collection), name);
+          if (typeof override !== "object") return [];
+          const replacement = { ...entry, ...override };
+          return {
+            filter: { [id]: replacement[id] },
+            name: "replaceOne",
+            namespace: `${Mongoose_DATABASE}.${collection}`,
+            replacement,
+            upsert: true,
+          } as const;
+        },
+      ),
+    ),
+  );
+  console.log(result);
 
   await client.close();
   console.log("Seed complete.");

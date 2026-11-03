@@ -54,5 +54,6 @@ COPY --from=builder /var/www/app/dist/apps/core-fca-low dist/instances/app
 COPY package.json ./
 COPY migrate-mongo-config.js ./migrate-mongo-config.js
 COPY migrations ./migrations
+COPY scripts/seed ./scripts/seed
 
 CMD ["node", "dist/instances/app/main.js"]
