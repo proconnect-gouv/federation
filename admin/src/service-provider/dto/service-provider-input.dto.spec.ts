@@ -43,4 +43,18 @@ describe("Service Provider Input (Data Transfer Object)", () => {
     // Then | Assert
     expect(result).toEqual([]);
   });
+  it.each(["<img src=x onerror=alert(1)>", ""])(
+    "should not validate if name is %j",
+    async (name) => {
+      // When | Action
+      const serviceProviderToClass = plainToInstance(ServiceProviderDto, {
+        ...serviceProvider,
+        name,
+      });
+      const result = await validate(serviceProviderToClass);
+
+      // Then | Assert
+      expect(result.map(({ property }) => property)).toEqual(["name"]);
+    },
+  );
 });

@@ -9,7 +9,7 @@ import { ConfigService } from "nestjs-config";
 import { Observable } from "rxjs";
 import { UserRole } from "../user/roles.enum";
 import { VALID_EMAILS_REGEX } from "../utils/regex/valid-email-regex";
-import { VALID_INPUT_STRING_REGEX } from "../utils/validators/is-valid-input-string";
+import { VALID_INPUT_STRING_REGEX } from "../utils/regex/valid-input-string-regex";
 import { errorCodeTranslations } from "./error-code-translations";
 
 @Injectable()

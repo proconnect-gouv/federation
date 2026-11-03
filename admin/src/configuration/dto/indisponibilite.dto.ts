@@ -1,10 +1,10 @@
 import { Transform } from "class-transformer";
-import { IsBoolean, IsISO8601, IsString } from "class-validator";
+import { IsBoolean, IsISO8601, IsString, Matches } from "class-validator";
+import { VALID_INPUT_STRING_REGEX } from "../../utils/regex/valid-input-string-regex";
 import { toBoolean } from "../../utils/transforms";
-import { IsSafeString } from "../../utils/validators";
 
 export class IndisponibiliteDTO {
-  @IsSafeString()
+  @Matches(VALID_INPUT_STRING_REGEX)
   @IsString()
   message: string;
 

@@ -112,4 +112,18 @@ describe("Identity Provider (Data Transfer Object)", () => {
       expect(result.length).toBeGreaterThan(0);
     });
   });
+  it.each(["name", "title"])(
+    "should not validate if %s contains HTML",
+    async (property) => {
+      // When | Action
+      const idpToClass = plainToInstance(IdentityProviderDTO, {
+        ...idpNoDiscoveryMock,
+        [property]: "<img src=x onerror=alert(1)>",
+      });
+      const result = await validate(idpToClass);
+
+      // Then | Assert
+      expect(result.map((error) => error.property)).toEqual([property]);
+    },
+  );
 });
