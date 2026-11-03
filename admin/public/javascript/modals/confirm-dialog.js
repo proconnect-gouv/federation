@@ -2,15 +2,39 @@ import $ from "../jquery_wrapper";
 // NOTE: must be imported after jquery_wrapper
 import "bootstrap/dist/js/bootstrap.bundle";
 
+/**
+ * Fills the dialog message without ever parsing it as HTML: message parts may
+ * contain data from the database (service provider name, identity provider
+ * title…).
+ *
+ * @param {JQuery} container
+ * @param {string | { before?: string, highlight?: string, after?: string }} message
+ *   A plain string, or a sentence whose `highlight` part is shown in bold.
+ */
+function renderMessage(container, message) {
+  if (typeof message === "string") {
+    container.text(message);
+    return;
+  }
+
+  const { before = "", highlight, after = "" } = message;
+  container.append(document.createTextNode(before));
+  if (highlight !== undefined && highlight !== null) {
+    container.append($("<strong>").text(String(highlight)));
+  }
+  container.append(document.createTextNode(after));
+}
+
 export function confirmDialog(message, handler) {
-  $(`<div class="modal fade confirm-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"> 
+  const modal =
+    $(`<div class="modal fade confirm-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document"> 
       <!-- Modal content--> 
       <div class="modal-content"> 
         <div class="modal-body">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-12 text-center">${message}</div>
+              <div class="col-12 text-center confirm-message"></div>
             </div>
           </div>
         </div>
@@ -20,7 +44,9 @@ export function confirmDialog(message, handler) {
         </div>
       </div> 
     </div> 
-  </div>`).appendTo("body");
+  </div>`);
+  renderMessage(modal.find(".confirm-message"), message);
+  modal.appendTo("body");
 
   //Trigger the modal
   $(".confirm-modal").modal("show");
@@ -44,14 +70,15 @@ export function confirmDialog(message, handler) {
 }
 
 export function confirmDialogWithTotp(message, handler) {
-  $(`<div class="modal fade confirm-modal-totp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"> 
+  const modal =
+    $(`<div class="modal fade confirm-modal-totp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document"> 
       <!-- Modal content--> 
       <div class="modal-content"> 
         <div class="modal-body">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-12 text-center">${message}</div>
+              <div class="col-12 text-center confirm-message"></div>
             </div>
             <div class="row mt-4 d-flex align-items-center" style="font-size: 1rem">
               <label class="col-2 col-form-label" for="totpModal">TOTP</label>
@@ -70,7 +97,9 @@ export function confirmDialogWithTotp(message, handler) {
         </div>
       </div> 
     </div> 
-  </div>`).appendTo("body");
+  </div>`);
+  renderMessage(modal.find(".confirm-message"), message);
+  modal.appendTo("body");
 
   //Trigger the modal
   $(".confirm-modal-totp").modal("show");

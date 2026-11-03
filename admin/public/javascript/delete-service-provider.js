@@ -41,7 +41,11 @@ export function submitDeletion(element) {
         });
 
         confirmDialogWithTotp(
-          `Voulez-vous supprimer les fournisseurs de service <strong>${eltTitle}</strong> ?`,
+          {
+            before: "Voulez-vous supprimer les fournisseurs de service ",
+            highlight: eltTitle,
+            after: " ?",
+          },
           (confirm, totp) => {
             if (confirm) {
               // create a form for submit all items which must deleted

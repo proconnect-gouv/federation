@@ -9,7 +9,7 @@ export function validateNotificationCreation(element) {
       event.stopPropagation();
 
       confirmDialog(
-        `La creation de cette notification entre en conflit avec une autre notification ?`,
+        "La creation de cette notification entre en conflit avec une autre notification ?",
         (confirm) => {
           if (confirm) {
             form.submit();

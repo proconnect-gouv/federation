@@ -14,7 +14,11 @@ const confirmTotp = (element, prefix, action) => {
       event.stopPropagation();
 
       confirmDialogWithTotp(
-        `${prefix} ${elementType} <strong>${elementTitle}</strong> ?`,
+        {
+          before: `${prefix} ${elementType} `,
+          highlight: elementTitle,
+          after: " ?",
+        },
         (confirm, totp) => {
           if (confirm) {
             const form = document.querySelector(`#${action}-${elementId}`);
