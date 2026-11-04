@@ -8,15 +8,18 @@ import { InjectModel } from "@nestjs/mongoose";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { Model } from "mongoose";
+import { errors } from "oidc-provider";
 import {
   ServiceProviderAdapterMongoConfig,
   ServiceProviderAdapterMongoDTO,
 } from "./dto";
 import { ServiceProvider } from "./schemas";
+import InvalidClient = errors.InvalidClient;
 
 @Injectable()
 export class ServiceProviderAdapterMongoService implements IServiceProviderAdapter {
   private listCache: ServiceProviderMetadata[];
+  private invalidPropertiesCache = new Map<string, string[]>();
 
   constructor(
     @InjectModel("ServiceProvider")
@@ -49,6 +52,7 @@ export class ServiceProviderAdapterMongoService implements IServiceProviderAdapt
       .lean();
 
     const serviceProviders = [];
+    const invalidProperties = new Map<string, string[]>();
 
     for (const rawServiceProvider of rawServiceProviders) {
       const serviceProvider = plainToInstance(
@@ -64,11 +68,16 @@ export class ServiceProviderAdapterMongoService implements IServiceProviderAdapt
           msg: `Service provider "${rawServiceProvider?.name}" (${rawServiceProvider?.key}) was excluded at DTO validation`,
           validationErrors: errors,
         });
+        invalidProperties.set(
+          rawServiceProvider.key,
+          errors.map(({ property }) => property),
+        );
       } else {
         serviceProviders.push(serviceProvider);
       }
     }
 
+    this.invalidPropertiesCache = invalidProperties;
     return serviceProviders;
   }
 
@@ -94,6 +103,13 @@ export class ServiceProviderAdapterMongoService implements IServiceProviderAdapt
     const serviceProvider: ServiceProviderMetadata = list.find(
       ({ client_id: dbId }) => dbId === spId,
     );
+
+    const invalidProperties = this.invalidPropertiesCache.get(spId);
+    if (!serviceProvider && invalidProperties) {
+      throw new InvalidClient(
+        `client configuration is invalid: ${invalidProperties.join(", ")}`,
+      );
+    }
 
     return serviceProvider;
   }
