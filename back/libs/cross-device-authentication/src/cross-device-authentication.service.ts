@@ -33,7 +33,7 @@ export class CrossDeviceAuthenticationService {
     const result = await this.model.find({
       status: { $in: [RequestStatus.INITIATED, RequestStatus.PENDING] },
       email: email.toLowerCase(),
-      createdAt: { $gt: this.getExpirationThreshold() },
+      ...this.getNotExpiredFilter(),
     });
     return result.map(({ id, spName, userAgent, createdAt }) => ({
       id,
@@ -50,7 +50,7 @@ export class CrossDeviceAuthenticationService {
     const request = await this.model.findOne({
       _id: params.requestId,
       browsingSessionId: params.browsingSessionId,
-      createdAt: { $gt: this.getExpirationThreshold() },
+      ...this.getNotExpiredFilter(),
     });
     if (!request) {
       return null;
@@ -62,14 +62,19 @@ export class CrossDeviceAuthenticationService {
     if (!isValidObjectId(params.requestId)) {
       return null;
     }
+    const now = new Date();
     const request = await this.model.findOneAndUpdate(
       {
         _id: params.requestId,
         status: { $in: [RequestStatus.INITIATED, RequestStatus.PENDING] },
         email: params.email.toLowerCase(),
-        createdAt: { $gt: this.getExpirationThreshold() },
+        ...this.getNotExpiredFilter(),
       },
-      { status: RequestStatus.PENDING, updatedAt: new Date() },
+      {
+        $set: { status: RequestStatus.PENDING, updatedAt: now },
+        // Keeps the first value, so that reviewing again does not extend the request
+        $min: { startedAt: now },
+      },
       { new: true },
     );
     if (!request) {
@@ -95,7 +100,7 @@ export class CrossDeviceAuthenticationService {
         _id: params.requestId,
         status: RequestStatus.PENDING,
         email: params.email.toLowerCase(),
-        createdAt: { $gt: this.getExpirationThreshold() },
+        ...this.getNotExpiredFilter(),
       },
       { status: params.status, updatedAt: new Date() },
     );
@@ -112,7 +117,7 @@ export class CrossDeviceAuthenticationService {
         spName: params.spName,
         email: params.email.toLowerCase(),
         browsingSessionId: params.browsingSessionId,
-        createdAt: { $gt: this.getExpirationThreshold() },
+        ...this.getNotExpiredFilter(),
       },
       { _id: true },
       { sort: { createdAt: -1 } },
@@ -136,12 +141,28 @@ export class CrossDeviceAuthenticationService {
     return { _id };
   }
 
-  private getExpirationThreshold(): Date {
-    const { requestExpirationDurationInMs } =
-      this.config.get<CrossDeviceAuthenticationConfig>(
-        "CrossDeviceAuthentication",
-      );
-    return new Date(Date.now() - requestExpirationDurationInMs);
+  private getNotExpiredFilter() {
+    const {
+      requestExpirationDurationInMs,
+      requestMaxDelayBetweenCreationAndStart,
+    } = this.config.get<CrossDeviceAuthenticationConfig>(
+      "CrossDeviceAuthentication",
+    );
+    const now = Date.now();
+    return {
+      $or: [
+        {
+          status: RequestStatus.INITIATED,
+          createdAt: {
+            $gt: new Date(now - requestMaxDelayBetweenCreationAndStart),
+          },
+        },
+        {
+          status: { $ne: RequestStatus.INITIATED },
+          startedAt: { $gt: new Date(now - requestExpirationDurationInMs) },
+        },
+      ],
+    };
   }
 
   private generateEmojis(): string[] {

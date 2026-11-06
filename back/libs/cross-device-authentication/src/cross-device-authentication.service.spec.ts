@@ -5,6 +5,19 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { CrossDeviceAuthenticationService } from "./cross-device-authentication.service";
 import { RequestStatus } from "./enums";
 
+const notExpiredFilter = {
+  $or: [
+    {
+      status: "initiated",
+      createdAt: { $gt: new Date("2026-01-01T09:00:00.000Z") },
+    },
+    {
+      status: { $ne: "initiated" },
+      startedAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+    },
+  ],
+};
+
 describe(CrossDeviceAuthenticationService.name, () => {
   let service: CrossDeviceAuthenticationService;
 
@@ -24,6 +37,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
       emojiAlphabet,
       emojiCodeLength: 5,
       requestExpirationDurationInMs: 5 * 60 * 1000,
+      requestMaxDelayBetweenCreationAndStart: 60 * 60 * 1000,
     });
 
     const app: TestingModule = await Test.createTestingModule({
@@ -71,7 +85,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
           spName: "My SP",
           email: "user@example.com",
           browsingSessionId: "browsing-session-id",
-          createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+          ...notExpiredFilter,
         },
         { _id: true },
         { sort: { createdAt: -1 } },
@@ -139,7 +153,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
       expect(modelMock.find).toHaveBeenCalledWith({
         status: { $in: ["initiated", "pending"] },
         email: "user@example.com",
-        createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+        ...notExpiredFilter,
       });
       expect(result).toEqual([
         {
@@ -174,7 +188,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
       expect(modelMock.findOne).toHaveBeenCalledWith({
         _id: requestId,
         browsingSessionId: "bsid",
-        createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+        ...notExpiredFilter,
       });
     });
 
@@ -258,11 +272,14 @@ describe(CrossDeviceAuthenticationService.name, () => {
           _id: requestId,
           status: { $in: ["initiated", "pending"] },
           email: "user@example.com",
-          createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+          ...notExpiredFilter,
         },
         {
-          status: "pending",
-          updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+          $set: {
+            status: "pending",
+            updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+          },
+          $min: { startedAt: new Date("2026-01-01T10:00:00.000Z") },
         },
         { new: true },
       );
@@ -322,7 +339,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
             _id: requestId,
             status: "pending",
             email: "user@example.com",
-            createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+            ...notExpiredFilter,
           },
           { status, updatedAt: new Date("2026-01-01T10:00:00.000Z") },
         );

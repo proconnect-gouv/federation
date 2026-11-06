@@ -7,7 +7,7 @@ export enum Routes {
   INTERACTION = "/interaction/:uid",
   INTERACTION_VERIFY = "/interaction/:uid/verify",
   INTERACTION_ERROR = "/interaction/:uid/error",
-  PROCEED_TO_CROSS_DEVICE_AUTHENTICATION = "/proceed-to-cross-device-authentication",
+  INITIATE_CROSS_DEVICE_AUTHENTICATION = "/initiate-cross-device-authentication",
   CROSS_DEVICE_AUTHENTICATION_WAITING = "/cross-device-authentication-waiting/:requestId",
   CROSS_DEVICE_AUTHENTICATION_STATUS = "/cross-device-authentication-status/:requestId",
   PROCEED_TO_IDP = "/proceed-to-idp",

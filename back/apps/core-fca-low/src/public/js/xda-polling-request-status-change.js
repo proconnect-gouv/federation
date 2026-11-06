@@ -19,12 +19,6 @@ document.addEventListener(
     const container = document.querySelector(".xda-waiting");
     if (!container) return;
 
-    const showEmojisButton = document.getElementById("xda-show-emojis-button");
-    showEmojisButton.addEventListener("click", () => {
-      showEmojisButton.classList.add("fr-hidden");
-      document.getElementById("xda-emojis").classList.remove("fr-hidden");
-    });
-
     const initialStatus = container.getAttribute("data-status");
     showSection(container, initialStatus);
 

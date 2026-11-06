@@ -60,34 +60,7 @@ describe("CrossDeviceAuthenticationController", () => {
     jest.clearAllMocks();
   });
 
-  describe("getProceedToCrossDeviceAuthentication()", () => {
-    const userSession = {
-      get: jest.fn().mockReturnValue({ spId: "sp-id", spName: "My SP" }),
-    } as unknown as ISessionService<AfterRedirectToRieWarningSessionDto>;
-
-    it("should render the intro page with a csrf token", async () => {
-      serviceProviderMock.getById.mockResolvedValue({ isXdaEnabled: true });
-
-      await controller.getProceedToCrossDeviceAuthentication(res, userSession);
-
-      expect(res.render).toHaveBeenCalledWith(
-        "proceed-to-cross-device-authentication",
-        { csrfToken: "csrf-token" },
-      );
-    });
-
-    it("should refuse to render the intro page when isXdaEnabled is false for the service provider", async () => {
-      serviceProviderMock.getById.mockResolvedValue({ isXdaEnabled: false });
-
-      await expect(
-        controller.getProceedToCrossDeviceAuthentication(res, userSession),
-      ).rejects.toThrow(XdaNotEnabled);
-
-      expect(res.render).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("proceedToCrossDeviceAuthentication()", () => {
+  describe("initiateCrossDeviceAuthentication()", () => {
     const userSession = {
       get: jest.fn().mockReturnValue({
         spId: "sp-id",
@@ -112,11 +85,7 @@ describe("CrossDeviceAuthenticationController", () => {
         headers: { "user-agent": "Mozilla/5.0" },
       } as unknown as Request;
 
-      await controller.proceedToCrossDeviceAuthentication(
-        res,
-        req,
-        userSession,
-      );
+      await controller.initiateCrossDeviceAuthentication(res, req, userSession);
 
       expect(
         crossDeviceAuthenticationServiceMock.findOrCreateRequest,
@@ -134,11 +103,7 @@ describe("CrossDeviceAuthenticationController", () => {
     it("should default the user agent to an empty string when missing", async () => {
       const req = { headers: {} } as unknown as Request;
 
-      await controller.proceedToCrossDeviceAuthentication(
-        res,
-        req,
-        userSession,
-      );
+      await controller.initiateCrossDeviceAuthentication(res, req, userSession);
 
       expect(
         crossDeviceAuthenticationServiceMock.findOrCreateRequest,
@@ -150,7 +115,7 @@ describe("CrossDeviceAuthenticationController", () => {
       const req = { headers: {} } as unknown as Request;
 
       await expect(
-        controller.proceedToCrossDeviceAuthentication(res, req, userSession),
+        controller.initiateCrossDeviceAuthentication(res, req, userSession),
       ).rejects.toThrow(XdaNotEnabled);
 
       expect(serviceProviderMock.getById).toHaveBeenCalledWith("sp-id");

@@ -34,24 +34,10 @@ export class CrossDeviceAuthenticationController {
     private readonly csrfService: CsrfService,
     private readonly config: ConfigService,
   ) {}
-  @Get(Routes.PROCEED_TO_CROSS_DEVICE_AUTHENTICATION)
-  @Header("cache-control", "no-store")
-  async getProceedToCrossDeviceAuthentication(
-    @Res() res: Response,
-    @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)
-    userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
-  ): Promise<void> {
-    const { spId, spName } = userSession.get();
-    await this.ensureXdaIsEnabled(spId, spName);
-
-    const csrfToken = this.csrfService.getOrCreate();
-    res.render("proceed-to-cross-device-authentication", { csrfToken });
-  }
-
-  @Post(Routes.PROCEED_TO_CROSS_DEVICE_AUTHENTICATION)
+  @Post(Routes.INITIATE_CROSS_DEVICE_AUTHENTICATION)
   @Header("cache-control", "no-store")
   @UseGuards(CsrfTokenGuard)
-  async proceedToCrossDeviceAuthentication(
+  async initiateCrossDeviceAuthentication(
     @Res() res: Response,
     @Req() req: Request,
     @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)

@@ -14,19 +14,18 @@ Fonctionnalité: Authentification cross-device (XDA)
     Et que je clique sur le bouton de connexion
     Et que la page d'avertissement d'utilisation du hybridge s'affiche pour le fournisseur d'identité "fia-rie-low"
     Et que je clique sur le bouton "Se connecter via un appareil vérifié"
-    Et que je suis redirigé vers la page d'authentification cross-device
-    Et que je clique sur le bouton "Commencer l'authentification"
     Et que je suis redirigé vers la page d'attente d'authentification cross-device
     Et les emojis de la XDA ne sont pas affichés
-    Et que je clique sur le bouton "Afficher les emojis"
+    Et que le polling de la page d'attente renvoie le statut "pending"
     Et je vois les emojis de la XDA
-    Et que je reviens sur la page d'authentification cross-device
-    Et que je clique sur le bouton "Commencer l'authentification"
+    Et que je reviens à la page précédente
+    Et que la page d'avertissement d'utilisation du hybridge s'affiche pour le fournisseur d'identité "fia-rie-low"
+    Et que je clique sur le bouton "Se connecter via un appareil vérifié"
     Et je suis redirigé vers la même page d'attente d'authentification cross-device
     Et que j'utilise le navigateur "RIE"
     Et que je navigue sur la page "/api/v2/cross-device-authentication-requests"
     Alors je vois une seule demande d'authentification cross-device
-    Quand je clique sur le bouton "Examiner"
+    Quand je clique sur le bouton "Vérifier"
     Alors je vois les emojis de la demande d'authentification cross-device
     Quand je clique sur le bouton "Oui"
     Alors je suis redirigé vers la liste des demandes d'authentification cross-device en cours

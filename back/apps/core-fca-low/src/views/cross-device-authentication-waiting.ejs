@@ -26,33 +26,39 @@
               Autorisez cet appareil depuis l'ordinateur RIE
             </h1>
 
-            <ol data-xda-status-section="initiated pending">
-              <li>
-                Sur votre ordinateur RIE, vous devriez voir une demande de
-                connexion en cours.
-              </li>
-              <li>
-                Si celle-ci correspond à votre demande, cliquez sur "Examiner".
-              </li>
-              <li>
-                Cliquez sur le bouton "Afficher les emojis" ci-dessous.
-                <button
-                  type="button"
-                  class="fr-btn fr-btn--secondary fr-my-2w btn--fullwidth"
-                  id="xda-show-emojis-button"
-                  aria-controls="xda-emojis"
-                >
-                  Afficher les emojis
-                </button>
-                <p id="xda-emojis" class="fr-h2 fr-container xda-emojis fr-hidden fr-my-2w">
+            <div data-xda-status-section="initiated" class="fr-hidden">
+              <p class="fr-mb-1w">Les étapes :</p>
+              <ol>
+                <li>Sur votre ordinateur RIE, ouvrez votre navigateur habituel.</li>
+                <li>Depuis l'ordinateur RIE, accédez à la page d'accueil de ProConnect : https://proconnect.gouv.fr/xda</li>
+                <li>
+                  Deux situations sont possibles :
+                  <ul>
+                    <li>Si vous <strong>avez déjà</strong> une session active à ProConnect : vous serez directement redirigé vers la page des demandes de connexion.</li>
+                    <li>Si vous <strong>n'avez pas</strong> de session active à ProConnect : connectez-vous avec vos identifiants ProConnect habituels. Vous serez ensuite redirigé vers la page des demandes de connexion.</li>
+                  </ul>
+                </li>
+              </ol>
+            </div>
+
+            <div data-xda-status-section="pending" class="fr-hidden">
+              <ol>
+                <li>
+                  Sur votre ordinateur RIE, vous devriez voir une demande de
+                  connexion en cours.
+                </li>
+                <li>
+                  Si celle-ci correspond à votre demande, cliquez sur "Vérifier".
+                </li>
+                <li>
+                  Sur votre ordinateur RIE, vérifiez que les emojis affichés
+                  correspondent à ceux ci-dessous. Si oui, cliquez sur "Oui".
+                </li>
+              </ol>
+              <p class="fr-h2 fr-container xda-emojis fr-my-2w">
                 <% emojis.forEach(emoji => { %><span><%= emoji %></span><% }) %>
-                </p>
-              </li>
-              <li>
-                Sur votre ordinateur RIE, vérifiez que les emojis affichés
-                correspondent à ceux ci-dessous. Si oui, cliquez sur "Oui".
-              </li>
-            </ol>
+              </p>
+            </div>
 
             <div
               data-xda-status-section="approved"

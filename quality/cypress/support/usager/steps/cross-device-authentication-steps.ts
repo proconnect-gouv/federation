@@ -69,14 +69,6 @@ Then("le bouton {string} n'est pas affiché", function (buttonText: string) {
 });
 
 Then(
-  "je suis redirigé vers la page d'authentification cross-device",
-  function () {
-    cy.url().should("include", "/proceed-to-cross-device-authentication");
-    cy.contains("h1", XDA_PAGE_TITLE).should("be.visible");
-  },
-);
-
-Then(
   "je suis redirigé vers la page d'attente d'authentification cross-device",
   function () {
     cy.url().should("include", "/cross-device-authentication-waiting/");
@@ -89,10 +81,15 @@ Then(
   },
 );
 
-When("je reviens sur la page d'authentification cross-device", function () {
+When(
+  "le polling de la page d'attente renvoie le statut {string}",
+  function (status: string) {
+    cy.intercept("GET", "**/cross-device-authentication-status/*", { status });
+  },
+);
+
+When("je reviens à la page précédente", function () {
   cy.go("back");
-  cy.url().should("include", "/proceed-to-cross-device-authentication");
-  cy.contains("h1", XDA_PAGE_TITLE).should("be.visible");
 });
 
 Then(

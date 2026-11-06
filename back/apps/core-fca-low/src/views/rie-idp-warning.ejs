@@ -24,9 +24,15 @@
             <% if (locals.isXdaEnabled) { %>
             <form
               class="fr-mb-2w"
-              action="/api/v2/proceed-to-cross-device-authentication"
-              method="GET"
+              action="/api/v2/initiate-cross-device-authentication"
+              method="POST"
             >
+              <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= locals.csrfToken %>"
+              />
+
               <button class="fr-btn btn--fullwidth" type="submit">
                 Se connecter via un appareil vérifié
               </button>
