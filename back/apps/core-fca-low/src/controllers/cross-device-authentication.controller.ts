@@ -3,6 +3,7 @@ import { ConfigService } from "#libs/config";
 import {
   CrossDeviceAuthenticationService,
   RequestStatus,
+  XdaInvalidSession,
   XdaNotEnabled,
   XdaRequestNotFound,
 } from "#libs/cross-device-authentication";
@@ -33,39 +34,68 @@ export class CrossDeviceAuthenticationController {
     private readonly csrfService: CsrfService,
     private readonly config: ConfigService,
   ) {}
-  @Post(Routes.PROCEED_TO_CROSS_DEVICE_AUTHENTICATION)
+  @Post(Routes.INITIATE_CROSS_DEVICE_AUTHENTICATION)
   @Header("cache-control", "no-store")
   @UseGuards(CsrfTokenGuard)
-  async proceedToCrossDeviceAuthentication(
+  async initiateCrossDeviceAuthentication(
     @Res() res: Response,
     @Req() req: Request,
     @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)
     userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
   ): Promise<void> {
     const { spId, spName, idpLoginHint, browsingSessionId } = userSession.get();
-    const { isXdaEnabled } = await this.serviceProvider.getById(spId);
-    if (!isXdaEnabled) {
-      throw new XdaNotEnabled(spName);
-    }
+    await this.ensureXdaIsEnabled(spId, spName);
 
-    const { _id: requestId, emojis } =
-      await this.crossDeviceAuthenticationService.create({
+    const { _id: requestId } =
+      await this.crossDeviceAuthenticationService.findOrCreateRequest({
         userAgent: req.headers["user-agent"] || "",
         spName,
         email: idpLoginHint,
         browsingSessionId,
       });
-    res.render("proceed-to-cross-device-authentication", {
+
+    const { urlPrefix } = this.config.get<AppConfig>("App");
+    res.redirect(
+      `${urlPrefix}${Routes.CROSS_DEVICE_AUTHENTICATION_WAITING.replace(
+        ":requestId",
+        requestId.toString(),
+      )}`,
+    );
+  }
+
+  @Get(Routes.CROSS_DEVICE_AUTHENTICATION_WAITING)
+  @Header("cache-control", "no-store")
+  async getCrossDeviceAuthenticationWaiting(
+    @Res() res: Response,
+    @Param("requestId") requestId: string,
+    @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)
+    userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
+  ): Promise<void> {
+    const { status, emojis } = await this.getRequest(requestId, userSession);
+
+    res.render("cross-device-authentication-waiting", {
       requestId,
+      status,
       emojis,
     });
+  }
+
+  @Get(Routes.CROSS_DEVICE_AUTHENTICATION_STATUS)
+  @Header("cache-control", "no-store")
+  async getCrossDeviceAuthenticationStatus(
+    @Param("requestId") requestId: string,
+    @UserSessionDecorator(AfterRedirectToRieWarningSessionDto)
+    userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
+  ): Promise<{ status: RequestStatus }> {
+    const { status } = await this.getRequest(requestId, userSession);
+    return { status };
   }
 
   @Get(Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUESTS)
   @Header("cache-control", "no-store")
   async reviewCrossDeviceAuthenticationRequests(
     @Res() res: Response,
-    @UserSessionDecorator(ActiveUserSessionDto)
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
     userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
     const csrfToken = this.csrfService.getOrCreate();
@@ -79,6 +109,20 @@ export class CrossDeviceAuthenticationController {
       csrfToken,
       awaitingRequests,
     });
+  }
+
+  @Get(Routes.CROSS_DEVICE_AUTHENTICATION_AWAITING_REQUESTS)
+  @Header("cache-control", "no-store")
+  async getCrossDeviceAuthenticationAwaitingRequests(
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
+  ): Promise<{ awaitingRequestIds: string[] }> {
+    const { idpIdentity } = userSession.get();
+    const awaitingRequests =
+      await this.crossDeviceAuthenticationService.getAwaitingRequests(
+        idpIdentity.email,
+      );
+    return { awaitingRequestIds: awaitingRequests.map(({ id }) => id) };
   }
 
   @Post(Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUEST)
@@ -141,6 +185,28 @@ export class CrossDeviceAuthenticationController {
       userSession,
       RequestStatus.REJECTED,
     );
+  }
+
+  private async ensureXdaIsEnabled(spId: string, spName: string) {
+    const { isXdaEnabled } = await this.serviceProvider.getById(spId);
+    if (!isXdaEnabled) {
+      throw new XdaNotEnabled(spName);
+    }
+  }
+
+  private async getRequest(
+    requestId: string,
+    userSession: ISessionService<AfterRedirectToRieWarningSessionDto>,
+  ) {
+    const { browsingSessionId } = userSession.get();
+    const result = await this.crossDeviceAuthenticationService.getRequest({
+      requestId,
+      browsingSessionId,
+    });
+    if (!result) {
+      throw new XdaRequestNotFound();
+    }
+    return result;
   }
 
   private async reviewRequest(

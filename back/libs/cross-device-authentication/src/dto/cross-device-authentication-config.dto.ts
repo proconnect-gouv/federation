@@ -25,4 +25,8 @@ export class CrossDeviceAuthenticationConfig {
   @IsInt()
   @IsPositive()
   readonly requestExpirationDurationInMs: number;
+
+  @IsInt()
+  @IsPositive()
+  readonly requestMaxDelayBetweenCreationAndStart: number;
 }

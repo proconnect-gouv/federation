@@ -56,6 +56,7 @@ const TEST_CONFIG: CoreFcaConfig = {
     emojiAlphabet: ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌", "🚗", "🚀"],
     emojiCodeLength: 4,
     requestExpirationDurationInMs: 5 * 60 * 1000,
+    requestMaxDelayBetweenCreationAndStart: 60 * 60 * 1000,
   },
   Exceptions: { prefix: "Y" },
   EmailValidator: {

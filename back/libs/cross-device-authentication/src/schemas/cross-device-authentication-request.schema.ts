@@ -25,6 +25,9 @@ export class CrossDeviceAuthenticationRequest extends Document {
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
+  @Prop({ type: Date })
+  startedAt?: Date;
+
   @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }
