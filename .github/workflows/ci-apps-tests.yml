@@ -29,7 +29,7 @@ jobs:
         with:
           cache: npm
           cache-dependency-path: ./${{ matrix.app }}/package-lock.json
-          node-version: "24"
+          node-version-file: ./admin/package.json
 
       - name: 📦 Install dependencies
         run: npm ci

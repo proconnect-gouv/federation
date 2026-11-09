@@ -1,4 +1,4 @@
-FROM node:24.21.0-alpine AS builder
+FROM node:26.13.0-alpine AS builder
 
 WORKDIR /var/www/app
 
@@ -11,7 +11,7 @@ COPY tsconfig.json ./
 COPY src ./src
 RUN npm run build
 
-FROM node:24.21.0-alpine AS production
+FROM node:26.13.0-alpine AS production
 
 WORKDIR /var/www/app
 
