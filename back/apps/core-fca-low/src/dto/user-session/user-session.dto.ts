@@ -48,11 +48,6 @@ export class UserSession {
   @Expose()
   readonly idpAmr?: string[];
 
-  @IsOptional()
-  @IsBoolean()
-  @Expose()
-  readonly isSilentAuthentication?: boolean;
-
   // == SP
 
   @IsOptional()

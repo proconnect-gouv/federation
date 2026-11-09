@@ -4,7 +4,9 @@ import type Redis from "ioredis";
 import MockRedis from "ioredis-mock";
 import { get } from "lodash";
 import { MongoMemoryReplSet } from "mongodb-memory-server";
+import type { AddressInfo } from "node:net";
 import { join } from "node:path";
+import request from "supertest";
 
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import type { TestingModuleBuilder } from "@nestjs/testing";
@@ -38,6 +40,14 @@ export class TestingBench {
     const configService = {
       configuration: {
         ...TEST_CONFIG,
+        // the bench serves plain http, where clients do not send Secure cookies
+        Session: {
+          ...TEST_CONFIG.Session,
+          cookieOptions: {
+            ...TEST_CONFIG.Session.cookieOptions,
+            secure: false,
+          },
+        },
         ...configOverrides,
         Mongoose: {
           uri: mongo.getUri(),
@@ -66,9 +76,10 @@ export class TestingBench {
 
     const app = moduleRef.createNestApplication<NestExpressApplication>();
 
+    const { urlPrefix, viewsPaths } = configService.get<AppConfig>("App");
+    app.setGlobalPrefix(urlPrefix);
     app.engine("ejs", renderFile);
     app.setViewEngine("ejs");
-    const { viewsPaths } = configService.get<AppConfig>("App");
     app.set(
       "views",
       viewsPaths.map((viewsPath) => {
@@ -81,9 +92,18 @@ export class TestingBench {
     app.use(CookieParser(cookieSecrets));
     NestJsDependencyInjectionWrapper.use(app.select(appModule));
 
-    await app.init();
+    // listen on a real port: oidc-provider sends absolute redirections
+    // built from the request host, that must reach the bench back
+    await app.listen(0, "127.0.0.1");
+    const { port } = app.getHttpServer().address() as AddressInfo;
 
-    return new TestingBench(app, configService as any, mongo, redis);
+    return new TestingBench(
+      app,
+      configService as any,
+      mongo,
+      redis,
+      `http://127.0.0.1:${port}`,
+    );
   }
 
   constructor(
@@ -91,7 +111,19 @@ export class TestingBench {
     readonly config: ConfigService,
     readonly mongo: MongoMemoryReplSet,
     readonly redis: Redis,
+    readonly url: string,
   ) {}
+
+  /**
+   * A cookie-keeping http client, that accepts the paths and the `Location`
+   * headers sent by the app (relative or absolute) as is.
+   */
+  agent() {
+    // the empty base url lets the plugin below resolve every url against the bench
+    return request.agent("").use((req) => {
+      req.url = new URL(req.url, this.url).href;
+    });
+  }
 
   async [Symbol.asyncDispose]() {
     await this.app.close();

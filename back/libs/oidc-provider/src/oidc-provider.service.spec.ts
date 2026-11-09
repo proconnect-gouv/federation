@@ -5,7 +5,7 @@ import { getLoggerMock } from "#mocks/logger";
 import { getRedisServiceMock } from "#mocks/redis";
 import { getSessionServiceMock } from "#mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
-import { Response } from "express";
+import { Request, Response } from "express";
 import OidcProvider from "oidc-provider";
 import {
   OidcProviderMiddlewarePattern,
@@ -434,10 +434,10 @@ describe("OidcProviderService", () => {
   });
 
   describe("abortInteraction", () => {
-    it("should have called this.provider.interactionFinished with parameters if retry params is false", async () => {
+    it("should call this.provider.interactionFinished with the error parameters", async () => {
       // given
-      const resMock = Symbol("mock result");
-      const reqMock = Symbol("mock request");
+      const resMock = Symbol("mock result") as unknown as Response;
+      const reqMock = Symbol("mock request") as unknown as Request;
       const mockErr = "this is an error message";
       const mockErrDescription = "this is an error description";
 
@@ -455,33 +455,6 @@ describe("OidcProviderService", () => {
         {
           error: mockErr,
           error_description: mockErrDescription,
-        },
-      );
-    });
-
-    it("should have called this.provider.interactionFinished with error undefined if retry params is true", async () => {
-      // given
-      const resMock = Symbol("mock result");
-      const reqMock = Symbol("mock request");
-
-      // when
-      await service.abortInteraction(
-        reqMock,
-        resMock,
-        {
-          error: "error",
-          error_description: "error description",
-        },
-        true,
-      );
-
-      // then
-      expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
-      expect(providerMock.interactionFinished).toHaveBeenCalledWith(
-        reqMock,
-        resMock,
-        {
-          error: undefined,
         },
       );
     });

@@ -40,14 +40,6 @@ Fonctionnalité: Connexion Usager - idp_hint
     Et que je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page login du fournisseur d'identité "second FI"
 
-  Scénario: Connexion avec idp_hint invalide
-    Etant donné que je navigue sur la page fournisseur de service
-    Et que je rentre un id qui ne correspond à aucun fournisseur d'identité dans le champ idp_hint
-    Quand je clique sur le bouton ProConnect
-    Alors je suis redirigé vers la page erreur du fournisseur de service
-    Et le titre de l'erreur fournisseur de service est "idp_hint_not_found"
-    Et la description de l'erreur fournisseur de service est "provided%20idp_hint%20could%20not%20be%20found"
-
   @ignoreInteg01
   Scénario: SSO après une cinématique idp_hint non terminée
     Etant donné que je navigue sur la page fournisseur de service "premier FS"

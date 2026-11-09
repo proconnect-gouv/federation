@@ -1,8 +1,5 @@
-import { ConfigService } from "#libs/config";
-import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
 import { LoggerService } from "#libs/logger";
 import { OidcCtx, OidcProviderService } from "#libs/oidc-provider";
-import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
 import { SessionService } from "#libs/session";
 import { getLoggerMock } from "#mocks/logger";
 import { getSessionServiceMock } from "#mocks/session";
@@ -21,7 +18,6 @@ jest.mock("#libs/exceptions/helpers/index", () => ({
 
 describe("CoreFcaMiddlewareService", () => {
   let service: CoreFcaMiddlewareService;
-  let mockConfigService: jest.Mocked<ConfigService>;
   let mockOidcProviderService: jest.Mocked<OidcProviderService>;
   let mockSessionService: jest.Mocked<SessionService>;
   const mockLoggerService: jest.Mocked<LoggerService> = getLoggerMock();
@@ -32,21 +28,15 @@ describe("CoreFcaMiddlewareService", () => {
       providers: [
         CoreFcaMiddlewareService,
         { provide: LoggerService, useValue: mockLoggerService },
-        { provide: ConfigService, useValue: { get: jest.fn() } },
         {
           provide: OidcProviderService,
           useValue: { registerMiddleware: jest.fn(), clearCookies: jest.fn() },
         },
         { provide: SessionService, useValue: getSessionServiceMock() },
-        { provide: ServiceProviderAdapterMongoService, useValue: jest.fn() },
-        { provide: IdentityProviderAdapterMongoService, useValue: jest.fn() },
       ],
     }).compile();
 
     service = module.get<CoreFcaMiddlewareService>(CoreFcaMiddlewareService);
-    mockConfigService = module.get<ConfigService>(
-      ConfigService,
-    ) as jest.Mocked<ConfigService>;
     mockOidcProviderService = module.get<OidcProviderService>(
       OidcProviderService,
     ) as jest.Mocked<OidcProviderService>;
@@ -83,35 +73,6 @@ describe("CoreFcaMiddlewareService", () => {
     (service as any).beforeAuthorizeMiddleware(mockCtx);
     expect(spy).toHaveBeenCalledWith(mockCtx.res);
     expect(mockCtx.req.headers.cookie).toBe("");
-  });
-
-  it("should log warning for unsupported methods and override prompt in overrideAuthorizePrompt", () => {
-    mockConfigService.get.mockReturnValue({
-      forcedPrompt: ["login", "consent"],
-    });
-
-    const postCtx = {
-      method: "POST",
-      req: { body: { prompt: "login" } },
-    } as any as OidcCtx;
-    (service as any).overrideAuthorizePrompt(postCtx);
-    expect(postCtx.req.body.prompt).toBe("login consent");
-
-    const getCtx = {
-      method: "GET",
-      query: { prompt: "login" },
-    } as any as OidcCtx;
-    (service as any).overrideAuthorizePrompt(getCtx);
-    expect(getCtx.query.prompt).toBe("login consent");
-
-    const unsupportedCtx = {
-      method: "PUT",
-      req: { body: {} },
-      query: {},
-    } as any as OidcCtx;
-    (service as any).overrideAuthorizePrompt(unsupportedCtx);
-    expect(unsupportedCtx.req.body.prompt).toBeUndefined();
-    expect(unsupportedCtx.query.prompt).toBeUndefined();
   });
 
   it("should call sessionService.initCache and return { isSessionLoaded: true } in loadSessionInAsyncLocalStorage", async () => {
@@ -160,25 +121,66 @@ describe("CoreFcaMiddlewareService", () => {
     expect(spyTrack).toHaveBeenCalled();
   });
 
-  it("should handle silent authentication prompts in handleSilentAuthenticationMiddleware", async () => {
-    const mockCtx = { method: "POST", req: { body: { prompt: "none" } } };
-    const spyOverride = jest.spyOn(service as any, "overrideAuthorizePrompt");
-    mockSessionService.get.mockReturnValueOnce({});
-    validateMock.mockResolvedValueOnce([]);
-    mockConfigService.get.mockReturnValueOnce({
-      forcedPrompt: ["login", "consent"],
+  describe("handleSilentAuthenticationMiddleware", () => {
+    beforeEach(() => {
+      validateMock.mockReset();
     });
-    await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
-    expect(spyOverride).toHaveBeenCalled();
-  });
 
-  it("should handle silent authentication prompts in handleSilentAuthenticationMiddleware", async () => {
-    const mockCtx = { method: "GET", query: {} };
-    const spyOverride = jest.spyOn(service as any, "overrideAuthorizePrompt");
-    mockConfigService.get.mockReturnValueOnce({
-      forcedPrompt: ["login", "consent"],
+    it.each([
+      ["POST", { method: "POST", req: { body: {} } }],
+      ["GET", { method: "GET", query: {} }],
+    ])(
+      "should force prompt=login when prompt is missing (%s)",
+      async (_method, ctx: any) => {
+        await (service as any).handleSilentAuthenticationMiddleware(ctx);
+
+        const params = ctx.method === "POST" ? ctx.req.body : ctx.query;
+        expect(params.prompt).toBe("login");
+        expect(validateMock).not.toHaveBeenCalled();
+      },
+    );
+
+    it("should force prompt=login for prompt=none when the user has an active session", async () => {
+      const ctx = { method: "POST", req: { body: { prompt: "none" } } };
+      mockSessionService.get.mockReturnValueOnce({});
+      validateMock.mockResolvedValueOnce([]);
+
+      await (service as any).handleSilentAuthenticationMiddleware(ctx);
+
+      expect(ctx.req.body.prompt).toBe("login");
     });
-    await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
-    expect(spyOverride).toHaveBeenCalled();
+
+    it("should keep prompt=none when the user has no active session", async () => {
+      const ctx = { method: "GET", query: { prompt: "none" } };
+      mockSessionService.get.mockReturnValueOnce({});
+      validateMock.mockResolvedValueOnce([new Error("no active session")]);
+
+      await (service as any).handleSilentAuthenticationMiddleware(ctx);
+
+      expect(ctx.query.prompt).toBe("none");
+    });
+
+    it.each(["login", "consent", "none login"])(
+      "should keep prompt=%s untouched",
+      async (prompt) => {
+        const ctx = { method: "GET", query: { prompt } };
+
+        await (service as any).handleSilentAuthenticationMiddleware(ctx);
+
+        expect(ctx.query.prompt).toBe(prompt);
+        expect(validateMock).not.toHaveBeenCalled();
+      },
+    );
+
+    it("should not store anything in the session", async () => {
+      const ctx = { method: "GET", query: { prompt: "none" } };
+      mockSessionService.get.mockReturnValueOnce({});
+      validateMock.mockResolvedValueOnce([]);
+
+      await (service as any).handleSilentAuthenticationMiddleware(ctx);
+
+      expect(mockSessionService.set).not.toHaveBeenCalled();
+      expect(mockSessionService.commit).not.toHaveBeenCalled();
+    });
   });
 });
