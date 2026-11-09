@@ -1,6 +1,6 @@
 import { LoggerService } from "#libs/logger";
 import { Injectable } from "@nestjs/common";
-import { toOrganizationInfo } from "@proconnect-gouv/proconnect.identite/managers/organization";
+import { toApiEntrepriseOrganizationInfo } from "@proconnect-gouv/proconnect.identite/managers/organization";
 import { OrganizationInfo } from "@proconnect-gouv/proconnect.identite/types";
 import { ApiEntrepriseClientService } from "./api-entreprise-client.service";
 
@@ -25,8 +25,11 @@ export class ApiEntrepriseService {
       throw error;
     }
     try {
-      const organization = toOrganizationInfo(establishment);
-      return organization;
+      return {
+        ...toApiEntrepriseOrganizationInfo(establishment),
+        // federation never queries the RNE API
+        denominationUsuelleEtablissementPrincipal: null,
+      };
     } catch (error) {
       this.logger.error({
         code: "api-entreprise-service-organization-mapping-error",
