@@ -9,7 +9,7 @@ export function generateNewSecret(element) {
       event.stopPropagation();
 
       confirmDialog(
-        `La génération d'un nouveau secret pour <strong>${elmTitle}</strong> va écraser immédiatement la valeur actuelle.
+        `La génération d'un nouveau secret pour ${elmTitle} va écraser immédiatement la valeur actuelle.
       Etes-vous sûr de vouloir changer le secret maintenant ?`,
         (confirm) => {
           if (confirm) {
