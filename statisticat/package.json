@@ -62,6 +62,6 @@
     "https-proxy-agent": "^9.1.0"
   },
   "engines": {
-    "node": ">=26"
+    "node": "^26"
   }
 }
