@@ -28,10 +28,7 @@ import { IdentityProvider } from "./schemas";
 export const CLIENT_METADATA = [
   "client_id",
   "client_secret",
-  "response_types",
   "id_token_signed_response_alg",
-  "token_endpoint_auth_method",
-  "revocation_endpoint_auth_method",
   "id_token_encrypted_response_alg",
   "id_token_encrypted_response_enc",
   "userinfo_encrypted_response_alg",
@@ -182,10 +179,6 @@ export class IdentityProviderAdapterMongoService implements IIdentityProviderAda
     });
 
     result.client_secret = this.decryptClientSecret(source.client_secret);
-
-    // default values
-    result.response_types = ["code"];
-    result.revocation_endpoint_auth_method = "client_secret_post";
 
     return this.toPanvaFormat(result);
   }
