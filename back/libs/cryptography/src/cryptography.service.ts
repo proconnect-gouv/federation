@@ -22,7 +22,7 @@ export const RANDOM_MIN_ENTROPY = 32;
 export class CryptographyService {
   /**
    * Encrypt the given data
-   * Current implementation use symetrical AES-256-GCM.
+   * Current implementation use symmetric AES-256-GCM.
    * @see https://crypto.stackexchange.com/a/18092
    * @param key the key to encrypt the data
    * @param data the data to encrypt
@@ -38,7 +38,7 @@ export class CryptographyService {
 
   /**
    * Decrypt the given cipher
-   * Current implementation use symetrical AES-256-GCM.
+   * Current implementation use symmetric AES-256-GCM.
    *
    * @see https://crypto.stackexchange.com/a/18092
    * @param key the key to encrypt the data
@@ -79,7 +79,7 @@ export class CryptographyService {
 
   /**
    * Encrypt the given string.
-   * Current implementation use symetrical AES-256-GCM.
+   * Current implementation use symmetric AES-256-GCM.
    * @see https://crypto.stackexchange.com/a/18092
    * @param key the key to encrypt the data
    * @param data the data to encrypt
@@ -101,7 +101,7 @@ export class CryptographyService {
 
   /**
    * Decrypt the given cipher.
-   * Current implementation use symetrical AES-256-GCM.
+   * Current implementation use symmetric AES-256-GCM.
    * @see https://crypto.stackexchange.com/a/18092
    * @param key the key to encrypt the data
    * @param cipher the cipher to decrypt
