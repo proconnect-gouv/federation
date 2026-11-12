@@ -3,6 +3,7 @@ import { getEnv, getServiceProviderByDescription } from "../../common/helpers";
 
 const RIE_IDP_NAME = "fia-rie-low";
 const REVIEW_PAGE_TITLE = "Demandes de connexion en cours";
+const XDA_PAGE_TITLE = "Autorisez cet appareil depuis l'ordinateur RIE";
 
 const loginOnRieIdp = (email: string): void => {
   const serviceProvider = getServiceProviderByDescription("par défaut");
@@ -32,6 +33,10 @@ type Browser = "RIE" | "internet";
 const browserSessions: Partial<
   Record<Browser, { setup: () => void; options?: Cypress.SessionOptions }>
 > = {};
+
+// cy.session() only caches the cookies set during its setup, so the waiting
+// page (and the session cookie it relies on) is saved to be restored later.
+let waitingPageState: { url: string; cookies: Cypress.Cookie[] } | undefined;
 
 const useBrowser = (browser: Browser): void => {
   const { setup, options } = browserSessions[browser] ?? {
@@ -64,25 +69,88 @@ Then("le bouton {string} n'est pas affiché", function (buttonText: string) {
 });
 
 Then(
-  "je suis redirigé vers la page d'authentification cross-device",
+  "je suis redirigé vers la page d'attente d'authentification cross-device",
   function () {
-    cy.url().should("include", "/proceed-to-cross-device-authentication");
-    cy.contains("h1", "Cross Device Authentication").should("be.visible");
+    cy.url().should("include", "/cross-device-authentication-waiting/");
+    cy.contains("h1", XDA_PAGE_TITLE).should("be.visible");
+    cy.url().then((url) => {
+      cy.getCookies().then((cookies) => {
+        waitingPageState = { url, cookies };
+      });
+    });
   },
 );
+
+When(
+  "le polling de la page d'attente renvoie le statut {string}",
+  function (status: string) {
+    cy.intercept("GET", "**/cross-device-authentication-status/*", { status });
+  },
+);
+
+When("je reviens à la page précédente", function () {
+  cy.go("back");
+});
+
+Then(
+  "je suis redirigé vers la même page d'attente d'authentification cross-device",
+  function () {
+    cy.url().should("eq", waitingPageState?.url);
+  },
+);
+
+When(
+  "je retourne sur la page d'attente d'authentification cross-device du navigateur internet",
+  function () {
+    useBrowser("internet");
+    cy.then(() => {
+      if (!waitingPageState) {
+        throw new Error("The cross-device waiting page was never visited");
+      }
+      const { url, cookies } = waitingPageState;
+      cookies.forEach(
+        ({ name, value, domain, path, secure, httpOnly, sameSite }) =>
+          cy.setCookie(name, value, {
+            domain,
+            path,
+            secure,
+            httpOnly,
+            sameSite,
+          }),
+      );
+      cy.visit(url);
+    });
+  },
+);
+
+Then("je vois que l'authentification cross-device est approuvée", function () {
+  cy.contains("Votre session est active").should("be.visible");
+});
 
 Then("je vois une seule demande d'authentification cross-device", function () {
   cy.contains("h1", REVIEW_PAGE_TITLE).should("be.visible");
   cy.get("main ul li").should("have.length", 1);
+  cy.get("main ul li time[data-local-date]")
+    .invoke("text")
+    .should("match", /^\d{2}\/\d{2}\/\d{4} à \d{2}:\d{2}$/);
 });
 
 Then(
   "je vois les emojis de la demande d'authentification cross-device",
   function () {
-    cy.contains("h1", "Demande de connexion").should("be.visible");
+    cy.contains("h1", "Vérifiez votre session").should("be.visible");
     cy.get(".xda-emojis span").should("have.length", 5);
   },
 );
+
+Then("les emojis de la XDA ne sont pas affichés", function () {
+  cy.get(".xda-emojis").should("not.be.visible");
+});
+
+Then("je vois les emojis de la XDA", function () {
+  cy.get(".xda-emojis").should("be.visible");
+  cy.get(".xda-emojis span").should("have.length", 5);
+});
 
 Then(
   "je suis redirigé vers la liste des demandes d'authentification cross-device en cours",

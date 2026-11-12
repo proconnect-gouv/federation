@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="light">
+  <head>
+    <%- include('includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/pages/interaction.css" />
+    <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
+    <title>Connexion via un appareil vérifié - ProConnect</title>
+  </head>
+
+  <body>
+    <%- include('includes/skiplinks.ejs') %> <%- include('includes/header.ejs')
+    %>
+    <main role="main" id="content" class="fr-py-2w">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center">
+          <div
+            class="fr-col-12 fr-col-md-8 fr-col-lg-4 xda-waiting"
+            data-status-url="/api/v2/cross-device-authentication-status/<%= requestId %>"
+            data-status="<%= status %>"
+            aria-live="polite"
+          >
+            <h1
+              data-xda-status-section="initiated pending"
+              class="fr-my-2w fr-h4"
+            >
+              Autorisez cet appareil depuis l'ordinateur RIE
+            </h1>
+
+            <div data-xda-status-section="initiated" class="fr-hidden">
+              <p class="fr-mb-1w">Les étapes :</p>
+              <ol>
+                <li>Sur votre ordinateur RIE, ouvrez votre navigateur habituel.</li>
+                <li>Depuis l'ordinateur RIE, accédez à la page d'accueil de ProConnect : https://proconnect.gouv.fr/xda</li>
+                <li>
+                  Deux situations sont possibles :
+                  <ul>
+                    <li>Si vous <strong>avez déjà</strong> une session active à ProConnect : vous serez directement redirigé vers la page des demandes de connexion.</li>
+                    <li>Si vous <strong>n'avez pas</strong> de session active à ProConnect : connectez-vous avec vos identifiants ProConnect habituels. Vous serez ensuite redirigé vers la page des demandes de connexion.</li>
+                  </ul>
+                </li>
+              </ol>
+            </div>
+
+            <div data-xda-status-section="pending" class="fr-hidden">
+              <ol>
+                <li>
+                  Sur votre ordinateur RIE, vous devriez voir une demande de
+                  connexion en cours.
+                </li>
+                <li>
+                  Si celle-ci correspond à votre demande, cliquez sur "Vérifier".
+                </li>
+                <li>
+                  Sur votre ordinateur RIE, vérifiez que les emojis affichés
+                  correspondent à ceux ci-dessous. Si oui, cliquez sur "Oui".
+                </li>
+              </ol>
+              <p class="fr-h2 fr-container xda-emojis fr-my-2w">
+                <% emojis.forEach(emoji => { %><span><%= emoji %></span><% }) %>
+              </p>
+            </div>
+
+            <div
+              data-xda-status-section="approved"
+              class="fr-hidden d-flex flex-column"
+            >
+              <h2 class="fr-my-2w fr-h5">✅ Votre session est active</h2>
+              <p>Vous pouvez continuer sur ce service.</p>
+            </div>
+
+            <div data-xda-status-section="rejected" class="fr-hidden">
+              <div class="fr-alert fr-alert--error fr-mb-2w">
+                <p>Connexion refusée</p>
+              </div>
+            </div>
+
+            <div data-xda-status-section="error" class="fr-hidden">
+              <div class="fr-alert fr-alert--error fr-mb-2w">
+                <p>
+                  Cette demande de connexion a expiré ou est introuvable.
+                  Veuillez recommencer.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script type="module" src="/js/xda-polling-request-status-change.js"></script>
+</html>

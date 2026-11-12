@@ -5,12 +5,26 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { CrossDeviceAuthenticationService } from "./cross-device-authentication.service";
 import { RequestStatus } from "./enums";
 
+const notExpiredFilter = {
+  $or: [
+    {
+      status: "initiated",
+      createdAt: { $gt: new Date("2026-01-01T09:00:00.000Z") },
+    },
+    {
+      status: { $ne: "initiated" },
+      startedAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+    },
+  ],
+};
+
 describe(CrossDeviceAuthenticationService.name, () => {
   let service: CrossDeviceAuthenticationService;
 
   const modelMock = {
     insertOne: jest.fn(),
     find: jest.fn(),
+    findOne: jest.fn(),
     findOneAndUpdate: jest.fn(),
   };
   const configServiceMock = getConfigMock();
@@ -23,6 +37,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
       emojiAlphabet,
       emojiCodeLength: 5,
       requestExpirationDurationInMs: 5 * 60 * 1000,
+      requestMaxDelayBetweenCreationAndStart: 60 * 60 * 1000,
     });
 
     const app: TestingModule = await Test.createTestingModule({
@@ -44,7 +59,14 @@ describe(CrossDeviceAuthenticationService.name, () => {
     );
   });
 
-  describe("create", () => {
+  describe("findOrCreateRequest", () => {
+    const params = {
+      userAgent: "Mozilla/5.0",
+      spName: "My SP",
+      email: "User@Example.com",
+      browsingSessionId: "browsing-session-id",
+    };
+
     beforeEach(() => {
       jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
     });
@@ -53,48 +75,55 @@ describe(CrossDeviceAuthenticationService.name, () => {
       jest.useRealTimers();
     });
 
-    it("should store an initiated request with a hashed device secret", async () => {
+    it("should return the latest unexpired request of the browsing session for the lowercased email and the service provider", async () => {
+      modelMock.findOne.mockResolvedValue({ _id: "existing-request-id" });
+
+      const result = await service.findOrCreateRequest(params);
+
+      expect(modelMock.findOne).toHaveBeenCalledWith(
+        {
+          spName: "My SP",
+          email: "user@example.com",
+          browsingSessionId: "browsing-session-id",
+          ...notExpiredFilter,
+        },
+        { _id: true },
+        { sort: { createdAt: -1 } },
+      );
+      expect(modelMock.insertOne).not.toHaveBeenCalled();
+      expect(result).toEqual({ _id: "existing-request-id" });
+    });
+
+    it("should store an initiated request when there is no recent request", async () => {
+      modelMock.findOne.mockResolvedValue(null);
       modelMock.insertOne.mockResolvedValue({ _id: "request-id" });
 
-      const result = await service.create({
-        userAgent: "Mozilla/5.0",
-        spName: "My SP",
-        email: "User@Example.com",
-        browsingSessionId: "browsing-session-id",
-      });
+      const result = await service.findOrCreateRequest(params);
 
-      expect(result).toEqual({
-        _id: "request-id",
-        emojis: expect.any(Array),
-      });
+      expect(result).toEqual({ _id: "request-id" });
       expect(modelMock.insertOne).toHaveBeenCalledWith({
         status: "initiated",
-        emojis: result.emojis,
+        emojis: expect.any(Array),
         userAgent: "Mozilla/5.0",
         spName: "My SP",
         email: "user@example.com",
         browsingSessionId: "browsing-session-id",
       });
     });
-  });
 
-  describe("emojis", () => {
     it("should generate distinct emojis from the configured alphabet", async () => {
+      modelMock.findOne.mockResolvedValue(null);
       modelMock.insertOne.mockResolvedValue({ _id: "request-id" });
 
-      const { emojis } = await service.create({
-        userAgent: "Mozilla/5.0",
-        spName: "My SP",
-        email: "user@example.com",
-        browsingSessionId: "browsing-session-id",
-      });
+      await service.findOrCreateRequest(params);
 
+      const { emojis } = modelMock.insertOne.mock.calls[0][0];
       expect(configServiceMock.get).toHaveBeenCalledWith(
         "CrossDeviceAuthentication",
       );
       expect(emojis).toHaveLength(5);
       expect(new Set(emojis).size).toBe(5);
-      emojis.forEach((emoji) => expect(emojiAlphabet).toContain(emoji));
+      emojis.forEach((emoji: string) => expect(emojiAlphabet).toContain(emoji));
     });
   });
 
@@ -115,6 +144,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
           spName: "My SP",
           userAgent:
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
+          createdAt: new Date("2026-01-01T09:58:00.000Z"),
         },
       ]);
 
@@ -123,11 +153,91 @@ describe(CrossDeviceAuthenticationService.name, () => {
       expect(modelMock.find).toHaveBeenCalledWith({
         status: { $in: ["initiated", "pending"] },
         email: "user@example.com",
-        createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+        ...notExpiredFilter,
       });
       expect(result).toEqual([
-        { id: "request-id", spName: "My SP", device: "Firefox sur Windows" },
+        {
+          id: "request-id",
+          spName: "My SP",
+          device: "Firefox sur Windows",
+          createdAt: new Date("2026-01-01T09:58:00.000Z"),
+        },
       ]);
+    });
+  });
+
+  describe("getRequest", () => {
+    const requestId = "65a1b2c3d4e5f60718293a4b";
+
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("should only look up a non-expired request bound to the browsing session", async () => {
+      modelMock.findOne.mockResolvedValue({
+        status: "initiated",
+        emojis: ["😀", "😎", "🤖", "👾"],
+      });
+
+      await service.getRequest({ requestId, browsingSessionId: "bsid" });
+
+      expect(modelMock.findOne).toHaveBeenCalledWith({
+        _id: requestId,
+        browsingSessionId: "bsid",
+        ...notExpiredFilter,
+      });
+    });
+
+    it("should return the status and the emojis of the request", async () => {
+      modelMock.findOne.mockResolvedValue({
+        status: "pending",
+        emojis: ["😀", "😎", "🤖", "👾"],
+      });
+
+      const result = await service.getRequest({
+        requestId,
+        browsingSessionId: "bsid",
+      });
+
+      expect(result).toEqual({
+        status: "pending",
+        emojis: ["😀", "😎", "🤖", "👾"],
+      });
+    });
+
+    it("should return null when no request matches", async () => {
+      modelMock.findOne.mockResolvedValue(null);
+
+      const result = await service.getRequest({
+        requestId,
+        browsingSessionId: "bsid",
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it("should return null without querying when the id is not a valid ObjectId", async () => {
+      const result = await service.getRequest({
+        requestId: "not-an-object-id",
+        browsingSessionId: "bsid",
+      });
+
+      expect(result).toBeNull();
+      expect(modelMock.findOne).not.toHaveBeenCalled();
+    });
+
+    it("should return null without querying when the browsing session id is missing", async () => {
+      const result = await service.getRequest({
+        requestId,
+        browsingSessionId: "",
+      });
+
+      expect(result).toBeNull();
+      expect(modelMock.findOne).not.toHaveBeenCalled();
     });
   });
 
@@ -162,11 +272,14 @@ describe(CrossDeviceAuthenticationService.name, () => {
           _id: requestId,
           status: { $in: ["initiated", "pending"] },
           email: "user@example.com",
-          createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+          ...notExpiredFilter,
         },
         {
-          status: "pending",
-          updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+          $set: {
+            status: "pending",
+            updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+          },
+          $min: { startedAt: new Date("2026-01-01T10:00:00.000Z") },
         },
         { new: true },
       );
@@ -226,7 +339,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
             _id: requestId,
             status: "pending",
             email: "user@example.com",
-            createdAt: { $gt: new Date("2026-01-01T09:55:00.000Z") },
+            ...notExpiredFilter,
           },
           { status, updatedAt: new Date("2026-01-01T10:00:00.000Z") },
         );

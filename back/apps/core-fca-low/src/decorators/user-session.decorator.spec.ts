@@ -65,7 +65,7 @@ describe("UserSessionDecoratorFactory", () => {
     validateMock.mockResolvedValueOnce([]);
 
     const result = await UserSessionDecoratorFactory(
-      DummyDto,
+      { userSessionDto: DummyDto },
       fakeExecutionContext,
     );
 
@@ -88,10 +88,34 @@ describe("UserSessionDecoratorFactory", () => {
     validateMock.mockResolvedValueOnce(validationError);
 
     await expect(
-      UserSessionDecoratorFactory(DummyDto, fakeExecutionContext),
+      UserSessionDecoratorFactory(
+        { userSessionDto: DummyDto },
+        fakeExecutionContext,
+      ),
     ).rejects.toThrowError(InvalidSessionException);
 
     expect(validateMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should throw the given exception if a session DTO validation fails", async () => {
+    class DummyDto {}
+    class DummyException extends Error {}
+    const validationError = [
+      {
+        property: "dummy",
+        constraints: { isDefined: "dummy must be defined" },
+      },
+    ];
+
+    const validateMock = jest.mocked(validate);
+    validateMock.mockResolvedValueOnce(validationError);
+
+    await expect(
+      UserSessionDecoratorFactory(
+        { userSessionDto: DummyDto, exception: DummyException },
+        fakeExecutionContext,
+      ),
+    ).rejects.toThrowError(DummyException);
   });
 
   it("should validate only UserSession when no session DTO is provided", async () => {
