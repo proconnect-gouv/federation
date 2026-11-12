@@ -17,4 +17,16 @@ describe("TestingBench", () => {
     expect(called).toBe(true);
     expect(bench.app).toBeDefined();
   });
+
+  it("should serve the app under its urlPrefix through a cookie-keeping agent", async () => {
+    await using bench = await TestingBench.createTestBench();
+
+    const response = await bench.agent().get("/api/v2/livez");
+    const absoluteResponse = await bench
+      .agent()
+      .get(`${bench.url}/api/v2/livez`);
+
+    expect(response.status).toBe(200);
+    expect(absoluteResponse.status).toBe(200);
+  });
 });

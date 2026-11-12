@@ -77,7 +77,6 @@ const TEST_CONFIG: CoreFcaConfig = {
   Logger: { threshold: "debug" },
   OidcProvider: {
     allowedPrompt: ["login", "consent", "none"],
-    forcedPrompt: ["login"],
     cookies: {
       keys: [
         "CeciEstUnTokenDeTest-1",

@@ -2,7 +2,7 @@ import { AccountFcaService } from "#libs/account-fca";
 import { ConfigService } from "#libs/config";
 import { CsrfService } from "#libs/csrf";
 import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
-import { LoggerService } from "#libs/logger";
+import { LoggerService, TrackedEvent } from "#libs/logger";
 import { NotificationsService } from "#libs/notifications";
 import { OidcAcrService } from "#libs/oidc-acr";
 import { OidcProviderService } from "#libs/oidc-provider";
@@ -281,7 +281,10 @@ describe("InteractionController", () => {
         uid: "interaction123",
         params: { client_id: "sp123", idp_hint: "idp123" },
       });
-      identityProviderMock.getById.mockResolvedValue({ id: "idp123" });
+      identityProviderMock.getById.mockResolvedValue({
+        uid: "idp123",
+        active: true,
+      });
 
       await controller.getInteraction(
         req,
@@ -297,32 +300,6 @@ describe("InteractionController", () => {
         res,
         "idp123",
       );
-    });
-
-    it("should call abort interaction for invalid IdP hints", async () => {
-      const req = { query: {} } as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn(),
-        duplicate: jest.fn(),
-        set: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123", idp_hint: "unknown-idp" },
-      });
-      identityProviderMock.getById.mockResolvedValue(null);
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
     });
 
     it("should call redirectToIdpWithEmail when login_hint is provided", async () => {
@@ -349,6 +326,7 @@ describe("InteractionController", () => {
         userSessionService,
       );
 
+      expect(identityProviderMock.getById).not.toHaveBeenCalled();
       expect(coreFcaControllerMock.redirectToIdpWithEmail).toHaveBeenCalledWith(
         req,
         res,
@@ -453,45 +431,33 @@ describe("InteractionController", () => {
       );
     });
 
-    it("should call abort interaction when IdP is inactive and in silent authentication mode", async () => {
+    it("should abort interaction with access_denied when the IdP is inactive", async () => {
       const req = { query: {} } as Request;
-      const res = {} as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({
-          interactionId: "interaction123",
-          spIdentity: { sub: "user1" },
-          isSilentAuthentication: true,
-          idpId: "idp123",
-        }),
-      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
-
-      identityProviderMock.isActiveById.mockResolvedValue(false);
-
-      await controller.getVerify(req, res, {} as any, userSessionService);
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
-    });
-
-    it("should redirect to INTERACTION route when IdP is inactive and not in silent authentication mode", async () => {
-      const req = { sessionId: "session1" } as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
       const userSessionService = {
         get: jest.fn().mockReturnValue({
-          spIdentity: { sub: "user1" },
-          isSilentAuthentication: false,
           interactionId: "interaction123",
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
           idpId: "idp123",
         }),
+        set: jest.fn(),
       } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
 
       identityProviderMock.isActiveById.mockResolvedValue(false);
-      configServiceMock.get.mockReturnValueOnce({ urlPrefix: "/prefix" });
 
       await controller.getVerify(req, res, {} as any, userSessionService);
 
-      expect(res.redirect).toHaveBeenCalledWith(
-        "/prefix/interaction/interaction123",
+      expect(identityProviderMock.isActiveById).toHaveBeenCalledWith("idp123");
+      expect(loggerMock.track).toHaveBeenCalledWith(
+        TrackedEvent.FC_IDP_DISABLED,
       );
+      expect(oidcProviderMock.abortInteraction).toHaveBeenCalledWith(req, res, {
+        error: "access_denied",
+        error_description:
+          "The user's identity provider is not active in ProConnect.",
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(oidcProviderMock.finishInteraction).not.toHaveBeenCalled();
     });
 
     it("should throw AgentNotFromPublicServiceException for private sector identity not allowed by SP", async () => {
@@ -658,7 +624,7 @@ describe("InteractionController", () => {
   });
 
   describe("getError()", () => {
-    it("should call abortInteraction", async () => {
+    it("should abort interaction with the provided error", async () => {
       const req = {} as Request;
       const res = {} as Response;
 
@@ -669,15 +635,23 @@ describe("InteractionController", () => {
         { error: "error", error_description: "error_description" } as any,
       );
 
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
+      expect(oidcProviderMock.abortInteraction).toHaveBeenCalledWith(req, res, {
+        error: "error",
+        error_description: "error_description",
+      });
     });
-    it("should call abortInteraction with no error messages", async () => {
+
+    it("should abort interaction with a default server_error when no error is provided", async () => {
       const req = {} as Request;
       const res = {} as Response;
 
       await controller.getError(req, res, {} as any, {} as any);
 
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
+      expect(oidcProviderMock.abortInteraction).toHaveBeenCalledWith(req, res, {
+        error: "server_error",
+        error_description:
+          "authentication aborted due to a technical error on the authorization server",
+      });
     });
   });
 });
