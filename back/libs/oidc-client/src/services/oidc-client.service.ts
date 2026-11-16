@@ -485,6 +485,11 @@ export class OidcClientService {
             plainIdpIdentity[key] = claims[key];
           }
         }
+
+        this.logger.info({
+          code: `oidc-client-info:get-patched-userinfo`,
+          plainIdpIdentity: cloneDeep(plainIdpIdentity),
+        });
       }
 
       return plainIdpIdentity;

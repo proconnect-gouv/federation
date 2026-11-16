@@ -1135,6 +1135,10 @@ describe("OidcClientService", () => {
 
       // Then
       expect(result.email).toBe("user@test.com");
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        code: "oidc-client-info:get-patched-userinfo",
+        plainIdpIdentity: result,
+      });
     });
 
     it("should not override existing userinfo values for EntraID", async () => {
