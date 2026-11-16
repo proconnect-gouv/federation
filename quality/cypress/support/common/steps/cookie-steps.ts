@@ -3,6 +3,7 @@ import {
   checkCookieExists,
   getCookieFromUrl,
   getEnv,
+  getIdentityProviderByDescription,
   setUnknowSessionIdInSessionCookie,
 } from "../helpers";
 
@@ -86,3 +87,11 @@ Given("je supprime les cookies AgentConnect", function () {
   const domain = url.hostname;
   cy.clearCookies({ domain });
 });
+
+When(
+  "je supprime les cookies du fournisseur d'identité {string}",
+  function (description: string) {
+    const { url } = getIdentityProviderByDescription(description);
+    cy.clearCookies({ domain: new URL(url).hostname });
+  },
+);

@@ -389,6 +389,7 @@ describe("OidcClientController", () => {
         idpAmr: "amr-value",
         idpIdToken: "id-token",
         idpAcr: "acr-value",
+        isEmailVerifiedByPcf: false,
       });
       expect(userSession.set).toHaveBeenNthCalledWith(3, {
         idpIdentity: { email: "user@example.com", sub: "sub123" },
@@ -398,6 +399,23 @@ describe("OidcClientController", () => {
       });
       expect(res.redirect).toHaveBeenCalledWith(
         "/app/interaction/interaction123/verify",
+      );
+    });
+
+    it("should reset the email verification made for a previous identity", async () => {
+      userSession.get.mockReturnValue({
+        ...sessionData,
+        isEmailVerifiedByPcf: true,
+      });
+
+      await controller.getOidcCallback(
+        req as Request,
+        res as Response,
+        userSession,
+      );
+
+      expect(userSession.set).toHaveBeenCalledWith(
+        expect.objectContaining({ isEmailVerifiedByPcf: false }),
       );
     });
 
@@ -539,6 +557,7 @@ describe("OidcClientController", () => {
         idpAmr: "amr-value",
         idpIdToken: "id-token",
         idpAcr: "acr-value",
+        isEmailVerifiedByPcf: false,
       });
       expect(userSession.set).toHaveBeenCalledWith({
         idpIdentity: sanitizedIdentity,
