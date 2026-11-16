@@ -14,6 +14,10 @@ PRIVATE_NETWORK_S3_ACCESS_KEY_ID="<privateId>" PRIVATE_NETWORK_S3_SECRET_ACCESS_
 
 ## Use in dev
 
+TypeScript is run natively by Node (type stripping), there is no build step:
+
 ```
-npm run transfer:dev
+npm run transfer
+npm test
+npm run lint
 ```
