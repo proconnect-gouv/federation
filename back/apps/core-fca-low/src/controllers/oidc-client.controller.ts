@@ -198,6 +198,9 @@ export class OidcClientController {
       idpAmr: claims.amr,
       idpIdToken: idToken,
       idpAcr: claims.acr,
+      // A new identity is about to be stored in the session: an email
+      // verification made for a previous identity must not be reused.
+      isEmailVerifiedByPcf: false,
     });
 
     this.logger.track(TrackedEvent.FC_REQUESTED_IDP_TOKEN);

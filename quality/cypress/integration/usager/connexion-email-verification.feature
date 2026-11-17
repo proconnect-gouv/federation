@@ -8,7 +8,7 @@ Fonctionnalité: Connexion Usager - Email verification
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test+mfa@fia2.fr"
     Quand je clique sur le bouton de connexion
-    Alors la page du FI affiche requestedAcrs "eidas0 eidas0-mfa" 
+    Alors la page du FI affiche requestedAcrs "eidas0 eidas0-mfa"
 
  Scénario: on vérifie mon e-mail, je rafraîchis, un seul e-mail est envoyé
     Etant donné que je navigue sur la page fournisseur de service
@@ -95,3 +95,25 @@ Fonctionnalité: Connexion Usager - Email verification
     Et que je rentre le code de confirmation "00000000"
     Alors je vois le message d'erreur "Vous avez dépassé le nombre de tentatives autorisées. Veuillez réessayer plus tard."
 
+  Scénario: un attaquant ne peut pas réutiliser la vérification de son propre e-mail pour se connecter avec mon compte
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que la base de données est réinitialisée
+    Et que le fournisseur de service requiert le claim "acr" avec la valeur "eidas1-mfa"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "pc+attaquant@fia2.fr"
+    Et que je clique sur le bouton de connexion
+    Et que j'utilise le compte usager avec l'email "pc+attaquant@fia2.fr"
+    Et que le fournisseur d'identité garantit un niveau de sécurité "eidas1"
+    Et que je m'authentifie
+    Et que je suis redirigé vers la page de vérification de l'email
+    Et qu'un e-mail a été envoyé à "pc+attaquant@fia2.fr"
+    Et que je valide le code de confirmation reçu par e-mail sans poursuivre la cinématique
+    # Le FI de test garde sa propre session : sans cela, il reconnecterait
+    # silencieusement l'attaquant au lieu d'afficher son formulaire de connexion.
+    Et que je supprime les cookies du fournisseur d'identité "second FI"
+    Et que je relance une connexion avec l'email "pc+victime@fia2.fr" dans la même session
+    Et que j'utilise le compte usager avec l'email "pc+victime@fia2.fr"
+    Et que le fournisseur d'identité garantit un niveau de sécurité "eidas1"
+    Quand je m'authentifie
+    Alors je suis redirigé vers la page de vérification de l'email
+    Et un e-mail a été envoyé à "pc+victime@fia2.fr"
