@@ -10,7 +10,7 @@ export function confirmDialog(message, handler) {
         <div class="modal-body">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-12 text-center">${message}</div>
+              <div class="col-12 text-center confirm-message"></div>
             </div>
           </div>
         </div>
@@ -20,7 +20,10 @@ export function confirmDialog(message, handler) {
         </div>
       </div> 
     </div> 
-  </div>`).appendTo("body");
+  </div>`)
+    .appendTo("body")
+    .find(".confirm-message")
+    .text(message);
 
   //Trigger the modal
   $(".confirm-modal").modal("show");
@@ -51,7 +54,7 @@ export function confirmDialogWithTotp(message, handler) {
         <div class="modal-body">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-12 text-center">${message}</div>
+              <div class="col-12 text-center confirm-message"></div>
             </div>
             <div class="row mt-4 d-flex align-items-center" style="font-size: 1rem">
               <label class="col-2 col-form-label" for="totpModal">TOTP</label>
@@ -70,7 +73,10 @@ export function confirmDialogWithTotp(message, handler) {
         </div>
       </div> 
     </div> 
-  </div>`).appendTo("body");
+  </div>`)
+    .appendTo("body")
+    .find(".confirm-message")
+    .text(message);
 
   //Trigger the modal
   $(".confirm-modal-totp").modal("show");
