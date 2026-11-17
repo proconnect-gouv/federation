@@ -17,7 +17,7 @@
             </div>
             <br>
             <details>
-                <summary id="open-custom-configuration">Usage avancé</summary>
+                <summary id="open-custom-configuration">Champs supplémentaires</summary>
                 <p><small>
                     Liste des valeurs qui seront typés en sortie de l'idp : 'true', 'false', 'null', 'undefined', 'empty', 'empty-array'. Les champs laissés vide ne seront pas renvoyés.
                 </small></p>
@@ -64,6 +64,40 @@
             <br>
             <button type="submit">Se connecter</button>
         </form>
+        <br>
+        <details>
+            <summary id="open-advanced-configuration">Usage avancé</summary>
+            <form action="/interaction/<%= locals.uid %>/advanced-login" method="post">
+                <textarea
+                    name="advanced-login-params"
+                    cols="50"
+                    rows="12"
+                ><%= locals.defaultParamsValue %></textarea>
+                </textarea>
+
+                <p>
+                    ProConnect Fédération reconnait par défaut
+                <a
+                    href="https://partenaires.proconnect.gouv.fr/docs/fournisseur-identite/format-user-info"
+                    target="_blank"
+                    rel="noopener external"
+                    >les valeurs suivantes</a
+                >.
+                </p>
+                <p>
+                    Les autres champs sont regroupés par ProConnect Fédération dans
+                <a
+                    href="https://partenaires.proconnect.gouv.fr/docs/fournisseur-service/custom-scope"
+                    target="_blank"
+                    rel="noopener external"
+                    >un champ custom</a
+                >.
+                </p>
+                
+                <button id="advanced-connection">Connexion personnalisée</button>
+            </form>
+        </details>
+        <br>
         <details id="open-debug-info">
             <summary>Informations de débogage</summary>
             <pre><code><%= locals.debugInfo %></code></pre>
