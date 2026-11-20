@@ -7,6 +7,7 @@ import { getSessionServiceMock } from "#mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
 import { KoaContextWithOIDC } from "oidc-provider";
 import { OidcProviderConfigService } from "./oidc-provider-config.service";
+import { OidcProviderGrantIdentityService } from "./oidc-provider-grant-identity.service";
 
 describe("OidcProviderConfigService", () => {
   let service: OidcProviderConfigService;
@@ -21,6 +22,7 @@ describe("OidcProviderConfigService", () => {
 
   const loggerServiceMock = getLoggerMock();
   const sessionServiceMock = getSessionServiceMock();
+  const grantIdentityServiceMock = { save: jest.fn(), find: jest.fn() };
 
   const oidcProviderRedisAdapterMock = class AdapterMock {};
 
@@ -67,6 +69,10 @@ describe("OidcProviderConfigService", () => {
         ConfigService,
         LoggerService,
         SessionService,
+        {
+          provide: OidcProviderGrantIdentityService,
+          useValue: grantIdentityServiceMock,
+        },
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
@@ -142,39 +148,83 @@ describe("OidcProviderConfigService", () => {
   });
 
   describe("findAccount", () => {
-    it("should return account details with accountId and claims when session is valid", async () => {
-      // Given
-      const sub = "test-sub";
-      const sessionId = "test-session-id";
-      const spIdentityMock = {
-        sub: "test-sub",
-        given_name: "John",
-        family_name: "Doe",
-      };
-      sessionServiceMock.getAlias.mockResolvedValueOnce(sessionId);
-      sessionServiceMock.initCache.mockResolvedValueOnce(true);
-      sessionServiceMock.get.mockReturnValueOnce({
-        spIdentity: spIdentityMock,
+    const sub = "test-sub";
+    const spIdentityMock = {
+      sub,
+      given_name: "John",
+      family_name: "Doe",
+    };
+
+    describe("with a token (/token, /userinfo)", () => {
+      const tokenMock = { grantId: "grant-id" } as any;
+
+      it("should return the identity stored for the grant of the token", async () => {
+        // Given
+        grantIdentityServiceMock.find.mockResolvedValueOnce({
+          spIdentity: spIdentityMock,
+          sessionId: "session-id",
+        });
+
+        // When
+        const result = await service.findAccount(ctxMock, sub, tokenMock);
+
+        // Then
+        expect(grantIdentityServiceMock.find).toHaveBeenCalledWith(
+          "grant-id",
+          sub,
+        );
+        expect(result).toEqual({
+          accountId: sub,
+          claims: expect.any(Function),
+        });
+        const claims = await result.claims(
+          "userinfo",
+          "openid given_name family_name",
+          {},
+          [],
+        );
+        expect(claims).toEqual(spIdentityMock);
       });
 
-      // When
-      const result = await service.findAccount(ctxMock, sub);
+      it("should not load any session", async () => {
+        // Given
+        grantIdentityServiceMock.find.mockResolvedValueOnce({
+          spIdentity: spIdentityMock,
+          sessionId: "session-id",
+        });
 
-      // Then
-      expect(sessionServiceMock.getAlias).toHaveBeenCalledWith(sub);
-      expect(result).toEqual({
-        accountId: spIdentityMock.sub,
-        claims: expect.any(Function),
+        // When
+        await service.findAccount(ctxMock, sub, tokenMock);
+
+        // Then
+        expect(sessionServiceMock.initCache).not.toHaveBeenCalled();
       });
 
-      // Claims function test
-      const claims = await result.claims(
-        "userinfo",
-        "openid given_name family_name",
-        {},
-        [],
-      );
-      expect(claims).toEqual(spIdentityMock);
+      it("should return undefined when the grant has no identity", async () => {
+        // Given
+        grantIdentityServiceMock.find.mockResolvedValueOnce(undefined);
+
+        // When
+        const result = await service.findAccount(ctxMock, sub, tokenMock);
+
+        // Then
+        expect(result).toBeUndefined();
+      });
+    });
+
+    describe("without token (/authorize)", () => {
+      it("should return the account with the sub only", async () => {
+        // When
+        const result = await service.findAccount(ctxMock, sub);
+
+        // Then
+        expect(grantIdentityServiceMock.find).not.toHaveBeenCalled();
+        expect(sessionServiceMock.initCache).not.toHaveBeenCalled();
+        expect(result.accountId).toBe(sub);
+        expect(await result.claims("id_token", "openid", {}, [])).toEqual({
+          sub,
+        });
+      });
     });
   });
 

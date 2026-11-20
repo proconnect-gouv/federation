@@ -1,4 +1,5 @@
 import { ConfigModule } from "#libs/config";
+import { CryptographyModule } from "#libs/cryptography";
 import { BaseExceptionFilter, ExceptionsModule } from "#libs/exceptions";
 import { LoggerModule } from "#libs/logger";
 import { IServiceProviderAdapter } from "#libs/oidc";
@@ -12,7 +13,10 @@ import { DynamicModule, Module, Type } from "@nestjs/common";
 import { ModuleMetadata } from "@nestjs/common/interfaces";
 import { OidcProviderSessionNotFoundExceptionFilter } from "./filters/oidc-provider-session-not-found-exception.filter";
 import { OidcProviderService } from "./oidc-provider.service";
-import { OidcProviderConfigService } from "./services";
+import {
+  OidcProviderConfigService,
+  OidcProviderGrantIdentityService,
+} from "./services";
 
 @Module({})
 export class OidcProviderModule {
@@ -37,6 +41,7 @@ export class OidcProviderModule {
       module: OidcProviderModule,
       imports: [
         ConfigModule,
+        CryptographyModule,
         RedisModule,
         ServiceProviderModule,
         IdentityProviderAdapterMongoModule,
@@ -54,9 +59,15 @@ export class OidcProviderModule {
         serviceProviderProvider,
         OidcProviderService,
         OidcProviderConfigService,
+        OidcProviderGrantIdentityService,
         OidcProviderSessionNotFoundExceptionFilter,
       ],
-      exports: [OidcProviderService, RedisModule, serviceProviderProvider],
+      exports: [
+        OidcProviderService,
+        OidcProviderGrantIdentityService,
+        RedisModule,
+        serviceProviderProvider,
+      ],
     };
   }
 }

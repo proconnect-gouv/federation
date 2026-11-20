@@ -17,7 +17,10 @@ import {
   OidcProviderRoutes,
 } from "./enums";
 import { OidcProviderInitialisationException } from "./exceptions";
-import { OidcProviderConfigService } from "./services";
+import {
+  OidcProviderConfigService,
+  OidcProviderGrantIdentityService,
+} from "./services";
 
 export const COOKIES = ["_session", "_interaction", "_interaction_resume"];
 
@@ -37,6 +40,7 @@ export class OidcProviderService {
     readonly redis: RedisService,
     private readonly configService: OidcProviderConfigService,
     protected readonly sessionService: SessionService,
+    private readonly grantIdentity: OidcProviderGrantIdentityService,
   ) {}
 
   /**
@@ -131,8 +135,39 @@ export class OidcProviderService {
     },
   ) {
     const { spIdentity } = this.sessionService.get<UserSession>("User");
-
     const sessionId = this.sessionService.getId();
+    const { params } = await this.provider.interactionDetails(req, res);
+
+    // A new grant per interaction, as in oidc-provider's skip_consent recipe:
+    // each login keeps its own identity, even when one oidc-provider session
+    // serves several logins. oidc-provider's default loadExistingGrant loads
+    // it through result.consent.grantId.
+    const grant = new this.provider.Grant({
+      accountId: spIdentity.sub,
+      clientId: params.client_id as string,
+    });
+    grant.addOIDCScope(params.scope as string);
+    if (params.claims) {
+      // already validated by oidc-provider at /authorize
+      const { id_token, userinfo } =
+        typeof params.claims === "string"
+          ? JSON.parse(params.claims)
+          : params.claims;
+      grant.addOIDCClaims([
+        ...Object.keys(id_token ?? {}),
+        ...Object.keys(userinfo ?? {}),
+      ]);
+    }
+    const grantId = await grant.save();
+    // the grant is never extended: its remaining TTL is ttl.Grant
+    await this.grantIdentity.save(
+      grantId,
+      { spIdentity, sessionId },
+      grant.remainingTTL,
+    );
+
+    // @todo remove in the next release, along with SessionService.setAlias:
+    // pods of the previous release still read this alias during the rollout.
     await this.sessionService.setAlias(spIdentity.sub, sessionId);
 
     const result = {
@@ -144,7 +179,7 @@ export class OidcProviderService {
         remember: false,
       },
       // skip the consent
-      consent: {},
+      consent: { grantId },
     } as InteractionResults;
 
     return await this.provider.interactionFinished(req, res, result);
