@@ -49,3 +49,30 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je m'authentifie
     Et je suis connecté au fournisseur de service
     Et le cookie "pc_session_id" est présent
+
+  Scénario: Session - le premier FS reçoit toujours l'identité de ma connexion après une connexion de mon compte depuis un autre navigateur
+    Etant donné que les navigateurs sont réinitialisés
+    Et que j'utilise le navigateur "premier"
+    Et que je navigue sur la page fournisseur de service "premier FS"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je m'authentifie
+    Et que je suis redirigé vers la page fournisseur de service "premier FS"
+    Et que le siret transmis au fournisseur de service est le suivant "21920023500014"
+    # Un autre navigateur : nouvelle session ProConnect et nouvelle authentification auprès du FI
+    Et que j'utilise le navigateur "second"
+    Et que je navigue sur la page fournisseur de service "second FS"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    # Même compte ProConnect (même sub), mais une autre organisation
+    Et que j'utilise un compte usager d'une organisation privée
+    Et que je m'authentifie
+    Et que je suis redirigé vers la page fournisseur de service "second FS"
+    Et que le siret transmis au fournisseur de service est le suivant "41816609600069"
+    Quand j'utilise le navigateur "premier"
+    Et que je navigue sur la page fournisseur de service "premier FS"
+    Et que je redemande les informations de l'usager
+    # Le premier FS lit l'identité de sa propre connexion, pas celle de la dernière connexion de ce sub
+    Alors le siret transmis au fournisseur de service est le suivant "21920023500014"

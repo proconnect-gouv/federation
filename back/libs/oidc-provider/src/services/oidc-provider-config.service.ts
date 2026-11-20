@@ -6,7 +6,6 @@ import {
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from "#libs/oidc";
 import { SessionConfig, SessionService } from "#libs/session";
-import { UserSession } from "#src";
 import { Inject, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import { Configuration, KoaContextWithOIDC } from "oidc-provider";
@@ -14,6 +13,7 @@ import { v4 as uuid } from "uuid";
 import { OidcProviderRedisAdapter } from "../adapters";
 import { OidcProviderConfig } from "../dto";
 import { OidcProviderService } from "../oidc-provider.service";
+import { OidcProviderGrantIdentityService } from "./oidc-provider-grant-identity.service";
 
 @Injectable()
 export class OidcProviderConfigService {
@@ -23,6 +23,7 @@ export class OidcProviderConfigService {
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: IServiceProviderAdapter,
     protected readonly sessionService: SessionService,
+    private readonly grantIdentity: OidcProviderGrantIdentityService,
   ) {}
 
   /**
@@ -157,7 +158,6 @@ export class OidcProviderConfigService {
       interactions: { url },
       issueRefreshToken: () => true,
       jwks,
-      loadExistingGrant: this.loadExistingGrant,
       pkce: {
         methods: ["S256"],
         required: () => false,
@@ -172,6 +172,9 @@ export class OidcProviderConfigService {
         // default values can be found in the documentation
         // https://github.com/panva/node-oidc-provider/blob/v8.x/docs/README.md#ttl
         AuthorizationCode: 600, // 10 minute in seconds
+        // A grant lives one Grant TTL after its interaction: it is never
+        // extended, and its identity record has the same TTL.
+        // see OidcProviderService.finishInteraction
         Grant: sessionLifetime,
         Session: sessionLifetime,
         RefreshToken: function RefreshTokenTTL(ctx, token, client) {
@@ -197,52 +200,6 @@ export class OidcProviderConfigService {
   private url(prefix: string, _ctx: KoaContextWithOIDC, interaction: any) {
     return `${prefix}/interaction/${interaction.uid}`;
   }
-
-  /* istanbul ignore next */
-  loadExistingGrant: Configuration["loadExistingGrant"] = async (ctx) => {
-    // We want to skip the consent
-    // inspired from https://github.com/panva/node-oidc-provider/blob/main/recipes/skip_consent.md
-    // We updated the function to ensure it always return a grant.
-    // As a consequence, the consent prompt should never be requested afterward.
-
-    // The grant id never comes from consent results, so we simplified this line
-    if (!ctx.oidc.session || !ctx.oidc.client || !ctx.oidc.params) {
-      return undefined;
-    }
-    const oidcContextParams = ctx.oidc.params;
-    const grantId = ctx.oidc.session.grantIdFor(ctx.oidc.client.clientId);
-
-    let grant: KoaContextWithOIDC["oidc"]["entities"]["Grant"];
-
-    if (grantId) {
-      grant = await ctx.oidc.provider.Grant.find(grantId);
-      // if the grant has expired, the grant can be undefined at this point.
-      if (grant) {
-        // Keep grant expiry aligned with session expiry to prevent consent
-        // prompt being requested when the grant is about to expire.
-        // The original code is overkill as session length is extended on every
-        // interaction.
-
-        const sessionTtlInSeconds = 14 * 24 * 60 * 60;
-        grant.exp = Math.floor(Date.now() / 1000) + sessionTtlInSeconds;
-        await grant.save();
-      }
-    }
-
-    if (!grant) {
-      grant = new ctx.oidc.provider.Grant({
-        clientId: ctx.oidc.client.clientId,
-        accountId: ctx.oidc.session.accountId,
-      });
-    }
-
-    // event existing grant should be updated, as requested scopes might be different
-    grant.addOIDCScope(oidcContextParams.scope as string);
-    grant.addOIDCClaims(Array.from(ctx.oidc.requestParamClaims || []));
-
-    await grant.save();
-    return grant;
-  };
 
   logoutSource: Configuration["features"]["rpInitiatedLogout"]["logoutSource"] =
     (ctx, form) => {
@@ -279,17 +236,29 @@ export class OidcProviderConfigService {
       ctx.body = res.render("error", errorPageParams);
     };
 
-  findAccount: Configuration["findAccount"] = async (
-    _ctx: KoaContextWithOIDC,
-    sub: string,
-  ) => {
-    const sessionId = await this.sessionService.getAlias(sub);
-    await this.sessionService.initCache(sessionId);
+  findAccount: Configuration["findAccount"] = async (_ctx, sub, token) => {
+    if (!token) {
+      // /authorize: claims() is not called there (responseTypes: ["code"]).
+      return {
+        accountId: sub,
+        async claims() {
+          return { sub };
+        },
+      };
+    }
 
-    const { spIdentity } = this.sessionService.get<UserSession>("User");
+    // /token and /userinfo are called by the SP, without the browser session:
+    // read the identity of the login that issued the token.
+    const grantIdentity = await this.grantIdentity.find(token.grantId, sub);
+
+    if (!grantIdentity) {
+      return undefined;
+    }
+
+    const { spIdentity } = grantIdentity;
 
     return {
-      accountId: spIdentity.sub,
+      accountId: sub,
 
       async claims() {
         return { ...spIdentity };

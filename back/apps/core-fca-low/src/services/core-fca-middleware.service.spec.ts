@@ -1,9 +1,13 @@
 import { ConfigService } from "#libs/config";
 import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
 import { LoggerService } from "#libs/logger";
-import { OidcCtx, OidcProviderService } from "#libs/oidc-provider";
+import {
+  OidcCtx,
+  OidcProviderGrantIdentityService,
+  OidcProviderService,
+} from "#libs/oidc-provider";
 import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
-import { SessionService } from "#libs/session";
+import { SessionNotFoundException, SessionService } from "#libs/session";
 import { getLoggerMock } from "#mocks/logger";
 import { getSessionServiceMock } from "#mocks/session";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -26,6 +30,7 @@ describe("CoreFcaMiddlewareService", () => {
   let mockSessionService: jest.Mocked<SessionService>;
   const mockLoggerService: jest.Mocked<LoggerService> = getLoggerMock();
   let validateMock: jest.Mock;
+  const grantIdentityMock = { save: jest.fn(), find: jest.fn() };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,6 +45,10 @@ describe("CoreFcaMiddlewareService", () => {
         { provide: SessionService, useValue: getSessionServiceMock() },
         { provide: ServiceProviderAdapterMongoService, useValue: jest.fn() },
         { provide: IdentityProviderAdapterMongoService, useValue: jest.fn() },
+        {
+          provide: OidcProviderGrantIdentityService,
+          useValue: grantIdentityMock,
+        },
       ],
     }).compile();
 
@@ -114,49 +123,124 @@ describe("CoreFcaMiddlewareService", () => {
     expect(unsupportedCtx.query.prompt).toBeUndefined();
   });
 
-  it("should call sessionService.initCache and return { isSessionLoaded: true } in loadSessionInAsyncLocalStorage", async () => {
+  describe("loadSessionInAsyncLocalStorage", () => {
     const mockCtx = {
-      oidc: { entities: { Account: { accountId: "123" } } },
-      req: {},
+      oidc: {
+        entities: {
+          Account: { accountId: "test-sub" },
+          Grant: { jti: "grant-id" },
+        },
+      },
     };
-    mockSessionService.getAlias.mockResolvedValueOnce("123");
-    const { isSessionLoaded } = await (
-      service as any
-    ).loadSessionInAsyncLocalStorage(mockCtx);
 
-    expect(mockSessionService.initCache).toHaveBeenCalled();
-    expect(isSessionLoaded).toBeTrue();
+    beforeEach(() => {
+      grantIdentityMock.find.mockReset();
+    });
+
+    it("should load the session of the login that issued the grant", async () => {
+      grantIdentityMock.find.mockResolvedValueOnce({
+        spIdentity: { sub: "test-sub" },
+        sessionId: "session-id",
+      });
+
+      const { isSessionLoaded } = await (
+        service as any
+      ).loadSessionInAsyncLocalStorage(mockCtx);
+
+      expect(grantIdentityMock.find).toHaveBeenCalledWith(
+        "grant-id",
+        "test-sub",
+      );
+      expect(mockSessionService.initCache).toHaveBeenCalledWith("session-id");
+      expect(isSessionLoaded).toBeTrue();
+    });
+
+    it("should return { isSessionLoaded: false } if there is no accountId in ctx", async () => {
+      const { isSessionLoaded } = await (
+        service as any
+      ).loadSessionInAsyncLocalStorage({ oidc: {} });
+
+      expect(grantIdentityMock.find).not.toHaveBeenCalled();
+      expect(isSessionLoaded).toBeFalse();
+    });
+
+    it("should return { isSessionLoaded: false } if there is no grant in ctx", async () => {
+      const { isSessionLoaded } = await (
+        service as any
+      ).loadSessionInAsyncLocalStorage({
+        oidc: { entities: { Account: { accountId: "test-sub" } } },
+      });
+
+      expect(grantIdentityMock.find).not.toHaveBeenCalled();
+      expect(isSessionLoaded).toBeFalse();
+    });
+
+    it("should return { isSessionLoaded: false } if the grant has no identity", async () => {
+      grantIdentityMock.find.mockResolvedValueOnce(undefined);
+
+      const { isSessionLoaded } = await (
+        service as any
+      ).loadSessionInAsyncLocalStorage(mockCtx);
+
+      expect(mockSessionService.initCache).not.toHaveBeenCalled();
+      expect(isSessionLoaded).toBeFalse();
+    });
+
+    it("should return { isSessionLoaded: false } if the session has expired", async () => {
+      grantIdentityMock.find.mockResolvedValueOnce({
+        spIdentity: { sub: "test-sub" },
+        sessionId: "session-id",
+      });
+      mockSessionService.initCache.mockRejectedValueOnce(
+        new SessionNotFoundException(),
+      );
+
+      const { isSessionLoaded } = await (
+        service as any
+      ).loadSessionInAsyncLocalStorage(mockCtx);
+
+      expect(isSessionLoaded).toBeFalse();
+    });
   });
 
-  it("should return { isSessionLoaded: false } if there is no accountId in ctx", async () => {
-    const mockCtx = { oidc: {}, req: {} };
-    const { isSessionLoaded } = await (
-      service as any
-    ).loadSessionInAsyncLocalStorage(mockCtx);
-    expect(isSessionLoaded).toBeFalse();
-  });
-
-  it("should initialize session, set alias, and track event in tokenMiddleware", async () => {
+  it("should load the session and track event in tokenMiddleware", async () => {
     const mockCtx = {
-      oidc: { entities: { AccessToken: {}, Account: { accountId: "123" } } },
+      oidc: {
+        entities: {
+          AccessToken: {},
+          Account: { accountId: "test-sub" },
+          Grant: { jti: "grant-id" },
+        },
+      },
     };
-    mockSessionService.getAlias.mockResolvedValueOnce("123");
+    grantIdentityMock.find.mockResolvedValueOnce({
+      spIdentity: { sub: "test-sub" },
+      sessionId: "session-id",
+    });
     const spyInitCache = jest.spyOn(mockSessionService, "initCache");
     const spyTrack = jest.spyOn(mockLoggerService, "track");
     await (service as any).tokenMiddleware(mockCtx);
-    expect(spyInitCache).toHaveBeenCalled();
+    expect(spyInitCache).toHaveBeenCalledWith("session-id");
     expect(spyTrack).toHaveBeenCalled();
   });
 
-  it("should initialize session and track event in userinfoMiddleware", async () => {
+  it("should load the session and track event in userinfoMiddleware", async () => {
     const mockCtx = {
-      oidc: { entities: { Account: { accountId: "123" } } },
+      oidc: {
+        entities: {
+          Account: { accountId: "test-sub" },
+          Grant: { jti: "grant-id" },
+        },
+      },
     };
-    mockSessionService.getAlias.mockResolvedValueOnce("123");
+    grantIdentityMock.find.mockResolvedValueOnce({
+      spIdentity: { sub: "test-sub" },
+      sessionId: "session-id",
+    });
     const spyInitCache = jest.spyOn(mockSessionService, "initCache");
     const spyTrack = jest.spyOn(mockLoggerService, "track");
     await (service as any).userinfoMiddleware(mockCtx);
-    expect(spyInitCache).toHaveBeenCalled();
+    expect(spyInitCache).toHaveBeenCalledWith("session-id");
     expect(spyTrack).toHaveBeenCalled();
   });
 
