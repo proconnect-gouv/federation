@@ -9,9 +9,11 @@ import CookieParser from "cookie-parser";
 import { renderFile } from "ejs";
 import { urlencoded } from "express";
 import helmet from "helmet";
+import { createServer } from "https";
 import { join } from "path";
 import { AppModule } from "./app.module";
 import config from "./config";
+import { createMaintenanceAppFromConfig } from "./maintenance/maintenance";
 
 async function bootstrap() {
   const configService = new ConfigService({
@@ -25,6 +27,7 @@ async function bootstrap() {
     assetsDsfrPaths,
     assetsCacheTtl,
     matomoEnabled,
+    maintenanceMode,
     httpsOptions: { key, cert },
     contentSecurityPolicy: {
       defaultSrc,
@@ -36,9 +39,22 @@ async function bootstrap() {
     },
   } = configService.get<AppConfig>("App");
 
-  const appModule = AppModule.forRoot(configService);
-
   const httpsOptions = key && cert ? { key, cert } : null;
+
+  if (maintenanceMode) {
+    const maintenanceApp = createMaintenanceAppFromConfig(
+      configService,
+      __dirname,
+    );
+    (httpsOptions
+      ? createServer(httpsOptions, maintenanceApp)
+      : maintenanceApp
+    ).listen(3000);
+    console.warn("Maintenance mode enabled: only serving maintenance page");
+    return;
+  }
+
+  const appModule = AppModule.forRoot(configService);
 
   const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**
