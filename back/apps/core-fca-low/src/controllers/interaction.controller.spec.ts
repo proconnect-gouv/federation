@@ -299,6 +299,43 @@ describe("InteractionController", () => {
       );
     });
 
+    it("should forward login_hint to the hinted IdP when both idp_hint and login_hint are provided", async () => {
+      const req = { sessionId: "session1" } as unknown as Request;
+      const res = { redirect: jest.fn() } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({}),
+        set: jest.fn(),
+        clear: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: "interaction123",
+        params: {
+          client_id: "sp123",
+          idp_hint: "idp123",
+          login_hint: "hint@example.com",
+        },
+      });
+      identityProviderMock.getById.mockResolvedValue({ id: "idp123" });
+
+      await controller.getInteraction(
+        req,
+        res as Response,
+        {},
+        {} as any,
+        userSessionService,
+      );
+
+      expect(userSessionService.set).toHaveBeenCalledWith({
+        idpLoginHint: "hint@example.com",
+      });
+      expect(coreFcaControllerMock.redirectToIdpWithIdpId).toHaveBeenCalledWith(
+        req,
+        res,
+        "idp123",
+      );
+    });
+
     it("should call abort interaction for invalid IdP hints", async () => {
       const req = { query: {} } as Request;
       const res = { redirect: jest.fn() } as unknown as Response;

@@ -159,6 +159,9 @@ export class InteractionController {
     if (idpHint) {
       this.logger.track(TrackedEvent.FC_REDIRECTED_TO_HINTED_IDP);
 
+      userSession.set({ idpLoginHint: spLoginHint });
+      await userSession.commit();
+
       return this.coreFcaControllerService.redirectToIdpWithIdpId(
         req,
         res,
