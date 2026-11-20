@@ -71,12 +71,13 @@ export class LoggerService {
     this.logWithContext(LogLevels.TRACE, obj, msg, ...args);
   }
 
-  track(event: TrackedEvent): void {
+  track(event: TrackedEvent, context: Record<string, unknown> = {}): void {
     const pluginsContext = this.getContextFromPlugins();
 
     this.pino.info({
       event,
       step: trackedEventSteps[event],
+      ...context,
       ...pluginsContext,
     });
   }

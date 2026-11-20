@@ -131,7 +131,12 @@ export class OidcProviderController {
     const activeUserSessionValidationErrors = await validate(activeUserSession);
     const isUserConnected = isEmpty(activeUserSessionValidationErrors);
 
-    if (isUserConnected) {
+    // A cross-device authenticated session was not opened with the IdP from
+    // this device, so only the ProConnect session is terminated
+    const shouldLogoutFromIdp =
+      isUserConnected && !activeUserSession.isCrossDeviceAuthenticated;
+
+    if (shouldLogoutFromIdp) {
       const { idpIdToken, idpId } = activeUserSession;
       userSession.clear();
 

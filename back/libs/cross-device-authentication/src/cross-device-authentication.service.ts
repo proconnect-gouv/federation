@@ -1,4 +1,5 @@
 import { ConfigService } from "#libs/config";
+import { LoggerService, TrackedEvent } from "#libs/logger";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { randomInt } from "crypto";
@@ -8,12 +9,27 @@ import { NOT_REVIEWED_STATUSES, RequestStatus } from "./enums";
 import { formatUserAgent } from "./helpers";
 import { CrossDeviceAuthenticationRequest } from "./schemas";
 
+const TRACKED_EVENTS: Record<RequestStatus, TrackedEvent> = {
+  [RequestStatus.CREATED]: TrackedEvent.FC_CROSS_DEVICE_AUTHENTICATION_CREATED,
+  [RequestStatus.VERIFICATION_STARTED]:
+    TrackedEvent.FC_CROSS_DEVICE_AUTHENTICATION_VERIFICATION_STARTED,
+  [RequestStatus.EMOJIS_DISPLAYED]:
+    TrackedEvent.FC_CROSS_DEVICE_AUTHENTICATION_EMOJIS_DISPLAYED,
+  [RequestStatus.APPROVED]:
+    TrackedEvent.FC_CROSS_DEVICE_AUTHENTICATION_APPROVED,
+  [RequestStatus.REJECTED]:
+    TrackedEvent.FC_CROSS_DEVICE_AUTHENTICATION_REJECTED,
+  [RequestStatus.CONSUMED]:
+    TrackedEvent.FC_CROSS_DEVICE_AUTHENTICATION_CONSUMED,
+};
+
 @Injectable()
 export class CrossDeviceAuthenticationService {
   constructor(
     @InjectModel("CrossDeviceAuthenticationRequest")
     private model: Model<CrossDeviceAuthenticationRequest>,
     private readonly config: ConfigService,
+    private readonly logger: LoggerService,
   ) {}
 
   async findOrCreateRequest(params: {
@@ -84,6 +100,7 @@ export class CrossDeviceAuthenticationService {
       return null;
     }
     const now = new Date();
+    // The request as it was before the update
     const request = await this.model.findOneAndUpdate(
       {
         _id: params.requestId,
@@ -108,12 +125,20 @@ export class CrossDeviceAuthenticationService {
           },
         },
       ],
-      { new: true, updatePipeline: true },
+      { updatePipeline: true },
     );
     if (!request) {
       return null;
     }
-    return { status: request.status, emojis: request.emojis };
+
+    const { emojis } = request;
+    if (request.status === RequestStatus.EMOJIS_DISPLAYED) {
+      return { status: RequestStatus.EMOJIS_DISPLAYED, emojis };
+    }
+    if (request.status === RequestStatus.CREATED) {
+      this.trackStatus(params.requestId, RequestStatus.VERIFICATION_STARTED);
+    }
+    return { status: RequestStatus.VERIFICATION_STARTED, emojis };
   }
 
   async markAsEmojisDisplayed(params: {
@@ -123,7 +148,7 @@ export class CrossDeviceAuthenticationService {
     if (!isValidObjectId(params.requestId) || !params.browsingSessionId) {
       return;
     }
-    await this.model.findOneAndUpdate(
+    const request = await this.model.findOneAndUpdate(
       {
         _id: params.requestId,
         status: RequestStatus.VERIFICATION_STARTED,
@@ -132,12 +157,16 @@ export class CrossDeviceAuthenticationService {
       },
       { status: RequestStatus.EMOJIS_DISPLAYED, updatedAt: new Date() },
     );
+    if (request) {
+      this.trackStatus(params.requestId, RequestStatus.EMOJIS_DISPLAYED);
+    }
   }
 
   async review(params: {
     requestId: string;
     email: string;
     status: RequestStatus.APPROVED | RequestStatus.REJECTED;
+    reviewerSessionId: string;
   }): Promise<boolean> {
     if (!isValidObjectId(params.requestId)) {
       return false;
@@ -149,9 +178,49 @@ export class CrossDeviceAuthenticationService {
         email: params.email.toLowerCase(),
         ...this.getNotExpiredFilter(),
       },
-      { status: params.status, updatedAt: new Date() },
+      {
+        status: params.status,
+        updatedAt: new Date(),
+        // Only an approved request needs the session of its reviewer
+        ...(params.status === RequestStatus.APPROVED && {
+          reviewerSessionId: params.reviewerSessionId,
+        }),
+      },
     );
-    return !!request;
+    if (!request) {
+      return false;
+    }
+    this.trackStatus(params.requestId, params.status);
+    return true;
+  }
+
+  async consume(params: {
+    requestId: string;
+    browsingSessionId: string;
+  }): Promise<{ reviewerSessionId: string | null } | null> {
+    if (!isValidObjectId(params.requestId) || !params.browsingSessionId) {
+      return null;
+    }
+    // The request as it was before the update, with the session id that the
+    // update removes: it can only be used once
+    const request = await this.model.findOneAndUpdate(
+      {
+        _id: params.requestId,
+        status: RequestStatus.APPROVED,
+        browsingSessionId: params.browsingSessionId,
+        ...this.getNotExpiredFilter(),
+      },
+      {
+        $set: { status: RequestStatus.CONSUMED, updatedAt: new Date() },
+        $unset: { reviewerSessionId: "" },
+      },
+    );
+    if (!request) {
+      return null;
+    }
+    this.trackStatus(params.requestId, RequestStatus.CONSUMED);
+
+    return { reviewerSessionId: request.reviewerSessionId ?? null };
   }
 
   private async findLatestNotReviewedRequest(params: {
@@ -186,6 +255,7 @@ export class CrossDeviceAuthenticationService {
       email: params.email.toLowerCase(),
       browsingSessionId: params.browsingSessionId,
     });
+    this.trackStatus(_id.toString(), RequestStatus.CREATED);
     return { _id };
   }
 
@@ -213,6 +283,12 @@ export class CrossDeviceAuthenticationService {
         },
       ],
     };
+  }
+
+  private trackStatus(requestId: string, status: RequestStatus): void {
+    this.logger.track(TRACKED_EVENTS[status], {
+      crossDeviceAuthenticationRequestId: requestId,
+    });
   }
 
   private generateEmojis(): string[] {

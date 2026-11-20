@@ -4,21 +4,29 @@ import {
   RequestStatus,
   XdaNotEnabled,
   XdaRequestNotFound,
+  XdaReviewerSessionInvalid,
 } from "#libs/cross-device-authentication";
 import { CsrfService } from "#libs/csrf";
 import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
-import { ISessionService } from "#libs/session";
+import { ISessionService, SessionService } from "#libs/session";
 import { Test, TestingModule } from "@nestjs/testing";
+import { validate } from "class-validator";
 import { Request, Response } from "express";
-import { ActiveUserSessionDto } from "../dto/user-session/active-user-session.dto";
 import { AfterRedirectToRieWarningSessionDto } from "../dto/user-session/after-redirect-to-rie-warning-session.dto";
+import { ReviewerSessionDto } from "../dto/user-session/reviewer-session.dto";
 import { CrossDeviceAuthenticationController } from "./cross-device-authentication.controller";
+
+jest.mock("class-validator", () => ({
+  ...jest.requireActual("class-validator"),
+  validate: jest.fn(),
+}));
 
 describe("CrossDeviceAuthenticationController", () => {
   let controller: CrossDeviceAuthenticationController;
 
   let crossDeviceAuthenticationServiceMock: any;
   let serviceProviderMock: any;
+  let sessionServiceMock: any;
   let res: Response;
 
   beforeEach(async () => {
@@ -30,8 +38,13 @@ describe("CrossDeviceAuthenticationController", () => {
       markAsEmojisDisplayed: jest.fn(),
       markAsVerificationStarted: jest.fn(),
       review: jest.fn(),
+      consume: jest.fn(),
     };
     serviceProviderMock = { getById: jest.fn() };
+    sessionServiceMock = {
+      getId: jest.fn(),
+      getDataFromBackend: jest.fn(),
+    };
     res = { render: jest.fn(), redirect: jest.fn() } as unknown as Response;
 
     const module: TestingModule = await Test.createTestingModule({
@@ -41,6 +54,7 @@ describe("CrossDeviceAuthenticationController", () => {
         ServiceProviderAdapterMongoService,
         CsrfService,
         ConfigService,
+        SessionService,
       ],
     })
       .overrideProvider(CrossDeviceAuthenticationService)
@@ -54,6 +68,8 @@ describe("CrossDeviceAuthenticationController", () => {
       })
       .overrideProvider(ConfigService)
       .useValue({ get: jest.fn().mockReturnValue({ urlPrefix: "/api/v2" }) })
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
     controller = module.get<CrossDeviceAuthenticationController>(
@@ -183,6 +199,159 @@ describe("CrossDeviceAuthenticationController", () => {
     });
   });
 
+  describe("continueCrossDeviceAuthentication()", () => {
+    const requesterSession = {
+      get: jest.fn().mockReturnValue({
+        browsingSessionId: "requester-browsing-session-id",
+        idpLoginHint: "User@Example.com",
+        idpId: "rie-idp-id",
+        interactionId: "interaction-id",
+      }),
+      set: jest.fn(),
+      duplicate: jest.fn(),
+    } as unknown as ISessionService<AfterRedirectToRieWarningSessionDto>;
+    const reviewerUserSession = {
+      browsingSessionId: "reviewer-browsing-session-id",
+      idpId: "rie-idp-id",
+      idpName: "RIE IdP",
+      idpLabel: "RIE",
+      idpAcr: "eidas1",
+      idpAmr: ["pwd"],
+      idpIdentity: { email: "user@example.com" },
+      spIdentity: { sub: "account-sub", email: "user@example.com" },
+      isEmailVerifiedByPcf: true,
+      idpIdToken: "reviewer-id-token",
+      authTime: 1_700_000_000,
+    };
+
+    beforeEach(() => {
+      crossDeviceAuthenticationServiceMock.consume.mockResolvedValue({
+        reviewerSessionId: "reviewer-session-id",
+      });
+      sessionServiceMock.getDataFromBackend.mockResolvedValue({
+        User: reviewerUserSession,
+      });
+      (validate as jest.Mock).mockResolvedValue([]);
+    });
+
+    it("should share the identity of the reviewer with the requester and redirect to the verify step", async () => {
+      await controller.continueCrossDeviceAuthentication(
+        res,
+        "request-id",
+        requesterSession,
+      );
+
+      expect(crossDeviceAuthenticationServiceMock.consume).toHaveBeenCalledWith(
+        {
+          requestId: "request-id",
+          browsingSessionId: "requester-browsing-session-id",
+        },
+      );
+      expect(sessionServiceMock.getDataFromBackend).toHaveBeenCalledWith(
+        "reviewer-session-id",
+      );
+      expect(requesterSession.duplicate).toHaveBeenCalled();
+      expect(requesterSession.set).toHaveBeenCalledWith({
+        idpId: "rie-idp-id",
+        idpName: "RIE IdP",
+        idpLabel: "RIE",
+        idpAcr: "eidas1",
+        idpAmr: ["pwd"],
+        idpIdentity: { email: "user@example.com" },
+        spIdentity: { sub: "account-sub", email: "user@example.com" },
+        isEmailVerifiedByPcf: true,
+        authTime: 1_700_000_000,
+        isCrossDeviceAuthenticated: true,
+        idpNonce: null,
+        idpState: null,
+        idpAuthorizationUrl: null,
+      });
+      expect(res.redirect).toHaveBeenCalledWith(
+        "/api/v2/interaction/interaction-id/verify",
+      );
+    });
+
+    it("should throw when no approved request of the browsing session matches", async () => {
+      crossDeviceAuthenticationServiceMock.consume.mockResolvedValue(null);
+
+      await expect(
+        controller.continueCrossDeviceAuthentication(
+          res,
+          "request-id",
+          requesterSession,
+        ),
+      ).rejects.toThrow(XdaRequestNotFound);
+      expect(requesterSession.set).not.toHaveBeenCalled();
+    });
+
+    it("should throw when the request has no session of its reviewer anymore", async () => {
+      crossDeviceAuthenticationServiceMock.consume.mockResolvedValue({
+        reviewerSessionId: null,
+      });
+
+      await expect(
+        controller.continueCrossDeviceAuthentication(
+          res,
+          "request-id",
+          requesterSession,
+        ),
+      ).rejects.toThrow(XdaReviewerSessionInvalid);
+      expect(sessionServiceMock.getDataFromBackend).not.toHaveBeenCalled();
+      expect(requesterSession.set).not.toHaveBeenCalled();
+    });
+
+    it("should throw when the session of the reviewer does not exist anymore", async () => {
+      sessionServiceMock.getDataFromBackend.mockRejectedValue(
+        new Error("session not found"),
+      );
+
+      await expect(
+        controller.continueCrossDeviceAuthentication(
+          res,
+          "request-id",
+          requesterSession,
+        ),
+      ).rejects.toThrow(XdaReviewerSessionInvalid);
+      expect(requesterSession.set).not.toHaveBeenCalled();
+    });
+
+    it("should throw when the session of the reviewer is not an active session obtained without cross-device authentication", async () => {
+      (validate as jest.Mock).mockResolvedValue([
+        { property: "isCrossDeviceAuthenticated" },
+      ]);
+
+      await expect(
+        controller.continueCrossDeviceAuthentication(
+          res,
+          "request-id",
+          requesterSession,
+        ),
+      ).rejects.toThrow(XdaReviewerSessionInvalid);
+      expect(requesterSession.set).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      { idpIdentity: { email: "other@example.com" } },
+      { idpId: "other-idp-id" },
+    ])(
+      "should throw when the reviewer is not the requester, or comes from another IdP (%o)",
+      async (reviewerDifference) => {
+        sessionServiceMock.getDataFromBackend.mockResolvedValue({
+          User: { ...reviewerUserSession, ...reviewerDifference },
+        });
+
+        await expect(
+          controller.continueCrossDeviceAuthentication(
+            res,
+            "request-id",
+            requesterSession,
+          ),
+        ).rejects.toThrow(XdaReviewerSessionInvalid);
+        expect(requesterSession.set).not.toHaveBeenCalled();
+      },
+    );
+  });
+
   describe("markCrossDeviceAuthenticationEmojisAsDisplayed()", () => {
     it("should mark the request of the browsing session as having its emojis displayed", async () => {
       const userSession = {
@@ -255,7 +424,7 @@ describe("CrossDeviceAuthenticationController", () => {
         get: jest
           .fn()
           .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
-      } as unknown as ISessionService<ActiveUserSessionDto>;
+      } as unknown as ISessionService<ReviewerSessionDto>;
       crossDeviceAuthenticationServiceMock.getNotReviewedRequests.mockResolvedValue(
         [{ id: "request-id", spName: "My SP", device: "Firefox sur Windows" }],
       );
@@ -290,7 +459,7 @@ describe("CrossDeviceAuthenticationController", () => {
         get: jest
           .fn()
           .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
-      } as unknown as ISessionService<ActiveUserSessionDto>;
+      } as unknown as ISessionService<ReviewerSessionDto>;
       crossDeviceAuthenticationServiceMock.getNotReviewedRequests.mockResolvedValue(
         [
           { id: "request-id-1", spName: "My SP", device: "Firefox" },
@@ -317,7 +486,7 @@ describe("CrossDeviceAuthenticationController", () => {
       get: jest
         .fn()
         .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
-    } as unknown as ISessionService<ActiveUserSessionDto>;
+    } as unknown as ISessionService<ReviewerSessionDto>;
 
     it("should start the verification of the request and render its emojis", async () => {
       crossDeviceAuthenticationServiceMock.markAsVerificationStarted.mockResolvedValue(
@@ -371,33 +540,34 @@ describe("CrossDeviceAuthenticationController", () => {
       get: jest
         .fn()
         .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
-    } as unknown as ISessionService<ActiveUserSessionDto>;
+    } as unknown as ISessionService<ReviewerSessionDto>;
 
-    it.each([RequestStatus.APPROVED, RequestStatus.REJECTED])(
-      "should render the request page with the %s status",
-      async (status) => {
-        crossDeviceAuthenticationServiceMock.getRequestForReviewer.mockResolvedValue(
-          { status },
-        );
+    it.each([
+      RequestStatus.APPROVED,
+      RequestStatus.CONSUMED,
+      RequestStatus.REJECTED,
+    ])("should render the request page with the %s status", async (status) => {
+      crossDeviceAuthenticationServiceMock.getRequestForReviewer.mockResolvedValue(
+        { status },
+      );
 
-        await controller.getReviewedCrossDeviceAuthenticationRequest(
-          res,
-          "request-id",
-          userSession,
-        );
+      await controller.getReviewedCrossDeviceAuthenticationRequest(
+        res,
+        "request-id",
+        userSession,
+      );
 
-        expect(
-          crossDeviceAuthenticationServiceMock.getRequestForReviewer,
-        ).toHaveBeenCalledWith({
-          requestId: "request-id",
-          email: "user@example.com",
-        });
-        expect(res.render).toHaveBeenCalledWith(
-          "review-cross-device-authentication-request",
-          { status },
-        );
-      },
-    );
+      expect(
+        crossDeviceAuthenticationServiceMock.getRequestForReviewer,
+      ).toHaveBeenCalledWith({
+        requestId: "request-id",
+        email: "user@example.com",
+      });
+      expect(res.render).toHaveBeenCalledWith(
+        "review-cross-device-authentication-request",
+        { status },
+      );
+    });
 
     it.each([
       RequestStatus.VERIFICATION_STARTED,
@@ -438,7 +608,7 @@ describe("CrossDeviceAuthenticationController", () => {
       get: jest
         .fn()
         .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
-    } as unknown as ISessionService<ActiveUserSessionDto>;
+    } as unknown as ISessionService<ReviewerSessionDto>;
 
     it("should return the status of the request of the reviewer", async () => {
       crossDeviceAuthenticationServiceMock.getRequestForReviewer.mockResolvedValue(
@@ -488,10 +658,11 @@ describe("CrossDeviceAuthenticationController", () => {
       get: jest
         .fn()
         .mockReturnValue({ idpIdentity: { email: "user@example.com" } }),
-    } as unknown as ISessionService<ActiveUserSessionDto>;
+    } as unknown as ISessionService<ReviewerSessionDto>;
 
     it(`should set the request status to ${status} and redirect to the request page`, async () => {
       crossDeviceAuthenticationServiceMock.review.mockResolvedValue(true);
+      sessionServiceMock.getId.mockReturnValue("reviewer-session-id");
 
       await controller[method](res, "request-id", userSession);
 
@@ -499,6 +670,7 @@ describe("CrossDeviceAuthenticationController", () => {
         requestId: "request-id",
         email: "user@example.com",
         status,
+        reviewerSessionId: "reviewer-session-id",
       });
       expect(res.redirect).toHaveBeenCalledWith(
         "/api/v2/cross-device-authentication-requests/request-id",

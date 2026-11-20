@@ -28,13 +28,16 @@ export const useSimulatedBrowser = (browser: string): void => {
     const state = browserStates[browser];
     if (!state) return;
     state.cookies.forEach(
-      ({ name, value, domain, path, secure, httpOnly, sameSite }) =>
+      ({ name, value, domain, path, secure, httpOnly, sameSite, hostOnly }) =>
         cy.setCookie(name, value, {
           domain,
           path,
           secure,
           httpOnly,
           sameSite,
+          // Otherwise the restored cookie would be sent along with the ones the
+          // server sets later under the same name
+          hostOnly,
         }),
     );
     // The last page may have been reached through a form, and fail when

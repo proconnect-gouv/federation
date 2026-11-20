@@ -349,6 +349,42 @@ describe("InteractionController", () => {
       });
     });
 
+    it("should not reuse a session shared through a cross-device authentication request", async () => {
+      const req = { query: {} } as Request;
+      const res = {
+        redirect: jest.fn(),
+        render: jest.fn(),
+      } as unknown as Response;
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          interactionId: "interaction123",
+          isCrossDeviceAuthenticated: true,
+        }),
+        clear: jest.fn(),
+        set: jest.fn(),
+        commit: jest.fn(),
+      } as unknown as ISessionService<UserSession>;
+      oidcProviderMock.getInteraction.mockResolvedValue({
+        uid: "interaction123",
+        params: { client_id: "sp123" },
+      });
+      (validate as jest.Mock).mockReturnValue([]);
+      oidcAcrMock.isEssentialAcrSatisfied.mockReturnValue(true);
+
+      await controller.getInteraction(
+        req,
+        res as Response,
+        {},
+        {} as any,
+        userSessionService,
+      );
+
+      expect(userSessionService.clear).toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalledWith(
+        "/prefix/interaction/interaction123/verify",
+      );
+    });
+
     it("should call redirectToIdpWithIdpId when a valid IdP hint exists", async () => {
       const req = { sessionId: "session1" } as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;
@@ -539,6 +575,40 @@ describe("InteractionController", () => {
           acr: interactionAcr,
         },
       );
+    });
+
+    it("should compute the amr of a cross-device authenticated session", async () => {
+      const req = {} as Request;
+      const res: Partial<Response> = { redirect: jest.fn() };
+      const userSessionService = {
+        get: jest.fn().mockReturnValue({
+          spIdentity: { sub: "user1", roles: ["agent_public"] },
+          interactionId: "interaction123",
+          idpAcr: "eidas1",
+          idpAmr: ["pwd"],
+          spId: "sp123",
+          idpId: "idp123",
+          isEmailVerifiedByPcf: true,
+          isCrossDeviceAuthenticated: true,
+        }),
+        set: jest.fn(),
+      } as unknown as ISessionService<AfterGetOidcCallbackSessionDto>;
+      identityProviderMock.isActiveById.mockResolvedValue(true);
+      serviceProviderMock.getById.mockResolvedValue({ type: "private" });
+      oidcAcrMock.getInteractionAcr.mockReturnValue("eidas1");
+
+      await controller.getVerify(
+        req,
+        res as Response,
+        {} as any,
+        userSessionService,
+      );
+
+      expect(oidcAcrMock.getInteractionAmr).toHaveBeenCalledWith({
+        idpAmr: ["pwd"],
+        isEmailVerifiedByPcf: true,
+        isCrossDeviceAuthenticated: true,
+      });
     });
 
     it("should call abort interaction when IdP is inactive and in silent authentication mode", async () => {
