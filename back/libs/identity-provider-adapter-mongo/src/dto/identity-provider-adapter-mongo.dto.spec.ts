@@ -22,7 +22,6 @@ describe("Identity Provider (Data Transfer Object)", () => {
     id_token_signed_response_alg: "RS512",
     name: "provider1",
     title: "provider 1",
-    token_endpoint_auth_method: "client_secret_post",
     uid: "uid",
     url: "https://corev2.docker.dev-franceconnect.fr",
     userinfo_encrypted_response_alg: "RSA-OAEP",
