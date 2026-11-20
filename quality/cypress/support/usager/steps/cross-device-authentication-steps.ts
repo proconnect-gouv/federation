@@ -48,13 +48,16 @@ const saveStateAndUseBrowser = (browser: Browser): void => {
     const state = browserStates[browser];
     if (!state) return;
     state.cookies.forEach(
-      ({ name, value, domain, path, secure, httpOnly, sameSite }) =>
+      ({ name, value, domain, path, secure, httpOnly, sameSite, hostOnly }) =>
         cy.setCookie(name, value, {
           domain,
           path,
           secure,
           httpOnly,
           sameSite,
+          // Otherwise the restored cookie would be sent along with the ones the
+          // server sets later under the same name
+          hostOnly,
         }),
     );
     // The last page may have been reached through a form, and fail when
@@ -111,6 +114,29 @@ Then(
     cy.get<string>("@xdaFlowPageUrl").then((url) => {
       cy.url().should("eq", url);
     });
+  },
+);
+
+When(
+  "je retourne sur l'URL mémorisée de la page du parcours d'authentification cross-device",
+  function () {
+    cy.get<string>("@xdaFlowPageUrl").then((url) => cy.visit(url));
+  },
+);
+
+Then(
+  "je vois que la demande d'authentification cross-device a déjà été utilisée",
+  function () {
+    cy.contains("h1", "Demande de connexion déjà utilisée").should(
+      "be.visible",
+    );
+  },
+);
+
+Then(
+  "je vois que cette session ne peut pas vérifier de demande d'authentification cross-device",
+  function () {
+    cy.contains("Session ProConnect introuvable").should("be.visible");
   },
 );
 

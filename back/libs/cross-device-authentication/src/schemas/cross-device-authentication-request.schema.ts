@@ -28,6 +28,11 @@ export class CrossDeviceAuthenticationRequest extends Document {
   @Prop({ type: Date })
   startedAt?: Date;
 
+  // Session of the reviewer who approved the request, shared with the
+  // requester when they continue to the service provider
+  @Prop({ type: String })
+  reviewerSessionId?: string;
+
   @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }

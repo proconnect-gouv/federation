@@ -423,6 +423,12 @@ describe(CrossDeviceAuthenticationService.name, () => {
 
   describe("review", () => {
     const requestId = "65a1b2c3d4e5f60718293a4b";
+    const filter = {
+      _id: requestId,
+      status: "emojis_displayed",
+      email: "user@example.com",
+      ...notExpiredFilter,
+    };
 
     beforeEach(() => {
       jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
@@ -432,29 +438,40 @@ describe(CrossDeviceAuthenticationService.name, () => {
       jest.useRealTimers();
     });
 
-    it.each([RequestStatus.APPROVED, RequestStatus.REJECTED] as const)(
-      "should set the status of the reviewer's unexpired request with displayed emojis to %s",
-      async (status) => {
-        modelMock.findOneAndUpdate.mockResolvedValue({ id: requestId });
+    it("should approve the reviewer's unexpired request with displayed emojis, and store the session of the reviewer", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue({ id: requestId });
 
-        const result = await service.review({
-          requestId,
-          email: "User@Example.com",
-          status,
-        });
+      const result = await service.review({
+        requestId,
+        email: "User@Example.com",
+        status: RequestStatus.APPROVED,
+        reviewerSessionId: "reviewer-session-id",
+      });
 
-        expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(
-          {
-            _id: requestId,
-            status: "emojis_displayed",
-            email: "user@example.com",
-            ...notExpiredFilter,
-          },
-          { status, updatedAt: new Date("2026-01-01T10:00:00.000Z") },
-        );
-        expect(result).toBe(true);
-      },
-    );
+      expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(filter, {
+        status: "approved",
+        updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+        reviewerSessionId: "reviewer-session-id",
+      });
+      expect(result).toBe(true);
+    });
+
+    it("should reject the reviewer's unexpired request with displayed emojis, without storing the session of the reviewer", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue({ id: requestId });
+
+      const result = await service.review({
+        requestId,
+        email: "User@Example.com",
+        status: RequestStatus.REJECTED,
+        reviewerSessionId: "reviewer-session-id",
+      });
+
+      expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(filter, {
+        status: "rejected",
+        updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+      });
+      expect(result).toBe(true);
+    });
 
     it("should return false when no unexpired request with displayed emojis matches", async () => {
       modelMock.findOneAndUpdate.mockResolvedValue(null);
@@ -463,6 +480,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
         requestId,
         email: "user@example.com",
         status: RequestStatus.APPROVED,
+        reviewerSessionId: "reviewer-session-id",
       });
 
       expect(result).toBe(false);
@@ -473,10 +491,78 @@ describe(CrossDeviceAuthenticationService.name, () => {
         requestId: "not-an-object-id",
         email: "user@example.com",
         status: RequestStatus.APPROVED,
+        reviewerSessionId: "reviewer-session-id",
       });
 
       expect(result).toBe(false);
       expect(modelMock.findOneAndUpdate).not.toHaveBeenCalled();
     });
+  });
+
+  describe("consume", () => {
+    const requestId = "65a1b2c3d4e5f60718293a4b";
+
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("should consume the approved request of the browsing session, and return the session of its reviewer", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue({
+        reviewerSessionId: "reviewer-session-id",
+      });
+
+      const result = await service.consume({
+        requestId,
+        browsingSessionId: "bsid",
+      });
+
+      expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(
+        {
+          _id: requestId,
+          status: "approved",
+          browsingSessionId: "bsid",
+          ...notExpiredFilter,
+        },
+        {
+          $set: {
+            status: "consumed",
+            updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+          },
+          $unset: { reviewerSessionId: "" },
+        },
+      );
+      expect(result).toEqual({ reviewerSessionId: "reviewer-session-id" });
+    });
+
+    it.each([null, {}])(
+      "should return null when no approved request with a reviewer session matches (%o)",
+      async (request) => {
+        modelMock.findOneAndUpdate.mockResolvedValue(request);
+
+        const result = await service.consume({
+          requestId,
+          browsingSessionId: "bsid",
+        });
+
+        expect(result).toBeNull();
+      },
+    );
+
+    it.each([
+      { requestId: "not-an-object-id", browsingSessionId: "bsid" },
+      { requestId, browsingSessionId: "" },
+    ])(
+      "should return null without querying when the id is invalid or the browsing session id is missing (%o)",
+      async (params) => {
+        const result = await service.consume(params);
+
+        expect(result).toBeNull();
+        expect(modelMock.findOneAndUpdate).not.toHaveBeenCalled();
+      },
+    );
   });
 });
