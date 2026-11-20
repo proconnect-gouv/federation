@@ -12,61 +12,75 @@
     %>
     <main role="main" id="content" class="fr-py-2w">
       <div class="fr-container">
-        <div class="fr-grid-row fr-grid-row--center">
-          <div class="fr-col-12 fr-col-md-8 fr-col-lg-4">
-            <h1 class="fr-my-2w fr-h4">
-              Le Fournisseur d'Identité "<%= idpName %>" n'est accessible que
-              depuis le RIE.
+        <div class="fr-grid-row">
+          <div class="fr-col-12 fr-col-md-6">
+            <h1 class="fr-my-2w fr-h3">
+              Authentification hors RIE
             </h1>
-            <p class="fr-my-6b">
-              La connexion n'est peut-être pas disponible sur Internet
+            <p>
+              Vous semblez être sur <strong>le réseau Internet.</strong><br />
+              Votre portail d'authentification habituel pourrait ne pas être disponible.
             </p>
+            
             <% if (locals.isXdaEnabled) { %>
-            <form
-              class="fr-mb-2w"
-              action="/api/v2/proceed-to-cross-device-authentication"
-              method="POST"
-            >
-              <input
-                type="hidden"
-                name="csrfToken"
-                value="<%= locals.csrfToken %>"
-              />
+            <p>
+              Pour vous connecter, vous pouvez :
+            </p>
+            <ul>
+              <li><strong>activer votre VPN</strong> sur cet appareil et continuer.</li>
+              <li><strong>vérifier ce nouvel appareil depuis une session ProConnect sur votre ordinateur RIE</strong> (celui de votre bureau)</li>
+            </ul>
+            
+            <% } else { %>
+            <p>
+              Pour vous connecter, il vous faut <strong>activer votre VPN</strong> sur cet appareil et continuer.
+            </p>
+            <% }  %>
 
-              <button class="fr-btn btn--fullwidth" type="submit">
-                Se connecter via un appareil vérifié
-              </button>
-            </form>
-            <% } %>
-
-            <form
-              class="fr-mb-2w"
-              action="/api/v2/proceed-to-idp"
-              method="POST"
-            >
-              <input
-                type="hidden"
-                name="csrfToken"
-                value="<%= locals.csrfToken %>"
-              />
-
-              <button
-                class="fr-btn btn--fullwidth <%= locals.isXdaEnabled ? 'fr-btn--tertiary-no-outline' : '' %>"
-                type="submit"
+            <div class="fr-grid-row fr-grid-row--middle">
+              <form
+                class="fr-col-6"
+                action="/api/v2/proceed-to-idp"
+                method="POST"
               >
-                Continuer sur cet appareil
-              </button>
-            </form>
-            <button
-              type="button"
-              class="fr-btn fr-btn--tertiary-no-outline btn--fullwidth go-back-link"
-            >
-              Revenir à l'étape précédente
-            </button>
+                <input
+                  type="hidden"
+                  name="csrfToken"
+                  value="<%= locals.csrfToken %>"
+                />
+
+                <button
+                  class="fr-btn btn--fullwidth <%= !locals.isXdaEnabled ? 'fr-btn--tertiary-no-outline' : '' %>"
+                  type="submit"
+                >
+                  Continuer
+                </button>
+              </form>
+
+              <% if (locals.isXdaEnabled) { %>
+                <form
+                  class="fr-col-6"
+                  action="/api/v2/cross-device-authentication-request"
+                  method="POST"
+                >
+                  <input
+                    type="hidden"
+                    name="csrfToken"
+                    value="<%= locals.csrfToken %>"
+                  />
+
+                  <button class="fr-btn btn--fullwidth fr-btn--tertiary-no-outline" type="submit">
+                    Vérifier depuis l'ordinateur RIE
+                  </button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+          <div class="fr-col-md-6 fr-hidden fr-unhidden-md fr-grid-row fr-grid-row--center">
+            <img src="/img/idea.svg" alt="" aria-hidden="true" />
           </div>
         </div>
       </div>
     </main>
   </body>
-  <script type="text/javascript" src="/js/go-back.js"></script>
 </html>

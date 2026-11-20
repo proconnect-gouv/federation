@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="light">
+  <head>
+    <%- include('includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/pages/interaction.css" />
+    <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
+    <title>Demandes de connexion - ProConnect</title>
+  </head>
+
+  <body>
+    <%- include('includes/skiplinks.ejs') %> <%- include('includes/header.ejs')
+    %>
+    <main role="main" id="content" class="fr-py-2w">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center">
+          <div
+            class="fr-col-12 fr-col-md-8 xda-review-requests"
+            data-not-reviewed-requests-url="/api/v2/cross-device-authentication-not-reviewed-requests"
+          >
+            <h1 class="fr-my-2w fr-h4">
+              Vérifiez une session sur un nouvel appareil
+            </h1>
+
+            <div class="fr-mb-2w">
+              <div role="status" data-xda-refresh-message></div>
+              <button
+                type="button"
+                class="fr-btn fr-btn--secondary fr-hidden"
+                data-xda-refresh-button
+              >
+                Actualiser la liste
+              </button>
+            </div>
+
+            <% if (notReviewedRequests.length > 1) { %>
+              <ul class="fr-raw-list">
+                <% notReviewedRequests.forEach(notReviewedRequest => { %>
+                  <li class="fr-mb-3w">
+                    <%- include('includes/xda-not-reviewed-request', { notReviewedRequest }) %>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } else if (notReviewedRequests.length === 1) { %>
+              <p>Une connexion a été demandée sur un nouvel appareil.</p>
+              <%- include('includes/xda-not-reviewed-request', { notReviewedRequest: notReviewedRequests[0] }) %>
+            <% } else { %>
+              <p>Aucune demande de connexion en cours.<br />Pour initier une connexion, cliquez sur "Vérifier depuis l'ordinateur RIE" sur l'autre appareil.</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script type="text/javascript" src="/js/local-date.js"></script>
+  <script type="module" src="/js/xda-polling-request-list.js"></script>
+</html>

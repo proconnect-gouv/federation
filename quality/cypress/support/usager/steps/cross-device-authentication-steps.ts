@@ -1,8 +1,9 @@
 import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
-import { getEnv, getServiceProviderByDescription } from "../../common/helpers";
+import { getServiceProviderByDescription } from "../../common/helpers";
 
-const RIE_IDP_NAME = "fia-rie-low";
-const REVIEW_PAGE_TITLE = "Demandes de connexion en cours";
+const REVIEW_PAGE_TITLE = "Vérifiez une session sur un nouvel appareil";
+const RIE_IDP_WARNING_PAGE_TITLE = "Authentification hors RIE";
+const XDA_PAGE_TITLE = "Vérifier cet appareil depuis l'ordinateur RIE";
 
 const loginOnRieIdp = (email: string): void => {
   const serviceProvider = getServiceProviderByDescription("par défaut");
@@ -10,49 +11,68 @@ const loginOnRieIdp = (email: string): void => {
   cy.get("button#custom-connection").click({ force: true });
   cy.get("#email-input").clearThenType(email);
   cy.get('[data-testid="interaction-connection-button"]').click();
-  cy.contains(
-    `Le Fournisseur d'Identité "${RIE_IDP_NAME}" n'est accessible que depuis le RIE.`,
-  ).should("be.visible");
-  cy.contains("button", "Continuer sur cet appareil").click();
+  cy.contains("h1", RIE_IDP_WARNING_PAGE_TITLE).should("be.visible");
+  cy.contains("button", "Continuer").click();
   cy.get("button[type='submit']").click();
   cy.contains("Information utilisateur");
 };
 
-const validateActiveSession = (): void => {
-  const { federationRootUrl } = getEnv();
-  cy.request(`${federationRootUrl}/api/v2/cross-device-authentication-requests`)
-    .its("body")
-    .should("contain", REVIEW_PAGE_TITLE);
+type Browser = "RIE" | "internet";
+type BrowserState = { cookies: Cypress.Cookie[]; url: string };
+
+// Each simulated browser keeps its cookies and its last page, which are
+// restored when switching back to it
+let currentBrowser: Browser | undefined;
+let browserStates: Partial<Record<Browser, BrowserState>> = {};
+
+Given("les navigateurs sont réinitialisés", function () {
+  currentBrowser = undefined;
+  browserStates = {};
+});
+
+const saveCurrentBrowserState = (): void => {
+  if (!currentBrowser) return;
+  const browser = currentBrowser;
+  cy.getAllCookies().then((cookies) => {
+    cy.url().then((url) => {
+      browserStates[browser] = { cookies, url };
+    });
+  });
 };
 
-type Browser = "RIE" | "internet";
-
-// cy.session() refuses to reuse an id with different setup/validate functions,
-// so switching back to a browser must replay the functions it was created with.
-const browserSessions: Partial<
-  Record<Browser, { setup: () => void; options?: Cypress.SessionOptions }>
-> = {};
-
-const useBrowser = (browser: Browser): void => {
-  const { setup, options } = browserSessions[browser] ?? {
-    setup: () => {},
-  };
-  cy.session(["navigateur", browser], setup, options);
+const saveStateAndUseBrowser = (browser: Browser): void => {
+  saveCurrentBrowserState();
+  cy.clearAllCookies();
+  cy.then(() => {
+    currentBrowser = browser;
+    const state = browserStates[browser];
+    if (!state) return;
+    state.cookies.forEach(
+      ({ name, value, domain, path, secure, httpOnly, sameSite }) =>
+        cy.setCookie(name, value, {
+          domain,
+          path,
+          secure,
+          httpOnly,
+          sameSite,
+        }),
+    );
+    // The last page may have been reached through a form, and fail when
+    // visited again: the next steps navigate from there
+    cy.visit(state.url, { failOnStatusCode: false });
+  });
 };
 
 Given(
   "j'ai une session active sur le FI RIE avec l'email {string} sur le navigateur RIE",
   function (email: string) {
-    browserSessions["RIE"] = {
-      setup: () => loginOnRieIdp(email),
-      options: { validate: validateActiveSession },
-    };
-    useBrowser("RIE");
+    saveStateAndUseBrowser("RIE");
+    loginOnRieIdp(email);
   },
 );
 
 When("j'utilise le navigateur {string}", function (browser: Browser) {
-  useBrowser(browser);
+  saveStateAndUseBrowser(browser);
 });
 
 When("je clique sur le bouton {string}", function (buttonText: string) {
@@ -64,34 +84,124 @@ Then("le bouton {string} n'est pas affiché", function (buttonText: string) {
 });
 
 Then(
-  "je suis redirigé vers la page d'authentification cross-device",
+  "je suis redirigé vers la page du parcours d'authentification cross-device",
   function () {
-    cy.url().should("include", "/proceed-to-cross-device-authentication");
-    cy.contains("h1", "Cross Device Authentication").should("be.visible");
+    cy.url().should("include", "/cross-device-authentication-flow/");
+    cy.contains("h1", XDA_PAGE_TITLE).should("be.visible");
   },
 );
 
+Given(
+  "je mémorise l'URL de la page du parcours d'authentification cross-device",
+  function () {
+    cy.url().as("xdaFlowPageUrl");
+  },
+);
+
+When(
+  "le polling de la page du parcours renvoie le statut {string}",
+  function (status: string) {
+    cy.intercept("GET", "**/cross-device-authentication-status/*", { status });
+  },
+);
+
+Then(
+  "je suis sur l'URL mémorisée de la page du parcours d'authentification cross-device",
+  function () {
+    cy.get<string>("@xdaFlowPageUrl").then((url) => {
+      cy.url().should("eq", url);
+    });
+  },
+);
+
+Then("je vois que l'authentification cross-device est approuvée", function () {
+  cy.contains("Votre session est active").should("be.visible");
+});
+
 Then("je vois une seule demande d'authentification cross-device", function () {
   cy.contains("h1", REVIEW_PAGE_TITLE).should("be.visible");
-  cy.get("main ul li").should("have.length", 1);
+  cy.get("main [data-request-id]").should("have.length", 1);
+  cy.get("main [data-request-id] time[data-local-date]")
+    .invoke("text")
+    .should("match", /^\d{2}\/\d{2}\/\d{4} à \d{2}:\d{2}$/);
+});
+
+Then(
+  "je ne peux pas encore approuver la demande d'authentification cross-device",
+  function () {
+    cy.contains("En attente de votre nouvel appareil").should("be.visible");
+    cy.contains("button", "Oui").should("not.be.visible");
+    cy.contains("button", "Non").should("not.be.visible");
+  },
+);
+
+Then(
+  "je peux approuver la demande d'authentification cross-device",
+  function () {
+    cy.contains("En attente de votre nouvel appareil").should("not.be.visible");
+    cy.contains("button", "Oui").should("be.visible");
+    cy.contains("button", "Non").should("be.visible");
+  },
+);
+
+When("j'affiche les emojis de la XDA", function () {
+  cy.intercept("POST", "**/cross-device-authentication-emojis-displayed/*").as(
+    "emojisDisplayed",
+  );
+  cy.contains("button", "Afficher les emojis").click();
+  cy.wait("@emojisDisplayed").its("response.statusCode").should("eq", 204);
 });
 
 Then(
   "je vois les emojis de la demande d'authentification cross-device",
   function () {
-    cy.contains("h1", "Demande de connexion").should("be.visible");
-    cy.get(".xda-emojis span").should("have.length", 5);
+    cy.contains("h1", "Vérifiez votre session").should("be.visible");
+    cy.get(".xda-emojis li").should("have.length", 5);
   },
 );
 
+Then("je vois uniquement les instructions de la XDA", function () {
+  cy.contains("h1", XDA_PAGE_TITLE).should("be.visible");
+  cy.contains("button", "Afficher les emojis").should("be.visible");
+  cy.contains("h1", "Vérifier la série d'emojis").should("not.be.visible");
+  cy.contains("En attente de connexion de l'ordinateur RIE").should(
+    "not.be.visible",
+  );
+  cy.get(".xda-emojis").should("not.be.visible");
+});
+
 Then(
-  "je suis redirigé vers la liste des demandes d'authentification cross-device en cours",
+  "je vois que la vérification de la XDA attend l'ordinateur RIE",
+  function () {
+    cy.contains("h1", "Vérifier la série d'emojis").should("be.visible");
+    cy.contains("En attente de connexion de l'ordinateur RIE").should(
+      "be.visible",
+    );
+    cy.contains("h1", XDA_PAGE_TITLE).should("not.be.visible");
+    cy.get(".xda-emojis").should("not.be.visible");
+  },
+);
+
+Then("je vois les emojis de la XDA", function () {
+  cy.contains("h1", "Vérifier la série d'emojis").should("be.visible");
+  cy.contains("En attente de connexion de l'ordinateur RIE").should(
+    "not.be.visible",
+  );
+  cy.get(".xda-emojis").should("be.visible");
+  cy.get(".xda-emojis li").should("have.length", 5);
+});
+
+Then(
+  "je vois que la demande d'authentification cross-device est approuvée sur l'ordinateur RIE",
   function () {
     cy.location("pathname").should(
-      "eq",
-      "/api/v2/cross-device-authentication-requests",
+      "match",
+      /^\/api\/v2\/cross-device-authentication-requests\/[0-9a-f]{24}$/,
     );
-    cy.contains("h1", REVIEW_PAGE_TITLE).should("be.visible");
+    cy.contains("h1", "Session vérifiée").should("be.visible");
+    cy.contains(
+      "Vous pouvez à présent utiliser ProConnect sur votre autre appareil et fermer cette fenêtre.",
+    ).should("be.visible");
   },
 );
 

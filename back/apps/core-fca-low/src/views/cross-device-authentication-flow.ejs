@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="light">
+  <head>
+    <%- include('includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/pages/interaction.css" />
+    <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
+    <title>Vérifier cet appareil - ProConnect</title>
+  </head>
+
+  <body>
+    <%- include('includes/skiplinks.ejs') %> <%- include('includes/header.ejs')
+    %>
+    <main role="main" id="content" class="fr-py-2w">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center">
+          <div
+            class="fr-col-12 fr-col-md-8 fr-col-lg-4 xda-flow"
+            data-status-url="/api/v2/cross-device-authentication-status/<%= requestId %>"
+            data-status="<%= status %>"
+            data-emojis-displayed-url="/api/v2/cross-device-authentication-emojis-displayed/<%= requestId %>"
+            data-csrf-token="<%= locals.csrfToken %>"
+          >
+            <p role="status" class="fr-sr-only" data-xda-status-message></p>
+
+            <div
+              data-xda-status-section="created verification_started emojis_displayed"
+              data-xda-step="instructions"
+            >
+              <h1 class="fr-my-2w fr-h4" tabindex="-1">
+                <span aria-hidden="true">👨‍💻</span> Vérifier cet appareil depuis l'ordinateur RIE
+              </h1>
+              <p class="fr-mb-1w">Les étapes :</p>
+              <ol>
+                <li>Sur votre <strong>ordinateur RIE</strong>, ouvrez votre messagerie habituelle.</li>
+                <li>Dans l'email que nous venons de vous envoyer, cliquez sur le bouton de connexion.</li>
+                <li>Sur cet appareil, lancez la vérification, puis comparez les emojis affichés avec ceux de votre ordinateur RIE. S'ils sont différents, ne validez pas.</li>
+              </ol>
+              <button
+                type="button"
+                class="fr-btn fr-my-2w btn--fullwidth"
+                id="xda-show-emojis-button"
+              >
+                Afficher les emojis
+              </button>
+            </div>
+
+            <div
+              data-xda-status-section="created verification_started emojis_displayed"
+              data-xda-step="verification"
+              class="fr-hidden fr-my-2w"
+            >
+              <h1 class="fr-my-2w fr-h4" tabindex="-1">
+                <span aria-hidden="true">🧩</span> Vérifier la série d'emojis
+              </h1>
+              <div data-xda-status-section="created">
+                <p>
+                  Cliquez sur le bouton de connexion reçu par email pour
+                  commencer la vérification.
+                </p>
+                <p><em>En attente de connexion de l'ordinateur RIE</em></p>
+              </div>
+
+              <ul
+                data-xda-status-section="verification_started emojis_displayed"
+                class="fr-raw-list fr-h2 fr-container xda-emojis fr-my-2w fr-hidden"
+                aria-label="Série d'emojis"
+              >
+                <% emojis.forEach(emoji => { %><li><%= emoji %></li><% }) %>
+              </ul>
+
+              <p data-xda-status-section="verification_started emojis_displayed">
+                Sur votre ordinateur RIE, confirmez que les emojis sont identiques.
+              </p>
+            </div>
+
+            <div data-xda-status-section="approved" class="fr-hidden">
+              <h1 class="fr-my-2w fr-h4" tabindex="-1">
+                <span aria-hidden="true">✅</span> Votre session est active
+              </h1>
+              <p>Vous pouvez continuer sur ce service.</p>
+            </div>
+
+            <div data-xda-status-section="rejected" class="fr-hidden">
+              <h1 class="fr-my-2w fr-h4" tabindex="-1">Connexion refusée</h1>
+              <div class="fr-alert fr-alert--error fr-mb-2w">
+                <p>La demande de connexion a été refusée depuis l'ordinateur RIE.</p>
+              </div>
+            </div>
+
+            <div data-xda-status-section="error" class="fr-hidden">
+              <h1 class="fr-my-2w fr-h4" tabindex="-1">
+                Demande de connexion introuvable
+              </h1>
+              <div class="fr-alert fr-alert--error fr-mb-2w">
+                <p>
+                  Cette demande de connexion a expiré ou est introuvable.
+                  Veuillez recommencer.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script type="module" src="/js/xda-polling-request-status-change.js"></script>
+</html>

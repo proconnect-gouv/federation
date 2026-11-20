@@ -62,21 +62,16 @@
   }
 }
 
-.xda-requests-list-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
 .xda-emojis {
   display: flex;
   justify-content: space-between;
 }
 
-.xda-review-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+.xda-request-item {
+  border: 1px solid var(--border-default-grey);
+  padding: 16px;
+}
+
+.xda-details {
+  line-height: 2;
 }

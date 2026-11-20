@@ -4,7 +4,7 @@
     <%- include('includes/head.ejs') %>
     <link rel="stylesheet" href="/css/pages/interaction.css" />
     <link rel="stylesheet" href="/css/pages/dsfr.pc.css" />
-    <title>Demande de connexion - ProConnect</title>
+    <title>Vérification de session - ProConnect</title>
   </head>
 
   <body>
@@ -13,61 +13,125 @@
     <main role="main" id="content" class="fr-py-2w">
       <div class="fr-container">
         <div class="fr-grid-row fr-grid-row--center">
-          <div class="fr-col-12 fr-col-md-8 fr-col-lg-4">
-            <h1 class="fr-my-2w fr-h4">
-              Demande de connexion
+          <div class="fr-col-12 fr-col-md-8 fr-col-lg-4 fr-grid-row fr-grid-row--center">
+            <% if (status === "approved") { %>
+            <h1 class="fr-my-4w fr-h4">
+              Session vérifiée
             </h1>
-            <p class="fr-mb-1w">
-              <strong><%= device %></strong><br />
-              Service : <%= spName %>
-            </p>
-            <p class="fr-mb-1w">
-              Vérifiez que les emojis ci-dessous sont identiques à ceux affichés
-              sur l'autre appareil :
-            </p>
-            <p class="fr-h2 fr-container xda-emojis">
-              <% emojis.forEach(emoji => { %><span><%= emoji %></span><% }) %>
-            </p>
-
-            <div class="xda-review-actions fr-mb-2w">
-              <form
-                action="/api/v2/cross-device-authentication-requests/<%= requestId %>/approve"
-                method="POST"
+            <p>Vous pouvez à présent utiliser ProConnect sur votre autre appareil et fermer cette fenêtre.</p>
+            <% } else if (status === "rejected") { %>
+            <div>
+              <h1 class="fr-my-4w fr-h4">
+                Connexion refusée
+              </h1>
+              <p>
+                Le nouvel appareil n'a pas été autorisé à se connecter avec
+                votre compte.
+              </p>
+              <p>
+                Si vous n'êtes pas à l'origine de cette demande, signalez-le à
+                votre service informatique.
+              </p>
+              <p>Vous pouvez fermer cette fenêtre.</p>
+              <a
+                class="fr-link"
+                href="/api/v2/cross-device-authentication-requests"
               >
-                <input
-                  type="hidden"
-                  name="csrfToken"
-                  value="<%= locals.csrfToken %>"
-                />
-                <button
-                  class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-check-line btn--fullwidth"
-                  type="submit"
-                >
-                  Approuver
-                </button>
-              </form>
-
-              <form
-                action="/api/v2/cross-device-authentication-requests/<%= requestId %>/reject"
-                method="POST"
-              >
-                <input
-                  type="hidden"
-                  name="csrfToken"
-                  value="<%= locals.csrfToken %>"
-                />
-                <button
-                  class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-line btn--fullwidth"
-                  type="submit"
-                >
-                  Rejeter
-                </button>
-              </form>
+                Voir les demandes de connexion en cours
+              </a>
             </div>
+            <% } else { %>
+            <div
+              class="fr-col-12 xda-review-request"
+              data-status="<%= status %>"
+              data-status-url="/api/v2/cross-device-authentication-requests/<%= requestId %>/status"
+            >
+              <p role="status" class="fr-sr-only" data-xda-status-message></p>
+
+              <h1 class="fr-mb-4w fr-h4">
+                Vérifiez votre session
+              </h1>
+
+              <ul
+                data-xda-status-section="verification_started emojis_displayed"
+                class="fr-raw-list fr-h2 fr-container xda-emojis fr-mb-4w"
+                aria-label="Série d'emojis"
+              >
+                <% emojis.forEach(emoji => { %><li><%= emoji %></li><% }) %>
+              </ul>
+
+              <p
+                data-xda-status-section="verification_started"
+                class="fr-mb-2w fr-hidden"
+              >
+                Pour continuer, affichez les emojis sur votre nouvel appareil.<br /><br />
+                <em>En attente de votre nouvel appareil</em>
+              </p>
+
+              <div
+                data-xda-status-section="emojis_displayed"
+                class="fr-hidden"
+              >
+                <p class="fr-mb-2w">
+                  Voyez-vous la même série d'emojis sur votre nouvel appareil ?
+                </p>
+                <div class="fr-col-12">
+                  <form
+                    class="fr-mb-2w"
+                    action="/api/v2/cross-device-authentication-requests/<%= requestId %>/approve"
+                    method="POST"
+                  >
+                    <input
+                      type="hidden"
+                      name="csrfToken"
+                      value="<%= locals.csrfToken %>"
+                    />
+                    <button
+                      class="fr-btn fr-btn--secondary btn--fullwidth"
+                      type="submit"
+                    >
+                      Oui<span class="fr-sr-only">, les emojis sont identiques</span>
+                    </button>
+                  </form>
+
+                  <form
+                    action="/api/v2/cross-device-authentication-requests/<%= requestId %>/reject"
+                    method="POST"
+                  >
+                    <input
+                      type="hidden"
+                      name="csrfToken"
+                      value="<%= locals.csrfToken %>"
+                    />
+                    <button
+                      class="fr-btn fr-btn--secondary btn--fullwidth"
+                      type="submit"
+                    >
+                      Non<span class="fr-sr-only">, les emojis sont différents</span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <div data-xda-status-section="changed" class="fr-hidden">
+                <p class="fr-mb-2w">
+                  Cette demande a été traitée depuis une autre fenêtre ou a
+                  expiré.
+                </p>
+                <a
+                  class="fr-link"
+                  href="/api/v2/cross-device-authentication-requests/<%= requestId %>"
+                >
+                  Afficher la demande
+                </a>
+              </div>
+            </div>
+            <% } %>
 
           </div>
         </div>
       </div>
     </main>
   </body>
+  <script type="module" src="/js/xda-polling-review-request-status.js"></script>
 </html>
