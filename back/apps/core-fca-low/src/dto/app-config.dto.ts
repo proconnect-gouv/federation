@@ -63,6 +63,10 @@ export class AppConfig extends AppGenericConfig {
 
   @IsBoolean()
   @IsOptional()
+  readonly maintenanceMode?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
   readonly matomoEnabled?: boolean;
 
   @IsArray()
