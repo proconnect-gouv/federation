@@ -71,6 +71,22 @@ export class OidcAcrService {
   getInteractionAmr({
     idpAmr,
     isEmailVerifiedByPcf,
+    isCrossDeviceAuthenticated,
+  }: Pick<
+    UserSession,
+    "idpAmr" | "isEmailVerifiedByPcf" | "isCrossDeviceAuthenticated"
+  >) {
+    const amr = this.getAmrFromIdpAndPcf({ idpAmr, isEmailVerifiedByPcf });
+    if (!isCrossDeviceAuthenticated) {
+      return amr;
+    }
+    // The identity was shared by the session of another device
+    return [...(amr ?? []), "xda"];
+  }
+
+  private getAmrFromIdpAndPcf({
+    idpAmr,
+    isEmailVerifiedByPcf,
   }: Pick<UserSession, "idpAmr" | "isEmailVerifiedByPcf">) {
     if (!idpAmr || isEmpty(idpAmr) || !isArray(idpAmr)) {
       return undefined;

@@ -138,6 +138,7 @@ export class CrossDeviceAuthenticationService {
     requestId: string;
     email: string;
     status: RequestStatus.APPROVED | RequestStatus.REJECTED;
+    reviewerSessionId: string;
   }): Promise<boolean> {
     if (!isValidObjectId(params.requestId)) {
       return false;
@@ -149,9 +150,43 @@ export class CrossDeviceAuthenticationService {
         email: params.email.toLowerCase(),
         ...this.getNotExpiredFilter(),
       },
-      { status: params.status, updatedAt: new Date() },
+      {
+        status: params.status,
+        updatedAt: new Date(),
+        // Only an approved request needs the session of its reviewer
+        ...(params.status === RequestStatus.APPROVED && {
+          reviewerSessionId: params.reviewerSessionId,
+        }),
+      },
     );
     return !!request;
+  }
+
+  async consume(params: {
+    requestId: string;
+    browsingSessionId: string;
+  }): Promise<{ reviewerSessionId: string } | null> {
+    if (!isValidObjectId(params.requestId) || !params.browsingSessionId) {
+      return null;
+    }
+    // Returns the request as it was before the update, with the session id
+    // that the update removes
+    const request = await this.model.findOneAndUpdate(
+      {
+        _id: params.requestId,
+        status: RequestStatus.APPROVED,
+        browsingSessionId: params.browsingSessionId,
+        ...this.getNotExpiredFilter(),
+      },
+      {
+        $set: { status: RequestStatus.CONSUMED, updatedAt: new Date() },
+        $unset: { reviewerSessionId: "" },
+      },
+    );
+    if (!request?.reviewerSessionId) {
+      return null;
+    }
+    return { reviewerSessionId: request.reviewerSessionId };
   }
 
   private async findLatestNotReviewedRequest(params: {

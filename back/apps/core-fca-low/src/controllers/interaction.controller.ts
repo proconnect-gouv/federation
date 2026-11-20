@@ -121,6 +121,9 @@ export class InteractionController {
 
     const canReuseActiveSession =
       isUserConnectedAlready &&
+      // A session shared through a cross-device authentication request is
+      // only valid for the service provider it was requested for
+      !activeUserSession.isCrossDeviceAuthenticated &&
       isSessionOpenedWithHintedIdp &&
       isEssentialAcrSatisfied &&
       isSessionOpenedWithHintedLogin;
@@ -253,6 +256,7 @@ export class InteractionController {
       spEssentialAcr,
       spId,
       isEmailVerifiedByPcf,
+      isCrossDeviceAuthenticated,
     } = userSessionService.get();
 
     const account = await this.accountService.getAccountBySub(sub);
@@ -323,6 +327,7 @@ export class InteractionController {
     const interactionAmr = this.oidcAcr.getInteractionAmr({
       idpAmr,
       isEmailVerifiedByPcf,
+      isCrossDeviceAuthenticated,
     });
 
     const session: UserSession = {

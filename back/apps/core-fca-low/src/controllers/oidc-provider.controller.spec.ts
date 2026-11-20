@@ -229,6 +229,33 @@ describe("OidcProviderController", () => {
       );
     });
 
+    it("should terminate locally without logging out from the IdP for a cross-device authenticated session", async () => {
+      const { req, res } = buildReqRes("/end-session");
+      req.query = {};
+      const query = {} as LogoutParamsDto;
+      oidcClientService.getEndSessionUrl = jest
+        .fn()
+        .mockResolvedValue("/end-session-url");
+      userSession.get = jest.fn().mockReturnValue({
+        idpId: "idp",
+        isCrossDeviceAuthenticated: true,
+      } as unknown as UserSession);
+
+      // Force user connected
+      const validateMock = jest.mocked(validate);
+      validateMock.mockResolvedValue([]);
+
+      await controller.getEndSession(req, res, query, userSession);
+
+      expect(oidcClientService.getEndSessionUrl).not.toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(userSession.destroy).toHaveBeenCalled();
+      expect(oidcProviderService.getCallback).toHaveBeenCalledTimes(1);
+      expect(loggerMock.track).toHaveBeenCalledWith(
+        TrackedEvent.FC_SESSION_TERMINATED,
+      );
+    });
+
     it("should not log SP_REQUESTED_LOGOUT when called back from IdP and should terminate locally when user is not connected", async () => {
       const { req, res } = buildReqRes("/end-session");
 
