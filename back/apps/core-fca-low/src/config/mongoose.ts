@@ -10,10 +10,10 @@ const mongooseConfig: MongooseConfig = {
   database: env.string("DATABASE"),
   options: {
     authSource: env.string("DATABASE"),
-    tls: env.boolean("TLS"),
-    tlsAllowInvalidCertificates: env.boolean("TLS_INSECURE"),
+    tls: env.boolean("TLS", true),
+    tlsAllowInvalidCertificates: env.boolean("TLS_INSECURE", true),
     tlsCAFile: env.string("TLS_CA_FILE", true),
-    tlsAllowInvalidHostnames: env.boolean("TLS_ALLOW_INVALID_HOST_NAME"),
+    tlsAllowInvalidHostnames: env.boolean("TLS_ALLOW_INVALID_HOST_NAME", true),
   },
   watcherDebounceWaitDuration:
     env.number("WATCHER_DEBOUNCE_WAIT_DURATION", true) ?? 1_000,
