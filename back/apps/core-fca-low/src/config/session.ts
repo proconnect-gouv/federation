@@ -25,6 +25,7 @@ const sessionConfig: SessionConfig = {
   middlewareIncludedRoutes: [
     // Connect flow
     OidcProviderRoutes.AUTHORIZATION,
+    OidcProviderRoutes.AUTHORIZATION_RESUME,
     `${Routes.INTERACTION}$`,
     Routes.REDIRECT_TO_IDP,
     Routes.OIDC_CALLBACK,

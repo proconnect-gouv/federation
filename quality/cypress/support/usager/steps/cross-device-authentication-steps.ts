@@ -1,5 +1,8 @@
 import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
-import { getServiceProviderByDescription } from "../../common/helpers";
+import {
+  getServiceProviderByDescription,
+  useSimulatedBrowser,
+} from "../../common/helpers";
 
 const REVIEW_PAGE_TITLE = "Vérifiez une session sur un nouvel appareil";
 const RIE_IDP_WARNING_PAGE_TITLE = "Authentification hors RIE";
@@ -17,63 +20,13 @@ const loginOnRieIdp = (email: string): void => {
   cy.contains("Information utilisateur");
 };
 
-type Browser = "RIE" | "internet";
-type BrowserState = { cookies: Cypress.Cookie[]; url: string };
-
-// Each simulated browser keeps its cookies and its last page, which are
-// restored when switching back to it
-let currentBrowser: Browser | undefined;
-let browserStates: Partial<Record<Browser, BrowserState>> = {};
-
-Given("les navigateurs sont réinitialisés", function () {
-  currentBrowser = undefined;
-  browserStates = {};
-});
-
-const saveCurrentBrowserState = (): void => {
-  if (!currentBrowser) return;
-  const browser = currentBrowser;
-  cy.getAllCookies().then((cookies) => {
-    cy.url().then((url) => {
-      browserStates[browser] = { cookies, url };
-    });
-  });
-};
-
-const saveStateAndUseBrowser = (browser: Browser): void => {
-  saveCurrentBrowserState();
-  cy.clearAllCookies();
-  cy.then(() => {
-    currentBrowser = browser;
-    const state = browserStates[browser];
-    if (!state) return;
-    state.cookies.forEach(
-      ({ name, value, domain, path, secure, httpOnly, sameSite }) =>
-        cy.setCookie(name, value, {
-          domain,
-          path,
-          secure,
-          httpOnly,
-          sameSite,
-        }),
-    );
-    // The last page may have been reached through a form, and fail when
-    // visited again: the next steps navigate from there
-    cy.visit(state.url, { failOnStatusCode: false });
-  });
-};
-
 Given(
   "j'ai une session active sur le FI RIE avec l'email {string} sur le navigateur RIE",
   function (email: string) {
-    saveStateAndUseBrowser("RIE");
+    useSimulatedBrowser("RIE");
     loginOnRieIdp(email);
   },
 );
-
-When("j'utilise le navigateur {string}", function (browser: Browser) {
-  saveStateAndUseBrowser(browser);
-});
 
 When("je clique sur le bouton {string}", function (buttonText: string) {
   cy.contains("button", buttonText).click();

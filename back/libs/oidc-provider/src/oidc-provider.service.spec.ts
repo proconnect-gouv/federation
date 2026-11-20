@@ -14,6 +14,7 @@ import {
 import { OidcProviderInitialisationException } from "./exceptions";
 import { COOKIES, OidcProviderService } from "./oidc-provider.service";
 import { OidcProviderConfigService } from "./services/oidc-provider-config.service";
+import { OidcProviderGrantIdentityService } from "./services/oidc-provider-grant-identity.service";
 
 describe("OidcProviderService", () => {
   let service: OidcProviderService;
@@ -67,6 +68,7 @@ describe("OidcProviderService", () => {
     on: jest.fn(),
     interactionDetails: jest.fn(),
     interactionFinished: jest.fn(),
+    Grant: jest.fn(),
   };
 
   const redisMock = getRedisServiceMock();
@@ -74,6 +76,18 @@ describe("OidcProviderService", () => {
 
   const oidcProviderConfigServiceMock = {
     getConfig: jest.fn(),
+  };
+
+  const grantIdentityServiceMock = {
+    save: jest.fn(),
+    find: jest.fn(),
+  };
+
+  const grantMock = {
+    addOIDCScope: jest.fn(),
+    addOIDCClaims: jest.fn(),
+    save: jest.fn(),
+    remainingTTL: 43200,
   };
 
   beforeEach(async () => {
@@ -84,6 +98,7 @@ describe("OidcProviderService", () => {
         RedisService,
         OidcProviderConfigService,
         SessionService,
+        OidcProviderGrantIdentityService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -94,6 +109,8 @@ describe("OidcProviderService", () => {
       .useValue(oidcProviderConfigServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
+      .overrideProvider(OidcProviderGrantIdentityService)
+      .useValue(grantIdentityServiceMock)
       .compile();
 
     service = module.get<OidcProviderService>(OidcProviderService);
@@ -500,12 +517,17 @@ describe("OidcProviderService", () => {
       sessionServiceMock.get.mockReturnValueOnce({
         spIdentity: spIdentityMock,
       });
+      providerMock.interactionDetails.mockResolvedValue({
+        params: { client_id: "client-id", scope: "openid email" },
+      });
+      providerMock.Grant.mockImplementation(() => grantMock);
+      grantMock.save.mockResolvedValue("grant-id");
     });
 
-    it("should finish interaction with grant", async () => {
+    it("should finish interaction with a new grant", async () => {
       // Given
       const resultMock = {
-        consent: {},
+        consent: { grantId: "grant-id" },
         login: {
           accountId: spIdentityMock.sub,
           acr: "acrValue",
@@ -522,16 +544,109 @@ describe("OidcProviderService", () => {
       });
 
       // Then
-      expect(sessionServiceMock.get).toHaveBeenCalledWith("User");
-      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
-        spIdentityMock.sub,
-        "sessionId",
-      );
+      expect(providerMock.Grant).toHaveBeenCalledWith({
+        accountId: spIdentityMock.sub,
+        clientId: "client-id",
+      });
+      expect(grantMock.addOIDCScope).toHaveBeenCalledWith("openid email");
+      expect(grantMock.addOIDCClaims).not.toHaveBeenCalled();
       expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
       expect(providerMock.interactionFinished).toHaveBeenCalledWith(
         reqMock,
         resMock,
         resultMock,
+      );
+    });
+
+    it("should store the identity of the grant for the grant TTL", async () => {
+      // When
+      await service.finishInteraction(reqMock, resMock, {
+        amr: ["amrValue"],
+        acr: "acrValue",
+      });
+
+      // Then
+      expect(grantIdentityServiceMock.save).toHaveBeenCalledWith(
+        "grant-id",
+        { spIdentity: spIdentityMock, sessionId: "sessionId" },
+        43200,
+      );
+    });
+
+    it("should grant the claims requested with the claims parameter", async () => {
+      // Given
+      providerMock.interactionDetails.mockResolvedValue({
+        params: {
+          client_id: "client-id",
+          scope: "openid",
+          claims: JSON.stringify({
+            id_token: { amr: { essential: true } },
+            userinfo: { siret: null },
+          }),
+        },
+      });
+
+      // When
+      await service.finishInteraction(reqMock, resMock, {
+        amr: ["amrValue"],
+        acr: "acrValue",
+      });
+
+      // Then
+      expect(grantMock.addOIDCClaims).toHaveBeenCalledWith(["amr", "siret"]);
+    });
+
+    it("should grant the userinfo claims of a claims parameter without id_token", async () => {
+      // Given
+      providerMock.interactionDetails.mockResolvedValue({
+        params: {
+          client_id: "client-id",
+          scope: "openid",
+          claims: JSON.stringify({ userinfo: { siret: null } }),
+        },
+      });
+
+      // When
+      await service.finishInteraction(reqMock, resMock, {
+        amr: ["amrValue"],
+        acr: "acrValue",
+      });
+
+      // Then
+      expect(grantMock.addOIDCClaims).toHaveBeenCalledWith(["siret"]);
+    });
+
+    it("should grant the id_token claims of a claims parameter without userinfo", async () => {
+      // Given
+      providerMock.interactionDetails.mockResolvedValue({
+        params: {
+          client_id: "client-id",
+          scope: "openid",
+          claims: JSON.stringify({ id_token: { amr: { essential: true } } }),
+        },
+      });
+
+      // When
+      await service.finishInteraction(reqMock, resMock, {
+        amr: ["amrValue"],
+        acr: "acrValue",
+      });
+
+      // Then
+      expect(grantMock.addOIDCClaims).toHaveBeenCalledWith(["amr"]);
+    });
+
+    it("should still write the sub alias for the pods of the previous release", async () => {
+      // When
+      await service.finishInteraction(reqMock, resMock, {
+        amr: ["amrValue"],
+        acr: "acrValue",
+      });
+
+      // Then
+      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
+        spIdentityMock.sub,
+        "sessionId",
       );
     });
   });
