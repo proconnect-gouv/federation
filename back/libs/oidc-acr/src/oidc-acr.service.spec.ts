@@ -137,6 +137,35 @@ describe("OidcAcrService", () => {
   });
 
   describe("getInteractionAmr()", () => {
+    it("should add 'xda' to the amr of a cross-device authenticated session", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        idpAmr: ["pwd"],
+        isEmailVerifiedByPcf: true,
+        isCrossDeviceAuthenticated: true,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toEqual(["pwd", "mail", "xda"]);
+    });
+
+    it("should return only 'xda' for a cross-device authenticated session without idpAmr", () => {
+      // Given
+      const sessionDataMock: UserSession = {
+        idpAmr: undefined,
+        isCrossDeviceAuthenticated: true,
+      };
+
+      // When
+      const result = service["getInteractionAmr"](sessionDataMock);
+
+      // Then
+      expect(result).toEqual(["xda"]);
+    });
+
     it("should return undefined if idpAmr is undefined", () => {
       // Given
       const sessionDataMock: UserSession = {

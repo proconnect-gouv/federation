@@ -9,6 +9,7 @@ export enum Routes {
   INTERACTION_ERROR = "/interaction/:uid/error",
   CREATE_CROSS_DEVICE_AUTHENTICATION_REQUEST = "/cross-device-authentication-request",
   CROSS_DEVICE_AUTHENTICATION_FLOW = "/cross-device-authentication-flow/:requestId",
+  CONTINUE_CROSS_DEVICE_AUTHENTICATION = "/cross-device-authentication-flow/:requestId/continue",
   CROSS_DEVICE_AUTHENTICATION_EMOJIS_DISPLAYED = "/cross-device-authentication-emojis-displayed/:requestId",
   PROCEED_TO_IDP = "/proceed-to-idp",
   REDIRECT_TO_IDP = "/redirect-to-idp",

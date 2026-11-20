@@ -78,6 +78,26 @@
                 <span aria-hidden="true">✅</span> Votre session est active
               </h1>
               <p>Vous pouvez continuer sur ce service.</p>
+              <form
+                action="/api/v2/cross-device-authentication-flow/<%= requestId %>/continue"
+                method="POST"
+              >
+                <input
+                  type="hidden"
+                  name="csrfToken"
+                  value="<%= locals.csrfToken %>"
+                />
+                <button type="submit" class="fr-btn btn--fullwidth">
+                  Continuer vers le Fournisseur de Service
+                </button>
+              </form>
+            </div>
+
+            <div data-xda-status-section="consumed" class="fr-hidden">
+              <h1 class="fr-my-2w fr-h4" tabindex="-1">
+                Demande de connexion déjà utilisée
+              </h1>
+              <p>Cette demande de connexion a déjà été utilisée.</p>
             </div>
 
             <div data-xda-status-section="rejected" class="fr-hidden">

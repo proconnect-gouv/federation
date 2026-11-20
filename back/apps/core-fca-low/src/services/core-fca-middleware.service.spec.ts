@@ -269,6 +269,17 @@ describe("CoreFcaMiddlewareService", () => {
     expect(spyOverride).toHaveBeenCalled();
   });
 
+  it("should not override a silent prompt for a session shared through a cross-device authentication request", async () => {
+    const mockCtx = { method: "POST", req: { body: { prompt: "none" } } };
+    const spyOverride = jest.spyOn(service as any, "overrideAuthorizePrompt");
+    mockSessionService.get.mockReturnValueOnce({
+      isCrossDeviceAuthenticated: true,
+    });
+    validateMock.mockResolvedValueOnce([]);
+    await (service as any).handleSilentAuthenticationMiddleware(mockCtx);
+    expect(spyOverride).not.toHaveBeenCalled();
+  });
+
   it("should handle silent authentication prompts in handleSilentAuthenticationMiddleware", async () => {
     const mockCtx = { method: "GET", query: {} };
     const spyOverride = jest.spyOn(service as any, "overrideAuthorizePrompt");

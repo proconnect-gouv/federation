@@ -1,9 +1,12 @@
 import { ConfigService } from "#libs/config";
+import { LoggerService } from "#libs/logger";
 import { getConfigMock } from "#mocks/config";
+import { getLoggerMock } from "#mocks/logger";
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { CrossDeviceAuthenticationService } from "./cross-device-authentication.service";
 import { RequestStatus } from "./enums";
+import { XdaReviewerSessionService } from "./xda-reviewer-session.service";
 
 const notExpiredFilter = {
   $or: [
@@ -28,6 +31,8 @@ describe(CrossDeviceAuthenticationService.name, () => {
     findOneAndUpdate: jest.fn(),
   };
   const configServiceMock = getConfigMock();
+  const loggerMock = getLoggerMock();
+  const xdaReviewerSessionMock = { save: jest.fn(), getAndDelete: jest.fn() };
   const emojiAlphabet = ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌"];
 
   beforeEach(async () => {
@@ -48,6 +53,11 @@ describe(CrossDeviceAuthenticationService.name, () => {
           provide: getModelToken("CrossDeviceAuthenticationRequest"),
           useValue: modelMock,
         },
+        {
+          provide: XdaReviewerSessionService,
+          useValue: xdaReviewerSessionMock,
+        },
+        { provide: LoggerService, useValue: loggerMock },
       ],
     })
       .overrideProvider(ConfigService)
@@ -58,6 +68,13 @@ describe(CrossDeviceAuthenticationService.name, () => {
       CrossDeviceAuthenticationService,
     );
   });
+
+  const expectTrackedOnce = (event: string, requestId: string) => {
+    expect(loggerMock.track).toHaveBeenCalledTimes(1);
+    expect(loggerMock.track).toHaveBeenCalledWith(event, {
+      crossDeviceAuthenticationRequestId: requestId,
+    });
+  };
 
   describe("findOrCreateRequest", () => {
     const params = {
@@ -94,6 +111,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
         { sort: { createdAt: -1 } },
       );
       expect(modelMock.insertOne).not.toHaveBeenCalled();
+      expect(loggerMock.track).not.toHaveBeenCalled();
       expect(result).toEqual({ _id: "existing-request-id" });
     });
 
@@ -112,6 +130,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
         email: "user@example.com",
         browsingSessionId: "browsing-session-id",
       });
+      expectTrackedOnce("FC_CROSS_DEVICE_AUTHENTICATION_CREATED", "request-id");
     });
 
     it("should generate distinct emojis from the configured alphabet", async () => {
@@ -312,7 +331,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
     it("should set the status of the reviewer's not reviewed request to verification_started, unless the emojis are already displayed", async () => {
       modelMock.findOneAndUpdate.mockResolvedValue({
         id: requestId,
-        status: "verification_started",
+        status: "created",
         spName: "My SP",
         emojis: ["😀", "😎", "🤖", "👾"],
       });
@@ -347,13 +366,36 @@ describe(CrossDeviceAuthenticationService.name, () => {
             },
           },
         ],
-        { new: true, updatePipeline: true },
+        { updatePipeline: true },
+      );
+      expectTrackedOnce(
+        "FC_CROSS_DEVICE_AUTHENTICATION_VERIFICATION_STARTED",
+        requestId,
       );
       expect(result).toEqual({
         status: "verification_started",
         emojis: ["😀", "😎", "🤖", "👾"],
       });
     });
+
+    it.each(["verification_started", "emojis_displayed"])(
+      "should keep the %s status without tracking it again",
+      async (status) => {
+        modelMock.findOneAndUpdate.mockResolvedValue({
+          id: requestId,
+          status,
+          emojis: ["😀", "😎", "🤖", "👾"],
+        });
+
+        const result = await service.markAsVerificationStarted({
+          requestId,
+          email: "user@example.com",
+        });
+
+        expect(loggerMock.track).not.toHaveBeenCalled();
+        expect(result).toEqual({ status, emojis: ["😀", "😎", "🤖", "👾"] });
+      },
+    );
 
     it("should return null when no not reviewed request matches", async () => {
       modelMock.findOneAndUpdate.mockResolvedValue(null);
@@ -389,6 +431,8 @@ describe(CrossDeviceAuthenticationService.name, () => {
     });
 
     it("should set the status of the request of the browsing session whose verification started to emojis_displayed", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue({ id: requestId });
+
       await service.markAsEmojisDisplayed({
         requestId,
         browsingSessionId: "bsid",
@@ -406,6 +450,21 @@ describe(CrossDeviceAuthenticationService.name, () => {
           updatedAt: new Date("2026-01-01T10:00:00.000Z"),
         },
       );
+      expectTrackedOnce(
+        "FC_CROSS_DEVICE_AUTHENTICATION_EMOJIS_DISPLAYED",
+        requestId,
+      );
+    });
+
+    it("should not track anything when no request whose verification started matches", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue(null);
+
+      await service.markAsEmojisDisplayed({
+        requestId,
+        browsingSessionId: "bsid",
+      });
+
+      expect(loggerMock.track).not.toHaveBeenCalled();
     });
 
     it.each([
@@ -423,6 +482,12 @@ describe(CrossDeviceAuthenticationService.name, () => {
 
   describe("review", () => {
     const requestId = "65a1b2c3d4e5f60718293a4b";
+    const filter = {
+      _id: requestId,
+      status: "emojis_displayed",
+      email: "user@example.com",
+      ...notExpiredFilter,
+    };
 
     beforeEach(() => {
       jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
@@ -432,29 +497,68 @@ describe(CrossDeviceAuthenticationService.name, () => {
       jest.useRealTimers();
     });
 
-    it.each([RequestStatus.APPROVED, RequestStatus.REJECTED] as const)(
-      "should set the status of the reviewer's unexpired request with displayed emojis to %s",
-      async (status) => {
-        modelMock.findOneAndUpdate.mockResolvedValue({ id: requestId });
+    it("should approve the reviewer's unexpired request with displayed emojis, and store the session of the reviewer until the request expires", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue({
+        id: requestId,
+        startedAt: new Date("2026-01-01T09:57:00.000Z"),
+      });
 
-        const result = await service.review({
-          requestId,
-          email: "User@Example.com",
-          status,
-        });
+      const result = await service.review({
+        requestId,
+        email: "User@Example.com",
+        status: RequestStatus.APPROVED,
+        reviewerSessionId: "reviewer-session-id",
+      });
 
-        expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(
-          {
-            _id: requestId,
-            status: "emojis_displayed",
-            email: "user@example.com",
-            ...notExpiredFilter,
-          },
-          { status, updatedAt: new Date("2026-01-01T10:00:00.000Z") },
-        );
-        expect(result).toBe(true);
-      },
-    );
+      expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(filter, {
+        status: "approved",
+        updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+      });
+      expect(xdaReviewerSessionMock.save).toHaveBeenCalledWith({
+        requestId,
+        reviewerSessionId: "reviewer-session-id",
+        ttlInMs: 2 * 60 * 1000,
+      });
+      expectTrackedOnce("FC_CROSS_DEVICE_AUTHENTICATION_APPROVED", requestId);
+      expect(result).toBe(true);
+    });
+
+    it("should store the session of the reviewer with a positive TTL when the request has just expired", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue({
+        id: requestId,
+        startedAt: new Date("2026-01-01T09:55:00.000Z"),
+      });
+
+      await service.review({
+        requestId,
+        email: "User@Example.com",
+        status: RequestStatus.APPROVED,
+        reviewerSessionId: "reviewer-session-id",
+      });
+
+      expect(xdaReviewerSessionMock.save).toHaveBeenCalledWith(
+        expect.objectContaining({ ttlInMs: 1 }),
+      );
+    });
+
+    it("should reject the reviewer's unexpired request with displayed emojis, without storing the session of the reviewer", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue({ id: requestId });
+
+      const result = await service.review({
+        requestId,
+        email: "User@Example.com",
+        status: RequestStatus.REJECTED,
+        reviewerSessionId: "reviewer-session-id",
+      });
+
+      expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(filter, {
+        status: "rejected",
+        updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+      });
+      expect(xdaReviewerSessionMock.save).not.toHaveBeenCalled();
+      expectTrackedOnce("FC_CROSS_DEVICE_AUTHENTICATION_REJECTED", requestId);
+      expect(result).toBe(true);
+    });
 
     it("should return false when no unexpired request with displayed emojis matches", async () => {
       modelMock.findOneAndUpdate.mockResolvedValue(null);
@@ -463,9 +567,12 @@ describe(CrossDeviceAuthenticationService.name, () => {
         requestId,
         email: "user@example.com",
         status: RequestStatus.APPROVED,
+        reviewerSessionId: "reviewer-session-id",
       });
 
       expect(result).toBe(false);
+      expect(xdaReviewerSessionMock.save).not.toHaveBeenCalled();
+      expect(loggerMock.track).not.toHaveBeenCalled();
     });
 
     it("should return false without querying when the id is not a valid ObjectId", async () => {
@@ -473,10 +580,82 @@ describe(CrossDeviceAuthenticationService.name, () => {
         requestId: "not-an-object-id",
         email: "user@example.com",
         status: RequestStatus.APPROVED,
+        reviewerSessionId: "reviewer-session-id",
       });
 
       expect(result).toBe(false);
       expect(modelMock.findOneAndUpdate).not.toHaveBeenCalled();
     });
+  });
+
+  describe("consume", () => {
+    const requestId = "65a1b2c3d4e5f60718293a4b";
+
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date("2026-01-01T10:00:00.000Z") });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it.each(["reviewer-session-id", null])(
+      "should consume the approved request of the browsing session, and get and delete the session of its reviewer (%s)",
+      async (reviewerSessionId) => {
+        modelMock.findOneAndUpdate.mockResolvedValue({ id: requestId });
+        xdaReviewerSessionMock.getAndDelete.mockResolvedValue(
+          reviewerSessionId,
+        );
+
+        const result = await service.consume({
+          requestId,
+          browsingSessionId: "bsid",
+        });
+
+        expect(modelMock.findOneAndUpdate).toHaveBeenCalledWith(
+          {
+            _id: requestId,
+            status: "approved",
+            browsingSessionId: "bsid",
+            ...notExpiredFilter,
+          },
+          {
+            status: "consumed",
+            updatedAt: new Date("2026-01-01T10:00:00.000Z"),
+          },
+        );
+        expect(xdaReviewerSessionMock.getAndDelete).toHaveBeenCalledWith(
+          requestId,
+        );
+        expectTrackedOnce("FC_CROSS_DEVICE_AUTHENTICATION_CONSUMED", requestId);
+        expect(result).toEqual({ reviewerSessionId });
+      },
+    );
+
+    it("should return null without getting the session of the reviewer when no approved request matches", async () => {
+      modelMock.findOneAndUpdate.mockResolvedValue(null);
+
+      const result = await service.consume({
+        requestId,
+        browsingSessionId: "bsid",
+      });
+
+      expect(result).toBeNull();
+      expect(xdaReviewerSessionMock.getAndDelete).not.toHaveBeenCalled();
+      expect(loggerMock.track).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      { requestId: "not-an-object-id", browsingSessionId: "bsid" },
+      { requestId, browsingSessionId: "" },
+    ])(
+      "should return null without querying when the id is invalid or the browsing session id is missing (%o)",
+      async (params) => {
+        const result = await service.consume(params);
+
+        expect(result).toBeNull();
+        expect(modelMock.findOneAndUpdate).not.toHaveBeenCalled();
+      },
+    );
   });
 });

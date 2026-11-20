@@ -3,7 +3,7 @@ import { getConfigMock } from "#mocks/config";
 import { getLoggerMock } from "#mocks/logger";
 import { Test, TestingModule } from "@nestjs/testing";
 import pino, { Logger } from "pino";
-import { LogLevels } from "../enums";
+import { LogLevels, TrackedEvent } from "../enums";
 import { PLUGIN_SERVICES } from "../tokens";
 import { LoggerService } from "./logger.service";
 
@@ -208,6 +208,36 @@ describe("LoggerService", () => {
       expect(service["getContextFromPlugins"]).toHaveBeenCalledExactlyOnceWith(
         undefined,
       );
+    });
+  });
+
+  describe("track", () => {
+    it("should log the event with its step, the given context and the context from the plugins", () => {
+      pluginMock1.getContext.mockReturnValue({ sessionId: "session-id" });
+      pluginMock2.getContext.mockReturnValue({});
+
+      service.track(TrackedEvent.FC_CROSS_DEVICE_AUTHENTICATION_CONSUMED, {
+        crossDeviceAuthenticationRequestId: "request-id",
+      });
+
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        event: "FC_CROSS_DEVICE_AUTHENTICATION_CONSUMED",
+        step: "4.8.0",
+        crossDeviceAuthenticationRequestId: "request-id",
+        sessionId: "session-id",
+      });
+    });
+
+    it("should log the event without any additional context", () => {
+      pluginMock1.getContext.mockReturnValue({});
+      pluginMock2.getContext.mockReturnValue({});
+
+      service.track(TrackedEvent.FC_VERIFIED);
+
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        event: "FC_VERIFIED",
+        step: "5.0.0",
+      });
     });
   });
 

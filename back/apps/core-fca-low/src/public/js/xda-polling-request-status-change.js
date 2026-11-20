@@ -2,7 +2,7 @@ import { startPolling } from "./polling-utils.js";
 import { announce, focusVisibleTitle, showSections } from "./xda-sections.js";
 
 const POLLING_INTERVAL_IN_MS = 1000;
-const FINAL_STATUSES = ["approved", "rejected", "error"];
+const FINAL_STATUSES = ["approved", "consumed", "rejected", "error"];
 
 // Lets the RIE computer approve or reject the request, once the emojis it
 // shows are also displayed on this device

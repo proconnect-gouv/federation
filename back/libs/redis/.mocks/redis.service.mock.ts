@@ -5,6 +5,7 @@ export function getRedisServiceMock() {
       exec: jest.fn(),
       expire: jest.fn(),
       get: jest.fn(),
+      getdel: jest.fn(),
       multi: jest.fn(),
       set: jest.fn(),
       ttl: jest.fn(),
