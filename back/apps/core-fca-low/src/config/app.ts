@@ -32,6 +32,7 @@ const appConfig: AppConfig = {
   displayMaintenanceNotice: env.boolean("FEATURE_DISPLAY_MAINTENANCE_NOTICE"),
   maintenanceDatetime: env.string("MAINTENANCE_DATETIME"),
   maintenanceDuration: env.string("MAINTENANCE_DURATION"),
+  maintenanceMode: env.boolean("MAINTENANCE_MODE"),
   matomoEnabled: env.boolean("FEATURE_MATOMO_ENABLED") ?? true,
   defaultRedirectUri: "https://www.proconnect.gouv.fr",
   supportEmail: "support+federation@proconnect.gouv.fr",

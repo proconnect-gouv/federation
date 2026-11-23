@@ -30,6 +30,7 @@
 | App_HTTPS_SERVER_KEY                             | file          |
 | App_MAINTENANCE_DATETIME                         | string        |
 | App_MAINTENANCE_DURATION                         | string        |
+| App_MAINTENANCE_MODE                             | boolean       |
 | App_RIE_IP_RANGES                                | stringArray   |
 | App_SP_AUTHORIZED_ATTACHED_EMAIL_DOMAINS_CONFIGS | json          |
 | App_VIEWS_PATHS                                  | json          |
