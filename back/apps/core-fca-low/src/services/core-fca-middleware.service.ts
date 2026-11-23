@@ -4,14 +4,11 @@ import { Response } from "express";
 
 import { Injectable } from "@nestjs/common";
 
-import { ConfigService } from "#libs/config";
 import { generateErrorId } from "#libs/exceptions/helpers/index";
 import { ErrorPageParams } from "#libs/exceptions/types/error-page-params";
-import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
 import { LoggerService, TrackedEvent } from "#libs/logger";
 import {
   OidcCtx,
-  OidcProviderConfig,
   OidcProviderMiddlewareStep,
   OidcProviderPrompt,
   OidcProviderRoutes,
@@ -25,10 +22,8 @@ import { isString } from "lodash";
 export class CoreFcaMiddlewareService {
   constructor(
     protected readonly logger: LoggerService,
-    protected readonly config: ConfigService,
     protected readonly oidcProvider: OidcProviderService,
     protected readonly sessionService: SessionService,
-    protected readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}
 
   protected koaHtmlErrorFormatterMiddlewareFactory(middleware: Function) {
@@ -96,33 +91,6 @@ export class CoreFcaMiddlewareService {
     req.headers.cookie = "";
   }
 
-  /**
-   * Override authorize request `prompt` parameter.
-   * We only support 'login' and 'consent' and enforce those.
-   *
-   * Overriding the parameters in the request allows us to influence
-   * `oidc-provider` behavior and disable all 'SSO' or 'auto login' like features.
-   *
-   * We make sure that a new call to authorization endpoint will result
-   * in a new interaction, whether user agent has a previous session.
-   *
-   * @param ctx
-   * @param overrideValue
-   */
-  protected overrideAuthorizePrompt(ctx: OidcCtx): void {
-    if (!["POST", "GET"].includes(ctx.method)) {
-      this.logger.warn(`Unsupported method "${ctx.method}".`);
-      return;
-    }
-
-    const { forcedPrompt } =
-      this.config.get<OidcProviderConfig>("OidcProvider");
-    const overrideValue = forcedPrompt.join(" ");
-
-    const data = ctx.method === "POST" ? ctx.req.body : ctx.query;
-    data.prompt = overrideValue;
-  }
-
   protected async loadSessionInAsyncLocalStorage(
     ctx: OidcCtx,
   ): Promise<{ isSessionLoaded: boolean }> {
@@ -156,37 +124,40 @@ export class CoreFcaMiddlewareService {
     }
   }
 
+  /**
+   * Override the authorize request `prompt` parameter with `login` when it
+   * is missing, or when it is `none` and the user already has an active session.
+   *
+   * oidc-provider is not aware of our own active session: without this
+   * override, it would start an SSO-like flow when prompt is missing, or answer
+   * `login_required` to silent authentication requests. Forcing `login`
+   * makes every call to the authorization endpoint start a new interaction,
+   * where we decide whether the active session can be reused.
+   */
   protected async handleSilentAuthenticationMiddleware(
     ctx: OidcCtx,
   ): Promise<void> {
-    const { prompt } = ctx.method === "POST" ? ctx.req.body : ctx.query;
+    const params = ctx.method === "POST" ? ctx.req.body : ctx.query;
+    const { prompt } = params;
 
     if (!isString(prompt)) {
-      return this.overrideAuthorizePrompt(ctx);
+      params.prompt = OidcProviderPrompt.LOGIN;
+      return;
     }
 
-    const isSilentAuthentication = this.isPromptStrictlyEqualNone(prompt);
-
-    // Persist this flag to adjust redirections during '/verify'
-    this.sessionService.set(
-      "User",
-      "isSilentAuthentication",
-      isSilentAuthentication,
-    );
-    await this.sessionService.commit();
+    if (!this.isPromptStrictlyEqualNone(prompt)) {
+      return;
+    }
 
     const activeUserSession = plainToInstance(
       ActiveUserSessionDto,
       this.sessionService.get<UserSession>("User"),
     );
     const activeSessionValidationErrors = await validate(activeUserSession);
-
     const isUserConnectedAlready = activeSessionValidationErrors.length <= 0;
 
-    if (isUserConnectedAlready && isSilentAuthentication) {
-      // Given the Panva middlewares lack of active session awareness, overriding the prompt value is crucial to prevent
-      // login-required errors. Silent authentication will be treated as a login attempt when an active session exists.
-      this.overrideAuthorizePrompt(ctx);
+    if (isUserConnectedAlready) {
+      params.prompt = OidcProviderPrompt.LOGIN;
     }
   }
 

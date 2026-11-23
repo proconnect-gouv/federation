@@ -4,7 +4,7 @@ import { RedisService } from "#libs/redis";
 import { SessionService } from "#libs/session";
 import { UserSession } from "#src";
 import { Global, Injectable } from "@nestjs/common";
-import { Response } from "express";
+import { Request, Response } from "express";
 import {
   InteractionResults,
   KoaContextWithOIDC,
@@ -151,18 +151,11 @@ export class OidcProviderService {
   }
 
   async abortInteraction(
-    req: any,
-    res: any,
-    errorParams: InteractionResults,
-    retry: boolean = false,
+    req: Request,
+    res: Response,
+    error: { error: string; error_description: string },
   ): Promise<void> {
-    const result = retry ? {} : errorParams;
-    const interactionFinished = await this.provider.interactionFinished(
-      req,
-      res,
-      result,
-    );
-    return interactionFinished;
+    return await this.provider.interactionFinished(req, res, error);
   }
 
   private async runMiddlewareBeforePattern(

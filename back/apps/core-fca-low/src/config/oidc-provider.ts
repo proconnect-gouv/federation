@@ -27,7 +27,6 @@ const oidcProviderConfig: OidcProviderConfig = {
     },
   },
   errorUriBase: env.string("ERROR_URI_BASE"),
-  forcedPrompt: [OidcProviderPrompt.LOGIN],
   issuer: `https://${process.env.FQDN}${env.string("PREFIX")}`,
   jwks: {
     keys: [
