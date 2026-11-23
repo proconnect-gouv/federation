@@ -22,7 +22,10 @@ describe("OidcProviderConfigService", () => {
 
   const loggerServiceMock = getLoggerMock();
   const sessionServiceMock = getSessionServiceMock();
-  const grantIdentityServiceMock = { save: jest.fn(), find: jest.fn() };
+  const grantIdentityServiceMock = {
+    save: jest.fn(),
+    findFromToken: jest.fn(),
+  };
 
   const oidcProviderRedisAdapterMock = class AdapterMock {};
 
@@ -160,7 +163,7 @@ describe("OidcProviderConfigService", () => {
 
       it("should return the identity stored for the grant of the token", async () => {
         // Given
-        grantIdentityServiceMock.find.mockResolvedValueOnce({
+        grantIdentityServiceMock.findFromToken.mockResolvedValueOnce({
           spIdentity: spIdentityMock,
           sessionId: "session-id",
         });
@@ -169,9 +172,8 @@ describe("OidcProviderConfigService", () => {
         const result = await service.findAccount(ctxMock, sub, tokenMock);
 
         // Then
-        expect(grantIdentityServiceMock.find).toHaveBeenCalledWith(
-          "grant-id",
-          sub,
+        expect(grantIdentityServiceMock.findFromToken).toHaveBeenCalledWith(
+          tokenMock,
         );
         expect(result).toEqual({
           accountId: sub,
@@ -188,7 +190,7 @@ describe("OidcProviderConfigService", () => {
 
       it("should not load any session", async () => {
         // Given
-        grantIdentityServiceMock.find.mockResolvedValueOnce({
+        grantIdentityServiceMock.findFromToken.mockResolvedValueOnce({
           spIdentity: spIdentityMock,
           sessionId: "session-id",
         });
@@ -202,7 +204,7 @@ describe("OidcProviderConfigService", () => {
 
       it("should return undefined when the grant has no identity", async () => {
         // Given
-        grantIdentityServiceMock.find.mockResolvedValueOnce(undefined);
+        grantIdentityServiceMock.findFromToken.mockResolvedValueOnce(undefined);
 
         // When
         const result = await service.findAccount(ctxMock, sub, tokenMock);
@@ -218,7 +220,7 @@ describe("OidcProviderConfigService", () => {
         const result = await service.findAccount(ctxMock, sub);
 
         // Then
-        expect(grantIdentityServiceMock.find).not.toHaveBeenCalled();
+        expect(grantIdentityServiceMock.findFromToken).not.toHaveBeenCalled();
         expect(sessionServiceMock.initCache).not.toHaveBeenCalled();
         expect(result.accountId).toBe(sub);
         expect(await result.claims("id_token", "openid", {}, [])).toEqual({

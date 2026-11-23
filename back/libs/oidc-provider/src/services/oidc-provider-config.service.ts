@@ -249,7 +249,7 @@ export class OidcProviderConfigService {
 
     // /token and /userinfo are called by the SP, without the browser session:
     // read the identity of the login that issued the token.
-    const grantIdentity = await this.grantIdentity.find(token.grantId, sub);
+    const grantIdentity = await this.grantIdentity.findFromToken(token);
 
     if (!grantIdentity) {
       return undefined;

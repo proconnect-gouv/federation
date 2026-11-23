@@ -30,7 +30,7 @@ describe("CoreFcaMiddlewareService", () => {
   let mockSessionService: jest.Mocked<SessionService>;
   const mockLoggerService: jest.Mocked<LoggerService> = getLoggerMock();
   let validateMock: jest.Mock;
-  const grantIdentityMock = { save: jest.fn(), find: jest.fn() };
+  const grantIdentityMock = { save: jest.fn(), findFromLoadedGrant: jest.fn() };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -127,18 +127,17 @@ describe("CoreFcaMiddlewareService", () => {
     const mockCtx = {
       oidc: {
         entities: {
-          Account: { accountId: "test-sub" },
           Grant: { jti: "grant-id" },
         },
       },
     };
 
     beforeEach(() => {
-      grantIdentityMock.find.mockReset();
+      grantIdentityMock.findFromLoadedGrant.mockReset();
     });
 
     it("should load the session of the login that issued the grant", async () => {
-      grantIdentityMock.find.mockResolvedValueOnce({
+      grantIdentityMock.findFromLoadedGrant.mockResolvedValueOnce({
         spIdentity: { sub: "test-sub" },
         sessionId: "session-id",
       });
@@ -147,36 +146,15 @@ describe("CoreFcaMiddlewareService", () => {
         service as any
       ).loadSessionInAsyncLocalStorage(mockCtx);
 
-      expect(grantIdentityMock.find).toHaveBeenCalledWith(
-        "grant-id",
-        "test-sub",
+      expect(grantIdentityMock.findFromLoadedGrant).toHaveBeenCalledWith(
+        mockCtx,
       );
       expect(mockSessionService.initCache).toHaveBeenCalledWith("session-id");
       expect(isSessionLoaded).toBeTrue();
     });
 
-    it("should return { isSessionLoaded: false } if there is no accountId in ctx", async () => {
-      const { isSessionLoaded } = await (
-        service as any
-      ).loadSessionInAsyncLocalStorage({ oidc: {} });
-
-      expect(grantIdentityMock.find).not.toHaveBeenCalled();
-      expect(isSessionLoaded).toBeFalse();
-    });
-
-    it("should return { isSessionLoaded: false } if there is no grant in ctx", async () => {
-      const { isSessionLoaded } = await (
-        service as any
-      ).loadSessionInAsyncLocalStorage({
-        oidc: { entities: { Account: { accountId: "test-sub" } } },
-      });
-
-      expect(grantIdentityMock.find).not.toHaveBeenCalled();
-      expect(isSessionLoaded).toBeFalse();
-    });
-
     it("should return { isSessionLoaded: false } if the grant has no identity", async () => {
-      grantIdentityMock.find.mockResolvedValueOnce(undefined);
+      grantIdentityMock.findFromLoadedGrant.mockResolvedValueOnce(undefined);
 
       const { isSessionLoaded } = await (
         service as any
@@ -187,7 +165,7 @@ describe("CoreFcaMiddlewareService", () => {
     });
 
     it("should return { isSessionLoaded: false } if the session has expired", async () => {
-      grantIdentityMock.find.mockResolvedValueOnce({
+      grantIdentityMock.findFromLoadedGrant.mockResolvedValueOnce({
         spIdentity: { sub: "test-sub" },
         sessionId: "session-id",
       });
@@ -203,7 +181,7 @@ describe("CoreFcaMiddlewareService", () => {
     });
 
     it("should rethrow the other errors when loading the session", async () => {
-      grantIdentityMock.find.mockResolvedValueOnce({
+      grantIdentityMock.findFromLoadedGrant.mockResolvedValueOnce({
         spIdentity: { sub: "test-sub" },
         sessionId: "session-id",
       });
@@ -221,12 +199,11 @@ describe("CoreFcaMiddlewareService", () => {
       oidc: {
         entities: {
           AccessToken: {},
-          Account: { accountId: "test-sub" },
           Grant: { jti: "grant-id" },
         },
       },
     };
-    grantIdentityMock.find.mockResolvedValueOnce({
+    grantIdentityMock.findFromLoadedGrant.mockResolvedValueOnce({
       spIdentity: { sub: "test-sub" },
       sessionId: "session-id",
     });
@@ -241,12 +218,11 @@ describe("CoreFcaMiddlewareService", () => {
     const mockCtx = {
       oidc: {
         entities: {
-          Account: { accountId: "test-sub" },
           Grant: { jti: "grant-id" },
         },
       },
     };
-    grantIdentityMock.find.mockResolvedValueOnce({
+    grantIdentityMock.findFromLoadedGrant.mockResolvedValueOnce({
       spIdentity: { sub: "test-sub" },
       sessionId: "session-id",
     });

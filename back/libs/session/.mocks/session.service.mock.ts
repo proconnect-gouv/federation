@@ -14,9 +14,6 @@ export function getSessionServiceMock() {
 
     getSessionIdFromCookie: jest.fn(),
 
-    getDataFromBackend: jest.fn(),
     expire: jest.fn(),
-    setAlias: jest.fn(),
-    getAlias: jest.fn(),
   };
 }

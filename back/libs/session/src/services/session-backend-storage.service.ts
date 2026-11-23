@@ -8,14 +8,11 @@ import { validate } from "class-validator";
 import { isEmpty } from "lodash";
 import { SessionConfig } from "../dto";
 import {
-  SessionAliasNotFoundException,
-  SessionBadAliasException,
   SessionBadFormatException,
   SessionBadStringifyException,
   SessionNotFoundException,
   SessionStorageException,
 } from "../exceptions";
-import { RedisQueryResult } from "./session.service";
 
 @Injectable()
 export class SessionBackendStorageService {
@@ -150,33 +147,5 @@ export class SessionBackendStorageService {
   private getSessionKey(sessionId: string) {
     const { prefix } = this.config.get<SessionConfig>("Session");
     return `${prefix}::${sessionId}`;
-  }
-
-  async setAlias(
-    alias: string,
-    sessionId: string,
-  ): Promise<RedisQueryResult[]> {
-    const { lifetime } = this.config.get<SessionConfig>("Session");
-    const multi = this.redis.client.multi();
-
-    multi.set(alias, sessionId);
-    multi.expire(alias, lifetime);
-
-    const result: RedisQueryResult[] = await multi.exec();
-
-    return result;
-  }
-
-  async getAlias(key: string): Promise<string> {
-    if (!key) {
-      throw new SessionBadAliasException();
-    }
-    const value = await this.redis.client.get(key);
-
-    if (isEmpty(value)) {
-      throw new SessionAliasNotFoundException();
-    }
-
-    return value;
   }
 }

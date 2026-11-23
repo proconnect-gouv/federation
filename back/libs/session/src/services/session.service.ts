@@ -5,8 +5,6 @@ import { SessionCookiesService } from "./session-cookies.service";
 import { SessionLifecycleService } from "./session-lifecycle.service";
 import { SessionLocalStorageService } from "./session-local-storage.service";
 
-export type RedisQueryResult = [Error | null, any];
-
 @Injectable()
 export class SessionService {
   constructor(
@@ -76,19 +74,7 @@ export class SessionService {
   /**
    * Backend storage specific methods
    */
-  getDataFromBackend<T = unknown>(sessionId: string): Promise<T | never> {
-    return this.backendStorage.get<T>(sessionId);
-  }
-
   expire(sessionId: string, ttl: number): Promise<number> {
     return this.backendStorage.expire(sessionId, ttl);
-  }
-
-  setAlias(alias: string, sessionId: string): Promise<RedisQueryResult[]> {
-    return this.backendStorage.setAlias(alias, sessionId);
-  }
-
-  getAlias(key: string): Promise<string> {
-    return this.backendStorage.getAlias(key);
   }
 }

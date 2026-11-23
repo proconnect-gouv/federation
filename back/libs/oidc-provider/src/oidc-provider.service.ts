@@ -163,10 +163,6 @@ export class OidcProviderService {
       grant.remainingTTL,
     );
 
-    // @todo remove in the next release, along with SessionService.setAlias:
-    // pods of the previous release still read this alias during the rollout.
-    await this.sessionService.setAlias(spIdentity.sub, sessionId);
-
     const result = {
       login: {
         amr,

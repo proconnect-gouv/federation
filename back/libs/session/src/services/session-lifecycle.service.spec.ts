@@ -39,8 +39,6 @@ describe("SessionLifecycleService", () => {
   const backendStorageMock = {
     get: jest.fn(),
     expire: jest.fn(),
-    setAlias: jest.fn(),
-    getAlias: jest.fn(),
     remove: jest.fn(),
     save: jest.fn(),
   };
