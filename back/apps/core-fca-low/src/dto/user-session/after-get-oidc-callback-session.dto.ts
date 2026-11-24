@@ -21,6 +21,9 @@ export class AfterGetOidcCallbackSessionDto extends AfterRedirectToIdpWithEmailS
   declare idpAcr: string;
 
   @IsDefined()
+  declare authTime: number;
+
+  @IsDefined()
   @ValidateNested()
   @Type(() => IdentityFromIdpDto)
   declare idpIdentity: IdentityFromIdpDto;
