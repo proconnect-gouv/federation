@@ -319,10 +319,12 @@ Given("je mémorise l'auth_time envoyé au fournisseur de service", function () 
 });
 
 Then(
-  "l'auth_time transmis au fournisseur de service est identique à l'auth_time mémorisé",
-  function () {
+  /^l'auth_time transmis au fournisseur de service est (identique à|différent de) l'auth_time mémorisé$/,
+  function (text: string) {
+    const comparison = text === "identique à" ? "be.equal" : "not.be.equal";
+
     cy.get<number>("@spAuthTime").then((previousAuthTime) => {
-      getIdTokenProperty("auth_time").should("be.equal", previousAuthTime);
+      getIdTokenProperty("auth_time").should(comparison, previousAuthTime);
     });
   },
 );

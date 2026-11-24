@@ -106,6 +106,8 @@ export class CoreFcaControllerService {
       sp_id: spId,
       sp_name: spName,
       remember_me: rememberMe,
+      // the IdP may reuse its own session: it must also honour the SP's max_age
+      max_age: interaction.params.max_age,
     };
 
     const { authorizationUrl, nonce, state, idpName, idpLabel } =

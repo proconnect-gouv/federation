@@ -194,8 +194,13 @@ export class OidcClientController {
       spName,
     });
 
+    // The IdP may have reused its own session: its auth_time, when given, is
+    // the actual time of the authentication. It cannot be in the future.
+    const now = Math.floor(Date.now() / 1000);
+    const authTime = Math.min(claims.auth_time ?? now, now);
+
     userSession.set({
-      authTime: Math.floor(Date.now() / 1000),
+      authTime,
       idpAmr: claims.amr,
       idpIdToken: idToken,
       idpAcr: claims.acr,

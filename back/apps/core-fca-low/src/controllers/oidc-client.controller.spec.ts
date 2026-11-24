@@ -403,6 +403,69 @@ describe("OidcClientController", () => {
       );
     });
 
+    describe("authentication time", () => {
+      const now = 1_700_000_000;
+      let dateNowSpy: jest.SpyInstance;
+
+      const givenIdTokenAuthTime = (authTime: number | undefined) => {
+        oidcClient.getToken.mockResolvedValue({
+          accessToken: "access-token",
+          idToken: "id-token",
+          claims: { acr: "acr-value", amr: "amr-value", auth_time: authTime },
+        });
+      };
+
+      beforeEach(() => {
+        dateNowSpy = jest.spyOn(Date, "now").mockReturnValue(now * 1000);
+      });
+
+      afterEach(() => {
+        dateNowSpy.mockRestore();
+      });
+
+      it("should keep the auth_time of the IdP", async () => {
+        givenIdTokenAuthTime(now - 120);
+
+        await controller.getOidcCallback(
+          req as Request,
+          res as Response,
+          userSession,
+        );
+
+        expect(userSession.set).toHaveBeenCalledWith(
+          expect.objectContaining({ authTime: now - 120 }),
+        );
+      });
+
+      it("should use the current time when the IdP gives no auth_time", async () => {
+        givenIdTokenAuthTime(undefined);
+
+        await controller.getOidcCallback(
+          req as Request,
+          res as Response,
+          userSession,
+        );
+
+        expect(userSession.set).toHaveBeenCalledWith(
+          expect.objectContaining({ authTime: now }),
+        );
+      });
+
+      it("should not keep an auth_time in the future", async () => {
+        givenIdTokenAuthTime(now + 120);
+
+        await controller.getOidcCallback(
+          req as Request,
+          res as Response,
+          userSession,
+        );
+
+        expect(userSession.set).toHaveBeenCalledWith(
+          expect.objectContaining({ authTime: now }),
+        );
+      });
+    });
+
     it("should reset the email verification made for a previous identity", async () => {
       userSession.get.mockReturnValue({
         ...sessionData,

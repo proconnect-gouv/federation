@@ -127,10 +127,18 @@ Fonctionnalité: Connexion Usager - SSO
     Et que je clique sur le bouton de connexion
     Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "premier FS"
-    Et que je suis connecté au fournisseur de service
+    Et que je mémorise l'auth_time envoyé au fournisseur de service
     # l'auth_time est en secondes : 2 secondes d'attente garantissent un écart supérieur à 1 seconde
     Et que j'attends 2 secondes
     Et que je navigue sur la page fournisseur de service "second FS"
     Et que le fournisseur de service demande un max_age de 1 secondes
     Quand je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page interaction
+    Et j'entre l'email "test@fia1.fr"
+    Et je clique sur le bouton de connexion
+    # le max_age est transmis au FI : sa propre session est trop ancienne, il redemande une authentification
+    Et je suis redirigé vers la page login du fournisseur d'identité "par défaut"
+    Et je m'authentifie
+    Et je suis redirigé vers la page fournisseur de service "second FS"
+    Et je suis connecté au fournisseur de service
+    Et l'auth_time transmis au fournisseur de service est différent de l'auth_time mémorisé
