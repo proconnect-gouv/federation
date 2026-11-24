@@ -34,6 +34,27 @@ sequenceDiagram
 
 L'échange entre le FI et PCF est encapsulé dans l'échange entre PCF et le FS. Il faut garder en tête que cette représentation reste simplifiée car il existe en vérité d'autres étapes qui s'insèrent entre ces étapes. On garde cependant une bonne vision globale de ce qu'il se passe.
 
+# Mode maintenance
+
+Pour activer le mode maintenance, définir `App_MAINTENANCE_MODE=true` et redémarrer l'application. La page de maintenance remplace l'application, mais le document de découverte OIDC et les endpoints de santé restent disponibles. La configuration habituelle reste requise.
+
+Pour personnaliser la page, définir éventuellement :
+
+- `App_MAINTENANCE_DATETIME` : date ou période de la maintenance.
+- `App_MAINTENANCE_DURATION` : durée d'indisponibilité annoncée.
+
+Pour désactiver le mode maintenance, supprimer `App_MAINTENANCE_MODE` ou le définir à `false`, puis redémarrer l'application.
+
+# Bandeau de maintenance programmée
+
+Pour prévenir les utilisateurs d'une opération de maintenance sur la page de connexion, définir les variables suivantes et redémarrer l'application :
+
+- `App_FEATURE_DISPLAY_MAINTENANCE_NOTICE=true` : affiche le bandeau.
+- `App_MAINTENANCE_DATETIME_NOTICE` : date ou période de la maintenance.
+- `App_MAINTENANCE_DURATION_NOTICE` : durée approximative d'indisponibilité.
+
+Pour masquer le bandeau, supprimer `App_FEATURE_DISPLAY_MAINTENANCE_NOTICE` ou le définir à `false`, puis redémarrer l'application.
+
 # Codes erreurs des applications
 
 Cette section fait le lien avec les codes erreurs des applications.
