@@ -186,8 +186,8 @@ export class InteractionController {
       defaultEmailRenater,
       displayTestEnvWarning,
       displayMaintenanceNotice,
-      maintenanceDatetime,
-      maintenanceDuration,
+      maintenanceNoticeDatetime,
+      maintenanceNoticeDuration,
     } = this.config.get<AppConfig>("App");
 
     const csrfToken = this.csrfService.getOrCreate();
@@ -202,8 +202,8 @@ export class InteractionController {
       loginHint: query.user_email,
       displayTestEnvWarning,
       displayMaintenanceNotice,
-      maintenanceDatetime,
-      maintenanceDuration,
+      maintenanceNoticeDatetime,
+      maintenanceNoticeDuration,
     });
   }
 

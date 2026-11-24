@@ -11,8 +11,8 @@ describe("createMaintenanceApp", () => {
     issuer: "https://auth.example.gouv.fr/api/v2",
     viewsPaths: [join(__dirname, "..", "views")],
     staticAssets: [{ path: join(__dirname, "..", "public") }],
-    maintenanceDatetime: "mercredi 14 avril <script>alert(1)</script>",
-    maintenanceDuration: "une heure",
+    maintenancePageDatetime: "mercredi 14 avril <script>alert(1)</script>",
+    maintenancePageDuration: "une heure",
   });
 
   it("serves the discovery document for the configured issuer", async () => {
@@ -79,7 +79,8 @@ describe("createMaintenanceAppFromConfig", () => {
           prefix: "/dsfr",
         },
       ],
-      maintenanceDuration: "deux heures",
+      maintenancePageDatetime: "mercredi 14 avril",
+      maintenancePageDuration: "deux heures",
     },
     OidcProvider: { issuer: "https://auth.example.gouv.fr/api/v2" },
   };
@@ -101,6 +102,7 @@ describe("createMaintenanceAppFromConfig", () => {
     const asset = await request(app).get("/img/maintenance.svg");
     const dsfr = await request(app).get("/dsfr/dsfr.min.css");
 
+    expect(page.text).toContain("mercredi 14 avril");
     expect(page.text).toContain("deux heures");
     expect(asset.status).toBe(200);
     expect(dsfr.status).toBe(200);

@@ -16,8 +16,8 @@ export interface MaintenanceAppOptions {
   issuer: string;
   viewsPaths: string[];
   staticAssets: { path: string; prefix?: string }[];
-  maintenanceDatetime?: string;
-  maintenanceDuration?: string;
+  maintenancePageDatetime?: string;
+  maintenancePageDuration?: string;
 }
 
 // Standalone app served instead of the Nest one when `App_MAINTENANCE_MODE`
@@ -28,8 +28,8 @@ export function createMaintenanceApp({
   issuer,
   viewsPaths,
   staticAssets,
-  maintenanceDatetime,
-  maintenanceDuration,
+  maintenancePageDatetime,
+  maintenancePageDuration,
 }: MaintenanceAppOptions): Express {
   const app = express();
   const openidConfiguration = buildOpenidConfiguration(issuer);
@@ -63,10 +63,10 @@ export function createMaintenanceApp({
   // 200 like `proconnect-maintenance`. A 503 would be more accurate for
   // clients and monitoring, but some ingresses replace 5xx with their own page.
   app.use((_, res) => {
-    res
-      .status(200)
-      .set("Cache-Control", "no-store")
-      .render("maintenance", { maintenanceDatetime, maintenanceDuration });
+    res.status(200).set("Cache-Control", "no-store").render("maintenance", {
+      maintenancePageDatetime,
+      maintenancePageDuration,
+    });
   });
 
   return app;
@@ -83,16 +83,16 @@ export function createMaintenanceAppFromConfig(
     viewsPaths,
     assetsPaths,
     assetsDsfrPaths,
-    maintenanceDatetime,
-    maintenanceDuration,
+    maintenancePageDatetime,
+    maintenancePageDuration,
   } = configService.get<AppConfig>("App");
   const { issuer } = configService.get<OidcProviderConfig>("OidcProvider");
 
   return createMaintenanceApp({
     urlPrefix,
     issuer,
-    maintenanceDatetime,
-    maintenanceDuration,
+    maintenancePageDatetime,
+    maintenancePageDuration,
     viewsPaths: viewsPaths.map((viewsPath) =>
       join(baseDir, viewsPath, "views"),
     ),

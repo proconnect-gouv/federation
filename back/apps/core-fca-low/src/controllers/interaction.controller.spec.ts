@@ -369,7 +369,12 @@ describe("InteractionController", () => {
       notificationsMock.getNotificationToDisplay.mockResolvedValue({
         message: "notification",
       });
-      configServiceMock.get.mockReturnValue({ defaultEmailRenater: "email" });
+      configServiceMock.get.mockReturnValue({
+        defaultEmailRenater: "email",
+        maintenancePageDuration: "durée de maintenance",
+        maintenanceNoticeDatetime: "date annoncée",
+        maintenanceNoticeDuration: "durée annoncée",
+      });
       oidcProviderMock.getInteraction.mockResolvedValue({
         uid: "interaction123",
         params: { client_id: "sp123" },
@@ -393,6 +398,8 @@ describe("InteractionController", () => {
         notificationMessage: "notification",
         isEmailInvalid: false,
         spName: "spName",
+        maintenanceNoticeDatetime: "date annoncée",
+        maintenanceNoticeDuration: "durée annoncée",
       });
     });
   });
