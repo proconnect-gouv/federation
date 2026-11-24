@@ -95,8 +95,9 @@ export function createApp(config: EnvConfig) {
       ts: number;
     } = {
       accountId: userId,
-      // the user is considered to have just logged in
-      ts: Date.now(),
+      // the user is considered to have just logged in (in seconds, as
+      // oidc-provider expects: it uses ts for max_age and auth_time)
+      ts: Math.floor(Date.now() / 1000),
     };
 
     if (acr !== "") {

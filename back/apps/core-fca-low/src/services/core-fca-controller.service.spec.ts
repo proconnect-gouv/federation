@@ -73,6 +73,7 @@ describe("CoreFcaControllerService", () => {
     jest.restoreAllMocks();
 
     (oidcProviderServiceMock.getInteraction as jest.Mock).mockResolvedValue({
+      params: {},
       prompt: {},
     });
 
@@ -172,6 +173,24 @@ describe("CoreFcaControllerService", () => {
         idpIdentity: undefined,
         spIdentity: undefined,
       });
+    });
+
+    it("should forward the max_age requested by the SP to the IdP", async () => {
+      // Given
+      (oidcProviderServiceMock.getInteraction as jest.Mock).mockResolvedValue({
+        params: { max_age: "60" },
+        prompt: {},
+      });
+
+      // When
+      await service.redirectToIdpWithIdpId(reqMock, resMock, idpIdMock);
+
+      // Then
+      expect(oidcClientMock.getAuthorizationUrl).toHaveBeenCalledWith(
+        idpIdMock,
+        undefined,
+        expect.objectContaining({ max_age: "60" }),
+      );
     });
 
     it("should redirect to the IdP with correct authorization URL when acrValues present", async () => {
