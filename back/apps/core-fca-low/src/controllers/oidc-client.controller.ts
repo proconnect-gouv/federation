@@ -195,6 +195,7 @@ export class OidcClientController {
     });
 
     userSession.set({
+      authTime: Math.floor(Date.now() / 1000),
       idpAmr: claims.amr,
       idpIdToken: idToken,
       idpAcr: claims.acr,

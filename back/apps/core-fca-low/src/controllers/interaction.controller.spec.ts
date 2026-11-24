@@ -267,6 +267,88 @@ describe("InteractionController", () => {
       );
     });
 
+    describe("with max_age", () => {
+      const now = 1_700_000_000;
+      const req = { query: {} } as Request;
+      let res: Response;
+      let userSessionService: ISessionService<UserSession>;
+
+      const givenAuthTime = (authTime: number | undefined) => {
+        const session = { interactionId: "interaction123", authTime };
+        userSessionService = {
+          get: jest.fn((key?: string) => (key ? session[key] : session)),
+          duplicate: jest.fn(),
+          set: jest.fn(),
+          clear: jest.fn(),
+          commit: jest.fn(),
+        } as unknown as ISessionService<UserSession>;
+      };
+
+      let dateNowSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        dateNowSpy = jest.spyOn(Date, "now").mockReturnValue(now * 1000);
+        res = { redirect: jest.fn(), render: jest.fn() } as unknown as Response;
+        oidcProviderMock.getInteraction.mockResolvedValue({
+          uid: "interaction123",
+          params: { client_id: "sp123", max_age: "60" },
+        });
+        oidcAcrMock.isEssentialAcrSatisfied.mockReturnValue(true);
+      });
+
+      afterEach(() => {
+        dateNowSpy.mockRestore();
+      });
+
+      it("should reuse the session when the authentication is recent enough", async () => {
+        givenAuthTime(now - 60);
+
+        await controller.getInteraction(
+          req,
+          res,
+          {},
+          {} as any,
+          userSessionService,
+        );
+
+        expect(userSessionService.clear).not.toHaveBeenCalled();
+        expect(res.redirect).toHaveBeenCalledWith(
+          "/prefix/interaction/interaction123/verify",
+        );
+      });
+
+      it("should not reuse the session when the authentication is too old", async () => {
+        givenAuthTime(now - 61);
+
+        await controller.getInteraction(
+          req,
+          res,
+          {},
+          {} as any,
+          userSessionService,
+        );
+
+        expect(userSessionService.clear).toHaveBeenCalled();
+        expect(userSessionService.set).toHaveBeenCalledWith(
+          expect.objectContaining({ reusesActiveSession: false }),
+        );
+      });
+
+      it("should not reuse the session when the authentication time is unknown", async () => {
+        givenAuthTime(undefined);
+
+        await controller.getInteraction(
+          req,
+          res,
+          {},
+          {} as any,
+          userSessionService,
+        );
+
+        expect(userSessionService.clear).toHaveBeenCalled();
+      });
+    });
+
     it("should call redirectToIdpWithIdpId when a valid IdP hint exists", async () => {
       const req = { sessionId: "session1" } as unknown as Request;
       const res = { redirect: jest.fn() } as unknown as Response;

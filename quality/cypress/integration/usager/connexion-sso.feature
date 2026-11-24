@@ -104,3 +104,33 @@ Fonctionnalité: Connexion Usager - SSO
     Alors je suis redirigé vers la page fournisseur de service "second FS"
     Et je suis connecté au fournisseur de service
 
+  Scénario: La session est ré-utilisée lorsque l'authentification respecte le max_age
+    Etant donné que je navigue sur la page fournisseur de service "premier FS"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je m'authentifie
+    Et que je suis redirigé vers la page fournisseur de service "premier FS"
+    Et que je mémorise l'auth_time envoyé au fournisseur de service
+    Et que je navigue sur la page fournisseur de service "second FS"
+    Et que le fournisseur de service demande un max_age de 3600 secondes
+    Quand je clique sur le bouton ProConnect
+    Alors je suis redirigé vers la page fournisseur de service "second FS"
+    Et je suis connecté au fournisseur de service
+    # l'auth_time est celui de l'authentification auprès du FI, pas celui de la réutilisation de la session
+    Et l'auth_time transmis au fournisseur de service est identique à l'auth_time mémorisé
+
+  Scénario: La session n'est pas ré-utilisée lorsque l'authentification est plus ancienne que le max_age
+    Etant donné que je navigue sur la page fournisseur de service "premier FS"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je m'authentifie
+    Et que je suis redirigé vers la page fournisseur de service "premier FS"
+    Et que je suis connecté au fournisseur de service
+    # l'auth_time est en secondes : 2 secondes d'attente garantissent un écart supérieur à 1 seconde
+    Et que j'attends 2 secondes
+    Et que je navigue sur la page fournisseur de service "second FS"
+    Et que le fournisseur de service demande un max_age de 1 secondes
+    Quand je clique sur le bouton ProConnect
+    Alors je suis redirigé vers la page interaction

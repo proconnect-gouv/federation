@@ -11,6 +11,8 @@ export interface ExtendedInteraction extends Interaction {
     idp_hint: string;
     login_hint: string;
     siret_hint: string;
+    // a non-negative integer, as a string: oidc-provider checks it at /authorize
+    max_age?: string;
   };
   prompt: {
     name: "login" | "consent" | string;
