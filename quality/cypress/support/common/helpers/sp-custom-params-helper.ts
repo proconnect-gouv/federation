@@ -73,6 +73,14 @@ export const setPrompt = (prompt: string): void => {
   });
 };
 
+export const setMaxAge = (maxAge: number): void => {
+  updateCustomParams((customParams) => {
+    customParams["max_age"] = maxAge;
+
+    return customParams;
+  });
+};
+
 export const removePrompt = (): void => {
   updateCustomParams((customParams) => {
     delete customParams["prompt"];

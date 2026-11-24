@@ -558,6 +558,29 @@ describe("OidcProviderService", () => {
       );
     });
 
+    it("should set the login time to the time of the authentication at the IdP", async () => {
+      // Given
+      sessionServiceMock.get.mockReset().mockReturnValueOnce({
+        spIdentity: spIdentityMock,
+        authTime: 1_700_000_000,
+      });
+
+      // When
+      await service.finishInteraction(reqMock, resMock, {
+        amr: ["amrValue"],
+        acr: "acrValue",
+      });
+
+      // Then
+      expect(providerMock.interactionFinished).toHaveBeenCalledWith(
+        reqMock,
+        resMock,
+        expect.objectContaining({
+          login: expect.objectContaining({ ts: 1_700_000_000 }),
+        }),
+      );
+    });
+
     it("should store the identity of the grant for the grant TTL", async () => {
       // When
       await service.finishInteraction(reqMock, resMock, {
