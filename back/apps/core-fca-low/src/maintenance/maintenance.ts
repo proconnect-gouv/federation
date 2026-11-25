@@ -16,8 +16,7 @@ export interface MaintenanceAppOptions {
   issuer: string;
   viewsPaths: string[];
   staticAssets: { path: string; prefix?: string }[];
-  maintenanceDatetime?: string;
-  maintenanceDuration?: string;
+  maintenanceModeText?: string;
 }
 
 // Standalone app served instead of the Nest one when `App_MAINTENANCE_MODE`
@@ -28,8 +27,7 @@ export function createMaintenanceApp({
   issuer,
   viewsPaths,
   staticAssets,
-  maintenanceDatetime,
-  maintenanceDuration,
+  maintenanceModeText,
 }: MaintenanceAppOptions): Express {
   const app = express();
   const openidConfiguration = buildOpenidConfiguration(issuer);
@@ -66,7 +64,7 @@ export function createMaintenanceApp({
     res
       .status(200)
       .set("Cache-Control", "no-store")
-      .render("maintenance", { maintenanceDatetime, maintenanceDuration });
+      .render("maintenance", { maintenanceModeText });
   });
 
   return app;
@@ -83,16 +81,14 @@ export function createMaintenanceAppFromConfig(
     viewsPaths,
     assetsPaths,
     assetsDsfrPaths,
-    maintenanceDatetime,
-    maintenanceDuration,
+    maintenanceModeText,
   } = configService.get<AppConfig>("App");
   const { issuer } = configService.get<OidcProviderConfig>("OidcProvider");
 
   return createMaintenanceApp({
     urlPrefix,
     issuer,
-    maintenanceDatetime,
-    maintenanceDuration,
+    maintenanceModeText,
     viewsPaths: viewsPaths.map((viewsPath) =>
       join(baseDir, viewsPath, "views"),
     ),
