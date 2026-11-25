@@ -58,6 +58,13 @@ const TEST_CONFIG: CoreFcaConfig = {
     requestExpirationDurationInMs: 5 * 60 * 1000,
     maxDelayBetweenRequestCreationAndVerificationStartInMs: 60 * 60 * 1000,
   },
+  IpGeolocation: {
+    baseUrl: "https://geolite.info",
+    accountId: "test-account-id",
+    licenseKey: "test-license-key",
+    shouldMockApi: true,
+    timeoutInMs: 5000,
+  },
   Exceptions: { prefix: "Y" },
   EmailValidator: {
     domainWhitelist: [],

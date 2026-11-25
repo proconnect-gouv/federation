@@ -1,4 +1,5 @@
 import { CryptographyModule } from "#libs/cryptography";
+import { IpGeolocationModule } from "#libs/ip-geolocation";
 import { LoggerModule } from "#libs/logger";
 import { RedisModule } from "#libs/redis";
 import { Module } from "@nestjs/common";
@@ -10,6 +11,7 @@ import { XdaReviewerSessionService } from "./xda-reviewer-session.service";
 @Module({
   imports: [
     CryptographyModule,
+    IpGeolocationModule,
     LoggerModule,
     RedisModule,
     MongooseModule.forFeature([

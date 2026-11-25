@@ -100,6 +100,7 @@ describe("CrossDeviceAuthenticationController", () => {
 
     it("should find or create a request and redirect to the flow page", async () => {
       const req = {
+        ip: "203.0.112.7",
         headers: { "user-agent": "Mozilla/5.0" },
       } as unknown as Request;
 
@@ -108,6 +109,7 @@ describe("CrossDeviceAuthenticationController", () => {
       expect(
         crossDeviceAuthenticationServiceMock.findOrCreateRequest,
       ).toHaveBeenCalledWith({
+        ip: "203.0.112.7",
         userAgent: "Mozilla/5.0",
         spName: "My SP",
         email: "user@example.com",
@@ -452,7 +454,7 @@ describe("CrossDeviceAuthenticationController", () => {
   });
 
   describe("getCrossDeviceAuthenticationNotReviewedRequests()", () => {
-    it("should return the ids of the requests linked to the reviewer email", async () => {
+    it("should return the id and the location of the requests linked to the reviewer email", async () => {
       const userSession = {
         get: jest
           .fn()
@@ -460,8 +462,18 @@ describe("CrossDeviceAuthenticationController", () => {
       } as unknown as ISessionService<ReviewerSessionDto>;
       crossDeviceAuthenticationServiceMock.getNotReviewedRequests.mockResolvedValue(
         [
-          { id: "request-id-1", spName: "My SP", device: "Firefox" },
-          { id: "request-id-2", spName: "My SP", device: "Chrome" },
+          {
+            id: "request-id-1",
+            spName: "My SP",
+            device: "Firefox",
+            location: "Paris, France",
+          },
+          {
+            id: "request-id-2",
+            spName: "My SP",
+            device: "Chrome",
+            location: "recherche en cours…",
+          },
         ],
       );
 
@@ -474,7 +486,10 @@ describe("CrossDeviceAuthenticationController", () => {
         crossDeviceAuthenticationServiceMock.getNotReviewedRequests,
       ).toHaveBeenCalledWith("user@example.com");
       expect(result).toEqual({
-        notReviewedRequestIds: ["request-id-1", "request-id-2"],
+        notReviewedRequests: [
+          { id: "request-id-1", location: "Paris, France" },
+          { id: "request-id-2", location: "recherche en cours…" },
+        ],
       });
     });
   });

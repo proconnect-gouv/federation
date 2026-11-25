@@ -30,6 +30,7 @@ Fonctionnalité: Authentification cross-device (XDA)
     Et que j'utilise le navigateur "RIE"
     Et que je navigue sur la page "/api/v2/cross-device-authentication-requests"
     Alors je vois une seule demande d'authentification cross-device
+    Et la demande d'authentification cross-device vient de "Paris, France"
     Quand je clique sur le bouton "Vérifier"
     Alors je vois les emojis de la demande d'authentification cross-device
     Et je ne peux pas encore approuver la demande d'authentification cross-device

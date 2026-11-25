@@ -7,6 +7,7 @@ import EmailVerification from "./email-verification";
 import Exceptions from "./exceptions";
 import HyyyperbridgeBroker from "./hyyyperbridge-broker";
 import IdentityProviderAdapterMongo from "./identity-provider-adapter-mongo";
+import IpGeolocation from "./ip-geolocation";
 import Logger from "./logger";
 import Mailer from "./mailer";
 import Mongoose from "./mongoose";
@@ -25,6 +26,7 @@ const coreFcaConfig: CoreFcaConfig = {
   EmailVerification,
   Exceptions,
   HyyyperbridgeBroker,
+  IpGeolocation,
   Logger,
   Mailer,
   OidcProvider,

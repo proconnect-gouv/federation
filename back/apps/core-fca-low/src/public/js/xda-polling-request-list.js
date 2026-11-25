@@ -16,6 +16,18 @@ const showRefreshNotice = (container, message) => {
     .classList.remove("fr-hidden");
 };
 
+// The location of a request is looked up after its creation
+const updateLocations = (container, notReviewedRequests) => {
+  notReviewedRequests.forEach(({ id, location }) => {
+    const locationElement = container.querySelector(
+      `[data-request-id="${id}"] [data-request-location]`,
+    );
+    if (locationElement && locationElement.textContent !== location) {
+      locationElement.textContent = location;
+    }
+  });
+};
+
 document.addEventListener(
   "DOMContentLoaded",
   function () {
@@ -43,7 +55,12 @@ document.addEventListener(
           );
           return false;
         }
-        if (toSortedKey(result.notReviewedRequestIds) !== displayedRequestIds) {
+
+        const { notReviewedRequests } = result;
+        updateLocations(container, notReviewedRequests);
+
+        const requestIds = notReviewedRequests.map(({ id }) => id);
+        if (toSortedKey(requestIds) !== displayedRequestIds) {
           showRefreshNotice(
             container,
             "La liste des demandes de connexion a changé.",
