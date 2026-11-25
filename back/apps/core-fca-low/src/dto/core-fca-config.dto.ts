@@ -4,6 +4,7 @@ import { EmailValidatorConfig } from "#libs/email-validator/dto/index";
 import { EmailVerificationConfig } from "#libs/email-verification";
 import { ExceptionsConfig } from "#libs/exceptions/dto/index";
 import { IdentityProviderAdapterMongoConfig } from "#libs/identity-provider-adapter-mongo";
+import { IpGeolocationConfig } from "#libs/ip-geolocation";
 import { LoggerConfig } from "#libs/logger";
 import { MailerConfig } from "#libs/mailer/dto/index";
 import { MongooseConfig } from "#libs/mongoose";
@@ -53,6 +54,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => RabbitmqConfig)
   readonly HyyyperbridgeBroker: RabbitmqConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => IpGeolocationConfig)
+  readonly IpGeolocation: IpGeolocationConfig;
 
   @IsObject()
   @ValidateNested()

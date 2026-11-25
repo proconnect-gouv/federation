@@ -40,6 +40,10 @@
 | FQDN                                             | string        |
 | HyyyperbridgeBroker_QUEUE                        | string        |
 | HyyyperbridgeBroker_URLS                         | json          |
+| IpGeolocation_ACCOUNT_ID                         | string        |
+| IpGeolocation_BASE_URL                           | string        |
+| IpGeolocation_LICENSE_KEY                        | string        |
+| IpGeolocation_SHOULD_MOCK_API                    | boolean       |
 | Logger_THRESHOLD                                 | string        |
 | Mailer_BREVO_API_KEY                             | string        |
 | Mailer_EMAIL_SUBJECT_PREFIX                      | string        |

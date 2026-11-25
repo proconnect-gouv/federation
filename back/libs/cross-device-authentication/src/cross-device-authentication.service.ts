@@ -1,4 +1,5 @@
 import { ConfigService } from "#libs/config";
+import { IpGeolocationService } from "#libs/ip-geolocation";
 import { LoggerService, TrackedEvent } from "#libs/logger";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -6,7 +7,7 @@ import { randomInt } from "crypto";
 import { isValidObjectId, Model, Types } from "mongoose";
 import { CrossDeviceAuthenticationConfig } from "./dto";
 import { NOT_REVIEWED_STATUSES, RequestStatus } from "./enums";
-import { formatUserAgent } from "./helpers";
+import { formatLocation, formatUserAgent } from "./helpers";
 import { CrossDeviceAuthenticationRequest } from "./schemas";
 import { XdaReviewerSessionService } from "./xda-reviewer-session.service";
 
@@ -32,9 +33,11 @@ export class CrossDeviceAuthenticationService {
     private readonly config: ConfigService,
     private readonly xdaReviewerSession: XdaReviewerSessionService,
     private readonly logger: LoggerService,
+    private readonly ipGeolocation: IpGeolocationService,
   ) {}
 
   async findOrCreateRequest(params: {
+    ip: string | undefined;
     userAgent: string;
     spName: string;
     email: string;
@@ -53,10 +56,11 @@ export class CrossDeviceAuthenticationService {
       email: email.toLowerCase(),
       ...this.getNotExpiredFilter(),
     });
-    return result.map(({ id, spName, userAgent, createdAt }) => ({
+    return result.map(({ id, spName, userAgent, location, createdAt }) => ({
       id,
       spName,
       device: formatUserAgent(userAgent),
+      location: formatLocation(location, createdAt),
       createdAt,
     }));
   }
@@ -245,6 +249,7 @@ export class CrossDeviceAuthenticationService {
   }
 
   private async createRequest(params: {
+    ip: string | undefined;
     userAgent: string;
     spName: string;
     email: string;
@@ -259,7 +264,26 @@ export class CrossDeviceAuthenticationService {
       browsingSessionId: params.browsingSessionId,
     });
     this.trackStatus(_id.toString(), RequestStatus.CREATED);
+
+    // In the background, so that the requester does not wait for it
+    void this.saveLocation(_id, params.ip);
+
     return { _id };
+  }
+
+  private async saveLocation(
+    _id: Types.ObjectId,
+    ip: string | undefined,
+  ): Promise<void> {
+    try {
+      const location = await this.ipGeolocation.getLocation(ip);
+      await this.model.updateOne({ _id }, { location });
+    } catch (error) {
+      this.logger.error({
+        code: "xda-location-not-saved",
+        xdaLocationError: error?.message,
+      });
+    }
   }
 
   private getNotExpiredFilter() {

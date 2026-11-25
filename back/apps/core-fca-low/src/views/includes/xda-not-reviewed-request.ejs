@@ -10,6 +10,9 @@
         datetime="<%= notReviewedRequest.createdAt.toISOString() %>"
         data-local-date
       ></time></strong><br />
+      Localisation approximative :
+      <strong data-request-location><%= notReviewedRequest.location %></strong
+      ><br />
       Service : <strong><%= notReviewedRequest.spName %></strong>
     </p>
   </div>

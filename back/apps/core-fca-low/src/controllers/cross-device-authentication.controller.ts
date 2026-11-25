@@ -56,6 +56,7 @@ export class CrossDeviceAuthenticationController {
 
     const { _id: requestId } =
       await this.crossDeviceAuthenticationService.findOrCreateRequest({
+        ip: req.ip,
         userAgent: req.headers["user-agent"] || "",
         spName,
         email: idpLoginHint,
@@ -208,13 +209,18 @@ export class CrossDeviceAuthenticationController {
   async getCrossDeviceAuthenticationNotReviewedRequests(
     @UserSessionDecorator(ReviewerSessionDto, XdaInvalidSession)
     userSession: ISessionService<ReviewerSessionDto>,
-  ): Promise<{ notReviewedRequestIds: string[] }> {
+  ): Promise<{ notReviewedRequests: { id: string; location: string }[] }> {
     const { idpIdentity } = userSession.get();
     const notReviewedRequests =
       await this.crossDeviceAuthenticationService.getNotReviewedRequests(
         idpIdentity.email,
       );
-    return { notReviewedRequestIds: notReviewedRequests.map(({ id }) => id) };
+    return {
+      notReviewedRequests: notReviewedRequests.map(({ id, location }) => ({
+        id,
+        location,
+      })),
+    };
   }
 
   @Post(Routes.REVIEW_CROSS_DEVICE_AUTHENTICATION_REQUEST)

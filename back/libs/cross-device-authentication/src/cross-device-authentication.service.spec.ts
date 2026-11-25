@@ -1,4 +1,5 @@
 import { ConfigService } from "#libs/config";
+import { IpGeolocationService } from "#libs/ip-geolocation";
 import { LoggerService } from "#libs/logger";
 import { getConfigMock } from "#mocks/config";
 import { getLoggerMock } from "#mocks/logger";
@@ -29,9 +30,11 @@ describe(CrossDeviceAuthenticationService.name, () => {
     find: jest.fn(),
     findOne: jest.fn(),
     findOneAndUpdate: jest.fn(),
+    updateOne: jest.fn(),
   };
   const configServiceMock = getConfigMock();
   const loggerMock = getLoggerMock();
+  const ipGeolocationMock = { getLocation: jest.fn() };
   const xdaReviewerSessionMock = { save: jest.fn(), getAndDelete: jest.fn() };
   const emojiAlphabet = ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌"];
 
@@ -58,6 +61,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
           useValue: xdaReviewerSessionMock,
         },
         { provide: LoggerService, useValue: loggerMock },
+        { provide: IpGeolocationService, useValue: ipGeolocationMock },
       ],
     })
       .overrideProvider(ConfigService)
@@ -78,6 +82,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
 
   describe("findOrCreateRequest", () => {
     const params = {
+      ip: "203.0.112.7",
       userAgent: "Mozilla/5.0",
       spName: "My SP",
       email: "User@Example.com",
@@ -112,6 +117,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
       );
       expect(modelMock.insertOne).not.toHaveBeenCalled();
       expect(loggerMock.track).not.toHaveBeenCalled();
+      expect(ipGeolocationMock.getLocation).not.toHaveBeenCalled();
       expect(result).toEqual({ _id: "existing-request-id" });
     });
 
@@ -131,6 +137,52 @@ describe(CrossDeviceAuthenticationService.name, () => {
         browsingSessionId: "browsing-session-id",
       });
       expectTrackedOnce("FC_CROSS_DEVICE_AUTHENTICATION_CREATED", "request-id");
+    });
+
+    it.each([{ city: "Paris", country: "France" }, null])(
+      "should save the location of a created request, without its IP (%o)",
+      async (location) => {
+        modelMock.findOne.mockResolvedValue(null);
+        modelMock.insertOne.mockResolvedValue({ _id: "request-id" });
+        ipGeolocationMock.getLocation.mockResolvedValue(location);
+
+        await service.findOrCreateRequest(params);
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(ipGeolocationMock.getLocation).toHaveBeenCalledWith(
+          "203.0.112.7",
+        );
+        expect(modelMock.updateOne).toHaveBeenCalledWith(
+          { _id: "request-id" },
+          { location },
+        );
+      },
+    );
+
+    it("should not wait for the location to return the created request", async () => {
+      modelMock.findOne.mockResolvedValue(null);
+      modelMock.insertOne.mockResolvedValue({ _id: "request-id" });
+      ipGeolocationMock.getLocation.mockReturnValue(new Promise(() => {}));
+
+      const result = await service.findOrCreateRequest(params);
+
+      expect(result).toEqual({ _id: "request-id" });
+      expect(modelMock.updateOne).not.toHaveBeenCalled();
+    });
+
+    it("should log an error when the location cannot be saved", async () => {
+      modelMock.findOne.mockResolvedValue(null);
+      modelMock.insertOne.mockResolvedValue({ _id: "request-id" });
+      ipGeolocationMock.getLocation.mockResolvedValue(null);
+      modelMock.updateOne.mockRejectedValue(new Error("mongo is down"));
+
+      await service.findOrCreateRequest(params);
+      await jest.advanceTimersByTimeAsync(0);
+
+      expect(loggerMock.error).toHaveBeenCalledWith({
+        code: "xda-location-not-saved",
+        xdaLocationError: "mongo is down",
+      });
     });
 
     it("should generate distinct emojis from the configured alphabet", async () => {
@@ -166,6 +218,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
           spName: "My SP",
           userAgent:
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
+          location: { city: "Paris", country: "France" },
           createdAt: new Date("2026-01-01T09:58:00.000Z"),
         },
       ]);
@@ -184,6 +237,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
           id: "request-id",
           spName: "My SP",
           device: "Firefox sur Windows",
+          location: "Paris, France",
           createdAt: new Date("2026-01-01T09:58:00.000Z"),
         },
       ]);

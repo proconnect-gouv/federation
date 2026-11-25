@@ -94,6 +94,17 @@ Then("je vois que l'authentification cross-device est approuvée", function () {
   cy.contains("Votre session est active").should("be.visible");
 });
 
+Then(
+  "la demande d'authentification cross-device vient de {string}",
+  function (location: string) {
+    // the location is looked up in the background
+    cy.get("main [data-request-id] [data-request-location]").should(
+      "have.text",
+      location,
+    );
+  },
+);
+
 Then("je vois une seule demande d'authentification cross-device", function () {
   cy.contains("h1", REVIEW_PAGE_TITLE).should("be.visible");
   cy.get("main [data-request-id]").should("have.length", 1);
