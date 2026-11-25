@@ -53,7 +53,16 @@ const TEST_CONFIG: CoreFcaConfig = {
     cacheTTLWhenApiEntrepriseIsDown: 7776000000,
   },
   CrossDeviceAuthentication: {
-    emojiAlphabet: ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌", "🚗", "🚀"],
+    emojiAlphabet: [
+      { symbol: "🐶", label: "Chien" },
+      { symbol: "🐱", label: "Chat" },
+      { symbol: "🦊", label: "Renard" },
+      { symbol: "🐼", label: "Panda" },
+      { symbol: "🍎", label: "Pomme" },
+      { symbol: "🍌", label: "Banane" },
+      { symbol: "🚗", label: "Voiture" },
+      { symbol: "🚀", label: "Fusée" },
+    ],
     emojiCodeLength: 4,
     requestExpirationDurationInMs: 5 * 60 * 1000,
     maxDelayBetweenRequestCreationAndVerificationStartInMs: 60 * 60 * 1000,

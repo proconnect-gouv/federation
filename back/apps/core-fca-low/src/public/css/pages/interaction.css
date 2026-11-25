@@ -64,7 +64,15 @@
 
 .xda-emojis {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+}
+
+.xda-emoji {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .xda-request-item {
