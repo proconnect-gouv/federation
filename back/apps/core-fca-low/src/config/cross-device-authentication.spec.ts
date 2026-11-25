@@ -4,11 +4,19 @@ describe("CrossDeviceAuthentication config", () => {
   const { emojiAlphabet, emojiCodeLength } = crossDeviceAuthenticationConfig;
 
   it("should only contain distinct single code point emojis", () => {
-    expect(new Set(emojiAlphabet).size).toBe(emojiAlphabet.length);
-    emojiAlphabet.forEach((emoji) => {
-      expect([...emoji]).toHaveLength(1);
-      expect(emoji).toMatch(/^\p{Emoji_Presentation}$/u);
+    const symbols = emojiAlphabet.map(({ symbol }) => symbol);
+
+    expect(new Set(symbols).size).toBe(symbols.length);
+    symbols.forEach((symbol) => {
+      expect([...symbol]).toHaveLength(1);
+      expect(symbol).toMatch(/^\p{Emoji_Presentation}$/u);
     });
+  });
+
+  it("should give a distinct label to each emoji", () => {
+    const labels = emojiAlphabet.map(({ label }) => label);
+
+    expect(new Set(labels).size).toBe(labels.length);
   });
 
   it("should have enough emojis to draw a code without repetition", () => {

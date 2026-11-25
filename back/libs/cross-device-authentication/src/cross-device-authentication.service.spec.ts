@@ -33,7 +33,18 @@ describe(CrossDeviceAuthenticationService.name, () => {
   const configServiceMock = getConfigMock();
   const loggerMock = getLoggerMock();
   const xdaReviewerSessionMock = { save: jest.fn(), getAndDelete: jest.fn() };
-  const emojiAlphabet = ["🐶", "🐱", "🦊", "🐼", "🍎", "🍌"];
+  const emojiAlphabet = [
+    { symbol: "🐶", label: "Chien" },
+    { symbol: "🐱", label: "Chat" },
+    { symbol: "🦊", label: "Renard" },
+    { symbol: "🐼", label: "Panda" },
+    { symbol: "🍎", label: "Pomme" },
+    { symbol: "🍌", label: "Banane" },
+  ];
+  const emojis = [
+    { symbol: "🐱", label: "Chat" },
+    { symbol: "🐶", label: "Chien" },
+  ];
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -145,7 +156,8 @@ describe(CrossDeviceAuthenticationService.name, () => {
       );
       expect(emojis).toHaveLength(5);
       expect(new Set(emojis).size).toBe(5);
-      emojis.forEach((emoji: string) => expect(emojiAlphabet).toContain(emoji));
+      const symbols = emojiAlphabet.map(({ symbol }) => symbol);
+      emojis.forEach((emoji: string) => expect(symbols).toContain(emoji));
     });
   });
 
@@ -204,7 +216,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
     it("should only look up a non-expired request bound to the browsing session", async () => {
       modelMock.findOne.mockResolvedValue({
         status: "created",
-        emojis: ["😀", "😎", "🤖", "👾"],
+        emojis: ["🐱", "🐶"],
       });
 
       await service.getRequestForRequester({
@@ -222,7 +234,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
     it("should return the status and the emojis of the request", async () => {
       modelMock.findOne.mockResolvedValue({
         status: "verification_started",
-        emojis: ["😀", "😎", "🤖", "👾"],
+        emojis: ["🐱", "🐶"],
       });
 
       const result = await service.getRequestForRequester({
@@ -232,7 +244,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
 
       expect(result).toEqual({
         status: "verification_started",
-        emojis: ["😀", "😎", "🤖", "👾"],
+        emojis,
       });
     });
 
@@ -333,7 +345,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
         id: requestId,
         status: "created",
         spName: "My SP",
-        emojis: ["😀", "😎", "🤖", "👾"],
+        emojis: ["🐱", "🐶"],
       });
 
       const result = await service.markAsVerificationStarted({
@@ -374,7 +386,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
       );
       expect(result).toEqual({
         status: "verification_started",
-        emojis: ["😀", "😎", "🤖", "👾"],
+        emojis,
       });
     });
 
@@ -384,7 +396,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
         modelMock.findOneAndUpdate.mockResolvedValue({
           id: requestId,
           status,
-          emojis: ["😀", "😎", "🤖", "👾"],
+          emojis: ["🐱", "🐶"],
         });
 
         const result = await service.markAsVerificationStarted({
@@ -393,7 +405,7 @@ describe(CrossDeviceAuthenticationService.name, () => {
         });
 
         expect(loggerMock.track).not.toHaveBeenCalled();
-        expect(result).toEqual({ status, emojis: ["😀", "😎", "🤖", "👾"] });
+        expect(result).toEqual({ status, emojis });
       },
     );
 

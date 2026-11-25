@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { randomInt } from "crypto";
 import { isValidObjectId, Model, Types } from "mongoose";
-import { CrossDeviceAuthenticationConfig } from "./dto";
+import { CrossDeviceAuthenticationConfig, Emoji } from "./dto";
 import { NOT_REVIEWED_STATUSES, RequestStatus } from "./enums";
 import { formatUserAgent } from "./helpers";
 import { CrossDeviceAuthenticationRequest } from "./schemas";
@@ -76,7 +76,10 @@ export class CrossDeviceAuthenticationService {
     if (!request) {
       return null;
     }
-    return { status: request.status, emojis: request.emojis };
+    return {
+      status: request.status,
+      emojis: this.addLabels(request.emojis),
+    };
   }
 
   async getRequestForReviewer(params: { requestId: string; email: string }) {
@@ -133,7 +136,7 @@ export class CrossDeviceAuthenticationService {
       return null;
     }
 
-    const { emojis } = request;
+    const emojis = this.addLabels(request.emojis);
     if (request.status === RequestStatus.EMOJIS_DISPLAYED) {
       return { status: RequestStatus.EMOJIS_DISPLAYED, emojis };
     }
@@ -304,13 +307,24 @@ export class CrossDeviceAuthenticationService {
     return Math.max(expiresAt - Date.now(), 1);
   }
 
+  private addLabels(symbols: string[]): Emoji[] {
+    const { emojiAlphabet } = this.config.get<CrossDeviceAuthenticationConfig>(
+      "CrossDeviceAuthentication",
+    );
+    const labels = new Map(
+      emojiAlphabet.map(({ symbol, label }) => [symbol, label]),
+    );
+
+    return symbols.map((symbol) => ({ symbol, label: labels.get(symbol) }));
+  }
+
   private generateEmojis(): string[] {
     const { emojiAlphabet, emojiCodeLength } =
       this.config.get<CrossDeviceAuthenticationConfig>(
         "CrossDeviceAuthentication",
       );
 
-    const availableEmojis = [...emojiAlphabet];
+    const availableEmojis = emojiAlphabet.map(({ symbol }) => symbol);
     const selectedEmojis: string[] = [];
 
     for (let i = 0; i < emojiCodeLength; i++) {

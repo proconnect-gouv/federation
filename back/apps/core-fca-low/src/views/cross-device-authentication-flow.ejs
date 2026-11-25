@@ -65,7 +65,7 @@
                 class="fr-raw-list fr-h2 fr-container xda-emojis fr-my-2w fr-hidden"
                 aria-label="Série d'emojis"
               >
-                <% emojis.forEach(emoji => { %><li><%= emoji %></li><% }) %>
+                <%- include('includes/xda-emojis.ejs') %>
               </ul>
 
               <p data-xda-status-section="verification_started emojis_displayed">
