@@ -11,8 +11,8 @@ describe("createMaintenanceApp", () => {
     issuer: "https://auth.example.gouv.fr/api/v2",
     viewsPaths: [join(__dirname, "..", "views")],
     staticAssets: [{ path: join(__dirname, "..", "public") }],
-    maintenancePageDatetime: "mercredi 14 avril <script>alert(1)</script>",
-    maintenancePageDuration: "une heure",
+    maintenanceModeText:
+      "ProConnect est en maintenance ce lundi 30 novembre. Nous prévoyons une durée d’indisponibilité d’au moins 30 minutes. <script>alert(1)</script>",
   });
 
   it("serves the discovery document for the configured issuer", async () => {
@@ -56,7 +56,9 @@ describe("createMaintenanceApp", () => {
     expect(headers["cache-control"]).toBe("no-store");
     expect(headers["content-security-policy"]).toBeDefined();
     expect(text).toContain("Site en maintenance");
-    expect(text).toContain("une heure");
+    expect(text).toContain(
+      "ProConnect est en maintenance ce lundi 30 novembre",
+    );
   });
 
   it("escapes configured values", async () => {
@@ -79,8 +81,8 @@ describe("createMaintenanceAppFromConfig", () => {
           prefix: "/dsfr",
         },
       ],
-      maintenancePageDatetime: "mercredi 14 avril",
-      maintenancePageDuration: "deux heures",
+      maintenanceModeText:
+        "ProConnect est en maintenance ce lundi 30 novembre. Nous prévoyons une durée d’indisponibilité d’au moins 30 minutes.",
     },
     OidcProvider: { issuer: "https://auth.example.gouv.fr/api/v2" },
   };
@@ -102,8 +104,9 @@ describe("createMaintenanceAppFromConfig", () => {
     const asset = await request(app).get("/img/maintenance.svg");
     const dsfr = await request(app).get("/dsfr/dsfr.min.css");
 
-    expect(page.text).toContain("mercredi 14 avril");
-    expect(page.text).toContain("deux heures");
+    expect(page.text).toContain(
+      "ProConnect est en maintenance ce lundi 30 novembre. Nous prévoyons une durée d’indisponibilité d’au moins 30 minutes.",
+    );
     expect(asset.status).toBe(200);
     expect(dsfr.status).toBe(200);
   });

@@ -55,15 +55,7 @@ export class AppConfig extends AppGenericConfig {
 
   @IsString()
   @IsOptional()
-  readonly maintenancePageDatetime?: string;
-
-  @IsString()
-  @IsOptional()
   readonly maintenanceNoticeDatetime?: string;
-
-  @IsString()
-  @IsOptional()
-  readonly maintenancePageDuration?: string;
 
   @IsString()
   @IsOptional()
@@ -72,6 +64,10 @@ export class AppConfig extends AppGenericConfig {
   @IsBoolean()
   @IsOptional()
   readonly maintenanceMode?: boolean;
+
+  @IsString()
+  @IsOptional()
+  readonly maintenanceModeText?: string;
 
   @IsBoolean()
   @IsOptional()

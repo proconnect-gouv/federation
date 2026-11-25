@@ -371,7 +371,6 @@ describe("InteractionController", () => {
       });
       configServiceMock.get.mockReturnValue({
         defaultEmailRenater: "email",
-        maintenancePageDuration: "durée de maintenance",
         maintenanceNoticeDatetime: "date annoncée",
         maintenanceNoticeDuration: "durée annoncée",
       });

@@ -12,14 +12,9 @@
       <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
         <div class="fr-col-12 fr-col-md-6">
           <h1 class="fr-h2">Site en maintenance</h1>
-          <p data-testid="maintenance-description">
-            ProConnect est en maintenance
-            <% if (locals.maintenancePageDatetime) { %><%= maintenancePageDatetime %><% } %>.
-            <% if (locals.maintenancePageDuration) { %>
-            Nous prévoyons une durée d’indisponibilité d’au moins
-            <%= maintenancePageDuration %>.
-            <% } %>
-          </p>
+          <% if (locals.maintenanceModeText) { %>
+            <p data-testid="maintenance-description"><%= maintenanceModeText %></p>
+          <% } %>
           <p>Merci de patienter et de rafraîchir la page ultérieurement.</p>
         </div>
         <div class="fr-col-12 fr-col-md-6 fr-grid-row fr-grid-row--center">
