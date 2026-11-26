@@ -28,9 +28,12 @@ import { validate } from "class-validator";
 import type { Request, Response } from "express";
 import { isEmpty } from "lodash";
 import { UserSessionDecorator } from "../decorators";
-import { AfterGetInteractionSessionDto, CoreFcaSession } from "../dto";
+import {
+  ActiveUserSessionDto,
+  AfterGetInteractionSessionDto,
+  CoreFcaSession,
+} from "../dto";
 import { AfterRedirectToRieWarningSessionDto } from "../dto/user-session/after-redirect-to-rie-warning-session.dto";
-import { ReviewerSessionDto } from "../dto/user-session/reviewer-session.dto";
 import { PollingRoutes, Routes } from "../enums";
 
 @Controller()
@@ -189,11 +192,11 @@ export class CrossDeviceAuthenticationController {
   @Header("cache-control", "no-store")
   async reviewCrossDeviceAuthenticationRequests(
     @Res() res: Response,
-    @UserSessionDecorator(ReviewerSessionDto, XdaInvalidSession)
-    userSession: ISessionService<ReviewerSessionDto>,
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
     const csrfToken = this.csrfService.getOrCreate();
-    const { idpIdentity } = userSession.get();
+    const { idpIdentity } = this.getReviewer(userSession);
     const notReviewedRequests =
       await this.crossDeviceAuthenticationService.getNotReviewedRequests(
         idpIdentity.email,
@@ -208,10 +211,10 @@ export class CrossDeviceAuthenticationController {
   @Get(PollingRoutes.CROSS_DEVICE_AUTHENTICATION_NOT_REVIEWED_REQUESTS)
   @Header("cache-control", "no-store")
   async getCrossDeviceAuthenticationNotReviewedRequests(
-    @UserSessionDecorator(ReviewerSessionDto, XdaInvalidSession)
-    userSession: ISessionService<ReviewerSessionDto>,
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<{ notReviewedRequestIds: string[] }> {
-    const { idpIdentity } = userSession.get();
+    const { idpIdentity } = this.getReviewer(userSession);
     const notReviewedRequests =
       await this.crossDeviceAuthenticationService.getNotReviewedRequests(
         idpIdentity.email,
@@ -225,11 +228,11 @@ export class CrossDeviceAuthenticationController {
   async reviewCrossDeviceAuthenticationRequest(
     @Res() res: Response,
     @Param("requestId") requestId: string,
-    @UserSessionDecorator(ReviewerSessionDto, XdaInvalidSession)
-    userSession: ISessionService<ReviewerSessionDto>,
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
     const csrfToken = this.csrfService.getOrCreate();
-    const { idpIdentity } = userSession.get();
+    const { idpIdentity } = this.getReviewer(userSession);
     const result =
       await this.crossDeviceAuthenticationService.markAsVerificationStarted({
         requestId,
@@ -252,8 +255,8 @@ export class CrossDeviceAuthenticationController {
   async getReviewedCrossDeviceAuthenticationRequest(
     @Res() res: Response,
     @Param("requestId") requestId: string,
-    @UserSessionDecorator(ReviewerSessionDto, XdaInvalidSession)
-    userSession: ISessionService<ReviewerSessionDto>,
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
     const { status } = await this.getRequestForReviewer(requestId, userSession);
     const reviewedStatuses = [
@@ -272,8 +275,8 @@ export class CrossDeviceAuthenticationController {
   @Header("cache-control", "no-store")
   async getCrossDeviceAuthenticationRequestStatusForReviewer(
     @Param("requestId") requestId: string,
-    @UserSessionDecorator(ReviewerSessionDto, XdaInvalidSession)
-    userSession: ISessionService<ReviewerSessionDto>,
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<{ status: RequestStatus }> {
     const { status } = await this.getRequestForReviewer(requestId, userSession);
     return { status };
@@ -285,8 +288,8 @@ export class CrossDeviceAuthenticationController {
   async approveCrossDeviceAuthenticationRequest(
     @Res() res: Response,
     @Param("requestId") requestId: string,
-    @UserSessionDecorator(ReviewerSessionDto, XdaInvalidSession)
-    userSession: ISessionService<ReviewerSessionDto>,
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
     return this.reviewRequest(
       res,
@@ -302,8 +305,8 @@ export class CrossDeviceAuthenticationController {
   async rejectCrossDeviceAuthenticationRequest(
     @Res() res: Response,
     @Param("requestId") requestId: string,
-    @UserSessionDecorator(ReviewerSessionDto, XdaInvalidSession)
-    userSession: ISessionService<ReviewerSessionDto>,
+    @UserSessionDecorator(ActiveUserSessionDto, XdaInvalidSession)
+    userSession: ISessionService<ActiveUserSessionDto>,
   ): Promise<void> {
     return this.reviewRequest(
       res,
@@ -341,11 +344,23 @@ export class CrossDeviceAuthenticationController {
     return result;
   }
 
+  // A session obtained through a cross-device authentication cannot review
+  // another request
+  private getReviewer(
+    userSession: ISessionService<ActiveUserSessionDto>,
+  ): ActiveUserSessionDto {
+    const reviewer = userSession.get();
+    if (reviewer.isCrossDeviceAuthenticated) {
+      throw new XdaInvalidSession();
+    }
+    return reviewer;
+  }
+
   private async getRequestForReviewer(
     requestId: string,
-    userSession: ISessionService<ReviewerSessionDto>,
+    userSession: ISessionService<ActiveUserSessionDto>,
   ) {
-    const { idpIdentity } = userSession.get();
+    const { idpIdentity } = this.getReviewer(userSession);
     const result =
       await this.crossDeviceAuthenticationService.getRequestForReviewer({
         requestId,
@@ -359,7 +374,7 @@ export class CrossDeviceAuthenticationController {
 
   private async getReviewerSession(
     reviewerSessionId: string | null,
-  ): Promise<ReviewerSessionDto> {
+  ): Promise<ActiveUserSessionDto> {
     if (!reviewerSessionId) {
       throw new XdaReviewerSessionInvalid();
     }
@@ -376,11 +391,16 @@ export class CrossDeviceAuthenticationController {
     }
 
     const reviewerUserSession = plainToInstance(
-      ReviewerSessionDto,
+      ActiveUserSessionDto,
       reviewerSession.User,
     );
     const validationErrors = await validate(reviewerUserSession);
-    if (!isEmpty(validationErrors)) {
+    // A session obtained through a cross-device authentication cannot be
+    // shared again
+    if (
+      !isEmpty(validationErrors) ||
+      reviewerUserSession.isCrossDeviceAuthenticated
+    ) {
       throw new XdaReviewerSessionInvalid();
     }
     return reviewerUserSession;
@@ -389,10 +409,10 @@ export class CrossDeviceAuthenticationController {
   private async reviewRequest(
     res: Response,
     requestId: string,
-    userSession: ISessionService<ReviewerSessionDto>,
+    userSession: ISessionService<ActiveUserSessionDto>,
     status: RequestStatus.APPROVED | RequestStatus.REJECTED,
   ): Promise<void> {
-    const { idpIdentity } = userSession.get();
+    const { idpIdentity } = this.getReviewer(userSession);
     const isReviewed = await this.crossDeviceAuthenticationService.review({
       requestId,
       email: idpIdentity.email,
