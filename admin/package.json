@@ -68,7 +68,7 @@
     "commander": "^15.0.0",
     "cookie-parser": "^1.4.4",
     "dotenv": "^18.0.4",
-    "ejs": "^6.0.1",
+    "ejs": "^7.0.2",
     "express-flash": "0.0.2",
     "express-session": "^1.19.0",
     "font-awesome": "^4.7.0",
