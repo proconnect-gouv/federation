@@ -3,7 +3,7 @@ import request from "supertest";
 
 import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
 
-import { serviceProviders } from "../../../scripts/seed/data/service-providers";
+import { serviceProviders } from "#seed/service-providers";
 import { TestingBench } from "./test-bench";
 
 const serviceProvider = {

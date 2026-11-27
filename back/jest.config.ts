@@ -17,6 +17,7 @@ const config: Config = {
     ".+.(config|descriptor|dto|enum|fixture|interface|module|plugin|schema|type|token).ts",
   ],
   moduleFileExtensions: ["js", "json", "ts"],
+  moduleNameMapper: { "^node:test$": "<rootDir>/jest-node-test.ts" },
   modulePaths: [compilerOptions.baseUrl],
   rootDir: ".",
   testRegex: ".spec.ts$",
