@@ -242,6 +242,17 @@ Given("je mémorise le sub envoyé au fournisseur de service", function () {
   getUserInfoProperty("sub").as("spSub");
 });
 
+Given(
+  "je mémorise l'access token envoyé au fournisseur de service",
+  function () {
+    cy.get("#oauth2token")
+      .invoke("text")
+      .then((text) => JSON.parse(text).access_token)
+      .should("be.a", "string")
+      .as("api:access_token");
+  },
+);
+
 Then(
   /^le sub transmis au fournisseur de service est (identique|différent) [ad]u sub mémorisé$/,
   function (text: string) {
