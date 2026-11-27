@@ -39,4 +39,23 @@ export const resourceServers = {
     type: "private",
     isXdaEnabled: false,
   },
+  "api-partenaires": {
+    name: "API Partenaires",
+    title: "API Partenaires",
+    active: true,
+    scopes: [],
+    key: "699dfb6c03bb70508024b73a9e567f93d195751dad843024f52da1c8e4170290",
+    client_secret:
+      // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
+      "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
+    introspection_signed_response_alg: null,
+    id_token_signed_response_alg: "ES256",
+    userinfo_signed_response_alg: null,
+    redirect_uris: [],
+    post_logout_redirect_uris: [],
+    response_types: [],
+    grant_types: [],
+    type: "private",
+    isXdaEnabled: false,
+  },
 };
