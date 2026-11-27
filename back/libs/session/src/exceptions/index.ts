@@ -1,5 +1,3 @@
-export * from "./session-alias-not-found.exception";
-export * from "./session-bad-alias.exception";
 export * from "./session-bad-cookie.exception";
 export * from "./session-bad-format.exception";
 export * from "./session-bad-stringify.exception";

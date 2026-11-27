@@ -18,8 +18,6 @@ describe("SessionService", () => {
   const backendStorageMock = {
     get: jest.fn(),
     expire: jest.fn(),
-    setAlias: jest.fn(),
-    getAlias: jest.fn(),
   };
 
   const lifecycleMock = {
@@ -290,25 +288,6 @@ describe("SessionService", () => {
     });
   });
 
-  describe("getDataFromBackend()", () => {
-    it("should call backendStorage.get()", async () => {
-      // When
-      await service.getDataFromBackend(sessionId);
-
-      // Then
-      expect(backendStorageMock.get).toHaveBeenCalledTimes(1);
-      expect(backendStorageMock.get).toHaveBeenCalledWith(sessionId);
-    });
-
-    it("should return result of backendStorage.get()", async () => {
-      // When
-      const result = await service.getDataFromBackend(sessionId);
-
-      // Then
-      expect(result).toBe("mockedReturnValue::get");
-    });
-  });
-
   describe("expire()", () => {
     it("should call backendStorage.expire()", async () => {
       // Given
@@ -331,59 +310,6 @@ describe("SessionService", () => {
 
       // Then
       expect(result).toBe("mockedReturnValue::expire");
-    });
-  });
-
-  describe("setAlias()", () => {
-    it("should call backendStorage.setAlias()", async () => {
-      // Given
-      const alias = "alias";
-
-      // When
-      await service.setAlias(alias, sessionId);
-
-      // Then
-      expect(backendStorageMock.setAlias).toHaveBeenCalledTimes(1);
-      expect(backendStorageMock.setAlias).toHaveBeenCalledWith(
-        alias,
-        sessionId,
-      );
-    });
-
-    it("should return result of backendStorage.setAlias()", async () => {
-      // Given
-      const alias = "alias";
-
-      // When
-      const result = await service.setAlias(alias, sessionId);
-
-      // Then
-      expect(result).toBe("mockedReturnValue::setAlias");
-    });
-  });
-
-  describe("getAlias()", () => {
-    it("should call backendStorage.getAlias()", async () => {
-      // Given
-      const key = "key";
-
-      // When
-      await service.getAlias(key);
-
-      // Then
-      expect(backendStorageMock.getAlias).toHaveBeenCalledTimes(1);
-      expect(backendStorageMock.getAlias).toHaveBeenCalledWith(key);
-    });
-
-    it("should return result of backendStorage.getAlias()", async () => {
-      // Given
-      const key = "key";
-
-      // When
-      const result = await service.getAlias(key);
-
-      // Then
-      expect(result).toBe("mockedReturnValue::getAlias");
     });
   });
 });

@@ -2,19 +2,13 @@ import { ConfigService } from "#libs/config";
 import { CryptographyService } from "#libs/cryptography";
 import { LoggerService } from "#libs/logger";
 import { RedisService } from "#libs/redis";
-import {
-  SessionAliasNotFoundException,
-  SessionBadAliasException,
-  SessionConfig,
-  SessionNotFoundException,
-  SessionService,
-} from "#libs/session";
-import type { CoreFcaSession } from "#src";
+import { SessionConfig } from "#libs/session";
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { OIDC_PROVIDER_REDIS_PREFIX } from "../adapters/oidc-provider-redis.adapter";
 import { GrantIdentity } from "../dto";
+import { OidcCtx } from "../interfaces";
 
 /**
  * Stores the identity handed over by a login, per grant.
@@ -31,7 +25,6 @@ export class OidcProviderGrantIdentityService {
     private readonly redis: RedisService,
     private readonly cryptography: CryptographyService,
     private readonly logger: LoggerService,
-    private readonly sessionService: SessionService,
   ) {}
 
   async save(
@@ -54,20 +47,26 @@ export class OidcProviderGrantIdentityService {
   }
 
   /**
-   * @returns the identity of the grant, or undefined if it is missing or was
-   * issued for another account.
+   * For findAccount, at /token and /userinfo.
    */
-  async find(grantId: string, sub: string): Promise<GrantIdentity | undefined> {
+  async findFromToken(
+    token: { grantId?: string } | undefined,
+  ): Promise<GrantIdentity | undefined> {
+    return token?.grantId ? await this.find(token.grantId) : undefined;
+  }
+
+  /**
+   * For our /token and /userinfo middlewares, once oidc-provider has loaded
+   * the grant of the token.
+   */
+  async findFromLoadedGrant(ctx: OidcCtx): Promise<GrantIdentity | undefined> {
+    const grantId = ctx.oidc?.entities?.Grant?.jti;
+    return grantId ? await this.find(grantId) : undefined;
+  }
+
+  private async find(grantId: string): Promise<GrantIdentity | undefined> {
     const cipher = await this.redis.client.get(this.keyFor(grantId));
-    const grantIdentity = cipher
-      ? await this.decrypt(cipher)
-      : await this.getLegacy(sub);
-
-    if (grantIdentity?.spIdentity?.sub !== sub) {
-      return undefined;
-    }
-
-    return grantIdentity;
+    return cipher ? await this.decrypt(cipher) : undefined;
   }
 
   private async decrypt(cipher: string): Promise<GrantIdentity | undefined> {
@@ -87,32 +86,6 @@ export class OidcProviderGrantIdentityService {
     }
 
     return grantIdentity;
-  }
-
-  /**
-   * Grants issued before this deploy have no record: their identity is still
-   * in the session that the `sub` alias points to.
-   *
-   * @todo remove once those grants have expired (Session lifetime), along with
-   * SessionService.setAlias and SessionService.getAlias.
-   */
-  private async getLegacy(sub: string): Promise<GrantIdentity | undefined> {
-    try {
-      const sessionId = await this.sessionService.getAlias(sub);
-      const { User } =
-        await this.sessionService.getDataFromBackend<CoreFcaSession>(sessionId);
-
-      return { spIdentity: User?.spIdentity, sessionId };
-    } catch (error) {
-      if (
-        error instanceof SessionAliasNotFoundException ||
-        error instanceof SessionBadAliasException ||
-        error instanceof SessionNotFoundException
-      ) {
-        return undefined;
-      }
-      throw error;
-    }
   }
 
   private keyFor(grantId: string): string {

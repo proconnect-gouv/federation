@@ -10,10 +10,8 @@
 export const enum ErrorCode {
   NOT_FOUND = 1,
   BAD_SESSION_FORMAT = 2,
-  BAD_SESSION_ALIAS = 3,
   STORAGE_ISSUE = 5,
   BAD_STRINGIFY = 8,
   BAD_COOKIE = 12,
   CANNOT_COMMIT = 13,
-  ALIAS_NOT_FOUND = 14,
 }

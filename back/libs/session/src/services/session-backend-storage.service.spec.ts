@@ -9,8 +9,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { plainToInstance } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 import {
-  SessionAliasNotFoundException,
-  SessionBadAliasException,
   SessionBadFormatException,
   SessionBadStringifyException,
   SessionNotFoundException,
@@ -448,112 +446,6 @@ describe("SessionBackendStorageService", () => {
 
       // Then
       expect(result).toBe(`${configDataMock.prefix}::${sessionId}`);
-    });
-  });
-
-  describe("setAlias", () => {
-    const alias = "alias";
-
-    it("should call config.get()", async () => {
-      // When
-      await service.setAlias(alias, sessionId);
-
-      // Then
-      expect(configMock.get).toHaveBeenCalledWith("Session");
-    });
-
-    it("should call redis.client.multi()", async () => {
-      // When
-      await service.setAlias(alias, sessionId);
-
-      // Then
-      expect(redisMock.client.multi).toHaveBeenCalled();
-    });
-
-    it("should call redis.client.multi.set()", async () => {
-      // When
-      await service.setAlias(alias, sessionId);
-
-      // Then
-      expect(redisMultiMock.set).toHaveBeenCalledWith(alias, sessionId);
-    });
-
-    it("should call redis.client.multi.expire()", async () => {
-      // When
-      await service.setAlias(alias, sessionId);
-
-      // Then
-      expect(redisMultiMock.expire).toHaveBeenCalledWith(
-        alias,
-        configDataMock.lifetime,
-      );
-    });
-
-    it("should call multi.exec()", async () => {
-      // Given
-      const result = [0, 1];
-      redisMultiMock.exec.mockResolvedValue(result);
-
-      // When
-      await service.setAlias(alias, sessionId);
-
-      // Then
-      expect(redisMultiMock.exec).toHaveBeenCalledTimes(1);
-    });
-
-    it("should return the result of multi.exec()", async () => {
-      // Given
-      const result = [0, 1];
-      redisMultiMock.exec.mockResolvedValue(result);
-
-      // When
-      const response = await service.setAlias(alias, sessionId);
-
-      // Then
-      expect(response).toBe(result);
-    });
-  });
-
-  describe("getAlias", () => {
-    const alias = "alias";
-
-    it("should throw SessionBadAliasException if alias is empty", async () => {
-      // When / Then
-      await expect(service.getAlias("")).rejects.toThrow(
-        SessionBadAliasException,
-      );
-    });
-
-    it("should call redis.client.get()", async () => {
-      // When
-      await service.getAlias(alias);
-
-      // Then
-      expect(redisMock.client.get).toHaveBeenCalledTimes(1);
-      expect(redisMock.client.get).toHaveBeenCalledWith(alias);
-    });
-
-    it("should return the result of client.get()", async () => {
-      // Given
-      const redisResult = "redisResult";
-      redisMock.client.get.mockResolvedValue(redisResult);
-
-      // When
-      const result = await service.getAlias(alias);
-
-      // Then
-      expect(result).toBe(redisResult);
-    });
-
-    it("should return the result of client.get()", async () => {
-      // Given
-      const redisResult = undefined;
-      redisMock.client.get.mockResolvedValue(redisResult);
-
-      // When / Then
-      await expect(service.getAlias(alias)).rejects.toThrow(
-        SessionAliasNotFoundException,
-      );
     });
   });
 });

@@ -635,20 +635,6 @@ describe("OidcProviderService", () => {
       // Then
       expect(grantMock.addOIDCClaims).toHaveBeenCalledWith(["amr"]);
     });
-
-    it("should still write the sub alias for the pods of the previous release", async () => {
-      // When
-      await service.finishInteraction(reqMock, resMock, {
-        amr: ["amrValue"],
-        acr: "acrValue",
-      });
-
-      // Then
-      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
-        spIdentityMock.sub,
-        "sessionId",
-      );
-    });
   });
 
   describe("clearCookies", () => {
