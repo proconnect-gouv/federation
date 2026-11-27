@@ -50,6 +50,16 @@ Then(
 );
 
 Then(
+  /^le corps de la réponse a une propriété "([^"]+)" égale à (true|false)$/,
+  function (property: string, value: string) {
+    cy.get("@apiResponse")
+      .its("body")
+      .its(property)
+      .should("equal", value === "true");
+  },
+);
+
+Then(
   "le corps de la réponse a une propriété {string}",
   function (property: string) {
     cy.get("@apiResponse").its("body").should("have.property", property);

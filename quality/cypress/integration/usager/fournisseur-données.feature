@@ -28,3 +28,20 @@ Fonctionnalité: Fournisseur Données
     Et le fournisseur de service demande l'accès aux données au fournisseur de données
     Alors le fournisseur de données vérifie l'access token fourni par le fournisseur de service
     Et le checktoken endpoint envoie un token d'introspection expiré
+
+  Scénario: Le serveur de ressources api-partenaires introspecte l'access token du fournisseur de service
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je m'authentifie
+    Et que je mémorise l'access token envoyé au fournisseur de service
+    Et que je prépare une requête "token-introspection-api-partenaires"
+    Et que je mets la donnée mémorisée "access_token" dans la propriété "token" du corps de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 200
+    Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
+    Et le corps de la réponse a une propriété "active" égale à true
+    Et le corps de la réponse a une propriété "token_type" égale à "Bearer"
+    Et le corps de la réponse a une propriété "client_id"
+    Et le corps de la réponse a une propriété "sub"
