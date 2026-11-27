@@ -134,7 +134,8 @@ export class OidcProviderService {
       acr: InteractionResults["login"]["acr"];
     },
   ) {
-    const { spIdentity } = this.sessionService.get<UserSession>("User");
+    const { spIdentity, authTime } =
+      this.sessionService.get<UserSession>("User");
     const sessionId = this.sessionService.getId();
     const { params } = await this.provider.interactionDetails(req, res);
 
@@ -172,7 +173,9 @@ export class OidcProviderService {
         amr,
         acr,
         accountId: spIdentity.sub,
-        ts: Math.floor(Date.now() / 1000),
+        // @todo drop the fallback in the next release: sessions opened by pods
+        // of the previous release have no authTime.
+        ts: authTime ?? Math.floor(Date.now() / 1000),
         remember: false,
       },
       // skip the consent

@@ -3,6 +3,7 @@ import {
   IsArray,
   IsAscii,
   IsBoolean,
+  IsInt,
   IsJWT,
   IsNotEmpty,
   IsObject,
@@ -47,6 +48,13 @@ export class UserSession {
   @IsArray()
   @Expose()
   readonly idpAmr?: string[];
+
+  // Time of the authentication at the IdP, in seconds since the epoch
+  // (the OIDC auth_time).
+  @IsOptional()
+  @IsInt()
+  @Expose()
+  readonly authTime?: number;
 
   @IsOptional()
   @IsBoolean()

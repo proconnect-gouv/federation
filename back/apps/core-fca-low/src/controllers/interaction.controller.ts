@@ -86,6 +86,7 @@ export class InteractionController {
         idp_hint: idpHint,
         login_hint: spLoginHint,
         siret_hint: spSiretHint,
+        max_age: maxAge,
       },
     } = interaction;
 
@@ -119,11 +120,20 @@ export class InteractionController {
       activeUserSession,
     );
 
+    // oidc-provider asks for a login on every /authorize, as its session is
+    // reset each time, so max_age must be checked against our own session.
+    const authTime = userSession.get("authTime");
+    const isMaxAgeSatisfied =
+      maxAge === undefined ||
+      (authTime !== undefined &&
+        Math.floor(Date.now() / 1000) - authTime <= Number(maxAge));
+
     const canReuseActiveSession =
       isUserConnectedAlready &&
       isSessionOpenedWithHintedIdp &&
       isEssentialAcrSatisfied &&
-      isSessionOpenedWithHintedLogin;
+      isSessionOpenedWithHintedLogin &&
+      isMaxAgeSatisfied;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
 

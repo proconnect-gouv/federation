@@ -386,6 +386,7 @@ describe("OidcClientController", () => {
         "user@example.com",
       );
       expect(userSession.set).toHaveBeenNthCalledWith(2, {
+        authTime: expect.any(Number),
         idpAmr: "amr-value",
         idpIdToken: "id-token",
         idpAcr: "acr-value",
@@ -554,6 +555,7 @@ describe("OidcClientController", () => {
         "idp123",
       );
       expect(userSession.set).toHaveBeenCalledWith({
+        authTime: expect.any(Number),
         idpAmr: "amr-value",
         idpIdToken: "id-token",
         idpAcr: "acr-value",

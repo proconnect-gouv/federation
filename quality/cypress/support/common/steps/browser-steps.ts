@@ -7,3 +7,5 @@ When(/^je rafraîchis la page$/, function () {
 });
 
 When("je reviens en arrière", () => cy.go("back"));
+
+When("j'attends {int} secondes", (seconds: number) => cy.wait(seconds * 1000));

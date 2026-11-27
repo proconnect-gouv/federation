@@ -21,6 +21,7 @@ import {
   setCodeChallengeMethod,
   setIdpHint,
   setLoginHint,
+  setMaxAge,
   setPrompt,
   setRedirectUri,
   setScope,
@@ -305,6 +306,26 @@ Given("je rentre {string} dans le champ prompt", function (prompt: string) {
 
   setPrompt(prompt);
 });
+
+Given(
+  "le fournisseur de service demande un max_age de {int} secondes",
+  function (maxAge: number) {
+    setMaxAge(maxAge);
+  },
+);
+
+Given("je mémorise l'auth_time envoyé au fournisseur de service", function () {
+  getIdTokenProperty("auth_time").as("spAuthTime");
+});
+
+Then(
+  "l'auth_time transmis au fournisseur de service est identique à l'auth_time mémorisé",
+  function () {
+    cy.get<number>("@spAuthTime").then((previousAuthTime) => {
+      getIdTokenProperty("auth_time").should("be.equal", previousAuthTime);
+    });
+  },
+);
 
 When("je révoque le token ProConnect", function () {
   cy.get("#revoke-token").click();
