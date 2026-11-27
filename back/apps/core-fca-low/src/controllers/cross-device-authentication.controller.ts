@@ -139,10 +139,11 @@ export class CrossDeviceAuthenticationController {
     const reviewerSession = await this.getReviewerSession(
       consumedRequest.reviewerSessionId,
     );
-    const isSameUser =
+    const isSameEmail =
       reviewerSession.idpIdentity.email.toLowerCase() ===
       idpLoginHint.toLowerCase();
-    if (!isSameUser || reviewerSession.idpId !== idpId) {
+    const isSameIdp = reviewerSession.idpId === idpId;
+    if (!isSameEmail || !isSameIdp) {
       throw new XdaReviewerSessionInvalid();
     }
 
