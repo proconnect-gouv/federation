@@ -26,7 +26,6 @@ export type ResolvedAuthorizeQuery = AuthorizeQuery &
   Required<
     Pick<
       AuthorizeQuery,
-      | "acr_values"
       | "client_id"
       | "nonce"
       | "redirect_uri"
@@ -42,6 +41,7 @@ export class ServiceProviderSession<
   State extends ServiceProviderSessionState = "fresh",
 > {
   readonly #cookies: Map<string, string>;
+  readonly #overrides: AuthorizeQuery;
   readonly query: ResolvedAuthorizeQuery;
   readonly state: State;
 
@@ -55,16 +55,18 @@ export class ServiceProviderSession<
   ) {
     const { key, redirect_uris } = serviceProviders[name];
     this.#cookies = cookies;
-    this.query = {
-      acr_values: "eidas1",
-      client_id: key,
-      nonce: "sp-nonce-of-at-least-32-characters-long",
-      redirect_uri: redirect_uris[0],
-      response_type: "code",
-      scope: "openid email given_name usual_name",
-      state: "sp-state-of-at-least-32-characters-long",
-      ...query,
-    };
+    this.#overrides = query;
+    this.query = Object.fromEntries(
+      Object.entries({
+        client_id: key,
+        nonce: "sp-nonce-of-at-least-32-characters-long",
+        redirect_uri: redirect_uris[0],
+        response_type: "code",
+        scope: "openid email given_name usual_name",
+        state: "sp-state-of-at-least-32-characters-long",
+        ...query,
+      }).filter(([, value]) => value !== undefined),
+    ) as ResolvedAuthorizeQuery;
     this.state = state;
   }
 
@@ -75,7 +77,7 @@ export class ServiceProviderSession<
 
   async signIn(
     this: ServiceProviderSession<"fresh" | "authorized">,
-    { email = "jean@fia1.fr" }: { email?: string } = {},
+    { acr, email = "jean@fia1.fr" }: { acr?: string; email?: string } = {},
   ) {
     const authorize = this.authorizeResponse ?? (await this.#authorize());
     const interaction = this.#keep(
@@ -105,7 +107,7 @@ export class ServiceProviderSession<
       idpAuthorization.href,
       {
         idToken: {
-          acr: idpAuthorization.searchParams.get("acr_values").split(" ")[0],
+          ...(acr && { acr }),
           amr: ["pwd"],
           sub: email,
         },
@@ -135,25 +137,31 @@ export class ServiceProviderSession<
         .get(this.#path(verify.headers.location))
         .set("Cookie", this.#cookie()),
     );
-    const token = await this.bench.request
-      .post("/token")
-      .type("form")
-      .send({
-        client_id: this.query.client_id,
-        client_secret: serviceProvidersClientSecret,
-        code: new URL(resume.headers.location).searchParams.get("code"),
-        grant_type: "authorization_code",
-        redirect_uri: this.query.redirect_uri,
-      });
-    return {
+    const steps = {
       authorize,
       callback,
       interaction,
       redirectToIdp,
       resume,
+      verify,
+    };
+    const spCode = new URL(
+      resume.headers.location,
+      "http://bench",
+    ).searchParams.get("code");
+    if (!spCode) return { ...steps, kind: "stopped" as const };
+    const token = await this.bench.request.post("/token").type("form").send({
+      client_id: this.query.client_id,
+      client_secret: serviceProvidersClientSecret,
+      code: spCode,
+      grant_type: "authorization_code",
+      redirect_uri: this.query.redirect_uri,
+    });
+    return {
+      ...steps,
+      kind: "signed-in" as const,
       session: this.#next("signed-in"),
       token,
-      verify,
     };
   }
 
@@ -183,7 +191,7 @@ export class ServiceProviderSession<
     return new ServiceProviderSession<Next>(
       this.bench,
       this.name,
-      this.query,
+      this.#overrides,
       this.#cookies,
       authorizeResponse,
       state,
