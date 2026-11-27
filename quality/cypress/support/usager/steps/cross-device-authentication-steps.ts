@@ -67,6 +67,29 @@ Then(
   },
 );
 
+When(
+  "je retourne sur l'URL mémorisée de la page du parcours d'authentification cross-device",
+  function () {
+    cy.get<string>("@xdaFlowPageUrl").then((url) => cy.visit(url));
+  },
+);
+
+Then(
+  "je vois que la demande d'authentification cross-device a déjà été utilisée",
+  function () {
+    cy.contains("h1", "Demande de connexion déjà utilisée").should(
+      "be.visible",
+    );
+  },
+);
+
+Then(
+  "je vois que cette session ne peut pas vérifier de demande d'authentification cross-device",
+  function () {
+    cy.contains("Session ProConnect introuvable").should("be.visible");
+  },
+);
+
 Then("je vois que l'authentification cross-device est approuvée", function () {
   cy.contains("Votre session est active").should("be.visible");
 });

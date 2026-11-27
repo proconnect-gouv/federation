@@ -71,16 +71,23 @@ export class OidcAcrService {
   getInteractionAmr({
     idpAmr,
     isEmailVerifiedByPcf,
-  }: Pick<UserSession, "idpAmr" | "isEmailVerifiedByPcf">) {
-    if (!idpAmr || isEmpty(idpAmr) || !isArray(idpAmr)) {
-      return undefined;
+    isCrossDeviceAuthenticated,
+  }: Pick<
+    UserSession,
+    "idpAmr" | "isEmailVerifiedByPcf" | "isCrossDeviceAuthenticated"
+  >) {
+    const hasIdpAmr = isArray(idpAmr) && !isEmpty(idpAmr);
+    const amr = hasIdpAmr ? [...idpAmr] : [];
+
+    if (hasIdpAmr && isEmailVerifiedByPcf && !amr.includes("mail")) {
+      amr.push("mail");
     }
 
-    if (isEmailVerifiedByPcf && !idpAmr.includes("mail")) {
-      return [...idpAmr, "mail"];
+    if (isCrossDeviceAuthenticated) {
+      amr.push("xda");
     }
 
-    return idpAmr;
+    return isEmpty(amr) ? undefined : amr;
   }
 
   computeCanAcrBeSatisfiedByPcf({

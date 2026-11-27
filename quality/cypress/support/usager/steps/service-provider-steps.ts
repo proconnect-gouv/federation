@@ -208,6 +208,13 @@ Then("la cinématique a renvoyé l'amr {string}", function (amrValue: string) {
   getIdTokenProperty("amr").should("deep.equal", amrValue.split(","));
 });
 
+Then(
+  "la cinématique a renvoyé un amr contenant {string}",
+  function (amrValue: string) {
+    getIdTokenProperty("amr").should("include", amrValue);
+  },
+);
+
 Then("la cinématique n'a pas renvoyé d'amr", function () {
   getIdToken().then((idToken) => {
     expect(idToken).to.not.have.property("amr");

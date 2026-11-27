@@ -195,7 +195,11 @@ export class CoreFcaMiddlewareService {
     );
     const activeSessionValidationErrors = await validate(activeUserSession);
 
-    const isUserConnectedAlready = activeSessionValidationErrors.length <= 0;
+    // A session shared through a cross-device authentication request is never
+    // reused, see InteractionController.getInteraction
+    const isUserConnectedAlready =
+      activeSessionValidationErrors.length <= 0 &&
+      !activeUserSession.isCrossDeviceAuthenticated;
 
     if (isUserConnectedAlready && isSilentAuthentication) {
       // Given the Panva middlewares lack of active session awareness, overriding the prompt value is crucial to prevent

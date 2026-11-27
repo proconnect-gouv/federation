@@ -177,4 +177,11 @@ export class UserSession {
   @IsOptional()
   @IsBoolean()
   readonly isEmailVerifiedByPcf?: boolean;
+
+  // The identity comes from the session of a reviewer, shared through a
+  // cross-device authentication request: no SSO, nor logout from the IdP
+  @IsOptional()
+  @IsBoolean()
+  @Expose()
+  readonly isCrossDeviceAuthenticated?: boolean;
 }
