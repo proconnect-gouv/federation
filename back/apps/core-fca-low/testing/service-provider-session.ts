@@ -41,7 +41,6 @@ export type ServiceProviderSessionState = "fresh" | "authorized" | "signed-in";
 export class ServiceProviderSession<
   State extends ServiceProviderSessionState = "fresh",
 > {
-  readonly #cookies: Map<string, string>;
   readonly query: ResolvedAuthorizeQuery;
   readonly state: State;
 
@@ -49,12 +48,11 @@ export class ServiceProviderSession<
     private readonly bench: TestingBench,
     readonly name: keyof typeof serviceProviders,
     query: AuthorizeQuery = {},
-    cookies = new Map<string, string>(),
+    readonly agent = bench.agent(),
     readonly authorizeResponse?: HttpResponse,
     state: State = "fresh" as State,
   ) {
     const { key, redirect_uris } = serviceProviders[name];
-    this.#cookies = cookies;
     this.query = {
       acr_values: "eidas1",
       client_id: key,
@@ -78,25 +76,20 @@ export class ServiceProviderSession<
     { email = "jean@fia1.fr" }: { email?: string } = {},
   ) {
     const authorize = this.authorizeResponse ?? (await this.#authorize());
-    const interaction = this.#keep(
-      await this.bench.request
-        .get(this.#path(authorize.headers.location))
-        .set("Cookie", this.#cookie()),
+    const interaction = await this.agent.get(
+      this.#path(authorize.headers.location),
     );
     const redirectToIdp =
       interaction.status === 200
-        ? this.#keep(
-            await this.bench.request
-              .post("/redirect-to-idp")
-              .type("form")
-              .set("Cookie", this.#cookie())
-              .send({
-                csrfToken: /name="csrfToken" value="([^"]+)"/.exec(
-                  interaction.text,
-                )[1],
-                email,
-              }),
-          )
+        ? await this.agent
+            .post("/redirect-to-idp")
+            .type("form")
+            .send({
+              csrfToken: /name="csrfToken" value="([^"]+)"/.exec(
+                interaction.text,
+              )[1],
+              email,
+            })
         : undefined;
     const idpAuthorization = new URL(
       (redirectToIdp ?? interaction).headers.location,
@@ -119,22 +112,11 @@ export class ServiceProviderSession<
         },
       },
     );
-    const callback = this.#keep(
-      await this.bench.request
-        .get("/oidc-callback")
-        .query({ code, state })
-        .set("Cookie", this.#cookie()),
-    );
-    const verify = this.#keep(
-      await this.bench.request
-        .get(this.#path(callback.headers.location))
-        .set("Cookie", this.#cookie()),
-    );
-    const resume = this.#keep(
-      await this.bench.request
-        .get(this.#path(verify.headers.location))
-        .set("Cookie", this.#cookie()),
-    );
+    const callback = await this.agent
+      .get("/oidc-callback")
+      .query({ code, state });
+    const verify = await this.agent.get(this.#path(callback.headers.location));
+    const resume = await this.agent.get(this.#path(verify.headers.location));
     const token = await this.bench.request
       .post("/token")
       .type("form")
@@ -157,23 +139,8 @@ export class ServiceProviderSession<
     };
   }
 
-  async #authorize() {
-    return this.#keep(
-      await this.bench.request
-        .get("/authorize")
-        .query(this.query)
-        .set("Cookie", this.#cookie()),
-    );
-  }
-
-  #cookie() {
-    return [...this.#cookies.values()].join("; ");
-  }
-
-  #keep(response: HttpResponse) {
-    for (const cookie of [response.headers["set-cookie"] ?? []].flat())
-      this.#cookies.set(cookie.split("=")[0], cookie.split(";")[0]);
-    return response;
+  #authorize() {
+    return this.agent.get("/authorize").query(this.query);
   }
 
   #next<Next extends ServiceProviderSessionState>(
@@ -184,7 +151,7 @@ export class ServiceProviderSession<
       this.bench,
       this.name,
       this.query,
-      this.#cookies,
+      this.agent,
       authorizeResponse,
       state,
     );

@@ -200,7 +200,7 @@ const TEST_CONFIG: CoreFcaConfig = {
       signed: true,
       sameSite: "lax",
       httpOnly: true,
-      secure: true,
+      secure: false,
     },
     cookieSecrets: [
       "CeciEstUnSecret1",

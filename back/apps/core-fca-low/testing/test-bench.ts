@@ -129,6 +129,10 @@ export class TestingBench {
     readonly redis: Redis,
   ) {}
 
+  agent() {
+    return request.agent(this.app.getHttpServer());
+  }
+
   get request() {
     return request(this.app.getHttpServer());
   }
