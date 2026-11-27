@@ -511,11 +511,13 @@ describe("OidcProviderService", () => {
     };
     const resMock = {};
     const spIdentityMock = { sub: "test-sub" };
+    const authTimeMock = 1_700_000_000;
 
     beforeEach(() => {
       sessionServiceMock.getId.mockReturnValue("sessionId");
       sessionServiceMock.get.mockReturnValueOnce({
         spIdentity: spIdentityMock,
+        authTime: authTimeMock,
       });
       providerMock.interactionDetails.mockResolvedValue({
         params: { client_id: "client-id", scope: "openid email" },
@@ -532,7 +534,8 @@ describe("OidcProviderService", () => {
           accountId: spIdentityMock.sub,
           acr: "acrValue",
           amr: ["amrValue"],
-          ts: expect.any(Number),
+          // the time of the authentication at the IdP
+          ts: authTimeMock,
           remember: false,
         },
       };
@@ -555,29 +558,6 @@ describe("OidcProviderService", () => {
         reqMock,
         resMock,
         resultMock,
-      );
-    });
-
-    it("should set the login time to the time of the authentication at the IdP", async () => {
-      // Given
-      sessionServiceMock.get.mockReset().mockReturnValueOnce({
-        spIdentity: spIdentityMock,
-        authTime: 1_700_000_000,
-      });
-
-      // When
-      await service.finishInteraction(reqMock, resMock, {
-        amr: ["amrValue"],
-        acr: "acrValue",
-      });
-
-      // Then
-      expect(providerMock.interactionFinished).toHaveBeenCalledWith(
-        reqMock,
-        resMock,
-        expect.objectContaining({
-          login: expect.objectContaining({ ts: 1_700_000_000 }),
-        }),
       );
     });
 

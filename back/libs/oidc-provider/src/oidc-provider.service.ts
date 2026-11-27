@@ -2,7 +2,7 @@ import { LoggerService } from "#libs/logger";
 import { ExtendedInteraction } from "#libs/oidc-acr";
 import { RedisService } from "#libs/redis";
 import { SessionService } from "#libs/session";
-import { UserSession } from "#src";
+import { AfterGetOidcCallbackSessionDto } from "#src";
 import { Global, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import {
@@ -135,7 +135,7 @@ export class OidcProviderService {
     },
   ) {
     const { spIdentity, authTime } =
-      this.sessionService.get<UserSession>("User");
+      this.sessionService.get<AfterGetOidcCallbackSessionDto>("User");
     const sessionId = this.sessionService.getId();
     const { params } = await this.provider.interactionDetails(req, res);
 
@@ -173,9 +173,7 @@ export class OidcProviderService {
         amr,
         acr,
         accountId: spIdentity.sub,
-        // @todo drop the fallback in the next release: sessions opened by pods
-        // of the previous release have no authTime.
-        ts: authTime ?? Math.floor(Date.now() / 1000),
+        ts: authTime,
         remember: false,
       },
       // skip the consent
