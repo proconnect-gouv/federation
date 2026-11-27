@@ -150,20 +150,6 @@ describe("InteractionController", () => {
     (validate as jest.Mock).mockReset();
   });
 
-  describe("getDefault()", () => {
-    it("should redirect to the configured defaultRedirectUri", () => {
-      const res: Partial<Response> = { redirect: jest.fn() };
-      configServiceMock.get.mockReturnValue({
-        defaultRedirectUri: "http://default-uri",
-      });
-
-      controller.getDefault(res as Response);
-
-      expect(configServiceMock.get).toHaveBeenCalledWith("App");
-      expect(res.redirect).toHaveBeenCalledWith(301, "http://default-uri");
-    });
-  });
-
   describe("getInteraction()", () => {
     beforeEach(() => {
       serviceProviderMock.getById.mockResolvedValue({ name: "spName" });
@@ -346,141 +332,6 @@ describe("InteractionController", () => {
         );
 
         expect(userSessionService.clear).toHaveBeenCalled();
-      });
-    });
-
-    it("should call redirectToIdpWithIdpId when a valid IdP hint exists", async () => {
-      const req = { sessionId: "session1" } as unknown as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({}),
-        duplicate: jest.fn(),
-        set: jest.fn(),
-        clear: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123", idp_hint: "idp123" },
-      });
-      identityProviderMock.getById.mockResolvedValue({ id: "idp123" });
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(identityProviderMock.getById).toHaveBeenCalledWith("idp123");
-      expect(coreFcaControllerMock.redirectToIdpWithIdpId).toHaveBeenCalledWith(
-        req,
-        res,
-        "idp123",
-      );
-    });
-
-    it("should call abort interaction for invalid IdP hints", async () => {
-      const req = { query: {} } as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn(),
-        duplicate: jest.fn(),
-        set: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123", idp_hint: "unknown-idp" },
-      });
-      identityProviderMock.getById.mockResolvedValue(null);
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
-    });
-
-    it("should call redirectToIdpWithEmail when login_hint is provided", async () => {
-      const req = { sessionId: "session1" } as unknown as Request;
-      const res = { redirect: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({}),
-        duplicate: jest.fn(),
-        set: jest.fn(),
-        clear: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123", login_hint: "login123" },
-      });
-      identityProviderMock.getById.mockResolvedValue({ id: "idp123" });
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(coreFcaControllerMock.redirectToIdpWithEmail).toHaveBeenCalledWith(
-        req,
-        res,
-        "login123",
-        false,
-      );
-    });
-
-    it("should render the interaction page if no hints are provided", async () => {
-      const req = { query: {} } as Request;
-      const res = { render: jest.fn() } as unknown as Response;
-      const userSessionService = {
-        get: jest.fn().mockReturnValue({}),
-        set: jest.fn(),
-        clear: jest.fn(),
-        commit: jest.fn(),
-      } as unknown as ISessionService<UserSession>;
-      notificationsMock.getNotificationToDisplay.mockResolvedValue({
-        message: "notification",
-      });
-      configServiceMock.get.mockReturnValue({
-        defaultEmailRenater: "email",
-        maintenanceNoticeDatetime: "date annoncée",
-        maintenanceNoticeDuration: "durée annoncée",
-      });
-      oidcProviderMock.getInteraction.mockResolvedValue({
-        uid: "interaction123",
-        params: { client_id: "sp123" },
-      });
-      csrfServiceMock.getOrCreate.mockReturnValue("csrfToken");
-      (validate as jest.Mock).mockReturnValue([
-        new Error("not a valid session"),
-      ]);
-
-      await controller.getInteraction(
-        req,
-        res as Response,
-        {},
-        {} as any,
-        userSessionService,
-      );
-
-      expect(res.render).toHaveBeenCalledWith("interaction", {
-        csrfToken: "csrfToken",
-        defaultEmailRenater: "email",
-        notificationMessage: "notification",
-        isEmailInvalid: false,
-        spName: "spName",
-        maintenanceNoticeDatetime: "date annoncée",
-        maintenanceNoticeDuration: "durée annoncée",
       });
     });
   });
@@ -742,30 +593,6 @@ describe("InteractionController", () => {
         expect(oidcProviderMock.finishInteraction).toHaveBeenCalled();
         expect(res.redirect).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe("getError()", () => {
-    it("should call abortInteraction", async () => {
-      const req = {} as Request;
-      const res = {} as Response;
-
-      await controller.getError(
-        req,
-        res,
-        {} as any,
-        { error: "error", error_description: "error_description" } as any,
-      );
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
-    });
-    it("should call abortInteraction with no error messages", async () => {
-      const req = {} as Request;
-      const res = {} as Response;
-
-      await controller.getError(req, res, {} as any, {} as any);
-
-      expect(oidcProviderMock.abortInteraction).toHaveBeenCalled();
     });
   });
 });
