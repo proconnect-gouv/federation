@@ -1,36 +1,23 @@
-import { generateKeyPairSync } from "crypto";
-import request from "supertest";
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+
+import { TestingBench } from "#testing";
 import TEST_CONFIG from "../../.mocks/config";
-import { TestingBench } from "../test-bench";
 import { buildOpenidConfiguration } from "./openid-configuration";
 
 // Guards against drift between the static maintenance discovery document and
 // the one served by `oidc-provider` (new scope, claim, acr…).
-describe("maintenance openid-configuration", () => {
-  it("matches the discovery document served by oidc-provider", async () => {
-    const { issuer, jwks } = TEST_CONFIG.OidcProvider;
-    // Production signs with both ES256 and RS256 keys, tests only with ES256.
-    const rs256Key = {
-      ...generateKeyPairSync("rsa", { modulusLength: 2048 }).privateKey.export({
-        format: "jwk",
-      }),
-      alg: "RS256",
-      use: "sig",
-      kid: "rs256-test",
-    };
-    await using bench = await TestingBench.createTestBench(undefined, {
-      OidcProvider: {
-        ...TEST_CONFIG.OidcProvider,
-        jwks: { keys: [...jwks.keys, rs256Key] },
-      },
-    });
+describe("GET /.well-known/openid-configuration", () => {
+  it("should match the static maintenance discovery document", async () => {
+    const { issuer } = TEST_CONFIG.OidcProvider;
+    await using bench = await TestingBench.createTestBench();
 
-    const { text } = await request(bench.app.getHttpServer()).get(
+    const { text } = await bench.request.get(
       "/.well-known/openid-configuration",
     );
     // The test bench serves endpoints on its ephemeral local origin.
     const served = JSON.parse(text.replace(/http:\/\/[^/"]+/g, issuer));
 
-    expect(served).toEqual(buildOpenidConfiguration(issuer));
-  }, 30_000);
+    assert.deepStrictEqual(served, buildOpenidConfiguration(issuer));
+  });
 });

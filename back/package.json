@@ -23,8 +23,10 @@
       "libs/cross-device-authentication/src/*.ts"
     ],
     "#mocks/*": "./libs/*/.mocks/index.ts",
+    "#seed/*": "./scripts/seed/data/*.ts",
     "#src": "./apps/core-fca-low/src/index.ts",
-    "#src/*": "./apps/core-fca-low/src/*.ts"
+    "#src/*": "./apps/core-fca-low/src/*.ts",
+    "#testing": "./apps/core-fca-low/testing/index.ts"
   },
   "scripts": {
     "build": "nest build",

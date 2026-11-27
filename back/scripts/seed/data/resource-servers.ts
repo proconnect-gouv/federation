@@ -1,5 +1,8 @@
 //
 
+export const resourceServersClientSecret =
+  "36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847";
+
 export const resourceServers = {
   "DPA1-LOW": {
     name: "Serveur de ressources Mock - 1",
@@ -26,6 +29,25 @@ export const resourceServers = {
     active: true,
     scopes: ["groups"],
     key: "71c27fec9540e5aa30b34f8c012154f88f8416530b25f31ba4873a2e58e3d3fe",
+    client_secret:
+      // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
+      "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
+    introspection_signed_response_alg: "ES256",
+    id_token_signed_response_alg: "ES256",
+    userinfo_signed_response_alg: "ES256",
+    redirect_uris: [],
+    post_logout_redirect_uris: [],
+    response_types: [],
+    grant_types: [],
+    type: "private",
+    isXdaEnabled: false,
+  },
+  "api-partenaires": {
+    name: "API Partenaires",
+    title: "API Partenaires",
+    active: true,
+    scopes: ["openid"],
+    key: "699dfb6c03bb70508024b73a9e567f93d195751dad843024f52da1c8e4170290",
     client_secret:
       // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
       "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",

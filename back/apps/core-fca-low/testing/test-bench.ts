@@ -3,8 +3,10 @@ import { renderFile } from "ejs";
 import type Redis from "ioredis";
 import MockRedis from "ioredis-mock";
 import { get } from "lodash";
+import { MongoClient } from "mongodb";
 import { MongoMemoryReplSet } from "mongodb-memory-server";
 import { join } from "node:path";
+import request from "supertest";
 
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import type { TestingModuleBuilder } from "@nestjs/testing";
@@ -12,12 +14,22 @@ import { Test } from "@nestjs/testing";
 
 import { NestJsDependencyInjectionWrapper } from "#libs/common";
 import type { ConfigService } from "#libs/config";
+import { IdentityProviderAdapterMongoService } from "#libs/identity-provider-adapter-mongo";
+import { OidcClientService } from "#libs/oidc-client";
 import { RedisService } from "#libs/redis";
+import { ServiceProviderAdapterMongoService } from "#libs/service-provider-adapter-mongo";
 import type { SessionConfig } from "#libs/session";
+import { IdentityProvidersMock } from "#mocks/oidc-client";
 
+import { accountsFca } from "#seed/account-fca";
+import { identityProviders } from "#seed/identity-providers";
+import { resourceServers } from "#seed/resource-servers";
+import { serviceProviders } from "#seed/service-providers";
 import TEST_CONFIG from "../.mocks/config";
-import { AppModule } from "./app.module";
-import type { AppConfig } from "./dto";
+import { AppModule } from "../src/app.module";
+import type { AppConfig } from "../src/dto";
+import type { AuthorizeQuery } from "./service-provider-session";
+import { ServiceProviderSession } from "./service-provider-session";
 
 export class TestingBench {
   static async createTestBench(
@@ -83,15 +95,61 @@ export class TestingBench {
 
     await app.init();
 
-    return new TestingBench(app, configService as any, mongo, redis);
+    const client = await MongoClient.connect(mongo.getUri());
+    const db = client.db();
+    await db.collection("accountFca").insertMany(Object.values(accountsFca));
+    await db
+      .collection("client")
+      .insertMany(Object.values({ ...resourceServers, ...serviceProviders }));
+    await db
+      .collection("provider")
+      .insertMany(Object.values(identityProviders));
+    await client.close();
+    await app.get(ServiceProviderAdapterMongoService).refreshCache();
+    await app.get(IdentityProviderAdapterMongoService).refreshCache();
+    const identityProvidersMock = new IdentityProvidersMock(
+      Object.values(identityProviders),
+    );
+    app.get(OidcClientService).fetch = identityProvidersMock.fetch;
+
+    return new TestingBench(
+      app,
+      configService as any,
+      identityProvidersMock,
+      mongo,
+      redis,
+    );
   }
 
   constructor(
     readonly app: NestExpressApplication,
     readonly config: ConfigService,
+    readonly identityProviders: IdentityProvidersMock,
     readonly mongo: MongoMemoryReplSet,
     readonly redis: Redis,
   ) {}
+
+  get request() {
+    return request(this.app.getHttpServer());
+  }
+
+  get serviceProviders() {
+    return Object.fromEntries(
+      Object.keys(serviceProviders).map((name) => [
+        name,
+        (query?: AuthorizeQuery) =>
+          new ServiceProviderSession(
+            this,
+            name as keyof typeof serviceProviders,
+            query,
+          ),
+      ]),
+    ) as {
+      [Name in keyof typeof serviceProviders]: (
+        query?: AuthorizeQuery,
+      ) => ServiceProviderSession;
+    };
+  }
 
   async [Symbol.asyncDispose]() {
     await this.app.close();
