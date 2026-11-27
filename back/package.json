@@ -108,7 +108,7 @@
     "uuid": "^14.0.2"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.24",
+    "@nestjs/cli": "^12.0.12",
     "@nestjs/testing": "^10.4.22",
     "@types/deep-freeze": "^0.1.2",
     "@types/express": "^5.0.6",
