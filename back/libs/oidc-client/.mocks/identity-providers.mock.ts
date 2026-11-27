@@ -89,9 +89,21 @@ export class IdentityProvidersMock {
 
   login(authorizationUrl: string, claims: Login["claims"]) {
     const url = new URL(authorizationUrl);
+    const { acr } = JSON.parse(url.searchParams.get("claims") ?? "{}")
+      .id_token ?? { acr: undefined };
     const code = randomUUID();
     this.#logins.set(code, {
-      claims,
+      claims: {
+        ...claims,
+        idToken: {
+          acr:
+            acr?.value ||
+            acr?.values?.[0] ||
+            url.searchParams.get("acr_values")?.split(" ")[0] ||
+            "eidas1",
+          ...claims.idToken,
+        },
+      },
       idp: this.#find(url),
       nonce: url.searchParams.get("nonce"),
     });

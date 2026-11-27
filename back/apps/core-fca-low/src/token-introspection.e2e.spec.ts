@@ -12,7 +12,9 @@ describe("POST /token/introspection", () => {
   it("should let api-partenaires introspect an access token issued to a service provider", async () => {
     await using bench = await TestingBench.createTestBench();
     const { session } = await bench.serviceProviders.mock_sp2().authorize();
-    const { token } = await session.signIn();
+    const signIn = await session.signIn();
+    assert.equal(signIn.kind, "signed-in");
+    const { token } = signIn;
 
     const response = await bench.request
       .post("/token/introspection")

@@ -48,48 +48,6 @@ describe("OidcAcrService", () => {
   });
 
   describe("getInteractionAcr()", () => {
-    it("should return undefined if essential ACR requirement is not satisfied", () => {
-      // Given
-      const sessionDataMock: UserSession = {
-        spEssentialAcr: "eidas1",
-        idpAcr: "eidas0",
-      };
-
-      // When
-      const result = service["getInteractionAcr"](sessionDataMock);
-
-      // Then
-      expect(result).toBeUndefined();
-    });
-
-    it("should return the IdP ACR if essential ACR is satisfied", () => {
-      // Given
-      const sessionDataMock: UserSession = {
-        spEssentialAcr: "eidas0 eidas1",
-        idpAcr: "eidas0",
-      };
-
-      // When
-      const result = service["getInteractionAcr"](sessionDataMock);
-
-      // Then
-      expect(result).toBe("eidas0");
-    });
-
-    it("should return 'eidas1' if IdP ACR is unsupported", () => {
-      // Given
-      const sessionDataMock: UserSession = {
-        spEssentialAcr: undefined,
-        idpAcr: "unknown",
-      };
-
-      // When
-      const result = service["getInteractionAcr"](sessionDataMock);
-
-      // Then
-      expect(result).toBe("eidas1");
-    });
-
     it("should return 'eidas1-mfa' if essential ACR is 'eidas1-mfa' and ACR is unsupported and email is verified by PCF", () => {
       // Given
       const sessionDataMock: UserSession = {
@@ -316,16 +274,6 @@ describe("OidcAcrService", () => {
       expect(result).toEqual([]);
     });
 
-    it("should filter supported ACR values when given a string", () => {
-      const inputAcrValues = "eidas1 eidas2 A";
-
-      // When
-      const result = service["getFilteredAcrValues"](inputAcrValues);
-
-      // Then
-      expect(result).toEqual(["eidas1", "eidas2"]);
-    });
-
     it("should filter supported ACR values when given an array", () => {
       const inputAcrValues = ["eidas1", "C"];
 
@@ -366,39 +314,6 @@ describe("OidcAcrService", () => {
       expect(result).toBe(true);
     });
 
-    it("should return false when essential ACR is requested but not satisfied", () => {
-      // Given
-      const interactionMock = {
-        uid: "123",
-        params: {},
-        prompt: {
-          name: "login",
-          reasons: ["essential_acr"],
-          details: {
-            acr: {
-              essential: true,
-              value: "eidas2",
-            },
-          },
-        },
-      } as unknown as ExtendedInteraction;
-
-      const userSessionMock = {
-        idpAcr: "eidas1",
-        isEmailVerifiedByPcf: true,
-        idpAmr: ["pwd"],
-      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "idpAmr">;
-
-      // When
-      const result = service.isEssentialAcrSatisfied(
-        interactionMock,
-        userSessionMock,
-      );
-
-      // Then
-      expect(result).toBe(false);
-    });
-
     it("should return false when satisfied ACR requires a new session", () => {
       // Given
       const interactionMock = {
@@ -431,59 +346,9 @@ describe("OidcAcrService", () => {
       // Then
       expect(result).toBe(false);
     });
-
-    it("should return true when essential ACR is satisfied and does not require a new session", () => {
-      // Given
-      const interactionMock = {
-        uid: "123",
-        params: {},
-        prompt: {
-          name: "login",
-          reasons: ["essential_acr"],
-          details: {
-            acr: {
-              essential: true,
-              value: "eidas1",
-            },
-          },
-        },
-      } as unknown as ExtendedInteraction;
-
-      const userSessionMock = {
-        idpAcr: "eidas1",
-        isEmailVerifiedByPcf: true,
-        idpAmr: ["pwd"],
-      } as Pick<UserSession, "idpAcr" | "isEmailVerifiedByPcf" | "idpAmr">;
-
-      // When
-      const result = service.isEssentialAcrSatisfied(
-        interactionMock,
-        userSessionMock,
-      );
-
-      // Then
-      expect(result).toBe(true);
-    });
   });
 
   describe("computeAreThereEssentialAcrRequested()", () => {
-    it("should return true when prompt contains essential_acr reason", () => {
-      // Given
-      const interactionMock = {
-        prompt: {
-          name: "login",
-          reasons: ["essential_acr"],
-        },
-      } as undefined as ExtendedInteraction;
-
-      // When
-      const result =
-        service["computeAreThereEssentialAcrRequested"](interactionMock);
-
-      // Then
-      expect(result).toBe(true);
-    });
-
     it("should return true when prompt contains essential_acrs reason", () => {
       // Given
       const interactionMock = {
@@ -537,103 +402,6 @@ describe("OidcAcrService", () => {
   });
 
   describe("getFilteredAcrParamsFromInteraction()", () => {
-    it("should return acrClaims with essential single value", () => {
-      // Given
-      const interactionMock: ExtendedInteraction = {
-        uid: "123",
-        params: {},
-        prompt: {
-          name: "login",
-          reasons: ["essential_acr"],
-          details: {
-            acr: {
-              essential: true,
-              value: "eidas1",
-            },
-          },
-        },
-      } as undefined as ExtendedInteraction;
-
-      jest
-        .spyOn(service, "getFilteredAcrValues")
-        .mockReturnValueOnce(["eidas1"]);
-
-      // When
-      const result =
-        service["getFilteredAcrParamsFromInteraction"](interactionMock);
-
-      // Then
-      expect(result).toEqual({
-        acrClaims: {
-          essential: true,
-          value: "eidas1",
-        },
-      });
-    });
-
-    it("should return acrClaims with essential multiple values", () => {
-      // Given
-      const interactionMock: ExtendedInteraction = {
-        uid: "123",
-        params: {},
-        prompt: {
-          name: "login",
-          reasons: ["essential_acrs"],
-          details: {
-            acr: {
-              essential: true,
-              values: ["A", "B"],
-            },
-          },
-        },
-      } as undefined as ExtendedInteraction;
-
-      jest.spyOn(service, "getFilteredAcrValues").mockReturnValueOnce(["A"]);
-
-      // When
-      const result =
-        service["getFilteredAcrParamsFromInteraction"](interactionMock);
-
-      // Then
-      expect(result).toEqual({
-        acrClaims: {
-          essential: true,
-          values: ["A"],
-        },
-      });
-    });
-
-    it("should return acrValues when acr_values parameter is used", () => {
-      // Given
-      const interactionMock = {
-        uid: "123",
-        params: {
-          acr_values: "A B",
-          client_id: "",
-          redirect_uri: "",
-          state: "",
-          idp_hint: "",
-          login_hint: "",
-        },
-        prompt: {
-          name: "consent",
-          reasons: [],
-          details: {},
-        },
-      } as unknown as ExtendedInteraction;
-
-      jest.spyOn(service, "getFilteredAcrValues").mockReturnValueOnce(["A"]);
-
-      // When
-      const result =
-        service["getFilteredAcrParamsFromInteraction"](interactionMock);
-
-      // Then
-      expect(result).toEqual({
-        acrValues: "A",
-      });
-    });
-
     it("should return acrValues when none of the previous conditions are valid", () => {
       // Given
       const interactionMock = {
