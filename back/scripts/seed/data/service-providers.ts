@@ -1,5 +1,8 @@
 //
 
+export const serviceProvidersClientSecret =
+  "a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5";
+
 export const serviceProviders = {
   // -- FSA - FSA1-LOW - Activated - HS256 - no encrypted response
   mock_sp1: {

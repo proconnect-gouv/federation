@@ -1,5 +1,8 @@
 //
 
+export const resourceServersClientSecret =
+  "36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847";
+
 export const resourceServers = {
   "DPA1-LOW": {
     name: "Serveur de ressources Mock - 1",

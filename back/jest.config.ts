@@ -10,6 +10,7 @@ const config: Config = {
     "migrations/.+.ts",
     "apps/.*/src/config/.*\\.ts",
     "apps/.*/src/main.ts",
+    "apps/.*/testing/",
     "apps/mock-service-provider-fca-low/.+.ts",
     "apps/mock-identity-provider-fca-low/.+.ts",
     ".mocks/",

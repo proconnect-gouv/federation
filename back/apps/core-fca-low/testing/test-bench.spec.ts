@@ -1,10 +1,13 @@
-import { TestingBench } from "./test-bench";
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+
+import { TestingBench } from "#testing";
 
 describe("TestingBench", () => {
   it("should boot a real app against an in-memory Mongo replset and tear it down cleanly", async () => {
     await using bench = await TestingBench.createTestBench();
 
-    expect(bench.app).toBeDefined();
+    assert.ok(bench.app);
   });
 
   it("should apply a configureModule override before compiling", async () => {
@@ -14,7 +17,9 @@ describe("TestingBench", () => {
       return builder;
     });
 
-    expect(called).toBe(true);
-    expect(bench.app).toBeDefined();
+    assert.deepStrictEqual(
+      { app: Boolean(bench.app), called },
+      { app: true, called: true },
+    );
   });
 });

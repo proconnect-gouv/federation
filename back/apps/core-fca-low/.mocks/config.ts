@@ -1,3 +1,5 @@
+import { generateKeyPairSync } from "node:crypto";
+
 import { OidcProviderRoutes } from "#libs/oidc-provider";
 import { RateLimiterKeyPrefix } from "#libs/rate-limiter";
 import { CoreFcaConfig, CoreFcaSession, Routes } from "#src";
@@ -127,6 +129,14 @@ const TEST_CONFIG: CoreFcaConfig = {
           d: "sMJDu7_nEjB0SwTKuKR8XiZPHvoUkem3rdgxP39kkfQ",
           kty: "EC",
           kid: "pkcs11:ES256:hsm",
+          use: "sig",
+        },
+        {
+          ...generateKeyPairSync("rsa", {
+            modulusLength: 2048,
+          }).privateKey.export({ format: "jwk" }),
+          alg: "RS256",
+          kid: "rs256-test",
           use: "sig",
         },
       ],
